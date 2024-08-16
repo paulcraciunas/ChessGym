@@ -1,22 +1,24 @@
 package com.paulcraciunas.chessgym.game
 
 data class Position(val x: Int, val y: Int) {
-    fun isValid(): Boolean = x in 0..7 && y in 0..7
+    init {
+        assert(isValid(x, y)) // No point in creating invalid positions
+    }
 
     // TODO Paul: when serializing whole move notation, keep in mind the following
     // TODO Paul: add special chars at the end of move (! for check, + for capture, # for checkmate)
     // TODO Paul: disambiguate moves (e.g. Nbd2 - Knight from B to D2; R8e4 - Rook from 8 to e8)
     // TODO Paul: finally, castling: O-O for short, O-O-O for long; use Oh, not Zero!!
     // TODO Paul: this will probably be a method on the Move class
-    fun toAlgebraic(): String {
-        assert(isValid())
+    fun toAlgebraic(): String = "${filesMap[x]}${rowsMap[y]}" //e.g. d4
 
-        return "${filesMap[x]}${rowsMap[y]}" //e.g. d4
-    }
+    fun hasNext(delta: Delta): Boolean = isValid(x + delta.dX, y + delta.dY)
 
     fun next(delta: Delta): Position = Position(x = x + delta.dX, y = y + delta.dY)
 
     companion object {
+        private fun isValid(x: Int, y: Int): Boolean = x in 0..7 && y in 0..7
+
         fun from(algebraic: String): Position {
             assert(algebraic.length == 2)
             assert(reverseFilesMap.contains(algebraic[0]))
