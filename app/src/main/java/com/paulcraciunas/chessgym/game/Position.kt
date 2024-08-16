@@ -50,3 +50,5 @@ data class Position(val x: Int, val y: Int) {
         private val reverseRowsMap = rowsMap.entries.associate { (k, v) -> v to k }
     }
 }
+
+fun String.toPosition(): Position = Position.from(this)
