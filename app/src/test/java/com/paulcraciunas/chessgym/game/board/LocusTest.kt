@@ -4,7 +4,7 @@ import com.paulcraciunas.chessgym.game.Side
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-class LocusTest {
+internal class LocusTest {
 
     @Test
     fun `WHEN calling top() THEN return the correct locus`() {

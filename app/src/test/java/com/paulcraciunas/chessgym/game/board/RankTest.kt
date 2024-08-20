@@ -6,7 +6,7 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 
-class RankTest {
+internal class RankTest {
     @ParameterizedTest(name = "next of {0} is {1}")
     @MethodSource("nextRanks")
     fun `WHEN calling next() THEN return the next rank`(current: Rank, next: Rank?) {

@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
-class StandardPlyTest {
+internal class StandardPlyTest {
     private val on = Board()
 
     @Test

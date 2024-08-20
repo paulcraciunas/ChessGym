@@ -6,7 +6,7 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 
-class FileTest {
+internal class FileTest {
     @ParameterizedTest(name = "next of {0} is {1}")
     @MethodSource("nextFiles")
     fun `WHEN calling next() THEN return the next file`(current: File, next: File?) {

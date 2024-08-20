@@ -17,7 +17,7 @@ import com.paulcraciunas.chessgym.game.board.Rank.`8`
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
-class BoardFactoryTest {
+internal class BoardFactoryTest {
 
     private val underTest = BoardFactory.defaultBoard()
 

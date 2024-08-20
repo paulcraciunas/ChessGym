@@ -29,7 +29,7 @@ import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
 
-class BoardTest {
+internal class BoardTest {
 
     private val underTest = Board()
 
