@@ -21,6 +21,7 @@ abstract class PlyStrategy {
 
     open fun canAttack(from: Locus, to: Locus, on: Board, turn: Side): Boolean {
         assert(on.has(turn, from))
+        assert(from != to)
 
         val plies = mutableListOf<Ply>()
         plies.addPliesInDirections(turn, from, on) { it == to }
@@ -29,7 +30,7 @@ abstract class PlyStrategy {
     }
 
     fun plies(from: Locus, on: Board, with: GameState): List<Ply> {
-        assert(on.has(with.turn, from))
+        assert(on.has(piece, with.turn, from))
 
         return mutableListOf<Ply>().apply {
             if (canMoveInCheck(with.inCheckCount)) {
@@ -74,8 +75,16 @@ abstract class PlyStrategy {
         verify: (Locus) -> Boolean,
     ) {
         var loc = next(from)
-        while (loc != null && !on.has(side, loc) && verify(loc)) {
-            add(StandardPly(side, piece, from = from, to = loc, captured = on.at(loc)))
+        // Stop if we're out of the board, if we met an ally
+        while (loc != null && !on.has(side, loc)) {
+            // Only add if the location is verified
+            if (verify(loc)) {
+                add(StandardPly(side, piece, from = from, to = loc, captured = on.at(loc)))
+            }
+            // If we reach an enemy, stop
+            if (on.at(loc) != null) {
+                return
+            }
             loc = next(loc)
         }
     }
