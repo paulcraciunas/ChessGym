@@ -8,8 +8,9 @@ import com.paulcraciunas.chessgym.game.board.Piece
 import com.paulcraciunas.chessgym.game.board.Rank
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
-class CastlePlyTest {
+internal class CastlePlyTest {
     private val on = Board()
 
     @Test
@@ -25,6 +26,32 @@ class CastlePlyTest {
     }
 
     @Test
+    fun `GIVEN position occupied WHEN castling kingSide THEN throw`() {
+        on.add(piece = Piece.King, side = Side.WHITE, at = Locus(File.e, Rank.`1`))
+        on.add(piece = Piece.Rook, side = Side.WHITE, at = Locus(File.h, Rank.`1`))
+        on.add(piece = Piece.Knight, side = Side.WHITE, at = Locus(File.g, Rank.`1`))
+        val ply = CastlePly(turn = Side.WHITE, type = CastlePly.Type.KingSide)
+
+        assertThrows<AssertionError> { ply.exec(on) }
+    }
+
+    @Test
+    fun `GIVEN king missing WHEN castling kingSide THEN throw`() {
+        on.add(piece = Piece.Rook, side = Side.WHITE, at = Locus(File.h, Rank.`1`))
+        val ply = CastlePly(turn = Side.WHITE, type = CastlePly.Type.KingSide)
+
+        assertThrows<AssertionError> { ply.exec(on) }
+    }
+
+    @Test
+    fun `GIVEN rook missing WHEN castling kingSide THEN throw`() {
+        on.add(piece = Piece.Rook, side = Side.WHITE, at = Locus(File.h, Rank.`1`))
+        val ply = CastlePly(turn = Side.WHITE, type = CastlePly.Type.KingSide)
+
+        assertThrows<AssertionError> { ply.exec(on) }
+    }
+
+    @Test
     fun `GIVEN white moving WHEN undoing kingSide castle THEN the king and rook move back`() {
         on.add(piece = Piece.King, side = Side.WHITE, at = Locus(File.g, Rank.`1`))
         on.add(piece = Piece.Rook, side = Side.WHITE, at = Locus(File.f, Rank.`1`))
@@ -37,7 +64,7 @@ class CastlePlyTest {
     }
 
     @Test
-    fun `GIVEN white moving WHEN castling queenSide for THEN the king and rook move correctly`() {
+    fun `GIVEN white moving WHEN castling queenSide THEN the king and rook move correctly`() {
         on.add(piece = Piece.King, side = Side.WHITE, at = Locus(File.e, Rank.`1`))
         on.add(piece = Piece.Rook, side = Side.WHITE, at = Locus(File.a, Rank.`1`))
         val ply = CastlePly(turn = Side.WHITE, type = CastlePly.Type.QueenSide)
@@ -46,6 +73,32 @@ class CastlePlyTest {
 
         assertTrue(on.has(Piece.King, Side.WHITE, Locus(File.c, Rank.`1`)))
         assertTrue(on.has(Piece.Rook, Side.WHITE, Locus(File.d, Rank.`1`)))
+    }
+
+    @Test
+    fun `GIVEN position occupied WHEN castling queenSide THEN throw`() {
+        on.add(piece = Piece.King, side = Side.WHITE, at = Locus(File.e, Rank.`1`))
+        on.add(piece = Piece.Rook, side = Side.WHITE, at = Locus(File.a, Rank.`1`))
+        on.add(piece = Piece.Bishop, side = Side.WHITE, at = Locus(File.c, Rank.`1`))
+        val ply = CastlePly(turn = Side.WHITE, type = CastlePly.Type.QueenSide)
+
+        assertThrows<AssertionError> { ply.exec(on) }
+    }
+
+    @Test
+    fun `GIVEN king missing WHEN castling queenSide THEN throw`() {
+        on.add(piece = Piece.Rook, side = Side.WHITE, at = Locus(File.a, Rank.`1`))
+        val ply = CastlePly(turn = Side.WHITE, type = CastlePly.Type.QueenSide)
+
+        assertThrows<AssertionError> { ply.exec(on) }
+    }
+
+    @Test
+    fun `GIVEN rook missing WHEN castling queenSide THEN throw`() {
+        on.add(piece = Piece.Rook, side = Side.WHITE, at = Locus(File.a, Rank.`1`))
+        val ply = CastlePly(turn = Side.WHITE, type = CastlePly.Type.QueenSide)
+
+        assertThrows<AssertionError> { ply.exec(on) }
     }
 
     @Test
@@ -61,7 +114,7 @@ class CastlePlyTest {
     }
 
     @Test
-    fun `GIVEN black moving WHEN castling kingSide for THEN the king and rook move correctly`() {
+    fun `GIVEN black moving WHEN castling kingSide THEN the king and rook move correctly`() {
         on.add(piece = Piece.King, side = Side.BLACK, at = Locus(File.e, Rank.`8`))
         on.add(piece = Piece.Rook, side = Side.BLACK, at = Locus(File.h, Rank.`8`))
         val ply = CastlePly(turn = Side.BLACK, type = CastlePly.Type.KingSide)
@@ -85,7 +138,7 @@ class CastlePlyTest {
     }
 
     @Test
-    fun `GIVEN black moving WHEN castling queenSide for THEN the king and rook move correctly`() {
+    fun `GIVEN black moving WHEN castling queenSide THEN the king and rook move correctly`() {
         on.add(piece = Piece.King, side = Side.BLACK, at = Locus(File.e, Rank.`8`))
         on.add(piece = Piece.Rook, side = Side.BLACK, at = Locus(File.a, Rank.`8`))
         val ply = CastlePly(turn = Side.BLACK, type = CastlePly.Type.QueenSide)
