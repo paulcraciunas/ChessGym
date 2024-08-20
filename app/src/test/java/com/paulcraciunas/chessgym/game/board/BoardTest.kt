@@ -211,6 +211,8 @@ class BoardTest {
         val captured = underTest.move(from = Locus(d, `4`), to = Locus(e, `5`), BLACK)
 
         assertEquals(Piece.Bishop, captured)
+        assertTrue(underTest.has(Piece.Pawn, BLACK, Locus(e, `5`)))
+        assertNull(underTest.at(Locus(d, `4`)))
     }
 
     @Test

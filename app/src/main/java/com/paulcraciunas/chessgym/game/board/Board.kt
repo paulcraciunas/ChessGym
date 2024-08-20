@@ -98,10 +98,16 @@ data class Board(
 
         val captured = board[to.rank.dec()][to.file.dec()]
         board[to.rank.dec()][to.file.dec()] = board[from.rank.dec()][from.file.dec()]
+        board[from.rank.dec()][from.file.dec()] = null
         Piece.entries.forEach { piece ->
             if (pieces[turn]!![piece]!!.contains(from)) {
                 pieces[turn]!![piece]!!.remove(from)
                 pieces[turn]!![piece]!!.add(to)
+            }
+        }
+        captured?.let {
+            if (pieces[turn.other()]!![it]!!.contains(to)) {
+                pieces[turn.other()]!![it]!!.remove(to)
             }
         }
         return captured
