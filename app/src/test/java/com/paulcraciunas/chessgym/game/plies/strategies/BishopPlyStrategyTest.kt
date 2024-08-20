@@ -132,7 +132,7 @@ internal class BishopPlyStrategyTest {
         }
     }
 
-    private companion object {
+    companion object {
         val validLocations = listOf(
             // First diagonal
             Locus(a, `8`),
