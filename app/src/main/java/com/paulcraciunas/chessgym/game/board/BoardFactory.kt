@@ -14,14 +14,12 @@ import com.paulcraciunas.chessgym.game.board.Rank.`2`
 import com.paulcraciunas.chessgym.game.board.Rank.`7`
 import com.paulcraciunas.chessgym.game.board.Rank.`8`
 
-class BoardFactory {
-    fun defaultBoard(): Board = defaultBoard.copy()
+object BoardFactory {
+    fun defaultBoard(): Board = Board().from(defaultBoard)
 
-    companion object {
-        private val defaultBoard: Board = Board()
-            .addWhitePieces()
-            .addBlackPieces()
-    }
+    private val defaultBoard: Board = Board()
+        .addWhitePieces()
+        .addBlackPieces()
 }
 
 private fun Board.addWhitePieces() = apply {

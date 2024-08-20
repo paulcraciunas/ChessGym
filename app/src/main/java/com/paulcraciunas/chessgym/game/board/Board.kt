@@ -42,10 +42,14 @@ data class Board(
         pieces[side]!![piece]!!.add(at)
     }
 
-    fun remove(piece: Piece, side: Side, at: Locus): Piece? {
+    fun remove(at: Locus): Piece? {
         val removed = board[at.rank.dec()][at.file.dec()]
         board[at.rank.dec()][at.file.dec()] = null
-        pieces[side]!![piece]!!.remove(at)
+        removed?.let {
+            Side.entries.forEach {
+                pieces[it]!![removed]!!.remove(at)
+            }
+        }
         return removed
     }
 
@@ -89,6 +93,9 @@ data class Board(
     fun isEmpty(at: Locus): Boolean = board[at.rank.dec()][at.file.dec()] == null
 
     fun move(from: Locus, to: Locus, turn: Side): Piece? {
+        assert(!isEmpty(from))
+        assert(isEmpty(to) || has(turn.other(), to))
+
         val captured = board[to.rank.dec()][to.file.dec()]
         board[to.rank.dec()][to.file.dec()] = board[from.rank.dec()][from.file.dec()]
         Piece.entries.forEach { piece ->
