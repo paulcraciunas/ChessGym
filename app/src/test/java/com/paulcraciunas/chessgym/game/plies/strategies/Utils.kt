@@ -75,15 +75,8 @@ internal inline fun <reified T : Ply> Collection<Ply>.assertHas(
     turn: Side,
     piece: Piece,
     home: Locus,
-    location: Pair<File, Rank>,
-) = assertHas<T>(turn, piece, home, Locus(location.first, location.second))
-
-internal inline fun <reified T : Ply> Collection<Ply>.assertHas(
-    turn: Side,
-    piece: Piece,
-    home: Locus,
     location: Locus,
-) {
+): Collection<Ply> = apply {
     assertNotNull(find { ply ->
         ply is T
         ply.turn == turn &&

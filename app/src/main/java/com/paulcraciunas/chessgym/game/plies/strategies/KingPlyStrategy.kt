@@ -12,7 +12,7 @@ import com.paulcraciunas.chessgym.game.plies.Ply
 class KingPlyStrategy : PlyStrategy() {
     override val piece: Piece = Piece.King
     override fun canMoveInCheck(count: CheckCount): Boolean = true // King can always try and move
-    override fun simpleMoves(): Collection<Next> = standardMoves
+    override fun simpleMoves(): Collection<Next> = QueenPlyStrategy.directions
 
     override fun canAttack(from: Locus, to: Locus, on: Board, turn: Side): Boolean {
         assert(on.has(Piece.King, turn, from))
@@ -40,12 +40,5 @@ class KingPlyStrategy : PlyStrategy() {
                 }
             }
         }
-    }
-
-    companion object {
-        private val standardMoves = listOf(
-            Locus::left, Locus::right, Locus::top, Locus::down,
-            Locus::topLeft, Locus::topRight, Locus::downLeft, Locus::downRight
-        )
     }
 }

@@ -4,18 +4,11 @@ import com.paulcraciunas.chessgym.game.CheckCount
 import com.paulcraciunas.chessgym.game.GameState
 import com.paulcraciunas.chessgym.game.Side
 import com.paulcraciunas.chessgym.game.board.Board
-import com.paulcraciunas.chessgym.game.board.File
-import com.paulcraciunas.chessgym.game.board.File.a
-import com.paulcraciunas.chessgym.game.board.File.b
-import com.paulcraciunas.chessgym.game.board.File.c
-import com.paulcraciunas.chessgym.game.board.File.d
 import com.paulcraciunas.chessgym.game.board.File.e
-import com.paulcraciunas.chessgym.game.board.File.f
 import com.paulcraciunas.chessgym.game.board.File.g
 import com.paulcraciunas.chessgym.game.board.File.h
 import com.paulcraciunas.chessgym.game.board.Locus
 import com.paulcraciunas.chessgym.game.board.Piece
-import com.paulcraciunas.chessgym.game.board.Rank
 import com.paulcraciunas.chessgym.game.board.Rank.`1`
 import com.paulcraciunas.chessgym.game.board.Rank.`7`
 import com.paulcraciunas.chessgym.game.board.Rank.`8`
@@ -61,9 +54,9 @@ internal class KingPlyCastlingTest {
     @ParameterizedTest(name = "{4} castling is allowed for {3} when king is on {0} and rook on {1}")
     @MethodSource("permittedCastles")
     fun `WHEN castling is possible THEN return castling`(
-        kingHome: Pair<File, Rank>,
-        rookHome: Pair<File, Rank>,
-        kingDest: Pair<File, Rank>,
+        kingHome: String,
+        rookHome: String,
+        kingDest: String,
         turn: Side,
         side: String, // This isn't needed for the test, but for pretty printing and readability
     ) {
@@ -76,7 +69,7 @@ internal class KingPlyCastlingTest {
                 turn = turn,
                 piece = Piece.King,
                 home = kingHome.loc(),
-                location = kingDest
+                location = kingDest.loc()
             )
     }
 
@@ -99,9 +92,9 @@ internal class KingPlyCastlingTest {
     @ParameterizedTest(name = "{4} castling forbidden for {3} when {2} is occupied")
     @MethodSource("forbiddenCastles")
     fun `GIVEN castling is available WHEN square is occupied THEN do not allow castle`(
-        kingHome: Pair<File, Rank>,
-        rookHome: Pair<File, Rank>,
-        occupied: Pair<File, Rank>,
+        kingHome: String,
+        rookHome: String,
+        occupied: String,
         turn: Side,
         side: String, // This isn't needed for the test, but for pretty printing and readability
     ) {
@@ -117,28 +110,28 @@ internal class KingPlyCastlingTest {
     companion object {
         @JvmStatic
         fun forbiddenCastles(): List<Arguments> =
-            mutableListOf<Arguments>().apply {
+            mutableListOf<Arguments>(
                 // Order is: King, Rook, Occupier, turn, name (for readability)
-                add(Arguments.of(e to `8`, h to `8`, g to `8`, Side.BLACK, "KingSide"))
-                add(Arguments.of(e to `8`, h to `8`, f to `8`, Side.BLACK, "KingSide"))
-                add(Arguments.of(e to `8`, a to `8`, b to `8`, Side.BLACK, "QueenSide"))
-                add(Arguments.of(e to `8`, a to `8`, c to `8`, Side.BLACK, "QueenSide"))
-                add(Arguments.of(e to `8`, a to `8`, d to `8`, Side.BLACK, "QueenSide"))
-                add(Arguments.of(e to `1`, h to `1`, g to `1`, Side.WHITE, "KingSide"))
-                add(Arguments.of(e to `1`, h to `1`, f to `1`, Side.WHITE, "KingSide"))
-                add(Arguments.of(e to `1`, a to `1`, b to `1`, Side.WHITE, "QueenSide"))
-                add(Arguments.of(e to `1`, a to `1`, c to `1`, Side.WHITE, "QueenSide"))
-                add(Arguments.of(e to `1`, a to `1`, d to `1`, Side.WHITE, "QueenSide"))
-            }
+                Arguments.of("e8", "h8", "g8", Side.BLACK, "KingSide"),
+                Arguments.of("e8", "h8", "f8", Side.BLACK, "KingSide"),
+                Arguments.of("e8", "a8", "b8", Side.BLACK, "QueenSide"),
+                Arguments.of("e8", "a8", "c8", Side.BLACK, "QueenSide"),
+                Arguments.of("e8", "a8", "d8", Side.BLACK, "QueenSide"),
+                Arguments.of("e1", "h1", "g1", Side.WHITE, "KingSide"),
+                Arguments.of("e1", "h1", "f1", Side.WHITE, "KingSide"),
+                Arguments.of("e1", "a1", "b1", Side.WHITE, "QueenSide"),
+                Arguments.of("e1", "a1", "c1", Side.WHITE, "QueenSide"),
+                Arguments.of("e1", "a1", "d1", Side.WHITE, "QueenSide"),
+            )
 
         @JvmStatic
         fun permittedCastles(): List<Arguments> =
-            mutableListOf<Arguments>().apply {
+            mutableListOf<Arguments>(
                 // Order is: King, Rook, King destination, turn, name (for readability)
-                add(Arguments.of(e to `8`, h to `8`, g to `8`, Side.BLACK, "KingSide"))
-                add(Arguments.of(e to `8`, a to `8`, c to `8`, Side.BLACK, "QueenSide"))
-                add(Arguments.of(e to `1`, h to `1`, g to `1`, Side.WHITE, "KingSide"))
-                add(Arguments.of(e to `1`, a to `1`, c to `1`, Side.WHITE, "QueenSide"))
-            }
+                Arguments.of("e8", "h8", "g8", Side.BLACK, "KingSide"),
+                Arguments.of("e8", "a8", "c8", Side.BLACK, "QueenSide"),
+                Arguments.of("e1", "h1", "g1", Side.WHITE, "KingSide"),
+                Arguments.of("e1", "a1", "c1", Side.WHITE, "QueenSide"),
+            )
     }
 }
