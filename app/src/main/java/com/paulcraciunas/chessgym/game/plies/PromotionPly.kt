@@ -14,6 +14,7 @@ class PromotionPly(
 ) : StandardPly(turn = turn, piece = Piece.Pawn, from = from, to = to, captured = captured) {
 
     fun accept(piece: Piece) {
+        assert(piece != Piece.Pawn && piece != Piece.King)
         resultingPiece = piece
     }
 

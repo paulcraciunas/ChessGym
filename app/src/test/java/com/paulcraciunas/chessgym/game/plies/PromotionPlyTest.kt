@@ -190,4 +190,21 @@ internal class PromotionPlyTest {
         assertTrue(on.has(Piece.Pawn, Side.WHITE, ply.from))
         assertTrue(on.has(Piece.Bishop, Side.BLACK, ply.to))
     }
+
+    @Test
+    fun `WHEN promoting to a Pawn or King THEN throw`() {
+        val ply = PromotionPly(
+            turn = Side.WHITE,
+            from = "c7".loc(),
+            to = "b8".loc(),
+            captured = Piece.Bishop,
+        )
+
+        assertThrows<AssertionError> {
+            ply.accept(Piece.Pawn)
+        }
+        assertThrows<AssertionError> {
+            ply.accept(Piece.King)
+        }
+    }
 }
