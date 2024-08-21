@@ -4,22 +4,12 @@ import com.paulcraciunas.chessgym.game.GameState
 import com.paulcraciunas.chessgym.game.Side
 import com.paulcraciunas.chessgym.game.board.Board
 import com.paulcraciunas.chessgym.game.board.File.a
-import com.paulcraciunas.chessgym.game.board.File.b
-import com.paulcraciunas.chessgym.game.board.File.c
-import com.paulcraciunas.chessgym.game.board.File.d
 import com.paulcraciunas.chessgym.game.board.File.e
-import com.paulcraciunas.chessgym.game.board.File.f
-import com.paulcraciunas.chessgym.game.board.File.g
 import com.paulcraciunas.chessgym.game.board.File.h
 import com.paulcraciunas.chessgym.game.board.Locus
 import com.paulcraciunas.chessgym.game.board.Piece
 import com.paulcraciunas.chessgym.game.board.Rank.`1`
-import com.paulcraciunas.chessgym.game.board.Rank.`2`
-import com.paulcraciunas.chessgym.game.board.Rank.`3`
 import com.paulcraciunas.chessgym.game.board.Rank.`4`
-import com.paulcraciunas.chessgym.game.board.Rank.`5`
-import com.paulcraciunas.chessgym.game.board.Rank.`6`
-import com.paulcraciunas.chessgym.game.board.Rank.`7`
 import com.paulcraciunas.chessgym.game.board.Rank.`8`
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -166,7 +156,7 @@ internal class KnightPlyStrategyTest {
                 turn = Side.BLACK,
                 piece = Piece.Knight,
                 home = newHome,
-                locations = arrayOf(b to `3`, c to `2`)
+                locations = listOf("b3", "c2").map { it.loc() }
             )
     }
 
@@ -181,20 +171,20 @@ internal class KnightPlyStrategyTest {
                 turn = Side.BLACK,
                 piece = Piece.Knight,
                 home = newHome,
-                locations = arrayOf(g to `6`, f to `7`)
+                locations = listOf("g6", "f7").map { it.loc() }
             )
     }
 
     private companion object {
         private val validLocations = listOf(
-            Locus(f, `6`),
-            Locus(d, `6`),
-            Locus(c, `5`),
-            Locus(c, `3`),
-            Locus(d, `2`),
-            Locus(f, `2`),
-            Locus(g, `3`),
-            Locus(g, `5`)
+            "f6".loc(),
+            "d6".loc(),
+            "c5".loc(),
+            "c3".loc(),
+            "d2".loc(),
+            "f2".loc(),
+            "g3".loc(),
+            "g5".loc(),
         )
     }
 }

@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
-class KingPlyStrategyTest {
+internal class KingPlyStrategyTest {
     private val home = Locus(e, `4`)
     private val on = Board().apply {
         add(piece = Piece.King, side = Side.BLACK, at = home)

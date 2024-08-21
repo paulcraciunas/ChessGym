@@ -3,24 +3,10 @@ package com.paulcraciunas.chessgym.game.plies.strategies
 import com.paulcraciunas.chessgym.game.GameState
 import com.paulcraciunas.chessgym.game.Side
 import com.paulcraciunas.chessgym.game.board.Board
-import com.paulcraciunas.chessgym.game.board.File.a
-import com.paulcraciunas.chessgym.game.board.File.b
-import com.paulcraciunas.chessgym.game.board.File.c
-import com.paulcraciunas.chessgym.game.board.File.d
 import com.paulcraciunas.chessgym.game.board.File.e
-import com.paulcraciunas.chessgym.game.board.File.f
-import com.paulcraciunas.chessgym.game.board.File.g
-import com.paulcraciunas.chessgym.game.board.File.h
 import com.paulcraciunas.chessgym.game.board.Locus
 import com.paulcraciunas.chessgym.game.board.Piece
-import com.paulcraciunas.chessgym.game.board.Rank.`1`
-import com.paulcraciunas.chessgym.game.board.Rank.`2`
-import com.paulcraciunas.chessgym.game.board.Rank.`3`
 import com.paulcraciunas.chessgym.game.board.Rank.`4`
-import com.paulcraciunas.chessgym.game.board.Rank.`5`
-import com.paulcraciunas.chessgym.game.board.Rank.`6`
-import com.paulcraciunas.chessgym.game.board.Rank.`7`
-import com.paulcraciunas.chessgym.game.board.Rank.`8`
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -71,7 +57,7 @@ internal class RookPlyStrategyTest {
             turn = Side.BLACK,
             piece = Piece.Rook,
             home = home,
-            *neighbours,
+            neighbours.map { it.loc() },
         )
     }
 
@@ -99,11 +85,11 @@ internal class RookPlyStrategyTest {
     fun `WHEN rook is surrounded by enemies THEN it can attack them`() {
         on.surroundRook(at = home, side = Side.WHITE)
 
-        neighbours.map { Locus(it.first, it.second) }
+        neighbours.map { it.loc() }
             .forEach {
                 assertTrue(underTest.canAttack(from = home, to = it, on = on, turn = with.turn))
             }
-        allLocationsExcept(home, *neighbours).forEach {
+        allLocationsExcept(home, neighbours.map { it.loc() }).forEach {
             assertFalse(underTest.canAttack(from = home, to = it, on = on, turn = with.turn))
         }
     }
@@ -111,22 +97,22 @@ internal class RookPlyStrategyTest {
     companion object {
         val validLocations = listOf(
             // e file
-            Locus(e, `1`),
-            Locus(e, `2`),
-            Locus(e, `3`),
-            Locus(e, `5`),
-            Locus(e, `6`),
-            Locus(e, `7`),
-            Locus(e, `8`),
+            "e1".loc(),
+            "e2".loc(),
+            "e3".loc(),
+            "e5".loc(),
+            "e6".loc(),
+            "e7".loc(),
+            "e8".loc(),
             // 4-th rank
-            Locus(a, `4`),
-            Locus(b, `4`),
-            Locus(c, `4`),
-            Locus(d, `4`),
-            Locus(f, `4`),
-            Locus(g, `4`),
-            Locus(h, `4`),
+            "a4".loc(),
+            "b4".loc(),
+            "c4".loc(),
+            "d4".loc(),
+            "f4".loc(),
+            "g4".loc(),
+            "h4".loc(),
         )
-        val neighbours = arrayOf(e to `3`, e to `5`, d to `4`, f to `4`)
+        val neighbours = listOf("e3", "e5", "d4", "f4")
     }
 }

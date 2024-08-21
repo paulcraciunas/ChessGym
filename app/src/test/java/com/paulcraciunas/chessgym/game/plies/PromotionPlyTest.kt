@@ -2,10 +2,8 @@ package com.paulcraciunas.chessgym.game.plies
 
 import com.paulcraciunas.chessgym.game.Side
 import com.paulcraciunas.chessgym.game.board.Board
-import com.paulcraciunas.chessgym.game.board.File
-import com.paulcraciunas.chessgym.game.board.Locus
 import com.paulcraciunas.chessgym.game.board.Piece
-import com.paulcraciunas.chessgym.game.board.Rank
+import com.paulcraciunas.chessgym.game.plies.strategies.loc
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -18,8 +16,8 @@ internal class PromotionPlyTest {
     fun `WHEN executing a promotion THEN the pawn is removed and desired piece is added`() {
         val ply = PromotionPly(
             turn = Side.WHITE,
-            from = Locus(File.c, Rank.`7`),
-            to = Locus(File.c, Rank.`8`),
+            from = "c7".loc(),
+            to = "c8".loc(),
             captured = null,
             resultingPiece = Piece.Queen
         )
@@ -35,8 +33,8 @@ internal class PromotionPlyTest {
     fun `WHEN executing a promotion for black THEN the pawn is removed and desired piece is added`() {
         val ply = PromotionPly(
             turn = Side.BLACK,
-            from = Locus(File.c, Rank.`2`),
-            to = Locus(File.c, Rank.`1`),
+            from = "c2".loc(),
+            to = "c1".loc(),
             captured = null,
             resultingPiece = Piece.Queen
         )
@@ -52,8 +50,8 @@ internal class PromotionPlyTest {
     fun `GIVEN a piece to capture WHEN executing THEN captured piece is removed`() {
         val ply = PromotionPly(
             turn = Side.WHITE,
-            from = Locus(File.c, Rank.`7`),
-            to = Locus(File.b, Rank.`8`),
+            from = "c7".loc(),
+            to = "b8".loc(),
             captured = Piece.Bishop,
             resultingPiece = Piece.Queen
         )
@@ -70,8 +68,8 @@ internal class PromotionPlyTest {
     fun `GIVEN a piece to capture for black WHEN executing THEN captured piece is removed`() {
         val ply = PromotionPly(
             turn = Side.BLACK,
-            from = Locus(File.c, Rank.`2`),
-            to = Locus(File.b, Rank.`1`),
+            from = "c2".loc(),
+            to = "b1".loc(),
             captured = Piece.Bishop,
             resultingPiece = Piece.Queen
         )
@@ -88,8 +86,8 @@ internal class PromotionPlyTest {
     fun `GIVEN no promotion selected WHEN executing a promotion THEN throw`() {
         val ply = PromotionPly(
             turn = Side.BLACK,
-            from = Locus(File.c, Rank.`2`),
-            to = Locus(File.b, Rank.`1`),
+            from = "c2".loc(),
+            to = "b1".loc(),
             captured = Piece.Bishop,
         )
         on.add(piece = Piece.Pawn, side = Side.BLACK, at = ply.from)
@@ -102,8 +100,8 @@ internal class PromotionPlyTest {
     fun `WHEN pawn is not near promotion THEN exec throws`() {
         val ply = PromotionPly(
             turn = Side.WHITE,
-            from = Locus(File.c, Rank.`6`),
-            to = Locus(File.c, Rank.`8`),
+            from = "c6".loc(),
+            to = "c8".loc(),
             captured = null,
             resultingPiece = Piece.Queen
         )
@@ -116,8 +114,8 @@ internal class PromotionPlyTest {
     fun `WHEN black pawn is not near promotion THEN exec throws`() {
         val ply = PromotionPly(
             turn = Side.BLACK,
-            from = Locus(File.c, Rank.`3`),
-            to = Locus(File.c, Rank.`1`),
+            from = "c3".loc(),
+            to = "c1".loc(),
             captured = null,
             resultingPiece = Piece.Queen
         )
@@ -130,8 +128,8 @@ internal class PromotionPlyTest {
     fun `WHEN pawn is not promoting THEN exec throws`() {
         val ply = PromotionPly(
             turn = Side.WHITE,
-            from = Locus(File.c, Rank.`6`),
-            to = Locus(File.c, Rank.`6`),
+            from = "c6".loc(),
+            to = "c6".loc(),
             captured = null,
             resultingPiece = Piece.Queen
         )
@@ -144,8 +142,8 @@ internal class PromotionPlyTest {
     fun `GIVEN no promotion selected WHEN accepting THEN ply executes correctly`() {
         val ply = PromotionPly(
             turn = Side.WHITE,
-            from = Locus(File.c, Rank.`7`),
-            to = Locus(File.c, Rank.`8`),
+            from = "c7".loc(),
+            to = "c8".loc(),
             captured = null,
         )
         on.add(piece = Piece.Pawn, side = Side.WHITE, at = ply.from)
@@ -163,8 +161,8 @@ internal class PromotionPlyTest {
     fun `WHEN undoing a promotion THEN the desired piece is removed and the pawn is added back`() {
         val ply = PromotionPly(
             turn = Side.WHITE,
-            from = Locus(File.c, Rank.`7`),
-            to = Locus(File.c, Rank.`8`),
+            from = "c7".loc(),
+            to = "c8".loc(),
             captured = null,
             resultingPiece = Piece.Queen
         )
@@ -180,8 +178,8 @@ internal class PromotionPlyTest {
     fun `WHEN undoing a capture promotion THEN the captured piece is added back`() {
         val ply = PromotionPly(
             turn = Side.WHITE,
-            from = Locus(File.c, Rank.`7`),
-            to = Locus(File.b, Rank.`8`),
+            from = "c7".loc(),
+            to = "b8".loc(),
             captured = Piece.Bishop,
             resultingPiece = Piece.Queen
         )

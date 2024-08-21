@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.util.Collections.singletonList
 
-class PlyStrategyTest {
+internal class PlyStrategyTest {
     private val on = Board().apply {
         add(piece = plyPiece, side = Side.WHITE, at = rookHome)
     }

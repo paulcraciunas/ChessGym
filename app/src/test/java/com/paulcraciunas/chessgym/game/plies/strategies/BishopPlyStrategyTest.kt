@@ -3,24 +3,14 @@ package com.paulcraciunas.chessgym.game.plies.strategies
 import com.paulcraciunas.chessgym.game.GameState
 import com.paulcraciunas.chessgym.game.Side
 import com.paulcraciunas.chessgym.game.board.Board
-import com.paulcraciunas.chessgym.game.board.File.a
-import com.paulcraciunas.chessgym.game.board.File.b
-import com.paulcraciunas.chessgym.game.board.File.c
 import com.paulcraciunas.chessgym.game.board.File.d
 import com.paulcraciunas.chessgym.game.board.File.e
 import com.paulcraciunas.chessgym.game.board.File.f
-import com.paulcraciunas.chessgym.game.board.File.g
-import com.paulcraciunas.chessgym.game.board.File.h
 import com.paulcraciunas.chessgym.game.board.Locus
 import com.paulcraciunas.chessgym.game.board.Piece
-import com.paulcraciunas.chessgym.game.board.Rank.`1`
-import com.paulcraciunas.chessgym.game.board.Rank.`2`
 import com.paulcraciunas.chessgym.game.board.Rank.`3`
 import com.paulcraciunas.chessgym.game.board.Rank.`4`
 import com.paulcraciunas.chessgym.game.board.Rank.`5`
-import com.paulcraciunas.chessgym.game.board.Rank.`6`
-import com.paulcraciunas.chessgym.game.board.Rank.`7`
-import com.paulcraciunas.chessgym.game.board.Rank.`8`
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -99,11 +89,11 @@ internal class BishopPlyStrategyTest {
     fun `WHEN bishop is surrounded by enemies THEN it can attack them`() {
         on.surroundBishop(at = home, side = Side.WHITE)
 
-        validAttacks.map { Locus(it.first, it.second) }
+        validAttacks.map { it.loc() }
             .forEach {
                 assertTrue(underTest.canAttack(from = home, to = it, on = on, turn = with.turn))
             }
-        allLocationsExcept(home, *validAttacks).forEach {
+        allLocationsExcept(home, validAttacks.map { it.loc() }).forEach {
             assertFalse(underTest.canAttack(from = home, to = it, on = on, turn = with.turn))
         }
     }
@@ -111,21 +101,21 @@ internal class BishopPlyStrategyTest {
     companion object {
         val validLocations = listOf(
             // First diagonal
-            Locus(a, `8`),
-            Locus(b, `7`),
-            Locus(c, `6`),
-            Locus(d, `5`),
-            Locus(f, `3`),
-            Locus(g, `2`),
-            Locus(h, `1`),
+            "a8".loc(),
+            "b7".loc(),
+            "c6".loc(),
+            "d5".loc(),
+            "f3".loc(),
+            "g2".loc(),
+            "h1".loc(),
             // Second diagonal
-            Locus(b, `1`),
-            Locus(c, `2`),
-            Locus(d, `3`),
-            Locus(f, `5`),
-            Locus(g, `6`),
-            Locus(h, `7`),
+            "b1".loc(),
+            "c2".loc(),
+            "d3".loc(),
+            "f5".loc(),
+            "g6".loc(),
+            "h7".loc(),
         )
-        val validAttacks = arrayOf(d to `5`, d to `3`, f to `5`, f to `3`)
+        val validAttacks = listOf("d5", "d3", "f5", "f3")
     }
 }

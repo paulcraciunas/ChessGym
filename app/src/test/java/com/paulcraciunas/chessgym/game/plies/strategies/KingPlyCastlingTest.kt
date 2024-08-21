@@ -25,7 +25,7 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 
-class KingPlyCastlingTest {
+internal class KingPlyCastlingTest {
     private val home = Locus(e, `8`)
     private val on = Board().apply {
         add(piece = Piece.King, side = Side.BLACK, at = home)
