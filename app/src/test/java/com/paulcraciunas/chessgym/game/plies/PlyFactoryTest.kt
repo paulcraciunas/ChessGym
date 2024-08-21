@@ -37,10 +37,10 @@ class PlyFactoryTest {
                 add(StandardPly(Side.WHITE, Piece.Knight, "b1".loc(), "c3".loc()))
                 add(StandardPly(Side.WHITE, Piece.Knight, "g1".loc(), "h3".loc()))
                 add(StandardPly(Side.WHITE, Piece.Knight, "g1".loc(), "f3".loc()))
-            }.map { Expected(it) }
+            }.map { ExpectedPly(it) }
 
         val actual = underTest.allLegalPlies(on = on, with = with)
-            .map { Expected(it) }
+            .map { ExpectedPly(it) }
 
         assertEquals(expected.size, actual.size)
         assertTrue(expected.containsAll(actual))
@@ -69,11 +69,11 @@ class PlyFactoryTest {
                 add(StandardPly(Side.BLACK, Piece.Knight, "b8".loc(), "c6".loc()))
                 add(StandardPly(Side.BLACK, Piece.Knight, "g8".loc(), "h6".loc()))
                 add(StandardPly(Side.BLACK, Piece.Knight, "g8".loc(), "f6".loc()))
-            }.map { Expected(it) }
+            }.map { ExpectedPly(it) }
 
         val actual = underTest.allLegalPlies(
             on, with.copy(turn = Side.BLACK, inCheckCount = CheckCount.One)
-        ).map { Expected(it) }
+        ).map { ExpectedPly(it) }
 
         assertEquals(expected.size, actual.size)
         assertTrue(expected.containsAll(actual))
@@ -153,11 +153,11 @@ class PlyFactoryTest {
                 add(StandardPly(Side.BLACK, Piece.King, "e8".loc(), "d8".loc()))
                 add(StandardPly(Side.BLACK, Piece.King, "e8".loc(), "f8".loc()))
                 add(StandardPly(Side.BLACK, Piece.King, "e8".loc(), "f7".loc()))
-            }.map { Expected(it) }
+            }.map { ExpectedPly(it) }
 
         val actual = underTest.allLegalPlies(
             on, with.copy(turn = Side.BLACK)
-        ).map { Expected(it) }
+        ).map { ExpectedPly(it) }
 
         assertEquals(expected.size, actual.size)
         assertTrue(expected.containsAll(actual))
@@ -188,11 +188,11 @@ class PlyFactoryTest {
             .apply {
                 add(StandardPly(Side.BLACK, Piece.King, "a8".loc(), "b8".loc()))
                 add(StandardPly(Side.BLACK, Piece.King, "a8".loc(), "b7".loc()))
-            }.map { Expected(it) }
+            }.map { ExpectedPly(it) }
 
         val actual = underTest.allLegalPlies(
             on, with.copy(turn = Side.BLACK)
-        ).map { Expected(it) }
+        ).map { ExpectedPly(it) }
 
         assertEquals(expected.size, actual.size)
         assertTrue(expected.containsAll(actual))
@@ -281,15 +281,6 @@ class PlyFactoryTest {
             move(it.first.loc(), it.second.loc(), turn)
             turn = turn.other()
         }
-    }
-
-    /**
-     * We use this to get around [StandardPly] not having a deep equals implemented
-     * That is due to it being an open class, which is inherited by
-     * [PromotionPly] and [EnPassentPly]
-     */
-    private data class Expected(val side: Side, val piece: Piece, val from: Locus, val to: Locus) {
-        constructor(ply: Ply) : this(ply.turn, ply.piece, ply.from, ply.to)
     }
 
     companion object {
