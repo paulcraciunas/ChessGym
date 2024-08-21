@@ -22,7 +22,7 @@ data class Locus(val file: File, val rank: Rank) {
 
     fun side(): Side = if ((file.dec() + rank.dec()) % 2 == 0) Side.BLACK else Side.WHITE
 
-    fun toAlgebraic(): String = "${file.name}${rank.name}}" //e.g. d4
+    override fun toString(): String = "${file.name}${rank.name}" //e.g. d4
 
     companion object {
         fun all(action: (Locus) -> Unit) {

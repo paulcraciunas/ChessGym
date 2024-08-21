@@ -21,6 +21,8 @@ import org.junit.jupiter.api.Assertions.assertTrue
 
 internal fun Pair<File, Rank>.loc() = Locus(first, second)
 
+internal fun String.loc(): Locus = Locus.from(this)!!
+
 internal fun allLocationsExcept(home: Locus, except: List<Locus> = emptyList()) =
     mutableListOf<Locus>().apply {
         File.entries.forEach { file ->
@@ -33,17 +35,23 @@ internal fun allLocationsExcept(home: Locus, except: List<Locus> = emptyList()) 
         }
     }
 
-internal fun allLocationsExcept(home: Locus, vararg except: Pair<File, Rank>) =
-    mutableListOf<Locus>().apply {
-        File.entries.forEach { file ->
-            Rank.entries.forEach { rank ->
-                val it = Locus(file, rank)
-                if (home != it && !except.contains(file to rank)) {
-                    add(it)
-                }
-            }
-        }
+internal inline fun <reified T : Ply> Collection<Ply>.assertMovesOf(
+    turn: Side,
+    piece: Piece,
+    home: Locus,
+    locations: List<Locus>,
+) {
+    assertEquals(locations.size, size)
+    locations.forEach { dest ->
+        assertNotNull(find { ply ->
+            ply is T &&
+            ply.turn == turn &&
+            ply.piece == piece &&
+            ply.from == home &&
+            ply.to == dest
+        })
     }
+}
 
 internal fun Collection<Ply>.assertMoves(
     turn: Side,
@@ -63,36 +71,25 @@ internal fun Collection<Ply>.assertMoves(
     }
 }
 
-internal fun Collection<Ply>.assertMoves(
-    turn: Side,
-    piece: Piece,
-    home: Locus,
-    vararg locations: Pair<File, Rank>,
-) {
-    assertEquals(locations.size, size)
-    locations.forEach { dest ->
-        assertNotNull(find { ply ->
-            ply is StandardPly &&
-            ply.turn == turn &&
-            ply.piece == piece &&
-            ply.from == home &&
-            ply.to == Locus(dest.first, dest.second)
-        })
-    }
-}
-
 internal inline fun <reified T : Ply> Collection<Ply>.assertHas(
     turn: Side,
     piece: Piece,
     home: Locus,
     location: Pair<File, Rank>,
+) = assertHas<T>(turn, piece, home, Locus(location.first, location.second))
+
+internal inline fun <reified T : Ply> Collection<Ply>.assertHas(
+    turn: Side,
+    piece: Piece,
+    home: Locus,
+    location: Locus,
 ) {
     assertNotNull(find { ply ->
         ply is T
         ply.turn == turn &&
         ply.piece == piece &&
         ply.from == home &&
-        ply.to == Locus(location.first, location.second)
+        ply.to == location
     })
 }
 
