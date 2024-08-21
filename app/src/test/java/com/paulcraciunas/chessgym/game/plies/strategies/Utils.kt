@@ -16,7 +16,10 @@ import com.paulcraciunas.chessgym.game.plies.Ply
 import com.paulcraciunas.chessgym.game.plies.StandardPly
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
+
+internal fun Pair<File, Rank>.loc() = Locus(first, second)
 
 internal fun allLocationsExcept(home: Locus, except: List<Locus> = emptyList()) =
     mutableListOf<Locus>().apply {
@@ -78,8 +81,27 @@ internal fun Collection<Ply>.assertMoves(
     }
 }
 
+internal inline fun <reified T : Ply> Collection<Ply>.assertHas(
+    turn: Side,
+    piece: Piece,
+    home: Locus,
+    location: Pair<File, Rank>,
+) {
+    assertNotNull(find { ply ->
+        ply is T
+        ply.turn == turn &&
+        ply.piece == piece &&
+        ply.from == home &&
+        ply.to == Locus(location.first, location.second)
+    })
+}
+
 internal fun Collection<Ply>.assertNoMoves() {
     assertTrue(isEmpty())
+}
+
+internal inline fun <reified T : Ply> Collection<Ply>.assertNoMovesOf() {
+    assertNull(find { it is T })
 }
 
 internal fun Board.surroundRook(at: Locus, side: Side) {
