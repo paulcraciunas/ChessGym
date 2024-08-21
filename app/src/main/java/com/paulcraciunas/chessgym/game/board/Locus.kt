@@ -25,6 +25,14 @@ data class Locus(val file: File, val rank: Rank) {
     fun toAlgebraic(): String = "${file.name}${rank.name}}" //e.g. d4
 
     companion object {
+        fun all(action: (Locus) -> Unit) {
+            File.entries.forEach { file ->
+                Rank.entries.forEach { rank ->
+                    action(Locus(file = file, rank = rank))
+                }
+            }
+        }
+
         fun from(algebraic: String): Locus? {
             if (algebraic.length != 2) return null
             val file = algebraic.substring(0, 1)

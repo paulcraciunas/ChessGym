@@ -41,13 +41,11 @@ internal class BoardTest {
         underTest.forEachPiece(WHITE) { piece, locus ->
             throw IllegalStateException("$piece at $locus not expected")
         }
-        File.entries.forEach { file ->
-            Rank.entries.forEach { rank ->
-                assertFalse(underTest.has(BLACK, at = Locus(file, rank)))
-                assertFalse(underTest.has(WHITE, at = Locus(file, rank)))
-                assertTrue(underTest.isEmpty(at = Locus(file, rank)))
-                assertNull(underTest.at(at = Locus(file, rank)))
-            }
+        Locus.all {
+            assertFalse(underTest.has(BLACK, at = it))
+            assertFalse(underTest.has(WHITE, at = it))
+            assertTrue(underTest.isEmpty(at = it))
+            assertNull(underTest.at(at = it))
         }
         assertNull(underTest.king(WHITE))
         assertNull(underTest.king(BLACK))
@@ -124,10 +122,8 @@ internal class BoardTest {
                 assertEquals(piece, underTest.at(locus))
             }
         }
-        File.entries.forEach { file ->
-            Rank.entries.forEach { rank ->
-                assertEquals(other.at(at = Locus(file, rank)), underTest.at(at = Locus(file, rank)))
-            }
+        Locus.all {
+            assertEquals(other.at(at = it), underTest.at(at = it))
         }
     }
 

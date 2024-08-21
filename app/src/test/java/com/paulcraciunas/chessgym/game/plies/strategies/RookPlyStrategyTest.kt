@@ -27,14 +27,17 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 internal class RookPlyStrategyTest {
-    private val on = Board()
+    private val home = Locus(e, `4`)
+    private val on = Board().apply {
+        add(piece = Piece.Rook, side = Side.BLACK, at = home)
+    }
     private val with = GameState(turn = Side.BLACK)
 
     private val underTest = RookPlyStrategy()
 
     @Test
     fun `GIVEN non-rook WHEN getting plies THEN throw`() {
-        val home = Locus(e, `4`)
+        on.remove(at = home)
         on.add(piece = Piece.Knight, side = Side.BLACK, at = home)
 
         assertThrows<AssertionError> {
@@ -44,9 +47,6 @@ internal class RookPlyStrategyTest {
 
     @Test
     fun `GIVEN rook on e4 WHEN getting plies THEN return e file and fourth rank`() {
-        val home = Locus(e, `4`)
-        on.add(piece = Piece.Rook, side = Side.BLACK, at = home)
-
         underTest.plies(from = home, on = on, with = with)
             .assertMoves(
                 turn = Side.BLACK,
@@ -58,82 +58,59 @@ internal class RookPlyStrategyTest {
 
     @Test
     fun `GIVEN rook surrounded by allies WHEN getting plies THEN return nothing`() {
-        val home = Locus(e, `4`)
-        on.add(piece = Piece.Rook, side = Side.BLACK, at = home)
-        on.add(piece = Piece.Bishop, side = Side.BLACK, at = home.top()!!)
-        on.add(piece = Piece.Knight, side = Side.BLACK, at = home.down()!!)
-        on.add(piece = Piece.Queen, side = Side.BLACK, at = home.left()!!)
-        on.add(piece = Piece.King, side = Side.BLACK, at = home.right()!!)
+        on.surroundRook(at = home, side = Side.BLACK)
 
         underTest.plies(from = home, on = on, with = with).assertNoMoves()
     }
 
     @Test
     fun `GIVEN rook surrounded by enemies WHEN getting plies THEN return captures`() {
-        val home = Locus(e, `4`)
-        on.add(piece = Piece.Rook, side = Side.BLACK, at = home)
-        on.add(piece = Piece.Bishop, side = Side.WHITE, at = home.top()!!)
-        on.add(piece = Piece.Knight, side = Side.WHITE, at = home.down()!!)
-        on.add(piece = Piece.Queen, side = Side.WHITE, at = home.left()!!)
-        on.add(piece = Piece.King, side = Side.WHITE, at = home.right()!!)
+        on.surroundRook(at = home, side = Side.WHITE)
 
         underTest.plies(from = home, on = on, with = with).assertMoves(
             turn = Side.BLACK,
             piece = Piece.Rook,
             home = home,
-            listOf(Locus(e, `3`), Locus(e, `5`), Locus(d, `4`), Locus(f, `4`)),
+            *neighbours,
         )
     }
 
     @Test
     fun `WHEN rook is on e4 THEN it can attack all e file and fourth rank`() {
-        val home = Locus(e, `4`)
-        on.add(piece = Piece.Rook, side = Side.BLACK, at = home)
-
         validLocations
             .forEach {
                 assertTrue(underTest.canAttack(from = home, to = it, on = on, turn = with.turn))
             }
-        invalidLocations(home, validLocations).forEach {
+        allLocationsExcept(home, validLocations).forEach {
             assertFalse(underTest.canAttack(from = home, to = it, on = on, turn = with.turn))
         }
     }
 
     @Test
     fun `WHEN rook is surrounded by allies THEN it cannot attack`() {
-        val home = Locus(e, `4`)
-        on.add(piece = Piece.Rook, side = Side.BLACK, at = home)
-        on.add(piece = Piece.Bishop, side = Side.BLACK, at = home.top()!!)
-        on.add(piece = Piece.Knight, side = Side.BLACK, at = home.down()!!)
-        on.add(piece = Piece.Queen, side = Side.BLACK, at = home.left()!!)
-        on.add(piece = Piece.King, side = Side.BLACK, at = home.right()!!)
+        on.surroundRook(at = home, side = Side.BLACK)
 
-        invalidLocations(home).forEach {
+        allLocationsExcept(home).forEach {
             assertFalse(underTest.canAttack(from = home, to = it, on = on, turn = with.turn))
         }
     }
 
     @Test
     fun `WHEN rook is surrounded by enemies THEN it can attack them`() {
-        val home = Locus(e, `4`)
-        on.add(piece = Piece.Rook, side = Side.BLACK, at = home)
-        on.add(piece = Piece.Bishop, side = Side.WHITE, at = home.top()!!)
-        on.add(piece = Piece.Knight, side = Side.WHITE, at = home.down()!!)
-        on.add(piece = Piece.Queen, side = Side.WHITE, at = home.left()!!)
-        on.add(piece = Piece.King, side = Side.WHITE, at = home.right()!!)
+        on.surroundRook(at = home, side = Side.WHITE)
 
-        val validAttacks = listOf(Locus(e, `3`), Locus(e, `5`), Locus(d, `4`), Locus(f, `4`))
-        validAttacks
+        neighbours.map { Locus(it.first, it.second) }
             .forEach {
                 assertTrue(underTest.canAttack(from = home, to = it, on = on, turn = with.turn))
             }
-        invalidLocations(home, validAttacks).forEach {
+        allLocationsExcept(home, *neighbours).forEach {
             assertFalse(underTest.canAttack(from = home, to = it, on = on, turn = with.turn))
         }
     }
 
     companion object {
         val validLocations = listOf(
+            // e file
             Locus(e, `1`),
             Locus(e, `2`),
             Locus(e, `3`),
@@ -141,6 +118,7 @@ internal class RookPlyStrategyTest {
             Locus(e, `6`),
             Locus(e, `7`),
             Locus(e, `8`),
+            // 4-th rank
             Locus(a, `4`),
             Locus(b, `4`),
             Locus(c, `4`),
@@ -149,5 +127,6 @@ internal class RookPlyStrategyTest {
             Locus(g, `4`),
             Locus(h, `4`),
         )
+        val neighbours = arrayOf(e to `3`, e to `5`, d to `4`, f to `4`)
     }
 }

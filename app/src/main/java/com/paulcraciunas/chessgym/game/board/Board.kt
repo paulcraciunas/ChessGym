@@ -22,10 +22,8 @@ data class Board(
     }
 
     fun from(other: Board): Board = apply {
-        Rank.entries.forEach { rank ->
-            File.entries.forEach { file ->
-                board[rank.dec()][file.dec()] = other.board[rank.dec()][file.dec()]
-            }
+        Locus.all {
+            board[it.rank.dec()][it.file.dec()] = other.board[it.rank.dec()][it.file.dec()]
         }
         Side.entries.forEach { side ->
             Piece.entries.forEach { piece ->
@@ -54,10 +52,8 @@ data class Board(
     }
 
     fun forEach(action: (Piece, Locus) -> Unit) {
-        Rank.entries.forEach { rank ->
-            File.entries.forEach { file ->
-                board[rank.dec()][file.dec()]?.let { action(it, Locus(file, rank)) }
-            }
+        Locus.all { loc ->
+            board[loc.rank.dec()][loc.file.dec()]?.let { action(it, loc) }
         }
     }
 

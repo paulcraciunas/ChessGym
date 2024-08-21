@@ -20,7 +20,7 @@ abstract class PlyStrategy {
     protected open fun MutableList<Ply>.addComplexPlies(from: Locus, on: Board, with: GameState) {}
 
     open fun canAttack(from: Locus, to: Locus, on: Board, turn: Side): Boolean {
-        assert(on.has(turn, from))
+        assert(on.has(piece, turn, from))
         assert(from != to)
 
         val plies = mutableListOf<Ply>()
