@@ -3,11 +3,10 @@ package com.paulcraciunas.chessgym.game
 import com.paulcraciunas.chessgym.game.board.Piece
 import com.paulcraciunas.chessgym.game.plies.CastlePly
 import com.paulcraciunas.chessgym.game.plies.StandardPly
-import com.paulcraciunas.chessgym.game.plies.strategies.loc
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-class GameStateTest {
+internal class GameStateTest {
     private lateinit var underTest: GameState
 
     @Test

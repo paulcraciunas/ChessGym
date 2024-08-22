@@ -1,6 +1,7 @@
-package com.paulcraciunas.chessgym.game.plies.strategies
+package com.paulcraciunas.chessgym.game
 
-import com.paulcraciunas.chessgym.game.Side
+import com.paulcraciunas.chessgym.game.Side.BLACK
+import com.paulcraciunas.chessgym.game.Side.WHITE
 import com.paulcraciunas.chessgym.game.board.Board
 import com.paulcraciunas.chessgym.game.board.File
 import com.paulcraciunas.chessgym.game.board.File.d
@@ -113,7 +114,42 @@ internal fun Board.surroundQueen(at: Locus, side: Side) {
     surroundBishop(at, side)
 }
 
-val E_4_NEIGHBOURS = listOf(
+internal val E_4_NEIGHBOURS = listOf(
     Locus(e, `3`), Locus(e, `5`), Locus(d, `4`), Locus(f, `4`),
     Locus(d, `3`), Locus(d, `5`), Locus(f, `3`), Locus(f, `5`)
 )
+
+internal fun assertDefaultBoard(board:Board) {
+    assertTrue(board.has(Piece.Rook, WHITE, "a1".loc()))
+    assertTrue(board.has(Piece.Knight, WHITE, "b1".loc()))
+    assertTrue(board.has(Piece.Bishop, WHITE, "c1".loc()))
+    assertTrue(board.has(Piece.Queen, WHITE, "d1".loc()))
+    assertTrue(board.has(Piece.King, WHITE, "e1".loc()))
+    assertTrue(board.has(Piece.Bishop, WHITE, "f1".loc()))
+    assertTrue(board.has(Piece.Knight, WHITE, "g1".loc()))
+    assertTrue(board.has(Piece.Rook, WHITE, "h1".loc()))
+    assertTrue(board.has(Piece.Pawn, WHITE, "a2".loc()))
+    assertTrue(board.has(Piece.Pawn, WHITE, "b2".loc()))
+    assertTrue(board.has(Piece.Pawn, WHITE, "c2".loc()))
+    assertTrue(board.has(Piece.Pawn, WHITE, "d2".loc()))
+    assertTrue(board.has(Piece.Pawn, WHITE, "e2".loc()))
+    assertTrue(board.has(Piece.Pawn, WHITE, "f2".loc()))
+    assertTrue(board.has(Piece.Pawn, WHITE, "g2".loc()))
+    assertTrue(board.has(Piece.Pawn, WHITE, "h2".loc()))
+    assertTrue(board.has(Piece.Rook, BLACK, "a8".loc()))
+    assertTrue(board.has(Piece.Knight, BLACK, "b8".loc()))
+    assertTrue(board.has(Piece.Bishop, BLACK, "c8".loc()))
+    assertTrue(board.has(Piece.Queen, BLACK, "d8".loc()))
+    assertTrue(board.has(Piece.King, BLACK, "e8".loc()))
+    assertTrue(board.has(Piece.Bishop, BLACK, "f8".loc()))
+    assertTrue(board.has(Piece.Knight, BLACK, "g8".loc()))
+    assertTrue(board.has(Piece.Rook, BLACK, "h8".loc()))
+    assertTrue(board.has(Piece.Pawn, BLACK, "a7".loc()))
+    assertTrue(board.has(Piece.Pawn, BLACK, "b7".loc()))
+    assertTrue(board.has(Piece.Pawn, BLACK, "c7".loc()))
+    assertTrue(board.has(Piece.Pawn, BLACK, "d7".loc()))
+    assertTrue(board.has(Piece.Pawn, BLACK, "e7".loc()))
+    assertTrue(board.has(Piece.Pawn, BLACK, "f7".loc()))
+    assertTrue(board.has(Piece.Pawn, BLACK, "g7".loc()))
+    assertTrue(board.has(Piece.Pawn, BLACK, "h7".loc()))
+}

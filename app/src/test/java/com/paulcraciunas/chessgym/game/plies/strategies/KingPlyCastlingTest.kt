@@ -3,6 +3,8 @@ package com.paulcraciunas.chessgym.game.plies.strategies
 import com.paulcraciunas.chessgym.game.CheckCount
 import com.paulcraciunas.chessgym.game.GameState
 import com.paulcraciunas.chessgym.game.Side
+import com.paulcraciunas.chessgym.game.assertHas
+import com.paulcraciunas.chessgym.game.assertNoMovesOf
 import com.paulcraciunas.chessgym.game.board.Board
 import com.paulcraciunas.chessgym.game.board.File.e
 import com.paulcraciunas.chessgym.game.board.File.g
@@ -12,6 +14,7 @@ import com.paulcraciunas.chessgym.game.board.Piece
 import com.paulcraciunas.chessgym.game.board.Rank.`1`
 import com.paulcraciunas.chessgym.game.board.Rank.`7`
 import com.paulcraciunas.chessgym.game.board.Rank.`8`
+import com.paulcraciunas.chessgym.game.loc
 import com.paulcraciunas.chessgym.game.plies.CastlePly
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest

@@ -3,7 +3,7 @@ package com.paulcraciunas.chessgym.game.plies
 import com.paulcraciunas.chessgym.game.Side
 import com.paulcraciunas.chessgym.game.board.Board
 import com.paulcraciunas.chessgym.game.board.Piece
-import com.paulcraciunas.chessgym.game.plies.strategies.loc
+import com.paulcraciunas.chessgym.game.loc
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test

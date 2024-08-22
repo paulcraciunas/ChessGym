@@ -2,11 +2,17 @@ package com.paulcraciunas.chessgym.game.plies.strategies
 
 import com.paulcraciunas.chessgym.game.GameState
 import com.paulcraciunas.chessgym.game.Side
+import com.paulcraciunas.chessgym.game.allLocationsExcept
+import com.paulcraciunas.chessgym.game.assertHas
+import com.paulcraciunas.chessgym.game.assertMoves
+import com.paulcraciunas.chessgym.game.assertMovesOf
+import com.paulcraciunas.chessgym.game.assertNoMoves
 import com.paulcraciunas.chessgym.game.board.Board
 import com.paulcraciunas.chessgym.game.board.File.e
 import com.paulcraciunas.chessgym.game.board.Locus
 import com.paulcraciunas.chessgym.game.board.Piece
 import com.paulcraciunas.chessgym.game.board.Rank.`7`
+import com.paulcraciunas.chessgym.game.loc
 import com.paulcraciunas.chessgym.game.plies.PromotionPly
 import com.paulcraciunas.chessgym.game.plies.StandardPly
 import org.junit.jupiter.api.Assertions.assertFalse

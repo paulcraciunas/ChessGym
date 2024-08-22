@@ -6,7 +6,6 @@ import com.paulcraciunas.chessgym.game.board.Locus
 import com.paulcraciunas.chessgym.game.board.Piece
 import com.paulcraciunas.chessgym.game.plies.ExpectedPly
 import com.paulcraciunas.chessgym.game.plies.StandardPly
-import com.paulcraciunas.chessgym.game.plies.strategies.loc
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue

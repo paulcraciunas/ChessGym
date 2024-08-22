@@ -9,10 +9,10 @@ import com.paulcraciunas.chessgym.game.board.File
 import com.paulcraciunas.chessgym.game.board.Locus
 import com.paulcraciunas.chessgym.game.board.Piece
 import com.paulcraciunas.chessgym.game.board.Rank
-import com.paulcraciunas.chessgym.game.plies.strategies.assertHas
-import com.paulcraciunas.chessgym.game.plies.strategies.assertNoMoves
-import com.paulcraciunas.chessgym.game.plies.strategies.assertNoMovesOf
-import com.paulcraciunas.chessgym.game.plies.strategies.loc
+import com.paulcraciunas.chessgym.game.assertHas
+import com.paulcraciunas.chessgym.game.assertNoMoves
+import com.paulcraciunas.chessgym.game.assertNoMovesOf
+import com.paulcraciunas.chessgym.game.loc
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -20,7 +20,7 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 
-class PlyFactoryTest {
+internal class PlyFactoryTest {
     private val on = Board()
     private val with = GameState()
 

@@ -48,6 +48,12 @@ class Game(
 
     fun ending(): Ending? = ending
 
+    // TODO Paul: this will be hidden when we move the Game class behind an interface
+    fun currentBoard(): Board = Board().from(board)
+
+    // TODO Paul: this will be hidden when we move the Game class behind an interface
+    fun state(): GameState = currentState
+
     private fun updateState() {
         computeAvailablePlies()
         updateResolution()
