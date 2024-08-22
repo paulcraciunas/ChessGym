@@ -4,6 +4,7 @@ import com.paulcraciunas.chessgym.game.Side
 import com.paulcraciunas.chessgym.game.board.Board
 import com.paulcraciunas.chessgym.game.board.Piece
 import com.paulcraciunas.chessgym.game.plies.strategies.loc
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -21,6 +22,7 @@ internal class CastlePlyTest {
 
         assertTrue(on.has(Piece.King, Side.WHITE, "g1".loc()))
         assertTrue(on.has(Piece.Rook, Side.WHITE, "f1".loc()))
+        assertFalse(ply.isCapture())
     }
 
     @Test
@@ -109,6 +111,7 @@ internal class CastlePlyTest {
 
         assertTrue(on.has(Piece.King, Side.WHITE, "e1".loc()))
         assertTrue(on.has(Piece.Rook, Side.WHITE, "a1".loc()))
+        assertFalse(ply.isCapture())
     }
 
     @Test
@@ -121,6 +124,7 @@ internal class CastlePlyTest {
 
         assertTrue(on.has(Piece.King, Side.BLACK, "g8".loc()))
         assertTrue(on.has(Piece.Rook, Side.BLACK, "f8".loc()))
+        assertFalse(ply.isCapture())
     }
 
     @Test
@@ -133,6 +137,7 @@ internal class CastlePlyTest {
 
         assertTrue(on.has(Piece.King, Side.BLACK, "e8".loc()))
         assertTrue(on.has(Piece.Rook, Side.BLACK, "h8".loc()))
+        assertFalse(ply.isCapture())
     }
 
     @Test
@@ -145,6 +150,7 @@ internal class CastlePlyTest {
 
         assertTrue(on.has(Piece.King, Side.BLACK, "c8".loc()))
         assertTrue(on.has(Piece.Rook, Side.BLACK, "d8".loc()))
+        assertFalse(ply.isCapture())
     }
 
     @Test
@@ -157,5 +163,6 @@ internal class CastlePlyTest {
 
         assertTrue(on.has(Piece.King, Side.BLACK, "e8".loc()))
         assertTrue(on.has(Piece.Rook, Side.BLACK, "a8".loc()))
+        assertFalse(ply.isCapture())
     }
 }

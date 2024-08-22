@@ -17,7 +17,7 @@ internal class KingPlyStrategyTest {
     private val on = Board().apply {
         add(piece = Piece.King, side = Side.BLACK, at = home)
     }
-    private val with = GameState(turn = Side.BLACK, castling = emptySet())
+    private val with = GameState(turn = Side.BLACK, blackCastling = emptySet())
 
     private val underTest = KingPlyStrategy()
 

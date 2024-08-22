@@ -1,6 +1,6 @@
 package com.paulcraciunas.chessgym.game
 
-enum class Resolution {
+enum class Ending {
     CheckMate,
     StaleMate,
     DrawByRepetition,

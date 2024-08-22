@@ -30,7 +30,7 @@ internal class GameTest {
             .map { ExpectedPly(it) }
 
         assertEquals(Side.WHITE, underTest.turn())
-        assertNull(underTest.resolution())
+        assertNull(underTest.ending())
         assertEquals(expected.size, actual.size)
         assertTrue(expected.containsAll(actual))
         assertTrue(actual.containsAll(expected))
@@ -52,7 +52,7 @@ internal class GameTest {
             .map { ExpectedPly(it) }
 
         assertEquals(Side.BLACK, underTest.turn())
-        assertNull(underTest.resolution())
+        assertNull(underTest.ending())
         assertEquals(expected.size, actual.size)
         assertTrue(expected.containsAll(actual))
         assertTrue(actual.containsAll(expected))
@@ -70,7 +70,7 @@ internal class GameTest {
             assertTrue(underTest.playablePlies(it).isEmpty())
         }
         assertEquals(Side.WHITE, underTest.turn())
-        assertEquals(Resolution.CheckMate, underTest.resolution())
+        assertEquals(Ending.CheckMate, underTest.ending())
     }
 
     @Test
@@ -88,7 +88,7 @@ internal class GameTest {
             assertTrue(underTest.playablePlies(it).isEmpty())
         }
         assertEquals(Side.BLACK, underTest.turn())
-        assertEquals(Resolution.CheckMate, underTest.resolution())
+        assertEquals(Ending.CheckMate, underTest.ending())
     }
 
     @Test
@@ -107,7 +107,7 @@ internal class GameTest {
             assertTrue(underTest.playablePlies(it).isEmpty())
         }
         assertEquals(Side.WHITE, underTest.turn())
-        assertEquals(Resolution.DrawByRepetition, underTest.resolution())
+        assertEquals(Ending.DrawByRepetition, underTest.ending())
     }
 
     @Test
@@ -123,7 +123,7 @@ internal class GameTest {
             assertTrue(underTest.playablePlies(it).isEmpty())
         }
         assertEquals(Side.BLACK, underTest.turn())
-        assertEquals(Resolution.StaleMate, underTest.resolution())
+        assertEquals(Ending.StaleMate, underTest.ending())
     }
 
     @Test
@@ -139,7 +139,7 @@ internal class GameTest {
             assertTrue(underTest.playablePlies(it).isEmpty())
         }
         assertEquals(Side.WHITE, underTest.turn())
-        assertEquals(Resolution.StaleMate, underTest.resolution())
+        assertEquals(Ending.StaleMate, underTest.ending())
     }
 
     @Test
@@ -190,8 +190,8 @@ internal class GameTest {
         }
         assertEquals(Side.WHITE, underTest.turn())
         assertEquals(
-            Resolution.DrawByInsufficientMaterial,
-            underTest.resolution()
+            Ending.DrawByInsufficientMaterial,
+            underTest.ending()
         )
     }
 

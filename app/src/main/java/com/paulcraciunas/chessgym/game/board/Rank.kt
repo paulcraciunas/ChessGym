@@ -14,4 +14,10 @@ enum class Rank {
     fun next(): Rank? = if (this != `8`) entries[this.ordinal + 1] else null
     fun prev(): Rank? = if (this != `1`) entries[this.ordinal - 1] else null
     fun dec(): Int = ordinal
+
+    companion object {
+        fun fromDec(dec: Int): Rank =
+            if (dec in 0..7) Rank.entries[dec]
+            else throw IllegalArgumentException("Wrong decimal value. Expecting [0 - 7]")
+    }
 }

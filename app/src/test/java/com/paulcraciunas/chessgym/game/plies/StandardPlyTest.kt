@@ -22,6 +22,7 @@ internal class StandardPlyTest {
 
         assertTrue(on.has(ply.piece, ply.turn, ply.to))
         assertFalse(on.has(ply.piece, ply.turn, ply.from))
+        assertFalse(ply.isCapture())
     }
 
     @Test
@@ -33,6 +34,7 @@ internal class StandardPlyTest {
 
         assertTrue(on.has(plyWithCapture.piece, plyWithCapture.turn, plyWithCapture.to))
         assertFalse(on.has(plyWithCapture.piece, plyWithCapture.turn, plyWithCapture.from))
+        assertTrue(plyWithCapture.isCapture())
     }
 
     @Test
@@ -53,6 +55,7 @@ internal class StandardPlyTest {
 
         assertTrue(on.has(ply.piece, ply.turn, ply.from))
         assertFalse(on.has(ply.piece, ply.turn, ply.to))
+        assertFalse(ply.isCapture())
     }
 
     @Test
@@ -63,6 +66,7 @@ internal class StandardPlyTest {
 
         assertTrue(on.has(plyWithCapture.piece, plyWithCapture.turn, plyWithCapture.from))
         assertTrue(on.has(plyWithCapture.captured!!, plyWithCapture.turn.other(), plyWithCapture.to))
+        assertTrue(plyWithCapture.isCapture())
     }
 
     private companion object {

@@ -22,4 +22,6 @@ open class StandardPly(
         // If we captured something, add it back to the other set (i.e. we capture "other" pieces)
         captured?.let { on.add(piece = it, side = turn.other(), at = to) }
     }
+
+    override fun isCapture(): Boolean = captured != null
 }

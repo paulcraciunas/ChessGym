@@ -4,23 +4,22 @@ import com.paulcraciunas.chessgym.game.board.Board
 import com.paulcraciunas.chessgym.game.board.Locus
 import com.paulcraciunas.chessgym.game.board.Piece
 import com.paulcraciunas.chessgym.game.plies.Ply
-import com.paulcraciunas.chessgym.game.plies.StandardPly
 import java.util.EnumMap
 
-class ResolutionFactory(
+class EndingStrategy(
     private val availablePlies: Collection<Ply>,
     private val board: Board,
-    private val plies: List<PlyWithState>,
+    private val plies: List<Ply>,
     private val settings: Settings,
 ) {
     private val tempBoard = Board()
 
-    fun of(current: GameState): Resolution? = when {
-        isCheckMate(current) -> Resolution.CheckMate
-        isStaleMate(current) -> Resolution.StaleMate
-        isDrawByMoveRule() -> Resolution.DrawByMoveRule
-        isDrawByInsufficientMaterial() -> Resolution.DrawByInsufficientMaterial
-        isDrawByRepetition(current) -> Resolution.DrawByRepetition
+    fun of(current: GameState): Ending? = when {
+        isCheckMate(current) -> Ending.CheckMate
+        isStaleMate(current) -> Ending.StaleMate
+        isDrawByMoveRule(current) -> Ending.DrawByMoveRule
+        isDrawByInsufficientMaterial() -> Ending.DrawByInsufficientMaterial
+        isDrawByRepetition(current) -> Ending.DrawByRepetition
         else -> null
     }
 
@@ -68,8 +67,8 @@ class ResolutionFactory(
         var count = 1
         tempBoard.from(board)
         for (i in plies.size - 1 downTo 0) {
-            plies[i].ply.undo(tempBoard)
-            if (plies[i].ply.turn == current.turn) { // only check every other ply
+            plies[i].undo(tempBoard)
+            if (plies[i].turn == current.turn) { // only check every other ply
                 if (tempBoard == board) { // is it the same position?
                     if (++count == settings.drawByRepetitionCount) {
                         return true
@@ -80,10 +79,7 @@ class ResolutionFactory(
         return false
     }
 
-    private fun isDrawByMoveRule(): Boolean =
-        (plies.size >= settings.drawByMoveRuleCount * 2) &&
-        plies.takeLast(settings.drawByMoveRuleCount * 2)
-            .map { it.ply }
-            .all { it.piece != Piece.Pawn && ((it as? StandardPly)?.captured == null) }
-
+    private fun isDrawByMoveRule(current: GameState): Boolean =
+        current.plieClock == (settings.drawByMoveRuleCount * 2 - 1) &&
+        !plies.last().isPawnMoveOrCapture()
 }

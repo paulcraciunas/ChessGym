@@ -20,4 +20,7 @@ interface Ply {
 
     fun exec(on: Board)
     fun undo(on: Board)
+
+    fun isCapture(): Boolean = false
+    fun isPawnMoveOrCapture() = piece == Piece.Pawn || isCapture()
 }

@@ -27,6 +27,7 @@ internal class PromotionPlyTest {
 
         assertTrue(on.has(Piece.Queen, Side.WHITE, ply.to))
         assertTrue(on.isEmpty(ply.from))
+        assertFalse(ply.isCapture())
     }
 
     @Test
@@ -44,6 +45,7 @@ internal class PromotionPlyTest {
 
         assertTrue(on.has(Piece.Queen, Side.BLACK, ply.to))
         assertTrue(on.isEmpty(ply.from))
+        assertFalse(ply.isCapture())
     }
 
     @Test
@@ -62,6 +64,7 @@ internal class PromotionPlyTest {
 
         assertTrue(on.has(Piece.Queen, Side.WHITE, ply.to))
         assertTrue(on.isEmpty(ply.from))
+        assertTrue(ply.isCapture())
     }
 
     @Test
@@ -80,6 +83,7 @@ internal class PromotionPlyTest {
 
         assertTrue(on.has(Piece.Queen, Side.BLACK, ply.to))
         assertTrue(on.isEmpty(ply.from))
+        assertTrue(ply.isCapture())
     }
 
     @Test

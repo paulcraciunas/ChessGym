@@ -269,6 +269,25 @@ class PlyFactoryTest {
         assertEquals(temp, on)
     }
 
+    @Test
+    fun `WHEN about to be smother mated THEN king cannot move`() {
+        on.add(piece = Piece.King, side = Side.BLACK, at = "a8".loc())
+        on.add(piece = Piece.Pawn, side = Side.BLACK, at = "a7".loc())
+        on.add(piece = Piece.Pawn, side = Side.BLACK, at = "b7".loc())
+        on.add(piece = Piece.Rook, side = Side.BLACK, at = "h8".loc())
+        on.add(piece = Piece.King, side = Side.WHITE, at = "g1".loc())
+        on.add(piece = Piece.Queen, side = Side.WHITE, at = "b8".loc())
+        on.add(piece = Piece.Knight, side = Side.WHITE, at = "a6".loc())
+        val expectedPly = ExpectedPly(Side.BLACK, Piece.Rook, "h8".loc(), "b8".loc())
+
+        val actual = underTest.allLegalPlies(
+            on, with.copy(turn = Side.BLACK)
+        ).map { ExpectedPly(it) }
+
+        assertEquals(1, actual.size)
+        assertEquals(expectedPly, actual.first())
+    }
+
     private fun MutableList<StandardPly>.addAllPawnMoves(side: Side, toRank: Rank) = apply {
         File.entries.forEach {
             add(StandardPly(side, Piece.Pawn, Locus(it, side.pawnStart()), to = Locus(it, toRank)))

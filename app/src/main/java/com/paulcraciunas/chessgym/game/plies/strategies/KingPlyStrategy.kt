@@ -28,7 +28,7 @@ class KingPlyStrategy : PlyStrategy() {
         with: GameState,
     ) {
         if (with.inCheckCount == CheckCount.None) {
-            with.castling.forEach { castle ->
+            with.castling(with.turn).forEach { castle ->
                 // Validating if these squares are not in check is done later. It can't be done now
                 if (on.has(piece, with.turn, castle.from(with.turn)) &&
                     on.has(Piece.Rook, with.turn, castle.rook(with.turn)) &&
