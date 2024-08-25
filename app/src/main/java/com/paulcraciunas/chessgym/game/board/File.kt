@@ -21,3 +21,7 @@ enum class File {
             else throw IllegalArgumentException("Wrong decimal value. Expecting [0 - 7]")
     }
 }
+
+fun Char.toFile(): File? = if (this in "abcdefgh") {
+    File.valueOf(toString())
+} else null

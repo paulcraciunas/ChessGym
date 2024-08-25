@@ -35,13 +35,10 @@ data class Locus(val file: File, val rank: Rank) {
 
         fun from(algebraic: String): Locus? {
             if (algebraic.length != 2) return null
-            val file = algebraic.substring(0, 1)
-            val rank = algebraic.substring(1)
-            return if (file in "abcdefgh" && rank in "12345678") {
-                Locus(
-                    File.valueOf(file),
-                    Rank.valueOf(rank)
-                )
+            val file = algebraic[0].toFile()
+            val rank = algebraic[1].toRank()
+            return if (file != null && rank != null) {
+                Locus(file, rank)
             } else null
         }
     }

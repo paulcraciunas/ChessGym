@@ -1,6 +1,7 @@
 package com.paulcraciunas.chessgym.game.board
 
 import com.paulcraciunas.chessgym.game.Side
+import com.paulcraciunas.chessgym.game.loc
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -120,41 +121,60 @@ internal class LocusTest {
 
     @Test
     fun `WHEN calling side() on black squares THEN return Side BLACK`() {
-        assertEquals(Side.BLACK, Locus(File.a, Rank.`1`).side())
-        assertEquals(Side.BLACK, Locus(File.b, Rank.`2`).side())
-        assertEquals(Side.BLACK, Locus(File.c, Rank.`3`).side())
-        assertEquals(Side.BLACK, Locus(File.d, Rank.`4`).side())
-        assertEquals(Side.BLACK, Locus(File.e, Rank.`5`).side())
-        assertEquals(Side.BLACK, Locus(File.f, Rank.`6`).side())
-        assertEquals(Side.BLACK, Locus(File.g, Rank.`7`).side())
-        assertEquals(Side.BLACK, Locus(File.h, Rank.`8`).side())
-        assertEquals(Side.BLACK, Locus(File.a, Rank.`7`).side())
-        assertEquals(Side.BLACK, Locus(File.b, Rank.`6`).side())
-        assertEquals(Side.BLACK, Locus(File.c, Rank.`5`).side())
-        assertEquals(Side.BLACK, Locus(File.d, Rank.`4`).side())
-        assertEquals(Side.BLACK, Locus(File.e, Rank.`3`).side())
-        assertEquals(Side.BLACK, Locus(File.f, Rank.`2`).side())
-        assertEquals(Side.BLACK, Locus(File.g, Rank.`1`).side())
+        assertEquals(Side.BLACK, "a1".loc().side())
+        assertEquals(Side.BLACK, "b2".loc().side())
+        assertEquals(Side.BLACK, "c3".loc().side())
+        assertEquals(Side.BLACK, "d4".loc().side())
+        assertEquals(Side.BLACK, "e5".loc().side())
+        assertEquals(Side.BLACK, "f6".loc().side())
+        assertEquals(Side.BLACK, "g7".loc().side())
+        assertEquals(Side.BLACK, "h8".loc().side())
+        assertEquals(Side.BLACK, "a7".loc().side())
+        assertEquals(Side.BLACK, "b6".loc().side())
+        assertEquals(Side.BLACK, "c5".loc().side())
+        assertEquals(Side.BLACK, "d4".loc().side())
+        assertEquals(Side.BLACK, "e3".loc().side())
+        assertEquals(Side.BLACK, "f2".loc().side())
+        assertEquals(Side.BLACK, "g1".loc().side())
     }
-
 
     @Test
     fun `WHEN calling side() on white squares THEN return Side WHITE`() {
-        assertEquals(Side.WHITE, Locus(File.a, Rank.`8`).side())
-        assertEquals(Side.WHITE, Locus(File.b, Rank.`7`).side())
-        assertEquals(Side.WHITE, Locus(File.c, Rank.`6`).side())
-        assertEquals(Side.WHITE, Locus(File.d, Rank.`5`).side())
-        assertEquals(Side.WHITE, Locus(File.e, Rank.`4`).side())
-        assertEquals(Side.WHITE, Locus(File.f, Rank.`3`).side())
-        assertEquals(Side.WHITE, Locus(File.g, Rank.`2`).side())
-        assertEquals(Side.WHITE, Locus(File.h, Rank.`1`).side())
-        assertEquals(Side.WHITE, Locus(File.a, Rank.`8`).side())
-        assertEquals(Side.WHITE, Locus(File.h, Rank.`7`).side())
-        assertEquals(Side.WHITE, Locus(File.g, Rank.`6`).side())
-        assertEquals(Side.WHITE, Locus(File.f, Rank.`5`).side())
-        assertEquals(Side.WHITE, Locus(File.e, Rank.`4`).side())
-        assertEquals(Side.WHITE, Locus(File.d, Rank.`3`).side())
-        assertEquals(Side.WHITE, Locus(File.c, Rank.`2`).side())
-        assertEquals(Side.WHITE, Locus(File.b, Rank.`1`).side())
+        assertEquals(Side.WHITE, "a8".loc().side())
+        assertEquals(Side.WHITE, "b7".loc().side())
+        assertEquals(Side.WHITE, "c6".loc().side())
+        assertEquals(Side.WHITE, "d5".loc().side())
+        assertEquals(Side.WHITE, "e4".loc().side())
+        assertEquals(Side.WHITE, "f3".loc().side())
+        assertEquals(Side.WHITE, "g2".loc().side())
+        assertEquals(Side.WHITE, "h1".loc().side())
+        assertEquals(Side.WHITE, "a8".loc().side())
+        assertEquals(Side.WHITE, "h7".loc().side())
+        assertEquals(Side.WHITE, "g6".loc().side())
+        assertEquals(Side.WHITE, "f5".loc().side())
+        assertEquals(Side.WHITE, "e4".loc().side())
+        assertEquals(Side.WHITE, "d3".loc().side())
+        assertEquals(Side.WHITE, "c2".loc().side())
+        assertEquals(Side.WHITE, "b1".loc().side())
+    }
+
+    @Test
+    fun `WHEN loading from algebraic THEN return correct Locus`() {
+        assertEquals(Locus(File.a, Rank.`8`), Locus.from("a8"))
+        assertEquals(Locus(File.b, Rank.`7`), Locus.from("b7"))
+        assertEquals(Locus(File.c, Rank.`6`), Locus.from("c6"))
+        assertEquals(Locus(File.d, Rank.`5`), Locus.from("d5"))
+        assertEquals(Locus(File.e, Rank.`4`), Locus.from("e4"))
+        assertEquals(Locus(File.f, Rank.`3`), Locus.from("f3"))
+        assertEquals(Locus(File.g, Rank.`2`), Locus.from("g2"))
+        assertEquals(Locus(File.h, Rank.`1`), Locus.from("h1"))
+        assertEquals(Locus(File.a, Rank.`8`), Locus.from("a8"))
+        assertEquals(Locus(File.h, Rank.`7`), Locus.from("h7"))
+        assertEquals(Locus(File.g, Rank.`6`), Locus.from("g6"))
+        assertEquals(Locus(File.f, Rank.`5`), Locus.from("f5"))
+        assertEquals(Locus(File.e, Rank.`4`), Locus.from("e4"))
+        assertEquals(Locus(File.d, Rank.`3`), Locus.from("d3"))
+        assertEquals(Locus(File.c, Rank.`2`), Locus.from("c2"))
+        assertEquals(Locus(File.b, Rank.`1`), Locus.from("b1"))
     }
 }

@@ -1,7 +1,9 @@
 package com.paulcraciunas.chessgym.game.board
 
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
@@ -29,6 +31,53 @@ internal class RankTest {
         assertEquals(5, Rank.`6`.dec())
         assertEquals(6, Rank.`7`.dec())
         assertEquals(7, Rank.`8`.dec())
+    }
+
+    @Test
+    fun `WHEN creating from decimal THEN return 0-based equivalent rank`() {
+        assertEquals(Rank.`1`, Rank.fromDec(0))
+        assertEquals(Rank.`2`, Rank.fromDec(1))
+        assertEquals(Rank.`3`, Rank.fromDec(2))
+        assertEquals(Rank.`4`, Rank.fromDec(3))
+        assertEquals(Rank.`5`, Rank.fromDec(4))
+        assertEquals(Rank.`6`, Rank.fromDec(5))
+        assertEquals(Rank.`7`, Rank.fromDec(6))
+        assertEquals(Rank.`8`, Rank.fromDec(7))
+    }
+
+    @Test
+    fun `WHEN creating from invalid decimal THEN throw`() {
+        assertThrows<IllegalArgumentException>("Wrong decimal value. Expecting [0 - 7]") {
+            Rank.fromDec(-1)
+        }
+        assertThrows<IllegalArgumentException>("Wrong decimal value. Expecting [0 - 7]") {
+            Rank.fromDec(8)
+        }
+        assertThrows<IllegalArgumentException>("Wrong decimal value. Expecting [0 - 7]") {
+            Rank.fromDec(Int.MAX_VALUE)
+        }
+    }
+
+    @Test
+    fun `WHEN loading from char THEN return correct rank`() {
+        assertEquals(Rank.`1`, '1'.toRank())
+        assertEquals(Rank.`2`, '2'.toRank())
+        assertEquals(Rank.`3`, '3'.toRank())
+        assertEquals(Rank.`4`, '4'.toRank())
+        assertEquals(Rank.`5`, '5'.toRank())
+        assertEquals(Rank.`6`, '6'.toRank())
+        assertEquals(Rank.`7`, '7'.toRank())
+        assertEquals(Rank.`8`, '8'.toRank())
+    }
+
+    @Test
+    fun `WHEN loading from invalid char THEN return null`() {
+        assertNull('a'.toRank())
+        assertNull('-'.toRank())
+        assertNull('9'.toRank())
+        assertNull('0'.toRank())
+        assertNull('/'.toRank())
+        assertNull('%'.toRank())
     }
 
     companion object {
