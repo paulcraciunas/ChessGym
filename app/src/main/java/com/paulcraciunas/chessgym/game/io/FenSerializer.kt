@@ -98,9 +98,13 @@ private fun Board.loadPieces(rows: List<String>) {
             if (file == 8) {
                 throw SerializeException("Illegal row found: ${rows[i]}")
             }
-            pieces[char]?.let {
-                add(it.first, it.second, Locus(File.fromDec(file++), Rank.fromDec(rank)))
-            } ?: {
+            if (pieces[char] != null) {
+                add(
+                    pieces[char]!!.first,
+                    pieces[char]!!.second,
+                    Locus(File.fromDec(file++), Rank.fromDec(rank))
+                )
+            } else {
                 if (!char.isDigit()) {
                     throw SerializeException("Illegal character found: $char in ${rows[i]}")
                 }

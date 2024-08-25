@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -151,11 +152,15 @@ internal class FenSerializerTest {
         assertEquals(fen, underTest.of(game))
     }
 
-    // TODO Paul: add 50 or so FEN positions to test both deserialization and serialization
+    @ParameterizedTest
+    @MethodSource("validPositions")
+    fun `WHEN deserializing valid positions THEN fen strings are accepted`(fen: String) {
+        assertDoesNotThrow { underTest.from(fen) }
+    }
 
     companion object {
         @JvmStatic
-        fun invalidRows(): List<Arguments> = mutableListOf<Arguments>(
+        fun invalidRows(): List<Arguments> = listOf<Arguments>(
             // Order is: FEN, malformed row
             Arguments.of("znbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", "znbqkbnr"),
             Arguments.of("rnbqkbnrr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", "rnbqkbnrr"),
@@ -164,6 +169,35 @@ internal class FenSerializerTest {
             Arguments.of("r8/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", "r8"),
             Arguments.of("znbqkbnr/9/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", "9"),
             Arguments.of("znbqkbnr/9/8/8/8/8/PPPPPPPP/ w KQkq - 0 1", ""),
+        )
+
+        @JvmStatic
+        fun validPositions(): List<Arguments> = listOf<Arguments>(
+            // These are the ending positions from the 1987 World Chess Championship
+            Arguments.of("r2qkb1r/ppp2ppp/3p4/4p3/4n3/1PP2N2/PB1P1PPP/RN1QR1K1 w kq - 0 12"),
+            Arguments.of("r3kb1r/pp1npppp/2p5/8/1q6/2N1P3/PPPQBPPP/R3K2R w KQkq - 0 15"),
+            Arguments.of("rnbq1rk1/pp3ppp/4b3/1B1pN3/3Pp3/2P5/PP3PPP/R1BQ1RK1 w - - 0 13"),
+            Arguments.of("r1bq1rk1/ppp2ppp/2n1p3/8/1b2P3/5N2/PPPB1PPP/RN1Q1RK1 w - - 0 11"),
+            Arguments.of("r1bqk2r/ppp2ppp/2nbp3/8/1PP2B2/2N2N2/P2P1PPP/R2Q1RK1 w kq - 0 10"),
+            Arguments.of("r1bq1rk1/pp2bppp/3p4/2p5/2PnP3/2N1B3/PPQ2PPP/R3K2R w KQ - 0 12"),
+            Arguments.of("rnbq1rk1/pp3ppp/4p3/8/1b1P4/2N2N2/PP2BPPP/R1BQ1RK1 w - - 0 9"),
+            Arguments.of("r1bqk2r/ppp2ppp/3bpn2/8/2B5/2N5/PPP2PPP/R1BQK2R w KQkq - 0 9"),
+            Arguments.of("rnbq1rk1/ppp2ppp/4pn2/8/2P1P3/2N5/PP2BPPP/R1BQ1RK1 w - - 0 9"),
+            Arguments.of("r1bq1rk1/ppp2ppp/3bpn2/4P3/2B5/2N5/PPP2PPP/R1BQ1RK1 w - - 0 11"),
+            Arguments.of("r1bq1rk1/ppp2ppp/4p3/4P3/2n1n3/2N5/PP3PPP/R1BQR1K1 w - - 0 12"),
+            Arguments.of("r1bq1rk1/ppp2ppp/4p3/4P3/2n1n3/2N5/PP3PPP/R1BQR1K1 w - - 0 12"),
+            Arguments.of("rnbq1rk1/ppp2ppp/4p3/8/2BPn3/2N5/PP3PPP/R1BQ1RK1 w - - 0 9"),
+            Arguments.of("rnbq1rk1/pp3ppp/4p3/8/2BpP3/2N5/PP3PPP/R1BQ1RK1 w - - 0 11"),
+            Arguments.of("r1bq1rk1/ppp2ppp/2n1p3/8/2B1P3/2N2N2/PP3PPP/R1BQ1RK1 w - - 0 12"),
+            Arguments.of("r1bq1rk1/ppp2ppp/2n1p3/8/2B1P3/2N2N2/PP3PPP/R1BQ1RK1 w - - 0 12"),
+            Arguments.of("r1bq1rk1/ppp2ppp/2n1p3/8/2B1P3/2N2N2/PP3PPP/R1BQ1RK1 w - - 0 12"),
+            Arguments.of("r1bq1rk1/ppp2ppp/2n1p3/8/2B1P3/2N2N2/PP3PPP/R1BQ1RK1 w - - 0 12"),
+            Arguments.of("rnbq1rk1/ppp2ppp/4p3/8/2BPn3/2N5/PP3PPP/R1BQ1RK1 w - - 0 9"),
+            Arguments.of("r1bq1rk1/ppp2ppp/4p3/8/2BPn3/2N5/PP3PPP/R1BQ1RK1 w - - 0 10"),
+            Arguments.of("rnbq1rk1/pp3ppp/4p3/8/2BPn3/2N5/PP3PPP/R1BQ1RK1 w - - 0 11"),
+            Arguments.of("rnbq1rk1/ppp2ppp/4p3/8/2BPn3/2N5/PP3PPP/R1BQ1RK1 w - - 0 9"),
+            Arguments.of("rnbq1rk1/pp3ppp/4p3/8/2BPn3/2N5/PP3PPP/R1BQ1RK1 w - - 0 11"),
+            Arguments.of("r1bq1rk1/pp3ppp/2n1p3/8/2BP4/2N5/PP3PPP/R1BQR1K1 w - - 0 11"),
         )
     }
 }
