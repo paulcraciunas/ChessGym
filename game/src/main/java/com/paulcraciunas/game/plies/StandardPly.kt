@@ -5,7 +5,7 @@ import com.paulcraciunas.game.board.Board
 import com.paulcraciunas.game.board.Locus
 import com.paulcraciunas.game.board.Piece
 
-open class StandardPly(
+internal open class StandardPly(
     override val turn: Side,
     override val piece: Piece,
     override val from: Locus,

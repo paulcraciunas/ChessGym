@@ -13,7 +13,7 @@ import com.paulcraciunas.game.plies.Ply
 import com.paulcraciunas.game.plies.PromotionPly
 import com.paulcraciunas.game.plies.StandardPly
 
-class PawnPlyStrategy : PlyStrategy() {
+internal class PawnPlyStrategy : PlyStrategy() {
     override val piece: Piece = Piece.Pawn
 
     /**

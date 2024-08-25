@@ -9,7 +9,7 @@ import com.paulcraciunas.game.board.Piece
 import com.paulcraciunas.game.plies.CastlePly
 import com.paulcraciunas.game.plies.Ply
 
-class KingPlyStrategy : PlyStrategy() {
+internal class KingPlyStrategy : PlyStrategy() {
     override val piece: Piece = Piece.King
     override fun canMoveInCheck(count: CheckCount): Boolean = true // King can always try and move
     override fun simpleMoves(): Collection<Next> = QueenPlyStrategy.directions

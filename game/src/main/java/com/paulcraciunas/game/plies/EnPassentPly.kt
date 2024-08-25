@@ -5,7 +5,7 @@ import com.paulcraciunas.game.board.Board
 import com.paulcraciunas.game.board.Locus
 import com.paulcraciunas.game.board.Piece
 
-class EnPassentPly(
+internal class EnPassentPly(
     turn: Side,
     from: Locus,
     to: Locus,

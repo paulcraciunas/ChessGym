@@ -19,7 +19,7 @@ import com.paulcraciunas.game.plies.StandardPly
  * 50 move rule). In that case, since we don't have access to the move history, we need to know
  * the number of non-pawn and non-capture plies.
  */
-data class GameState(
+internal data class GameState(
     val turn: Side = Side.WHITE,
     val lastPly: Ply? = null,
     val inCheckCount: CheckCount = CheckCount.None,

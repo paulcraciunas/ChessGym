@@ -11,7 +11,7 @@ import com.paulcraciunas.game.plies.StandardPly
 
 typealias Next = (Locus) -> Locus?
 
-abstract class PlyStrategy {
+internal abstract class PlyStrategy {
     abstract val piece: Piece
 
     protected open fun canMoveInCheck(count: CheckCount): Boolean = count != CheckCount.Two

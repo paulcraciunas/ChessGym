@@ -6,7 +6,7 @@ import com.paulcraciunas.game.board.Piece
 import com.paulcraciunas.game.plies.Ply
 import java.util.EnumMap
 
-class EndingStrategy(
+internal class EndingStrategy(
     private val availablePlies: Collection<Ply>,
     private val board: Board,
     private val plies: List<Ply>,

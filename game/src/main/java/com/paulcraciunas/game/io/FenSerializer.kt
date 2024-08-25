@@ -23,7 +23,7 @@ import com.paulcraciunas.game.plies.StandardPly
  *
  * @see <a href="https://en.wikipedia.org/wiki/Forsyth–Edwards_Notation">FEN Wiki</a>
  **/
-object FenSerializer : Serializer {
+internal object FenSerializer : Serializer {
 
     override fun from(gameString: String): Game {
         val fenParts = gameString.fenParts()

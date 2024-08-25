@@ -2,7 +2,7 @@ package com.paulcraciunas.game.plies.strategies
 
 import com.paulcraciunas.game.board.Piece
 
-class KnightPlyStrategy : PlyStrategy() {
+internal class KnightPlyStrategy : PlyStrategy() {
     override val piece: Piece = Piece.Knight
     override fun simpleMoves(): Collection<Next> = standardMoves
 

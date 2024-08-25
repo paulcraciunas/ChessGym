@@ -6,7 +6,7 @@ package com.paulcraciunas.game
  * @see <a href="https://en.wikipedia.org/wiki/Portable_Game_Notation#Seven_Tag_Roster">
  *     Seven Tag Roster</a>
  */
-data class MetaData(val headers: Map<Header, String> = mapOf()) {
+internal data class MetaData(val headers: Map<Header, String> = mapOf()) {
 
     fun data(header: Header): String? = headers[header]
 

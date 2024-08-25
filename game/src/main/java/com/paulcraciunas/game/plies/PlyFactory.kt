@@ -29,7 +29,7 @@ import java.util.EnumMap
  * Q: OK, can I move this Rook? A: Only if I don't end up in check.
  * - repeat ad infinitum
  */
-class PlyFactory {
+internal class PlyFactory {
     private val strategies = EnumMap<Piece, PlyStrategy>(Piece::class.java).apply {
         put(Piece.Pawn, PawnPlyStrategy())
         put(Piece.Bishop, BishopPlyStrategy())

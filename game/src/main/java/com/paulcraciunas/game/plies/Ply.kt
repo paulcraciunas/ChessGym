@@ -11,7 +11,7 @@ import com.paulcraciunas.game.board.Piece
  *
  * e.g. The 50 move rule requires there to be 50 moves (i.e. 100 plies)
  */
-interface Ply: IPly {
+internal interface Ply: IPly {
     fun resolve(disambiguate: Disambiguate) {}
     fun exec(on: Board)
     fun undo(on: Board)

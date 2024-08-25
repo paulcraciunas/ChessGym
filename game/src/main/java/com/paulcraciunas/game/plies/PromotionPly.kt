@@ -7,7 +7,7 @@ import com.paulcraciunas.game.board.Piece
 import com.paulcraciunas.game.board.pawnStart
 import com.paulcraciunas.game.board.promotion
 
-class PromotionPly(
+internal class PromotionPly(
     turn: Side,
     from: Locus,
     to: Locus,

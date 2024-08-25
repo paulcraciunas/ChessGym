@@ -12,7 +12,7 @@ import com.paulcraciunas.game.board.toRank
 import com.paulcraciunas.game.plies.CastlePly
 import com.paulcraciunas.game.plies.Ply
 
-object PgnSerializer : Serializer {
+internal object PgnSerializer : Serializer {
     // I hate regEx
     private val headerRegex = Regex("\\[([A-Za-z]+)\\s+\"(.+)\"]")
     private val moveSplitRegex = Regex("([0-9]+)\\.\\s?(\\S+)(?:\\s+(\\S+))?")

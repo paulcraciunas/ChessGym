@@ -4,7 +4,7 @@ import com.paulcraciunas.game.Side
 import com.paulcraciunas.game.api.IBoard
 import java.util.EnumMap
 
-data class Board(
+internal data class Board(
     private val board: Array<Array<Piece?>> =
         Array(Rank.entries.size) {
             Array(File.entries.size) { null }

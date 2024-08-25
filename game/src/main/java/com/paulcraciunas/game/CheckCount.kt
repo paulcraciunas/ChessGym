@@ -6,7 +6,7 @@ package com.paulcraciunas.game
  * the checking piece.
  * If the king is in check from 2 pieces, then only the King can move.
  */
-enum class CheckCount {
+internal enum class CheckCount {
     None,
     One,
     Two;

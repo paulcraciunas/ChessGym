@@ -3,7 +3,7 @@ package com.paulcraciunas.game.plies.strategies
 import com.paulcraciunas.game.board.Locus
 import com.paulcraciunas.game.board.Piece
 
-class BishopPlyStrategy : PlyStrategy() {
+internal class BishopPlyStrategy : PlyStrategy() {
     override val piece: Piece = Piece.Bishop
     override fun directions(): Collection<Next> = directions
 

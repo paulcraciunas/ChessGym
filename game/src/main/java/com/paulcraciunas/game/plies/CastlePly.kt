@@ -7,7 +7,7 @@ import com.paulcraciunas.game.board.Locus
 import com.paulcraciunas.game.board.Piece
 import com.paulcraciunas.game.board.Rank
 
-class CastlePly(override val turn: Side, val type: Type) : Ply {
+internal class CastlePly(override val turn: Side, val type: Type) : Ply {
     override val piece = Piece.King
     override val from = type.from(turn)
     override val to = type.end(turn)
