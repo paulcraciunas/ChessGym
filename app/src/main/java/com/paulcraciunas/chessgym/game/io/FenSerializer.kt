@@ -25,8 +25,8 @@ import com.paulcraciunas.chessgym.game.plies.StandardPly
  **/
 object FenSerializer : Serializer {
 
-    override fun from(game: String): Game {
-        val fenParts = game.fenParts()
+    override fun from(gameString: String): Game {
+        val fenParts = gameString.fenParts()
         val rows = fenParts[0].rows()
 
         val board = Board().apply { loadPieces(rows) }
@@ -42,10 +42,21 @@ object FenSerializer : Serializer {
 
         return Game(board = board, state = gameState)
     }
+
+    override fun of(game: Game): String = StringBuilder().apply {
+        append(game.currentBoard().toFen()).append(" ")
+        append(if (game.state().turn == Side.WHITE) 'w' else 'b').append(" ")
+        append(game.state().castlingFen()).append(" ")
+        append(game.allPlies().lastOrNull()?.toEnPassentFen() ?: MISSING).append(" ")
+        append(game.allPlies().size).append(" ")
+        append(game.state().moveIndex)
+    }.toString()
 }
 
 private const val EXPECTED_FEN_PARTS = 6
 private const val EXPECTED_ROWS = 8
+private const val MISSING = "-"
+private const val ROW_SPLIT = "/"
 private val pieces = mapOf(
     'p' to Pair(Piece.Pawn, Side.BLACK),
     'r' to Pair(Piece.Rook, Side.BLACK),
@@ -70,7 +81,7 @@ private fun String.fenParts(): List<String> {
 }
 
 private fun String.rows(): List<String> {
-    val result = split("/")
+    val result = split(ROW_SPLIT)
     if (result.size != EXPECTED_ROWS)
         throw SerializeException("Expected $EXPECTED_ROWS FEN rows, found ${result.size}")
     return result
@@ -104,6 +115,33 @@ private fun Board.loadPieces(rows: List<String>) {
     }
 }
 
+private fun Board.toFen(): String {
+    var skips = 0
+    var at: Locus
+    fun StringBuilder.addSkips(): StringBuilder {
+        if (skips != 0) {
+            append(skips)
+            skips = 0
+        }
+        return this
+    }
+
+    return StringBuilder().apply {
+        Rank.entries.reversed().forEach { rank ->
+            File.entries.forEach { file ->
+                at = Locus(file, rank)
+                at(at)?.let { piece ->
+                    addSkips()
+                    val symbol = piece.alg().takeIf { it.isNotBlank() } ?: "P"
+                    append(if (has(piece, Side.WHITE, at)) symbol else symbol.lowercase())
+                } ?: skips++
+            }
+            addSkips().append(ROW_SPLIT)
+        }
+        deleteAt(length - 1) // remove trailing ROW_SPLIT
+    }.toString()
+}
+
 private fun String.loadSide(): Side =
     if (isEmpty()) throw SerializeException("Missing 'w'/'b' as side")
     else turns[get(0)] ?: throw SerializeException("Expecting 'w'/'b' as side, found ${get(0)}")
@@ -114,7 +152,7 @@ private fun String.loadNumber(): Int {
 }
 
 private fun String.loadEnPassent(): Ply? {
-    if (this == "-") return null
+    if (this == MISSING) return null
     // This tells us the location a pawn moved OVER (e.g. e6)
     // To load the correct information as the "previous move", we have to add the from - to
     val loc = Locus.from(this) ?: throw SerializeException("Invalid en-passent location: $this")
@@ -138,7 +176,7 @@ private fun String.loadEnPassent(): Ply? {
 }
 
 private fun String.loadCastling(): Pair<Set<CastlePly.Type>, Set<CastlePly.Type>> {
-    if (this == "-") return Pair(emptySet(), emptySet())
+    if (this == MISSING) return Pair(emptySet(), emptySet())
 
     val white = mutableSetOf<CastlePly.Type>()
     val black = mutableSetOf<CastlePly.Type>()
@@ -152,4 +190,19 @@ private fun String.loadCastling(): Pair<Set<CastlePly.Type>, Set<CastlePly.Type>
         }
     }
     return Pair(white, black)
+}
+
+private fun GameState.castlingFen(): String = StringBuilder().apply {
+    // Might be important that they're in the correct order
+    if (whiteCastling.contains(CastlePly.Type.KingSide)) append('K')
+    if (whiteCastling.contains(CastlePly.Type.QueenSide)) append('Q')
+    if (blackCastling.contains(CastlePly.Type.KingSide)) append('k')
+    if (blackCastling.contains(CastlePly.Type.QueenSide)) append('q')
+}.toString()
+
+private fun Ply?.toEnPassentFen(): String = when {
+    this == null -> MISSING
+    piece == Piece.Pawn && from.rank == Rank.`2` && to.rank == Rank.`4` -> "${from.file}3"
+    piece == Piece.Pawn && from.rank == Rank.`7` && to.rank == Rank.`5` -> "${from.file}6"
+    else -> MISSING
 }

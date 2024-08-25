@@ -1,5 +1,6 @@
 package com.paulcraciunas.chessgym.game.io
 
+import com.paulcraciunas.chessgym.game.Game
 import com.paulcraciunas.chessgym.game.Side
 import com.paulcraciunas.chessgym.game.assertDefaultBoard
 import com.paulcraciunas.chessgym.game.board.Piece
@@ -133,6 +134,24 @@ internal class FenSerializerTest {
         assertTrue(expectedPlies.containsAll(actualPlies))
         assertTrue(actualPlies.containsAll(expectedPlies))
     }
+
+    @Test
+    fun `WHEN serializing default starting position THEN fen string is correct`() {
+        val fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+
+        assertEquals(fen, underTest.of(Game()))
+    }
+
+    @Test
+    fun `WHEN serializing after pawn jump THEN fen string contains en-passent`() {
+        val fen = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 1 1"
+        val game = Game()
+        game.play(game.playablePlies("e2".loc()).first { it.to == "e4".loc() })
+
+        assertEquals(fen, underTest.of(game))
+    }
+
+    // TODO Paul: add 50 or so FEN positions to test both deserialization and serialization
 
     companion object {
         @JvmStatic
