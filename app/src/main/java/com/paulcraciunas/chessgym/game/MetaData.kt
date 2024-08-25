@@ -10,17 +10,17 @@ data class MetaData(val headers: Map<Header, String> = mapOf()) {
 
     fun data(header: Header): String? = headers[header]
 
-    enum class Header(val key: String) {
-        Event("Event"),
-        Site("Site"),
-        Date("Date"),
-        Round("Round"),
-        White("White"),
-        Black("Black"),
-        Result("Result");
+    enum class Header {
+        Event,
+        Site,
+        Date,
+        Round,
+        White,
+        Black,
+        Result;
 
         companion object {
-            fun of(value: String): Header? = entries.firstOrNull { it.key == value }
+            fun of(value: String): Header? = entries.firstOrNull { it.name == value }
         }
     }
 }

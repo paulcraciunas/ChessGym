@@ -23,10 +23,10 @@ abstract class PlyStrategy {
         assert(on.has(piece, turn, from))
         assert(from != to)
 
-        val plies = mutableListOf<Ply>()
-        plies.addPliesInDirections(turn, from, on) { it == to }
-        plies.addSimplePlies(turn, from, on, simpleMoves()) { it == to }
-        return plies.any { it.to == to }
+        return mutableListOf<Ply>().apply {
+            addPliesInDirections(turn, from, on) { it == to }
+            addSimplePlies(turn, from, on, simpleMoves()) { it == to }
+        }.any { it.to == to }
     }
 
     fun plies(from: Locus, on: Board, with: GameState): List<Ply> {

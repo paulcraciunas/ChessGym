@@ -22,6 +22,7 @@ class CastlePly(override val turn: Side, val type: Type) : Ply {
         on.move(from = type.pass(turn), to = type.rook(turn), turn = turn)
     }
 
+    override fun captured(): Piece? = null
     override fun isPawnMoveOrCapture(): Boolean = false
     override fun algebraic(): String = if (type == Type.KingSide) "O-O" else "O-O-O"
 

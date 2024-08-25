@@ -175,7 +175,7 @@ internal class PlyFactoryTest {
         on.add(piece = Piece.Rook, side = Side.WHITE, at = "e3".loc())
         on.add(piece = Piece.Queen, side = Side.WHITE, at = "a4".loc())
 
-        assertEquals(CheckCount.Two, underTest.canCheck("e8".loc(), on, turn = Side.WHITE))
+        assertEquals(CheckCount.Two, underTest.checkCount("e8".loc(), on, turn = Side.WHITE))
     }
 
     @Test
@@ -256,8 +256,8 @@ internal class PlyFactoryTest {
     fun `WHEN computing checks on a default board THEN return no checks`() {
         on.from(BoardFactory.defaultBoard())
 
-        assertEquals(CheckCount.None, underTest.canCheck("e8".loc(), on = on, with.turn))
-        assertEquals(CheckCount.None, underTest.canCheck("e1".loc(), on = on, with.turn.other()))
+        assertEquals(CheckCount.None, underTest.checkCount("e8".loc(), on = on, with.turn))
+        assertEquals(CheckCount.None, underTest.checkCount("e1".loc(), on = on, with.turn.other()))
     }
 
     @Test
@@ -265,7 +265,7 @@ internal class PlyFactoryTest {
         on.from(BoardFactory.defaultBoard())
         val temp = Board().from(on)
 
-        underTest.canCheck("e8".loc(), on = on, with.turn)
+        underTest.checkCount("e8".loc(), on = on, with.turn)
 
         assertEquals(temp, on)
     }

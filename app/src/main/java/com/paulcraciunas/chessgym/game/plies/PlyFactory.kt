@@ -42,7 +42,7 @@ class PlyFactory {
     fun allLegalPlies(on: Board, with: GameState): Collection<Ply> =
         allPlies(on, with).filter { it.isValid(on) }
 
-    fun canCheck(at: Locus, on: Board, turn: Side): CheckCount {
+    fun checkCount(at: Locus, on: Board, turn: Side): CheckCount {
         var checkCount = CheckCount.None
         on.forEachPiece(turn) { piece, pieceLoc ->
             if (strategies[piece]!!.canAttack(from = pieceLoc, to = at, on = on, turn = turn)) {
@@ -51,6 +51,11 @@ class PlyFactory {
         }
         return checkCount
     }
+
+    fun isCheck(ply: Ply, on: Board): Boolean =
+        on.king(ply.turn.other())?.let {
+            strategies[ply.piece]!!.canAttack(from = ply.to, to = it, on = on, turn = ply.turn)
+        } ?: false
 
     private fun Ply.isValid(on: Board): Boolean {
         exec(on) // try the move

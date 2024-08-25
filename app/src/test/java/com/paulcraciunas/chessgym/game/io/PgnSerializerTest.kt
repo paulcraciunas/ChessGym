@@ -1,6 +1,7 @@
 package com.paulcraciunas.chessgym.game.io
 
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
@@ -17,8 +18,7 @@ class PgnSerializerTest {
         underTest.from(ClassLoader.getSystemResource(pgnFile).readText())
     }
 
-//    @Test
-    //TODO Paul: we have to add support for checks
+    @Test
     fun `WHEN serializing a loaded game THEN contents are identical`() {
         val gameString = ClassLoader.getSystemResource("Kasparov_Karpov_WC_1986_round_1.pgn")
             .readText()

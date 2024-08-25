@@ -1,7 +1,7 @@
 package com.paulcraciunas.chessgym.game
 
 //TODO Paul: rename to result
-enum class Ending {
+enum class Result {
     CheckMate,
     StaleMate,
     Resigned,

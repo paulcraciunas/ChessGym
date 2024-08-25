@@ -129,7 +129,7 @@ internal class FenSerializerTest {
 
         assertDefaultBoard(board)
         assertEquals(Side.WHITE, game.turn())
-        assertNull(game.ending())
+        assertNull(game.result())
         assertEquals(expectedPlies.size, actualPlies.size)
         assertTrue(expectedPlies.containsAll(actualPlies))
         assertTrue(actualPlies.containsAll(expectedPlies))

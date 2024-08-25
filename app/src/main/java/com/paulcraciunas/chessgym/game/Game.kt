@@ -4,6 +4,7 @@ import com.paulcraciunas.chessgym.game.board.Board
 import com.paulcraciunas.chessgym.game.board.BoardFactory
 import com.paulcraciunas.chessgym.game.board.Locus
 import com.paulcraciunas.chessgym.game.board.Piece
+import com.paulcraciunas.chessgym.game.plies.CheckPly
 import com.paulcraciunas.chessgym.game.plies.Ply
 import com.paulcraciunas.chessgym.game.plies.PlyFactory
 import com.paulcraciunas.chessgym.game.plies.PromotionPly
@@ -19,7 +20,7 @@ class Game(
     private val availablePlies = mutableListOf<Ply>()
     private val plies = mutableListOf<Ply>()
     private var currentState = state
-    private var ending: Ending? = null
+    private var result: Result? = null
 
     private val plyFactory = PlyFactory()
     private val endingStrategy = EndingStrategy(availablePlies, board, plies, settings)
@@ -35,22 +36,21 @@ class Game(
     fun playablePlies(from: Locus): Collection<Ply> = availablePlies.filter { it.from == from }
 
     fun play(ply: Ply) {
-        assert(ending == null)
+        assert(result == null)
         assert(availablePlies.contains(ply))
 
         // Execute and keep track
-        ply.resolve(
-            availablePlies.filter { it.piece == ply.piece && it.to == ply.to }.disambiguate()
-        )
+        ply.resolve(availablePlies.filter { it.piece == ply.piece && it.to == ply.to }
+            .disambiguate())
         ply.exec(board)
-        plies.add(ply)
+        plies.add(if (plyFactory.isCheck(ply, board)) CheckPly(ply) else ply)
 
         // Update state
         currentState = currentState.next(plies.last(), checkCount(currentState.turn.other()))
         updateState()
     }
 
-    fun ending(): Ending? = ending
+    fun result(): Result? = result
 
     fun currentBoard(): Board = Board().from(board)
 
@@ -63,11 +63,11 @@ class Game(
     fun metaData() = metaData
 
     fun resign() {
-        ending = Ending.Resigned
+        result = Result.Resigned
     }
 
     fun agreeToDraw() {
-        ending = Ending.DrawByAgreement
+        result = Result.DrawByAgreement
     }
 
     private fun updateState() {
@@ -76,8 +76,8 @@ class Game(
     }
 
     private fun updateResolution() { // Important to call after updating game state
-        ending = endingStrategy.of(currentState)
-        if (ending != null) {
+        result = endingStrategy.of(currentState)
+        if (result != null) {
             availablePlies.clear()
         }
     }
@@ -93,7 +93,7 @@ class Game(
     }
 
     private fun checkCount(turn: Side) =
-        board.king(turn)?.let { plyFactory.canCheck(it, board, turn.other()) } ?: CheckCount.None
+        board.king(turn)?.let { plyFactory.checkCount(it, board, turn.other()) } ?: CheckCount.None
 }
 
 private fun List<Ply>.disambiguate(): Ply.Disambiguate = when {

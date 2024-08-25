@@ -14,12 +14,12 @@ class EndingStrategy(
 ) {
     private val tempBoard = Board()
 
-    fun of(current: GameState): Ending? = when {
-        isCheckMate(current) -> Ending.CheckMate
-        isStaleMate(current) -> Ending.StaleMate
-        isDrawByMoveRule(current) -> Ending.DrawByMoveRule
-        isDrawByInsufficientMaterial() -> Ending.DrawByInsufficientMaterial
-        isDrawByRepetition(current) -> Ending.DrawByRepetition
+    fun of(current: GameState): Result? = when {
+        isCheckMate(current) -> Result.CheckMate
+        isStaleMate(current) -> Result.StaleMate
+        isDrawByMoveRule(current) -> Result.DrawByMoveRule
+        isDrawByInsufficientMaterial() -> Result.DrawByInsufficientMaterial
+        isDrawByRepetition(current) -> Result.DrawByRepetition
         else -> null
     }
 
