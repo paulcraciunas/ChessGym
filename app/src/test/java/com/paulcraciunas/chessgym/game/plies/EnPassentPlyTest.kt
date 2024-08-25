@@ -87,4 +87,20 @@ internal class EnPassentPlyTest {
 
         assertThrows<AssertionError> { underTest.undo(on) }
     }
+
+    @Test
+    fun `WHEN serializing to algebraic notation THEN return correct string`() {
+        assertEquals("exd6", underTest.algebraic())
+    }
+
+    @Test
+    fun `WHEN getting captured piece THEN return pawn`() {
+        assertEquals(Piece.Pawn, underTest.captured())
+        assertTrue(underTest.isPawnMoveOrCapture())
+    }
+
+    @Test
+    fun `WHEN accepting a piece for promotion THEN throw`() {
+        assertThrows<AssertionError> { underTest.accept(Piece.Bishop) }
+    }
 }

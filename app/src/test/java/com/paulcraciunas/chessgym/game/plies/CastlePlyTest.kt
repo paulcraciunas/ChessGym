@@ -4,10 +4,15 @@ import com.paulcraciunas.chessgym.game.Side
 import com.paulcraciunas.chessgym.game.board.Board
 import com.paulcraciunas.chessgym.game.board.Piece
 import com.paulcraciunas.chessgym.game.loc
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 
 internal class CastlePlyTest {
     private val on = Board()
@@ -22,7 +27,7 @@ internal class CastlePlyTest {
 
         assertTrue(on.has(Piece.King, Side.WHITE, "g1".loc()))
         assertTrue(on.has(Piece.Rook, Side.WHITE, "f1".loc()))
-        assertFalse(ply.isCapture())
+        assertFalse(ply.isPawnMoveOrCapture())
     }
 
     @Test
@@ -111,7 +116,7 @@ internal class CastlePlyTest {
 
         assertTrue(on.has(Piece.King, Side.WHITE, "e1".loc()))
         assertTrue(on.has(Piece.Rook, Side.WHITE, "a1".loc()))
-        assertFalse(ply.isCapture())
+        assertFalse(ply.isPawnMoveOrCapture())
     }
 
     @Test
@@ -124,7 +129,7 @@ internal class CastlePlyTest {
 
         assertTrue(on.has(Piece.King, Side.BLACK, "g8".loc()))
         assertTrue(on.has(Piece.Rook, Side.BLACK, "f8".loc()))
-        assertFalse(ply.isCapture())
+        assertFalse(ply.isPawnMoveOrCapture())
     }
 
     @Test
@@ -137,7 +142,7 @@ internal class CastlePlyTest {
 
         assertTrue(on.has(Piece.King, Side.BLACK, "e8".loc()))
         assertTrue(on.has(Piece.Rook, Side.BLACK, "h8".loc()))
-        assertFalse(ply.isCapture())
+        assertFalse(ply.isPawnMoveOrCapture())
     }
 
     @Test
@@ -150,7 +155,7 @@ internal class CastlePlyTest {
 
         assertTrue(on.has(Piece.King, Side.BLACK, "c8".loc()))
         assertTrue(on.has(Piece.Rook, Side.BLACK, "d8".loc()))
-        assertFalse(ply.isCapture())
+        assertFalse(ply.isPawnMoveOrCapture())
     }
 
     @Test
@@ -163,6 +168,63 @@ internal class CastlePlyTest {
 
         assertTrue(on.has(Piece.King, Side.BLACK, "e8".loc()))
         assertTrue(on.has(Piece.Rook, Side.BLACK, "a8".loc()))
-        assertFalse(ply.isCapture())
+        assertFalse(ply.isPawnMoveOrCapture())
+    }
+
+    @Test
+    fun `WHEN serializing to algebraic notation THEN return correct string`() {
+        assertEquals(
+            "O-O",
+            CastlePly(turn = Side.BLACK, type = CastlePly.Type.KingSide).algebraic()
+        )
+        assertEquals(
+            "O-O",
+            CastlePly(turn = Side.WHITE, type = CastlePly.Type.KingSide).algebraic()
+        )
+        assertEquals(
+            "O-O-O",
+            CastlePly(turn = Side.BLACK, type = CastlePly.Type.QueenSide).algebraic()
+        )
+        assertEquals(
+            "O-O-O",
+            CastlePly(turn = Side.WHITE, type = CastlePly.Type.QueenSide).algebraic()
+        )
+    }
+
+    @Test
+    fun `WHEN checking extraPass THEN return correct Locus`() {
+        assertEquals("b1".loc(), CastlePly.Type.QueenSide.extraPass(Side.WHITE))
+        assertEquals("b8".loc(), CastlePly.Type.QueenSide.extraPass(Side.BLACK))
+        assertEquals(null, CastlePly.Type.KingSide.extraPass(Side.WHITE))
+        assertEquals(null, CastlePly.Type.KingSide.extraPass(Side.BLACK))
+    }
+
+    @ParameterizedTest(name = "No captured piece for {1} castling for {0}")
+    @MethodSource("castles")
+    fun `WHEN getting captured piece THEN return null`(
+        side: Side,
+        type: CastlePly.Type,
+    ) {
+        assertNull(CastlePly(side, type).captured())
+    }
+
+    @ParameterizedTest(name = "Promotion disallowed for {1} castling for {0}")
+    @MethodSource("castles")
+    fun `WHEN accepting a piece for promotion THEN throw`(
+        side: Side,
+        type: CastlePly.Type,
+    ) {
+        assertThrows<AssertionError> { CastlePly(side, type).accept(Piece.Bishop) }
+    }
+
+    companion object {
+        @JvmStatic
+        fun castles(): List<Arguments> =
+            mutableListOf<Arguments>(
+                Arguments.of(Side.BLACK, CastlePly.Type.KingSide),
+                Arguments.of(Side.WHITE, CastlePly.Type.KingSide),
+                Arguments.of(Side.BLACK, CastlePly.Type.QueenSide),
+                Arguments.of(Side.WHITE, CastlePly.Type.QueenSide),
+            )
     }
 }

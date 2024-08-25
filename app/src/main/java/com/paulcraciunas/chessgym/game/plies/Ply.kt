@@ -17,10 +17,22 @@ interface Ply {
     val piece: Piece
     val from: Locus
     val to: Locus
+    // TODO Paul: add is check field, to allow things like sounds effect on check
 
+    fun resolve(disambiguate: Disambiguate) {}
     fun exec(on: Board)
     fun undo(on: Board)
 
-    fun isCapture(): Boolean = false
-    fun isPawnMoveOrCapture() = piece == Piece.Pawn || isCapture()
+    fun captured(): Piece? = null
+    fun isPawnMoveOrCapture(): Boolean
+    fun accept(piece: Piece): Unit = throw AssertionError("Default moves can't promote")
+    // TODO Paul: need to add if it's a check or not for serialization purposes
+    fun algebraic(): String
+
+    enum class Disambiguate {
+        File,
+        Rank,
+        Both,
+        None
+    }
 }

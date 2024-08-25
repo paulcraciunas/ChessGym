@@ -4,7 +4,9 @@ import com.paulcraciunas.chessgym.game.Side
 import com.paulcraciunas.chessgym.game.board.Board
 import com.paulcraciunas.chessgym.game.board.Piece
 import com.paulcraciunas.chessgym.game.loc
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -27,7 +29,8 @@ internal class PromotionPlyTest {
 
         assertTrue(on.has(Piece.Queen, Side.WHITE, ply.to))
         assertTrue(on.isEmpty(ply.from))
-        assertFalse(ply.isCapture())
+        assertTrue(ply.isPawnMoveOrCapture())
+        assertNull(ply.captured())
     }
 
     @Test
@@ -45,7 +48,7 @@ internal class PromotionPlyTest {
 
         assertTrue(on.has(Piece.Queen, Side.BLACK, ply.to))
         assertTrue(on.isEmpty(ply.from))
-        assertFalse(ply.isCapture())
+        assertTrue(ply.isPawnMoveOrCapture())
     }
 
     @Test
@@ -64,7 +67,7 @@ internal class PromotionPlyTest {
 
         assertTrue(on.has(Piece.Queen, Side.WHITE, ply.to))
         assertTrue(on.isEmpty(ply.from))
-        assertTrue(ply.isCapture())
+        assertTrue(ply.isPawnMoveOrCapture())
     }
 
     @Test
@@ -83,7 +86,7 @@ internal class PromotionPlyTest {
 
         assertTrue(on.has(Piece.Queen, Side.BLACK, ply.to))
         assertTrue(on.isEmpty(ply.from))
-        assertTrue(ply.isCapture())
+        assertTrue(ply.isPawnMoveOrCapture())
     }
 
     @Test
@@ -210,5 +213,28 @@ internal class PromotionPlyTest {
         assertThrows<AssertionError> {
             ply.accept(Piece.King)
         }
+    }
+
+    @Test
+    fun `WHEN serializing to algebraic notation THEN return correct string`() {
+        assertEquals(
+            "c8=Q",
+            PromotionPly(
+                Side.WHITE,
+                "c7".loc(),
+                "c8".loc(),
+                resultingPiece = Piece.Queen
+            ).algebraic()
+        )
+        assertEquals(
+            "cxb1=B",
+            PromotionPly(
+                turn = Side.BLACK,
+                from = "c2".loc(),
+                to = "b1".loc(),
+                captured = Piece.Rook,
+                resultingPiece = Piece.Bishop
+            ).algebraic()
+        )
     }
 }

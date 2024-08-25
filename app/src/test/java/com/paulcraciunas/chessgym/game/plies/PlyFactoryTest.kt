@@ -12,6 +12,7 @@ import com.paulcraciunas.chessgym.game.board.Rank
 import com.paulcraciunas.chessgym.game.assertHas
 import com.paulcraciunas.chessgym.game.assertNoMoves
 import com.paulcraciunas.chessgym.game.assertNoMovesOf
+import com.paulcraciunas.chessgym.game.board.pawnStart
 import com.paulcraciunas.chessgym.game.loc
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -290,7 +291,7 @@ internal class PlyFactoryTest {
 
     private fun MutableList<StandardPly>.addAllPawnMoves(side: Side, toRank: Rank) = apply {
         File.entries.forEach {
-            add(StandardPly(side, Piece.Pawn, Locus(it, side.pawnStart()), to = Locus(it, toRank)))
+            add(StandardPly(side, Piece.Pawn, Locus(it, pawnStart(side)), to = Locus(it, toRank)))
         }
     }
 

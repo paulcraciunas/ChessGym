@@ -10,8 +10,13 @@ open class StandardPly(
     override val piece: Piece,
     override val from: Locus,
     override val to: Locus,
-    val captured: Piece? = null,
+    private val captured: Piece? = null,
+    private var disambiguate: Ply.Disambiguate = Ply.Disambiguate.None,
 ) : Ply {
+
+    override fun resolve(disambiguate: Ply.Disambiguate) {
+        this.disambiguate = disambiguate
+    }
 
     override fun exec(on: Board) {
         on.move(from = from, to = to, turn = turn)?.let { assert(it == captured) }
@@ -23,5 +28,18 @@ open class StandardPly(
         captured?.let { on.add(piece = it, side = turn.other(), at = to) }
     }
 
-    override fun isCapture(): Boolean = captured != null
+    override fun captured(): Piece? = captured
+    override fun isPawnMoveOrCapture(): Boolean = piece == Piece.Pawn || captured != null
+    override fun algebraic(): String {
+        val captured = if (captured != null) "x" else ""
+        val amb = if (piece == Piece.Pawn && captured.isNotBlank()) Ply.Disambiguate.File
+        else disambiguate
+        val from = when (amb) {
+            Ply.Disambiguate.File -> "${from.file}"
+            Ply.Disambiguate.Rank -> "${from.rank}"
+            Ply.Disambiguate.Both -> "$from"
+            Ply.Disambiguate.None -> ""
+        }
+        return "${piece.alg()}$from$captured$to"
+    }
 }

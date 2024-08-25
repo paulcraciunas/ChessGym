@@ -6,6 +6,8 @@ import com.paulcraciunas.chessgym.game.board.Board
 import com.paulcraciunas.chessgym.game.board.Locus
 import com.paulcraciunas.chessgym.game.board.Piece
 import com.paulcraciunas.chessgym.game.board.Rank
+import com.paulcraciunas.chessgym.game.board.pawnStart
+import com.paulcraciunas.chessgym.game.board.promotion
 import com.paulcraciunas.chessgym.game.plies.EnPassentPly
 import com.paulcraciunas.chessgym.game.plies.Ply
 import com.paulcraciunas.chessgym.game.plies.PromotionPly
@@ -38,12 +40,12 @@ class PawnPlyStrategy : PlyStrategy() {
     private fun MutableList<Ply>.addSimplePlies(from: Locus, on: Board, with: GameState) {
         var loc = with.turn.next(from)
         if (loc != null && on.isEmpty(loc)) {
-            if (loc.rank == with.turn.promotion()) {
+            if (loc.rank == promotion(with.turn)) {
                 add(PromotionPly(turn = with.turn, from = from, to = loc))
             } else {
                 add(StandardPly(turn = with.turn, piece = piece, from = from, to = loc))
                 loc = with.turn.next(loc)
-                if (loc != null && from.rank == with.turn.pawnStart() && on.isEmpty(loc)) {
+                if (loc != null && from.rank == pawnStart(with.turn) && on.isEmpty(loc)) {
                     add(StandardPly(turn = with.turn, piece = piece, from = from, to = loc))
                 }
             }
@@ -51,8 +53,8 @@ class PawnPlyStrategy : PlyStrategy() {
     }
 
     private fun MutableList<Ply>.addCaptures(from: Locus, on: Board, with: GameState) {
-        with.turn.captureLeft(from)?.let { addCapture(it, on, with.turn.promotion(), with, from) }
-        with.turn.captureRight(from)?.let { addCapture(it, on, with.turn.promotion(), with, from) }
+        with.turn.captureLeft(from)?.let { addCapture(it, on, promotion(with.turn), with, from) }
+        with.turn.captureRight(from)?.let { addCapture(it, on, promotion(with.turn), with, from) }
     }
 
     private fun MutableList<Ply>.addCapture(
@@ -71,7 +73,7 @@ class PawnPlyStrategy : PlyStrategy() {
         if (from.rank == with.turn.enPassent() &&
             with.lastPly?.piece == Piece.Pawn &&
             with.lastPly.to.rank == with.turn.enPassent() &&
-            with.lastPly.from.rank == with.turn.other().pawnStart()
+            with.lastPly.from.rank == pawnStart(with.turn.other())
         ) {
             var loc: Locus?
             if (with.lastPly.to.file == from.left()?.file) {
