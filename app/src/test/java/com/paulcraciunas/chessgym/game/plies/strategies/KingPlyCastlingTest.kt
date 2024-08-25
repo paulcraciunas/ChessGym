@@ -113,7 +113,7 @@ internal class KingPlyCastlingTest {
     companion object {
         @JvmStatic
         fun forbiddenCastles(): List<Arguments> =
-            mutableListOf<Arguments>(
+            listOf<Arguments>(
                 // Order is: King, Rook, Occupier, turn, name (for readability)
                 Arguments.of("e8", "h8", "g8", Side.BLACK, "KingSide"),
                 Arguments.of("e8", "h8", "f8", Side.BLACK, "KingSide"),
@@ -129,7 +129,7 @@ internal class KingPlyCastlingTest {
 
         @JvmStatic
         fun permittedCastles(): List<Arguments> =
-            mutableListOf<Arguments>(
+            listOf<Arguments>(
                 // Order is: King, Rook, King destination, turn, name (for readability)
                 Arguments.of("e8", "h8", "g8", Side.BLACK, "KingSide"),
                 Arguments.of("e8", "a8", "c8", Side.BLACK, "QueenSide"),

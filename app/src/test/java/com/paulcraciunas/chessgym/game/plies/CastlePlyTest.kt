@@ -220,7 +220,7 @@ internal class CastlePlyTest {
     companion object {
         @JvmStatic
         fun castles(): List<Arguments> =
-            mutableListOf<Arguments>(
+            listOf<Arguments>(
                 Arguments.of(Side.BLACK, CastlePly.Type.KingSide),
                 Arguments.of(Side.WHITE, CastlePly.Type.KingSide),
                 Arguments.of(Side.BLACK, CastlePly.Type.QueenSide),

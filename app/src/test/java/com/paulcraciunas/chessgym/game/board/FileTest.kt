@@ -83,7 +83,7 @@ internal class FileTest {
     companion object {
         @JvmStatic
         fun nextFiles(): List<Arguments> =
-            mutableListOf<Arguments>(
+            listOf<Arguments>(
                 Arguments.of(File.a, File.b),
                 Arguments.of(File.b, File.c),
                 Arguments.of(File.c, File.d),
@@ -96,7 +96,7 @@ internal class FileTest {
 
         @JvmStatic
         fun prevFiles(): List<Arguments> =
-            mutableListOf<Arguments>(
+            listOf<Arguments>(
                 Arguments.of(File.a, null),
                 Arguments.of(File.b, File.a),
                 Arguments.of(File.c, File.b),

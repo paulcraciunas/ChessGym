@@ -220,7 +220,7 @@ internal class PawnPlyStrategyTest {
     companion object {
         @JvmStatic
         fun standardMoves(): List<Arguments> =
-            mutableListOf<Arguments>(
+            listOf<Arguments>(
                 // Order is: turn, from, moves,
                 Arguments.of(Side.BLACK, "e7", listOf("e6", "e5")),
                 Arguments.of(Side.BLACK, "e6", listOf("e5")),
@@ -232,7 +232,7 @@ internal class PawnPlyStrategyTest {
 
         @JvmStatic
         fun captures(): List<Arguments> =
-            mutableListOf<Arguments>(
+            listOf<Arguments>(
                 // Order is: turn, from, block, captures
                 Arguments.of(Side.BLACK, "e7", "e6", listOf("d6", "f6")),
                 Arguments.of(Side.BLACK, "a6", "a5", listOf("b5")),
@@ -244,7 +244,7 @@ internal class PawnPlyStrategyTest {
 
         @JvmStatic
         fun movesAndCaptures(): List<Arguments> =
-            mutableListOf<Arguments>(
+            listOf<Arguments>(
                 // Order is: turn, from, captures, moves
                 Arguments.of(Side.BLACK, "e7", listOf("d6", "f6"), listOf("e6", "e5")),
                 Arguments.of(Side.BLACK, "e6", listOf("d5", "f5"), listOf("e5")),
@@ -260,7 +260,7 @@ internal class PawnPlyStrategyTest {
 
         @JvmStatic
         fun enPassentCaptures(): List<Arguments> =
-            mutableListOf<Arguments>(
+            listOf<Arguments>(
                 // Order is: from, capture, to, lastPly
                 Arguments.of("e4", "d4", "d3", Pair("d2", "d4")),
                 Arguments.of("e4", "f4", "f3", Pair("f2", "f4")),

@@ -29,7 +29,7 @@ class PgnSerializerTest {
     companion object {
         @JvmStatic
         fun pgnGames(): List<Arguments> =
-            mutableListOf<Arguments>(
+            listOf<Arguments>(
                 // TODO Paul: add more games
                 Arguments.of("AnandKramnik2007.pgn"),
                 Arguments.of("FischerSpasskyRound6.pgn"),

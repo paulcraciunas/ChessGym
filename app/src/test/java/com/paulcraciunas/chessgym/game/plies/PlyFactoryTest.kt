@@ -306,7 +306,7 @@ internal class PlyFactoryTest {
     companion object {
         @JvmStatic
         fun forbiddenCastles(): List<Arguments> =
-            mutableListOf<Arguments>(
+            listOf<Arguments>(
                 // Order is: King, Rook, Enemy Rook, turn, name (for readability)
                 Arguments.of("e8", "h8", "g1", Side.BLACK, "KingSide"),
                 Arguments.of("e8", "h8", "f1", Side.BLACK, "KingSide"),
