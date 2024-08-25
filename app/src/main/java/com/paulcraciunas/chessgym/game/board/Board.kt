@@ -1,6 +1,7 @@
 package com.paulcraciunas.chessgym.game.board
 
 import com.paulcraciunas.chessgym.game.Side
+import com.paulcraciunas.chessgym.game.api.IBoard
 import java.util.EnumMap
 
 data class Board(
@@ -8,7 +9,7 @@ data class Board(
         Array(Rank.entries.size) {
             Array(File.entries.size) { null }
         },
-) {
+): IBoard {
     // Useful to keep track of, as we use this often in checking move validity
     private val pieces: EnumMap<Side, EnumMap<Piece, HashSet<Locus>>> = EnumMap(Side::class.java)
 
@@ -57,7 +58,7 @@ data class Board(
         }
     }
 
-    fun forEachPiece(turn: Side, action: (Piece, Locus) -> Unit) {
+    override fun forEachPiece(turn: Side, action: (Piece, Locus) -> Unit) {
         pieces[turn]!!.forEach { entry ->
             entry.value.forEach { locus ->
                 action(entry.key, locus)

@@ -117,7 +117,7 @@ internal class FenSerializerTest {
         val fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
         val game = underTest.from(fen)
-        val board = game.currentBoard()
+        val board = game.board()
 
         val expectedPlies = mutableListOf<StandardPly>()
             .apply {
@@ -130,7 +130,7 @@ internal class FenSerializerTest {
 
         assertDefaultBoard(board)
         assertEquals(Side.WHITE, game.turn())
-        assertNull(game.result())
+        assertNull(game.isOver())
         assertEquals(expectedPlies.size, actualPlies.size)
         assertTrue(expectedPlies.containsAll(actualPlies))
         assertTrue(actualPlies.containsAll(expectedPlies))

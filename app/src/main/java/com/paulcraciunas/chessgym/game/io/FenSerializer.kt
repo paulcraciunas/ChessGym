@@ -44,7 +44,7 @@ object FenSerializer : Serializer {
     }
 
     override fun of(game: Game): String = StringBuilder().apply {
-        append(game.currentBoard().toFen()).append(" ")
+        append(game.board().toFen()).append(" ")
         append(if (game.state().turn == Side.WHITE) 'w' else 'b').append(" ")
         append(game.state().castlingFen()).append(" ")
         append(game.allPlies().lastOrNull()?.toEnPassentFen() ?: MISSING).append(" ")

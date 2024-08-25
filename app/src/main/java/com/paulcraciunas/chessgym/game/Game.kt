@@ -1,5 +1,7 @@
 package com.paulcraciunas.chessgym.game
 
+import com.paulcraciunas.chessgym.game.api.IGame
+import com.paulcraciunas.chessgym.game.api.IPly
 import com.paulcraciunas.chessgym.game.board.Board
 import com.paulcraciunas.chessgym.game.board.BoardFactory
 import com.paulcraciunas.chessgym.game.board.Locus
@@ -14,7 +16,7 @@ class Game(
     private val settings: Settings = Settings(),
     private val metaData: MetaData = MetaData(),
     state: GameState = GameState(),
-) {
+) : IGame {
     constructor(board: Board, turn: Side) : this(board = board, state = GameState(turn = turn))
 
     private val availablePlies = mutableListOf<Ply>()
@@ -31,16 +33,17 @@ class Game(
         updateState()
     }
 
-    fun turn(): Side = currentState.turn
+    override fun turn(): Side = currentState.turn
 
-    fun playablePlies(from: Locus): Collection<Ply> = availablePlies.filter { it.from == from }
+    override fun playablePlies(from: Locus): Collection<Ply> =
+        availablePlies.filter { it.from == from }
 
-    fun play(ply: Ply) {
+    override fun play(ply: IPly) {
         assert(result == null)
         assert(availablePlies.contains(ply))
 
         // Execute and keep track
-        ply.resolve(availablePlies.filter { it.piece == ply.piece && it.to == ply.to }
+        (ply as Ply).resolve(availablePlies.filter { it.piece == ply.piece && it.to == ply.to }
             .disambiguate())
         ply.exec(board)
         plies.add(if (plyFactory.isCheck(ply, board)) CheckPly(ply) else ply)
@@ -50,25 +53,32 @@ class Game(
         updateState()
     }
 
-    fun result(): Result? = result
+    override fun requiresPromotion(ply: IPly): Boolean =
+        !settings.autoPromote && (ply as? PromotionPly)?.isPending() == true
 
-    fun currentBoard(): Board = Board().from(board)
+    override fun promote(piece: Piece, on: IPly) {
+        (on as Ply).accept(piece)
+    }
+
+    override fun isOver(): Result? = result
+
+    override fun board(): Board = Board().from(board)
 
     fun state(): GameState = currentState
+
+    override fun resign() {
+        result = Result.Resigned
+    }
+
+    override fun agreeToDraw() {
+        result = Result.DrawByAgreement
+    }
 
     fun allPlies(): List<Ply> = plies
 
     fun allPlayablePlies(): Collection<Ply> = availablePlies
 
     fun metaData() = metaData
-
-    fun resign() {
-        result = Result.Resigned
-    }
-
-    fun agreeToDraw() {
-        result = Result.DrawByAgreement
-    }
 
     private fun updateState() {
         computeAvailablePlies()

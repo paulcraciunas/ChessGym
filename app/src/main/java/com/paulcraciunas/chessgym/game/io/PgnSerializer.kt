@@ -70,7 +70,7 @@ object PgnSerializer : Serializer {
                 append(plies[i + 1].algebraic()).append(" ")
             }
         }
-        game.result()?.let { append(" ").append(it.algebraic(game.state().turn)) }
+        game.isOver()?.let { append(" ").append(it.algebraic(game.state().turn)) }
         append("\n")
     }.toString()
 }
@@ -82,7 +82,7 @@ private fun Game.loadPly(plyString: String) = when {
 }
 
 private fun Game.findCastlePly(side: Side, castle: CastlePly.Type): Ply {
-    val kingLoc = currentBoard().king(side)
+    val kingLoc = this.board().king(side)
         ?: throw SerializeException("Found castling move but can't find king for $side")
     val ply = playablePlies(kingLoc).find { it.to == castle.end(side) }
         ?: throw SerializeException("Can't find castling move for $side")

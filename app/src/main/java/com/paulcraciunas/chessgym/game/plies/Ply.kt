@@ -1,8 +1,7 @@
 package com.paulcraciunas.chessgym.game.plies
 
-import com.paulcraciunas.chessgym.game.Side
+import com.paulcraciunas.chessgym.game.api.IPly
 import com.paulcraciunas.chessgym.game.board.Board
-import com.paulcraciunas.chessgym.game.board.Locus
 import com.paulcraciunas.chessgym.game.board.Piece
 
 /**
@@ -12,12 +11,7 @@ import com.paulcraciunas.chessgym.game.board.Piece
  *
  * e.g. The 50 move rule requires there to be 50 moves (i.e. 100 plies)
  */
-interface Ply {
-    val turn: Side
-    val piece: Piece
-    val from: Locus
-    val to: Locus
-
+interface Ply: IPly {
     fun resolve(disambiguate: Disambiguate) {}
     fun exec(on: Board)
     fun undo(on: Board)
