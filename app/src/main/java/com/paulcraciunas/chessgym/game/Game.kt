@@ -11,6 +11,7 @@ import com.paulcraciunas.chessgym.game.plies.PromotionPly
 class Game(
     private val board: Board = BoardFactory.defaultBoard(),
     private val settings: Settings = Settings(),
+    private val metaData: MetaData = MetaData(),
     state: GameState = GameState(),
 ) {
     constructor(board: Board, turn: Side) : this(board = board, state = GameState(turn = turn))
@@ -38,6 +39,9 @@ class Game(
         assert(availablePlies.contains(ply))
 
         // Execute and keep track
+        ply.resolve(
+            availablePlies.filter { it.piece == ply.piece && it.to == ply.to }.disambiguate()
+        )
         ply.exec(board)
         plies.add(ply)
 
@@ -48,11 +52,23 @@ class Game(
 
     fun ending(): Ending? = ending
 
-    // TODO Paul: this will be hidden when we move the Game class behind an interface
     fun currentBoard(): Board = Board().from(board)
 
-    // TODO Paul: this will be hidden when we move the Game class behind an interface
     fun state(): GameState = currentState
+
+    fun allPlies(): List<Ply> = plies
+
+    fun allPlayablePlies(): Collection<Ply> = availablePlies
+
+    fun metaData() = metaData
+
+    fun resign() {
+        ending = Ending.Resigned
+    }
+
+    fun agreeToDraw() {
+        ending = Ending.DrawByAgreement
+    }
 
     private fun updateState() {
         computeAvailablePlies()
@@ -78,4 +94,10 @@ class Game(
 
     private fun checkCount(turn: Side) =
         board.king(turn)?.let { plyFactory.canCheck(it, board, turn.other()) } ?: CheckCount.None
+}
+
+private fun List<Ply>.disambiguate(): Ply.Disambiguate = when {
+    size >= 3 -> Ply.Disambiguate.Both
+    size == 2 -> if (get(0).from.file == get(1).from.file) Ply.Disambiguate.Rank else Ply.Disambiguate.File
+    else -> Ply.Disambiguate.None
 }

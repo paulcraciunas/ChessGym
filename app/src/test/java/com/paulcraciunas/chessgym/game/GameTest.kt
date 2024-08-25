@@ -200,8 +200,4 @@ internal class GameTest {
                 ?: throw AssertionError("Wrong move")
         )
     }
-
-    // TODO Paul: add more tests: check auto-promotion
-    // TODO Paul: implement PGN serialization/deserialization
-    // TODO Paul: load games from online database and validate that they work as expected
 }

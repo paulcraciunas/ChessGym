@@ -64,7 +64,7 @@ data class GameState(
 
     private fun otherCastling(ply: Ply, castling: Set<CastlePly.Type>): Set<CastlePly.Type> {
         val result = mutableSetOf<CastlePly.Type>().apply { addAll(castling) }
-        if (ply is StandardPly && ply.captured == Piece.Rook) {
+        if (ply is StandardPly && ply.captured() == Piece.Rook) {
             castling.forEach {
                 // If the corresponding Rook was captured
                 if (ply.to == it.rook(ply.turn.other())) {
