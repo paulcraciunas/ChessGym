@@ -1,10 +1,12 @@
 package com.paulcraciunas.chessgym.game.board
 
-enum class Piece {
-    Pawn,
-    Rook,
-    Knight,
-    Bishop,
-    Queen,
-    King,
+enum class Piece(private val algebraic: String) {
+    Pawn(""),
+    Rook("R"),
+    Knight("N"),
+    Bishop("B"),
+    Queen("Q"),
+    King("K");
+
+    fun alg(): String = algebraic
 }
