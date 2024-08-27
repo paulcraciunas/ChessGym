@@ -22,6 +22,6 @@ enum class File {
     }
 }
 
-fun Char.toFile(): File? = if (this in "abcdefgh") {
+internal fun Char.toFile(): File? = if (this in "abcdefgh") {
     File.valueOf(toString())
 } else null

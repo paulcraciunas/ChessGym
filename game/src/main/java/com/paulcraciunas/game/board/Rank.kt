@@ -24,8 +24,8 @@ enum class Rank {
     }
 }
 
-fun Char.toRank(): Rank? = if (this in "12345678") {
+internal fun Char.toRank(): Rank? = if (this in "12345678") {
     Rank.valueOf(toString())
 } else null
-fun promotion(side: Side): Rank = if (side == Side.WHITE) Rank.`8` else Rank.`1`
-fun pawnStart(side: Side): Rank = if (side == Side.WHITE) Rank.`2` else Rank.`7`
+internal fun promotion(side: Side): Rank = if (side == Side.WHITE) Rank.`8` else Rank.`1`
+internal fun pawnStart(side: Side): Rank = if (side == Side.WHITE) Rank.`2` else Rank.`7`

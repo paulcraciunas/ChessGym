@@ -9,7 +9,7 @@ import com.paulcraciunas.game.board.Piece
 import com.paulcraciunas.game.plies.Ply
 import com.paulcraciunas.game.plies.StandardPly
 
-typealias Next = (Locus) -> Locus?
+internal typealias Next = (Locus) -> Locus?
 
 internal abstract class PlyStrategy {
     abstract val piece: Piece
