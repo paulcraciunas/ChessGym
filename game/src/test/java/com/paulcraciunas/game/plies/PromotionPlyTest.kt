@@ -5,6 +5,7 @@ import com.paulcraciunas.game.board.Board
 import com.paulcraciunas.game.board.Piece
 import com.paulcraciunas.game.loc
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -89,7 +90,7 @@ internal class PromotionPlyTest {
     }
 
     @Test
-    fun `GIVEN no promotion selected WHEN executing a promotion THEN throw`() {
+    fun `GIVEN no promotion selected WHEN executing a promotion THEN assume a Queen`() {
         val ply = PromotionPly(
             turn = Side.BLACK,
             from = "c2".loc(),
@@ -99,7 +100,12 @@ internal class PromotionPlyTest {
         on.add(piece = Piece.Pawn, side = Side.BLACK, at = ply.from)
         on.add(piece = Piece.Bishop, side = Side.WHITE, at = ply.to)
 
-        assertThrows<AssertionError> { ply.exec(on) }
+        ply.exec(on)
+
+        assertTrue(on.has(Piece.Queen, Side.BLACK, ply.to))
+        assertTrue(on.isEmpty(ply.from))
+        assertTrue(ply.isPawnMoveOrCapture())
+        assertNotNull(ply.captured())
     }
 
     @Test
