@@ -22,5 +22,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "ChessGym"
+include(":game")
 include(":app")
- 
