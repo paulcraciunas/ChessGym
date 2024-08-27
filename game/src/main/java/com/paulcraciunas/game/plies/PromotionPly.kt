@@ -12,16 +12,13 @@ internal class PromotionPly(
     from: Locus,
     to: Locus,
     captured: Piece? = null,
-    private var resultingPiece: Piece? = null,
+    private var resultingPiece: Piece? = Piece.Queen,
 ) : StandardPly(turn = turn, piece = Piece.Pawn, from = from, to = to, captured = captured) {
 
     override fun accept(piece: Piece) {
         assert(piece != Piece.Pawn && piece != Piece.King)
         resultingPiece = piece
     }
-
-    fun isAccepted(): Boolean = resultingPiece != null
-    fun isPending(): Boolean = resultingPiece == null
 
     override fun exec(on: Board) {
         assert(resultingPiece != null)

@@ -53,8 +53,7 @@ internal class Game(
         updateState()
     }
 
-    override fun requiresPromotion(ply: IPly): Boolean =
-        !settings.autoPromote && (ply as? PromotionPly)?.isPending() == true
+    override fun requiresPromotion(ply: IPly): Boolean = !settings.autoPromote
 
     override fun promote(piece: Piece, on: IPly) {
         (on as Ply).accept(piece)

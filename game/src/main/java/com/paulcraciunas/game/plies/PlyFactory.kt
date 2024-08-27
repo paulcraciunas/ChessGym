@@ -52,10 +52,17 @@ internal class PlyFactory {
         return checkCount
     }
 
-    fun isCheck(ply: Ply, on: Board): Boolean =
+    fun isCheck(ply: Ply, on: Board): Boolean {
+        var isCheck = false
         on.king(ply.turn.other())?.let {
-            strategies[ply.piece]!!.canAttack(from = ply.to, to = it, on = on, turn = ply.turn)
-        } ?: false
+            on.forEachPiece(ply.turn) { piece, loc ->
+                if (strategies[piece]!!.canAttack(from = loc, to = it, on = on, turn = ply.turn)) {
+                    isCheck = true
+                }
+            }
+        }
+        return isCheck
+    }
 
     private fun Ply.isValid(on: Board): Boolean {
         exec(on) // try the move

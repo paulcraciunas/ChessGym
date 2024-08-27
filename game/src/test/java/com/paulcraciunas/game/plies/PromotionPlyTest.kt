@@ -5,7 +5,6 @@ import com.paulcraciunas.game.board.Board
 import com.paulcraciunas.game.board.Piece
 import com.paulcraciunas.game.loc
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -154,8 +153,6 @@ internal class PromotionPlyTest {
             captured = null,
         )
         on.add(piece = Piece.Pawn, side = Side.WHITE, at = ply.from)
-        assertFalse(ply.isAccepted())
-        assertTrue(ply.isPending())
 
         ply.accept(Piece.Queen)
         ply.exec(on)

@@ -30,11 +30,35 @@ class PgnSerializerTest {
         @JvmStatic
         fun pgnGames(): List<Arguments> =
             listOf<Arguments>(
-                // TODO Paul: add more games
                 Arguments.of("AnandKramnik2007.pgn"),
                 Arguments.of("FischerSpasskyRound6.pgn"),
                 Arguments.of("GameOfCentury.pgn"),
                 Arguments.of("Kasparov_Karpov_WC_1986_round_1.pgn"),
+                Arguments.of("Kasparov_Karpov_WC_1986_round_1.pgn"),
+                Arguments.of("Kasparov_Karpov_87WC_Round1.pgn"),
+                Arguments.of("Kasparov_Karpov_87WC_Round2.pgn"),
+                Arguments.of("Kasparov_Karpov_87WC_Round3.pgn"),
+                Arguments.of("Kasparov_Karpov_87WC_Round4.pgn"),
+                Arguments.of("Kasparov_Karpov_87WC_Round5.pgn"),
+                Arguments.of("Kasparov_Karpov_87WC_Round6.pgn"),
+                Arguments.of("Kasparov_Karpov_87WC_Round7.pgn"),
+                Arguments.of("Kasparov_Karpov_87WC_Round8.pgn"),
+                Arguments.of("Kasparov_Karpov_87WC_Round9.pgn"),
+                Arguments.of("Kasparov_Karpov_87WC_Round10.pgn"),
+                Arguments.of("Kasparov_Karpov_87WC_Round11.pgn"),
+                Arguments.of("Kasparov_Karpov_87WC_Round12.pgn"),
+                Arguments.of("Kasparov_Karpov_87WC_Round13.pgn"),
+                Arguments.of("Kasparov_Karpov_87WC_Round14.pgn"),
+                Arguments.of("Kasparov_Karpov_87WC_Round15.pgn"),
+                Arguments.of("Kasparov_Karpov_87WC_Round16.pgn"),
+                Arguments.of("Kasparov_Karpov_87WC_Round17.pgn"),
+                Arguments.of("Kasparov_Karpov_87WC_Round18.pgn"),
+                Arguments.of("Kasparov_Karpov_87WC_Round19.pgn"),
+                Arguments.of("Kasparov_Karpov_87WC_Round20.pgn"),
+                Arguments.of("Kasparov_Karpov_87WC_Round21.pgn"),
+                Arguments.of("Kasparov_Karpov_87WC_Round22.pgn"),
+                Arguments.of("Kasparov_Karpov_87WC_Round23.pgn"),
+                Arguments.of("Kasparov_Karpov_87WC_Round24.pgn"),
             )
     }
 }
