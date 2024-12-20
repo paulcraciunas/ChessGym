@@ -45,7 +45,9 @@ internal class BoardTest {
             assertFalse(underTest.has(BLACK, at = it))
             assertFalse(underTest.has(WHITE, at = it))
             assertTrue(underTest.isEmpty(at = it))
+            assertTrue(underTest.isEmpty(file = it.file, rank = it.rank))
             assertNull(underTest.at(at = it))
+            assertNull(underTest.at(file = it.file, rank = it.rank))
         }
         assertNull(underTest.king(WHITE))
         assertNull(underTest.king(BLACK))
@@ -63,6 +65,7 @@ internal class BoardTest {
         assertTrue(underTest.has(WHITE, at = at))
         assertTrue(underTest.has(expected, WHITE, at = at))
         assertFalse(underTest.isEmpty(at = at))
+        assertFalse(underTest.isEmpty(file = at.file, rank = at.rank))
         underTest.forEachPiece(WHITE) { piece, locus ->
             assertEquals(expected, piece)
             assertEquals(locus, at)
@@ -114,16 +117,22 @@ internal class BoardTest {
             }
             assertEquals(piece, other.at(locus))
             assertEquals(piece, underTest.at(locus))
+            assertEquals(piece, underTest.at(locus.file, locus.rank))
         }
         Side.entries.forEach {
             assertEquals(other.king(it), underTest.king(it))
             underTest.forEachPiece(it) { piece, locus ->
                 assertEquals(piece, other.at(locus))
                 assertEquals(piece, underTest.at(locus))
+                assertEquals(piece, underTest.at(locus.file, locus.rank))
             }
         }
         Locus.all {
             assertEquals(other.at(at = it), underTest.at(at = it))
+            assertEquals(
+                other.at(file = it.file, rank = it.rank),
+                underTest.at(file = it.file, rank = it.rank)
+            )
         }
     }
 
@@ -161,6 +170,7 @@ internal class BoardTest {
 
         assertEquals(Piece.King, removed)
         assertTrue(underTest.isEmpty(at))
+        assertTrue(underTest.isEmpty(file = at.file, rank = at.rank))
     }
 
     @Test
@@ -209,6 +219,7 @@ internal class BoardTest {
         assertEquals(Piece.Bishop, captured)
         assertTrue(underTest.has(Piece.Pawn, BLACK, Locus(e, `5`)))
         assertNull(underTest.at(Locus(d, `4`)))
+        assertNull(underTest.at(d, `4`))
     }
 
     @Test
