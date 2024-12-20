@@ -12,9 +12,7 @@ class PgnSerializerTest {
 
     @ParameterizedTest(name = "Loading game {0} from pgn")
     @MethodSource("pgnGames")
-    fun `WHEN loading a valid game THEN game loads`(
-        pgnFile: String,
-    ) {
+    fun `WHEN loading a valid game THEN game loads`(pgnFile: String) {
         underTest.from(ClassLoader.getSystemResource(pgnFile).readText())
     }
 
