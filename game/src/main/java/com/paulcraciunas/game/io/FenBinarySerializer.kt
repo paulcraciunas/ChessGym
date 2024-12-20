@@ -37,7 +37,7 @@ internal class FenBinarySerializer(
     private val reader: BinaryPuzzleReader,
     private val writer: BinaryPuzzleWriter
 ) {
-    fun toBinary(puzzleString: String): String = writer.toBinary(puzzleString)
+    fun toBinary(puzzleString: String): ByteArray = writer.toBinary(puzzleString)
 
-    fun fromBinary(binary: String): String = reader.readFen(binary)
+    fun fromBinary(bytes: ByteArray): String = reader.readFen(bytes)
 }

@@ -50,8 +50,7 @@ internal class BinaryPuzzleReader(
     private var int: Int = 0
     private var long: Long = 0L
 
-    fun readFen(binary: String): String {
-        val bytes = binary.toByteArray()
+    fun readFen(bytes: ByteArray): String {
         int = 0
         return mutableListOf<String>().apply {
             add(fen.of(bytes.loadGame()))
@@ -59,8 +58,7 @@ internal class BinaryPuzzleReader(
         }.joinToString(",")
     }
 
-    fun readPuzzle(binary: String): Puzzle {
-        val bytes = binary.toByteArray()
+    fun readPuzzle(bytes: ByteArray): Puzzle {
         int = 0
         return Puzzle(bytes.loadGame(), bytes.loadMoves())
     }
@@ -94,7 +92,7 @@ internal class BinaryPuzzleReader(
                     val piece = pieces.poll()
                     board.add(piece.piece, piece.side, Locus(file, rank))
                 }
-                long = long shr 1
+                long = long ushr 1
             }
         }
         assert(long == 0L)
@@ -111,9 +109,9 @@ internal class BinaryPuzzleReader(
     private fun ByteArray.loadMetadata(): GameMetadata {
         val data = get(int++).toInt()
         val side = Side.fromCode(data and 1)
-        val (white, black) = adapter.toCastling(data shr 4)
-        val ply = if (int < size) { // check if we have en-passent information
-            adapter.toLocation(get(int).toInt()).toString().loadEnPassent()
+        val (white, black) = adapter.toCastling(data shr 1)
+        val ply = if (data and 0b11100000 != 0) { // check if we have en-passent information
+            adapter.toLocation(get(int++).toInt()).toString().loadEnPassent()
         } else null
         return GameMetadata(
             side = side,
@@ -128,10 +126,10 @@ internal class BinaryPuzzleReader(
         val pieceCount = bitBoard.countOneBits()
         assert(pieceCount >= 2) // we should have at least 2 pieces; otherwise, it's not a puzzle
         var piecesBinary: Int
-        for (i in 0..pieceCount / 2) {
+        for (i in 1..pieceCount / 2) {
             piecesBinary = get(int++).toInt()
-            pieces.add(adapter.toPiece(piecesBinary))
             pieces.add(adapter.toPiece(piecesBinary shr 4))
+            pieces.add(adapter.toPiece(piecesBinary))
         }
         if (pieceCount % 2 == 1) { // If we have an odd number of pieces
             pieces.add(adapter.toPiece(get(int++).toInt()))
@@ -140,18 +138,22 @@ internal class BinaryPuzzleReader(
     }
 
     private fun ByteArray.loadBitBoard(): Long {
-        long = 0L
-        for (i in 0..7) {
-            long = long shl 8
-            long = long or get(int++).toLong()
-        }
-        return long
+        val first = ((this[int++].toUInt() and 0xFFu) shl 24) or
+                ((this[int++].toUInt() and 0xFFu) shl 16) or
+                ((this[int++].toUInt() and 0xFFu) shl 8) or
+                (this[int++].toUInt() and 0xFFu)
+        val second = ((this[int++].toUInt() and 0xFFu) shl 24) or
+                ((this[int++].toUInt() and 0xFFu) shl 16) or
+                ((this[int++].toUInt() and 0xFFu) shl 8) or
+                (this[int++].toUInt() and 0xFFu)
+
+        return first.toLong() shl 32 or second.toLong()
     }
 
     private fun ByteArray.loadMoves(): Queue<String> {
         val movesList = ArrayDeque<String>()
         var move: Int
-        while (int < size - 2) { // Each move takes 2 bytes
+        while (int <= size - 2) { // Each move takes 2 bytes
             move = get(int++).toInt() shl 8
             move = move or get(int++).toInt()
             movesList.add(adapter.toMove(move))

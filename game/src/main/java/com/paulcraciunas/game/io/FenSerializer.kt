@@ -45,8 +45,8 @@ internal object FenSerializer : Serializer {
         append(game.board().toFen()).append(" ")
         append(if (game.state().turn == Side.WHITE) 'w' else 'b').append(" ")
         append(game.state().castlingFen()).append(" ")
-        append(game.allPlies().lastOrNull()?.toEnPassentFen() ?: MISSING).append(" ")
-        append(game.allPlies().size).append(" ")
+        append(game.state().lastPly?.toEnPassentFen() ?: MISSING).append(" ")
+        append(game.state().plieClock).append(" ")
         append(game.state().moveIndex)
     }.toString()
 }

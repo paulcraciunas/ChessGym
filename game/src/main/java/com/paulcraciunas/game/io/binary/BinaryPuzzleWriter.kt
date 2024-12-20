@@ -7,6 +7,8 @@ import com.paulcraciunas.game.board.Locus
 import com.paulcraciunas.game.board.Piece
 import com.paulcraciunas.game.board.Rank
 import com.paulcraciunas.game.io.FenSerializer
+import java.io.ByteArrayOutputStream
+import java.io.OutputStream
 import java.util.ArrayDeque
 
 /**
@@ -23,8 +25,9 @@ import java.util.ArrayDeque
  *
  * 4. Write the move index - number of moves played, stored as 1 byte - max value is 127
  *
- * 5. Write remaining metadata as 1 or 2 bytes. First byte contains the side to play & castling
- * state for both sides. The second byte contains en-passent move availability. It may be omitted
+ * 5. Write remaining metadata as 1 or 2 bytes. First byte contains the side to play, castling for
+ * both sides and 111/000 in the 3 MSB if we have en-passent information or not.
+ * The second byte contains the en-passent move. It may be omitted
  *
  * 6. Write the moves sequentially. 2 bytes per move until the end
  *
@@ -41,23 +44,24 @@ internal class BinaryPuzzleWriter(
 ) {
     private var int: Int = 0 // So we don't keep allocating ints pointlessly
 
-    fun toBinary(puzzleString: String): String {
+    fun toBinary(puzzleString: String): ByteArray {
         val parts = puzzleString.split(',')
         assert(parts.size == 2)
 
-        return with(StringBuilder()) {
+        with(ByteArrayOutputStream()) {
             writeFenBoard(parts[0]) // first part is FEN board
             writeMoves(parts[1].split(' ')) // second part is moves
-        }.toString()
+            return toByteArray()
+        }
     }
 
-    private fun StringBuilder.writeFenBoard(boardString: String) {
+    private fun OutputStream.writeFenBoard(boardString: String) {
         val game = fen.from(boardString)
         writeBoard(game).also { writePieces(it) }
         writeMetadata(game)
     }
 
-    private fun StringBuilder.writeBoard(game: Game): ArrayDeque<BinaryAdapter.SidedPiece> {
+    private fun OutputStream.writeBoard(game: Game): ArrayDeque<BinaryAdapter.SidedPiece> {
         val pieces = ArrayDeque<BinaryAdapter.SidedPiece>()
         var bitBoard: Long = 0
         var pos = 1L
@@ -77,57 +81,68 @@ internal class BinaryPuzzleWriter(
                 pos = pos shl 1
             }
         }
-        append(bitBoard)
+        write(bitBoard.toByteArray())
         return pieces
     }
 
-    private fun StringBuilder.writePieces(pieces: ArrayDeque<BinaryAdapter.SidedPiece>) {
+    private fun Long.toByteArray(): ByteArray {
+        var l = this
+        val result = ByteArray(8)
+        for (i in 7 downTo 0) {
+            result[i] = (l and 0xFFL).toByte()
+            l = l shr 8
+        }
+        return result
+    }
+
+    private fun OutputStream.writePieces(pieces: ArrayDeque<BinaryAdapter.SidedPiece>) {
         int = 0
-        var first: BinaryAdapter.SidedPiece? = null
+        var first: BinaryAdapter.SidedPiece?
         var second: BinaryAdapter.SidedPiece?
         while (pieces.isNotEmpty()) {
             first = pieces.poll()
             second = pieces.poll()
-            if (second == null) {
+            int = adapter.toBinary(first)
+            if (second == null) { // if we have an odd number of pieces
+                write(int)
                 break
             }
-            int = int or adapter.toBinary(first) shl 4
-            int = int or adapter.toBinary(second)
-            append(int.toByte())
-        }
-        if (first != null) { // if we have an odd number of pieces
-            append(adapter.toBinary(first).toByte())
+            int = (int shl 4) or adapter.toBinary(second)
+            write(int)
         }
     }
 
     // Order here matters. Ye be warned
-    private fun StringBuilder.writeMetadata(game: Game) {
-        append(game.state().plieClock.toByte()) // don't care if it's above 127
-        append(game.state().moveIndex.toByte()) // don't care if it's above 127
+    private fun OutputStream.writeMetadata(game: Game) {
+        write(game.state().plieClock) // don't care if it's above 127
+        write(game.state().moveIndex) // don't care if it's above 127
         int = 0
         int = game.state().turn.code
-        int = int or (adapter.toBinary( // add castling into the most significant 4 bits
+        int = int or (adapter.toBinary( // add castling into the next 4 bits
             white = game.state().whiteCastling,
             black = game.state().blackCastling
-        ) shl 4)
-        append(int.toByte())
+        ) shl 1)
         // if last ply was a pawn move, add possible en-passent
         // we only care about the file. The rank can be disambiguated depending on the side playing
         game.state().lastPly?.let {
+            int = int or 0b11100000
+            write(int)
             if (it.piece != Piece.Pawn) return
             int = when (it.to.rank) {
                 Rank.`5` -> adapter.toBinary(Locus(file = it.from.file, rank = Rank.`6`))
                 Rank.`4` -> adapter.toBinary(Locus(file = it.from.file, rank = Rank.`3`))
                 else -> return
             }
-            append(int.toByte())
-        }
+            write(int)
+        } ?: write(int) // write the 5 bits we already have, side + castling
     }
 
-    private fun StringBuilder.writeMoves(moves: List<String>) {
+    private fun OutputStream.writeMoves(moves: List<String>) {
         moves.forEach {
             // Each move takes 2 bytes
-            append(adapter.toBinary(it).toShort())
+            int = adapter.toBinary(it)
+            write(int shr 8)
+            write(int)
         }
     }
 }
