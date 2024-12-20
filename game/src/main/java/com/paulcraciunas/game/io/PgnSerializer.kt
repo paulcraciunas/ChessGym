@@ -12,6 +12,17 @@ import com.paulcraciunas.game.board.toRank
 import com.paulcraciunas.game.plies.CastlePly
 import com.paulcraciunas.game.plies.Ply
 
+/**
+ * Portable Game Notation serializer
+ *
+ * Portable Game Notation (PGN) is a standard plain text format for recording chess games
+ * (both the moves and related data), which can be read by humans and is also supported by most
+ * chess software.
+ *
+ * Implementation note: it is currently implemented with RegEx, which is why it's so slow
+ *
+ * @see <a href="https://en.wikipedia.org/wiki/Portable_Game_Notation">PGN Wiki</a>
+ **/
 internal object PgnSerializer : Serializer {
     // I hate regEx
     private val headerRegex = Regex("\\[([A-Za-z]+)\\s+\"(.+)\"]")
