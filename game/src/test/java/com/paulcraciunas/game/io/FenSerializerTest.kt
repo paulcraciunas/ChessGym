@@ -137,6 +137,24 @@ internal class FenSerializerTest {
     }
 
     @Test
+    fun `WHEN loading position without castling THEN game state is correct`() {
+        val fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1"
+
+        val game = underTest.from(fen)
+
+        assertDefaultBoard(game.board())
+        assertTrue(game.state().whiteCastling.isEmpty())
+        assertTrue(game.state().blackCastling.isEmpty())
+    }
+
+    @Test
+    fun `WHEN serializing position without castling THEN fen string is correct`() {
+        val fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1"
+
+        assertEquals(fen, underTest.of(underTest.from(fen)))
+    }
+
+    @Test
     fun `WHEN serializing default starting position THEN fen string is correct`() {
         val fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
@@ -155,7 +173,10 @@ internal class FenSerializerTest {
     @ParameterizedTest
     @MethodSource("validPositions")
     fun `WHEN deserializing valid positions THEN fen strings are accepted`(fen: String) {
-        assertDoesNotThrow { underTest.from(fen) }
+        assertDoesNotThrow {
+            val game = underTest.from(fen)
+            assertEquals(fen, underTest.of(game))
+        }
     }
 
     companion object {

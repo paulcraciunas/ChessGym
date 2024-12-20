@@ -10,7 +10,6 @@ import com.paulcraciunas.game.board.Piece
 import com.paulcraciunas.game.board.Rank
 import com.paulcraciunas.game.plies.CastlePly
 import com.paulcraciunas.game.plies.Ply
-import com.paulcraciunas.game.plies.StandardPly
 
 /**
  * Forsyth–Edwards Notation serializer
@@ -19,12 +18,11 @@ import com.paulcraciunas.game.plies.StandardPly
  * of a chess game. The purpose of FEN is to provide all the necessary information to
  * restart a game from a particular position.
  *
- * Implementation note: it could be done with RegEx, but I suck at RegEx
+ * Implementation note: it could be done with RegEx, but I hate RegEx
  *
  * @see <a href="https://en.wikipedia.org/wiki/Forsyth–Edwards_Notation">FEN Wiki</a>
  **/
 internal object FenSerializer : Serializer {
-
     override fun from(gameString: String): Game {
         val fenParts = gameString.fenParts()
         val rows = fenParts[0].rows()
@@ -55,7 +53,6 @@ internal object FenSerializer : Serializer {
 
 private const val EXPECTED_FEN_PARTS = 6
 private const val EXPECTED_ROWS = 8
-private const val MISSING = "-"
 private const val ROW_SPLIT = "/"
 private val pieces = mapOf(
     'p' to Pair(Piece.Pawn, Side.BLACK),
@@ -155,30 +152,6 @@ private fun String.loadNumber(): Int {
     return toInt()
 }
 
-private fun String.loadEnPassent(): Ply? {
-    if (this == MISSING) return null
-    // This tells us the location a pawn moved OVER (e.g. e6)
-    // To load the correct information as the "previous move", we have to add the from - to
-    val loc = Locus.from(this) ?: throw SerializeException("Invalid en-passent location: $this")
-    return when (loc.rank) {
-        Rank.`3` -> StandardPly(
-            turn = Side.WHITE,
-            piece = Piece.Pawn,
-            from = Locus(loc.file, Rank.`2`),
-            to = Locus(loc.file, Rank.`4`)
-        )
-
-        Rank.`6` -> StandardPly(
-            turn = Side.BLACK,
-            piece = Piece.Pawn,
-            from = Locus(loc.file, Rank.`7`),
-            to = Locus(loc.file, Rank.`5`)
-        )
-
-        else -> throw SerializeException("Invalid en-passent rank: ${loc.rank}")
-    }
-}
-
 private fun String.loadCastling(): Pair<Set<CastlePly.Type>, Set<CastlePly.Type>> {
     if (this == MISSING) return Pair(emptySet(), emptySet())
 
@@ -202,6 +175,7 @@ private fun GameState.castlingFen(): String = StringBuilder().apply {
     if (whiteCastling.contains(CastlePly.Type.QueenSide)) append('Q')
     if (blackCastling.contains(CastlePly.Type.KingSide)) append('k')
     if (blackCastling.contains(CastlePly.Type.QueenSide)) append('q')
+    if (whiteCastling.isEmpty() && blackCastling.isEmpty()) append(MISSING)
 }.toString()
 
 private fun Ply?.toEnPassentFen(): String = when {
