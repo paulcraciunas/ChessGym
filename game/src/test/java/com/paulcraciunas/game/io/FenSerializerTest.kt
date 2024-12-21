@@ -163,7 +163,7 @@ internal class FenSerializerTest {
 
     @Test
     fun `WHEN serializing after pawn jump THEN fen string contains en-passent`() {
-        val fen = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 1 1"
+        val fen = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1"
         val game = Game()
         game.play(game.playablePlies("e2".loc()).first { it.to == "e4".loc() })
 
