@@ -23,8 +23,14 @@ private val LightColorScheme = lightColorScheme(
     tertiary = Pink40
 )
 
+enum class BoardTheme {
+    Wood,
+    Grey
+}
+
 @Composable
 fun ChessGymTheme(
+    boardTheme: BoardTheme = BoardTheme.Wood,
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
@@ -40,11 +46,13 @@ fun ChessGymTheme(
         else -> LightColorScheme
     }
 
-    val customColorsPalette = if (darkTheme) DarkCustomColorPalette
-    else LightCustomColorPalette
+    val boardPalette = when (boardTheme) {
+        BoardTheme.Wood -> WoodenBoardPalette
+        BoardTheme.Grey -> GreyBoardPalette
+    }
 
     CompositionLocalProvider(
-        LocalCustomColorPalette provides customColorsPalette
+        LocalCustomColorPalette provides boardPalette
     ) {
         MaterialTheme(
             colorScheme = colorScheme,
