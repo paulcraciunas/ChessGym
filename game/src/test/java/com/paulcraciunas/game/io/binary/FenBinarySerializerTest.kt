@@ -22,6 +22,7 @@ internal class FenBinarySerializerTest {
     }
 
     companion object {
+        // fen_puzzles.csv is a small subset of ~900 puzzles from all the available puzzles
         @JvmStatic
         fun fenPuzzles(): List<String> =
             ClassLoader.getSystemResource("fen_puzzles.csv").readText().split("\n")
