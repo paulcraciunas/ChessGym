@@ -67,6 +67,14 @@ internal class BinaryAdapterTest {
         assertEquals(move, underTest.toMove(binary))
     }
 
+    @ParameterizedTest(name = "Promotion move {0} is serialized to binary and back")
+    @MethodSource("promotions")
+    fun `WHEN promotion move is adapted to binary THEN binary can be adapted back`(move: String) {
+        val binary = underTest.toBinary(move)
+
+        assertEquals(move, underTest.toMove(binary))
+    }
+
     companion object {
         @JvmStatic
         fun pieces(): List<Piece> = Piece.entries.toList()
@@ -96,5 +104,8 @@ internal class BinaryAdapterTest {
                 "$file$rank"
             }
         }.map { "${it}h8" }
+
+        @JvmStatic
+        fun promotions(): List<String> = listOf("e7e8q", "c7c8n", "b7b8r", "a2a1b")
     }
 }

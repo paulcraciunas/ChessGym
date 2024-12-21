@@ -52,11 +52,19 @@ internal class BinaryAdapter {
     }
 
     fun toBinary(move: String): Int {
-        assert(move.length == 4) // Need a "from" and a "dest" both in algebraic notation
+        // Need a "from" and a "dest" both in algebraic notation
         val from = Locus.from(move.substring(0, 2)) ?: error("Invalid start for move $move")
         val to = Locus.from(move.substring(2, 4)) ?: error("Invalid destination for move $move")
 
-        return (toBinary(from) shl 8) or toBinary(to)
+        return if (move.length == 4) {
+            (toBinary(from) shl 8) or toBinary(to)
+        } else { // if we have a promotion, set the seventh bit for "to" as 1
+            assert(move.length == 5)
+            assert(promotionBits.contains(move[4]))
+            // we mark a bit in the "from" to say there's a promotion
+            // we set the 2 MSB in the "to" to the type of piece
+            ((toBinary(from) or PROMOTION_MASK) shl 8) or toBinary(to) or promotionBits[move[4]]!!
+        }
     }
 
     fun toPiece(data: Int): SidedPiece {
@@ -84,10 +92,25 @@ internal class BinaryAdapter {
 
     fun toMove(move: Int): String {
         val from = toLocation((move shr 8) and 0x3F) // 6 bits for from
+        val hasPromotion = ((move shr 8) and PROMOTION_MASK) != 0
         val to = toLocation(move and 0x3F) // 6 bits for to
+        val pieceCode = move and 0b1100_0000
+        val piece = if (hasPromotion) {
+            promotionBits.entries.first { it.value == pieceCode }.key
+        } else ""
 
-        return "$from$to"
+        return "$from$to$piece"
     }
 
     internal data class SidedPiece(val piece: Piece, val side: Side)
+
+    companion object {
+        private const val PROMOTION_MASK = 0b0100_0000
+        private val promotionBits = mapOf(
+            Piece.Queen.alg().lowercase().first() to 0b1100_0000,
+            Piece.Knight.alg().lowercase().first() to 0b1000_0000,
+            Piece.Rook.alg().lowercase().first() to 0b0100_0000,
+            Piece.Bishop.alg().lowercase().first() to 0b0000_0000
+        )
+    }
 }
