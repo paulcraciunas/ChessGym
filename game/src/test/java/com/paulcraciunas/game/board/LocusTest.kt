@@ -3,6 +3,7 @@ package com.paulcraciunas.game.board
 import com.paulcraciunas.game.Side
 import com.paulcraciunas.game.loc
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 
 internal class LocusTest {
@@ -176,5 +177,19 @@ internal class LocusTest {
         assertEquals(Locus(File.d, Rank.`3`), Locus.from("d3"))
         assertEquals(Locus(File.c, Rank.`2`), Locus.from("c2"))
         assertEquals(Locus(File.b, Rank.`1`), Locus.from("b1"))
+    }
+
+    @Test
+    fun `WHEN creating from invalid algebraic THEN return null`() {
+        File.entries.forEach {
+            assertNull(Locus.from(it.toString()))
+        }
+        Rank.entries.forEach {
+            assertNull(Locus.from(it.toString()))
+        }
+        assertNull(Locus.from("a9"))
+        assertNull(Locus.from("h9"))
+        assertNull(Locus.from("i4"))
+        assertNull(Locus.from("i1"))
     }
 }

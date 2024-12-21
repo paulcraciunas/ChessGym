@@ -85,9 +85,13 @@ internal data class Board(
 
     fun king(side: Side): Locus? = pieces[side]!![Piece.King]!!.firstOrNull()
 
-    fun at(at: Locus): Piece? = board[at.rank.dec()][at.file.dec()]
+    fun at(at: Locus): Piece? = at(at.file, at.rank)
 
-    fun isEmpty(at: Locus): Boolean = board[at.rank.dec()][at.file.dec()] == null
+    fun at(file: File, rank: Rank): Piece? = board[rank.dec()][file.dec()]
+
+    fun isEmpty(at: Locus): Boolean = isEmpty(at.file, at.rank)
+
+    fun isEmpty(file: File, rank: Rank): Boolean = board[rank.dec()][file.dec()] == null
 
     fun move(from: Locus, to: Locus, turn: Side): Piece? {
         assert(!isEmpty(from))

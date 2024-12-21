@@ -6,6 +6,7 @@ import com.paulcraciunas.game.board.Piece
 import com.paulcraciunas.game.plies.Ply
 import java.util.EnumMap
 
+//TODO Paul: I should probably add unit tests for this class as there's a lot of logic here
 internal class EndingStrategy(
     private val availablePlies: Collection<Ply>,
     private val board: Board,
