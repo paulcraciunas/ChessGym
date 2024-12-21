@@ -2,6 +2,7 @@ package com.paulcraciunas.game.board
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 internal class PieceTest {
     @Test
@@ -22,5 +23,18 @@ internal class PieceTest {
         assertEquals("B", Piece.Bishop.alg())
         assertEquals("Q", Piece.Queen.alg())
         assertEquals("K", Piece.King.alg())
+    }
+
+    @Test
+    fun `WHEN creating from invalid decimal THEN throw`() {
+        assertThrows<IllegalArgumentException>("Wrong decimal value. Expecting [0 - 5]") {
+            Piece.fromCode(-1)
+        }
+        assertThrows<IllegalArgumentException>("Wrong decimal value. Expecting [0 - 5]") {
+            Piece.fromCode(6)
+        }
+        assertThrows<IllegalArgumentException>("Wrong decimal value. Expecting [0 - 5]") {
+            Piece.fromCode(Int.MAX_VALUE)
+        }
     }
 }

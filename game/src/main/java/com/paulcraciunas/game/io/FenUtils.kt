@@ -21,7 +21,6 @@ internal fun String.loadEnPassent(): Ply? {
             from = Locus(loc.file, Rank.`2`),
             to = Locus(loc.file, Rank.`4`)
         )
-
         Rank.`6` -> StandardPly(
             turn = Side.BLACK,
             piece = Piece.Pawn,
