@@ -141,7 +141,7 @@ internal class BinaryPuzzleWriter(
         moves.forEach {
             // Each move takes 2 bytes
             int = adapter.toBinary(it)
-            write(int shr 8)
+            write(int ushr 8)
             write(int)
         }
     }

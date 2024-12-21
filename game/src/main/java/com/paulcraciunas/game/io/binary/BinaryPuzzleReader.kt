@@ -154,8 +154,8 @@ internal class BinaryPuzzleReader(
         val movesList = ArrayDeque<String>()
         var move: Int
         while (int <= size - 2) { // Each move takes 2 bytes
-            move = get(int++).toInt() shl 8
-            move = move or get(int++).toInt()
+            move = (((get(int++).toUInt() and 0xFFu) shl 8) or
+                    (get(int++).toUInt() and 0xFFu)).toInt()
             movesList.add(adapter.toMove(move))
         }
         return movesList
