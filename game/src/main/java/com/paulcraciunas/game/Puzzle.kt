@@ -5,6 +5,7 @@ import com.paulcraciunas.game.api.IPly
 import com.paulcraciunas.game.api.IPuzzle
 import com.paulcraciunas.game.board.Locus
 import com.paulcraciunas.game.board.Piece
+import com.paulcraciunas.game.plies.PromotionPly
 import java.util.Queue
 
 internal class Puzzle(
@@ -27,8 +28,11 @@ internal class Puzzle(
         assert(result == null)
 
         val expected = moves.poll()
+        // We need to also check the promotion. Jesus, forgive me for Down-casting - :puke
+        // TODO Paul: perhaps we could hoist this information up to the iPly somehow?!
+        val promotedPiece = (ply as? PromotionPly)?.algebraic()?.last()?.lowercase() ?: ""
         // check if the move is the first in the list of expected moves
-        if (expected == "${ply.from}${ply.to}") {
+        if (expected == "${ply.from}${ply.to}$promotedPiece") {
             game.play(ply)
             if (moves.isEmpty()) { // Now check if we have any expected moves left
                 result = IPuzzle.PuzzleResult.Success
