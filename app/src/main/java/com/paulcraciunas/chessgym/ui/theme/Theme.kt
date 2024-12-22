@@ -50,9 +50,13 @@ fun ChessGymTheme(
         BoardTheme.Wood -> WoodenBoardPalette
         BoardTheme.Grey -> GreyBoardPalette
     }
+    val pieces = DefaultPieceSet // We don't currently have multiple piece sets
+    val tokens = DefaultTokens // We don't currently have multiple sets of tokens
 
     CompositionLocalProvider(
-        LocalCustomColorPalette provides boardPalette
+        LocalBoardPalette provides boardPalette,
+        LocalPieceSet provides pieces,
+        LocalTokens provides tokens
     ) {
         MaterialTheme(
             colorScheme = colorScheme,

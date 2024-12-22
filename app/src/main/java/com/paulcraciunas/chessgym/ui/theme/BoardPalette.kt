@@ -1,6 +1,8 @@
 package com.paulcraciunas.chessgym.ui.theme
 
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
@@ -21,7 +23,7 @@ val WoodenBoardPalette = BoardPalette(
     boardSquareWhite = Color(color = 0xFFE8BB64),
     boardSquareBlack = Color(color = 0xFF9E5B27),
     boardSquareSelected = Color(color = 0x99999999),
-    boardMoveAvailable = Color(color = 0x99999999),
+    boardMoveAvailable = Color(color = 0xDD999999),
     boardMovePrevious = Color(color = 0x8800CA99),
 )
 
@@ -35,4 +37,9 @@ val GreyBoardPalette = BoardPalette(
     boardMovePrevious = Color(color = 0x8800CA99),
 )
 
-val LocalCustomColorPalette = staticCompositionLocalOf { BoardPalette() }
+val LocalBoardPalette = staticCompositionLocalOf { BoardPalette() }
+
+val BoardColors: BoardPalette
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalBoardPalette.current
