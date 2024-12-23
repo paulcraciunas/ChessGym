@@ -6,7 +6,7 @@ import com.paulcraciunas.game.board.Piece
 import com.paulcraciunas.game.board.Rank
 
 data class BoardViewData(
-    private val squares: Array<Array<SquareViewData>>,
+    val squares: Array<Array<SquareViewData>>,
 ) {
     fun at(rank: Rank, file: File): SquareViewData = squares[rank.dec()][file.dec()]
 

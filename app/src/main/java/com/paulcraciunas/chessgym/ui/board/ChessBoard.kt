@@ -10,7 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.chessgym.ui.model.BoardViewData
-import com.paulcraciunas.chessgym.ui.model.BoardViewDataFactory
+import com.paulcraciunas.chessgym.ui.model.BoardViewDataBuilder
 import com.paulcraciunas.chessgym.ui.model.SquareViewData
 import com.paulcraciunas.chessgym.ui.theme.BoardTheme
 import com.paulcraciunas.chessgym.ui.theme.ChessGymTheme
@@ -79,7 +79,7 @@ private fun squareSide(file: File, rank: Rank): Side =
 fun WhitePerspectivePreview() {
     ChessGymTheme {
         ChessBoard(
-            board = BoardViewDataFactory.default().create(),
+            board = BoardViewDataBuilder().build(),
             orientation = BoardOrientation.White,
             onClick = { _, _ -> }
         )
@@ -91,7 +91,7 @@ fun WhitePerspectivePreview() {
 fun BlackPerspectivePreview() {
     ChessGymTheme {
         ChessBoard(
-            board = BoardViewDataFactory.default().create(),
+            board = BoardViewDataBuilder().build(),
             orientation = BoardOrientation.Black,
             onClick = { _, _ -> }
         )
@@ -105,7 +105,7 @@ fun GreyThemePreview() {
         boardTheme = BoardTheme.Grey
     ) {
         ChessBoard(
-            board = BoardViewDataFactory.default().create(),
+            board = BoardViewDataBuilder().build(),
             orientation = BoardOrientation.Black,
             onClick = { _, _ -> }
         )
