@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">ChessGym</string>
+
+    <!-- region pieces -->
+    <string name="pawn">Pawn</string>
+    <string name="rook">Rook</string>
+    <string name="knight">Knight</string>
+    <string name="bishop">Bishop</string>
+    <string name="queen">Queen</string>
+    <string name="king">King</string>
+    <!-- endregion -->
+
 </resources>

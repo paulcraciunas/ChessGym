@@ -7,7 +7,7 @@ import com.paulcraciunas.game.io.PgnSerializer
 import com.paulcraciunas.game.io.SerializeException
 
 object GameFactory {
-    fun new(settings: Settings): IGame = Game(settings = settings)
+    fun new(settings: Settings): Game = Game(settings = settings)
 
     @Throws(SerializeException::class)
     fun fromPgn(pgn: String): IGame = PgnSerializer.from(pgn)

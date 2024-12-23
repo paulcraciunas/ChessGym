@@ -14,7 +14,7 @@ import com.paulcraciunas.game.board.Rank.`2`
 import com.paulcraciunas.game.board.Rank.`7`
 import com.paulcraciunas.game.board.Rank.`8`
 
-internal object BoardFactory {
+object BoardFactory {
     fun defaultBoard(): Board = Board().from(defaultBoard)
 
     private val defaultBoard: Board = Board()

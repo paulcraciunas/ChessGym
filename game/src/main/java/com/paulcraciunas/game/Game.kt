@@ -11,7 +11,7 @@ import com.paulcraciunas.game.plies.Ply
 import com.paulcraciunas.game.plies.PlyFactory
 import com.paulcraciunas.game.plies.PromotionPly
 
-internal class Game(
+class Game(
     private val board: Board = BoardFactory.defaultBoard(),
     private val settings: Settings = Settings(),
     private val metaData: MetaData = MetaData(),
