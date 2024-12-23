@@ -10,4 +10,14 @@
     <string name="king">King</string>
     <!-- endregion -->
 
+    <!-- region Nav drawer -->
+    <string name="nav_drawer_menu">Menu</string>
+    <string name="nav_drawer_sign_in">Sign in…</string>
+    <string name="nav_drawer_general">General</string>
+    <string name="nav_drawer_home">Home</string>
+    <string name="nav_drawer_application">Application</string>
+    <string name="nav_drawer_settings">Settings</string>
+    <string name="nav_drawer_about">About</string>
+    <!-- endregion -->
+
 </resources>
