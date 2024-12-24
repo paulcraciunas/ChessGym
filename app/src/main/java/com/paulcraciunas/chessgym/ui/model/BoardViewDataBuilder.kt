@@ -1,11 +1,11 @@
 package com.paulcraciunas.chessgym.ui.model
 
-import com.paulcraciunas.game.Side
-import com.paulcraciunas.game.board.Board
-import com.paulcraciunas.game.board.BoardFactory
-import com.paulcraciunas.game.board.File
-import com.paulcraciunas.game.board.Locus
-import com.paulcraciunas.game.board.Rank
+import com.paulcraciunas.game.logic.Side
+import com.paulcraciunas.game.logic.board.Board
+import com.paulcraciunas.game.logic.board.BoardFactory
+import com.paulcraciunas.game.logic.board.File
+import com.paulcraciunas.game.logic.board.Locus
+import com.paulcraciunas.game.logic.board.Rank
 
 class BoardViewDataBuilder(board: Board) {
     private val squares: Array<Array<SquareViewData>> = Array(Rank.entries.size) {

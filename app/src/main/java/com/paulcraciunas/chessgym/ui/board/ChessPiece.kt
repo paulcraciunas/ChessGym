@@ -21,8 +21,8 @@ import com.paulcraciunas.chessgym.ui.theme.ChessGymTheme
 import com.paulcraciunas.chessgym.ui.theme.GlobalTokens
 import com.paulcraciunas.chessgym.ui.theme.PieceIcons
 import com.paulcraciunas.chessgym.ui.theme.PieceSet
-import com.paulcraciunas.game.Side
-import com.paulcraciunas.game.board.Piece
+import com.paulcraciunas.game.logic.Side
+import com.paulcraciunas.game.logic.board.Piece
 
 @Composable
 fun ChessPiece(

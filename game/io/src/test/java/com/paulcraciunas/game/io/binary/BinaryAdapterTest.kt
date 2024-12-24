@@ -1,11 +1,11 @@
 package com.paulcraciunas.game.io.binary
 
-import com.paulcraciunas.game.Side
-import com.paulcraciunas.game.board.File
-import com.paulcraciunas.game.board.Locus
-import com.paulcraciunas.game.board.Piece
-import com.paulcraciunas.game.board.Rank
-import com.paulcraciunas.game.plies.CastlePly
+import com.paulcraciunas.game.logic.Side
+import com.paulcraciunas.game.logic.board.File
+import com.paulcraciunas.game.logic.board.Locus
+import com.paulcraciunas.game.logic.board.Piece
+import com.paulcraciunas.game.logic.board.Rank
+import com.paulcraciunas.game.logic.plies.CastlePly
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest

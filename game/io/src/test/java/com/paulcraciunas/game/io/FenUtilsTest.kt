@@ -1,8 +1,8 @@
 package com.paulcraciunas.game.io
 
-import com.paulcraciunas.game.Side
-import com.paulcraciunas.game.board.Piece
-import com.paulcraciunas.game.loc
+import com.paulcraciunas.game.logic.Side
+import com.paulcraciunas.game.logic.board.Piece
+import com.paulcraciunas.game.logic.loc
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.fail

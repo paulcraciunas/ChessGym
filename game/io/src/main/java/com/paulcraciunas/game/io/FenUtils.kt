@@ -1,11 +1,11 @@
 package com.paulcraciunas.game.io
 
-import com.paulcraciunas.game.Side
-import com.paulcraciunas.game.board.Locus
-import com.paulcraciunas.game.board.Piece
-import com.paulcraciunas.game.board.Rank
-import com.paulcraciunas.game.plies.Ply
-import com.paulcraciunas.game.plies.StandardPly
+import com.paulcraciunas.game.logic.Side
+import com.paulcraciunas.game.logic.board.Locus
+import com.paulcraciunas.game.logic.board.Piece
+import com.paulcraciunas.game.logic.board.Rank
+import com.paulcraciunas.game.logic.plies.Ply
+import com.paulcraciunas.game.logic.plies.StandardPly
 
 internal const val MISSING = "-"
 

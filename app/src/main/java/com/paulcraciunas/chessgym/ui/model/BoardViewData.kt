@@ -1,9 +1,9 @@
 package com.paulcraciunas.chessgym.ui.model
 
-import com.paulcraciunas.game.Side
-import com.paulcraciunas.game.board.File
-import com.paulcraciunas.game.board.Piece
-import com.paulcraciunas.game.board.Rank
+import com.paulcraciunas.game.logic.Side
+import com.paulcraciunas.game.logic.board.File
+import com.paulcraciunas.game.logic.board.Piece
+import com.paulcraciunas.game.logic.board.Rank
 
 data class BoardViewData(
     val squares: Array<Array<SquareViewData>>,

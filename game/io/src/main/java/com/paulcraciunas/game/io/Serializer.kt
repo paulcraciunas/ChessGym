@@ -1,6 +1,6 @@
 package com.paulcraciunas.game.io
 
-import com.paulcraciunas.game.Game
+import com.paulcraciunas.game.logic.Game
 
 internal interface Serializer {
     @Throws(SerializeException::class)

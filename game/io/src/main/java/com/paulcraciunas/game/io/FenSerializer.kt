@@ -1,15 +1,15 @@
 package com.paulcraciunas.game.io
 
-import com.paulcraciunas.game.Game
-import com.paulcraciunas.game.GameState
-import com.paulcraciunas.game.Side
-import com.paulcraciunas.game.board.Board
-import com.paulcraciunas.game.board.File
-import com.paulcraciunas.game.board.Locus
-import com.paulcraciunas.game.board.Piece
-import com.paulcraciunas.game.board.Rank
-import com.paulcraciunas.game.plies.CastlePly
-import com.paulcraciunas.game.plies.Ply
+import com.paulcraciunas.game.logic.Game
+import com.paulcraciunas.game.logic.GameState
+import com.paulcraciunas.game.logic.Side
+import com.paulcraciunas.game.logic.board.Board
+import com.paulcraciunas.game.logic.board.File
+import com.paulcraciunas.game.logic.board.Locus
+import com.paulcraciunas.game.logic.board.Piece
+import com.paulcraciunas.game.logic.board.Rank
+import com.paulcraciunas.game.logic.plies.CastlePly
+import com.paulcraciunas.game.logic.plies.Ply
 
 /**
  * Forsyth–Edwards Notation serializer

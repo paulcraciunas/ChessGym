@@ -1,16 +1,16 @@
 package com.paulcraciunas.game.io
 
-import com.paulcraciunas.game.Game
-import com.paulcraciunas.game.MetaData
-import com.paulcraciunas.game.Side
-import com.paulcraciunas.game.board.File
-import com.paulcraciunas.game.board.Locus
-import com.paulcraciunas.game.board.Piece
-import com.paulcraciunas.game.board.Rank
-import com.paulcraciunas.game.board.toFile
-import com.paulcraciunas.game.board.toRank
-import com.paulcraciunas.game.plies.CastlePly
-import com.paulcraciunas.game.plies.Ply
+import com.paulcraciunas.game.logic.Game
+import com.paulcraciunas.game.logic.MetaData
+import com.paulcraciunas.game.logic.Side
+import com.paulcraciunas.game.logic.board.File
+import com.paulcraciunas.game.logic.board.Locus
+import com.paulcraciunas.game.logic.board.Piece
+import com.paulcraciunas.game.logic.board.Rank
+import com.paulcraciunas.game.logic.board.toFile
+import com.paulcraciunas.game.logic.board.toRank
+import com.paulcraciunas.game.logic.plies.CastlePly
+import com.paulcraciunas.game.logic.plies.Ply
 
 /**
  * Portable Game Notation serializer

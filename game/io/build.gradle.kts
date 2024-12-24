@@ -9,9 +9,9 @@ java {
 }
 
 dependencies {
-    implementation(project(":game"))
+    implementation(project(":game:logic"))
 
-    testImplementation(testFixtures(project(":game")))
+    testImplementation(testFixtures(project(":game:logic")))
     testImplementation(libs.junit)
     testImplementation(libs.junit.jupiter.api)
     testImplementation(libs.junit.jupiter.engine)

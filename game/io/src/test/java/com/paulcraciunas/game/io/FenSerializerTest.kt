@@ -1,12 +1,12 @@
 package com.paulcraciunas.game.io
 
-import com.paulcraciunas.game.Game
-import com.paulcraciunas.game.Side
-import com.paulcraciunas.game.assertDefaultBoard
-import com.paulcraciunas.game.board.Piece
-import com.paulcraciunas.game.loc
-import com.paulcraciunas.game.plies.ExpectedPly
-import com.paulcraciunas.game.plies.StandardPly
+import com.paulcraciunas.game.logic.Game
+import com.paulcraciunas.game.logic.Side
+import com.paulcraciunas.game.logic.assertDefaultBoard
+import com.paulcraciunas.game.logic.board.Piece
+import com.paulcraciunas.game.logic.loc
+import com.paulcraciunas.game.logic.plies.ExpectedPly
+import com.paulcraciunas.game.logic.plies.StandardPly
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue

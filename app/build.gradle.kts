@@ -50,7 +50,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":game"))
+    implementation(project(":game:logic"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
