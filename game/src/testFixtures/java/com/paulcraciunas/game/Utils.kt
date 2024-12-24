@@ -20,11 +20,11 @@ import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 
-internal fun Pair<File, Rank>.loc() = Locus(first, second)
+fun Pair<File, Rank>.loc() = Locus(first, second)
 
-internal fun String.loc(): Locus = Locus.from(this)!!
+fun String.loc(): Locus = Locus.from(this)!!
 
-internal fun allLocationsExcept(home: Locus, except: List<Locus> = emptyList()) =
+fun allLocationsExcept(home: Locus, except: List<Locus> = emptyList()) =
     mutableListOf<Locus>().apply {
         File.entries.forEach { file ->
             Rank.entries.forEach { rank ->
@@ -36,7 +36,7 @@ internal fun allLocationsExcept(home: Locus, except: List<Locus> = emptyList()) 
         }
     }
 
-internal inline fun <reified T : Ply> Collection<Ply>.assertMovesOf(
+inline fun <reified T : Ply> Collection<Ply>.assertMovesOf(
     turn: Side,
     piece: Piece,
     home: Locus,
@@ -46,15 +46,15 @@ internal inline fun <reified T : Ply> Collection<Ply>.assertMovesOf(
     locations.forEach { dest ->
         assertNotNull(find { ply ->
             ply is T &&
-            ply.turn == turn &&
-            ply.piece == piece &&
-            ply.from == home &&
-            ply.to == dest
+                    ply.turn == turn &&
+                    ply.piece == piece &&
+                    ply.from == home &&
+                    ply.to == dest
         })
     }
 }
 
-internal fun Collection<Ply>.assertMoves(
+fun Collection<Ply>.assertMoves(
     turn: Side,
     piece: Piece,
     home: Locus,
@@ -64,15 +64,15 @@ internal fun Collection<Ply>.assertMoves(
     locations.forEach { dest ->
         assertNotNull(find { ply ->
             ply is StandardPly &&
-            ply.turn == turn &&
-            ply.piece == piece &&
-            ply.from == home &&
-            ply.to == dest
+                    ply.turn == turn &&
+                    ply.piece == piece &&
+                    ply.from == home &&
+                    ply.to == dest
         })
     }
 }
 
-internal inline fun <reified T : Ply> Collection<Ply>.assertHas(
+inline fun <reified T : Ply> Collection<Ply>.assertHas(
     turn: Side,
     piece: Piece,
     home: Locus,
@@ -81,45 +81,45 @@ internal inline fun <reified T : Ply> Collection<Ply>.assertHas(
     assertNotNull(find { ply ->
         ply is T
         ply.turn == turn &&
-        ply.piece == piece &&
-        ply.from == home &&
-        ply.to == location
+                ply.piece == piece &&
+                ply.from == home &&
+                ply.to == location
     })
 }
 
-internal fun Collection<Ply>.assertNoMoves() {
+fun Collection<Ply>.assertNoMoves() {
     assertTrue(isEmpty())
 }
 
-internal inline fun <reified T : Ply> Collection<Ply>.assertNoMovesOf() {
+inline fun <reified T : Ply> Collection<Ply>.assertNoMovesOf() {
     assertNull(find { it is T })
 }
 
-internal fun Board.surroundRook(at: Locus, side: Side) {
+fun Board.surroundRook(at: Locus, side: Side) {
     add(piece = Piece.Bishop, side = side, at = at.top()!!)
     add(piece = Piece.Knight, side = side, at = at.down()!!)
     add(piece = Piece.Queen, side = side, at = at.left()!!)
     add(piece = Piece.King, side = side, at = at.right()!!)
 }
 
-internal fun Board.surroundBishop(at: Locus, side: Side) {
+fun Board.surroundBishop(at: Locus, side: Side) {
     add(piece = Piece.Rook, side = side, at = at.topLeft()!!)
     add(piece = Piece.Knight, side = side, at = at.topRight()!!)
     add(piece = Piece.Queen, side = side, at = at.downLeft()!!)
     add(piece = Piece.King, side = side, at = at.downRight()!!)
 }
 
-internal fun Board.surroundQueen(at: Locus, side: Side) {
+fun Board.surroundQueen(at: Locus, side: Side) {
     surroundRook(at, side)
     surroundBishop(at, side)
 }
 
-internal val E_4_NEIGHBOURS = listOf(
+val E_4_NEIGHBOURS = listOf(
     Locus(e, `3`), Locus(e, `5`), Locus(d, `4`), Locus(f, `4`),
     Locus(d, `3`), Locus(d, `5`), Locus(f, `3`), Locus(f, `5`)
 )
 
-internal fun assertDefaultBoard(board:Board) {
+fun assertDefaultBoard(board: Board) {
     assertTrue(board.has(Piece.Rook, WHITE, "a1".loc()))
     assertTrue(board.has(Piece.Knight, WHITE, "b1".loc()))
     assertTrue(board.has(Piece.Bishop, WHITE, "c1".loc()))

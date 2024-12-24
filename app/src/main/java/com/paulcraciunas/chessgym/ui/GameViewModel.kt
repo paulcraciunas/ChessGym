@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.paulcraciunas.chessgym.ui.model.BoardViewDataBuilder
 import com.paulcraciunas.game.Game
 import com.paulcraciunas.game.Settings
-import com.paulcraciunas.game.api.GameFactory
 import com.paulcraciunas.game.board.File
 import com.paulcraciunas.game.board.Locus
 import com.paulcraciunas.game.board.Rank
@@ -17,7 +16,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class GameViewModel(
-    private var game: Game = GameFactory.new(Settings())
+    private var game: Game = Game(settings = Settings())
 ) : ViewModel() {
     private var selection: Locus? = null
 

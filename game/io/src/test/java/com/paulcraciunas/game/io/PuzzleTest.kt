@@ -1,14 +1,15 @@
-package com.paulcraciunas.game.api
+package com.paulcraciunas.game.io
 
+import com.paulcraciunas.game.api.IPly
+import com.paulcraciunas.game.api.IPuzzle
 import com.paulcraciunas.game.board.Piece
-import com.paulcraciunas.game.io.FenSerializer
 import com.paulcraciunas.game.io.binary.BinaryAdapter
 import com.paulcraciunas.game.io.binary.BinaryPuzzleReader
 import com.paulcraciunas.game.io.binary.BinaryPuzzleWriter
 import com.paulcraciunas.game.loc
 import com.paulcraciunas.game.plies.Ply
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
@@ -40,7 +41,7 @@ internal class PuzzleTest {
                         Piece.entries.find { it.alg().lowercase().lastOrNull() == move[4] }!!
                     )
                 }
-                assertNotNull(expectedMove) // Verify that the expected move exists
+                Assertions.assertNotNull(expectedMove) // Verify that the expected move exists
                 puzzle.play(expectedMove!!) // Verify that we can play this move
             }
         }

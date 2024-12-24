@@ -8,7 +8,7 @@ import com.paulcraciunas.game.board.Piece
 import com.paulcraciunas.game.plies.PromotionPly
 import java.util.Queue
 
-internal class Puzzle(
+class Puzzle(
     private val game: Game,
     private val moves: Queue<String>
 ) : IPuzzle {
