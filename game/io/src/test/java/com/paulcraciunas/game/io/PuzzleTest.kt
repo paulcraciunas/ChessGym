@@ -1,11 +1,11 @@
 package com.paulcraciunas.game.io
 
-import com.paulcraciunas.game.logic.api.IPly
-import com.paulcraciunas.game.logic.api.IPuzzle
-import com.paulcraciunas.game.logic.board.Piece
 import com.paulcraciunas.game.io.binary.BinaryAdapter
 import com.paulcraciunas.game.io.binary.BinaryPuzzleReader
 import com.paulcraciunas.game.io.binary.BinaryPuzzleWriter
+import com.paulcraciunas.game.logic.api.IPly
+import com.paulcraciunas.game.logic.api.IPuzzle
+import com.paulcraciunas.game.logic.board.Piece
 import com.paulcraciunas.game.logic.loc
 import com.paulcraciunas.game.logic.plies.Ply
 import org.junit.jupiter.api.Assertions
