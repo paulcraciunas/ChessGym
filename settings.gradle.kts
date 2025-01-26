@@ -22,5 +22,8 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "ChessGym"
-include(":game")
 include(":app")
+include(":game:io")
+include(":game:logic")
+include(":tools:puzzles:sanitize")
+include(":tools:puzzles:generate")
