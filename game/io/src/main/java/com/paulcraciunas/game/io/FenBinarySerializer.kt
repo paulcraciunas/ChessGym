@@ -33,9 +33,9 @@ import com.paulcraciunas.game.io.binary.BinaryPuzzleWriter
  * @see BinaryPuzzleReader
  * @see BinaryPuzzleWriter
  */
-internal class FenBinarySerializer(
-    private val reader: BinaryPuzzleReader,
-    private val writer: BinaryPuzzleWriter
+class FenBinarySerializer(
+    private val reader: BinaryPuzzleReader = BinaryPuzzleReader(),
+    private val writer: BinaryPuzzleWriter = BinaryPuzzleWriter()
 ) {
     fun toBinary(puzzleString: String): ByteArray = writer.toBinary(puzzleString)
 

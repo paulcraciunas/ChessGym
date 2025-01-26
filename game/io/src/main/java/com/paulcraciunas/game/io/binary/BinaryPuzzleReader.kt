@@ -41,9 +41,9 @@ import java.util.Queue
  * @see BinaryPuzzleWriter
  * @see BinaryAdapter
  */
-internal class BinaryPuzzleReader(
-    private val fen: FenSerializer,
-    private val adapter: BinaryAdapter,
+class BinaryPuzzleReader(
+    private val fen: FenSerializer = FenSerializer,
+    private val adapter: BinaryAdapter = BinaryAdapter(),
 ) {
     // These are here so we don't keep allocating these vars pointlessly
     // This is mostly useful when we generate & test all puzzles at once

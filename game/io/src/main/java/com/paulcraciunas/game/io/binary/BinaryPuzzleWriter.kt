@@ -38,9 +38,9 @@ import java.util.ArrayDeque
  * @see BinaryPuzzleReader
  * @see BinaryAdapter
  */
-internal class BinaryPuzzleWriter(
-    private val fen: FenSerializer,
-    private val adapter: BinaryAdapter,
+class BinaryPuzzleWriter(
+    private val fen: FenSerializer = FenSerializer,
+    private val adapter: BinaryAdapter = BinaryAdapter(),
 ) {
     private var int: Int = 0 // So we don't keep allocating ints pointlessly
 

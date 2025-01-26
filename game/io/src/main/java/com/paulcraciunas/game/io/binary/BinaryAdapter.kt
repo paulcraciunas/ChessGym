@@ -26,7 +26,7 @@ import com.paulcraciunas.game.logic.plies.CastlePly
  * @see BinaryPuzzleReader
  * @see BinaryPuzzleWriter
  */
-internal class BinaryAdapter {
+class BinaryAdapter {
     fun toBinary(data: SidedPiece): Int {
         val typeBits = data.piece.code and 0b111 // 3 bits for type
         val sideBit = data.side.code and 0b1 // 1 bit for side
@@ -102,7 +102,7 @@ internal class BinaryAdapter {
         return "$from$to$piece"
     }
 
-    internal data class SidedPiece(val piece: Piece, val side: Side)
+    data class SidedPiece(val piece: Piece, val side: Side)
 
     companion object {
         private const val PROMOTION_MASK = 0b0100_0000
