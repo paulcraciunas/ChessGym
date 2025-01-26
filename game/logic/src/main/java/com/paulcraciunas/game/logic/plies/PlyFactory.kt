@@ -70,7 +70,8 @@ internal class PlyFactory {
         val inCheck = on.king(turn)?.let { kingLoc ->
             if (this is CastlePly) {
                 canAttack(type.pass(turn), on, turn) ||
-                canAttack(type.extraPass(turn), on, turn) ||
+                        // TODO Paul: This should be unit tested
+//                canAttack(type.extraPass(turn), on, turn) ||
                 canAttack(type.end(turn), on, turn)
             } else {
                 canAttack(kingLoc, on, turn)

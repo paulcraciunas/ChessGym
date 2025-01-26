@@ -81,6 +81,6 @@ internal class EndingStrategy(
     }
 
     private fun isDrawByMoveRule(current: GameState): Boolean =
-        current.plieClock == (settings.drawByMoveRuleCount * 2 - 1) &&
-        !plies.last().isPawnMoveOrCapture()
+        // TODO Paul: add tests for these scenarios
+        current.plieClock == settings.drawByMoveRuleCount * 2
 }
