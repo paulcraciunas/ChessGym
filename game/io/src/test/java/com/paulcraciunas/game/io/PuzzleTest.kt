@@ -3,8 +3,7 @@ package com.paulcraciunas.game.io
 import com.paulcraciunas.game.io.binary.BinaryAdapter
 import com.paulcraciunas.game.io.binary.BinaryPuzzleReader
 import com.paulcraciunas.game.io.binary.BinaryPuzzleWriter
-import com.paulcraciunas.game.logic.api.IPly
-import com.paulcraciunas.game.logic.api.IPuzzle
+import com.paulcraciunas.game.logic.Puzzle
 import com.paulcraciunas.game.logic.board.Piece
 import com.paulcraciunas.game.logic.loc
 import com.paulcraciunas.game.logic.plies.Ply
@@ -26,7 +25,7 @@ internal class PuzzleTest {
         val moves = fenGame.split(',')[1].split(' ')
         var from: String
         var to: String
-        var expectedMove: IPly?
+        var expectedMove: Ply?
 
         assertDoesNotThrow {
             moves.forEach { move ->
@@ -45,7 +44,7 @@ internal class PuzzleTest {
                 puzzle.play(expectedMove!!) // Verify that we can play this move
             }
         }
-        assertEquals(IPuzzle.PuzzleResult.Success, puzzle.isOver())
+        assertEquals(Puzzle.PuzzleResult.Success, puzzle.isOver())
     }
 
     companion object {

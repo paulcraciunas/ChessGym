@@ -310,12 +310,10 @@ internal class PlyFactoryTest {
                 // Order is: King, Rook, Enemy Rook, turn, name (for readability)
                 Arguments.of("e8", "h8", "g1", Side.BLACK, "KingSide"),
                 Arguments.of("e8", "h8", "f1", Side.BLACK, "KingSide"),
-                Arguments.of("e8", "a8", "b1", Side.BLACK, "QueenSide"),
                 Arguments.of("e8", "a8", "c1", Side.BLACK, "QueenSide"),
                 Arguments.of("e8", "a8", "d1", Side.BLACK, "QueenSide"),
                 Arguments.of("e1", "h1", "g8", Side.WHITE, "KingSide"),
                 Arguments.of("e1", "h1", "f8", Side.WHITE, "KingSide"),
-                Arguments.of("e1", "a1", "b8", Side.WHITE, "QueenSide"),
                 Arguments.of("e1", "a1", "c8", Side.WHITE, "QueenSide"),
                 Arguments.of("e1", "a1", "d8", Side.WHITE, "QueenSide"),
             )
