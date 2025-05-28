@@ -64,9 +64,10 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize()
                     ) { innerPadding ->
                         val boardState by gameViewModel.boardState.collectAsStateWithLifecycle()
+                        val orientation by gameViewModel.orientationState.collectAsStateWithLifecycle()
                         ChessBoard(
                             board = boardState,
-                            orientation = BoardOrientation.White,
+                            orientation = orientation,
                             onClick = { rank, file -> gameViewModel.onClick(rank, file) },
                             modifier = Modifier.padding(innerPadding)
                         )
