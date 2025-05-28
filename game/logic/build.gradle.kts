@@ -15,6 +15,7 @@ dependencies {
     testImplementation(libs.junit.jupiter.engine)
     testImplementation(libs.junit.jupiter.params)
     testImplementation(libs.junit.jupiter)
+    testRuntimeOnly(libs.junit.platform.launcher)
 
     testFixturesImplementation(libs.junit)
     testFixturesImplementation(libs.junit.jupiter.api)

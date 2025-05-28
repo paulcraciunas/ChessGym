@@ -1,18 +1,18 @@
 [versions]
 agp = "8.9.1"
 kotlin = "2.1.0"
-coreKtx = "1.15.0"
+coreKtx = "1.16.0"
 junit = "4.13.2"
-junit5 = "5.11.0"
+junit5 = "5.12.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 kotlinxCoroutinesCore = "1.10.1"
-lifecycleRuntimeKtx = "2.8.7"
-lifecycleRuntimeCompose = "2.8.7"
-activityCompose = "1.10.0"
-composeBom = "2025.01.00"
+lifecycleRuntimeKtx = "2.9.0"
+lifecycleRuntimeCompose = "2.9.0"
+activityCompose = "1.10.1"
+composeBom = "2025.05.01"
 jetbrainsKotlinJvm = "2.1.0"
-junitJupiter = "5.11.0"
+junitJupiter = "5.12.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -20,6 +20,7 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit5" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit5"  }
 junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit5" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
