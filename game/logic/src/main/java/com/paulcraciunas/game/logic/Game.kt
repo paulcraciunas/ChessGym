@@ -1,7 +1,5 @@
 package com.paulcraciunas.game.logic
 
-import com.paulcraciunas.game.logic.api.IGame
-import com.paulcraciunas.game.logic.api.IPly
 import com.paulcraciunas.game.logic.board.Board
 import com.paulcraciunas.game.logic.board.BoardFactory
 import com.paulcraciunas.game.logic.board.Locus
@@ -16,7 +14,7 @@ class Game(
     private val settings: Settings = Settings(),
     private val metaData: MetaData = MetaData(),
     state: GameState = GameState(),
-) : IGame {
+) {
     constructor(board: Board, turn: Side) : this(board = board, state = GameState(turn = turn))
 
     private val availablePlies = mutableListOf<Ply>()
@@ -33,17 +31,17 @@ class Game(
         updateState()
     }
 
-    override fun turn(): Side = currentState.turn
+    fun turn(): Side = currentState.turn
 
-    override fun playablePlies(from: Locus): Collection<Ply> =
+    fun playablePlies(from: Locus): Collection<Ply> =
         availablePlies.filter { it.from == from }
 
-    override fun play(ply: IPly) {
+    fun play(ply: Ply) {
         assert(result == null)
         assert(availablePlies.contains(ply))
 
         // Execute and keep track
-        (ply as Ply).resolve(availablePlies.filter { it.piece == ply.piece && it.to == ply.to }
+        ply.resolve(availablePlies.filter { it.piece == ply.piece && it.to == ply.to }
             .disambiguate())
         ply.exec(board)
         plies.add(if (plyFactory.isCheck(ply, board)) CheckPly(ply) else ply)
@@ -53,23 +51,23 @@ class Game(
         updateState()
     }
 
-    override fun requiresPromotion(ply: IPly): Boolean = !settings.autoPromote
+    fun requiresPromotion(ply: Ply): Boolean = !settings.autoPromote
 
-    override fun promote(piece: Piece, on: IPly) {
-        (on as Ply).accept(piece)
+    fun promote(piece: Piece, on: Ply) {
+        on.accept(piece)
     }
 
-    override fun isOver(): Result? = result
+    fun isOver(): Result? = result
 
-    override fun board(): Board = Board().from(board)
+    fun board(): Board = Board().from(board)
 
     fun state(): GameState = currentState
 
-    override fun resign() {
+    fun resign() {
         result = Result.Resigned
     }
 
-    override fun agreeToDraw() {
+    fun agreeToDraw() {
         result = Result.DrawByAgreement
     }
 

@@ -1,29 +1,29 @@
 package com.paulcraciunas.game.logic
 
-import com.paulcraciunas.game.logic.api.IBoard
-import com.paulcraciunas.game.logic.api.IPly
-import com.paulcraciunas.game.logic.api.IPuzzle
+import com.paulcraciunas.game.logic.board.Board
 import com.paulcraciunas.game.logic.board.Locus
 import com.paulcraciunas.game.logic.board.Piece
+import com.paulcraciunas.game.logic.plies.Ply
 import com.paulcraciunas.game.logic.plies.PromotionPly
 import java.util.Queue
 
 class Puzzle(
     private val game: Game,
     private val moves: Queue<String>
-) : IPuzzle {
-    private var result: IPuzzle.PuzzleResult? = null
+) {
+    private var result: PuzzleResult? = null
 
-    override fun turn(): Side = game.turn()
-    override fun isOver(): IPuzzle.PuzzleResult? = result
-    override fun playablePlies(from: Locus): Collection<IPly> =
+    fun state(): GameState = game.state()
+    fun turn(): Side = game.turn()
+    fun isOver(): PuzzleResult? = result
+    fun playablePlies(from: Locus): Collection<Ply> =
         game.playablePlies(from)
 
-    override fun board(): IBoard = game.board()
-    override fun requiresPromotion(ply: IPly): Boolean = game.requiresPromotion(ply)
-    override fun promote(piece: Piece, on: IPly) = game.promote(piece, on)
-    override fun resign() = game.resign()
-    override fun play(ply: IPly) {
+    fun board(): Board = game.board()
+    fun requiresPromotion(ply: Ply): Boolean = game.requiresPromotion(ply)
+    fun promote(piece: Piece, on: Ply) = game.promote(piece, on)
+    fun resign() = game.resign()
+    fun play(ply: Ply) {
         assert(moves.isNotEmpty())
         assert(result == null)
 
@@ -35,11 +35,16 @@ class Puzzle(
         if (expected == "${ply.from}${ply.to}$promotedPiece") {
             game.play(ply)
             if (moves.isEmpty()) { // Now check if we have any expected moves left
-                result = IPuzzle.PuzzleResult.Success
+                result = PuzzleResult.Success
             }
         } else {
             // If the move played wasn't the expected one, we failed
-            result = IPuzzle.PuzzleResult.Failed
+            result = PuzzleResult.Failed
         }
+    }
+
+    enum class PuzzleResult {
+        Failed,
+        Success
     }
 }
