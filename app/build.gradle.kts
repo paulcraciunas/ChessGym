@@ -52,6 +52,8 @@ android {
 
 dependencies {
     implementation(project(":game:logic"))
+    implementation(project(":game:io"))
+    implementation(project(":game:puzzles"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
