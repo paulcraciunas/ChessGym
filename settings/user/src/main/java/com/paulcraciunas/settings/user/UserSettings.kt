@@ -2,11 +2,7 @@ package com.paulcraciunas.settings.user
 
 import android.content.Context
 import androidx.core.content.edit
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.components.SingletonComponent
 import javax.inject.Inject
 import javax.inject.Singleton
 
