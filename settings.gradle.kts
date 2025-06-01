@@ -25,4 +25,5 @@ rootProject.name = "ChessGym"
 include(":app")
 include(":game:io")
 include(":game:logic")
-include(":game:puzzles")
+include(":game:data")
+include(":settings:user")
