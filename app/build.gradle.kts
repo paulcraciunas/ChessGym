@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.google.hilt)
+    alias(libs.plugins.google.ksp)
 }
 
 android {
@@ -53,7 +55,6 @@ android {
 dependencies {
     implementation(project(":game:logic"))
     implementation(project(":game:io"))
-    implementation(project(":game:puzzles"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
@@ -65,10 +66,23 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
+    // TODO Paul: do I need to include these?! I shouldn't
+    // TODO Paul: I should just include the database module
+    // Database
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
+
+    // Dependency injection
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+
+    // Testing
     testImplementation(libs.junit)
     testImplementation(libs.junit.jupiter.api)
     testImplementation(libs.junit.jupiter.engine)
     testImplementation(libs.junit.jupiter.params)
+    testImplementation(libs.room.testing)
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
