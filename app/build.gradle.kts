@@ -55,6 +55,9 @@ android {
 dependencies {
     implementation(project(":game:logic"))
     implementation(project(":game:io"))
+    implementation(project(":game:data"))
+    implementation(project(":global:notifications"))
+    implementation(project(":settings:user"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
@@ -66,16 +69,13 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
-    // TODO Paul: do I need to include these?! I shouldn't
-    // TODO Paul: I should just include the database module
-    // Database
-    implementation(libs.room.runtime)
-    implementation(libs.room.ktx)
-    ksp(libs.room.compiler)
-
     // Dependency injection
     implementation(libs.hilt.android)
+    implementation(libs.androidx.work.ktx)
+    implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.hilt.work)
     ksp(libs.hilt.compiler)
+    ksp(libs.androidx.hilt.compiler)
 
     // Testing
     testImplementation(libs.junit)
