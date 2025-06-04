@@ -60,9 +60,7 @@ dependencies {
 
     implementation(libs.androidx.work.ktx)
 
-    // TODO Paul: fix the version catalogs here
-    //noinspection UseTomlInstead
-    implementation("com.github.luben:zstd-jni:1.5.7-3@aar")
+    implementation(libs.public.zstd) { artifact { type = "aar" } }
     implementation(libs.kotlinx.coroutines.android)
 
     testImplementation(libs.junit)
