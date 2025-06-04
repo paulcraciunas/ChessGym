@@ -1,15 +1,18 @@
 package com.paulcraciunas.game.io.binary
 
+import com.paulcraciunas.game.io.api.Serializer
+import com.paulcraciunas.game.io.api.SerializerFen
+import com.paulcraciunas.game.io.api.PuzzleWriter
 import com.paulcraciunas.game.logic.Game
 import com.paulcraciunas.game.logic.Side
 import com.paulcraciunas.game.logic.board.File
 import com.paulcraciunas.game.logic.board.Locus
 import com.paulcraciunas.game.logic.board.Piece
 import com.paulcraciunas.game.logic.board.Rank
-import com.paulcraciunas.game.io.FenSerializer
 import java.io.ByteArrayOutputStream
 import java.io.OutputStream
 import java.util.ArrayDeque
+import javax.inject.Inject
 
 /**
  * Write a puzzle written in FEN format, in binary.
@@ -38,25 +41,26 @@ import java.util.ArrayDeque
  * @see BinaryPuzzleReader
  * @see BinaryAdapter
  */
-class BinaryPuzzleWriter(
-    private val fen: FenSerializer = FenSerializer,
-    private val adapter: BinaryAdapter = BinaryAdapter(),
-) {
+internal class BinaryPuzzleWriter @Inject constructor(
+    @SerializerFen private val serializer: Serializer,
+    private val adapter: BinaryAdapter,
+) : PuzzleWriter {
     private var int: Int = 0 // So we don't keep allocating ints pointlessly
 
-    fun toBinary(puzzleString: String): ByteArray {
-        val parts = puzzleString.split(',')
+    override fun write(puzzleAndMoves: String): ByteArray {
+        val parts = puzzleAndMoves.split(',')
         assert(parts.size == 2)
 
-        with(ByteArrayOutputStream()) {
-            writeFenBoard(parts[0]) // first part is FEN board
-            writeMoves(parts[1].split(' ')) // second part is moves
-            return toByteArray()
-        }
+        return write(parts[0], parts[1])
     }
 
-    private fun OutputStream.writeFenBoard(boardString: String) {
-        val game = fen.from(boardString)
+    override fun write(puzzle: String, moves: String): ByteArray = ByteArrayOutputStream()
+        .writeFenBoard(puzzle)
+        .writeMoves(moves.split(' '))
+        .toByteArray()
+
+    private fun ByteArrayOutputStream.writeFenBoard(boardString: String) = apply {
+        val game = serializer.from(boardString)
         writeBoard(game).also { writePieces(it) }
         writeMetadata(game)
     }
@@ -137,7 +141,7 @@ class BinaryPuzzleWriter(
         } ?: write(int) // write the 5 bits we already have, side + castling
     }
 
-    private fun OutputStream.writeMoves(moves: List<String>) {
+    private fun ByteArrayOutputStream.writeMoves(moves: List<String>) = apply {
         moves.forEach {
             // Each move takes 2 bytes
             int = adapter.toBinary(it)

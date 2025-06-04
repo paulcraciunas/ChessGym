@@ -1,5 +1,9 @@
 package com.paulcraciunas.game.io.binary
 
+import com.paulcraciunas.game.io.api.Serializer
+import com.paulcraciunas.game.io.api.SerializerFen
+import com.paulcraciunas.game.io.api.PuzzleReader
+import com.paulcraciunas.game.io.loadEnPassent
 import com.paulcraciunas.game.logic.Game
 import com.paulcraciunas.game.logic.GameState
 import com.paulcraciunas.game.logic.Puzzle
@@ -8,12 +12,11 @@ import com.paulcraciunas.game.logic.board.Board
 import com.paulcraciunas.game.logic.board.File
 import com.paulcraciunas.game.logic.board.Locus
 import com.paulcraciunas.game.logic.board.Rank
-import com.paulcraciunas.game.io.FenSerializer
-import com.paulcraciunas.game.io.loadEnPassent
 import com.paulcraciunas.game.logic.plies.CastlePly
 import com.paulcraciunas.game.logic.plies.Ply
 import java.util.ArrayDeque
 import java.util.Queue
+import javax.inject.Inject
 
 /**
  * Read a puzzle written in binary, according to FEN format
@@ -41,24 +44,24 @@ import java.util.Queue
  * @see BinaryPuzzleWriter
  * @see BinaryAdapter
  */
-class BinaryPuzzleReader(
-    private val fen: FenSerializer = FenSerializer,
-    private val adapter: BinaryAdapter = BinaryAdapter(),
-) {
+internal class BinaryPuzzleReader @Inject constructor(
+    @SerializerFen private val serializer: Serializer,
+    private val adapter: BinaryAdapter,
+) : PuzzleReader {
     // These are here so we don't keep allocating these vars pointlessly
     // This is mostly useful when we generate & test all puzzles at once
     private var int: Int = 0
     private var long: Long = 0L
 
-    fun readFen(bytes: ByteArray): String {
+    override fun read(bytes: ByteArray): String {
         int = 0
         return mutableListOf<String>().apply {
-            add(fen.of(bytes.loadGame()))
+            add(serializer.of(bytes.loadGame()))
             add(bytes.loadMoves().joinToString(" ")) // separate moves by spaces
         }.joinToString(",")
     }
 
-    fun readPuzzle(bytes: ByteArray): Puzzle {
+    override fun readPuzzle(bytes: ByteArray): Puzzle {
         int = 0
         return Puzzle(bytes.loadGame(), bytes.loadMoves())
     }
@@ -90,7 +93,7 @@ class BinaryPuzzleReader(
             File.entries.forEach { file ->
                 if (bitBoard and long != 0L) {
                     val piece = pieces.poll()
-                    board.add(piece.piece, piece.side, Locus(file, rank))
+                    board.add(piece!!.piece, piece.side, Locus(file, rank))
                 }
                 long = long ushr 1
             }

@@ -1,5 +1,7 @@
 package com.paulcraciunas.game.io
 
+import com.paulcraciunas.game.io.api.SerializeException
+import com.paulcraciunas.game.io.api.Serializer
 import com.paulcraciunas.game.logic.Game
 import com.paulcraciunas.game.logic.MetaData
 import com.paulcraciunas.game.logic.Side

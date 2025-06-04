@@ -1,5 +1,7 @@
 package com.paulcraciunas.game.io
 
+import com.paulcraciunas.game.io.api.SerializeException
+import com.paulcraciunas.game.io.api.Serializer
 import com.paulcraciunas.game.logic.Game
 import com.paulcraciunas.game.logic.GameState
 import com.paulcraciunas.game.logic.Side
@@ -22,7 +24,7 @@ import com.paulcraciunas.game.logic.plies.Ply
  *
  * @see <a href="https://en.wikipedia.org/wiki/Forsyth–Edwards_Notation">FEN Wiki</a>
  **/
-object FenSerializer : Serializer {
+internal object FenSerializer : Serializer {
     override fun from(gameString: String): Game {
         val fenParts = gameString.fenParts()
         val rows = fenParts[0].rows()

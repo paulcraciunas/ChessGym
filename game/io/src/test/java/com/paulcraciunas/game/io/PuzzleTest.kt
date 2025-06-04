@@ -21,7 +21,7 @@ internal class PuzzleTest {
     @ParameterizedTest(name = "Checking puzzle {0}")
     @MethodSource("fenPuzzles")
     fun `WHEN serializing a loaded game THEN contents are identical`(fenGame: String) {
-        val puzzle = reader.readPuzzle(writer.toBinary(fenGame))
+        val puzzle = reader.readPuzzle(writer.write(fenGame))
         val moves = fenGame.split(',')[1].split(' ')
         var from: String
         var to: String

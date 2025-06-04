@@ -1,5 +1,6 @@
 package com.paulcraciunas.game.io
 
+import com.paulcraciunas.game.io.api.SerializeException
 import com.paulcraciunas.game.logic.Side
 import com.paulcraciunas.game.logic.board.Locus
 import com.paulcraciunas.game.logic.board.Piece

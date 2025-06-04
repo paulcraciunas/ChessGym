@@ -1,5 +1,6 @@
 package com.paulcraciunas.game.io
 
+import com.paulcraciunas.game.io.binary.BinaryAdapter
 import com.paulcraciunas.game.io.binary.BinaryPuzzleReader
 import com.paulcraciunas.game.io.binary.BinaryPuzzleWriter
 
@@ -33,11 +34,11 @@ import com.paulcraciunas.game.io.binary.BinaryPuzzleWriter
  * @see BinaryPuzzleReader
  * @see BinaryPuzzleWriter
  */
-class FenBinarySerializer(
-    private val reader: BinaryPuzzleReader = BinaryPuzzleReader(),
-    private val writer: BinaryPuzzleWriter = BinaryPuzzleWriter()
+internal class FenBinarySerializer(
+    private val reader: BinaryPuzzleReader = BinaryPuzzleReader(FenSerializer, BinaryAdapter()),
+    private val writer: BinaryPuzzleWriter = BinaryPuzzleWriter(FenSerializer, BinaryAdapter())
 ) {
-    fun toBinary(puzzleString: String): ByteArray = writer.toBinary(puzzleString)
+    fun toBinary(puzzleString: String): ByteArray = writer.write(puzzleString)
 
-    fun fromBinary(bytes: ByteArray): String = reader.readFen(bytes)
+    fun fromBinary(bytes: ByteArray): String = reader.read(bytes)
 }
