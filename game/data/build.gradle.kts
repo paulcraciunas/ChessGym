@@ -39,6 +39,10 @@ android {
 }
 
 dependencies {
+    implementation(project(":game:io"))
+    implementation(project(":game:domain"))
+    implementation(project(":global:notifications"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
 
@@ -50,10 +54,15 @@ dependencies {
 
     // Dependency injection
     implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.work)
     ksp(libs.hilt.compiler)
+    ksp(libs.androidx.hilt.compiler)
 
     implementation(libs.androidx.work.ktx)
-    implementation(libs.public.zstd)
+
+    // TODO Paul: fix the version catalogs here
+    //noinspection UseTomlInstead
+    implementation("com.github.luben:zstd-jni:1.5.7-3@aar")
     implementation(libs.kotlinx.coroutines.android)
 
     testImplementation(libs.junit)

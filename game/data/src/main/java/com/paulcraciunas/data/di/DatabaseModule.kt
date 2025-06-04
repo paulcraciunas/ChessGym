@@ -2,9 +2,10 @@ package com.paulcraciunas.data.di
 
 import android.content.Context
 import androidx.room.Room
-import com.paulcraciunas.data.api.PuzzleDatabase
-import com.paulcraciunas.data.api.PuzzleRepository
-import com.paulcraciunas.data.api.PuzzleRepositoryImpl
+import com.paulcraciunas.data.impl.PuzzleAdapter
+import com.paulcraciunas.data.impl.PuzzleDatabase
+import com.paulcraciunas.data.impl.PuzzleRepositoryImpl
+import com.paulcraciunas.domain.PuzzleRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,7 +28,7 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideRepository(db: PuzzleDatabase): PuzzleRepository = PuzzleRepositoryImpl(db)
+    fun provideRepository(db: PuzzleDatabase, adapter: PuzzleAdapter): PuzzleRepository = PuzzleRepositoryImpl(db, adapter)
 
     private const val DB_NAME = "puzzle_database"
 }
