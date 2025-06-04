@@ -20,4 +20,10 @@
     <string name="nav_drawer_about">About</string>
     <!-- endregion -->
 
+    <!-- landing screen -->
+    <string name="download_prompt">To start using the app, please download the puzzle data.</string>
+    <string name="download_button">Download Puzzles</string>
+    <string name="download_progress">Downloading: %d\%%</string>
+    <!-- endregion -->
+
 </resources>
