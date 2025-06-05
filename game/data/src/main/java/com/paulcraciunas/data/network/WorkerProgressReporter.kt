@@ -25,10 +25,10 @@ class WorkerProgressReporter @Inject constructor() {
     suspend fun onCompleted(amount: Int) {
         current += amount
 
-        update((current / total).toInt())
+        update(((current / total) * 100).toInt())
     }
 
-    private suspend inline fun update(newProgress: Int) {
+    private suspend fun update(newProgress: Int) {
         if (newProgress != progress) {
             progress = newProgress
             report(progress)

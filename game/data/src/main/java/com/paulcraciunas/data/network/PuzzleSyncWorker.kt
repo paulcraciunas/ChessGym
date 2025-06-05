@@ -40,7 +40,7 @@ class PuzzleSyncWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         setForegroundAsync(createForegroundInfo())
-        progressReporter.init { progress -> setProgress(workDataOf(STEP to step, PROGRESS_NAME to progress)) }
+        progressReporter.init { progress -> setProgress(workDataOf(STEP to step.toString(), PROGRESS_NAME to progress)) }
 
         val zstFile = File(applicationContext.cacheDir, "puzzles.zst")
         val csvFile = File(applicationContext.cacheDir, "puzzles.csv")
@@ -90,7 +90,7 @@ class PuzzleSyncWorker @AssistedInject constructor(
 
     private suspend fun decompressZst(zstFile: File, csvFile: File) {
         step = Step.Unpack
-        progressReporter.onBegin(zstFile.length())
+        progressReporter.onBegin((zstFile.length() * COMPRESS_FACTOR).toLong())
         withContext(Dispatchers.IO) {
             FileInputStream(zstFile).use { fis ->
                 ZstdInputStream(fis).use { zis ->
@@ -115,10 +115,11 @@ class PuzzleSyncWorker @AssistedInject constructor(
      */
     private suspend fun writeDb(csvFile: File) {
         step = Step.BuildDb
+        progressReporter.onBegin(DB_SIZE)
+
         val puzzles = ArrayList<Puzzle>(BULK_INSERT_COUNT)
         csvFile.reader(Charsets.UTF_8).buffered(BUFFER_SIZE).use { reader ->
             val lines = reader.lineSequence().drop(1)
-            progressReporter.onBegin(DB_SIZE)
             lines.forEach { line ->
                 val tokens = line.split(',')
                 if (!line.startsWith("#") && tokens.size == 10) {
@@ -150,6 +151,7 @@ class PuzzleSyncWorker @AssistedInject constructor(
 
     companion object {
         private const val LICHESS_URL = "https://database.lichess.org/lichess_db_puzzle.csv.zst"
+        private const val COMPRESS_FACTOR = 3.7f // It's an approximation. Can't get the proper full size from the Zstd library
         private const val BUFFER_SIZE = 32 * 1024
         private const val DB_SIZE = 5_000_000L // The 05/2025 version has 4,824,507 puzzles. We'll use this as an approximation for progress
         private const val BULK_INSERT_COUNT = 50_000 // Insert 50k puzzles at once, to improve performance
