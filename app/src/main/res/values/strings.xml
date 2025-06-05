@@ -23,7 +23,9 @@
     <!-- landing screen -->
     <string name="download_prompt">To start using the app, please download the puzzle data.</string>
     <string name="download_button">Download Puzzles</string>
-    <string name="download_progress">Downloading: %d\%%</string>
+    <string name="download_progress">Downloading puzzle archive: %d\%%</string>
+    <string name="unpack_progress">Unpacking puzzle archive: %d\%%</string>
+    <string name="write_to_db_progress">Building puzzle database: %d\%%</string>
     <!-- endregion -->
 
 </resources>
