@@ -3,8 +3,9 @@ package com.paulcraciunas.game.io.binary
 import com.paulcraciunas.game.io.api.Serializer
 import com.paulcraciunas.game.io.api.SerializerFen
 import com.paulcraciunas.game.io.api.PuzzleWriter
-import com.paulcraciunas.game.logic.Game
+import com.paulcraciunas.game.logic.GameState
 import com.paulcraciunas.game.logic.Side
+import com.paulcraciunas.game.logic.board.Board
 import com.paulcraciunas.game.logic.board.File
 import com.paulcraciunas.game.logic.board.Locus
 import com.paulcraciunas.game.logic.board.Piece
@@ -60,21 +61,21 @@ internal class BinaryPuzzleWriter @Inject constructor(
         .toByteArray()
 
     private fun ByteArrayOutputStream.writeFenBoard(boardString: String) = apply {
-        val game = serializer.from(boardString)
-        writeBoard(game).also { writePieces(it) }
-        writeMetadata(game)
+        val (board, state) = serializer.serialize(boardString)
+        writeBoard(board).also { writePieces(it) }
+        writeMetadata(state)
     }
 
-    private fun OutputStream.writeBoard(game: Game): ArrayDeque<BinaryAdapter.SidedPiece> {
+    private fun OutputStream.writeBoard(board: Board): ArrayDeque<BinaryAdapter.SidedPiece> {
         val pieces = ArrayDeque<BinaryAdapter.SidedPiece>()
         var bitBoard: Long = 0
         var pos = 1L
         // read the board, starting with bottom right (h1) -> top left (a8)
         Rank.entries.forEach { rank ->
             File.entries.reversed().forEach { file ->
-                game.board().at(file, rank)?.let {
+                board.at(file, rank)?.let {
                     bitBoard = bitBoard or pos
-                    val side = if (game.board().has(it, Side.WHITE, Locus(file, rank))) {
+                    val side = if (board.has(it, Side.WHITE, Locus(file, rank))) {
                         Side.WHITE
                     } else {
                         Side.BLACK
@@ -117,18 +118,18 @@ internal class BinaryPuzzleWriter @Inject constructor(
     }
 
     // Order here matters. Ye be warned
-    private fun OutputStream.writeMetadata(game: Game) {
-        write(game.state().plieClock) // don't care if it's above 127
-        write(game.state().moveIndex) // don't care if it's above 127
+    private fun OutputStream.writeMetadata(state: GameState) {
+        write(state.plieClock) // don't care if it's above 127
+        write(state.moveIndex) // don't care if it's above 127
         int = 0
-        int = game.state().turn.code
+        int = state.turn.code
         int = int or (adapter.toBinary( // add castling into the next 4 bits
-            white = game.state().whiteCastling,
-            black = game.state().blackCastling
+            white = state.whiteCastling,
+            black = state.blackCastling
         ) shl 1)
         // if last ply was a pawn move, add possible en-passent
         // we only care about the file. The rank can be disambiguated depending on the side playing
-        game.state().lastPly?.let {
+        state.lastPly?.let {
             int = int or 0b11100000
             write(int)
             if (it.piece != Piece.Pawn) return

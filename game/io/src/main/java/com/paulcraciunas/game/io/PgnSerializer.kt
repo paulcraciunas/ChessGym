@@ -3,8 +3,10 @@ package com.paulcraciunas.game.io
 import com.paulcraciunas.game.io.api.SerializeException
 import com.paulcraciunas.game.io.api.Serializer
 import com.paulcraciunas.game.logic.Game
+import com.paulcraciunas.game.logic.GameState
 import com.paulcraciunas.game.logic.MetaData
 import com.paulcraciunas.game.logic.Side
+import com.paulcraciunas.game.logic.board.Board
 import com.paulcraciunas.game.logic.board.File
 import com.paulcraciunas.game.logic.board.Locus
 import com.paulcraciunas.game.logic.board.Piece
@@ -30,6 +32,11 @@ internal object PgnSerializer : Serializer {
     private val headerRegex = Regex("\\[([A-Za-z]+)\\s+\"(.+)\"]")
     private val moveSplitRegex = Regex("([0-9]+)\\.\\s?(\\S+)(?:\\s+(\\S+))?")
     private val endingRegex = Regex("(1-0|0-1|1/2-1/2)\$")
+
+    override fun serialize(gameString: String): Pair<Board, GameState> {
+        val game = from(gameString)
+        return Pair(game.board(), game.state())
+    }
 
     override fun from(gameString: String): Game {
         // TODO Paul: this is horrendously slow
