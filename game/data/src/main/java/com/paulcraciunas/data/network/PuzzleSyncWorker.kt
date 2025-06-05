@@ -34,20 +34,20 @@ class PuzzleSyncWorker @AssistedInject constructor(
     private val db: PuzzleDatabase
 ) : CoroutineWorker(context, workerParams) {
 
+    private val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
+    private var bytes: Int = 0
+    private var step: Step = Step.Download
+
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
-        // TODO Paul: add support for retry/continue. Pick up from where we left off. Perhaps save how many records we've inserted
-        // TODO Paul: check if the files already exist. If they do, don't bother recreating them.
-        setForeground(getForegroundInfo())
-        progressReporter.init { progress -> setProgress(workDataOf(PROGRESS_NAME to progress)) }
+        setForegroundAsync(createForegroundInfo())
+        progressReporter.init { progress -> setProgress(workDataOf(STEP to step, PROGRESS_NAME to progress)) }
 
         val zstFile = File(applicationContext.cacheDir, "puzzles.zst")
         val csvFile = File(applicationContext.cacheDir, "puzzles.csv")
 
         try {
             downloadDb(URL(LICHESS_URL), zstFile)
-            progressReporter.onDecompressing()
             decompressZst(zstFile, csvFile)
-            progressReporter.onDecompressDone()
             writeDb(csvFile)
             return@withContext Result.success()
         } catch (e: Exception) {
@@ -59,7 +59,9 @@ class PuzzleSyncWorker @AssistedInject constructor(
         }
     }
 
-    override suspend fun getForegroundInfo(): ForegroundInfo {
+    private fun createForegroundInfo(): ForegroundInfo {
+        // Create a Notification channel if necessary
+        notificationFactory.createChannel(applicationContext)
         val notification = notificationFactory.createForegroundNotification(applicationContext)
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             ForegroundInfo(NotificationFactory.Ids.DOWNLOAD_NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
@@ -72,26 +74,34 @@ class PuzzleSyncWorker @AssistedInject constructor(
         val connection = withContext(Dispatchers.IO) {
             url.openConnection()
         } as HttpURLConnection
-        progressReporter.onBeginDownload(connection.contentLength)
+        progressReporter.onBegin(connection.contentLength.toLong())
 
         connection.inputStream.use { input ->
             zstFile.outputStream().use { output ->
-                val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
-                var bytes = input.read(buffer)
+                bytes = input.read(buffer)
                 while (bytes >= 0) {
                     output.write(buffer, 0, bytes)
-                    progressReporter.onDownloaded(bytes)
+                    progressReporter.onCompleted(bytes)
                     bytes = input.read(buffer)
                 }
             }
         }
     }
 
-    private fun decompressZst(zstFile: File, csvFile: File) {
-        FileInputStream(zstFile).use { fis ->
-            ZstdInputStream(fis).use { zis ->
-                FileOutputStream(csvFile).use { fos ->
-                    zis.copyTo(fos)
+    private suspend fun decompressZst(zstFile: File, csvFile: File) {
+        step = Step.Unpack
+        progressReporter.onBegin(zstFile.length())
+        withContext(Dispatchers.IO) {
+            FileInputStream(zstFile).use { fis ->
+                ZstdInputStream(fis).use { zis ->
+                    FileOutputStream(csvFile).use { fos ->
+                        bytes = zis.read(buffer)
+                        while (bytes >= 0) {
+                            fos.write(buffer, 0, bytes)
+                            progressReporter.onCompleted(bytes)
+                            bytes = zis.read(buffer)
+                        }
+                    }
                 }
             }
         }
@@ -104,11 +114,12 @@ class PuzzleSyncWorker @AssistedInject constructor(
      * We want to keep only the following: FEN, Moves, Rating and Themes
      */
     private suspend fun writeDb(csvFile: File) {
-        // === Parse CSV and insert with progress ===
-        csvFile.useLines { lines ->
-            progressReporter.onBeginInsert(DB_SIZE)
-            val puzzles = ArrayList<Puzzle>(BULK_INSERT_COUNT)
-            lines.drop(1).forEach { line ->
+        step = Step.BuildDb
+        val puzzles = ArrayList<Puzzle>(BULK_INSERT_COUNT)
+        csvFile.reader(Charsets.UTF_8).buffered(BUFFER_SIZE).use { reader ->
+            val lines = reader.lineSequence().drop(1)
+            progressReporter.onBegin(DB_SIZE)
+            lines.forEach { line ->
                 val tokens = line.split(',')
                 if (!line.startsWith("#") && tokens.size == 10) {
                     puzzles.add(Puzzle(fenBinary = puzzleWriter.write(tokens[1], tokens[2]), rating = tokens[3].toInt()))
@@ -122,7 +133,7 @@ class PuzzleSyncWorker @AssistedInject constructor(
         if (puzzles.size == BULK_INSERT_COUNT) {
             try {
                 db.bulkInsert(puzzles)
-                progressReporter.onInserted(BULK_INSERT_COUNT)
+                progressReporter.onCompleted(BULK_INSERT_COUNT)
                 puzzles.clear()
             } catch (e: Exception) {
                 Log.e(PuzzleSyncWorker::class.java.simpleName, "Bulk insert failed!", e)
@@ -130,11 +141,20 @@ class PuzzleSyncWorker @AssistedInject constructor(
         }
     }
 
+    // TODO Paul: move these to Repository layer
+    enum class Step {
+        Download,
+        Unpack,
+        BuildDb
+    }
+
     companion object {
         private const val LICHESS_URL = "https://database.lichess.org/lichess_db_puzzle.csv.zst"
-        private const val DB_SIZE = 5_000_000 // The 05/2025 version has 4,824,507 puzzles. We'll use this as an approximation for progress
+        private const val BUFFER_SIZE = 32 * 1024
+        private const val DB_SIZE = 5_000_000L // The 05/2025 version has 4,824,507 puzzles. We'll use this as an approximation for progress
         private const val BULK_INSERT_COUNT = 50_000 // Insert 50k puzzles at once, to improve performance
 
+        const val STEP = "step"
         const val PROGRESS_NAME = "progress"
         const val TAG = "PuzzleSync"
     }
