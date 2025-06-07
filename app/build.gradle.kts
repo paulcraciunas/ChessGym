@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.google.hilt)
+    alias(libs.plugins.google.ksp)
 }
 
 android {
@@ -50,7 +53,12 @@ android {
 }
 
 dependencies {
-    implementation(project(":game"))
+    implementation(project(":game:logic"))
+    implementation(project(":game:io"))
+    implementation(project(":game:domain"))
+    implementation(project(":game:data"))
+    implementation(project(":global:notifications"))
+    implementation(project(":settings:user"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
@@ -62,10 +70,20 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
+    // Dependency injection
+    implementation(libs.hilt.android)
+    implementation(libs.androidx.work.ktx)
+    implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.hilt.work)
+    ksp(libs.hilt.compiler)
+    ksp(libs.androidx.hilt.compiler)
+
+    // Testing
     testImplementation(libs.junit)
     testImplementation(libs.junit.jupiter.api)
     testImplementation(libs.junit.jupiter.engine)
     testImplementation(libs.junit.jupiter.params)
+    testImplementation(libs.room.testing)
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

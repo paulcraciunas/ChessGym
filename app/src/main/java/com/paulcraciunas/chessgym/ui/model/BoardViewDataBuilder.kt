@@ -1,13 +1,13 @@
 package com.paulcraciunas.chessgym.ui.model
 
-import com.paulcraciunas.game.Side
-import com.paulcraciunas.game.board.Board
-import com.paulcraciunas.game.board.BoardFactory
-import com.paulcraciunas.game.board.File
-import com.paulcraciunas.game.board.Locus
-import com.paulcraciunas.game.board.Rank
+import com.paulcraciunas.game.logic.Side
+import com.paulcraciunas.game.logic.board.Board
+import com.paulcraciunas.game.logic.board.File
+import com.paulcraciunas.game.logic.board.Locus
+import com.paulcraciunas.game.logic.board.Rank
 
-class BoardViewDataBuilder(board: Board) {
+// TODO Paul: rethink this class when cleaning up the repo structure
+class BoardViewDataBuilder {
     private val squares: Array<Array<SquareViewData>> = Array(Rank.entries.size) {
         Array(File.entries.size) { SquareViewData(piece = null) }
     }
@@ -15,10 +15,20 @@ class BoardViewDataBuilder(board: Board) {
     private var lastMove: Pair<Locus, Locus>? = null
     private var moves: List<Locus> = emptyList()
 
-    constructor() : this(BoardFactory.defaultBoard())
-
-    init {
-        loadBoard(board = board)
+    fun loadBoard(board: Board) {
+        // Clear the squares first
+        Locus.all { loc ->
+            squares[loc.rank.dec()][loc.file.dec()] = SquareViewData(piece = null)
+        }
+        // now loaded the board
+        Locus.all { loc ->
+            board.at(loc)?.let { piece ->
+                val side = if (board.has(piece, Side.WHITE, loc)) Side.WHITE else Side.BLACK
+                squares[loc.rank.dec()][loc.file.dec()] = SquareViewData(
+                    piece = PieceViewData(piece = piece, side = side)
+                )
+            }
+        }
     }
 
     fun withSelection(from: Locus, availableMoves: List<Locus>): BoardViewDataBuilder = apply {
@@ -49,17 +59,6 @@ class BoardViewDataBuilder(board: Board) {
                 square.piece?.let { // if we have a piece, we can attack it; mark selected
                     square.copy(piece = square.piece.copy(isSelected = true))
                 } ?: square.copy(canMoveTo = true) // otherwise mark that we can move there
-            }
-        }
-    }
-
-    private fun loadBoard(board: Board) {
-        Locus.all { loc ->
-            board.at(loc)?.let { piece ->
-                val side = if (board.has(piece, Side.WHITE, loc)) Side.WHITE else Side.BLACK
-                squares[loc.rank.dec()][loc.file.dec()] = SquareViewData(
-                    piece = PieceViewData(piece = piece, side = side)
-                )
             }
         }
     }

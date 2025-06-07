@@ -2,45 +2,83 @@ package com.paulcraciunas.chessgym.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.paulcraciunas.chessgym.ui.board.BoardOrientation
 import com.paulcraciunas.chessgym.ui.model.BoardViewDataBuilder
-import com.paulcraciunas.game.Game
-import com.paulcraciunas.game.Settings
-import com.paulcraciunas.game.api.GameFactory
-import com.paulcraciunas.game.board.File
-import com.paulcraciunas.game.board.Locus
-import com.paulcraciunas.game.board.Rank
-import com.paulcraciunas.game.plies.Ply
+import com.paulcraciunas.domain.PuzzleRepository
+import com.paulcraciunas.game.io.api.PuzzleReader
+import com.paulcraciunas.game.logic.Game
+import com.paulcraciunas.game.logic.Puzzle
+import com.paulcraciunas.game.logic.Side
+import com.paulcraciunas.game.logic.board.File
+import com.paulcraciunas.game.logic.board.Locus
+import com.paulcraciunas.game.logic.board.Rank
+import com.paulcraciunas.game.logic.plies.Ply
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class GameViewModel(
-    private var game: Game = GameFactory.new(Settings())
+//TODO Paul: This is only temporary. Delete this and reimplement it properly
+@HiltViewModel
+class GameViewModel @Inject constructor(
+    private val puzzleRepository: PuzzleRepository,
+    private val puzzleReader: PuzzleReader
 ) : ViewModel() {
+    private val builder = BoardViewDataBuilder()
     private var selection: Locus? = null
+    private lateinit var game: Game
 
-    private val boardData = MutableStateFlow(BoardViewDataBuilder(game.board()).build())
+    // Backing state
+    private val _puzzleState = MutableStateFlow<Puzzle?>(null)
+    val puzzleState: StateFlow<Puzzle?> = _puzzleState.asStateFlow()
+    private val boardData = MutableStateFlow(builder.build())
+    private var orientation = MutableStateFlow(BoardOrientation.White)
     val boardState = boardData.stateIn( // UI state exposed to the UI
         viewModelScope,
         SharingStarted.Eagerly,
         boardData.value
     )
+    val orientationState = orientation.stateIn(
+        viewModelScope,
+        SharingStarted.Eagerly,
+        orientation.value
+    )
+
+    fun loadPuzzle(targetRating: Int) {
+        viewModelScope.launch {
+            val puzzle = withContext(Dispatchers.IO) {
+                puzzleReader.readPuzzle(puzzleRepository.getByRating(targetRating)!!.binary)
+            }
+            _puzzleState.value = puzzle
+            game = puzzle.game
+            builder.loadBoard(puzzle.board())
+            boardData.update {
+                builder.build()
+            }
+        }
+    }
 
     fun onClick(rank: Rank, file: File) {
         viewModelScope.launch {
             select(rank, file)
             boardData.update {
-                BoardViewDataBuilder(game.board()).apply {
-                    selection?.let {
-                        withSelection(it, game.playablePlies(it).map(Ply::to))
-                    }
-                    game.state().lastPly?.let {
-                        withLastMove(it.from, it.to)
-                    }
-                }.build()
+                builder.loadBoard(game.board())
+                selection?.let {
+                    builder.withSelection(it, game.playablePlies(it).map(Ply::to))
+                }
+                game.state().lastPly?.let {
+                    builder.withLastMove(it.from, it.to)
+                }
+                builder.build()
             }
+            orientation.update { game.turn().toOrientation() }
         }
     }
 
@@ -58,6 +96,10 @@ class GameViewModel(
             }
             selection = null // whether we move or not, clear the selection
         } ?: markSelected(rank, file)
+
+        game.isOver()?.let {
+            loadPuzzle(1200)
+        }
     }
 
     private fun markSelected(rank: Rank, file: File) {
@@ -69,3 +111,6 @@ class GameViewModel(
         }
     }
 }
+
+fun Side.toOrientation(): BoardOrientation =
+    if (this == Side.WHITE) BoardOrientation.White else BoardOrientation.Black
