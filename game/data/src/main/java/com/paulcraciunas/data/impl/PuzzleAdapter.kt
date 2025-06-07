@@ -4,12 +4,11 @@ import com.paulcraciunas.data.db.Puzzle
 import com.paulcraciunas.game.io.api.PuzzleReader
 import javax.inject.Inject
 
-// TODO Paul: test me
+//TODO Paul: This is only temporary. Delete this and reimplement it properly
 class PuzzleAdapter @Inject constructor(
     private val puzzleReader: PuzzleReader
 ) {
     fun adapt(puzzle: Puzzle): DomainPuzzle {
-        val (fen, moves) = puzzleReader.read(puzzle.fenBinary).split(",")
-        return DomainPuzzle(fen, moves, puzzle.rating)
+        return DomainPuzzle(puzzle.fenBinary, puzzle.rating)
     }
 }

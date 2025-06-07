@@ -35,7 +35,7 @@ class PuzzleDatabaseTest {
         val puzzles = underTest.get(count = 1)
         //then
         assertEquals(1, puzzles.size)
-        assertEquals(FEN, puzzles[0].fenBinary)
+        assertTrue(FEN.contentEquals(puzzles[0].fenBinary))
         assertEquals(1000, puzzles[0].rating)
     }
 

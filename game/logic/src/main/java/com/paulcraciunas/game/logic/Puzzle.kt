@@ -7,8 +7,9 @@ import com.paulcraciunas.game.logic.plies.Ply
 import com.paulcraciunas.game.logic.plies.PromotionPly
 import java.util.Queue
 
+//TODO Paul: exposing the game is temporary. Figure out the API and clean everything up
 class Puzzle(
-    private val game: Game,
+    val game: Game,
     private val moves: Queue<String>
 ) {
     private var result: PuzzleResult? = null

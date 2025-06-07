@@ -55,6 +55,7 @@ android {
 dependencies {
     implementation(project(":game:logic"))
     implementation(project(":game:io"))
+    implementation(project(":game:domain"))
     implementation(project(":game:data"))
     implementation(project(":global:notifications"))
     implementation(project(":settings:user"))
