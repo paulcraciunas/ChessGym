@@ -39,8 +39,8 @@ android {
 }
 
 dependencies {
-    implementation(project(":game:io"))
     implementation(project(":game:domain"))
+    implementation(project(":game:serializer:api"))
     implementation(project(":global:notifications"))
 
     implementation(libs.androidx.core.ktx)
