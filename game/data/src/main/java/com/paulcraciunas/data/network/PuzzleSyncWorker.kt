@@ -12,8 +12,8 @@ import androidx.work.workDataOf
 import com.github.luben.zstd.ZstdInputStream
 import com.paulcraciunas.data.db.Puzzle
 import com.paulcraciunas.data.impl.PuzzleDatabase
-import com.paulcraciunas.game.io.api.PuzzleWriter
 import com.paulcraciunas.notifications.api.NotificationFactory
+import com.paulcraciunas.serializer.api.PuzzleWriter
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers

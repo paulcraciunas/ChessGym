@@ -1,7 +1,7 @@
 package com.paulcraciunas.data.impl
 
 import com.paulcraciunas.data.db.Puzzle
-import com.paulcraciunas.game.io.api.PuzzleReader
+import com.paulcraciunas.serializer.api.PuzzleReader
 import javax.inject.Inject
 
 //TODO Paul: This is only temporary. Delete this and reimplement it properly
