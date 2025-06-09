@@ -23,10 +23,10 @@ dependencyResolutionManagement {
 
 rootProject.name = "ChessGym"
 include(":app")
-include(":game:domain")
-include(":game:data")
 include(":game:logic:api")
 include(":game:logic:impl")
+include(":game:puzzles:api")
+include(":game:puzzles:impl")
 include(":game:serializer:api")
 include(":game:serializer:impl")
 include(":global:notifications")
