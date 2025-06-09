@@ -5,6 +5,7 @@ import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.state.IGameState
 
+// TODO Paul: clean up api. Also add rating somewhere
 interface IPuzzle {
     fun turn(): Side
     fun board(): IBoard

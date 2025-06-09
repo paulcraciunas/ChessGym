@@ -9,7 +9,7 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import com.paulcraciunas.data.network.PuzzleSyncWorker
+import com.paulcraciunas.puzzles.impl.network.PuzzleSyncWorker
 import com.paulcraciunas.notifications.api.NotificationFactory
 import com.paulcraciunas.settings.user.UserSettings
 import dagger.hilt.android.lifecycle.HiltViewModel
