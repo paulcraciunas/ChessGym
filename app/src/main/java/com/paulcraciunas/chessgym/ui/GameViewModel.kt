@@ -4,15 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.paulcraciunas.chessgym.ui.board.BoardOrientation
 import com.paulcraciunas.chessgym.ui.model.BoardViewDataBuilder
-import com.paulcraciunas.domain.PuzzleRepository
-import com.paulcraciunas.game.io.api.PuzzleReader
-import com.paulcraciunas.game.logic.Game
-import com.paulcraciunas.game.logic.Puzzle
-import com.paulcraciunas.game.logic.Side
-import com.paulcraciunas.game.logic.board.File
-import com.paulcraciunas.game.logic.board.Locus
-import com.paulcraciunas.game.logic.board.Rank
-import com.paulcraciunas.game.logic.plies.Ply
+import com.paulcraciunas.game.logic.api.Side
+import com.paulcraciunas.game.logic.api.board.File
+import com.paulcraciunas.game.logic.api.board.Locus
+import com.paulcraciunas.game.logic.api.board.Rank
+import com.paulcraciunas.game.logic.impl.Puzzle
+import com.paulcraciunas.puzzles.api.PuzzleRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,11 +26,9 @@ import javax.inject.Inject
 @HiltViewModel
 class GameViewModel @Inject constructor(
     private val puzzleRepository: PuzzleRepository,
-    private val puzzleReader: PuzzleReader
 ) : ViewModel() {
     private val builder = BoardViewDataBuilder()
     private var selection: Locus? = null
-    private lateinit var game: Game
 
     // Backing state
     private val _puzzleState = MutableStateFlow<Puzzle?>(null)
@@ -54,14 +49,15 @@ class GameViewModel @Inject constructor(
     fun loadPuzzle(targetRating: Int) {
         viewModelScope.launch {
             val puzzle = withContext(Dispatchers.IO) {
-                puzzleReader.readPuzzle(puzzleRepository.getByRating(targetRating)!!.binary)
+                puzzleRepository.getByRating(targetRating)!! as Puzzle
             }
             _puzzleState.value = puzzle
-            game = puzzle.game
-            builder.loadBoard(puzzle.board())
-            boardData.update {
-                builder.build()
-            }
+            // TODO Paul: Fix this when cleaning up the puzzle APIs
+//            game = puzzle.game
+//            builder.loadBoard(puzzle.board())
+//            boardData.update {
+//                builder.build()
+//            }
         }
     }
 
@@ -69,16 +65,16 @@ class GameViewModel @Inject constructor(
         viewModelScope.launch {
             select(rank, file)
             boardData.update {
-                builder.loadBoard(game.board())
-                selection?.let {
-                    builder.withSelection(it, game.playablePlies(it).map(Ply::to))
-                }
-                game.state().lastPly?.let {
-                    builder.withLastMove(it.from, it.to)
-                }
+//                builder.loadBoard(game.board())
+//                selection?.let {
+//                    builder.withSelection(it, game.playablePlies(it).map(Ply::to))
+//                }
+//                game.state().lastPly?.let {
+//                    builder.withLastMove(it.from, it.to)
+//                }
                 builder.build()
             }
-            orientation.update { game.turn().toOrientation() }
+//            orientation.update { game.turn().toOrientation() }
         }
     }
 
@@ -87,27 +83,27 @@ class GameViewModel @Inject constructor(
 
         selection?.let { from -> // If we have a piece already selected
             // and can move to the new destination
-            game.playablePlies(from).firstOrNull { it.to == at }?.let { ply ->
-                if (game.requiresPromotion(ply)) {
-                    // TODO Paul: show a dialog to select promotion
-                } else {
-                    game.play(ply)
-                }
-            }
+//            game.playablePlies(from).firstOrNull { it.to == at }?.let { ply ->
+//                if (game.requiresPromotion(ply)) {
+//                    // TODO Paul: show a dialog to select promotion
+//                } else {
+//                    game.play(ply)
+//                }
+//            }
             selection = null // whether we move or not, clear the selection
         } ?: markSelected(rank, file)
 
-        game.isOver()?.let {
-            loadPuzzle(1200)
-        }
+//        game.isOver()?.let {
+//            loadPuzzle(1200)
+//        }
     }
 
     private fun markSelected(rank: Rank, file: File) {
         // only select if we click on an actual piece
         boardData.value.squares[rank.dec()][file.dec()].piece?.let {
-            if (it.side == game.turn()) { // and the piece is of our turn
-                selection = Locus(file, rank)
-            }
+//            if (it.side == game.turn()) { // and the piece is of our turn
+//                selection = Locus(file, rank)
+//            }
         }
     }
 }
