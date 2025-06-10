@@ -9,7 +9,6 @@ import com.paulcraciunas.game.logic.api.state.IGameState
 interface IPuzzle {
     fun turn(): Side
     fun board(): IBoard
-    fun state(): IGameState
     fun isOver(): Result?
     fun playablePlies(from: Locus): Collection<Ply>
     fun requiresPromotion(ply: Ply): Boolean

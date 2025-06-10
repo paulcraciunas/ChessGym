@@ -6,8 +6,6 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.api.state.IGameState
-import com.paulcraciunas.game.logic.impl.GameState
 import com.paulcraciunas.game.logic.impl.board.BoardFactory
 import com.paulcraciunas.puzzles.api.PuzzleRepository
 import com.paulcraciunas.puzzles.api.usecases.GetPuzzleSeries
@@ -54,7 +52,7 @@ internal class GetPuzzleSeriesImplTest {
         fun load(count: Int) {
             var rating = GetPuzzleSeries.RATING_START
             for (i in 0 until count) {
-                puzzles[rating] = PuzzleStub(rating)
+                puzzles[rating] = PuzzleStub()
                 rating += NEXT_INT
             }
         }
@@ -86,10 +84,9 @@ internal class GetPuzzleSeriesImplTest {
         override fun nextInt(from: Int, to: Int): Int = NEXT_INT
     }
 
-    private class PuzzleStub(val rating: Int) : IPuzzle {
+    private class PuzzleStub : IPuzzle {
         override fun turn(): Side = Side.WHITE
         override fun board(): IBoard = BoardFactory.defaultBoard()
-        override fun state(): IGameState = GameState()
         override fun isOver(): IPuzzle.Result? = null
         override fun playablePlies(from: Locus): Collection<Ply> = emptyList()
         override fun requiresPromotion(ply: Ply): Boolean = false

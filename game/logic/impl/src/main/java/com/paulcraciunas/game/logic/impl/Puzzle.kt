@@ -18,7 +18,6 @@ class Puzzle(
 
     override fun turn(): Side = game.turn()
     override fun board(): IBoard = game.board()
-    override fun state(): IGameState = game.state()
     override fun isOver(): IPuzzle.Result? = result
     override fun playablePlies(from: Locus): Collection<Ply> =
         game.playablePlies(from)
