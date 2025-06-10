@@ -9,7 +9,7 @@ import com.paulcraciunas.game.logic.impl.Game
 import com.paulcraciunas.game.logic.impl.GameState
 import com.paulcraciunas.game.logic.impl.Puzzle
 import com.paulcraciunas.game.logic.impl.board.Board
-import com.paulcraciunas.game.logic.impl.plies.Ply
+import com.paulcraciunas.game.logic.impl.plies.Playable
 import com.paulcraciunas.serializer.api.PuzzleReader
 import com.paulcraciunas.serializer.api.Serializer
 import com.paulcraciunas.serializer.impl.di.SerializerFen
@@ -104,7 +104,7 @@ internal class BinaryPuzzleReader @Inject constructor(
 
     private class GameMetadata(
         val side: Side,
-        val enPassent: Ply?,
+        val enPassent: Playable?,
         val whiteCastling: Set<CastleType>,
         val blackCastling: Set<CastleType>,
     )

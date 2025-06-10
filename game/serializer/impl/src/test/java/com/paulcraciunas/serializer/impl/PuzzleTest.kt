@@ -4,7 +4,7 @@ import com.paulcraciunas.game.logic.api.IPly
 import com.paulcraciunas.game.logic.api.IPuzzle
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.loc
-import com.paulcraciunas.game.logic.impl.plies.Ply
+import com.paulcraciunas.game.logic.impl.plies.Playable
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.assertDoesNotThrow
@@ -34,9 +34,12 @@ internal class PuzzleTest {
                 }
                 // Verify promotions
                 if (move.length == 5) { // promotion
-                    (expectedMove as Ply).accept(
+                    (expectedMove as Playable).accept(
                         Piece.entries.find { it.alg().lowercase().lastOrNull() == move[4] }!!
                     )
+                }
+                if (expectedMove == null) {
+                    println("ERROR! Found null move: $move in puzzle: $fenGame")
                 }
                 Assertions.assertNotNull(expectedMove) // Verify that the expected move exists
                 puzzle.play(expectedMove!!) // Verify that we can play this move

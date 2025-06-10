@@ -18,6 +18,8 @@ import com.paulcraciunas.game.logic.api.Side
  * 50 move rule). In that case, since we don't have access to the move history, we need to know
  * the number of non-pawn and non-capture plies.
  */
+// TODO Paul: FIXME
+// This isn't needed. Moreover, the actual GameState can be moved to the Game class where it can be accessed by classes like Serializer
 interface IGameState {
     val turn: Side
     val lastPly: IPly?

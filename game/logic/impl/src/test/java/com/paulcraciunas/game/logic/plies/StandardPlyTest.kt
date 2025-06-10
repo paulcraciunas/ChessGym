@@ -6,7 +6,7 @@ import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.game.logic.impl.board.Board
-import com.paulcraciunas.game.logic.impl.plies.Ply
+import com.paulcraciunas.game.logic.impl.plies.Playable
 import com.paulcraciunas.game.logic.impl.plies.StandardPly
 import com.paulcraciunas.game.logic.loc
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -103,7 +103,7 @@ internal class StandardPlyTest {
                 Piece.Knight,
                 "b1".loc(),
                 "d2".loc(),
-                disambiguate = Ply.Disambiguate.File
+                disambiguate = Playable.Disambiguate.File
             ).algebraic()
         )
     }
@@ -117,7 +117,7 @@ internal class StandardPlyTest {
                 "a1".loc(),
                 "a7".loc(),
                 captured = Piece.Queen,
-                disambiguate = Ply.Disambiguate.Rank
+                disambiguate = Playable.Disambiguate.Rank
             ).algebraic()
         )
     }

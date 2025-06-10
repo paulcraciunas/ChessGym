@@ -13,7 +13,7 @@ import com.paulcraciunas.game.logic.api.board.toRank
 import com.paulcraciunas.game.logic.api.state.IGameState
 import com.paulcraciunas.game.logic.api.state.MetaData
 import com.paulcraciunas.game.logic.impl.Game
-import com.paulcraciunas.game.logic.impl.plies.Ply
+import com.paulcraciunas.game.logic.impl.plies.Playable
 import com.paulcraciunas.serializer.api.SerializeException
 import com.paulcraciunas.serializer.api.Serializer
 
@@ -101,7 +101,7 @@ private fun Game.loadPly(plyString: String) = when {
     else -> play(findPly(plyString))
 }
 
-private fun Game.findCastlePly(side: Side, castle: CastleType): Ply {
+private fun Game.findCastlePly(side: Side, castle: CastleType): Playable {
     val kingLoc = this.board().king(side)
         ?: throw SerializeException("Found castling move but can't find king for $side")
     val ply = playablePlies(kingLoc).find { it.to == castle.end(side) }
@@ -109,7 +109,7 @@ private fun Game.findCastlePly(side: Side, castle: CastleType): Ply {
     return ply
 }
 
-private fun Game.findPly(plyString: String): Ply {
+private fun Game.findPly(plyString: String): Playable {
     // Nice thing about find is we can skip game annotations
     val bits = moveRegex.find(plyString) ?: throw SerializeException("Invalid move: $plyString")
     val to = Locus.from(bits.groupValues[4] + bits.groupValues[5])

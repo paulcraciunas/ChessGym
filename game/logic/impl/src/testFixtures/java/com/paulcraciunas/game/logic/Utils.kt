@@ -15,7 +15,7 @@ import com.paulcraciunas.game.logic.api.board.Rank.`3`
 import com.paulcraciunas.game.logic.api.board.Rank.`4`
 import com.paulcraciunas.game.logic.api.board.Rank.`5`
 import com.paulcraciunas.game.logic.impl.board.Board
-import com.paulcraciunas.game.logic.impl.plies.Ply
+import com.paulcraciunas.game.logic.impl.plies.Playable
 import com.paulcraciunas.game.logic.impl.plies.StandardPly
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -38,7 +38,7 @@ fun allLocationsExcept(home: Locus, except: List<Locus> = emptyList()) =
         }
     }
 
-inline fun <reified T : Ply> Collection<Ply>.assertMovesOf(
+inline fun <reified T : Playable> Collection<Playable>.assertMovesOf(
     turn: Side,
     piece: Piece,
     home: Locus,
@@ -56,7 +56,7 @@ inline fun <reified T : Ply> Collection<Ply>.assertMovesOf(
     }
 }
 
-fun Collection<Ply>.assertMoves(
+fun Collection<Playable>.assertMoves(
     turn: Side,
     piece: Piece,
     home: Locus,
@@ -74,12 +74,12 @@ fun Collection<Ply>.assertMoves(
     }
 }
 
-inline fun <reified T : Ply> Collection<Ply>.assertHas(
+inline fun <reified T : Playable> Collection<Playable>.assertHas(
     turn: Side,
     piece: Piece,
     home: Locus,
     location: Locus,
-): Collection<Ply> = apply {
+): Collection<Playable> = apply {
     assertNotNull(find { ply ->
         ply is T
         ply.turn == turn &&
@@ -89,11 +89,11 @@ inline fun <reified T : Ply> Collection<Ply>.assertHas(
     })
 }
 
-fun Collection<Ply>.assertNoMoves() {
+fun Collection<Playable>.assertNoMoves() {
     assertTrue(isEmpty())
 }
 
-inline fun <reified T : Ply> Collection<Ply>.assertNoMovesOf() {
+inline fun <reified T : Playable> Collection<Playable>.assertNoMovesOf() {
     assertNull(find { it is T })
 }
 

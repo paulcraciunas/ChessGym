@@ -4,13 +4,13 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank
-import com.paulcraciunas.game.logic.impl.plies.Ply
+import com.paulcraciunas.game.logic.impl.plies.Playable
 import com.paulcraciunas.game.logic.impl.plies.StandardPly
 import com.paulcraciunas.serializer.api.SerializeException
 
 internal const val MISSING = "-"
 
-internal fun String.loadEnPassent(): Ply? {
+internal fun String.loadEnPassent(): Playable? {
     if (this == MISSING) return null
     // This tells us the location a pawn moved OVER (e.g. e6)
     // To load the correct information as the "previous move", we have to add the from - to

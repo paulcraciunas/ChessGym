@@ -5,7 +5,7 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Piece
 
-class CastlePly(override val turn: Side, val type: CastleType) : Ply {
+class CastlePly(override val turn: Side, val type: CastleType) : Playable {
     override val piece = Piece.King
     override val from = type.from(turn)
     override val to = type.end(turn)

@@ -39,7 +39,7 @@ internal class PlyFactory {
         put(Piece.King, KingPlyStrategy())
     }
 
-    fun allLegalPlies(on: IBoard, with: GameState): Collection<Ply> =
+    fun allLegalPlies(on: IBoard, with: GameState): Collection<Playable> =
         allPlies(on, with).filter { it.isValid(on) }
 
     fun checkCount(at: Locus, on: IBoard, turn: Side): CheckCount {
@@ -52,11 +52,11 @@ internal class PlyFactory {
         return checkCount
     }
 
-    fun isCheck(ply: Ply, on: IBoard): Boolean {
+    fun isCheck(playable: Playable, on: IBoard): Boolean {
         var isCheck = false
-        on.king(ply.turn.other())?.let {
-            on.forEachPiece(ply.turn) { piece, loc ->
-                if (strategies[piece]!!.canAttack(from = loc, to = it, on = on, turn = ply.turn)) {
+        on.king(playable.turn.other())?.let {
+            on.forEachPiece(playable.turn) { piece, loc ->
+                if (strategies[piece]!!.canAttack(from = loc, to = it, on = on, turn = playable.turn)) {
                     isCheck = true
                 }
             }
@@ -64,7 +64,7 @@ internal class PlyFactory {
         return isCheck
     }
 
-    private fun Ply.isValid(on: IBoard): Boolean {
+    private fun Playable.isValid(on: IBoard): Boolean {
         exec(on) // try the move
         // verify for checks
         val inCheck = on.king(turn)?.let { kingLoc ->
@@ -79,8 +79,8 @@ internal class PlyFactory {
         return !inCheck
     }
 
-    private fun allPlies(on: IBoard, with: GameState): MutableList<Ply> {
-        val allMoves = mutableListOf<Ply>()
+    private fun allPlies(on: IBoard, with: GameState): MutableList<Playable> {
+        val allMoves = mutableListOf<Playable>()
         on.forEachPiece(with.turn) { piece, loc ->
             allMoves.addAll(strategies[piece]!!.plies(from = loc, on = on, with = with))
         }

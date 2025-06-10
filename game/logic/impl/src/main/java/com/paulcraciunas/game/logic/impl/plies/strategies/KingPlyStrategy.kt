@@ -7,7 +7,7 @@ import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.state.CheckCount
 import com.paulcraciunas.game.logic.impl.GameState
 import com.paulcraciunas.game.logic.impl.plies.CastlePly
-import com.paulcraciunas.game.logic.impl.plies.Ply
+import com.paulcraciunas.game.logic.impl.plies.Playable
 
 internal class KingPlyStrategy : PlyStrategy() {
     override val piece: Piece = Piece.King
@@ -17,12 +17,12 @@ internal class KingPlyStrategy : PlyStrategy() {
     override fun canAttack(from: Locus, to: Locus, on: IBoard, turn: Side): Boolean {
         assert(on.has(Piece.King, turn, from))
 
-        return mutableListOf<Ply>().apply {
+        return mutableListOf<Playable>().apply {
             addSimplePlies(turn, from, on, simpleMoves()) { it == to }
         }.any { it.to == to }
     }
 
-    override fun MutableList<Ply>.addComplexPlies(
+    override fun MutableList<Playable>.addComplexPlies(
         from: Locus,
         on: IBoard,
         with: GameState,

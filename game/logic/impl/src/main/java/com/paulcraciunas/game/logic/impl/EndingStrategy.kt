@@ -8,14 +8,14 @@ import com.paulcraciunas.game.logic.api.state.Settings
 import com.paulcraciunas.game.logic.api.Result
 import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.impl.board.Board
-import com.paulcraciunas.game.logic.impl.plies.Ply
+import com.paulcraciunas.game.logic.impl.plies.Playable
 import java.util.EnumMap
 
 //TODO Paul: I should probably add unit tests for this class as there's a lot of logic here
 internal class EndingStrategy(
-    private val availablePlies: Collection<Ply>,
+    private val availablePlies: Collection<Playable>,
     private val board: IBoard,
-    private val plies: List<Ply>,
+    private val plies: List<Playable>,
     private val settings: Settings,
 ) {
     private val tempBoard = Board()

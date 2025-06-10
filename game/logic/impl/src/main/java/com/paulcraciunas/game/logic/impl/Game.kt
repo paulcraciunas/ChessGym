@@ -12,7 +12,7 @@ import com.paulcraciunas.game.logic.api.state.MetaData
 import com.paulcraciunas.game.logic.api.state.Settings
 import com.paulcraciunas.game.logic.impl.board.BoardFactory
 import com.paulcraciunas.game.logic.impl.plies.CheckPly
-import com.paulcraciunas.game.logic.impl.plies.Ply
+import com.paulcraciunas.game.logic.impl.plies.Playable
 import com.paulcraciunas.game.logic.impl.plies.PlyFactory
 import com.paulcraciunas.game.logic.impl.plies.PromotionPly
 
@@ -24,8 +24,8 @@ class Game(
 ) : IGame {
     constructor(board: IBoard, turn: Side) : this(board = board, state = GameState(turn = turn))
 
-    private val availablePlies = mutableListOf<Ply>()
-    private val plies = mutableListOf<Ply>()
+    private val availablePlies = mutableListOf<Playable>()
+    private val plies = mutableListOf<Playable>()
     private var currentState = state
     private var result: Result? = null
 
@@ -43,9 +43,9 @@ class Game(
     override fun state(): GameState = currentState
     override fun metaData() = metaData
 
-    override fun allPlies(): List<Ply> = plies
-    override fun playablePlies(from: Locus): Collection<Ply> = availablePlies.filter { it.from == from }
-    override fun allPlayablePlies(): Collection<Ply> = availablePlies
+    override fun allPlies(): List<Playable> = plies
+    override fun playablePlies(from: Locus): Collection<Playable> = availablePlies.filter { it.from == from }
+    override fun allPlayablePlies(): Collection<Playable> = availablePlies
     override fun requiresPromotion(ply: IPly): Boolean = !settings.autoPromote
     override fun isOver(): Result? = result
 
@@ -54,7 +54,7 @@ class Game(
         assert(availablePlies.contains(ply))
 
         // Execute and keep track
-        ply as Ply //TODO Paul: fix down-casting
+        ply as Playable //TODO Paul: fix down-casting
         ply.resolve(availablePlies.filter { it.piece == ply.piece && it.to == ply.to }
             .disambiguate())
         ply.exec(board)
@@ -65,7 +65,7 @@ class Game(
         updateState()
     }
 
-    override fun promote(piece: Piece, on: IPly) = (on as Ply).accept(piece) // TODO Paul: fix down-casting
+    override fun promote(piece: Piece, on: IPly) = (on as Playable).accept(piece) // TODO Paul: fix down-casting
     override fun resign() {
         result = Result.Resigned
     }
@@ -100,8 +100,8 @@ class Game(
         board.king(turn)?.let { plyFactory.checkCount(it, board, turn.other()) } ?: CheckCount.None
 }
 
-private fun List<Ply>.disambiguate(): Ply.Disambiguate = when {
-    size >= 3 -> Ply.Disambiguate.Both
-    size == 2 -> if (get(0).from.file == get(1).from.file) Ply.Disambiguate.Rank else Ply.Disambiguate.File
-    else -> Ply.Disambiguate.None
+private fun List<Playable>.disambiguate(): Playable.Disambiguate = when {
+    size >= 3 -> Playable.Disambiguate.Both
+    size == 2 -> if (get(0).from.file == get(1).from.file) Playable.Disambiguate.Rank else Playable.Disambiguate.File
+    else -> Playable.Disambiguate.None
 }
