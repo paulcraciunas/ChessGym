@@ -1,5 +1,6 @@
 package com.paulcraciunas.game.logic.impl.plies
 
+import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
@@ -11,10 +12,10 @@ open class StandardPly(
     override val from: Locus,
     override val to: Locus,
     private val captured: Piece? = null,
-    private var disambiguate: Playable.Disambiguate = Playable.Disambiguate.None,
+    private var disambiguate: Ply.Disambiguate = Ply.Disambiguate.None,
 ) : Playable {
 
-    override fun resolve(disambiguate: Playable.Disambiguate) {
+    override fun resolve(disambiguate: Ply.Disambiguate) {
         this.disambiguate = disambiguate
     }
 
@@ -32,13 +33,13 @@ open class StandardPly(
     override fun isPawnMoveOrCapture(): Boolean = piece == Piece.Pawn || captured != null
     override fun algebraic(): String {
         val captured = if (captured != null) "x" else ""
-        val amb = if (piece == Piece.Pawn && captured.isNotBlank()) Playable.Disambiguate.File
+        val amb = if (piece == Piece.Pawn && captured.isNotBlank()) Ply.Disambiguate.File
         else disambiguate
         val from = when (amb) {
-            Playable.Disambiguate.File -> "${from.file}"
-            Playable.Disambiguate.Rank -> "${from.rank}"
-            Playable.Disambiguate.Both -> "$from"
-            Playable.Disambiguate.None -> ""
+            Ply.Disambiguate.File -> "${from.file}"
+            Ply.Disambiguate.Rank -> "${from.rank}"
+            Ply.Disambiguate.Both -> "$from"
+            Ply.Disambiguate.None -> ""
         }
         return "${piece.alg()}$from$captured$to"
     }

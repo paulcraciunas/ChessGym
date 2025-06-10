@@ -7,7 +7,6 @@ import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.state.CheckCount
 import com.paulcraciunas.game.logic.api.state.IGameState
 import com.paulcraciunas.game.logic.impl.plies.CastlePly
-import com.paulcraciunas.game.logic.impl.plies.Playable
 import com.paulcraciunas.game.logic.impl.plies.StandardPly
 
 data class GameState(
@@ -28,7 +27,7 @@ data class GameState(
         inCheckCount = checkCount,
         whiteCastling = updateCastling(Side.WHITE, ply),
         blackCastling = updateCastling(Side.BLACK, ply),
-        plieClock = if (!(ply as Playable).isPawnMoveOrCapture()) plieClock + 1 else 0, // TODO Paul: Fix down-casting
+        plieClock = if (!ply.isPawnMoveOrCapture()) plieClock + 1 else 0,
         moveIndex = moveIndex + turn.moveIncrement()
     )
 

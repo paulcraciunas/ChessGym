@@ -161,7 +161,7 @@ internal class PromotionPlyTest {
         )
         on.add(piece = Piece.Pawn, side = Side.WHITE, at = ply.from)
 
-        ply.accept(Piece.Queen)
+        ply.promote(Piece.Queen)
         ply.exec(on)
 
         assertTrue(on.has(Piece.Queen, Side.WHITE, ply.to))
@@ -212,10 +212,10 @@ internal class PromotionPlyTest {
         )
 
         assertThrows<AssertionError> {
-            ply.accept(Piece.Pawn)
+            ply.promote(Piece.Pawn)
         }
         assertThrows<AssertionError> {
-            ply.accept(Piece.King)
+            ply.promote(Piece.King)
         }
     }
 

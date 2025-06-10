@@ -52,20 +52,20 @@ class Game(
     override fun play(ply: Ply) {
         assert(result == null)
         assert(availablePlies.contains(ply))
+        val playable = availablePlies.find { it == ply }!!
 
         // Execute and keep track
-        ply as Playable //TODO Paul: fix down-casting
-        ply.resolve(availablePlies.filter { it.piece == ply.piece && it.to == ply.to }
+        playable.resolve(availablePlies.filter { it.piece == ply.piece && it.to == ply.to }
             .disambiguate())
-        ply.exec(board)
-        plies.add(if (plyFactory.isCheck(ply, board)) CheckPly(ply) else ply)
+        playable.exec(board)
+        plies.add(if (plyFactory.isCheck(playable, board)) CheckPly(playable) else playable)
 
         // Update state
         currentState = currentState.next(plies.last(), checkCount(currentState.turn.other()))
         updateState()
     }
 
-    override fun promote(piece: Piece, on: Ply) = (on as Playable).accept(piece) // TODO Paul: fix down-casting
+    override fun promote(piece: Piece, on: Ply) = on.promote(piece)
     override fun resign() {
         result = Result.Resigned
     }
@@ -91,7 +91,7 @@ class Game(
         availablePlies.addAll(plyFactory.allLegalPlies(board, currentState))
         availablePlies.forEach {
             if (it is PromotionPly && settings.autoPromote) {
-                it.accept(Piece.Queen)
+                it.promote(Piece.Queen)
             }
         }
     }
@@ -100,8 +100,8 @@ class Game(
         board.king(turn)?.let { plyFactory.checkCount(it, board, turn.other()) } ?: CheckCount.None
 }
 
-private fun List<Playable>.disambiguate(): Playable.Disambiguate = when {
-    size >= 3 -> Playable.Disambiguate.Both
-    size == 2 -> if (get(0).from.file == get(1).from.file) Playable.Disambiguate.Rank else Playable.Disambiguate.File
-    else -> Playable.Disambiguate.None
+private fun List<Playable>.disambiguate(): Ply.Disambiguate = when {
+    size >= 3 -> Ply.Disambiguate.Both
+    size == 2 -> if (get(0).from.file == get(1).from.file) Ply.Disambiguate.Rank else Ply.Disambiguate.File
+    else -> Ply.Disambiguate.None
 }

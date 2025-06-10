@@ -17,4 +17,19 @@ interface Ply {
     val to: Locus
 
     fun algebraic(): String
+
+    fun captured(): Piece? = null
+    fun isPawnMoveOrCapture(): Boolean
+
+    fun isPromotion(): Boolean
+    fun promote(piece: Piece)
+
+    fun resolve(disambiguate: Disambiguate)
+
+    enum class Disambiguate {
+        File,
+        Rank,
+        Both,
+        None
+    }
 }

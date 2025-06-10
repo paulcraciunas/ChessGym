@@ -34,7 +34,7 @@ internal class PuzzleTest {
                 }
                 // Verify promotions
                 if (move.length == 5) { // promotion
-                    (expectedMove as Playable).accept(
+                    (expectedMove as Playable).promote(
                         Piece.entries.find { it.alg().lowercase().lastOrNull() == move[4] }!!
                     )
                 }

@@ -126,7 +126,7 @@ private fun Game.findPly(plyString: String): Playable {
         }
         .apply { if (size != 1) throw SerializeException("Can't find single ply in: $plyString") }
         .first()
-        .apply { bits.groupValues[6].promotion()?.let { accept(it) } }
+        .apply { bits.groupValues[6].promotion()?.let { promote(it) } }
 }
 
 private fun String.file(): File? = if (isNotEmpty()) get(0).toFile() else null

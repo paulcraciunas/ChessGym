@@ -102,6 +102,6 @@ internal class EnPassentPlyTest {
 
     @Test
     fun `WHEN accepting a piece for promotion THEN throw`() {
-        assertThrows<AssertionError> { underTest.accept(Piece.Bishop) }
+        assertThrows<AssertionError> { underTest.promote(Piece.Bishop) }
     }
 }
