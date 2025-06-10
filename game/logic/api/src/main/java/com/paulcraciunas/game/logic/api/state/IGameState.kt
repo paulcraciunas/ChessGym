@@ -1,7 +1,7 @@
 package com.paulcraciunas.game.logic.api.state
 
 import com.paulcraciunas.game.logic.api.CastleType
-import com.paulcraciunas.game.logic.api.IPly
+import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Side
 
 /**
@@ -22,7 +22,7 @@ import com.paulcraciunas.game.logic.api.Side
 // This isn't needed. Moreover, the actual GameState can be moved to the Game class where it can be accessed by classes like Serializer
 interface IGameState {
     val turn: Side
-    val lastPly: IPly?
+    val lastPly: Ply?
     val inCheckCount: CheckCount
     val whiteCastling: Set<CastleType>
     val blackCastling: Set<CastleType>
@@ -30,5 +30,5 @@ interface IGameState {
     val moveIndex: Int
 
     fun castling(turn: Side): Set<CastleType>
-    fun next(ply: IPly, checkCount: CheckCount): IGameState
+    fun next(ply: Ply, checkCount: CheckCount): IGameState
 }

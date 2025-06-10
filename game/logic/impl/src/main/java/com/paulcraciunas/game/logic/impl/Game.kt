@@ -1,7 +1,7 @@
 package com.paulcraciunas.game.logic.impl
 
 import com.paulcraciunas.game.logic.api.IGame
-import com.paulcraciunas.game.logic.api.IPly
+import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Result
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.IBoard
@@ -46,10 +46,10 @@ class Game(
     override fun allPlies(): List<Playable> = plies
     override fun playablePlies(from: Locus): Collection<Playable> = availablePlies.filter { it.from == from }
     override fun allPlayablePlies(): Collection<Playable> = availablePlies
-    override fun requiresPromotion(ply: IPly): Boolean = !settings.autoPromote
+    override fun requiresPromotion(ply: Ply): Boolean = !settings.autoPromote
     override fun isOver(): Result? = result
 
-    override fun play(ply: IPly) {
+    override fun play(ply: Ply) {
         assert(result == null)
         assert(availablePlies.contains(ply))
 
@@ -65,7 +65,7 @@ class Game(
         updateState()
     }
 
-    override fun promote(piece: Piece, on: IPly) = (on as Playable).accept(piece) // TODO Paul: fix down-casting
+    override fun promote(piece: Piece, on: Ply) = (on as Playable).accept(piece) // TODO Paul: fix down-casting
     override fun resign() {
         result = Result.Resigned
     }

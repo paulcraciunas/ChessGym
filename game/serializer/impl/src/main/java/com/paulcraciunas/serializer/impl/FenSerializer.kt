@@ -2,7 +2,7 @@ package com.paulcraciunas.serializer.impl
 
 import com.paulcraciunas.game.logic.api.CastleType
 import com.paulcraciunas.game.logic.api.IGame
-import com.paulcraciunas.game.logic.api.IPly
+import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.IBoard
@@ -187,7 +187,7 @@ private fun IGameState.castlingFen(): String = StringBuilder().apply {
     if (whiteCastling.isEmpty() && blackCastling.isEmpty()) append(MISSING)
 }.toString()
 
-private fun IPly?.toEnPassentFen(): String = when {
+private fun Ply?.toEnPassentFen(): String = when {
     this == null -> MISSING
     piece == Piece.Pawn && from.rank == Rank.`2` && to.rank == Rank.`4` -> "${from.file}3"
     piece == Piece.Pawn && from.rank == Rank.`7` && to.rank == Rank.`5` -> "${from.file}6"

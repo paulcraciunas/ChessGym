@@ -1,6 +1,6 @@
 package com.paulcraciunas.puzzles.impl.usecases
 
-import com.paulcraciunas.game.logic.api.IPly
+import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.IPuzzle
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.IBoard
@@ -91,10 +91,10 @@ internal class GetPuzzleSeriesImplTest {
         override fun board(): IBoard = BoardFactory.defaultBoard()
         override fun state(): IGameState = GameState()
         override fun isOver(): IPuzzle.Result? = null
-        override fun playablePlies(from: Locus): Collection<IPly> = emptyList()
-        override fun requiresPromotion(ply: IPly): Boolean = false
-        override fun play(ply: IPly) {}
-        override fun promote(piece: Piece, on: IPly) {}
+        override fun playablePlies(from: Locus): Collection<Ply> = emptyList()
+        override fun requiresPromotion(ply: Ply): Boolean = false
+        override fun play(ply: Ply) {}
+        override fun promote(piece: Piece, on: Ply) {}
         override fun resign() {}
     }
 

@@ -11,11 +11,11 @@ interface IPuzzle {
     fun board(): IBoard
     fun state(): IGameState
     fun isOver(): Result?
-    fun playablePlies(from: Locus): Collection<IPly>
-    fun requiresPromotion(ply: IPly): Boolean
+    fun playablePlies(from: Locus): Collection<Ply>
+    fun requiresPromotion(ply: Ply): Boolean
 
-    fun play(ply: IPly)
-    fun promote(piece: Piece, on: IPly)
+    fun play(ply: Ply)
+    fun promote(piece: Piece, on: Ply)
     fun resign()
 
     enum class Result {

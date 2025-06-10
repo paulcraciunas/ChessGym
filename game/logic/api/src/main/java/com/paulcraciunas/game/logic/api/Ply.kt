@@ -10,7 +10,7 @@ import com.paulcraciunas.game.logic.api.board.Piece
  *
  * e.g. The 50 move rule requires there to be 50 moves (i.e. 100 plies)
  */
-interface IPly {
+interface Ply {
     val turn: Side
     val piece: Piece
     val from: Locus
