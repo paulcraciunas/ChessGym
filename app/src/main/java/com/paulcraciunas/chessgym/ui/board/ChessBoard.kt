@@ -14,9 +14,9 @@ import com.paulcraciunas.chessgym.ui.model.BoardViewDataBuilder
 import com.paulcraciunas.chessgym.ui.model.SquareViewData
 import com.paulcraciunas.chessgym.ui.theme.BoardTheme
 import com.paulcraciunas.chessgym.ui.theme.ChessGymTheme
-import com.paulcraciunas.game.logic.Side
-import com.paulcraciunas.game.logic.board.File
-import com.paulcraciunas.game.logic.board.Rank
+import com.paulcraciunas.game.logic.api.Side
+import com.paulcraciunas.game.logic.api.board.Rank
+import com.paulcraciunas.game.logic.api.board.File
 
 // Most of the time, this will be the same as player's side
 enum class BoardOrientation(val ranks: List<Rank>, val files: List<File>) {

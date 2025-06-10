@@ -53,10 +53,11 @@ android {
 }
 
 dependencies {
-    implementation(project(":game:logic"))
-    implementation(project(":game:io"))
-    implementation(project(":game:domain"))
-    implementation(project(":game:data"))
+    implementation(project(":game:puzzles:api"))
+    implementation(project(":game:puzzles:impl"))
+    implementation(project(":game:serializer:impl"))
+    implementation(project(":game:logic:api"))
+    implementation(project(":game:logic:impl"))
     implementation(project(":global:notifications"))
     implementation(project(":settings:user"))
 

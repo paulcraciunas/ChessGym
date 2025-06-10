@@ -1,10 +1,10 @@
 package com.paulcraciunas.chessgym.ui.model
 
-import com.paulcraciunas.game.logic.Side
-import com.paulcraciunas.game.logic.board.Board
-import com.paulcraciunas.game.logic.board.File
-import com.paulcraciunas.game.logic.board.Locus
-import com.paulcraciunas.game.logic.board.Rank
+import com.paulcraciunas.game.logic.api.Side
+import com.paulcraciunas.game.logic.api.board.File
+import com.paulcraciunas.game.logic.api.board.IBoard
+import com.paulcraciunas.game.logic.api.board.Locus
+import com.paulcraciunas.game.logic.api.board.Rank
 
 // TODO Paul: rethink this class when cleaning up the repo structure
 class BoardViewDataBuilder {
@@ -15,7 +15,7 @@ class BoardViewDataBuilder {
     private var lastMove: Pair<Locus, Locus>? = null
     private var moves: List<Locus> = emptyList()
 
-    fun loadBoard(board: Board) {
+    fun loadBoard(board: IBoard) {
         // Clear the squares first
         Locus.all { loc ->
             squares[loc.rank.dec()][loc.file.dec()] = SquareViewData(piece = null)

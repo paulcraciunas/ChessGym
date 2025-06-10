@@ -23,7 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.work.WorkInfo
 import com.paulcraciunas.chessgym.R
-import com.paulcraciunas.data.network.PuzzleSyncWorker
+import com.paulcraciunas.puzzles.impl.network.PuzzleSyncWorker
 import com.paulcraciunas.settings.user.UserSettings
 
 //TODO Paul: This is only temporary. Delete this and reimplement it properly

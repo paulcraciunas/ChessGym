@@ -22,8 +22,8 @@ import androidx.compose.ui.unit.dp
 import com.paulcraciunas.chessgym.R
 import com.paulcraciunas.chessgym.ui.theme.BoardColors
 import com.paulcraciunas.chessgym.ui.theme.ChessGymTheme
-import com.paulcraciunas.game.logic.Side
-import com.paulcraciunas.game.logic.board.Piece
+import com.paulcraciunas.game.logic.api.Side
+import com.paulcraciunas.game.logic.api.board.Piece
 
 @Composable
 fun BoardSquare(
