@@ -1,6 +1,6 @@
 package com.paulcraciunas.serializer.impl
 
-import com.paulcraciunas.game.logic.api.IPly
+import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.IPuzzle
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.loc
@@ -23,7 +23,7 @@ internal class PuzzleTest {
         val moves = fenGame.split(',')[1].split(' ')
         var from: String
         var to: String
-        var expectedMove: IPly?
+        var expectedMove: Ply?
 
         assertDoesNotThrow {
             moves.forEach { move ->
@@ -37,9 +37,6 @@ internal class PuzzleTest {
                     (expectedMove as Playable).accept(
                         Piece.entries.find { it.alg().lowercase().lastOrNull() == move[4] }!!
                     )
-                }
-                if (expectedMove == null) {
-                    println("ERROR! Found null move: $move in puzzle: $fenGame")
                 }
                 Assertions.assertNotNull(expectedMove) // Verify that the expected move exists
                 puzzle.play(expectedMove!!) // Verify that we can play this move
