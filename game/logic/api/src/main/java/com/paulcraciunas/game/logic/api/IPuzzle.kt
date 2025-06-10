@@ -3,7 +3,6 @@ package com.paulcraciunas.game.logic.api
 import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.api.state.IGameState
 
 // TODO Paul: clean up api. Also add rating somewhere
 interface IPuzzle {
