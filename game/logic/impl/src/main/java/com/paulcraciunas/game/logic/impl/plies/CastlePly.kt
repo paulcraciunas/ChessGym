@@ -22,7 +22,6 @@ class CastlePly(override val turn: Side, val type: CastleType) : Playable {
     }
 
     override fun captured(): Piece? = null
-    override fun isPawnMoveOrCapture(): Boolean = false
     override fun algebraic(): String = if (type == CastleType.KingSide) "O-O" else "O-O-O"
     override fun resolve(disambiguate: Ply.Disambiguate) {}
 }

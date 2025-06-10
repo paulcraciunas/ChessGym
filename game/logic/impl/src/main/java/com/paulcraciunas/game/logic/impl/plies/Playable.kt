@@ -10,4 +10,5 @@ interface Playable: Ply {
 
     override fun isPromotion(): Boolean = false
     override fun promote(piece: Piece): Unit = throw AssertionError("By default, moves can't promote")
+    override fun isPawnMoveOrCapture(): Boolean { return piece == Piece.Pawn || captured() != null }
 }

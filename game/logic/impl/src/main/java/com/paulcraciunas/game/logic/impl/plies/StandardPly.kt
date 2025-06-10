@@ -30,7 +30,6 @@ open class StandardPly(
     }
 
     override fun captured(): Piece? = captured
-    override fun isPawnMoveOrCapture(): Boolean = piece == Piece.Pawn || captured != null
     override fun algebraic(): String {
         val captured = if (captured != null) "x" else ""
         val amb = if (piece == Piece.Pawn && captured.isNotBlank()) Ply.Disambiguate.File
