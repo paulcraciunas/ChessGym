@@ -8,7 +8,6 @@ import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.state.IGameState
-import com.paulcraciunas.game.logic.impl.plies.PromotionPly
 import java.util.Queue
 
 class Puzzle(
@@ -30,8 +29,7 @@ class Puzzle(
         assert(result == null)
 
         val expected = moves.poll()
-        // TODO Paul: fix this down-casting; Also, FIXME! if I remove the cast, tests fail
-        val promotedPiece = (ply as? PromotionPly)?.algebraic()?.last()?.lowercase() ?: ""
+        val promotedPiece = if (ply.isPromotion()) ply.algebraic().last().lowercase() else ""
         // check if the move is the first in the list of expected moves
         if (expected == "${ply.from}${ply.to}$promotedPiece") {
             game.play(ply)

@@ -4,7 +4,6 @@ import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.IPuzzle
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.loc
-import com.paulcraciunas.game.logic.impl.plies.Playable
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.assertDoesNotThrow
@@ -34,7 +33,7 @@ internal class PuzzleTest {
                 }
                 // Verify promotions
                 if (move.length == 5) { // promotion
-                    (expectedMove as Playable).promote(
+                    expectedMove?.promote(
                         Piece.entries.find { it.alg().lowercase().lastOrNull() == move[4] }!!
                     )
                 }
