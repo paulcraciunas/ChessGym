@@ -46,7 +46,6 @@ class Game(
     override fun allPlies(): List<Playable> = plies
     override fun playablePlies(from: Locus): Collection<Playable> = availablePlies.filter { it.from == from }
     override fun allPlayablePlies(): Collection<Playable> = availablePlies
-    override fun requiresPromotion(ply: Ply): Boolean = !settings.autoPromote
     override fun isOver(): Result? = result
 
     override fun play(ply: Ply) {

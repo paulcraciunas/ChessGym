@@ -20,7 +20,6 @@ class Puzzle(
     override fun isOver(): IPuzzle.Result? = result
     override fun playablePlies(from: Locus): Collection<Ply> =
         game.playablePlies(from)
-    override fun requiresPromotion(ply: Ply): Boolean = game.requiresPromotion(ply)
 
     override fun play(ply: Ply) {
         assert(moves.isNotEmpty())

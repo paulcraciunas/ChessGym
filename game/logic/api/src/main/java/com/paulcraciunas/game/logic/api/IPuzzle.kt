@@ -10,7 +10,6 @@ interface IPuzzle {
     fun board(): IBoard
     fun isOver(): Result?
     fun playablePlies(from: Locus): Collection<Ply>
-    fun requiresPromotion(ply: Ply): Boolean
 
     fun play(ply: Ply)
     fun promote(piece: Piece, on: Ply)

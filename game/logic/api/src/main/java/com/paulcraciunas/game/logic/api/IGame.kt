@@ -17,7 +17,6 @@ interface IGame {
     fun allPlies(): List<Ply>
     fun playablePlies(from: Locus): Collection<Ply>
     fun allPlayablePlies(): Collection<Ply>
-    fun requiresPromotion(ply: Ply): Boolean
     fun isOver(): Result?
 
     fun play(ply: Ply)

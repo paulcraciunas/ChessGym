@@ -89,7 +89,6 @@ internal class GetPuzzleSeriesImplTest {
         override fun board(): IBoard = BoardFactory.defaultBoard()
         override fun isOver(): IPuzzle.Result? = null
         override fun playablePlies(from: Locus): Collection<Ply> = emptyList()
-        override fun requiresPromotion(ply: Ply): Boolean = false
         override fun play(ply: Ply) {}
         override fun promote(piece: Piece, on: Ply) {}
         override fun resign() {}
