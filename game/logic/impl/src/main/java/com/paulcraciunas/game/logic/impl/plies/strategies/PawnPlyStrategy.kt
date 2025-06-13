@@ -70,22 +70,23 @@ internal class PawnPlyStrategy : PlyStrategy() {
     }
 
     private fun MutableList<Playable>.addEnPassent(from: Locus, on: IBoard, with: MutableGameInfo) {
+        val lastPly = with.lastPly
         if (from.rank == with.turn.enPassent() &&
-            with.lastPly?.piece == Piece.Pawn &&
-            with.lastPly.to.rank == with.turn.enPassent() &&
-            with.lastPly.from.rank == pawnStart(with.turn.other())
+            lastPly?.piece == Piece.Pawn &&
+            lastPly.to.rank == with.turn.enPassent() &&
+            lastPly.from.rank == pawnStart(with.turn.other())
         ) {
             var loc: Locus?
-            if (with.lastPly.to.file == from.left()?.file) {
+            if (lastPly.to.file == from.left()?.file) {
                 loc = with.turn.captureLeft(from)
                 if (loc != null && on.isEmpty(loc)) {
-                    add(EnPassentPly(with.turn, from = from, to = loc, passedLoc = with.lastPly.to))
+                    add(EnPassentPly(with.turn, from = from, to = loc, passedLoc = lastPly.to))
                 }
             }
-            if (with.lastPly.to.file == from.right()?.file) {
+            if (lastPly.to.file == from.right()?.file) {
                 loc = with.turn.captureRight(from)
                 if (loc != null && on.isEmpty(loc)) {
-                    add(EnPassentPly(with.turn, from = from, to = loc, passedLoc = with.lastPly.to))
+                    add(EnPassentPly(with.turn, from = from, to = loc, passedLoc = lastPly.to))
                 }
             }
         }

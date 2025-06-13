@@ -7,7 +7,7 @@ import com.paulcraciunas.game.logic.api.state.GameInfo
 import com.paulcraciunas.game.logic.api.state.MetaData
 
 interface IGame {
-    val state: GameInfo
+    val info: GameInfo
 
     fun turn(): Side
     fun board(): IBoard

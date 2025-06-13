@@ -18,7 +18,9 @@ internal class MutableGameInfoTest {
         val ply = StandardPly(Side.WHITE, Piece.Pawn, "e2".loc(), "e4".loc())
         val expected = MutableGameInfo(Side.BLACK, ply)
 
-        assertEquals(expected, underTest.next(ply, CheckCount.None))
+        underTest.update(ply, CheckCount.None)
+
+        assertEquals(expected, underTest)
     }
 
     @Test
@@ -28,7 +30,9 @@ internal class MutableGameInfoTest {
             StandardPly(Side.WHITE, Piece.Knight, "g1".loc(), "f3".loc(), captured = Piece.Bishop)
         val expected = MutableGameInfo(Side.BLACK, ply)
 
-        assertEquals(expected, underTest.next(ply, CheckCount.None))
+        underTest.update(ply, CheckCount.None)
+
+        assertEquals(expected, underTest)
     }
 
     @Test
@@ -37,7 +41,9 @@ internal class MutableGameInfoTest {
         val ply = StandardPly(Side.WHITE, Piece.Knight, "g1".loc(), "f3".loc())
         val expected = MutableGameInfo(Side.BLACK, ply, plieClock = 1)
 
-        assertEquals(expected, underTest.next(ply, CheckCount.None))
+        underTest.update(ply, CheckCount.None)
+
+        assertEquals(expected, underTest)
     }
 
     @Test
@@ -46,7 +52,9 @@ internal class MutableGameInfoTest {
         val ply = StandardPly(Side.BLACK, Piece.Knight, "g8".loc(), "f6".loc())
         val expected = MutableGameInfo(Side.WHITE, ply, plieClock = 1, moveIndex = 2)
 
-        assertEquals(expected, underTest.next(ply, CheckCount.None))
+        underTest.update(ply, CheckCount.None)
+
+        assertEquals(expected, underTest)
     }
 
     @Test
@@ -55,7 +63,9 @@ internal class MutableGameInfoTest {
         val ply = StandardPly(Side.WHITE, Piece.King, "e1".loc(), "e2".loc())
         val expected = MutableGameInfo(Side.BLACK, ply, plieClock = 1, whiteCastling = setOf())
 
-        assertEquals(expected, underTest.next(ply, CheckCount.None))
+        underTest.update(ply, CheckCount.None)
+
+        assertEquals(expected, underTest)
     }
 
     @Test
@@ -66,7 +76,9 @@ internal class MutableGameInfoTest {
             Side.BLACK, ply, plieClock = 1, whiteCastling = setOf(CastleType.KingSide)
         )
 
-        assertEquals(expected, underTest.next(ply, CheckCount.None))
+        underTest.update(ply, CheckCount.None)
+
+        assertEquals(expected, underTest)
     }
 
     @Test
@@ -77,7 +89,9 @@ internal class MutableGameInfoTest {
             Side.BLACK, ply, plieClock = 1, whiteCastling = setOf(CastleType.QueenSide)
         )
 
-        assertEquals(expected, underTest.next(ply, CheckCount.None))
+        underTest.update(ply, CheckCount.None)
+
+        assertEquals(expected, underTest)
     }
 
     @Test
@@ -87,7 +101,9 @@ internal class MutableGameInfoTest {
         val expected =
             MutableGameInfo(Side.WHITE, ply, plieClock = 1, moveIndex = 2, blackCastling = setOf())
 
-        assertEquals(expected, underTest.next(ply, CheckCount.None))
+        underTest.update(ply, CheckCount.None)
+
+        assertEquals(expected, underTest)
     }
 
     @Test
@@ -103,7 +119,9 @@ internal class MutableGameInfoTest {
                 blackCastling = setOf(CastleType.KingSide)
             )
 
-        assertEquals(expected, underTest.next(ply, CheckCount.None))
+        underTest.update(ply, CheckCount.None)
+
+        assertEquals(expected, underTest)
     }
 
     @Test
@@ -119,7 +137,9 @@ internal class MutableGameInfoTest {
                 blackCastling = setOf(CastleType.QueenSide)
             )
 
-        assertEquals(expected, underTest.next(ply, CheckCount.None))
+        underTest.update(ply, CheckCount.None)
+
+        assertEquals(expected, underTest)
     }
 
     @Test
@@ -135,7 +155,9 @@ internal class MutableGameInfoTest {
                 whiteCastling = setOf(CastleType.KingSide)
             )
 
-        assertEquals(expected, underTest.next(ply, CheckCount.None))
+        underTest.update(ply, CheckCount.None)
+
+        assertEquals(expected, underTest)
     }
 
     @Test
@@ -146,6 +168,8 @@ internal class MutableGameInfoTest {
         val expected =
             MutableGameInfo(Side.BLACK, ply, blackCastling = setOf(CastleType.QueenSide))
 
-        assertEquals(expected, underTest.next(ply, CheckCount.None))
+        underTest.update(ply, CheckCount.None)
+
+        assertEquals(expected, underTest)
     }
 }

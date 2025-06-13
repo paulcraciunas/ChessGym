@@ -47,7 +47,7 @@ internal object FenSerializer : Serializer {
 
     override fun from(gameString: String): Game {
         val (board, gameState) = serialize(gameString)
-        return Game(board = board, state = gameState)
+        return Game(board = board, info = gameState)
     }
 
     override fun of(game: IGame): String = StringBuilder().apply {

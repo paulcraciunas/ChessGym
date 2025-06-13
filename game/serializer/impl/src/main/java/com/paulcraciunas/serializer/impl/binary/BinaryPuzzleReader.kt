@@ -81,7 +81,7 @@ internal class BinaryPuzzleReader @Inject constructor(
             moveIndex = moveIndex
         )
 
-        return Game(board = board, state = gameState)
+        return Game(board = board, info = gameState)
     }
 
     private fun ByteArray.loadBoard(): Board {

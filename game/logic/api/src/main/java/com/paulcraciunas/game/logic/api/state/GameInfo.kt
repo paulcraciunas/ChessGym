@@ -3,6 +3,7 @@ package com.paulcraciunas.game.logic.api.state
 import com.paulcraciunas.game.logic.api.CastleType
 import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Side
+import com.paulcraciunas.game.logic.api.board.Locus
 
 /**
  * Non-computable information about the current state of the game.
@@ -18,8 +19,6 @@ import com.paulcraciunas.game.logic.api.Side
  * 50 move rule). In that case, since we don't have access to the move history, we need to know
  * the number of non-pawn and non-capture plies.
  */
-// TODO Paul: FIXME
-// This isn't needed. Moreover, the actual GameState can be moved to the Game class where it can be accessed by classes like Serializer
 interface GameInfo {
     val turn: Side
     val lastPly: Ply?
@@ -28,7 +27,9 @@ interface GameInfo {
     val blackCastling: Set<CastleType>
     val plieClock: Int // Since last pawn move or capture
     val moveIndex: Int
+    val plies: Collection<Ply>
+
+    fun plies(from: Locus): Collection<Ply>
 
     fun castling(turn: Side): Set<CastleType>
-    fun next(ply: Ply, checkCount: CheckCount): GameInfo
 }

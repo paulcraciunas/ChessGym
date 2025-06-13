@@ -20,21 +20,20 @@ class Game(
     private val board: IBoard = BoardFactory.defaultBoard(),
     private val settings: Settings = Settings(),
     private val metaData: MetaData = MetaData(),
-    override val state: MutableGameInfo = MutableGameInfo(),
+    override val info: MutableGameInfo = MutableGameInfo(),
 ) : IGame {
-    constructor(board: IBoard, turn: Side) : this(board = board, state = MutableGameInfo(turn = turn))
+    constructor(board: IBoard, turn: Side) : this(board = board, info = MutableGameInfo(turn = turn))
 
-    private val availablePlies = mutableListOf<Playable>()
     private val plies = mutableListOf<Playable>()
-    private var currentState = state
+    private var currentState = info
     private var result: Result? = null
 
     private val plyFactory = PlyFactory()
-    private val endingStrategy = EndingStrategy(availablePlies, board, plies, settings)
+    private val endingStrategy = EndingStrategy(info.plies, board, plies, settings)
 
     init {
         // Update initial state. Useful for loading "in media res" (e.g. puzzles)
-        currentState = currentState.copy(inCheckCount = checkCount(currentState.turn))
+        currentState.inCheckCount = checkCount(currentState.turn)
         updateState()
     }
 
@@ -44,23 +43,23 @@ class Game(
     override fun metaData() = metaData
 
     override fun allPlies(): List<Playable> = plies
-    override fun playablePlies(from: Locus): Collection<Playable> = availablePlies.filter { it.from == from }
-    override fun allPlayablePlies(): Collection<Playable> = availablePlies
+    override fun playablePlies(from: Locus): Collection<Playable> = info.plies.filter { it.from == from }
+    override fun allPlayablePlies(): Collection<Playable> = info.plies
     override fun isOver(): Result? = result
 
     override fun play(ply: Ply) {
         assert(result == null)
-        assert(availablePlies.contains(ply))
-        val playable = availablePlies.find { it == ply }!!
+        assert(info.plies.contains(ply))
+        val playable = info.plies.find { it == ply }!!
 
         // Execute and keep track
-        playable.resolve(availablePlies.filter { it.piece == ply.piece && it.to == ply.to }
+        playable.resolve(info.plies.filter { it.piece == ply.piece && it.to == ply.to }
             .disambiguate())
         playable.exec(board)
         plies.add(if (plyFactory.isCheck(playable, board)) CheckPly(playable) else playable)
 
         // Update state
-        currentState = currentState.next(plies.last(), checkCount(currentState.turn.other()))
+        currentState.update(playable, checkCount(currentState.turn.other()))
         updateState()
     }
 
@@ -81,14 +80,14 @@ class Game(
     private fun updateResolution() { // Important to call after updating game state
         result = endingStrategy.of(currentState)
         if (result != null) {
-            availablePlies.clear()
+            info.plies.clear()
         }
     }
 
     private fun computeAvailablePlies() {
-        availablePlies.clear()
-        availablePlies.addAll(plyFactory.allLegalPlies(board, currentState))
-        availablePlies.forEach {
+        info.plies.clear()
+        info.plies.addAll(plyFactory.allLegalPlies(board, currentState))
+        info.plies.forEach {
             if (it is PromotionPly && settings.autoPromote) {
                 it.promote(Piece.Queen)
             }
