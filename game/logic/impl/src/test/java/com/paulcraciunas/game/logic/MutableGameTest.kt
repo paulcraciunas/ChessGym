@@ -4,7 +4,7 @@ import com.paulcraciunas.game.logic.api.Result
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.impl.Game
+import com.paulcraciunas.game.logic.impl.MutableGame
 import com.paulcraciunas.game.logic.impl.board.Board
 import com.paulcraciunas.game.logic.impl.board.BoardFactory
 import com.paulcraciunas.game.logic.impl.plies.StandardPly
@@ -14,14 +14,14 @@ import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
-internal class GameTest {
+internal class MutableGameTest {
     private val on = BoardFactory.defaultBoard()
 
-    private lateinit var underTest: Game
+    private lateinit var underTest: MutableGame
 
     @Test
     fun `GIVEN default starting board WHEN getting plies for white THEN return all correct plies`() {
-        underTest = Game(board = on)
+        underTest = MutableGame(board = on)
         val expected = mutableListOf<StandardPly>()
             .apply {
                 add(StandardPly(Side.WHITE, Piece.Pawn, "e2".loc(), "e3".loc()))
@@ -40,7 +40,7 @@ internal class GameTest {
 
     @Test
     fun `GIVEN default starting board WHEN getting plies for black THEN return all correct plies`() {
-        underTest = Game(board = on)
+        underTest = MutableGame(board = on)
         underTest.play(
             underTest.playablePlies("e2".loc()).first { it.to == "e4".loc() }
         )
@@ -62,7 +62,7 @@ internal class GameTest {
 
     @Test
     fun `WHEN playing a Fools Mate game THEN game ends in checkmate`() {
-        underTest = Game(board = on)
+        underTest = MutableGame(board = on)
         underTest.play("f2", "f3")
             .play("e7", "e6")
             .play("g2", "g4")
@@ -77,7 +77,7 @@ internal class GameTest {
 
     @Test
     fun `WHEN playing a Scholars Mate game THEN game ends in checkmate`() {
-        underTest = Game(board = on)
+        underTest = MutableGame(board = on)
         underTest.play("e2", "e4")
             .play("e7", "e5")
             .play("d1", "h5")
@@ -95,7 +95,7 @@ internal class GameTest {
 
     @Test
     fun `WHEN repeating position 3 times THEN game ends in draw`() {
-        underTest = Game(board = on)
+        underTest = MutableGame(board = on)
         underTest // Start with an inconsequential move
             .play("e2", "e4").play("e7", "e5")
             // Move the king forward and back
@@ -119,7 +119,7 @@ internal class GameTest {
             add(Piece.Queen, Side.WHITE, "g6".loc())
             add(Piece.King, Side.BLACK, "h8".loc())
         }
-        underTest = Game(board = board, turn = Side.BLACK)
+        underTest = MutableGame(board = board, turn = Side.BLACK)
 
         Locus.all { // No move from anywhere
             assertTrue(underTest.playablePlies(it).isEmpty())
@@ -135,7 +135,7 @@ internal class GameTest {
             add(Piece.Pawn, Side.BLACK, "f2".loc())
             add(Piece.King, Side.BLACK, "f3".loc())
         }
-        underTest = Game(board = board)
+        underTest = MutableGame(board = board)
 
         Locus.all { // No move from anywhere
             assertTrue(underTest.playablePlies(it).isEmpty())
@@ -185,7 +185,7 @@ internal class GameTest {
         pieces.forEach {
             board.add(it.first, it.second, it.third.loc())
         }
-        underTest = Game(board = board)
+        underTest = MutableGame(board = board)
 
         Locus.all { // No move from anywhere
             assertTrue(underTest.playablePlies(it).isEmpty())
@@ -197,7 +197,7 @@ internal class GameTest {
         )
     }
 
-    private fun Game.play(from: String, to: String): Game = apply {
+    private fun MutableGame.play(from: String, to: String): MutableGame = apply {
         play(
             playablePlies(from.loc()).firstOrNull { it.to == to.loc() }
                 ?: throw AssertionError("Wrong move")

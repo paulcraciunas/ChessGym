@@ -5,7 +5,7 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Rank
-import com.paulcraciunas.game.logic.impl.Game
+import com.paulcraciunas.game.logic.impl.MutableGame
 import com.paulcraciunas.game.logic.impl.MutableGameInfo
 import com.paulcraciunas.game.logic.impl.Puzzle
 import com.paulcraciunas.game.logic.impl.board.Board
@@ -67,7 +67,7 @@ internal class BinaryPuzzleReader @Inject constructor(
     }
 
     // Order here matters. Ye be warned
-    private fun ByteArray.loadGame(): Game {
+    private fun ByteArray.loadGame(): MutableGame {
         val board = loadBoard()
         val plieClock = get(int++).toInt()
         val moveIndex = get(int++).toInt()
@@ -81,7 +81,7 @@ internal class BinaryPuzzleReader @Inject constructor(
             moveIndex = moveIndex
         )
 
-        return Game(board = board, info = gameState)
+        return MutableGame(board = board, info = gameState)
     }
 
     private fun ByteArray.loadBoard(): Board {

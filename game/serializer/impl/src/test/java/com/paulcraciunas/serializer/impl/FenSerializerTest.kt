@@ -3,7 +3,7 @@ package com.paulcraciunas.serializer.impl
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.assertDefaultBoard
-import com.paulcraciunas.game.logic.impl.Game
+import com.paulcraciunas.game.logic.impl.MutableGame
 import com.paulcraciunas.game.logic.impl.plies.StandardPly
 import com.paulcraciunas.game.logic.loc
 import com.paulcraciunas.game.logic.plies.ExpectedPly
@@ -159,13 +159,13 @@ internal class FenSerializerTest {
     fun `WHEN serializing default starting position THEN fen string is correct`() {
         val fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
-        assertEquals(fen, underTest.of(Game()))
+        assertEquals(fen, underTest.of(MutableGame()))
     }
 
     @Test
     fun `WHEN serializing after pawn jump THEN fen string contains en-passent`() {
         val fen = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1"
-        val game = Game()
+        val game = MutableGame()
         game.play(game.playablePlies("e2".loc()).first { it.to == "e4".loc() })
 
         assertEquals(fen, underTest.of(game))

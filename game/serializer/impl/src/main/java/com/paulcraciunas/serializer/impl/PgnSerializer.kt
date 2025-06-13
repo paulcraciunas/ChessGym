@@ -12,7 +12,7 @@ import com.paulcraciunas.game.logic.api.board.toFile
 import com.paulcraciunas.game.logic.api.board.toRank
 import com.paulcraciunas.game.logic.api.state.GameInfo
 import com.paulcraciunas.game.logic.api.state.MetaData
-import com.paulcraciunas.game.logic.impl.Game
+import com.paulcraciunas.game.logic.impl.MutableGame
 import com.paulcraciunas.game.logic.impl.plies.Playable
 import com.paulcraciunas.serializer.api.SerializeException
 import com.paulcraciunas.serializer.api.Serializer
@@ -55,7 +55,7 @@ internal object PgnSerializer : Serializer {
             } ?: break
         }
         val remaining = lines.drop(idx).joinToString(separator = " ")
-        return Game(metaData = MetaData(headers)).apply {
+        return MutableGame(metaData = MetaData(headers)).apply {
             // Match moves
             moveSplitRegex.findAll(remaining).forEach { moves ->
                 // ignore part 0 - the move count
@@ -95,13 +95,13 @@ internal object PgnSerializer : Serializer {
     }.toString()
 }
 
-private fun Game.loadPly(plyString: String) = when {
+private fun MutableGame.loadPly(plyString: String) = when {
     kingSideRegex.matches(plyString) -> play(findCastlePly(state().turn, CastleType.KingSide))
     queenSideRegex.matches(plyString) -> play(findCastlePly(state().turn, CastleType.QueenSide))
     else -> play(findPly(plyString))
 }
 
-private fun Game.findCastlePly(side: Side, castle: CastleType): Playable {
+private fun MutableGame.findCastlePly(side: Side, castle: CastleType): Playable {
     val kingLoc = this.board().king(side)
         ?: throw SerializeException("Found castling move but can't find king for $side")
     val ply = playablePlies(kingLoc).find { it.to == castle.end(side) }
@@ -109,7 +109,7 @@ private fun Game.findCastlePly(side: Side, castle: CastleType): Playable {
     return ply
 }
 
-private fun Game.findPly(plyString: String): Playable {
+private fun MutableGame.findPly(plyString: String): Playable {
     // Nice thing about find is we can skip game annotations
     val bits = moveRegex.find(plyString) ?: throw SerializeException("Invalid move: $plyString")
     val to = Locus.from(bits.groupValues[4] + bits.groupValues[5])

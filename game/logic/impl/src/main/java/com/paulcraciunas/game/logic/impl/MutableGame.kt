@@ -16,7 +16,7 @@ import com.paulcraciunas.game.logic.impl.plies.Playable
 import com.paulcraciunas.game.logic.impl.plies.PlyFactory
 import com.paulcraciunas.game.logic.impl.plies.PromotionPly
 
-class Game(
+class MutableGame(
     private val board: IBoard = BoardFactory.defaultBoard(),
     private val settings: Settings = Settings(),
     private val metaData: MetaData = MetaData(),

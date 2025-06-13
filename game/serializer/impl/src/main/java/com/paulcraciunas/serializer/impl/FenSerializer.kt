@@ -10,7 +10,7 @@ import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.game.logic.api.state.GameInfo
-import com.paulcraciunas.game.logic.impl.Game
+import com.paulcraciunas.game.logic.impl.MutableGame
 import com.paulcraciunas.game.logic.impl.MutableGameInfo
 import com.paulcraciunas.game.logic.impl.board.Board
 import com.paulcraciunas.serializer.api.SerializeException
@@ -45,9 +45,9 @@ internal object FenSerializer : Serializer {
         return Pair(board, gameState)
     }
 
-    override fun from(gameString: String): Game {
+    override fun from(gameString: String): MutableGame {
         val (board, gameState) = serialize(gameString)
-        return Game(board = board, info = gameState)
+        return MutableGame(board = board, info = gameState)
     }
 
     override fun of(game: IGame): String = StringBuilder().apply {
