@@ -1,7 +1,7 @@
 package com.paulcraciunas.serializer.impl
 
 import com.paulcraciunas.game.logic.api.Ply
-import com.paulcraciunas.game.logic.api.IPuzzle
+import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.loc
 import com.paulcraciunas.serializer.impl.binary.BinaryAdapter
@@ -44,7 +44,7 @@ internal class MutablePuzzleTest {
                 puzzle.play(expectedMove!!) // Verify that we can play this move
             }
         }
-        assertEquals(IPuzzle.Result.Success, puzzle.isOver())
+        assertEquals(Puzzle.Result.Success, puzzle.isOver())
     }
 
     companion object {

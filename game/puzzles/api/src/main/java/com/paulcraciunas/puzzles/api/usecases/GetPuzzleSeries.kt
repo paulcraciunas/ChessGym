@@ -1,9 +1,9 @@
 package com.paulcraciunas.puzzles.api.usecases
 
-import com.paulcraciunas.game.logic.api.IPuzzle
+import com.paulcraciunas.game.logic.api.Puzzle
 
 interface GetPuzzleSeries {
-    suspend operator fun invoke(count: Int = COUNT, increment: Int = INCREMENT, from: Int = RATING_START): List<IPuzzle>
+    suspend operator fun invoke(count: Int = COUNT, increment: Int = INCREMENT, from: Int = RATING_START): List<Puzzle>
 
     companion object Defaults {
         const val RATING_START = 400

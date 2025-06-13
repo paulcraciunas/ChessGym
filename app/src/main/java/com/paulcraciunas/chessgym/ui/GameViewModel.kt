@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.paulcraciunas.chessgym.ui.board.BoardOrientation
 import com.paulcraciunas.chessgym.ui.model.BoardViewDataBuilder
-import com.paulcraciunas.game.logic.api.IPuzzle
+import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
@@ -31,8 +31,8 @@ class GameViewModel @Inject constructor(
     private var selection: Locus? = null
 
     // Backing state
-    private val _puzzleState = MutableStateFlow<IPuzzle?>(null)
-    val puzzleState: StateFlow<IPuzzle?> = _puzzleState.asStateFlow()
+    private val _puzzleState = MutableStateFlow<Puzzle?>(null)
+    val puzzleState: StateFlow<Puzzle?> = _puzzleState.asStateFlow()
     private val boardData = MutableStateFlow(builder.build())
     private var orientation = MutableStateFlow(BoardOrientation.White)
     val boardState = boardData.stateIn( // UI state exposed to the UI

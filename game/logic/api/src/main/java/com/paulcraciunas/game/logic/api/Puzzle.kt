@@ -4,7 +4,7 @@ import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
 
 // TODO Paul: clean up api. Also add rating somewhere
-interface IPuzzle {
+interface Puzzle {
     fun turn(): Side
     fun board(): IBoard
     fun isOver(): Result?

@@ -1,7 +1,7 @@
 package com.paulcraciunas.puzzles.impl.usecases
 
 import com.paulcraciunas.game.logic.api.Ply
-import com.paulcraciunas.game.logic.api.IPuzzle
+import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
@@ -46,7 +46,7 @@ internal class GetPuzzleSeriesImplTest {
     }
 
     private class FakeRepository : PuzzleRepository {
-        private val puzzles = mutableMapOf<Int, IPuzzle>()
+        private val puzzles = mutableMapOf<Int, Puzzle>()
 
         fun load(count: Int) {
             var rating = GetPuzzleSeries.RATING_START
@@ -56,8 +56,8 @@ internal class GetPuzzleSeriesImplTest {
             }
         }
 
-        override suspend fun get(count: Int): List<IPuzzle> {
-            val result = mutableListOf<IPuzzle>()
+        override suspend fun get(count: Int): List<Puzzle> {
+            val result = mutableListOf<Puzzle>()
             puzzles.values.forEachIndexed { index, iPuzzle ->
                 if (index < count) {
                     result.add(iPuzzle)
@@ -68,8 +68,8 @@ internal class GetPuzzleSeriesImplTest {
             return result
         }
 
-        override suspend fun getByRating(targetRating: Int): IPuzzle? = puzzles[targetRating]
-        override suspend fun getByRatingRange(min: Int, max: Int): IPuzzle? {
+        override suspend fun getByRating(targetRating: Int): Puzzle? = puzzles[targetRating]
+        override suspend fun getByRatingRange(min: Int, max: Int): Puzzle? {
             for (i in min until max) {
                 if (puzzles.contains(i)) {
                     return puzzles[i]
@@ -83,11 +83,11 @@ internal class GetPuzzleSeriesImplTest {
         override fun nextInt(from: Int, to: Int): Int = NEXT_INT
     }
 
-    private class PuzzleStub : IPuzzle {
+    private class PuzzleStub : Puzzle {
         override fun start() {}
         override fun turn(): Side = Side.WHITE
         override fun board(): IBoard = BoardFactory.defaultBoard()
-        override fun isOver(): IPuzzle.Result? = null
+        override fun isOver(): Puzzle.Result? = null
         override fun playablePlies(from: Locus): Collection<Ply> = emptyList()
         override fun play(ply: Ply) {}
         override fun resign() {}
