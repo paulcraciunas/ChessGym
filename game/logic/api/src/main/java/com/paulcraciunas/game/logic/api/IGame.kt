@@ -3,15 +3,15 @@ package com.paulcraciunas.game.logic.api
 import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.api.state.IGameState
+import com.paulcraciunas.game.logic.api.state.GameInfo
 import com.paulcraciunas.game.logic.api.state.MetaData
 
 interface IGame {
-    val state: IGameState
+    val state: GameInfo
 
     fun turn(): Side
     fun board(): IBoard
-    fun state(): IGameState
+    fun state(): GameInfo
     fun metaData(): MetaData
 
     fun allPlies(): List<Ply>

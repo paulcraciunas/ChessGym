@@ -10,7 +10,7 @@ import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.game.logic.api.board.toFile
 import com.paulcraciunas.game.logic.api.board.toRank
-import com.paulcraciunas.game.logic.api.state.IGameState
+import com.paulcraciunas.game.logic.api.state.GameInfo
 import com.paulcraciunas.game.logic.api.state.MetaData
 import com.paulcraciunas.game.logic.impl.Game
 import com.paulcraciunas.game.logic.impl.plies.Playable
@@ -34,7 +34,7 @@ internal object PgnSerializer : Serializer {
     private val moveSplitRegex = Regex("([0-9]+)\\.\\s?(\\S+)(?:\\s+(\\S+))?")
     private val endingRegex = Regex("(1-0|0-1|1/2-1/2)\$")
 
-    override fun serialize(gameString: String): Pair<IBoard, IGameState> {
+    override fun serialize(gameString: String): Pair<IBoard, GameInfo> {
         val game = from(gameString)
         return Pair(game.board(), game.state())
     }

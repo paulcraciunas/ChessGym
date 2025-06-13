@@ -9,7 +9,7 @@ import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank
-import com.paulcraciunas.game.logic.api.state.IGameState
+import com.paulcraciunas.game.logic.api.state.GameInfo
 import com.paulcraciunas.game.logic.impl.Game
 import com.paulcraciunas.game.logic.impl.GameState
 import com.paulcraciunas.game.logic.impl.board.Board
@@ -178,7 +178,7 @@ private fun String.loadCastling(): Pair<Set<CastleType>, Set<CastleType>> {
     return Pair(white, black)
 }
 
-private fun IGameState.castlingFen(): String = StringBuilder().apply {
+private fun GameInfo.castlingFen(): String = StringBuilder().apply {
     // Might be important that they're in the correct order
     if (whiteCastling.contains(CastleType.KingSide)) append('K')
     if (whiteCastling.contains(CastleType.QueenSide)) append('Q')

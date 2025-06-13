@@ -6,7 +6,7 @@ import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank
-import com.paulcraciunas.game.logic.api.state.IGameState
+import com.paulcraciunas.game.logic.api.state.GameInfo
 import com.paulcraciunas.serializer.api.PuzzleWriter
 import com.paulcraciunas.serializer.api.Serializer
 import com.paulcraciunas.serializer.impl.di.SerializerFen
@@ -118,7 +118,7 @@ internal class BinaryPuzzleWriter @Inject constructor(
     }
 
     // Order here matters. Ye be warned
-    private fun OutputStream.writeMetadata(state: IGameState) {
+    private fun OutputStream.writeMetadata(state: GameInfo) {
         write(state.plieClock) // don't care if it's above 127
         write(state.moveIndex) // don't care if it's above 127
         int = 0

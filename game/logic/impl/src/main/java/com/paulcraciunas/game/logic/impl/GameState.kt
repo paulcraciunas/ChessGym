@@ -5,7 +5,7 @@ import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.state.CheckCount
-import com.paulcraciunas.game.logic.api.state.IGameState
+import com.paulcraciunas.game.logic.api.state.GameInfo
 import com.paulcraciunas.game.logic.impl.plies.CastlePly
 import com.paulcraciunas.game.logic.impl.plies.StandardPly
 
@@ -17,7 +17,7 @@ data class GameState(
     override val blackCastling: Set<CastleType> = CastleType.entries.toSet(),
     override val plieClock: Int = 0, // Since last pawn move or capture
     override val moveIndex: Int = 1,
-): IGameState {
+): GameInfo {
     override fun castling(turn: Side): Set<CastleType> =
         if (turn == Side.WHITE) whiteCastling else blackCastling
 

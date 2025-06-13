@@ -20,7 +20,7 @@ import com.paulcraciunas.game.logic.api.Side
  */
 // TODO Paul: FIXME
 // This isn't needed. Moreover, the actual GameState can be moved to the Game class where it can be accessed by classes like Serializer
-interface IGameState {
+interface GameInfo {
     val turn: Side
     val lastPly: Ply?
     val inCheckCount: CheckCount
@@ -30,5 +30,5 @@ interface IGameState {
     val moveIndex: Int
 
     fun castling(turn: Side): Set<CastleType>
-    fun next(ply: Ply, checkCount: CheckCount): IGameState
+    fun next(ply: Ply, checkCount: CheckCount): GameInfo
 }
