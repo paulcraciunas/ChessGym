@@ -11,7 +11,7 @@ import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.game.logic.api.state.GameInfo
 import com.paulcraciunas.game.logic.impl.Game
-import com.paulcraciunas.game.logic.impl.GameState
+import com.paulcraciunas.game.logic.impl.MutableGameInfo
 import com.paulcraciunas.game.logic.impl.board.Board
 import com.paulcraciunas.serializer.api.SerializeException
 import com.paulcraciunas.serializer.api.Serializer
@@ -28,13 +28,13 @@ import com.paulcraciunas.serializer.api.Serializer
  * @see <a href="https://en.wikipedia.org/wiki/Forsyth–Edwards_Notation">FEN Wiki</a>
  **/
 internal object FenSerializer : Serializer {
-    override fun serialize(gameString: String): Pair<Board, GameState> {
+    override fun serialize(gameString: String): Pair<Board, MutableGameInfo> {
         val fenParts = gameString.fenParts()
         val rows = fenParts[0].rows()
 
         val board = Board().apply { loadPieces(rows) }
         val castling: Pair<Set<CastleType>, Set<CastleType>> = fenParts[2].loadCastling()
-        val gameState = GameState(
+        val gameState = MutableGameInfo(
             turn = fenParts[1].loadSide(),
             lastPly = fenParts[3].loadEnPassent(),
             whiteCastling = castling.first,

@@ -9,7 +9,7 @@ import com.paulcraciunas.game.logic.api.state.GameInfo
 import com.paulcraciunas.game.logic.impl.plies.CastlePly
 import com.paulcraciunas.game.logic.impl.plies.StandardPly
 
-data class GameState(
+data class MutableGameInfo(
     override val turn: Side = Side.WHITE,
     override val lastPly: Ply? = null,
     override val inCheckCount: CheckCount = CheckCount.None,
@@ -21,7 +21,7 @@ data class GameState(
     override fun castling(turn: Side): Set<CastleType> =
         if (turn == Side.WHITE) whiteCastling else blackCastling
 
-    override fun next(ply: Ply, checkCount: CheckCount): GameState = GameState(
+    override fun next(ply: Ply, checkCount: CheckCount): MutableGameInfo = MutableGameInfo(
         turn = turn.other(),
         lastPly = ply,
         inCheckCount = checkCount,

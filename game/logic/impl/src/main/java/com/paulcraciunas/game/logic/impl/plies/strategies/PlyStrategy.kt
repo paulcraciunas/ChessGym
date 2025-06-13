@@ -5,7 +5,7 @@ import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.state.CheckCount
-import com.paulcraciunas.game.logic.impl.GameState
+import com.paulcraciunas.game.logic.impl.MutableGameInfo
 import com.paulcraciunas.game.logic.impl.plies.Playable
 import com.paulcraciunas.game.logic.impl.plies.StandardPly
 
@@ -17,7 +17,7 @@ internal abstract class PlyStrategy {
     protected open fun canMoveInCheck(count: CheckCount): Boolean = count != CheckCount.Two
     protected open fun directions(): Collection<Next> = emptyList()
     protected open fun simpleMoves(): Collection<Next> = emptyList()
-    protected open fun MutableList<Playable>.addComplexPlies(from: Locus, on: IBoard, with: GameState) {}
+    protected open fun MutableList<Playable>.addComplexPlies(from: Locus, on: IBoard, with: MutableGameInfo) {}
 
     open fun canAttack(from: Locus, to: Locus, on: IBoard, turn: Side): Boolean {
         assert(on.has(piece, turn, from))
@@ -29,7 +29,7 @@ internal abstract class PlyStrategy {
         }.any { it.to == to }
     }
 
-    fun plies(from: Locus, on: IBoard, with: GameState): List<Playable> {
+    fun plies(from: Locus, on: IBoard, with: MutableGameInfo): List<Playable> {
         assert(on.has(piece, with.turn, from))
 
         return mutableListOf<Playable>().apply {

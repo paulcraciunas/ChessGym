@@ -5,7 +5,7 @@ import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.state.CheckCount
-import com.paulcraciunas.game.logic.impl.GameState
+import com.paulcraciunas.game.logic.impl.MutableGameInfo
 import com.paulcraciunas.game.logic.impl.plies.strategies.BishopPlyStrategy
 import com.paulcraciunas.game.logic.impl.plies.strategies.KingPlyStrategy
 import com.paulcraciunas.game.logic.impl.plies.strategies.KnightPlyStrategy
@@ -39,7 +39,7 @@ class PlyFactory {
         put(Piece.King, KingPlyStrategy())
     }
 
-    fun allLegalPlies(on: IBoard, with: GameState): Collection<Playable> =
+    fun allLegalPlies(on: IBoard, with: MutableGameInfo): Collection<Playable> =
         allPlies(on, with).filter { it.isValid(on) }
 
     fun checkCount(at: Locus, on: IBoard, turn: Side): CheckCount {
@@ -79,7 +79,7 @@ class PlyFactory {
         return !inCheck
     }
 
-    private fun allPlies(on: IBoard, with: GameState): MutableList<Playable> {
+    private fun allPlies(on: IBoard, with: MutableGameInfo): MutableList<Playable> {
         val allMoves = mutableListOf<Playable>()
         on.forEachPiece(with.turn) { piece, loc ->
             allMoves.addAll(strategies[piece]!!.plies(from = loc, on = on, with = with))

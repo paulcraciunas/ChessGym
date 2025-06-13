@@ -20,7 +20,7 @@ internal class EndingStrategy(
 ) {
     private val tempBoard = Board()
 
-    fun of(current: GameState): Result? = when {
+    fun of(current: MutableGameInfo): Result? = when {
         isCheckMate(current) -> Result.CheckMate
         isStaleMate(current) -> Result.StaleMate
         isDrawByMoveRule(current) -> Result.DrawByMoveRule
@@ -29,10 +29,10 @@ internal class EndingStrategy(
         else -> null
     }
 
-    private fun isCheckMate(with: GameState): Boolean =
+    private fun isCheckMate(with: MutableGameInfo): Boolean =
         with.inCheckCount != CheckCount.None && availablePlies.isEmpty()
 
-    private fun isStaleMate(with: GameState): Boolean =
+    private fun isStaleMate(with: MutableGameInfo): Boolean =
         with.inCheckCount == CheckCount.None && availablePlies.isEmpty()
 
     private fun isDrawByInsufficientMaterial(): Boolean {
@@ -66,7 +66,7 @@ internal class EndingStrategy(
         return false
     }
 
-    private fun isDrawByRepetition(current: GameState): Boolean {
+    private fun isDrawByRepetition(current: MutableGameInfo): Boolean {
         if (plies.size < settings.drawByRepetitionCount * 2) {
             return false
         }
@@ -85,7 +85,7 @@ internal class EndingStrategy(
         return false
     }
 
-    private fun isDrawByMoveRule(current: GameState): Boolean =
+    private fun isDrawByMoveRule(current: MutableGameInfo): Boolean =
         // TODO Paul: add tests for these scenarios
         current.plieClock == settings.drawByMoveRuleCount * 2
 }

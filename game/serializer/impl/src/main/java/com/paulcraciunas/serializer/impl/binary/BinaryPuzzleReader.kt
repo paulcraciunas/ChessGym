@@ -6,7 +6,7 @@ import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.game.logic.impl.Game
-import com.paulcraciunas.game.logic.impl.GameState
+import com.paulcraciunas.game.logic.impl.MutableGameInfo
 import com.paulcraciunas.game.logic.impl.Puzzle
 import com.paulcraciunas.game.logic.impl.board.Board
 import com.paulcraciunas.game.logic.impl.plies.Playable
@@ -72,7 +72,7 @@ internal class BinaryPuzzleReader @Inject constructor(
         val plieClock = get(int++).toInt()
         val moveIndex = get(int++).toInt()
         val metadata = loadMetadata()
-        val gameState = GameState(
+        val gameState = MutableGameInfo(
             turn = metadata.side,
             lastPly = metadata.enPassent,
             whiteCastling = metadata.whiteCastling,

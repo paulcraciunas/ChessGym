@@ -5,7 +5,7 @@ import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.state.CheckCount
-import com.paulcraciunas.game.logic.impl.GameState
+import com.paulcraciunas.game.logic.impl.MutableGameInfo
 import com.paulcraciunas.game.logic.impl.plies.CastlePly
 import com.paulcraciunas.game.logic.impl.plies.Playable
 
@@ -25,7 +25,7 @@ internal class KingPlyStrategy : PlyStrategy() {
     override fun MutableList<Playable>.addComplexPlies(
         from: Locus,
         on: IBoard,
-        with: GameState,
+        with: MutableGameInfo,
     ) {
         if (with.inCheckCount == CheckCount.None) {
             with.castling(with.turn).forEach { castle ->

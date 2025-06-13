@@ -20,9 +20,9 @@ class Game(
     private val board: IBoard = BoardFactory.defaultBoard(),
     private val settings: Settings = Settings(),
     private val metaData: MetaData = MetaData(),
-    override val state: GameState = GameState(),
+    override val state: MutableGameInfo = MutableGameInfo(),
 ) : IGame {
-    constructor(board: IBoard, turn: Side) : this(board = board, state = GameState(turn = turn))
+    constructor(board: IBoard, turn: Side) : this(board = board, state = MutableGameInfo(turn = turn))
 
     private val availablePlies = mutableListOf<Playable>()
     private val plies = mutableListOf<Playable>()
@@ -40,7 +40,7 @@ class Game(
 
     override fun turn(): Side = currentState.turn
     override fun board(): IBoard = board
-    override fun state(): GameState = currentState
+    override fun state(): MutableGameInfo = currentState
     override fun metaData() = metaData
 
     override fun allPlies(): List<Playable> = plies
