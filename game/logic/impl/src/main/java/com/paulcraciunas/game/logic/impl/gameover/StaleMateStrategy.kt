@@ -1,8 +1,8 @@
 package com.paulcraciunas.game.logic.impl.gameover
 
+import com.paulcraciunas.game.logic.api.Game
 import com.paulcraciunas.game.logic.api.Result
 import com.paulcraciunas.game.logic.api.state.CheckCount
-import com.paulcraciunas.game.logic.api.v2.Game
 
 internal class StaleMateStrategy : GameOverStrategy {
     override fun invoke(of: Game): Game.GameState =

@@ -1,7 +1,7 @@
 package com.paulcraciunas.game.logic.impl.gameover
 
+import com.paulcraciunas.game.logic.api.Game
 import com.paulcraciunas.game.logic.api.Result
-import com.paulcraciunas.game.logic.api.v2.Game
 
 internal class DrawByMoveRuleStrategy : GameOverStrategy {
 

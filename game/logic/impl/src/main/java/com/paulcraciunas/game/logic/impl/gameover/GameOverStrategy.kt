@@ -1,6 +1,6 @@
 package com.paulcraciunas.game.logic.impl.gameover
 
-import com.paulcraciunas.game.logic.api.v2.Game
+import com.paulcraciunas.game.logic.api.Game
 import com.paulcraciunas.game.logic.impl.board.Board
 
 fun interface GameOverStrategy {

@@ -1,10 +1,10 @@
 package com.paulcraciunas.game.logic.impl.gameover
 
+import com.paulcraciunas.game.logic.api.Game
 import com.paulcraciunas.game.logic.api.Result
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.api.v2.Game
 import java.util.EnumMap
 
 // TODO Paul: I think this has bugs. It counts the pieces from both sides together when evaluating the sufficient material
