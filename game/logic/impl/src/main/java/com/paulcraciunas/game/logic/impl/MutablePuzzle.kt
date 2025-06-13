@@ -8,7 +8,7 @@ import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
 import java.util.Queue
 
-class Puzzle(
+class MutablePuzzle(
     private val game: Game,
     private val moves: Queue<String>
 ) : IPuzzle {

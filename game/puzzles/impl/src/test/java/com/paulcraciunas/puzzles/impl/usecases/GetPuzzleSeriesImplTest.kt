@@ -5,7 +5,6 @@ import com.paulcraciunas.game.logic.api.IPuzzle
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
-import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.impl.board.BoardFactory
 import com.paulcraciunas.puzzles.api.PuzzleRepository
 import com.paulcraciunas.puzzles.api.usecases.GetPuzzleSeries
@@ -85,12 +84,12 @@ internal class GetPuzzleSeriesImplTest {
     }
 
     private class PuzzleStub : IPuzzle {
+        override fun start() {}
         override fun turn(): Side = Side.WHITE
         override fun board(): IBoard = BoardFactory.defaultBoard()
         override fun isOver(): IPuzzle.Result? = null
         override fun playablePlies(from: Locus): Collection<Ply> = emptyList()
         override fun play(ply: Ply) {}
-        override fun promote(piece: Piece, on: Ply) {}
         override fun resign() {}
     }
 

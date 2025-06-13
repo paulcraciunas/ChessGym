@@ -13,7 +13,7 @@ import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 
-internal class PuzzleTest {
+internal class MutablePuzzleTest {
     private val adapter = BinaryAdapter()
     private val reader = BinaryPuzzleReader(FenSerializer, adapter)
     private val writer = BinaryPuzzleWriter(FenSerializer, adapter)

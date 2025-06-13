@@ -7,7 +7,7 @@ import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.game.logic.impl.MutableGame
 import com.paulcraciunas.game.logic.impl.MutableGameInfo
-import com.paulcraciunas.game.logic.impl.Puzzle
+import com.paulcraciunas.game.logic.impl.MutablePuzzle
 import com.paulcraciunas.game.logic.impl.board.Board
 import com.paulcraciunas.game.logic.impl.plies.Playable
 import com.paulcraciunas.serializer.api.PuzzleReader
@@ -61,9 +61,9 @@ internal class BinaryPuzzleReader @Inject constructor(
         }.joinToString(",")
     }
 
-    override fun readPuzzle(bytes: ByteArray): Puzzle {
+    override fun readPuzzle(bytes: ByteArray): MutablePuzzle {
         int = 0
-        return Puzzle(bytes.loadGame(), bytes.loadMoves())
+        return MutablePuzzle(bytes.loadGame(), bytes.loadMoves())
     }
 
     // Order here matters. Ye be warned
