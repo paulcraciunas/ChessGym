@@ -4,5 +4,5 @@ import com.paulcraciunas.game.logic.api.Puzzle
 
 interface PuzzleReader {
     fun read(bytes: ByteArray): String
-    fun readPuzzle(bytes: ByteArray): Puzzle
+    fun readPuzzle(rating: Int, bytes: ByteArray): Puzzle
 }

@@ -4,8 +4,10 @@ import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.IBoard
-import com.paulcraciunas.game.logic.api.board.Locus
-import com.paulcraciunas.game.logic.impl.board.BoardFactory
+import com.paulcraciunas.game.logic.api.board.Piece
+import com.paulcraciunas.game.logic.api.state.GameInfo
+import com.paulcraciunas.game.logic.impl.MutableGameInfo
+import com.paulcraciunas.game.logic.impl.board.Board
 import com.paulcraciunas.puzzles.api.PuzzleRepository
 import com.paulcraciunas.puzzles.api.usecases.GetPuzzleSeries
 import com.paulcraciunas.puzzles.impl.impl.RandomFactory
@@ -84,13 +86,16 @@ internal class GetPuzzleSeriesImplTest {
     }
 
     private class PuzzleStub : Puzzle {
+        override val rating: Int = 420
+        override val player: Side = Side.WHITE
+        override val state: Puzzle.State = Puzzle.State.Idle
+        override val info: GameInfo = MutableGameInfo()
+        override val board: IBoard = Board()
+
         override fun start() {}
-        override fun turn(): Side = Side.WHITE
-        override fun board(): IBoard = BoardFactory.defaultBoard()
-        override fun isOver(): Puzzle.Result? = null
-        override fun playablePlies(from: Locus): Collection<Ply> = emptyList()
         override fun play(ply: Ply) {}
-        override fun resign() {}
+        override fun abandon() {}
+        override fun hint(): Piece = Piece.King
     }
 
     private companion object {

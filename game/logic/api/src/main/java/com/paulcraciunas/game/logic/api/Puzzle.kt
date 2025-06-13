@@ -1,20 +1,24 @@
 package com.paulcraciunas.game.logic.api
 
 import com.paulcraciunas.game.logic.api.board.IBoard
-import com.paulcraciunas.game.logic.api.board.Locus
+import com.paulcraciunas.game.logic.api.board.Piece
+import com.paulcraciunas.game.logic.api.state.GameInfo
 
-// TODO Paul: clean up api. Also add rating somewhere
 interface Puzzle {
-    fun turn(): Side
-    fun board(): IBoard
-    fun isOver(): Result?
-    fun playablePlies(from: Locus): Collection<Ply>
+    val rating: Int
+    val player: Side
+    val state: State
+    val info: GameInfo
+    val board: IBoard
 
     fun start()
     fun play(ply: Ply)
-    fun resign()
+    fun abandon()
+    fun hint(): Piece
 
-    enum class Result {
+    enum class State {
+        Idle,
+        InProgress,
         Failed,
         Success
     }

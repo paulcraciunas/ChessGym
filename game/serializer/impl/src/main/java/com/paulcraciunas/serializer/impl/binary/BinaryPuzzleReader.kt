@@ -1,6 +1,7 @@
 package com.paulcraciunas.serializer.impl.binary
 
 import com.paulcraciunas.game.logic.api.CastleType
+import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
@@ -10,6 +11,7 @@ import com.paulcraciunas.game.logic.impl.MutableGameInfo
 import com.paulcraciunas.game.logic.impl.MutablePuzzle
 import com.paulcraciunas.game.logic.impl.board.Board
 import com.paulcraciunas.game.logic.impl.plies.Playable
+import com.paulcraciunas.game.logic.impl.plies.PlyFactory
 import com.paulcraciunas.serializer.api.PuzzleReader
 import com.paulcraciunas.serializer.api.Serializer
 import com.paulcraciunas.serializer.impl.di.SerializerFen
@@ -56,18 +58,28 @@ internal class BinaryPuzzleReader @Inject constructor(
     override fun read(bytes: ByteArray): String {
         int = 0
         return mutableListOf<String>().apply {
-            add(serializer.of(bytes.loadGame()))
+            add(serializer.of(bytes.loadData().toGame()))
             add(bytes.loadMoves().joinToString(" ")) // separate moves by spaces
         }.joinToString(",")
     }
 
-    override fun readPuzzle(bytes: ByteArray): MutablePuzzle {
+    override fun readPuzzle(rating: Int, bytes: ByteArray): MutablePuzzle {
         int = 0
-        return MutablePuzzle(bytes.loadGame(), bytes.loadMoves())
+        val (board, info) = bytes.loadData()
+
+        return MutablePuzzle(
+            rating = rating,
+            player = info.turn.other(), // First move is the opponent, so the player can see the last move
+            state = Puzzle.State.Idle,
+            info = info,
+            board = board,
+            moves = bytes.loadMoves(),
+            plyFactory = PlyFactory(),
+        )
     }
 
     // Order here matters. Ye be warned
-    private fun ByteArray.loadGame(): MutableGame {
+    private fun ByteArray.loadData(): Pair<Board, MutableGameInfo> {
         val board = loadBoard()
         val plieClock = get(int++).toInt()
         val moveIndex = get(int++).toInt()
@@ -81,7 +93,7 @@ internal class BinaryPuzzleReader @Inject constructor(
             moveIndex = moveIndex
         )
 
-        return MutableGame(board = board, info = gameState)
+        return Pair(board, gameState)
     }
 
     private fun ByteArray.loadBoard(): Board {
@@ -164,3 +176,5 @@ internal class BinaryPuzzleReader @Inject constructor(
         return movesList
     }
 }
+
+private fun Pair<Board, MutableGameInfo>.toGame() = MutableGame(board = first, info = second)
