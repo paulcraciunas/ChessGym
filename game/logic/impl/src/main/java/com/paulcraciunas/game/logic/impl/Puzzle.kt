@@ -1,6 +1,6 @@
 package com.paulcraciunas.game.logic.impl
 
-import com.paulcraciunas.game.logic.api.IGame
+import com.paulcraciunas.game.logic.api.Game
 import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.IPuzzle
 import com.paulcraciunas.game.logic.api.Side
@@ -10,7 +10,7 @@ import com.paulcraciunas.game.logic.api.board.Piece
 import java.util.Queue
 
 class Puzzle(
-    private val game: IGame,
+    private val game: Game,
     private val moves: Queue<String>
 ) : IPuzzle {
     private var result: IPuzzle.Result? = null

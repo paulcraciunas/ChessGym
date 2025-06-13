@@ -1,7 +1,7 @@
 package com.paulcraciunas.serializer.impl
 
 import com.paulcraciunas.game.logic.api.CastleType
-import com.paulcraciunas.game.logic.api.IGame
+import com.paulcraciunas.game.logic.api.Game
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.IBoard
@@ -39,7 +39,7 @@ internal object PgnSerializer : Serializer {
         return Pair(game.board(), game.state())
     }
 
-    override fun from(gameString: String): IGame {
+    override fun from(gameString: String): Game {
         // TODO Paul: this is horrendously slow
         // TODO Paul: rewrite this without regex
         val lines = gameString.replace(endingRegex, "")
@@ -75,7 +75,7 @@ internal object PgnSerializer : Serializer {
         }
     }
 
-    override fun of(game: IGame): String = StringBuilder().apply {
+    override fun of(game: Game): String = StringBuilder().apply {
         MetaData.Header.entries.forEach { header ->
             game.metaData().data(header)?.let { value ->
                 append("[$header \"$value\"]\n")

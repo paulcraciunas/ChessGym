@@ -1,6 +1,6 @@
 package com.paulcraciunas.game.logic.impl
 
-import com.paulcraciunas.game.logic.api.IGame
+import com.paulcraciunas.game.logic.api.Game
 import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Result
 import com.paulcraciunas.game.logic.api.Side
@@ -21,7 +21,7 @@ class MutableGame(
     private val settings: Settings = Settings(),
     private val metaData: MetaData = MetaData(),
     override val info: MutableGameInfo = MutableGameInfo(),
-) : IGame {
+) : Game {
     constructor(board: IBoard, turn: Side) : this(board = board, info = MutableGameInfo(turn = turn))
 
     private val plies = mutableListOf<Playable>()

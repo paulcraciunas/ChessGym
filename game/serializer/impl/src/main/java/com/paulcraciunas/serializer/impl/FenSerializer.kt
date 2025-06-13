@@ -1,7 +1,7 @@
 package com.paulcraciunas.serializer.impl
 
 import com.paulcraciunas.game.logic.api.CastleType
-import com.paulcraciunas.game.logic.api.IGame
+import com.paulcraciunas.game.logic.api.Game
 import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File
@@ -50,7 +50,7 @@ internal object FenSerializer : Serializer {
         return MutableGame(board = board, info = gameState)
     }
 
-    override fun of(game: IGame): String = StringBuilder().apply {
+    override fun of(game: Game): String = StringBuilder().apply {
         append(game.board().toFen()).append(" ")
         append(if (game.state().turn == Side.WHITE) 'w' else 'b').append(" ")
         append(game.state().castlingFen()).append(" ")
