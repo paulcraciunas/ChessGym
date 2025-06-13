@@ -1,5 +1,6 @@
 package com.paulcraciunas.game.logic
 
+import com.paulcraciunas.game.logic.api.Game
 import com.paulcraciunas.game.logic.api.Result
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
@@ -10,7 +11,6 @@ import com.paulcraciunas.game.logic.impl.board.BoardFactory
 import com.paulcraciunas.game.logic.impl.plies.StandardPly
 import com.paulcraciunas.game.logic.plies.ExpectedPly
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
@@ -21,18 +21,18 @@ internal class MutableGameTest {
 
     @Test
     fun `GIVEN default starting board WHEN getting plies for white THEN return all correct plies`() {
-        underTest = MutableGame(board = on)
+        underTest = MutableGame(board = on).apply { start() }
         val expected = mutableListOf<StandardPly>()
             .apply {
                 add(StandardPly(Side.WHITE, Piece.Pawn, "e2".loc(), "e3".loc()))
                 add(StandardPly(Side.WHITE, Piece.Pawn, "e2".loc(), "e4".loc()))
             }.map { ExpectedPly(it) }
 
-        val actual = underTest.playablePlies("e2".loc())
+        val actual = underTest.info.plies("e2".loc())
             .map { ExpectedPly(it) }
 
-        assertEquals(Side.WHITE, underTest.turn())
-        assertNull(underTest.isOver())
+        assertEquals(Side.WHITE, underTest.info.turn)
+        assertEquals(Game.GameState.InProgress, underTest.state)
         assertEquals(expected.size, actual.size)
         assertTrue(expected.containsAll(actual))
         assertTrue(actual.containsAll(expected))
@@ -40,9 +40,9 @@ internal class MutableGameTest {
 
     @Test
     fun `GIVEN default starting board WHEN getting plies for black THEN return all correct plies`() {
-        underTest = MutableGame(board = on)
+        underTest = MutableGame(board = on).apply { start() }
         underTest.play(
-            underTest.playablePlies("e2".loc()).first { it.to == "e4".loc() }
+            underTest.info.plies("e2".loc()).first { it.to == "e4".loc() }
         )
         val expected = mutableListOf<StandardPly>()
             .apply {
@@ -50,11 +50,11 @@ internal class MutableGameTest {
                 add(StandardPly(Side.BLACK, Piece.Pawn, "e7".loc(), "e5".loc()))
             }.map { ExpectedPly(it) }
 
-        val actual = underTest.playablePlies("e7".loc())
+        val actual = underTest.info.plies("e7".loc())
             .map { ExpectedPly(it) }
 
-        assertEquals(Side.BLACK, underTest.turn())
-        assertNull(underTest.isOver())
+        assertEquals(Side.BLACK, underTest.info.turn)
+        assertEquals(Game.GameState.InProgress, underTest.state)
         assertEquals(expected.size, actual.size)
         assertTrue(expected.containsAll(actual))
         assertTrue(actual.containsAll(expected))
@@ -62,22 +62,22 @@ internal class MutableGameTest {
 
     @Test
     fun `WHEN playing a Fools Mate game THEN game ends in checkmate`() {
-        underTest = MutableGame(board = on)
+        underTest = MutableGame(board = on).apply { start() }
         underTest.play("f2", "f3")
             .play("e7", "e6")
             .play("g2", "g4")
             .play("d8", "h4")
 
         Locus.all { // No move from anywhere
-            assertTrue(underTest.playablePlies(it).isEmpty())
+            assertTrue(underTest.info.plies(it).isEmpty())
         }
-        assertEquals(Side.WHITE, underTest.turn())
-        assertEquals(com.paulcraciunas.game.logic.api.Result.CheckMate, underTest.isOver())
+        assertEquals(Side.WHITE, underTest.info.turn)
+        assertEquals(Game.GameState.Finished(Result.CheckMate), underTest.state)
     }
 
     @Test
     fun `WHEN playing a Scholars Mate game THEN game ends in checkmate`() {
-        underTest = MutableGame(board = on)
+        underTest = MutableGame(board = on).apply { start() }
         underTest.play("e2", "e4")
             .play("e7", "e5")
             .play("d1", "h5")
@@ -87,15 +87,15 @@ internal class MutableGameTest {
             .play("h5", "f7")
 
         Locus.all { // No move from anywhere
-            assertTrue(underTest.playablePlies(it).isEmpty())
+            assertTrue(underTest.info.plies(it).isEmpty())
         }
-        assertEquals(Side.BLACK, underTest.turn())
-        assertEquals(Result.CheckMate, underTest.isOver())
+        assertEquals(Side.BLACK, underTest.info.turn)
+        assertEquals(Game.GameState.Finished(Result.CheckMate), underTest.state)
     }
 
     @Test
     fun `WHEN repeating position 3 times THEN game ends in draw`() {
-        underTest = MutableGame(board = on)
+        underTest = MutableGame(board = on).apply { start() }
         underTest // Start with an inconsequential move
             .play("e2", "e4").play("e7", "e5")
             // Move the king forward and back
@@ -106,10 +106,10 @@ internal class MutableGameTest {
             .play("f3", "g1").play("c6", "b8")
 
         Locus.all { // No move from anywhere
-            assertTrue(underTest.playablePlies(it).isEmpty())
+            assertTrue(underTest.info.plies(it).isEmpty())
         }
-        assertEquals(Side.WHITE, underTest.turn())
-        assertEquals(Result.DrawByRepetition, underTest.isOver())
+        assertEquals(Side.WHITE, underTest.info.turn)
+        assertEquals(Game.GameState.Finished(Result.DrawByRepetition), underTest.state)
     }
 
     @Test
@@ -119,13 +119,13 @@ internal class MutableGameTest {
             add(Piece.Queen, Side.WHITE, "g6".loc())
             add(Piece.King, Side.BLACK, "h8".loc())
         }
-        underTest = MutableGame(board = board, turn = Side.BLACK)
+        underTest = MutableGame(board = board, turn = Side.BLACK).apply { start() }
 
         Locus.all { // No move from anywhere
-            assertTrue(underTest.playablePlies(it).isEmpty())
+            assertTrue(underTest.info.plies(it).isEmpty())
         }
-        assertEquals(Side.BLACK, underTest.turn())
-        assertEquals(Result.StaleMate, underTest.isOver())
+        assertEquals(Side.BLACK, underTest.info.turn)
+        assertEquals(Game.GameState.Finished(Result.StaleMate), underTest.state)
     }
 
     @Test
@@ -135,13 +135,13 @@ internal class MutableGameTest {
             add(Piece.Pawn, Side.BLACK, "f2".loc())
             add(Piece.King, Side.BLACK, "f3".loc())
         }
-        underTest = MutableGame(board = board)
+        underTest = MutableGame(board = board).apply { start() }
 
         Locus.all { // No move from anywhere
-            assertTrue(underTest.playablePlies(it).isEmpty())
+            assertTrue(underTest.info.plies(it).isEmpty())
         }
-        assertEquals(Side.WHITE, underTest.turn())
-        assertEquals(Result.StaleMate, underTest.isOver())
+        assertEquals(Side.WHITE, underTest.info.turn)
+        assertEquals(Game.GameState.Finished(Result.StaleMate), underTest.state)
     }
 
     @Test
@@ -185,21 +185,18 @@ internal class MutableGameTest {
         pieces.forEach {
             board.add(it.first, it.second, it.third.loc())
         }
-        underTest = MutableGame(board = board)
+        underTest = MutableGame(board = board).apply { start() }
 
         Locus.all { // No move from anywhere
-            assertTrue(underTest.playablePlies(it).isEmpty())
+            assertTrue(underTest.info.plies(it).isEmpty())
         }
-        assertEquals(Side.WHITE, underTest.turn())
-        assertEquals(
-            Result.DrawByInsufficientMaterial,
-            underTest.isOver()
-        )
+        assertEquals(Side.WHITE, underTest.info.turn)
+        assertEquals(Game.GameState.Finished(Result.DrawByInsufficientMaterial), underTest.state)
     }
 
     private fun MutableGame.play(from: String, to: String): MutableGame = apply {
         play(
-            playablePlies(from.loc()).firstOrNull { it.to == to.loc() }
+            info.plies(from.loc()).firstOrNull { it.to == to.loc() }
                 ?: throw AssertionError("Wrong move")
         )
     }

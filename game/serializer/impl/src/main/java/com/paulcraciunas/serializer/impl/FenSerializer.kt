@@ -51,12 +51,12 @@ internal object FenSerializer : Serializer {
     }
 
     override fun of(game: Game): String = StringBuilder().apply {
-        append(game.board().toFen()).append(" ")
-        append(if (game.state().turn == Side.WHITE) 'w' else 'b').append(" ")
-        append(game.state().castlingFen()).append(" ")
-        append(game.state().lastPly?.toEnPassentFen() ?: MISSING).append(" ")
-        append(game.state().plieClock).append(" ")
-        append(game.state().moveIndex)
+        append(game.board.toFen()).append(" ")
+        append(if (game.info.turn == Side.WHITE) 'w' else 'b').append(" ")
+        append(game.info.castlingFen()).append(" ")
+        append(game.info.lastPly?.toEnPassentFen() ?: MISSING).append(" ")
+        append(game.info.plieClock).append(" ")
+        append(game.info.moveIndex)
     }.toString()
 }
 

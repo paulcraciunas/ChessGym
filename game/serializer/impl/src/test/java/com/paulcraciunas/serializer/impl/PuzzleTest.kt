@@ -4,6 +4,9 @@ import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.IPuzzle
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.loc
+import com.paulcraciunas.serializer.impl.binary.BinaryAdapter
+import com.paulcraciunas.serializer.impl.binary.BinaryPuzzleReader
+import com.paulcraciunas.serializer.impl.binary.BinaryPuzzleWriter
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.assertDoesNotThrow
@@ -11,14 +14,14 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 
 internal class PuzzleTest {
-    private val adapter = com.paulcraciunas.serializer.impl.binary.BinaryAdapter()
-    private val reader = com.paulcraciunas.serializer.impl.binary.BinaryPuzzleReader(FenSerializer, adapter)
-    private val writer = com.paulcraciunas.serializer.impl.binary.BinaryPuzzleWriter(FenSerializer, adapter)
+    private val adapter = BinaryAdapter()
+    private val reader = BinaryPuzzleReader(FenSerializer, adapter)
+    private val writer = BinaryPuzzleWriter(FenSerializer, adapter)
 
     @ParameterizedTest(name = "Checking puzzle {0}")
     @MethodSource("fenPuzzles")
     fun `WHEN serializing a loaded game THEN contents are identical`(fenGame: String) {
-        val puzzle = reader.readPuzzle(writer.write(fenGame))
+        val puzzle = reader.readPuzzle(writer.write(fenGame)).apply { start() }
         val moves = fenGame.split(',')[1].split(' ')
         var from: String
         var to: String

@@ -7,6 +7,7 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.state.CheckCount
 import com.paulcraciunas.game.logic.api.state.MetaData
 import com.paulcraciunas.game.logic.impl.board.Board
+import com.paulcraciunas.game.logic.impl.board.BoardFactory
 import com.paulcraciunas.game.logic.impl.gameover.CheckMateStrategy
 import com.paulcraciunas.game.logic.impl.gameover.DrawByInsufficientMaterialStrategy
 import com.paulcraciunas.game.logic.impl.gameover.DrawByMoveRuleStrategy
@@ -20,12 +21,12 @@ class MutableGame(
     override val metadata: MetaData = MetaData(),
     override val rating: Int? = null,
     override val info: MutableGameInfo = MutableGameInfo(),
-    override val board: Board = Board(),
+    override val board: Board = BoardFactory.defaultBoard(),
     override var state: Game.GameState = Game.GameState.Ready,
     override val history: MutableList<Playable> = mutableListOf(),
     private val plyFactory: PlyFactory = PlyFactory(),
 ) : Game {
-//    constructor(board: Board, turn: Side) : this(board = board, info = MutableGameInfo(turn = turn), plyFactory = PlyFactory())
+    constructor(board: Board, turn: Side) : this(board = board, info = MutableGameInfo(turn = turn))
 
     override fun start() {
         assert(state == Game.GameState.Ready)
@@ -71,6 +72,9 @@ class MutableGame(
             if (state == Game.GameState.InProgress) {
                 state = it(this)
             }
+        }
+        if (state != Game.GameState.InProgress) {
+            info.plies.clear()
         }
     }
 

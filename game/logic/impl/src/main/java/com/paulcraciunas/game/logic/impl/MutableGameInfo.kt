@@ -22,7 +22,7 @@ data class MutableGameInfo(
     override val plies: MutableList<Playable> = mutableListOf()
 ) : GameInfo {
 
-    override fun plies(from: Locus): Collection<Ply> = plies.filter { it.from == from }
+    override fun plies(from: Locus): List<Playable> = plies.filter { it.from == from }
 
     override fun castling(turn: Side): Set<CastleType> =
         if (turn == Side.WHITE) whiteCastling else blackCastling

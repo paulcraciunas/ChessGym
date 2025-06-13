@@ -2,7 +2,6 @@ package com.paulcraciunas.game.logic.api
 
 import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
-import com.paulcraciunas.game.logic.api.board.Piece
 
 // TODO Paul: clean up api. Also add rating somewhere
 interface IPuzzle {
@@ -11,6 +10,7 @@ interface IPuzzle {
     fun isOver(): Result?
     fun playablePlies(from: Locus): Collection<Ply>
 
+    fun start()
     fun play(ply: Ply)
     fun resign()
 

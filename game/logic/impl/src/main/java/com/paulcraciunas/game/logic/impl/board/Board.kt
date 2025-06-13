@@ -26,7 +26,7 @@ data class Board(
         }
     }
 
-    override fun from(other: IBoard): IBoard = apply {
+    override fun from(other: IBoard): Board = apply {
         Locus.all {
             board[it.rank.dec()][it.file.dec()] = other.at(it.file, it.rank)
         }

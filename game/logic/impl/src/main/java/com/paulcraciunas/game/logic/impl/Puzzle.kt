@@ -20,6 +20,10 @@ class Puzzle(
     override fun playablePlies(from: Locus): Collection<Ply> =
         game.info.plies(from)
 
+    override fun start() {
+        game.start()
+    }
+
     override fun play(ply: Ply) {
         assert(moves.isNotEmpty())
         assert(result == null)

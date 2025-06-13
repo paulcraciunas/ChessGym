@@ -1,5 +1,6 @@
 package com.paulcraciunas.serializer.impl
 
+import com.paulcraciunas.game.logic.api.Game
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.assertDefaultBoard
@@ -9,7 +10,6 @@ import com.paulcraciunas.game.logic.loc
 import com.paulcraciunas.game.logic.plies.ExpectedPly
 import com.paulcraciunas.serializer.api.SerializeException
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
@@ -117,8 +117,8 @@ internal class FenSerializerTest {
     fun `WHEN loading default starting position THEN board is correct`() {
         val fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
-        val game = underTest.from(fen)
-        val board = game.board()
+        val game = underTest.from(fen).apply { start() }
+        val board = game.board
 
         val expectedPlies = mutableListOf<StandardPly>()
             .apply {
@@ -126,12 +126,12 @@ internal class FenSerializerTest {
                 add(StandardPly(Side.WHITE, Piece.Pawn, "e2".loc(), "e4".loc()))
             }.map { ExpectedPly(it) }
 
-        val actualPlies = game.playablePlies("e2".loc())
+        val actualPlies = game.info.plies("e2".loc())
             .map { ExpectedPly(it) }
 
         assertDefaultBoard(board)
-        assertEquals(Side.WHITE, game.turn())
-        assertNull(game.isOver())
+        assertEquals(Side.WHITE, game.info.turn)
+        assertEquals(Game.GameState.InProgress, game.state)
         assertEquals(expectedPlies.size, actualPlies.size)
         assertTrue(expectedPlies.containsAll(actualPlies))
         assertTrue(actualPlies.containsAll(expectedPlies))
@@ -143,9 +143,9 @@ internal class FenSerializerTest {
 
         val game = underTest.from(fen)
 
-        assertDefaultBoard(game.board())
-        assertTrue(game.state().whiteCastling.isEmpty())
-        assertTrue(game.state().blackCastling.isEmpty())
+        assertDefaultBoard(game.board)
+        assertTrue(game.info.whiteCastling.isEmpty())
+        assertTrue(game.info.blackCastling.isEmpty())
     }
 
     @Test
@@ -165,8 +165,8 @@ internal class FenSerializerTest {
     @Test
     fun `WHEN serializing after pawn jump THEN fen string contains en-passent`() {
         val fen = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1"
-        val game = MutableGame()
-        game.play(game.playablePlies("e2".loc()).first { it.to == "e4".loc() })
+        val game = MutableGame().apply { start() }
+        game.play(game.info.plies("e2".loc()).first { it.to == "e4".loc() })
 
         assertEquals(fen, underTest.of(game))
     }

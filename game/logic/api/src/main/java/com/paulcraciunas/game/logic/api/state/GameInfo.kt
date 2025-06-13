@@ -27,9 +27,9 @@ interface GameInfo {
     val blackCastling: Set<CastleType>
     val plieClock: Int // Since last pawn move or capture
     val moveIndex: Int
-    val plies: Collection<Ply>
+    val plies: List<Ply>
 
-    fun plies(from: Locus): Collection<Ply>
+    fun plies(from: Locus): List<Ply>
 
     fun castling(turn: Side): Set<CastleType>
 }

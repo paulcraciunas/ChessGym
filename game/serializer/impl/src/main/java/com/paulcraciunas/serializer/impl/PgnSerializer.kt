@@ -36,7 +36,7 @@ internal object PgnSerializer : Serializer {
 
     override fun serialize(gameString: String): Pair<IBoard, GameInfo> {
         val game = from(gameString)
-        return Pair(game.board(), game.state())
+        return Pair(game.board, game.info)
     }
 
     override fun from(gameString: String): Game {
@@ -55,7 +55,8 @@ internal object PgnSerializer : Serializer {
             } ?: break
         }
         val remaining = lines.drop(idx).joinToString(separator = " ")
-        return MutableGame(metaData = MetaData(headers)).apply {
+        return MutableGame(metadata = MetaData(headers)).apply {
+            start()
             // Match moves
             moveSplitRegex.findAll(remaining).forEach { moves ->
                 // ignore part 0 - the move count
@@ -63,10 +64,10 @@ internal object PgnSerializer : Serializer {
                 moves.groupValues[3].takeIf { it.isNotBlank() }?.let { loadPly(it) }
             }
             // Match ending if we didn't already compute it
-            if (allPlayablePlies().isNotEmpty()) {
+            if (info.plies.isNotEmpty()) {
                 endingRegex.find(gameString)?.let {
                     if (it.groupValues[1].replace(" ", "") == "1/2-1/2") {
-                        agreeToDraw()
+                        draw()
                     } else {
                         resign()
                     }
@@ -77,12 +78,12 @@ internal object PgnSerializer : Serializer {
 
     override fun of(game: Game): String = StringBuilder().apply {
         MetaData.Header.entries.forEach { header ->
-            game.metaData().data(header)?.let { value ->
+            game.metadata.data(header)?.let { value ->
                 append("[$header \"$value\"]\n")
             }
         }
         append("\n")
-        val plies = game.allPlies()
+        val plies = game.history
         for (i in plies.indices step 2) {
             append("${i / 2 + 1}.")
             append(plies[i].algebraic()).append(" ")
@@ -90,21 +91,23 @@ internal object PgnSerializer : Serializer {
                 append(plies[i + 1].algebraic()).append(" ")
             }
         }
-        game.isOver()?.let { append(" ").append(it.algebraic(game.state().turn)) }
+        (game.state as? Game.GameState.Finished)?.let {
+            append(" ").append(it.result.algebraic(game.info.turn))
+        }
         append("\n")
     }.toString()
 }
 
 private fun MutableGame.loadPly(plyString: String) = when {
-    kingSideRegex.matches(plyString) -> play(findCastlePly(state().turn, CastleType.KingSide))
-    queenSideRegex.matches(plyString) -> play(findCastlePly(state().turn, CastleType.QueenSide))
+    kingSideRegex.matches(plyString) -> play(findCastlePly(info.turn, CastleType.KingSide))
+    queenSideRegex.matches(plyString) -> play(findCastlePly(info.turn, CastleType.QueenSide))
     else -> play(findPly(plyString))
 }
 
 private fun MutableGame.findCastlePly(side: Side, castle: CastleType): Playable {
-    val kingLoc = this.board().king(side)
+    val kingLoc = this.board.king(side)
         ?: throw SerializeException("Found castling move but can't find king for $side")
-    val ply = playablePlies(kingLoc).find { it.to == castle.end(side) }
+    val ply = info.plies(kingLoc).find { it.to == castle.end(side) }
         ?: throw SerializeException("Can't find castling move for $side")
     return ply
 }
@@ -115,7 +118,7 @@ private fun MutableGame.findPly(plyString: String): Playable {
     val to = Locus.from(bits.groupValues[4] + bits.groupValues[5])
         ?: throw SerializeException("Invalid destination at $plyString")
 
-    return allPlayablePlies()
+    return info.plies
         .filter {
             it.to == to &&
                     it.piece == pieceMap[bits.groupValues[1]]!!
