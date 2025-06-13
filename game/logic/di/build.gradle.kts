@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.paulcraciunas.serializer.impl"
+    namespace = "com.paulcraciunas.logic.di"
     compileSdk = 35
 
     defaultConfig {
@@ -34,17 +34,14 @@ android {
 dependencies {
     implementation(project(":game:logic:api"))
     implementation(project(":game:logic:impl"))
-    implementation(project(":game:serializer:api"))
 
     // Dependency injection
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
-    testImplementation(testFixtures(project(":game:logic:impl")))
     testImplementation(libs.bundles.unit.tests)
     testRuntimeOnly(libs.junit.platform.launcher)
-}
 
-tasks.withType<Test> {
-    useJUnitPlatform()
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
 }
