@@ -5,7 +5,6 @@ import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.api.state.CheckCount
 import com.paulcraciunas.game.logic.impl.board.Board
 import com.paulcraciunas.game.logic.impl.plies.Playable
 import com.paulcraciunas.game.logic.impl.plies.PlyFactory
@@ -18,8 +17,8 @@ class MutablePuzzle(
     override val info: MutableGameInfo,
     override val board: Board,
     private val moves: Queue<String>,
-    private val plyFactory: PlyFactory = PlyFactory(),
-) : Puzzle {
+    override val plyFactory: PlyFactory = PlyFactory(),
+) : Puzzle, Executable() {
 
     override fun start() {
         state = Puzzle.State.InProgress
@@ -35,7 +34,7 @@ class MutablePuzzle(
         val promotedPiece = if (ply.isPromotion()) ply.algebraic().last().lowercase() else ""
         // check if the move is the first in the list of expected moves
         if (expected == "${ply.from}${ply.to}$promotedPiece") {
-            playMove(ply)
+            execute(ply)
             // TODO Paul: also play the move for the opponent?!
             if (moves.isEmpty()) { // Now check if we have any expected moves left
                 state = Puzzle.State.Success
@@ -60,46 +59,13 @@ class MutablePuzzle(
         return board.at(from)!!
     }
 
-    private fun updateState() {
-        computeAvailablePlies()
-        updateResolution()
-    }
+    override fun isRunning(): Boolean = state == Puzzle.State.InProgress
 
-    private fun updateResolution() {
+    override fun recomputeState() {
         if (moves.isEmpty()) {
             state = Puzzle.State.Success
-            info.plies.clear()
         }
     }
 
-    // TODO Paul: Reuse everything below this line
-    private fun computeAvailablePlies() {
-        info.plies.clear()
-        info.plies.addAll(plyFactory.allLegalPlies(board, info))
-    }
-
-    private fun playMove(ply: Ply) {
-        assert(state == Puzzle.State.InProgress)
-        assert(info.plies.contains(ply))
-        val playable = info.plies.find { it == ply }!!
-
-        // Execute and keep track
-        playable.resolve(info.plies.filter { it.piece == ply.piece && it.to == ply.to }
-            .disambiguate())
-        playable.exec(board)
-
-        // Update state
-        info.update(playable, checkCount = checkCount(info.turn.other()))
-        updateState()
-    }
-
-    private fun checkCount(turn: Side) =
-        board.king(turn)?.let { plyFactory.checkCount(it, board, turn.other()) } ?: CheckCount.None
+    override fun savePly(playable: Playable) {}
 }
-
-private fun List<Playable>.disambiguate(): Ply.Disambiguate = when {
-    size >= 3 -> Ply.Disambiguate.Both
-    size == 2 -> if (get(0).from.file == get(1).from.file) Ply.Disambiguate.Rank else Ply.Disambiguate.File
-    else -> Ply.Disambiguate.None
-}
-
