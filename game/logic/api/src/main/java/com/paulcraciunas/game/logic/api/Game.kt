@@ -7,20 +7,23 @@ import com.paulcraciunas.game.logic.api.state.GameInfo
 import com.paulcraciunas.game.logic.api.state.MetaData
 
 interface Game {
+    val metadata: MetaData
+    val rating: Int?
+
     val info: GameInfo
+    val board: IBoard
+    val state: GameState
+    val history: List<Ply>
 
-    fun turn(): Side
-    fun board(): IBoard
-    fun state(): GameInfo
-    fun metaData(): MetaData
-
-    fun allPlies(): List<Ply>
-    fun playablePlies(from: Locus): Collection<Ply>
-    fun allPlayablePlies(): Collection<Ply>
-    fun isOver(): Result?
+    fun start()
 
     fun play(ply: Ply)
-    fun promote(piece: Piece, on: Ply)
     fun resign()
-    fun agreeToDraw()
+    fun draw()
+
+    sealed class GameState {
+        data object Ready : GameState()
+        data object InProgress : GameState()
+        data class Finished(val result: Result) : GameState()
+    }
 }

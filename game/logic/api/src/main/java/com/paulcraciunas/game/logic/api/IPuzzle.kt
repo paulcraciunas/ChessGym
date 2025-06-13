@@ -12,7 +12,6 @@ interface IPuzzle {
     fun playablePlies(from: Locus): Collection<Ply>
 
     fun play(ply: Ply)
-    fun promote(piece: Piece, on: Ply)
     fun resign()
 
     enum class Result {

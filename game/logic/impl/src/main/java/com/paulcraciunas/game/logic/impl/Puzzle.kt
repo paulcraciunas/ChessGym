@@ -6,7 +6,6 @@ import com.paulcraciunas.game.logic.api.IPuzzle
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
-import com.paulcraciunas.game.logic.api.board.Piece
 import java.util.Queue
 
 class Puzzle(
@@ -15,11 +14,11 @@ class Puzzle(
 ) : IPuzzle {
     private var result: IPuzzle.Result? = null
 
-    override fun turn(): Side = game.turn()
-    override fun board(): IBoard = game.board()
+    override fun turn(): Side = game.info.turn
+    override fun board(): IBoard = game.board
     override fun isOver(): IPuzzle.Result? = result
     override fun playablePlies(from: Locus): Collection<Ply> =
-        game.playablePlies(from)
+        game.info.plies(from)
 
     override fun play(ply: Ply) {
         assert(moves.isNotEmpty())
@@ -38,6 +37,5 @@ class Puzzle(
             result = IPuzzle.Result.Failed
         }
     }
-    override fun promote(piece: Piece, on: Ply) = game.promote(piece, on)
     override fun resign() = game.resign()
 }
