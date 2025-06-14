@@ -3,7 +3,9 @@ package com.paulcraciunas.serializer.impl
 import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.board.Piece
+import com.paulcraciunas.game.logic.impl.plies.PlyFactory
 import com.paulcraciunas.game.logic.loc
+import com.paulcraciunas.logic.di.GameFactory
 import com.paulcraciunas.serializer.impl.binary.BinaryAdapter
 import com.paulcraciunas.serializer.impl.binary.BinaryPuzzleReader
 import com.paulcraciunas.serializer.impl.binary.BinaryPuzzleWriter
@@ -14,9 +16,10 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 
 internal class MutablePuzzleTest {
+    private val factory = GameFactory(PlyFactory())
     private val adapter = BinaryAdapter()
-    private val reader = BinaryPuzzleReader(FenSerializer, adapter)
-    private val writer = BinaryPuzzleWriter(FenSerializer, adapter)
+    private val reader = BinaryPuzzleReader(factory, adapter)
+    private val writer = BinaryPuzzleWriter(FenSerializer(factory), adapter)
 
     @ParameterizedTest(name = "Checking puzzle {0}")
     @MethodSource("fenPuzzles")

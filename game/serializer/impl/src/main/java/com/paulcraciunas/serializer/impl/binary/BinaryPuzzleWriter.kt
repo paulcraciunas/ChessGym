@@ -61,9 +61,9 @@ internal class BinaryPuzzleWriter @Inject constructor(
         .toByteArray()
 
     private fun ByteArrayOutputStream.writeFenBoard(boardString: String) = apply {
-        val (board, state) = serializer.serialize(boardString)
-        writeBoard(board).also { writePieces(it) }
-        writeMetadata(state)
+        val game = serializer.from(boardString)
+        writeBoard(game.board).also { writePieces(it) }
+        writeMetadata(game.info)
     }
 
     private fun OutputStream.writeBoard(board: IBoard): ArrayDeque<BinaryAdapter.SidedPiece> {

@@ -6,8 +6,6 @@ import com.paulcraciunas.game.logic.api.state.GameInfo
 
 interface Serializer {
     @Throws(SerializeException::class)
-    fun serialize(gameString: String): Pair<IBoard, GameInfo>
-    @Throws(SerializeException::class)
     fun from(gameString: String): Game
     fun of(game: Game): String
 }

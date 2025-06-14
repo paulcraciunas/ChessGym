@@ -1,21 +1,14 @@
 package com.paulcraciunas.serializer.impl.binary
 
-import com.paulcraciunas.game.logic.api.CastleType
 import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Rank
-import com.paulcraciunas.game.logic.impl.MutableGame
-import com.paulcraciunas.game.logic.impl.MutableGameInfo
-import com.paulcraciunas.game.logic.impl.MutablePuzzle
-import com.paulcraciunas.game.logic.impl.board.Board
-import com.paulcraciunas.game.logic.impl.plies.Playable
-import com.paulcraciunas.game.logic.impl.plies.PlyFactory
+import com.paulcraciunas.logic.di.Builder
+import com.paulcraciunas.logic.di.GameFactory
 import com.paulcraciunas.serializer.api.PuzzleReader
-import com.paulcraciunas.serializer.api.Serializer
-import com.paulcraciunas.serializer.impl.di.SerializerFen
-import com.paulcraciunas.serializer.impl.loadEnPassent
+import com.paulcraciunas.serializer.impl.withEnPassent
 import java.util.ArrayDeque
 import java.util.Queue
 import javax.inject.Inject
@@ -47,7 +40,7 @@ import javax.inject.Inject
  * @see BinaryAdapter
  */
 internal class BinaryPuzzleReader @Inject constructor(
-    @SerializerFen private val serializer: Serializer,
+    private val gameFactory: GameFactory,
     private val adapter: BinaryAdapter,
 ) : PuzzleReader {
     // These are here so we don't keep allocating these vars pointlessly
@@ -55,85 +48,46 @@ internal class BinaryPuzzleReader @Inject constructor(
     private var int: Int = 0
     private var long: Long = 0L
 
-    override fun read(bytes: ByteArray): String {
+    override fun readPuzzle(rating: Int, bytes: ByteArray): Puzzle {
         int = 0
-        return mutableListOf<String>().apply {
-            add(serializer.of(bytes.loadData().toGame()))
-            add(bytes.loadMoves().joinToString(" ")) // separate moves by spaces
-        }.joinToString(",")
+        // Order here matters. Ye be warned
+        return gameFactory.builder()
+            .withBoard(bytes)
+            .withRating(rating)
+            .withPlieClock(bytes[int++].toInt())
+            .withMoveIndex(bytes[int++].toInt())
+            .withMetadata(bytes)
+            .withMoves(bytes.loadMoves())
+            .buildPuzzle()
     }
 
-    override fun readPuzzle(rating: Int, bytes: ByteArray): MutablePuzzle {
-        int = 0
-        val (board, info) = bytes.loadData()
-
-        return MutablePuzzle(
-            rating = rating,
-            player = info.turn.other(), // First move is the opponent, so the player can see the last move
-            state = Puzzle.State.Idle,
-            info = info,
-            board = board,
-            moves = bytes.loadMoves(),
-            plyFactory = PlyFactory(),
-        )
-    }
-
-    // Order here matters. Ye be warned
-    private fun ByteArray.loadData(): Pair<Board, MutableGameInfo> {
-        val board = loadBoard()
-        val plieClock = get(int++).toInt()
-        val moveIndex = get(int++).toInt()
-        val metadata = loadMetadata()
-        val gameState = MutableGameInfo(
-            turn = metadata.side,
-            lastPly = metadata.enPassent,
-            whiteCastling = metadata.whiteCastling,
-            blackCastling = metadata.blackCastling,
-            plieClock = plieClock,
-            moveIndex = moveIndex
-        )
-
-        return Pair(board, gameState)
-    }
-
-    private fun ByteArray.loadBoard(): Board {
-        val bitBoard = loadBitBoard()
-        val pieces = loadPieces(bitBoard)
-        val board = Board()
+    private fun Builder.withBoard(bytes: ByteArray) = apply {
+        val bitBoard = bytes.loadBitBoard()
+        val pieces = bytes.loadPieces(bitBoard)
         long = 1L shl 63
         Rank.entries.reversed().forEach { rank ->
             File.entries.forEach { file ->
                 if (bitBoard and long != 0L) {
                     val piece = pieces.poll()
-                    board.add(piece!!.piece, piece.side, Locus(file, rank))
+                    withPiece(piece!!.piece, piece.side, Locus(file, rank))
                 }
                 long = long ushr 1
             }
         }
         assert(long == 0L)
-        return board
     }
 
-    private class GameMetadata(
-        val side: Side,
-        val enPassent: Playable?,
-        val whiteCastling: Set<CastleType>,
-        val blackCastling: Set<CastleType>,
-    )
-
-    private fun ByteArray.loadMetadata(): GameMetadata {
-        val data = get(int++).toInt()
+    private fun Builder.withMetadata(bytes: ByteArray): Builder {
+        val data = bytes[int++].toInt()
         val side = Side.fromCode(data and 1)
         val (white, black) = adapter.toCastling(data shr 1)
         val ply = if (data and 0b11100000 != 0) { // check if we have en-passent information
-            adapter.toLocation(get(int++).toInt()).toString().loadEnPassent()
+            adapter.toLocation(bytes[int++].toInt()).toString()
         } else null
-        return GameMetadata(
-            side = side,
-            enPassent = ply,
-            whiteCastling = white,
-            blackCastling = black
-        )
+        return withTurn(side)
+            .withEnPassent(ply)
+            .withWhiteCastling(white)
+            .withBlackCastling(black)
     }
 
     private fun ByteArray.loadPieces(bitBoard: Long): ArrayDeque<BinaryAdapter.SidedPiece> {
@@ -176,5 +130,3 @@ internal class BinaryPuzzleReader @Inject constructor(
         return movesList
     }
 }
-
-private fun Pair<Board, MutableGameInfo>.toGame() = MutableGame(board = first, info = second)

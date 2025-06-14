@@ -10,11 +10,11 @@ import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.game.logic.api.state.GameInfo
-import com.paulcraciunas.game.logic.impl.MutableGame
-import com.paulcraciunas.game.logic.impl.MutableGameInfo
-import com.paulcraciunas.game.logic.impl.board.Board
+import com.paulcraciunas.logic.di.Builder
+import com.paulcraciunas.logic.di.GameFactory
 import com.paulcraciunas.serializer.api.SerializeException
 import com.paulcraciunas.serializer.api.Serializer
+import javax.inject.Inject
 
 /**
  * Forsyth–Edwards Notation serializer
@@ -27,27 +27,21 @@ import com.paulcraciunas.serializer.api.Serializer
  *
  * @see <a href="https://en.wikipedia.org/wiki/Forsyth–Edwards_Notation">FEN Wiki</a>
  **/
-internal object FenSerializer : Serializer {
-    override fun serialize(gameString: String): Pair<Board, MutableGameInfo> {
+internal class FenSerializer @Inject constructor(
+    private val gameFactory: GameFactory,
+) : Serializer {
+    override fun from(gameString: String): Game {
         val fenParts = gameString.fenParts()
         val rows = fenParts[0].rows()
 
-        val board = Board().apply { loadPieces(rows) }
-        val castling: Pair<Set<CastleType>, Set<CastleType>> = fenParts[2].loadCastling()
-        val gameState = MutableGameInfo(
-            turn = fenParts[1].loadSide(),
-            lastPly = fenParts[3].loadEnPassent(),
-            whiteCastling = castling.first,
-            blackCastling = castling.second,
-            plieClock = fenParts[4].loadNumber(),
-            moveIndex = fenParts[5].loadNumber()
-        )
-        return Pair(board, gameState)
-    }
-
-    override fun from(gameString: String): MutableGame {
-        val (board, gameState) = serialize(gameString)
-        return MutableGame(board = board, info = gameState)
+        return gameFactory.builder()
+            .withPieces(rows)
+            .withCastling(fenParts[2].loadCastling())
+            .withTurn(fenParts[1].loadSide())
+            .withEnPassent(fenParts[3])
+            .withPlieClock(fenParts[4].loadNumber())
+            .withMoveIndex(fenParts[5].loadNumber())
+            .buildGame()
     }
 
     override fun of(game: Game): String = StringBuilder().apply {
@@ -93,7 +87,7 @@ private fun String.rows(): List<String> {
     return result
 }
 
-private fun Board.loadPieces(rows: List<String>) {
+private fun Builder.withPieces(rows: List<String>): Builder = apply {
     var rank = 7 // Rank.`8`; FEN ranks are from 8 to 1, hence the reverse order
     var file = 0 // File.a
     for (i in rows.indices) {
@@ -105,7 +99,7 @@ private fun Board.loadPieces(rows: List<String>) {
                 throw SerializeException("Illegal row found: ${rows[i]}")
             }
             if (pieces[char] != null) {
-                add(
+                withPiece(
                     pieces[char]!!.first,
                     pieces[char]!!.second,
                     Locus(File.fromDec(file++), Rank.fromDec(rank))

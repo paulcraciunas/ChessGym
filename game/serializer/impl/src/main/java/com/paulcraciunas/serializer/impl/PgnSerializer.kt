@@ -2,20 +2,19 @@ package com.paulcraciunas.serializer.impl
 
 import com.paulcraciunas.game.logic.api.CastleType
 import com.paulcraciunas.game.logic.api.Game
+import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File
-import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.game.logic.api.board.toFile
 import com.paulcraciunas.game.logic.api.board.toRank
-import com.paulcraciunas.game.logic.api.state.GameInfo
 import com.paulcraciunas.game.logic.api.state.MetaData
-import com.paulcraciunas.game.logic.impl.MutableGame
-import com.paulcraciunas.game.logic.impl.plies.Playable
+import com.paulcraciunas.logic.di.GameFactory
 import com.paulcraciunas.serializer.api.SerializeException
 import com.paulcraciunas.serializer.api.Serializer
+import javax.inject.Inject
 
 /**
  * Portable Game Notation serializer
@@ -28,16 +27,13 @@ import com.paulcraciunas.serializer.api.Serializer
  *
  * @see <a href="https://en.wikipedia.org/wiki/Portable_Game_Notation">PGN Wiki</a>
  **/
-internal object PgnSerializer : Serializer {
+internal class PgnSerializer @Inject constructor(
+    private val gameFactory: GameFactory,
+) : Serializer {
     // I hate regEx
     private val headerRegex = Regex("\\[([A-Za-z]+)\\s+\"(.+)\"]")
     private val moveSplitRegex = Regex("([0-9]+)\\.\\s?(\\S+)(?:\\s+(\\S+))?")
     private val endingRegex = Regex("(1-0|0-1|1/2-1/2)\$")
-
-    override fun serialize(gameString: String): Pair<IBoard, GameInfo> {
-        val game = from(gameString)
-        return Pair(game.board, game.info)
-    }
 
     override fun from(gameString: String): Game {
         // TODO Paul: this is horrendously slow
@@ -55,7 +51,7 @@ internal object PgnSerializer : Serializer {
             } ?: break
         }
         val remaining = lines.drop(idx).joinToString(separator = " ")
-        return MutableGame(metadata = MetaData(headers)).apply {
+        return gameFactory.builder().withMetadata(MetaData(headers)).withDefaultBoard().buildGame().apply {
             start()
             // Match moves
             moveSplitRegex.findAll(remaining).forEach { moves ->
@@ -98,13 +94,13 @@ internal object PgnSerializer : Serializer {
     }.toString()
 }
 
-private fun MutableGame.loadPly(plyString: String) = when {
+private fun Game.loadPly(plyString: String) = when {
     kingSideRegex.matches(plyString) -> play(findCastlePly(info.turn, CastleType.KingSide))
     queenSideRegex.matches(plyString) -> play(findCastlePly(info.turn, CastleType.QueenSide))
     else -> play(findPly(plyString))
 }
 
-private fun MutableGame.findCastlePly(side: Side, castle: CastleType): Playable {
+private fun Game.findCastlePly(side: Side, castle: CastleType): Ply {
     val kingLoc = this.board.king(side)
         ?: throw SerializeException("Found castling move but can't find king for $side")
     val ply = info.plies(kingLoc).find { it.to == castle.end(side) }
@@ -112,7 +108,7 @@ private fun MutableGame.findCastlePly(side: Side, castle: CastleType): Playable 
     return ply
 }
 
-private fun MutableGame.findPly(plyString: String): Playable {
+private fun Game.findPly(plyString: String): Ply {
     // Nice thing about find is we can skip game annotations
     val bits = moveRegex.find(plyString) ?: throw SerializeException("Invalid move: $plyString")
     val to = Locus.from(bits.groupValues[4] + bits.groupValues[5])

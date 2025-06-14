@@ -5,9 +5,11 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.assertDefaultBoard
 import com.paulcraciunas.game.logic.impl.MutableGame
+import com.paulcraciunas.game.logic.impl.plies.PlyFactory
 import com.paulcraciunas.game.logic.impl.plies.StandardPly
 import com.paulcraciunas.game.logic.loc
 import com.paulcraciunas.game.logic.plies.ExpectedPly
+import com.paulcraciunas.logic.di.GameFactory
 import com.paulcraciunas.serializer.api.SerializeException
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -19,7 +21,7 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 
 internal class FenSerializerTest {
-    private val underTest = FenSerializer
+    private val underTest = FenSerializer(GameFactory(PlyFactory()))
 
     @Test
     fun `WHEN fen parts are missing THEN throw`() {
