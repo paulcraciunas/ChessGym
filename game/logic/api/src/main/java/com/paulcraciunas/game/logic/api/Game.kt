@@ -2,7 +2,6 @@ package com.paulcraciunas.game.logic.api
 
 import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
-import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.state.GameInfo
 import com.paulcraciunas.game.logic.api.state.MetaData
 
@@ -18,6 +17,7 @@ interface Game {
     fun start()
 
     fun play(ply: Ply)
+    fun play(from: Locus, to: Locus)
     fun resign()
     fun draw()
 

@@ -4,6 +4,7 @@ import com.paulcraciunas.game.logic.api.Game
 import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Result
 import com.paulcraciunas.game.logic.api.Side
+import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.state.MetaData
 import com.paulcraciunas.game.logic.impl.board.Board
 import com.paulcraciunas.game.logic.impl.board.BoardFactory
@@ -39,6 +40,12 @@ class MutableGame(
         assert(state == Game.GameState.InProgress)
 
         execute(ply)
+    }
+
+    override fun play(from: Locus, to: Locus) {
+        assert(state == Game.GameState.InProgress)
+
+        play(info.plies(from).first { it.to == to })
     }
 
     override fun resign() = finish(Result.Resigned)
