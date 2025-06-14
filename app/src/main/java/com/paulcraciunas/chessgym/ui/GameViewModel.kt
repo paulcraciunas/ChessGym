@@ -4,11 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.paulcraciunas.chessgym.ui.board.BoardOrientation
 import com.paulcraciunas.chessgym.ui.model.BoardViewDataBuilder
+import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Rank
-import com.paulcraciunas.game.logic.impl.Puzzle
 import com.paulcraciunas.puzzles.api.PuzzleRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -49,7 +49,7 @@ class GameViewModel @Inject constructor(
     fun loadPuzzle(targetRating: Int) {
         viewModelScope.launch {
             val puzzle = withContext(Dispatchers.IO) {
-                puzzleRepository.getByRating(targetRating)!! as Puzzle
+                puzzleRepository.getByRating(targetRating)!!
             }
             _puzzleState.value = puzzle
             // TODO Paul: Fix this when cleaning up the puzzle APIs

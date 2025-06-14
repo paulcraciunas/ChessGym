@@ -1,9 +1,9 @@
 package com.paulcraciunas.puzzles.api
 
-import com.paulcraciunas.game.logic.api.IPuzzle
+import com.paulcraciunas.game.logic.api.Puzzle
 
 interface PuzzleRepository {
-    suspend fun get(count: Int): List<IPuzzle>
-    suspend fun getByRating(targetRating: Int): IPuzzle?
-    suspend fun getByRatingRange(min: Int, max: Int): IPuzzle?
+    suspend fun get(count: Int): List<Puzzle>
+    suspend fun getByRating(targetRating: Int): Puzzle?
+    suspend fun getByRatingRange(min: Int, max: Int): Puzzle?
 }

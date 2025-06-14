@@ -1,6 +1,6 @@
 package com.paulcraciunas.puzzles.impl.usecases
 
-import com.paulcraciunas.game.logic.api.IPuzzle
+import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.puzzles.api.PuzzleRepository
 import com.paulcraciunas.puzzles.api.usecases.GetPuzzleSeries
 import com.paulcraciunas.puzzles.impl.impl.RandomFactory
@@ -11,8 +11,8 @@ internal class GetPuzzleSeriesImpl @Inject constructor(
     private val randomFactory: RandomFactory
 ) : GetPuzzleSeries {
 
-    override suspend fun invoke(count: Int, increment: Int, from: Int): List<IPuzzle> {
-        val result = mutableListOf<IPuzzle>()
+    override suspend fun invoke(count: Int, increment: Int, from: Int): List<Puzzle> {
+        val result = mutableListOf<Puzzle>()
         var rating = from
 
         repeat(count) {

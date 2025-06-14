@@ -5,7 +5,7 @@ import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.state.CheckCount
-import com.paulcraciunas.game.logic.impl.GameState
+import com.paulcraciunas.game.logic.impl.MutableGameInfo
 import com.paulcraciunas.game.logic.impl.plies.strategies.BishopPlyStrategy
 import com.paulcraciunas.game.logic.impl.plies.strategies.KingPlyStrategy
 import com.paulcraciunas.game.logic.impl.plies.strategies.KnightPlyStrategy
@@ -29,7 +29,7 @@ import java.util.EnumMap
  * Q: OK, can I move this Rook? A: Only if I don't end up in check.
  * - repeat ad infinitum
  */
-internal class PlyFactory {
+class PlyFactory {
     private val strategies = EnumMap<Piece, PlyStrategy>(Piece::class.java).apply {
         put(Piece.Pawn, PawnPlyStrategy())
         put(Piece.Bishop, BishopPlyStrategy())
@@ -39,7 +39,7 @@ internal class PlyFactory {
         put(Piece.King, KingPlyStrategy())
     }
 
-    fun allLegalPlies(on: IBoard, with: GameState): Collection<Ply> =
+    fun allLegalPlies(on: IBoard, with: MutableGameInfo): Collection<Playable> =
         allPlies(on, with).filter { it.isValid(on) }
 
     fun checkCount(at: Locus, on: IBoard, turn: Side): CheckCount {
@@ -52,11 +52,11 @@ internal class PlyFactory {
         return checkCount
     }
 
-    fun isCheck(ply: Ply, on: IBoard): Boolean {
+    fun isCheck(playable: Playable, on: IBoard): Boolean {
         var isCheck = false
-        on.king(ply.turn.other())?.let {
-            on.forEachPiece(ply.turn) { piece, loc ->
-                if (strategies[piece]!!.canAttack(from = loc, to = it, on = on, turn = ply.turn)) {
+        on.king(playable.turn.other())?.let {
+            on.forEachPiece(playable.turn) { piece, loc ->
+                if (strategies[piece]!!.canAttack(from = loc, to = it, on = on, turn = playable.turn)) {
                     isCheck = true
                 }
             }
@@ -64,7 +64,7 @@ internal class PlyFactory {
         return isCheck
     }
 
-    private fun Ply.isValid(on: IBoard): Boolean {
+    private fun Playable.isValid(on: IBoard): Boolean {
         exec(on) // try the move
         // verify for checks
         val inCheck = on.king(turn)?.let { kingLoc ->
@@ -79,8 +79,8 @@ internal class PlyFactory {
         return !inCheck
     }
 
-    private fun allPlies(on: IBoard, with: GameState): MutableList<Ply> {
-        val allMoves = mutableListOf<Ply>()
+    private fun allPlies(on: IBoard, with: MutableGameInfo): MutableList<Playable> {
+        val allMoves = mutableListOf<Playable>()
         on.forEachPiece(with.turn) { piece, loc ->
             allMoves.addAll(strategies[piece]!!.plies(from = loc, on = on, with = with))
         }

@@ -8,7 +8,7 @@ import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank
 
 object BoardFactory {
-    fun defaultBoard(): IBoard = Board().from(defaultBoard)
+    fun defaultBoard(): Board = Board().from(defaultBoard)
 
     private val defaultBoard: IBoard = Board()
         .addWhitePieces()

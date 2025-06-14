@@ -1,14 +1,13 @@
 package com.paulcraciunas.puzzles.impl.usecases
 
-import com.paulcraciunas.game.logic.api.IPly
-import com.paulcraciunas.game.logic.api.IPuzzle
+import com.paulcraciunas.game.logic.api.Ply
+import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.IBoard
-import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.api.state.IGameState
-import com.paulcraciunas.game.logic.impl.GameState
-import com.paulcraciunas.game.logic.impl.board.BoardFactory
+import com.paulcraciunas.game.logic.api.state.GameInfo
+import com.paulcraciunas.game.logic.impl.MutableGameInfo
+import com.paulcraciunas.game.logic.impl.board.Board
 import com.paulcraciunas.puzzles.api.PuzzleRepository
 import com.paulcraciunas.puzzles.api.usecases.GetPuzzleSeries
 import com.paulcraciunas.puzzles.impl.impl.RandomFactory
@@ -49,18 +48,18 @@ internal class GetPuzzleSeriesImplTest {
     }
 
     private class FakeRepository : PuzzleRepository {
-        private val puzzles = mutableMapOf<Int, IPuzzle>()
+        private val puzzles = mutableMapOf<Int, Puzzle>()
 
         fun load(count: Int) {
             var rating = GetPuzzleSeries.RATING_START
             for (i in 0 until count) {
-                puzzles[rating] = PuzzleStub(rating)
+                puzzles[rating] = PuzzleStub()
                 rating += NEXT_INT
             }
         }
 
-        override suspend fun get(count: Int): List<IPuzzle> {
-            val result = mutableListOf<IPuzzle>()
+        override suspend fun get(count: Int): List<Puzzle> {
+            val result = mutableListOf<Puzzle>()
             puzzles.values.forEachIndexed { index, iPuzzle ->
                 if (index < count) {
                     result.add(iPuzzle)
@@ -71,8 +70,8 @@ internal class GetPuzzleSeriesImplTest {
             return result
         }
 
-        override suspend fun getByRating(targetRating: Int): IPuzzle? = puzzles[targetRating]
-        override suspend fun getByRatingRange(min: Int, max: Int): IPuzzle? {
+        override suspend fun getByRating(targetRating: Int): Puzzle? = puzzles[targetRating]
+        override suspend fun getByRatingRange(min: Int, max: Int): Puzzle? {
             for (i in min until max) {
                 if (puzzles.contains(i)) {
                     return puzzles[i]
@@ -86,16 +85,17 @@ internal class GetPuzzleSeriesImplTest {
         override fun nextInt(from: Int, to: Int): Int = NEXT_INT
     }
 
-    private class PuzzleStub(val rating: Int) : IPuzzle {
-        override fun turn(): Side = Side.WHITE
-        override fun board(): IBoard = BoardFactory.defaultBoard()
-        override fun state(): IGameState = GameState()
-        override fun isOver(): IPuzzle.Result? = null
-        override fun playablePlies(from: Locus): Collection<IPly> = emptyList()
-        override fun requiresPromotion(ply: IPly): Boolean = false
-        override fun play(ply: IPly) {}
-        override fun promote(piece: Piece, on: IPly) {}
-        override fun resign() {}
+    private class PuzzleStub : Puzzle {
+        override val rating: Int = 420
+        override val player: Side = Side.WHITE
+        override val state: Puzzle.State = Puzzle.State.Idle
+        override val info: GameInfo = MutableGameInfo()
+        override val board: IBoard = Board()
+
+        override fun start() {}
+        override fun play(ply: Ply) {}
+        override fun abandon() {}
+        override fun hint(): Piece = Piece.King
     }
 
     private companion object {

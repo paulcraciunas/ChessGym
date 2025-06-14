@@ -10,11 +10,26 @@ import com.paulcraciunas.game.logic.api.board.Piece
  *
  * e.g. The 50 move rule requires there to be 50 moves (i.e. 100 plies)
  */
-interface IPly {
+interface Ply {
     val turn: Side
     val piece: Piece
     val from: Locus
     val to: Locus
 
     fun algebraic(): String
+
+    fun captured(): Piece? = null
+    fun isPawnMoveOrCapture(): Boolean
+
+    fun isPromotion(): Boolean
+    fun promote(piece: Piece)
+
+    fun resolve(disambiguate: Disambiguate)
+
+    enum class Disambiguate {
+        File,
+        Rank,
+        Both,
+        None
+    }
 }

@@ -11,7 +11,7 @@ import com.paulcraciunas.game.logic.api.state.CheckCount
 import com.paulcraciunas.game.logic.assertHas
 import com.paulcraciunas.game.logic.assertNoMoves
 import com.paulcraciunas.game.logic.assertNoMovesOf
-import com.paulcraciunas.game.logic.impl.GameState
+import com.paulcraciunas.game.logic.impl.MutableGameInfo
 import com.paulcraciunas.game.logic.impl.board.Board
 import com.paulcraciunas.game.logic.impl.board.BoardFactory
 import com.paulcraciunas.game.logic.impl.plies.CastlePly
@@ -27,7 +27,7 @@ import org.junit.jupiter.params.provider.MethodSource
 
 internal class PlyFactoryTest {
     private val on = Board()
-    private val with = GameState()
+    private val with = MutableGameInfo()
 
     private val underTest = PlyFactory()
 

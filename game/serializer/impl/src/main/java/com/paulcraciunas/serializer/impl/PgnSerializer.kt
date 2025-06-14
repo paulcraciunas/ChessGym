@@ -1,21 +1,20 @@
 package com.paulcraciunas.serializer.impl
 
 import com.paulcraciunas.game.logic.api.CastleType
-import com.paulcraciunas.game.logic.api.IGame
+import com.paulcraciunas.game.logic.api.Game
+import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File
-import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.game.logic.api.board.toFile
 import com.paulcraciunas.game.logic.api.board.toRank
-import com.paulcraciunas.game.logic.api.state.IGameState
 import com.paulcraciunas.game.logic.api.state.MetaData
-import com.paulcraciunas.game.logic.impl.Game
-import com.paulcraciunas.game.logic.impl.plies.Ply
+import com.paulcraciunas.logic.di.GameFactory
 import com.paulcraciunas.serializer.api.SerializeException
 import com.paulcraciunas.serializer.api.Serializer
+import javax.inject.Inject
 
 /**
  * Portable Game Notation serializer
@@ -28,18 +27,15 @@ import com.paulcraciunas.serializer.api.Serializer
  *
  * @see <a href="https://en.wikipedia.org/wiki/Portable_Game_Notation">PGN Wiki</a>
  **/
-internal object PgnSerializer : Serializer {
+internal class PgnSerializer @Inject constructor(
+    private val gameFactory: GameFactory,
+) : Serializer {
     // I hate regEx
     private val headerRegex = Regex("\\[([A-Za-z]+)\\s+\"(.+)\"]")
     private val moveSplitRegex = Regex("([0-9]+)\\.\\s?(\\S+)(?:\\s+(\\S+))?")
     private val endingRegex = Regex("(1-0|0-1|1/2-1/2)\$")
 
-    override fun serialize(gameString: String): Pair<IBoard, IGameState> {
-        val game = from(gameString)
-        return Pair(game.board(), game.state())
-    }
-
-    override fun from(gameString: String): IGame {
+    override fun from(gameString: String): Game {
         // TODO Paul: this is horrendously slow
         // TODO Paul: rewrite this without regex
         val lines = gameString.replace(endingRegex, "")
@@ -55,7 +51,8 @@ internal object PgnSerializer : Serializer {
             } ?: break
         }
         val remaining = lines.drop(idx).joinToString(separator = " ")
-        return Game(metaData = MetaData(headers)).apply {
+        return gameFactory.builder().withMetadata(MetaData(headers)).withDefaultBoard().buildGame().apply {
+            start()
             // Match moves
             moveSplitRegex.findAll(remaining).forEach { moves ->
                 // ignore part 0 - the move count
@@ -63,10 +60,10 @@ internal object PgnSerializer : Serializer {
                 moves.groupValues[3].takeIf { it.isNotBlank() }?.let { loadPly(it) }
             }
             // Match ending if we didn't already compute it
-            if (allPlayablePlies().isNotEmpty()) {
+            if (info.plies.isNotEmpty()) {
                 endingRegex.find(gameString)?.let {
                     if (it.groupValues[1].replace(" ", "") == "1/2-1/2") {
-                        agreeToDraw()
+                        draw()
                     } else {
                         resign()
                     }
@@ -75,14 +72,14 @@ internal object PgnSerializer : Serializer {
         }
     }
 
-    override fun of(game: IGame): String = StringBuilder().apply {
+    override fun of(game: Game): String = StringBuilder().apply {
         MetaData.Header.entries.forEach { header ->
-            game.metaData().data(header)?.let { value ->
+            game.metadata.data(header)?.let { value ->
                 append("[$header \"$value\"]\n")
             }
         }
         append("\n")
-        val plies = game.allPlies()
+        val plies = game.history
         for (i in plies.indices step 2) {
             append("${i / 2 + 1}.")
             append(plies[i].algebraic()).append(" ")
@@ -90,21 +87,23 @@ internal object PgnSerializer : Serializer {
                 append(plies[i + 1].algebraic()).append(" ")
             }
         }
-        game.isOver()?.let { append(" ").append(it.algebraic(game.state().turn)) }
+        (game.state as? Game.GameState.Finished)?.let {
+            append(" ").append(it.result.algebraic(game.info.turn))
+        }
         append("\n")
     }.toString()
 }
 
 private fun Game.loadPly(plyString: String) = when {
-    kingSideRegex.matches(plyString) -> play(findCastlePly(state().turn, CastleType.KingSide))
-    queenSideRegex.matches(plyString) -> play(findCastlePly(state().turn, CastleType.QueenSide))
+    kingSideRegex.matches(plyString) -> play(findCastlePly(info.turn, CastleType.KingSide))
+    queenSideRegex.matches(plyString) -> play(findCastlePly(info.turn, CastleType.QueenSide))
     else -> play(findPly(plyString))
 }
 
 private fun Game.findCastlePly(side: Side, castle: CastleType): Ply {
-    val kingLoc = this.board().king(side)
+    val kingLoc = this.board.king(side)
         ?: throw SerializeException("Found castling move but can't find king for $side")
-    val ply = playablePlies(kingLoc).find { it.to == castle.end(side) }
+    val ply = info.plies(kingLoc).find { it.to == castle.end(side) }
         ?: throw SerializeException("Can't find castling move for $side")
     return ply
 }
@@ -115,7 +114,7 @@ private fun Game.findPly(plyString: String): Ply {
     val to = Locus.from(bits.groupValues[4] + bits.groupValues[5])
         ?: throw SerializeException("Invalid destination at $plyString")
 
-    return allPlayablePlies()
+    return info.plies
         .filter {
             it.to == to &&
                     it.piece == pieceMap[bits.groupValues[1]]!!
@@ -126,7 +125,7 @@ private fun Game.findPly(plyString: String): Ply {
         }
         .apply { if (size != 1) throw SerializeException("Can't find single ply in: $plyString") }
         .first()
-        .apply { bits.groupValues[6].promotion()?.let { accept(it) } }
+        .apply { bits.groupValues[6].promotion()?.let { promote(it) } }
 }
 
 private fun String.file(): File? = if (isNotEmpty()) get(0).toFile() else null

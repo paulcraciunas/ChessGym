@@ -43,3 +43,5 @@ data class Locus(val file: File, val rank: Rank) {
         }
     }
 }
+
+fun String.loc(): Locus = Locus.from(this)!!

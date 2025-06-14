@@ -216,7 +216,7 @@ internal class CastlePlyTest {
         side: Side,
         type: CastleType,
     ) {
-        assertThrows<AssertionError> { CastlePly(side, type).accept(Piece.Bishop) }
+        assertThrows<AssertionError> { CastlePly(side, type).promote(Piece.Bishop) }
     }
 
     companion object {

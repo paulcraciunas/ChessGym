@@ -11,11 +11,8 @@ java {
 
 dependencies {
     implementation(project(":game:logic:api"))
-    testImplementation(libs.junit)
-    testImplementation(libs.junit.jupiter.api)
-    testImplementation(libs.junit.jupiter.engine)
-    testImplementation(libs.junit.jupiter.params)
-    testImplementation(libs.junit.jupiter)
+
+    testImplementation(libs.bundles.unit.tests)
     testRuntimeOnly(libs.junit.platform.launcher)
 
     testFixturesImplementation(project(":game:logic:api"))

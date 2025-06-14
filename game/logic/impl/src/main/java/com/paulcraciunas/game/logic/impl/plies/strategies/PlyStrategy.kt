@@ -5,8 +5,8 @@ import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.state.CheckCount
-import com.paulcraciunas.game.logic.impl.GameState
-import com.paulcraciunas.game.logic.impl.plies.Ply
+import com.paulcraciunas.game.logic.impl.MutableGameInfo
+import com.paulcraciunas.game.logic.impl.plies.Playable
 import com.paulcraciunas.game.logic.impl.plies.StandardPly
 
 internal typealias Next = (Locus) -> Locus?
@@ -17,22 +17,22 @@ internal abstract class PlyStrategy {
     protected open fun canMoveInCheck(count: CheckCount): Boolean = count != CheckCount.Two
     protected open fun directions(): Collection<Next> = emptyList()
     protected open fun simpleMoves(): Collection<Next> = emptyList()
-    protected open fun MutableList<Ply>.addComplexPlies(from: Locus, on: IBoard, with: GameState) {}
+    protected open fun MutableList<Playable>.addComplexPlies(from: Locus, on: IBoard, with: MutableGameInfo) {}
 
     open fun canAttack(from: Locus, to: Locus, on: IBoard, turn: Side): Boolean {
         assert(on.has(piece, turn, from))
         assert(from != to)
 
-        return mutableListOf<Ply>().apply {
+        return mutableListOf<Playable>().apply {
             addPliesInDirections(turn, from, on) { it == to }
             addSimplePlies(turn, from, on, simpleMoves()) { it == to }
         }.any { it.to == to }
     }
 
-    fun plies(from: Locus, on: IBoard, with: GameState): List<Ply> {
+    fun plies(from: Locus, on: IBoard, with: MutableGameInfo): List<Playable> {
         assert(on.has(piece, with.turn, from))
 
-        return mutableListOf<Ply>().apply {
+        return mutableListOf<Playable>().apply {
             if (canMoveInCheck(with.inCheckCount)) {
                 addPliesInDirections(with.turn, from, on)
                 addSimplePlies(with.turn, from, on, simpleMoves())
@@ -41,7 +41,7 @@ internal abstract class PlyStrategy {
         }
     }
 
-    protected fun MutableList<Ply>.addSimplePlies(
+    protected fun MutableList<Playable>.addSimplePlies(
         side: Side,
         from: Locus,
         on: IBoard,
@@ -56,7 +56,7 @@ internal abstract class PlyStrategy {
         }
     }
 
-    private fun MutableList<Ply>.addPliesInDirections(
+    private fun MutableList<Playable>.addPliesInDirections(
         side: Side,
         from: Locus,
         on: IBoard,
@@ -67,7 +67,7 @@ internal abstract class PlyStrategy {
         }
     }
 
-    private fun MutableList<Ply>.addPliesInDirection(
+    private fun MutableList<Playable>.addPliesInDirection(
         side: Side,
         from: Locus,
         on: IBoard,

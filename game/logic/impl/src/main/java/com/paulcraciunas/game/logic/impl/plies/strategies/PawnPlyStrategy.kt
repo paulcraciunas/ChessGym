@@ -7,9 +7,9 @@ import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.game.logic.api.board.pawnStart
 import com.paulcraciunas.game.logic.api.board.promotion
-import com.paulcraciunas.game.logic.impl.GameState
+import com.paulcraciunas.game.logic.impl.MutableGameInfo
 import com.paulcraciunas.game.logic.impl.plies.EnPassentPly
-import com.paulcraciunas.game.logic.impl.plies.Ply
+import com.paulcraciunas.game.logic.impl.plies.Playable
 import com.paulcraciunas.game.logic.impl.plies.PromotionPly
 import com.paulcraciunas.game.logic.impl.plies.StandardPly
 
@@ -23,7 +23,7 @@ internal class PawnPlyStrategy : PlyStrategy() {
      * Pawns capture in a different direction to their normal movement.
      * Finally, there's en-passent capturing, which has it's own extra conditions.
      */
-    override fun MutableList<Ply>.addComplexPlies(from: Locus, on: IBoard, with: GameState) {
+    override fun MutableList<Playable>.addComplexPlies(from: Locus, on: IBoard, with: MutableGameInfo) {
         assert(from.rank != Rank.`1` && from.rank != Rank.`8`)
 
         addSimplePlies(from, on, with)
@@ -37,7 +37,7 @@ internal class PawnPlyStrategy : PlyStrategy() {
         return turn.captureLeft(from) == to || turn.captureRight(from) == to
     }
 
-    private fun MutableList<Ply>.addSimplePlies(from: Locus, on: IBoard, with: GameState) {
+    private fun MutableList<Playable>.addSimplePlies(from: Locus, on: IBoard, with: MutableGameInfo) {
         var loc = with.turn.next(from)
         if (loc != null && on.isEmpty(loc)) {
             if (loc.rank == promotion(with.turn)) {
@@ -52,13 +52,13 @@ internal class PawnPlyStrategy : PlyStrategy() {
         }
     }
 
-    private fun MutableList<Ply>.addCaptures(from: Locus, on: IBoard, with: GameState) {
+    private fun MutableList<Playable>.addCaptures(from: Locus, on: IBoard, with: MutableGameInfo) {
         with.turn.captureLeft(from)?.let { addCapture(it, on, promotion(with.turn), with, from) }
         with.turn.captureRight(from)?.let { addCapture(it, on, promotion(with.turn), with, from) }
     }
 
-    private fun MutableList<Ply>.addCapture(
-        loc: Locus, on: IBoard, promotion: Rank, with: GameState, from: Locus,
+    private fun MutableList<Playable>.addCapture(
+        loc: Locus, on: IBoard, promotion: Rank, with: MutableGameInfo, from: Locus,
     ) {
         if (on.has(with.turn.other(), loc)) {
             if (loc.rank == promotion) {
@@ -69,23 +69,24 @@ internal class PawnPlyStrategy : PlyStrategy() {
         }
     }
 
-    private fun MutableList<Ply>.addEnPassent(from: Locus, on: IBoard, with: GameState) {
+    private fun MutableList<Playable>.addEnPassent(from: Locus, on: IBoard, with: MutableGameInfo) {
+        val lastPly = with.lastPly
         if (from.rank == with.turn.enPassent() &&
-            with.lastPly?.piece == Piece.Pawn &&
-            with.lastPly.to.rank == with.turn.enPassent() &&
-            with.lastPly.from.rank == pawnStart(with.turn.other())
+            lastPly?.piece == Piece.Pawn &&
+            lastPly.to.rank == with.turn.enPassent() &&
+            lastPly.from.rank == pawnStart(with.turn.other())
         ) {
             var loc: Locus?
-            if (with.lastPly.to.file == from.left()?.file) {
+            if (lastPly.to.file == from.left()?.file) {
                 loc = with.turn.captureLeft(from)
                 if (loc != null && on.isEmpty(loc)) {
-                    add(EnPassentPly(with.turn, from = from, to = loc, passedLoc = with.lastPly.to))
+                    add(EnPassentPly(with.turn, from = from, to = loc, passedLoc = lastPly.to))
                 }
             }
-            if (with.lastPly.to.file == from.right()?.file) {
+            if (lastPly.to.file == from.right()?.file) {
                 loc = with.turn.captureRight(from)
                 if (loc != null && on.isEmpty(loc)) {
-                    add(EnPassentPly(with.turn, from = from, to = loc, passedLoc = with.lastPly.to))
+                    add(EnPassentPly(with.turn, from = from, to = loc, passedLoc = lastPly.to))
                 }
             }
         }

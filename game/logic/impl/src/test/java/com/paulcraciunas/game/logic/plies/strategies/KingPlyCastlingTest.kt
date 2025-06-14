@@ -12,7 +12,7 @@ import com.paulcraciunas.game.logic.api.board.Rank.`8`
 import com.paulcraciunas.game.logic.api.state.CheckCount
 import com.paulcraciunas.game.logic.assertHas
 import com.paulcraciunas.game.logic.assertNoMovesOf
-import com.paulcraciunas.game.logic.impl.GameState
+import com.paulcraciunas.game.logic.impl.MutableGameInfo
 import com.paulcraciunas.game.logic.impl.board.Board
 import com.paulcraciunas.game.logic.impl.plies.CastlePly
 import com.paulcraciunas.game.logic.impl.plies.strategies.KingPlyStrategy
@@ -27,7 +27,7 @@ internal class KingPlyCastlingTest {
     private val on = Board().apply {
         add(piece = Piece.King, side = Side.BLACK, at = home)
     }
-    private val with = GameState(turn = Side.BLACK)
+    private val with = MutableGameInfo(turn = Side.BLACK)
 
     private val underTest = KingPlyStrategy()
 
@@ -80,7 +80,7 @@ internal class KingPlyCastlingTest {
     @Test
     fun `WHEN castling is not available THEN do not return castling moves`() {
         on.add(piece = Piece.Rook, side = Side.BLACK, at = Locus(h, `8`))
-        val withOut = GameState(turn = Side.BLACK, blackCastling = emptySet())
+        val withOut = MutableGameInfo(turn = Side.BLACK, blackCastling = emptySet())
 
         underTest.plies(from = home, on = on, with = withOut).assertNoMovesOf<CastlePly>()
     }

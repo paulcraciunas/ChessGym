@@ -1,12 +1,12 @@
 package com.paulcraciunas.game.logic.plies
 
+import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.game.logic.impl.board.Board
-import com.paulcraciunas.game.logic.impl.plies.Ply
 import com.paulcraciunas.game.logic.impl.plies.StandardPly
 import com.paulcraciunas.game.logic.loc
 import org.junit.jupiter.api.Assertions.assertEquals

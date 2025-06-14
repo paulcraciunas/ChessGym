@@ -15,7 +15,8 @@ internal class PromotionPly(
     private var resultingPiece: Piece? = Piece.Queen,
 ) : StandardPly(turn = turn, piece = Piece.Pawn, from = from, to = to, captured = captured) {
 
-    override fun accept(piece: Piece) {
+    override fun isPromotion(): Boolean = true
+    override fun promote(piece: Piece) {
         assert(piece != Piece.Pawn && piece != Piece.King)
         resultingPiece = piece
     }

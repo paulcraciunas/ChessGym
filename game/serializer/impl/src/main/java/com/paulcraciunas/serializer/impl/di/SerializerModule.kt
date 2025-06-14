@@ -3,8 +3,8 @@ package com.paulcraciunas.serializer.impl.di
 import com.paulcraciunas.serializer.api.Serializer
 import com.paulcraciunas.serializer.impl.FenSerializer
 import com.paulcraciunas.serializer.impl.PgnSerializer
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Qualifier
@@ -18,14 +18,14 @@ internal annotation class SerializerPgn
 
 @Module
 @InstallIn(SingletonComponent::class)
-internal object SerializerModule {
+internal abstract class SerializerModule {
     @SerializerFen
-    @Provides
+    @Binds
     @Singleton
-    fun provideFenSerializer(): Serializer = FenSerializer
+    abstract fun provideFenSerializer(impl: FenSerializer): Serializer
 
     @SerializerPgn
-    @Provides
+    @Binds
     @Singleton
-    fun providePgnSerializer(): Serializer = PgnSerializer
+    abstract fun providePgnSerializer(impl: PgnSerializer): Serializer
 }

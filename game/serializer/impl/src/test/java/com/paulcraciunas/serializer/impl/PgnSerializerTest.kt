@@ -1,5 +1,7 @@
 package com.paulcraciunas.serializer.impl
 
+import com.paulcraciunas.game.logic.impl.plies.PlyFactory
+import com.paulcraciunas.logic.di.GameFactory
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -8,7 +10,7 @@ import org.junit.jupiter.params.provider.MethodSource
 
 class PgnSerializerTest {
 
-    private val underTest = PgnSerializer
+    private val underTest = PgnSerializer(GameFactory(PlyFactory()))
 
     @ParameterizedTest(name = "Loading game {0} from pgn")
     @MethodSource("pgnGames")

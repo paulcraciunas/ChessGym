@@ -1,8 +1,9 @@
 package com.paulcraciunas.game.logic.api.state
 
 import com.paulcraciunas.game.logic.api.CastleType
-import com.paulcraciunas.game.logic.api.IPly
+import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Side
+import com.paulcraciunas.game.logic.api.board.Locus
 
 /**
  * Non-computable information about the current state of the game.
@@ -18,15 +19,17 @@ import com.paulcraciunas.game.logic.api.Side
  * 50 move rule). In that case, since we don't have access to the move history, we need to know
  * the number of non-pawn and non-capture plies.
  */
-interface IGameState {
+interface GameInfo {
     val turn: Side
-    val lastPly: IPly?
+    val lastPly: Ply?
     val inCheckCount: CheckCount
     val whiteCastling: Set<CastleType>
     val blackCastling: Set<CastleType>
     val plieClock: Int // Since last pawn move or capture
     val moveIndex: Int
+    val plies: List<Ply>
+
+    fun plies(from: Locus): List<Ply>
 
     fun castling(turn: Side): Set<CastleType>
-    fun next(ply: IPly, checkCount: CheckCount): IGameState
 }

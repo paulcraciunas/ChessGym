@@ -10,7 +10,7 @@ import com.paulcraciunas.game.logic.assertHas
 import com.paulcraciunas.game.logic.assertMoves
 import com.paulcraciunas.game.logic.assertMovesOf
 import com.paulcraciunas.game.logic.assertNoMoves
-import com.paulcraciunas.game.logic.impl.GameState
+import com.paulcraciunas.game.logic.impl.MutableGameInfo
 import com.paulcraciunas.game.logic.impl.board.Board
 import com.paulcraciunas.game.logic.impl.plies.PromotionPly
 import com.paulcraciunas.game.logic.impl.plies.StandardPly
@@ -27,7 +27,7 @@ import org.junit.jupiter.params.provider.MethodSource
 internal class PawnPlyStrategyTest {
     private val home = Locus(e, `7`)
     private val on = Board()
-    private val with = GameState(turn = Side.BLACK)
+    private val with = MutableGameInfo(turn = Side.BLACK)
 
     private val underTest = PawnPlyStrategy()
 

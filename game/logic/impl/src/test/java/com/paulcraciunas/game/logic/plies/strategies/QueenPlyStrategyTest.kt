@@ -9,7 +9,7 @@ import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank.`4`
 import com.paulcraciunas.game.logic.assertMoves
 import com.paulcraciunas.game.logic.assertNoMoves
-import com.paulcraciunas.game.logic.impl.GameState
+import com.paulcraciunas.game.logic.impl.MutableGameInfo
 import com.paulcraciunas.game.logic.impl.board.Board
 import com.paulcraciunas.game.logic.impl.plies.strategies.QueenPlyStrategy
 import com.paulcraciunas.game.logic.surroundQueen
@@ -23,7 +23,7 @@ class QueenPlyStrategyTest {
     private val on = Board().apply {
         add(piece = Piece.Queen, side = Side.BLACK, at = home)
     }
-    private val with = GameState(turn = Side.BLACK)
+    private val with = MutableGameInfo(turn = Side.BLACK)
 
     private val underTest = QueenPlyStrategy()
 

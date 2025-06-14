@@ -1,20 +1,20 @@
 package com.paulcraciunas.serializer.impl
 
 import com.paulcraciunas.game.logic.api.CastleType
-import com.paulcraciunas.game.logic.api.IGame
-import com.paulcraciunas.game.logic.api.IPly
+import com.paulcraciunas.game.logic.api.Game
+import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank
-import com.paulcraciunas.game.logic.api.state.IGameState
-import com.paulcraciunas.game.logic.impl.Game
-import com.paulcraciunas.game.logic.impl.GameState
-import com.paulcraciunas.game.logic.impl.board.Board
+import com.paulcraciunas.game.logic.api.state.GameInfo
+import com.paulcraciunas.logic.di.Builder
+import com.paulcraciunas.logic.di.GameFactory
 import com.paulcraciunas.serializer.api.SerializeException
 import com.paulcraciunas.serializer.api.Serializer
+import javax.inject.Inject
 
 /**
  * Forsyth–Edwards Notation serializer
@@ -27,36 +27,30 @@ import com.paulcraciunas.serializer.api.Serializer
  *
  * @see <a href="https://en.wikipedia.org/wiki/Forsyth–Edwards_Notation">FEN Wiki</a>
  **/
-internal object FenSerializer : Serializer {
-    override fun serialize(gameString: String): Pair<Board, GameState> {
+internal class FenSerializer @Inject constructor(
+    private val gameFactory: GameFactory,
+) : Serializer {
+    override fun from(gameString: String): Game {
         val fenParts = gameString.fenParts()
         val rows = fenParts[0].rows()
 
-        val board = Board().apply { loadPieces(rows) }
-        val castling: Pair<Set<CastleType>, Set<CastleType>> = fenParts[2].loadCastling()
-        val gameState = GameState(
-            turn = fenParts[1].loadSide(),
-            lastPly = fenParts[3].loadEnPassent(),
-            whiteCastling = castling.first,
-            blackCastling = castling.second,
-            plieClock = fenParts[4].loadNumber(),
-            moveIndex = fenParts[5].loadNumber()
-        )
-        return Pair(board, gameState)
+        return gameFactory.builder()
+            .withPieces(rows)
+            .withCastling(fenParts[2].loadCastling())
+            .withTurn(fenParts[1].loadSide())
+            .withEnPassent(fenParts[3])
+            .withPlieClock(fenParts[4].loadNumber())
+            .withMoveIndex(fenParts[5].loadNumber())
+            .buildGame()
     }
 
-    override fun from(gameString: String): Game {
-        val (board, gameState) = serialize(gameString)
-        return Game(board = board, state = gameState)
-    }
-
-    override fun of(game: IGame): String = StringBuilder().apply {
-        append(game.board().toFen()).append(" ")
-        append(if (game.state().turn == Side.WHITE) 'w' else 'b').append(" ")
-        append(game.state().castlingFen()).append(" ")
-        append(game.state().lastPly?.toEnPassentFen() ?: MISSING).append(" ")
-        append(game.state().plieClock).append(" ")
-        append(game.state().moveIndex)
+    override fun of(game: Game): String = StringBuilder().apply {
+        append(game.board.toFen()).append(" ")
+        append(if (game.info.turn == Side.WHITE) 'w' else 'b').append(" ")
+        append(game.info.castlingFen()).append(" ")
+        append(game.info.lastPly?.toEnPassentFen() ?: MISSING).append(" ")
+        append(game.info.plieClock).append(" ")
+        append(game.info.moveIndex)
     }.toString()
 }
 
@@ -93,7 +87,7 @@ private fun String.rows(): List<String> {
     return result
 }
 
-private fun Board.loadPieces(rows: List<String>) {
+private fun Builder.withPieces(rows: List<String>): Builder = apply {
     var rank = 7 // Rank.`8`; FEN ranks are from 8 to 1, hence the reverse order
     var file = 0 // File.a
     for (i in rows.indices) {
@@ -105,7 +99,7 @@ private fun Board.loadPieces(rows: List<String>) {
                 throw SerializeException("Illegal row found: ${rows[i]}")
             }
             if (pieces[char] != null) {
-                add(
+                withPiece(
                     pieces[char]!!.first,
                     pieces[char]!!.second,
                     Locus(File.fromDec(file++), Rank.fromDec(rank))
@@ -178,7 +172,7 @@ private fun String.loadCastling(): Pair<Set<CastleType>, Set<CastleType>> {
     return Pair(white, black)
 }
 
-private fun IGameState.castlingFen(): String = StringBuilder().apply {
+private fun GameInfo.castlingFen(): String = StringBuilder().apply {
     // Might be important that they're in the correct order
     if (whiteCastling.contains(CastleType.KingSide)) append('K')
     if (whiteCastling.contains(CastleType.QueenSide)) append('Q')
@@ -187,7 +181,7 @@ private fun IGameState.castlingFen(): String = StringBuilder().apply {
     if (whiteCastling.isEmpty() && blackCastling.isEmpty()) append(MISSING)
 }.toString()
 
-private fun IPly?.toEnPassentFen(): String = when {
+private fun Ply?.toEnPassentFen(): String = when {
     this == null -> MISSING
     piece == Piece.Pawn && from.rank == Rank.`2` && to.rank == Rank.`4` -> "${from.file}3"
     piece == Piece.Pawn && from.rank == Rank.`7` && to.rank == Rank.`5` -> "${from.file}6"

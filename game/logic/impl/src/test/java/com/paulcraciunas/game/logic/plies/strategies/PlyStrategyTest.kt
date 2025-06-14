@@ -6,9 +6,9 @@ import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank
-import com.paulcraciunas.game.logic.impl.GameState
+import com.paulcraciunas.game.logic.impl.MutableGameInfo
 import com.paulcraciunas.game.logic.impl.board.Board
-import com.paulcraciunas.game.logic.impl.plies.Ply
+import com.paulcraciunas.game.logic.impl.plies.Playable
 import com.paulcraciunas.game.logic.impl.plies.StandardPly
 import com.paulcraciunas.game.logic.impl.plies.strategies.Next
 import com.paulcraciunas.game.logic.impl.plies.strategies.PlyStrategy
@@ -189,7 +189,7 @@ internal class PlyStrategyTest {
 
     private class TestComplexMove : PlyStrategy() {
         override val piece: Piece = plyPiece
-        override fun MutableList<Ply>.addComplexPlies(from: Locus, on: IBoard, with: GameState) {
+        override fun MutableList<Playable>.addComplexPlies(from: Locus, on: IBoard, with: MutableGameInfo) {
             add(StandardPly(side, plyPiece, from = from, to = from.top()!!))
         }
     }
@@ -198,6 +198,6 @@ internal class PlyStrategyTest {
         private val plyPiece = Piece.Rook
         private val side = Side.WHITE
         private val rookHome = Locus(File.e, Rank.`4`)
-        private val with = GameState(turn = side)
+        private val with = MutableGameInfo(turn = side)
     }
 }

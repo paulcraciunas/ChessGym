@@ -1,42 +1,48 @@
 package com.paulcraciunas.game.logic.impl
 
 import com.paulcraciunas.game.logic.api.CastleType
-import com.paulcraciunas.game.logic.api.IPly
+import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Side
+import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.state.CheckCount
-import com.paulcraciunas.game.logic.api.state.IGameState
+import com.paulcraciunas.game.logic.api.state.GameInfo
 import com.paulcraciunas.game.logic.impl.plies.CastlePly
-import com.paulcraciunas.game.logic.impl.plies.Ply
+import com.paulcraciunas.game.logic.impl.plies.Playable
 import com.paulcraciunas.game.logic.impl.plies.StandardPly
 
-data class GameState(
-    override val turn: Side = Side.WHITE,
-    override val lastPly: IPly? = null,
-    override val inCheckCount: CheckCount = CheckCount.None,
-    override val whiteCastling: Set<CastleType> = CastleType.entries.toSet(),
-    override val blackCastling: Set<CastleType> = CastleType.entries.toSet(),
-    override val plieClock: Int = 0, // Since last pawn move or capture
-    override val moveIndex: Int = 1,
-): IGameState {
+data class MutableGameInfo(
+    override var turn: Side = Side.WHITE,
+    override var lastPly: Ply? = null,
+    override var inCheckCount: CheckCount = CheckCount.None,
+    override var whiteCastling: Set<CastleType> = CastleType.entries.toSet(),
+    override var blackCastling: Set<CastleType> = CastleType.entries.toSet(),
+    override var plieClock: Int = 0,
+    override var moveIndex: Int = 1,
+    override val plies: MutableList<Playable> = mutableListOf()
+) : GameInfo {
+
+    override fun plies(from: Locus): List<Playable> = plies.filter { it.from == from }
+
     override fun castling(turn: Side): Set<CastleType> =
         if (turn == Side.WHITE) whiteCastling else blackCastling
 
-    override fun next(ply: IPly, checkCount: CheckCount): GameState = GameState(
-        turn = turn.other(),
-        lastPly = ply,
-        inCheckCount = checkCount,
-        whiteCastling = updateCastling(Side.WHITE, ply),
-        blackCastling = updateCastling(Side.BLACK, ply),
-        plieClock = if (!(ply as Ply).isPawnMoveOrCapture()) plieClock + 1 else 0, // TODO Paul: Fix down-casting
-        moveIndex = moveIndex + turn.moveIncrement()
-    )
+    fun update(ply: Playable, checkCount: CheckCount) {
+        moveIndex += turn.moveIncrement() // do this before we swap the turn
+        turn = turn.other()
+        lastPly = ply
+        inCheckCount = checkCount
+        whiteCastling = updateCastling(Side.WHITE, ply)
+        blackCastling = updateCastling(Side.BLACK, ply)
+        plieClock = if (!ply.isPawnMoveOrCapture()) plieClock + 1 else 0
+        plies.clear()
+    }
 
-    private fun updateCastling(side: Side, ply: IPly): Set<CastleType> =
+    private fun updateCastling(side: Side, ply: Ply): Set<CastleType> =
         if (side == ply.turn) currentCastling(ply, castling(side))
         else otherCastling(ply, castling(side))
 
-    private fun currentCastling(ply: IPly, castling: Set<CastleType>): Set<CastleType> {
+    private fun currentCastling(ply: Ply, castling: Set<CastleType>): Set<CastleType> {
         if (castling.isEmpty() || ply.piece == Piece.King) return emptySet()
         val result = mutableSetOf<CastleType>().apply { addAll(castling) }
         when (ply) {
@@ -53,7 +59,7 @@ data class GameState(
         return result
     }
 
-    private fun otherCastling(ply: IPly, castling: Set<CastleType>): Set<CastleType> {
+    private fun otherCastling(ply: Ply, castling: Set<CastleType>): Set<CastleType> {
         val result = mutableSetOf<CastleType>().apply { addAll(castling) }
         if (ply is StandardPly && ply.captured() == Piece.Rook) {
             castling.forEach {
