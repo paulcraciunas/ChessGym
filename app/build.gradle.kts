@@ -57,7 +57,7 @@ dependencies {
     implementation(project(":game:puzzles:impl"))
     implementation(project(":game:serializer:impl"))
     implementation(project(":game:logic:api"))
-    implementation(project(":game:logic:impl"))
+    implementation(project(":game:logic:di"))
     implementation(project(":global:notifications"))
     implementation(project(":settings:user"))
 

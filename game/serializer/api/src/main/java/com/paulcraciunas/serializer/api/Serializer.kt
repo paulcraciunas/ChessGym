@@ -1,8 +1,6 @@
 package com.paulcraciunas.serializer.api
 
 import com.paulcraciunas.game.logic.api.Game
-import com.paulcraciunas.game.logic.api.board.IBoard
-import com.paulcraciunas.game.logic.api.state.GameInfo
 
 interface Serializer {
     @Throws(SerializeException::class)
