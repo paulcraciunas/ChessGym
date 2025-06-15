@@ -9,10 +9,8 @@ import com.paulcraciunas.puzzles.impl.impl.AbstractPuzzleDatabase
 import com.paulcraciunas.puzzles.impl.network.PuzzleSyncWorker
 import com.paulcraciunas.puzzles.impl.network.progress.WorkerProgressReporter
 import com.paulcraciunas.puzzles.impl.network.save.CsvPuzzleDatabaseWriter
-import com.paulcraciunas.puzzles.impl.network.unpack.FileDecompressor
 import com.paulcraciunas.puzzles.impl.network.writer.FileProgressWriter
 import com.paulcraciunas.serializer.api.PuzzleWriter
-import java.io.InputStream
 
 // Test implementation of PuzzleWriter
 private class FakePuzzleWriter : PuzzleWriter {

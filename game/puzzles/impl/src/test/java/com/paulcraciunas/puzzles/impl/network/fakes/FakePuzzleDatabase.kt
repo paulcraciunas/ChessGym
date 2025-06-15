@@ -35,11 +35,6 @@ internal class FakePuzzleDatabase : PuzzleDatabase {
         return insertedPuzzles.firstOrNull { it.rating in min..max }
     }
 
-    fun clear() {
-        insertedPuzzles.clear()
-        shouldThrowError = false
-    }
-
     private fun checkError() {
         if (shouldThrowError) {
             throw RuntimeException("Database error")
