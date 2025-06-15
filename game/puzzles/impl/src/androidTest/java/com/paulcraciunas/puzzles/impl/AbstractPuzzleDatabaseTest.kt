@@ -4,19 +4,19 @@ import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.paulcraciunas.puzzles.impl.db.Puzzle
-import com.paulcraciunas.puzzles.impl.impl.PuzzleDatabase
+import com.paulcraciunas.puzzles.impl.impl.AbstractPuzzleDatabase
 import junit.framework.TestCase
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class PuzzleDatabaseTest {
+class AbstractPuzzleDatabaseTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
     private val underTest = Room.inMemoryDatabaseBuilder(
         context.applicationContext,
-        PuzzleDatabase::class.java
+        AbstractPuzzleDatabase::class.java
     ).allowMainThreadQueries().build()
 
     @Test

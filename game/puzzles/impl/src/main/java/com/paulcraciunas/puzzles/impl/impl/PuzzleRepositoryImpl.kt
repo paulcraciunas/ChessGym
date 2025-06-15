@@ -4,7 +4,7 @@ import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.puzzles.api.PuzzleRepository
 import javax.inject.Inject
 
-class PuzzleRepositoryImpl @Inject constructor(
+internal class PuzzleRepositoryImpl @Inject constructor(
     private val db: PuzzleDatabase,
     private val adapter: PuzzleAdapter,
 ) : PuzzleRepository {
