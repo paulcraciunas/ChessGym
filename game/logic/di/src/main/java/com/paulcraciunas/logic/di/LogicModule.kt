@@ -9,8 +9,12 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class LogicModule {
+internal class LogicModule {
     @Provides
     @Singleton
     fun providePlyFactory(): PlyFactory = PlyFactory()
+
+    @Provides
+    @Singleton
+    fun provideGameFactory(plyFactory: PlyFactory): GameFactory = RealGameFactory(plyFactory)
 }

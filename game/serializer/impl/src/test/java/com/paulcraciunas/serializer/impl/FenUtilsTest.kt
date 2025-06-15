@@ -4,7 +4,7 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.impl.plies.PlyFactory
 import com.paulcraciunas.game.logic.loc
-import com.paulcraciunas.logic.di.Builder
+import com.paulcraciunas.logic.di.RealBuilder
 import com.paulcraciunas.serializer.api.SerializeException
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 internal class FenUtilsTest {
-    private val underTest = Builder(PlyFactory())
+    private val underTest = RealBuilder(PlyFactory())
 
     @Test
     fun `WHEN invalid en passent location THEN throw`() {
