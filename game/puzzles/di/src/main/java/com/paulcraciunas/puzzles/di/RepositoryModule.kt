@@ -1,4 +1,4 @@
-package com.paulcraciunas.puzzles.impl.di
+package com.paulcraciunas.puzzles.di
 
 import com.paulcraciunas.puzzles.api.PuzzleRepository
 import com.paulcraciunas.puzzles.impl.impl.PuzzleRepositoryImpl

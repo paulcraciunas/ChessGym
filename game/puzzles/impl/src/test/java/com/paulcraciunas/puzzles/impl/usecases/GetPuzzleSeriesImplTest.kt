@@ -6,13 +6,11 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.state.GameInfo
-import com.paulcraciunas.game.logic.impl.MutableGameInfo
-import com.paulcraciunas.game.logic.impl.board.Board
 import com.paulcraciunas.puzzles.api.PuzzleRepository
 import com.paulcraciunas.puzzles.api.usecases.GetPuzzleSeries
 import com.paulcraciunas.puzzles.impl.impl.RandomFactory
 import kotlinx.coroutines.runBlocking
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.assertEquals
 
 internal class GetPuzzleSeriesImplTest {
@@ -85,12 +83,13 @@ internal class GetPuzzleSeriesImplTest {
         override fun nextInt(from: Int, to: Int): Int = NEXT_INT
     }
 
+    @Suppress("IMPLICIT_NOTHING_TYPE_ARGUMENT_IN_RETURN_POSITION")
     private class PuzzleStub : Puzzle {
         override val rating: Int = 420
         override val player: Side = Side.WHITE
         override val state: Puzzle.State = Puzzle.State.Idle
-        override val info: GameInfo = MutableGameInfo()
-        override val board: IBoard = Board()
+        override val info: GameInfo by lazy { throw NotImplementedError() }
+        override val board: IBoard  by lazy { throw NotImplementedError() }
 
         override fun start() {}
         override fun play(ply: Ply) {}

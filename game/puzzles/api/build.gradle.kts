@@ -10,4 +10,6 @@ java {
 
 dependencies {
     implementation(project(":game:logic:api"))
+
+    implementation(libs.kotlinx.coroutines.core)
 }

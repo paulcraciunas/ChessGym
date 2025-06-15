@@ -32,7 +32,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":game:logic:api"))
+    api(project(":game:logic:api"))
     implementation(project(":game:logic:impl"))
 
     // Dependency injection

@@ -5,7 +5,7 @@ import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.impl.plies.PlyFactory
 import com.paulcraciunas.game.logic.loc
-import com.paulcraciunas.logic.di.GameFactory
+import com.paulcraciunas.logic.di.RealGameFactory
 import com.paulcraciunas.serializer.impl.binary.BinaryAdapter
 import com.paulcraciunas.serializer.impl.binary.BinaryPuzzleReader
 import com.paulcraciunas.serializer.impl.binary.BinaryPuzzleWriter
@@ -16,7 +16,7 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 
 internal class MutablePuzzleTest {
-    private val factory = GameFactory(PlyFactory())
+    private val factory = RealGameFactory(PlyFactory())
     private val adapter = BinaryAdapter()
     private val reader = BinaryPuzzleReader(factory, adapter)
     private val writer = BinaryPuzzleWriter(FenSerializer(factory), adapter)
@@ -55,6 +55,7 @@ internal class MutablePuzzleTest {
         @JvmStatic
         fun fenPuzzles(): List<String> =
             ClassLoader.getSystemResource("fen_puzzles.csv").readText().split("\n")
+
         private const val RATING = 42 // Chosen at random
     }
 }

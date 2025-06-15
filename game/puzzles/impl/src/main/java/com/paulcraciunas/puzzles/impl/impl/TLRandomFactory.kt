@@ -5,6 +5,6 @@ import java.util.concurrent.ThreadLocalRandom
 /**
  * Uses ThreadLocalRandom to generate random numbers
  */
-internal class TLRandomFactory : RandomFactory {
+class TLRandomFactory : RandomFactory {
     override fun nextInt(from: Int, to: Int): Int = ThreadLocalRandom.current().nextInt(from, to)
 }

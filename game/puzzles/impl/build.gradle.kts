@@ -36,8 +36,7 @@ android {
 
 dependencies {
     implementation(project(":game:puzzles:api"))
-    implementation(project(":game:logic:api"))
-    implementation(project(":game:logic:impl")) // TODO Paul: add DI to the impl module, so we don't need to import it like this
+    implementation(project(":game:logic:di"))
     implementation(project(":game:serializer:api"))
     implementation(project(":global:notifications"))
 
@@ -61,14 +60,19 @@ dependencies {
     // Unpacking library
     implementation(libs.public.zstd) { artifact { type = "aar" } }
 
-    testImplementation(libs.junit)
-    testImplementation(libs.junit.jupiter.api)
-    testImplementation(libs.junit.jupiter.engine)
-    testImplementation(libs.junit.jupiter.params)
-    testImplementation(libs.junit.jupiter)
+    testFixturesImplementation(project(":game:puzzles:api"))
+    testFixturesImplementation(libs.bundles.unit.tests)
+
+    testImplementation(libs.bundles.unit.tests)
+    testImplementation(libs.kotlinx.coroutines.test)
     testRuntimeOnly(libs.junit.platform.launcher)
 
     androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.espresso.core)
-    testImplementation(kotlin("test"))
+    androidTestImplementation(libs.androidx.work.test)
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }

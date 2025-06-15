@@ -9,7 +9,7 @@ import com.paulcraciunas.game.logic.impl.plies.PlyFactory
 import com.paulcraciunas.game.logic.impl.plies.StandardPly
 import com.paulcraciunas.game.logic.loc
 import com.paulcraciunas.game.logic.plies.ExpectedPly
-import com.paulcraciunas.logic.di.GameFactory
+import com.paulcraciunas.logic.di.RealGameFactory
 import com.paulcraciunas.serializer.api.SerializeException
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -21,7 +21,7 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 
 internal class FenSerializerTest {
-    private val underTest = FenSerializer(GameFactory(PlyFactory()))
+    private val underTest = FenSerializer(RealGameFactory(PlyFactory()))
 
     @Test
     fun `WHEN fen parts are missing THEN throw`() {

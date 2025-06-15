@@ -1,23 +1,15 @@
 package com.paulcraciunas.puzzles.impl.impl
 
-import androidx.room.Database
-import androidx.room.RoomDatabase
 import com.paulcraciunas.puzzles.impl.db.Puzzle
-import com.paulcraciunas.puzzles.impl.db.PuzzleDao
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
-@Database(entities = [Puzzle::class], version = 1)
-abstract class PuzzleDatabase : RoomDatabase() {
-    abstract fun puzzleDao(): PuzzleDao
+interface PuzzleDatabase {
+    suspend fun insert(puzzle: Puzzle): Long
 
-    suspend fun insert(puzzle: Puzzle) = withContext(Dispatchers.IO) { puzzleDao().insert(puzzle) }
+    suspend fun bulkInsert(all: List<Puzzle>)
 
-    suspend fun bulkInsert(all: List<Puzzle>) = withContext(Dispatchers.IO) { puzzleDao().insertAll(all) }
+    suspend fun get(count: Int): List<Puzzle>
 
-    suspend fun get(count: Int): List<Puzzle> = withContext(Dispatchers.IO) { puzzleDao().get(count) }
+    suspend fun getByRating(rating: Int): Puzzle?
 
-    suspend fun getByRating(rating: Int): Puzzle? = withContext(Dispatchers.IO) { puzzleDao().getByRating(rating) }
-
-    suspend fun getInRatingRange(min: Int, max: Int): Puzzle? = withContext(Dispatchers.IO) { puzzleDao().getInRange(min, max) }
+    suspend fun getInRatingRange(min: Int, max: Int): Puzzle?
 }
