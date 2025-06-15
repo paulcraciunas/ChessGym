@@ -1,0 +1,60 @@
+package com.paulcraciunas.puzzles.impl.network.save
+
+import android.util.Log
+import com.paulcraciunas.puzzles.impl.db.Puzzle
+import com.paulcraciunas.puzzles.impl.impl.PuzzleDatabase
+import com.paulcraciunas.puzzles.impl.network.progress.ProgressReporter
+import com.paulcraciunas.serializer.api.PuzzleWriter
+import java.io.File
+import javax.inject.Inject
+
+internal class CsvPuzzleDatabaseWriter @Inject constructor(
+    private val progressReporter: ProgressReporter,
+    private val puzzleWriter: PuzzleWriter,
+    private val db: PuzzleDatabase
+) : PuzzleDatabaseWriter {
+
+    override suspend fun writePuzzlesToDatabase(csvSource: File) {
+        val puzzles = ArrayList<Puzzle>(BULK_INSERT_COUNT)
+
+        csvSource.reader(Charsets.UTF_8).buffered(BUFFER_SIZE).use { reader ->
+            val lines = reader.lineSequence().drop(1) // Skip header
+
+            lines.forEach { line ->
+                val tokens = line.split(',')
+                if (!line.startsWith("#") && tokens.size == 10) {
+                    puzzles.add(
+                        Puzzle(
+                            fenBinary = puzzleWriter.write(tokens[1], tokens[2]),
+                            rating = tokens[3].toInt()
+                        )
+                    )
+
+                    if (puzzles.size == BULK_INSERT_COUNT) {
+                        insertBulk(puzzles)
+                    }
+                }
+            }
+
+            // Insert remaining puzzles
+            if (puzzles.isNotEmpty()) {
+                insertBulk(puzzles)
+            }
+        }
+    }
+
+    private suspend fun insertBulk(puzzles: ArrayList<Puzzle>) {
+        try {
+            db.bulkInsert(puzzles)
+            progressReporter.onCompleted(puzzles.size)
+            puzzles.clear()
+        } catch (e: Exception) {
+            Log.e(CsvPuzzleDatabaseWriter::class.java.simpleName, "Bulk insert failed!", e)
+        }
+    }
+
+    companion object {
+        private const val BUFFER_SIZE = 32 * 1024
+        private const val BULK_INSERT_COUNT = 50_000
+    }
+}

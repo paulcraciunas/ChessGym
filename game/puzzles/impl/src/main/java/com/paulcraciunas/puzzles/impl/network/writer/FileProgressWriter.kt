@@ -1,0 +1,33 @@
+package com.paulcraciunas.puzzles.impl.network.writer
+
+import com.paulcraciunas.puzzles.impl.network.progress.ProgressReporter
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.InputStream
+import javax.inject.Inject
+
+internal class FileProgressWriter @Inject constructor(
+    private val progressReporter: ProgressReporter
+) : FileWriter {
+    private val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
+
+    override fun onBegin(size: Long) {
+        progressReporter.onBegin(size)
+    }
+
+    override suspend fun write(inputStream: InputStream, destination: File) {
+        withContext(Dispatchers.IO) {
+            inputStream.use { input ->
+                destination.outputStream().use { output ->
+                    var bytes = input.read(buffer)
+                    while (bytes >= 0) {
+                        output.write(buffer, 0, bytes)
+                        progressReporter.onCompleted(bytes)
+                        bytes = input.read(buffer)
+                    }
+                }
+            }
+        }
+    }
+}
