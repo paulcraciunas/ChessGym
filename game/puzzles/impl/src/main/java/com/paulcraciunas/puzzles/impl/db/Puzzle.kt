@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(indices = [Index(value = ["rating"]), Index(value = ["fenBinary"])])
+@Entity(indices = [Index(value = ["rating"]), Index(value = ["fenBinary"], unique = true)])
 data class Puzzle(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val fenBinary: ByteArray,
