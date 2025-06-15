@@ -53,11 +53,9 @@ android {
 }
 
 dependencies {
-    implementation(project(":game:puzzles:api"))
-    implementation(project(":game:puzzles:impl"))
-    implementation(project(":game:serializer:impl"))
-    implementation(project(":game:logic:api"))
+    implementation(project(":game:puzzles:di"))
     implementation(project(":game:logic:di"))
+    implementation(project(":game:serializer:impl"))
     implementation(project(":global:notifications"))
     implementation(project(":settings:user"))
 
