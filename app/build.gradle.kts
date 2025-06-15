@@ -69,20 +69,28 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
+    // Navigation
+    implementation(libs.androidx.navigation.compose)
+
+    // Splash Screen
+    implementation(libs.androidx.core.splashscreen)
+
+    // Edge-to-edge
+    implementation(libs.androidx.activity.ktx)
+
     // Dependency injection
     implementation(libs.hilt.android)
     implementation(libs.androidx.work.ktx)
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.androidx.hilt.work)
+    implementation(libs.androidx.hilt.navigation)
     ksp(libs.hilt.compiler)
     ksp(libs.androidx.hilt.compiler)
 
     // Testing
-    testImplementation(libs.junit)
-    testImplementation(libs.junit.jupiter.api)
-    testImplementation(libs.junit.jupiter.engine)
-    testImplementation(libs.junit.jupiter.params)
-    testImplementation(libs.room.testing)
+    testImplementation(libs.bundles.unit.tests)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testRuntimeOnly(libs.junit.platform.launcher)
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
