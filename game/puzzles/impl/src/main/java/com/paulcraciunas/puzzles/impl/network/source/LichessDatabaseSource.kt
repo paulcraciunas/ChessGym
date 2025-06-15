@@ -7,7 +7,7 @@ import java.net.URL
 import java.net.URLConnection
 import javax.inject.Inject
 
-internal class LichessDatabaseSource @Inject constructor() : PuzzleDatabaseSource {
+class LichessDatabaseSource @Inject constructor() : PuzzleDatabaseSource {
     private lateinit var connection: URLConnection
 
     override suspend fun open(): Long = withContext(Dispatchers.IO) {

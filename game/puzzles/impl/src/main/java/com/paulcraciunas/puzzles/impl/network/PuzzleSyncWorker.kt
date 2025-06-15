@@ -89,7 +89,16 @@ class PuzzleSyncWorker @AssistedInject constructor(
     enum class Step {
         Download,
         Unpack,
-        BuildDb
+        BuildDb;
+
+        companion object {
+            fun fromString(value: String?) = when(value) {
+                "Download" -> Download
+                "Unpack" -> Unpack
+                "BuildDb" -> BuildDb
+                else -> null
+            }
+        }
     }
 
     companion object {

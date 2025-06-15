@@ -1,4 +1,4 @@
-package com.paulcraciunas.puzzles.impl.di
+package com.paulcraciunas.puzzles.di
 
 import android.content.Context
 import androidx.room.Room

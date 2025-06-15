@@ -8,7 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 @Database(entities = [Puzzle::class], version = 1)
-internal abstract class AbstractPuzzleDatabase : RoomDatabase(), PuzzleDatabase {
+abstract class AbstractPuzzleDatabase : RoomDatabase(), PuzzleDatabase {
     abstract fun puzzleDao(): PuzzleDao
 
     override suspend fun insert(puzzle: Puzzle) = withContext(Dispatchers.IO) { puzzleDao().insert(puzzle) }

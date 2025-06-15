@@ -4,6 +4,6 @@ import com.github.luben.zstd.ZstdInputStream
 import java.io.InputStream
 import javax.inject.Inject
 
-internal class ZstdFileDecompressor @Inject constructor() : FileDecompressor {
+class ZstdFileDecompressor @Inject constructor() : FileDecompressor {
     override suspend fun decompress(source: InputStream): InputStream = ZstdInputStream(source)
 }

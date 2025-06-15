@@ -1,11 +1,11 @@
-package com.paulcraciunas.puzzles.impl.di
+package com.paulcraciunas.puzzles.di
 
 import com.paulcraciunas.puzzles.impl.network.progress.ProgressReporter
 import com.paulcraciunas.puzzles.impl.network.progress.WorkerProgressReporter
 import com.paulcraciunas.puzzles.impl.network.save.CsvPuzzleDatabaseWriter
 import com.paulcraciunas.puzzles.impl.network.save.PuzzleDatabaseWriter
-import com.paulcraciunas.puzzles.impl.network.source.PuzzleDatabaseSource
 import com.paulcraciunas.puzzles.impl.network.source.LichessDatabaseSource
+import com.paulcraciunas.puzzles.impl.network.source.PuzzleDatabaseSource
 import com.paulcraciunas.puzzles.impl.network.unpack.FileDecompressor
 import com.paulcraciunas.puzzles.impl.network.unpack.ZstdFileDecompressor
 import com.paulcraciunas.puzzles.impl.network.writer.FileProgressWriter

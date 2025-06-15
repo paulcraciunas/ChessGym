@@ -6,7 +6,7 @@ import com.paulcraciunas.puzzles.api.usecases.GetPuzzleSeries
 import com.paulcraciunas.puzzles.impl.impl.RandomFactory
 import javax.inject.Inject
 
-internal class GetPuzzleSeriesImpl @Inject constructor(
+class GetPuzzleSeriesImpl @Inject constructor(
     private val repository: PuzzleRepository,
     private val randomFactory: RandomFactory
 ) : GetPuzzleSeries {

@@ -3,7 +3,7 @@ package com.paulcraciunas.puzzles.impl.network.progress
 import javax.inject.Inject
 
 
-internal class WorkerProgressReporter @Inject constructor() : ProgressReporter {
+class WorkerProgressReporter @Inject constructor() : ProgressReporter {
     private lateinit var report: Reporter
 
     private var total: Int = 0

@@ -8,7 +8,7 @@ import com.paulcraciunas.serializer.api.PuzzleWriter
 import java.io.File
 import javax.inject.Inject
 
-internal class CsvPuzzleDatabaseWriter @Inject constructor(
+class CsvPuzzleDatabaseWriter @Inject constructor(
     private val progressReporter: ProgressReporter,
     private val puzzleWriter: PuzzleWriter,
     private val db: PuzzleDatabase
