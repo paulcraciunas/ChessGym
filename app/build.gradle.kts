@@ -58,6 +58,7 @@ dependencies {
     implementation(project(":game:serializer:impl"))
     implementation(project(":global:notifications"))
     implementation(project(":settings:user"))
+    implementation(project(":settings:application"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
