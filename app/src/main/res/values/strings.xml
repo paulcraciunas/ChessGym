@@ -12,6 +12,7 @@
 
     <!-- region Nav drawer -->
     <string name="nav_drawer_menu">Menu</string>
+    <string name="nav_drawer_back">Back</string>
     <string name="nav_drawer_sign_in">Sign in…</string>
     <string name="nav_drawer_general">General</string>
     <string name="nav_drawer_home">Home</string>
@@ -30,6 +31,8 @@
     <!-- region navigation -->
     <string name="navigation_home_label">Home</string>
     <string name="navigation_home_screen_description">Home screen</string>
+    <string name="navigation_puzzle_dashboard_label">Puzzles</string>
+    <string name="navigation_puzzle_dashboard_content_description">Puzzle Dashboard</string>
     <string name="navigation_rated_puzzle_label">Rated</string>
     <string name="navigation_rated_puzzle_content_description">Rated puzzle challenge</string>
     <string name="navigation_puzzle_rush_label">Rush</string>
@@ -42,41 +45,57 @@
 
     <!-- region landing screen -->
     <string name="landing_download_title">Download Puzzle Database</string>
-    <string name="landing_download_prompt">To start solving puzzles, you need to download the puzzle database first. This will give you access to thousands of chess puzzles to improve your tactical skills.</string>
+    <string name="landing_download_explanation">To start solving puzzles, you need to download the puzzle database first. This will give you access to thousands of chess puzzles to improve your tactical skills.</string>
     <string name="landing_download_button">Download Database</string>
     <string name="landing_download_content_title">Constructing Puzzle Database</string>
     <string name="landing_download_progress">Downloading</string>
     <string name="landing_unpack_progress">Unpacking</string>
     <string name="landing_write_to_db_progress">Building database</string>
     <string name="landing_download_complete">Download Complete!</string>
+    <string name="loading_error_generic">Error occurred during database setup. Please try again.</string>
+    <string name="loading_error_no_internet">A stable internet connection is required to download the database.</string>
+    <string name="loading_error_not_enough_disk_space">The application needs around 1.5 GB of temporary storage to download and unpack the puzzle database.</string>
+    <string name="loading_error_permission">Notification permission is required as the download might take a long time to complete.</string>
+    <string name="database_download_dialog_title">Large Download</string>
+    <string name="database_download_dialog_body">The puzzle database is approximately 500MB. Make sure you have a stable internet connection and sufficient storage space. The download may take several minutes depending on your connection speed.</string>
 
     <string name="enable_notifications_dialog_title">Enable Notifications</string>
     <string name="enable_notifications_dialog_body">To keep you informed about the download progress, we\'d like to show notifications. This will help you track the download status even when the app is in the background.</string>
     <string name="enable_notifications_dialog_accept">Allow</string>
-    <string name="enable_notifications_dialog_refuse">Skip</string>
+    <string name="enable_notifications_dialog_refuse">Deny</string>
+    <!-- endregion -->
+
+    <!-- region user stats -->
+    <string name="user_stats_title">Puzzle Statistics</string>
+    <string name="user_stats_high_score_title">High Scores</string>
+    <string name="user_stat_current_rating">Current Rating</string>
+    <string name="user_stat_puzzles_played">Puzzles Played</string>
+    <string name="user_stat_puzzles_success">Success Rate</string>
+    <string name="user_stat_puzzles_solved">Puzzles Solved</string>
+    <string name="user_stat_high_score_rated_puzzle">Best Rated Score</string>
+    <string name="user_stat_high_score_puzzles_rush">Best Rush Score</string>
+    <string name="user_stat_high_score_puzzles_streak">Longest Rated Streak</string>
+    <string name="user_stat_high_score_blind_mode">Best Blind Mode Win</string>
+    <string name="user_stat_high_score_board_visualisation">Board Visualisation Score</string>
+    <!-- endregion -->
+
+    <!-- region Rated Puzzle Screen -->
+    <string name="rated_puzzle_hint_description">Hint</string>
+    <string name="rated_puzzle_abandon_description">Abandon</string>
+    <string name="rated_puzzle_next_description">Next</string>
+    <string name="rated_puzzle_rating_title">Puzzle rating %1$d</string>
+    <string name="rated_puzzle_white_to_move">White to move</string>
+    <string name="rated_puzzle_black_to_move">Black to move</string>
+    <string name="rated_puzzle_moves">Moves: %1$s</string>
     <!-- endregion -->
 
     <!-- region generic text resources which can be reused across screens -->
     <string name="generic_continue">Continue</string>
-    <string name="generic_cancel">Cancel</string>
-    <string name="database_download_dialog_title">Large Download</string>
-    <string name="database_download_dialog_body">The puzzle database is approximately 500MB. Make sure you have a stable internet connection and sufficient storage space. The download may take several minutes depending on your connection speed.</string>
-    <!-- endregion -->
-
-    <!-- region user stats -->
-    <string name="user_stat_current_rating_title">Current Rating</string>
-    <string name="user_stat_current_rating_subtitle">Your puzzle rating</string>
-    <string name="user_stat_puzzles_played_title">Puzzles Played</string>
-    <string name="user_stat_puzzles_played_subtitle">Total number of puzzles played</string>
-    <string name="user_stat_puzzles_success_title">Success Rate</string>
-    <string name="user_stat_puzzles_success_subtitle">Percentage of puzzles solved</string>
-    <string name="user_stat_puzzles_rush_title">Best Rush Score</string>
-    <string name="user_stat_puzzles_rush_subtitle">Puzzle Rush high score</string>
-    <string name="user_stat_puzzles_streak_title">Longest Streak</string>
-    <string name="user_stat_puzzles_streak_subtitle">Best solving streak</string>
+    <string name="generic_download">Download</string>
+    <string name="generic_retry">Retry</string>
     <!-- endregion -->
 
     <!-- temporary values; these will be deleted as we build features -->
-    <string name="under_construction">Continue</string>
+    <string name="under_construction">Under Construction</string>
 
 </resources>
