@@ -26,11 +26,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
 }
 
@@ -39,6 +39,7 @@ dependencies {
     implementation(project(":game:logic:di"))
     implementation(project(":game:serializer:api"))
     implementation(project(":global:notifications"))
+    implementation(project(":settings:application"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -65,12 +66,14 @@ dependencies {
 
     testImplementation(libs.bundles.unit.tests)
     testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(project(":settings:testFixtures"))
     testRuntimeOnly(libs.junit.platform.launcher)
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.work.test)
+    androidTestImplementation(project(":settings:testFixtures"))
 }
 
 tasks.withType<Test> {
