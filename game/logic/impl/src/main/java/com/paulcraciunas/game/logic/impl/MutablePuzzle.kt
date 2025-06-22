@@ -45,6 +45,8 @@ class MutablePuzzle(
         }
     }
 
+    override fun play(from: Locus, to: Locus) = play(info.plies(from).first { it.to == to })
+
     override fun abandon() {
         assert(state == Puzzle.State.InProgress)
 

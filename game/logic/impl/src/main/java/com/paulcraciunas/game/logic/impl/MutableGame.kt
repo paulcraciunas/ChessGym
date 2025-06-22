@@ -42,12 +42,7 @@ class MutableGame(
         execute(ply)
     }
 
-    override fun play(from: Locus, to: Locus) {
-        assert(state == Game.GameState.InProgress)
-
-        play(info.plies(from).first { it.to == to })
-    }
-
+    override fun play(from: Locus, to: Locus) = play(info.plies(from).first { it.to == to })
     override fun resign() = finish(Result.Resigned)
     override fun draw() = finish(Result.DrawByAgreement)
     override fun isRunning(): Boolean = state == Game.GameState.InProgress
