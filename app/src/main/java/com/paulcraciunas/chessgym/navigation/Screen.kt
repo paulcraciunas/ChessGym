@@ -1,10 +1,40 @@
 package com.paulcraciunas.chessgym.navigation
 
-sealed class Screen(val route: String) {
-    data object Loading : Screen("loading")
-    data object Home : Screen("home")
-    data object RatedPuzzle : Screen("rated_puzzle")
-    data object PuzzleRush : Screen("puzzle_rush")
-    data object BoardVisualization : Screen("board_visualization")
-    data object BlindMode : Screen("blind_mode")
+import kotlinx.serialization.Serializable
+
+@Serializable
+sealed class Screen {
+    @Serializable
+    data object Loading : Screen()
+
+    @Serializable
+    data object Main : Screen()
+
+    @Serializable
+    data object Home : Screen()
+
+    @Serializable
+    data object PuzzleDashboard : Screen()
+
+// TODO Paul: Integrate this in the Puzzle Dashboard screen
+//    @Serializable
+//    data object RatedPuzzle : Screen()
+// TODO Paul: Integrate this in the Puzzle Dashboard screen
+//    @Serializable
+//    data object PuzzleRush : Screen()
+//
+    @Serializable
+    data object BoardVisualization : Screen()
+
+    @Serializable
+    data object BlindMode : Screen()
+
+    @Serializable
+    data object Settings : Screen()
+
+    @Serializable
+    data object SignUp : Screen()
+
+    @Serializable
+    data object About : Screen()
 }
