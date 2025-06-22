@@ -33,6 +33,6 @@ class FetchPuzzleDatabaseImpl @Inject constructor(
         val workManager = WorkManager.getInstance(context)
         workManager.enqueueUniqueWork(PuzzleSyncWorker.TAG, ExistingWorkPolicy.KEEP, request)
 
-        return workManager.getWorkInfoByIdFlow(request.id).map { dataAdapter.adapt(it?.progress) }
+        return workManager.getWorkInfoByIdFlow(request.id).map { dataAdapter.adapt(it) }
     }
 }

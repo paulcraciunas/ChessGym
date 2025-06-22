@@ -4,6 +4,7 @@ import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.IBoard
+import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.state.GameInfo
 import com.paulcraciunas.puzzles.api.PuzzleRepository
@@ -93,6 +94,7 @@ internal class GetPuzzleSeriesImplTest {
 
         override fun start() {}
         override fun play(ply: Ply) {}
+        override fun play(from: Locus, to: Locus) {}
         override fun abandon() {}
         override fun hint(): Piece = Piece.King
     }

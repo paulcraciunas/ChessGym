@@ -56,7 +56,7 @@ fun AppDrawer(
                     )
                 },
                 selected = false,
-                onClick = { onSignIn(); closeDrawer() }
+                onClick = { onSignIn(); closeDrawer() },
             )
             HorizontalDivider()
             Text(
@@ -68,7 +68,7 @@ fun AppDrawer(
                 label = { Text(text = stringResource(R.string.nav_drawer_home)) },
                 icon = { Icon(imageVector = Icons.Outlined.Home, contentDescription = null) },
                 selected = false,
-                onClick = { onHome(); closeDrawer() }
+                onClick = { onHome(); closeDrawer() },
             )
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
@@ -88,7 +88,7 @@ fun AppDrawer(
                         contentDescription = null
                     )
                 },
-                onClick = { onSettings(); closeDrawer() }
+                onClick = { onSettings(); closeDrawer() },
             )
             NavigationDrawerItem(
                 label = { Text(text = stringResource(R.string.nav_drawer_about)) },

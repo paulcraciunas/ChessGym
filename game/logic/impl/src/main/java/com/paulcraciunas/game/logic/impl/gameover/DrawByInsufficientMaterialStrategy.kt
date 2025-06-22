@@ -7,7 +7,6 @@ import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import java.util.EnumMap
 
-// TODO Paul: I think this has bugs. It counts the pieces from both sides together when evaluating the sufficient material
 internal class DrawByInsufficientMaterialStrategy : GameOverStrategy {
 
     override fun invoke(of: Game): Game.GameState =

@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.jetbrains.kotlin.serialization)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.google.hilt)
     alias(libs.plugins.google.ksp)
@@ -33,11 +34,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -58,6 +59,7 @@ dependencies {
     implementation(project(":game:serializer:impl"))
     implementation(project(":global:notifications"))
     implementation(project(":settings:user"))
+    implementation(project(":settings:application"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
@@ -69,20 +71,28 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
+    // Navigation
+    implementation(libs.androidx.navigation.compose)
+
+    // Splash Screen
+    implementation(libs.androidx.core.splashscreen)
+
+    // Edge-to-edge
+    implementation(libs.androidx.activity.ktx)
+
     // Dependency injection
     implementation(libs.hilt.android)
     implementation(libs.androidx.work.ktx)
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.androidx.hilt.work)
+    implementation(libs.androidx.hilt.navigation)
     ksp(libs.hilt.compiler)
     ksp(libs.androidx.hilt.compiler)
 
     // Testing
-    testImplementation(libs.junit)
-    testImplementation(libs.junit.jupiter.api)
-    testImplementation(libs.junit.jupiter.engine)
-    testImplementation(libs.junit.jupiter.params)
-    testImplementation(libs.room.testing)
+    testImplementation(libs.bundles.unit.tests)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testRuntimeOnly(libs.junit.platform.launcher)
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

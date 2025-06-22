@@ -17,9 +17,5 @@ interface FetchPuzzleDatabase {
         }
 
         fun isComplete(): Boolean = download == 100 && unpack == 100 && buildDb == 100
-
-        companion object {
-            fun empty(): Progress = Progress(download = 0, unpack = 0, buildDb = 0)
-        }
     }
 }

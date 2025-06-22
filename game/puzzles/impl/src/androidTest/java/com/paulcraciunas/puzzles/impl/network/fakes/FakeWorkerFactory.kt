@@ -11,6 +11,7 @@ import com.paulcraciunas.puzzles.impl.network.progress.WorkerProgressReporter
 import com.paulcraciunas.puzzles.impl.network.save.CsvPuzzleDatabaseWriter
 import com.paulcraciunas.puzzles.impl.network.writer.FileProgressWriter
 import com.paulcraciunas.serializer.api.PuzzleWriter
+import com.paulcraciunas.settings.testutils.FakeAppSettingsRepository
 
 // Test implementation of PuzzleWriter
 private class FakePuzzleWriter : PuzzleWriter {
@@ -36,7 +37,7 @@ internal class FakeWorkerFactory(
     database: AbstractPuzzleDatabase
 ) : WorkerFactory() {
     private val reporter = WorkerProgressReporter()
-    private val databaseWriter = CsvPuzzleDatabaseWriter(reporter, FakePuzzleWriter(), database)
+    private val databaseWriter = CsvPuzzleDatabaseWriter(reporter, FakePuzzleWriter(), database, FakeAppSettingsRepository())
     val decompressor = FakeDecompressor()
     val databaseSource = FakeDatabaseSource()
 
