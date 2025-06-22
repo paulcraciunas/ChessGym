@@ -50,6 +50,7 @@ class PuzzleSyncWorker @AssistedInject constructor(
             writePuzzlesToDatabase(csvFile)
             return@withContext Result.success()
         } catch (e: Exception) {
+            // TODO Paul: propagate the error so we know the reason why, so we can show appropriate error
             Log.e(PuzzleSyncWorker::class.java.canonicalName, "Failed to provision puzzle database. Will retry later", e)
             return@withContext Result.retry()
         } finally {

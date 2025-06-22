@@ -14,22 +14,28 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 internal abstract class WorkerModule {
     @Binds
+    @Singleton
     abstract fun databaseSource(impl: LichessDatabaseSource): PuzzleDatabaseSource
 
     @Binds
+    @Singleton
     abstract fun progressReporter(impl: WorkerProgressReporter): ProgressReporter
 
     @Binds
+    @Singleton
     abstract fun databaseWriter(impl: CsvPuzzleDatabaseWriter): PuzzleDatabaseWriter
 
     @Binds
+    @Singleton
     abstract fun fileDecompressor(impl: ZstdFileDecompressor): FileDecompressor
 
     @Binds
+    @Singleton
     abstract fun fileWriter(impl: FileProgressWriter): FileWriter
 }
