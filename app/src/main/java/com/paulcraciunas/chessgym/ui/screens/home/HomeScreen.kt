@@ -21,7 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.paulcraciunas.chessgym.R
+import com.paulcraciunas.global.resources.R
 
 @Composable
 internal fun HomeScreen(

@@ -58,8 +58,10 @@ dependencies {
     implementation(project(":game:logic:di"))
     implementation(project(":game:serializer:impl"))
     implementation(project(":global:notifications"))
+    implementation(project(":global:resources"))
     implementation(project(":settings:user"))
     implementation(project(":settings:application"))
+    implementation(project(":ui:loading"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)

@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
+import com.paulcraciunas.global.resources.R
 
 @Composable
 internal fun UnderConstruction(

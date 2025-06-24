@@ -26,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.chessgym.ui.theme.ChessGymTheme
+import com.paulcraciunas.global.resources.R
 
 @Composable
 fun AppDrawer(
