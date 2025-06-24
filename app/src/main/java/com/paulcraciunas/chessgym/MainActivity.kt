@@ -7,7 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import com.paulcraciunas.chessgym.navigation.NavGraph
-import com.paulcraciunas.chessgym.ui.theme.ChessGymTheme
+import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

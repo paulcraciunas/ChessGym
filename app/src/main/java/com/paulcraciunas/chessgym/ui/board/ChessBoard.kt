@@ -12,8 +12,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.chessgym.ui.model.BoardViewData
 import com.paulcraciunas.chessgym.ui.model.BoardViewDataBuilder
 import com.paulcraciunas.chessgym.ui.model.SquareViewData
-import com.paulcraciunas.chessgym.ui.theme.BoardTheme
-import com.paulcraciunas.chessgym.ui.theme.ChessGymTheme
+import com.paulcraciunas.screens.common.theme.BoardTheme
+import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.game.logic.api.board.File

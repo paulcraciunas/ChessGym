@@ -31,6 +31,9 @@ import androidx.navigation.compose.rememberNavController
 import com.paulcraciunas.chessgym.navigation.BottomNavigationBar
 import com.paulcraciunas.chessgym.navigation.Screen
 import com.paulcraciunas.chessgym.ui.screens.home.HomeScreen
+import com.paulcraciunas.screens.common.AppBar
+import com.paulcraciunas.screens.common.AppBarAlignment
+import com.paulcraciunas.screens.common.AppDrawer
 import kotlinx.coroutines.launch
 
 @Composable
@@ -67,8 +70,8 @@ fun MainScreen(
         Scaffold(
             modifier = modifier,
             topBar = {
-                AppBar(
-                    onClick = {
+                AppBar(titleAlign = AppBarAlignment.Center) {
+                    Home(onClick = {
                         scope.launch {
                             if (drawerState.isClosed) {
                                 drawerState.open()
@@ -76,9 +79,7 @@ fun MainScreen(
                                 drawerState.close()
                             }
                         }
-                    }
-                ) {
-                    Home()
+                    })
                 }
             },
             bottomBar = {

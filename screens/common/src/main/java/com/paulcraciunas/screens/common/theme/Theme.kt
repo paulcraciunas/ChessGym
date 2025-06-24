@@ -1,4 +1,4 @@
-package com.paulcraciunas.chessgym.ui.theme
+package com.paulcraciunas.screens.common.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

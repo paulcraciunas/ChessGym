@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import com.paulcraciunas.global.resources.R
+import com.paulcraciunas.screens.common.AppBar
 
 @Composable
 internal fun UnderConstruction(
@@ -18,8 +19,8 @@ internal fun UnderConstruction(
 ) {
     Scaffold(
         topBar = {
-            AppBar(onClick = navController::popBackStack) {
-                Back()
+            AppBar {
+                Back(onClick = navController::popBackStack)
             }
         },
         modifier = modifier.fillMaxSize()

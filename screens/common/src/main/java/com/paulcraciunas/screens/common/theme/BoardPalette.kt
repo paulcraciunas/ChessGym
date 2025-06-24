@@ -1,4 +1,4 @@
-package com.paulcraciunas.chessgym.ui.theme
+package com.paulcraciunas.screens.common.theme
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable

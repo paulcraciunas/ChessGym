@@ -16,10 +16,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.paulcraciunas.chessgym.ui.theme.ChessGymTheme
-import com.paulcraciunas.chessgym.ui.theme.GlobalTokens
-import com.paulcraciunas.chessgym.ui.theme.PieceIcons
-import com.paulcraciunas.chessgym.ui.theme.PieceSet
+import com.paulcraciunas.screens.common.theme.ChessGymTheme
+import com.paulcraciunas.screens.common.theme.GlobalTokens
+import com.paulcraciunas.screens.common.theme.PieceIcons
+import com.paulcraciunas.screens.common.theme.PieceSet
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.global.resources.R
