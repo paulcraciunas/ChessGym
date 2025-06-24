@@ -56,7 +56,7 @@
     <string name="landing_write_to_db_subtitle">Building puzzle database. This may take a while.</string>
     <string name="loading_error_generic">Error occurred during database setup. Please try again.</string>
     <string name="loading_error_no_internet">A stable internet connection is required to download the database.</string>
-    <string name="loading_error_not_enough_disk_space">The application needs around 1.5 GB of temporary storage to download and unpack the puzzle database.</string>
+    <string name="loading_error_not_enough_disk_space">The application needs around 1.8 GB of temporary storage to download and unpack the puzzle database.</string>
     <string name="loading_error_permission">Notification permission is required as the download might take a long time to complete.</string>
     <string name="database_download_dialog_title">Large Download</string>
     <string name="database_download_dialog_body">The puzzle database is approximately 300MB. Make sure you have a stable internet connection and sufficient storage space. The download may take several minutes depending on your connection speed.</string>
