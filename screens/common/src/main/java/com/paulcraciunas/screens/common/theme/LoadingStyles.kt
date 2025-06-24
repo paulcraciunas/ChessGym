@@ -31,6 +31,9 @@ data class LoadingTypography(
     val landingDescription: TextStyle,
     val errorText: TextStyle,
     val buttonText: TextStyle,
+    val dialogTitle: TextStyle,
+    val dialogBody: TextStyle,
+    val dialogButton: TextStyle,
 )
 
 @Immutable
@@ -54,6 +57,8 @@ data class LoadingDimensions(
     val buttonRadius: Dp = 12.dp,
     val errorCardRadius: Dp = 8.dp,
     val errorCardPadding: Dp = 16.dp,
+    val dialogIconSize: Dp = 32.dp,
+    val dialogContentSpacing: Dp = 16.dp,
 )
 
 @Immutable
@@ -110,6 +115,18 @@ fun createLoadingTypography() = LoadingTypography(
     buttonText = MaterialTheme.typography.titleMedium.copy(
         fontSize = 18.sp,
         fontWeight = FontWeight.SemiBold
+    ),
+    dialogTitle = MaterialTheme.typography.headlineSmall.copy(
+        fontSize = 20.sp,
+        fontWeight = FontWeight.SemiBold
+    ),
+    dialogBody = MaterialTheme.typography.bodyMedium.copy(
+        fontSize = 14.sp,
+        lineHeight = 20.sp
+    ),
+    dialogButton = MaterialTheme.typography.labelLarge.copy(
+        fontSize = 14.sp,
+        fontWeight = FontWeight.Medium
     )
 )
 

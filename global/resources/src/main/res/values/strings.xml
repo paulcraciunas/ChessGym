@@ -60,7 +60,7 @@
     <string name="loading_error_not_enough_disk_space">The application needs around 1.5 GB of temporary storage to download and unpack the puzzle database.</string>
     <string name="loading_error_permission">Notification permission is required as the download might take a long time to complete.</string>
     <string name="database_download_dialog_title">Large Download</string>
-    <string name="database_download_dialog_body">The puzzle database is approximately 500MB. Make sure you have a stable internet connection and sufficient storage space. The download may take several minutes depending on your connection speed.</string>
+    <string name="database_download_dialog_body">The puzzle database is approximately 300MB. Make sure you have a stable internet connection and sufficient storage space. The download may take several minutes depending on your connection speed.</string>
 
     <string name="enable_notifications_dialog_title">Enable Notifications</string>
     <string name="enable_notifications_dialog_body">To keep you informed about the download progress, we\'d like to show notifications. This will help you track the download status even when the app is in the background.</string>
