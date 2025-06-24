@@ -1,4 +1,4 @@
-package com.paulcraciunas.chessgym.ui.screens.loading
+package com.paulcraciunas.screens.loading.ui
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
-import com.paulcraciunas.chessgym.R
+import com.paulcraciunas.global.resources.R
 
 @Composable
 internal fun PermissionDialog(

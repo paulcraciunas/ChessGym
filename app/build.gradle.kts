@@ -61,7 +61,8 @@ dependencies {
     implementation(project(":global:resources"))
     implementation(project(":settings:user"))
     implementation(project(":settings:application"))
-    implementation(project(":ui:loading"))
+    implementation(project(":screens:loading:ui"))
+    implementation(project(":screens:loading:vm"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
@@ -85,7 +86,6 @@ dependencies {
     // Dependency injection
     implementation(libs.hilt.android)
     implementation(libs.androidx.work.ktx)
-    implementation(libs.androidx.runtime.livedata)
     implementation(libs.androidx.hilt.work)
     implementation(libs.androidx.hilt.navigation)
     ksp(libs.hilt.compiler)

@@ -15,7 +15,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.paulcraciunas.chessgym.MainScreen
 import com.paulcraciunas.chessgym.UnderConstruction
-import com.paulcraciunas.chessgym.ui.screens.loading.LoadingScreen
+import com.paulcraciunas.screens.loading.ui.LoadingScreen
+import com.paulcraciunas.screens.loading.vm.LoadingViewModel
 
 @Composable
 fun NavGraph(
@@ -48,7 +49,15 @@ fun NavGraph(
         startDestination = startDestination,
     ) {
         composable<Screen.Loading> {
-            LoadingScreen(onComplete = { navController.navigateTo(Screen.Main) })
+            val vm: LoadingViewModel = hiltViewModel()
+            val loadingState by vm.uiState.collectAsState()
+            LoadingScreen(
+                onComplete = { navController.navigateTo(Screen.Main) },
+                onDownload = vm::onDownload,
+                onDownloadConfirmation = vm::onDownloadConfirmation,
+                onPermissionReceived = vm::onPermissionReceived,
+                uiState = loadingState
+            )
         }
         composable<Screen.Main> {
             MainScreen(

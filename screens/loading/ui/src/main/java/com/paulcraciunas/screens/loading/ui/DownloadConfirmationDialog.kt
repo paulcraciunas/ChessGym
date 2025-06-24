@@ -1,4 +1,4 @@
-package com.paulcraciunas.chessgym.ui.screens.loading
+package com.paulcraciunas.screens.loading.ui
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
@@ -7,7 +7,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import com.paulcraciunas.chessgym.R
+import com.paulcraciunas.global.resources.R
 
 @Composable
 internal fun DownloadConfirmationDialog(

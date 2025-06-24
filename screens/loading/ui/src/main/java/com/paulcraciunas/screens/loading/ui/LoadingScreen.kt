@@ -1,36 +1,36 @@
-package com.paulcraciunas.chessgym.ui.screens.loading
+package com.paulcraciunas.screens.loading.ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
+import com.paulcraciunas.screens.loading.vm.LoadingState
 
 @Composable
-internal fun LoadingScreen(
+fun LoadingScreen(
     onComplete: () -> Unit,
+    onDownload: () -> Unit,
+    onDownloadConfirmation: (Boolean) -> Unit,
+    onPermissionReceived: (Boolean) -> Unit,
+    uiState: LoadingState,
     modifier: Modifier = Modifier,
-    viewModel: LoadingViewModel = hiltViewModel()
 ) {
-    val uiState = viewModel.uiState.collectAsState()
-
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        when (val state = uiState.value) {
+        when (uiState) {
             is LoadingState.Loading -> CircularProgressIndicator() //TODO Paul: this will be replaced with splash screen
             is LoadingState.Ready -> LandingCard(
-                onDownload = viewModel::onDownload,
-                onDownloadConfirmation = viewModel::onDownloadConfirmation,
-                onPermissionResponse = viewModel::onPermissionReceived,
-                state = state
+                onDownload = onDownload,
+                onDownloadConfirmation = onDownloadConfirmation,
+                onPermissionResponse = onPermissionReceived,
+                state = uiState
             )
 
-            is LoadingState.Downloading -> DownloadProgressCard(progress = state.progress)
+            is LoadingState.Downloading -> DownloadProgressCard(progress = uiState.progress)
             is LoadingState.Complete -> CompletionCard(onComplete)
         }
     }

@@ -1,4 +1,4 @@
-package com.paulcraciunas.chessgym.ui.screens.loading
+package com.paulcraciunas.screens.loading.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,7 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.paulcraciunas.chessgym.R
+import com.paulcraciunas.global.resources.R
 import kotlinx.coroutines.delay
 
 @Composable

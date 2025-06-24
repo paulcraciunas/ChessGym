@@ -1,4 +1,4 @@
-package com.paulcraciunas.chessgym.ui.screens.loading
+package com.paulcraciunas.screens.loading.vm
 
 sealed class LoadingState {
     data object Loading : LoadingState()
