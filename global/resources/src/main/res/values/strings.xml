@@ -54,7 +54,6 @@
     <string name="landing_unpack_subtitle">Unpacking puzzle database. This should not take too long.</string>
     <string name="landing_write_to_db_progress">Building database</string>
     <string name="landing_write_to_db_subtitle">Building puzzle database. This may take a while.</string>
-    <string name="landing_download_complete">Download Complete!</string>
     <string name="loading_error_generic">Error occurred during database setup. Please try again.</string>
     <string name="loading_error_no_internet">A stable internet connection is required to download the database.</string>
     <string name="loading_error_not_enough_disk_space">The application needs around 1.5 GB of temporary storage to download and unpack the puzzle database.</string>

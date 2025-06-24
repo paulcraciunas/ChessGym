@@ -31,7 +31,7 @@ fun LoadingScreen(
             )
 
             is LoadingState.Downloading -> DownloadProgressCard(progress = uiState.progress)
-            is LoadingState.Complete -> CompletionCard(onComplete)
+            is LoadingState.Complete -> onComplete()
         }
     }
 }
