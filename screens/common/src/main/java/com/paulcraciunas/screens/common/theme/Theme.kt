@@ -52,11 +52,17 @@ fun ChessGymTheme(
     }
     val pieces = DefaultPieceSet // We don't currently have multiple piece sets
     val tokens = DefaultTokens // We don't currently have multiple sets of tokens
+    val loadingTypography = createLoadingTypography()
 
     CompositionLocalProvider(
         LocalBoardPalette provides boardPalette,
         LocalPieceSet provides pieces,
-        LocalTokens provides tokens
+        LocalTokens provides tokens,
+        LocalLoadingColors provides LoadingColors(),
+        LocalLoadingTypography provides loadingTypography,
+        LocalLoadingDimensions provides LoadingDimensions(),
+        LocalLoadingAlphas provides LoadingAlphas(),
+        LocalLoadingBorders provides LoadingBorders()
     ) {
         MaterialTheme(
             colorScheme = colorScheme,

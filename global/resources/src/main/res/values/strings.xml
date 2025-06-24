@@ -49,8 +49,11 @@
     <string name="landing_download_button">Download Database</string>
     <string name="landing_download_content_title">Constructing Puzzle Database</string>
     <string name="landing_download_progress">Downloading</string>
+    <string name="landing_download_subtitle">Downloading puzzle database. This may take a few minutes, depending on the speed of your internet connection.</string>
     <string name="landing_unpack_progress">Unpacking</string>
+    <string name="landing_unpack_subtitle">Unpacking puzzle database. This should not take too long.</string>
     <string name="landing_write_to_db_progress">Building database</string>
+    <string name="landing_write_to_db_subtitle">Building puzzle database. This may take a while.</string>
     <string name="landing_download_complete">Download Complete!</string>
     <string name="loading_error_generic">Error occurred during database setup. Please try again.</string>
     <string name="loading_error_no_internet">A stable internet connection is required to download the database.</string>
@@ -63,6 +66,11 @@
     <string name="enable_notifications_dialog_body">To keep you informed about the download progress, we\'d like to show notifications. This will help you track the download status even when the app is in the background.</string>
     <string name="enable_notifications_dialog_accept">Allow</string>
     <string name="enable_notifications_dialog_refuse">Deny</string>
+
+    <!-- Loading screen facts -->
+    <string name="loading_fact_1">Did you know that ChessGym has almost 5 million puzzles in its database?</string>
+    <string name="loading_fact_2">ChessGym puzzles range from beginner level (500 rating) to grandmaster level (3000+ rating).</string>
+    <string name="loading_fact_3">The puzzle database includes tactical themes like pins, forks, skewers, discovered attacks, and many more!</string>
     <!-- endregion -->
 
     <!-- region user stats -->

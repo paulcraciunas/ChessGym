@@ -38,6 +38,7 @@ android {
 
 dependencies {
     implementation(project(":global:resources"))
+    implementation(project(":screens:common"))
     implementation(project(":screens:loading:vm"))
 
     implementation(libs.androidx.core.ktx)

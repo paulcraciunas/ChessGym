@@ -1,29 +1,37 @@
 package com.paulcraciunas.screens.loading.ui
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Card
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
+import com.paulcraciunas.screens.common.theme.ChessGymTheme
+import com.paulcraciunas.screens.common.theme.LoadingTheme
 import com.paulcraciunas.screens.loading.vm.LoadingState
 
 @Composable
@@ -36,80 +44,132 @@ internal fun LandingCard(
 ) {
     val canDownload = state.error != LoadingState.Error.NoInternet && state.error != LoadingState.Error.NotEnoughDiskSpace
 
-    Card(
+    Box(
         modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp)
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .padding(horizontal = LoadingTheme.dimensions.horizontalPadding),
+        contentAlignment = Alignment.Center
     ) {
         Column(
-            modifier = Modifier.padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(LoadingTheme.dimensions.landingContentSpacing)
         ) {
+            // App Title
+            Text(
+                text = stringResource(R.string.app_name),
+                style = LoadingTheme.typography.appTitleLarge,
+                color = MaterialTheme.colorScheme.onBackground,
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(LoadingTheme.dimensions.titleSpacing))
+
+            // Landing Title
             Text(
                 text = stringResource(R.string.landing_download_title),
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.Bold,
+                style = LoadingTheme.typography.landingTitle,
+                color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
-
+            // Description
             Text(
                 text = stringResource(R.string.landing_download_explanation),
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Normal,
-                textAlign = TextAlign.Center
+                style = LoadingTheme.typography.landingDescription,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = 16.dp)
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
-
+            // Error Display
             if (state.error != LoadingState.Error.None) {
-                state.error.iconRes()?.let {
-                    Icon(
-                        painter = painterResource(it),
-                        contentDescription = null
-                    )
-                }
-                Text(
-                    text = stringResource(state.error.res()),
-                    color = Color.Red,
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-                Spacer(modifier = Modifier.height(24.dp))
+                ErrorCard(error = state.error)
             }
 
-            OutlinedButton(
+            // Download Button
+            Button(
                 onClick = onDownload,
                 enabled = canDownload,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+                modifier = Modifier.fillMaxWidth(0.8f),
+                shape = RoundedCornerShape(LoadingTheme.dimensions.buttonRadius)
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Absolute.Left
+                    horizontalArrangement = Arrangement.spacedBy(LoadingTheme.dimensions.buttonSpacing)
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.download_icon),
-                        contentDescription = stringResource(R.string.rated_puzzle_hint_description)
+                        contentDescription = stringResource(R.string.rated_puzzle_hint_description),
+                        modifier = Modifier.size(20.dp)
                     )
                     Text(
                         text = stringResource(state.error.asDownloadRes()),
-                        style = MaterialTheme.typography.labelLarge,
+                        style = LoadingTheme.typography.buttonText
                     )
                 }
             }
+
+            Spacer(modifier = Modifier.height(LoadingTheme.dimensions.bottomSpacing))
+
+            // App name at bottom
+            Text(
+                text = stringResource(R.string.app_name),
+                style = LoadingTheme.typography.appTitleSmall,
+                color = MaterialTheme.colorScheme.primary,
+                textAlign = TextAlign.Center
+            )
         }
     }
 
+    // Dialogs
     when (state.dialog) {
         LoadingState.Dialog.Download -> DownloadConfirmationDialog(
             onCancelled = { onDownloadConfirmation(false) },
             onConfirmed = { onDownloadConfirmation(true) }
         )
-
         LoadingState.Dialog.Permission -> PermissionDialog(onPermissionResponse)
         LoadingState.Dialog.None -> {}
+    }
+}
+
+@Composable
+private fun ErrorCard(
+    error: LoadingState.Error,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(LoadingTheme.dimensions.errorCardRadius))
+            .background(LoadingTheme.colors.error.copy(alpha = 0.1f))
+            .border(
+                width = 1.dp,
+                color = LoadingTheme.colors.error.copy(alpha = 0.3f),
+                shape = RoundedCornerShape(LoadingTheme.dimensions.errorCardRadius)
+            )
+            .padding(LoadingTheme.dimensions.errorCardPadding)
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(LoadingTheme.dimensions.itemSpacing)
+        ) {
+            error.iconRes()?.let { iconRes ->
+                Icon(
+                    painter = painterResource(iconRes),
+                    contentDescription = null,
+                    tint = LoadingTheme.colors.error,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+            
+            Text(
+                text = stringResource(error.res()),
+                style = LoadingTheme.typography.errorText,
+                color = LoadingTheme.colors.error,
+                textAlign = TextAlign.Center
+            )
+        }
     }
 }
 
@@ -132,4 +192,47 @@ private fun LoadingState.Error.iconRes(): Int? = when (this) {
 private fun LoadingState.Error.asDownloadRes(): Int = when (this) {
     LoadingState.Error.Other -> R.string.generic_retry
     else -> R.string.generic_download
+}
+
+@Preview("LandingCard - Normal")
+@Preview("LandingCard - Normal (dark)", uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun LandingCardPreview() {
+    ChessGymTheme {
+        LandingCard(
+            onDownload = {},
+            onDownloadConfirmation = {},
+            onPermissionResponse = {},
+            state = LoadingState.Ready(error = LoadingState.Error.None)
+        )
+    }
+}
+
+@Preview("LandingCard - With Error")
+@Preview("LandingCard - With Error (dark)", uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun LandingCardWithErrorPreview() {
+    ChessGymTheme {
+        LandingCard(
+            onDownload = {},
+            onDownloadConfirmation = {},
+            onPermissionResponse = {},
+            state = LoadingState.Ready(error = LoadingState.Error.NoInternet)
+        )
+    }
+}
+
+@Preview("ErrorCard")
+@Composable
+private fun ErrorCardPreview() {
+    ChessGymTheme {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            ErrorCard(error = LoadingState.Error.NoInternet)
+            ErrorCard(error = LoadingState.Error.NotEnoughDiskSpace)
+            ErrorCard(error = LoadingState.Error.NoPermission)
+        }
+    }
 }
