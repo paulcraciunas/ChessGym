@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.paulcraciunas.screens.loading.vm"
+    namespace = "com.paulcraciunas.global.device.di"
     compileSdk = 35
 
     defaultConfig {
@@ -32,24 +32,16 @@ android {
 }
 
 dependencies {
-    implementation(project(":settings:application"))
-    implementation(project(":game:puzzles:api"))
-    implementation(project(":global:device:api"))
-
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.material)
+    api(project(":global:device:api"))
+    implementation(project(":global:device:impl"))
 
     // Dependency injection
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
-    ksp(libs.androidx.hilt.compiler)
 
-    testImplementation(libs.junit)
-    testImplementation(project(":settings:testFixtures"))
-    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.bundles.unit.tests)
+    testRuntimeOnly(libs.junit.platform.launcher)
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-}
+} 

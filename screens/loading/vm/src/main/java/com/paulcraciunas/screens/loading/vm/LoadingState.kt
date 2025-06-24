@@ -40,6 +40,13 @@ sealed class LoadingState {
     companion object {
         fun ready() = Ready()
 
+        fun error(error: Error) = Ready(
+            requiresConfirmation = false,
+            requiresPermission = false,
+            dialog = Dialog.None,
+            error = error
+        )
+
         fun downloadError() = Ready(
             requiresConfirmation = false,
             requiresPermission = false,

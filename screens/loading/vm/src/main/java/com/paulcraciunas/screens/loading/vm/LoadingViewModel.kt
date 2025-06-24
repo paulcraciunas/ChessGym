@@ -3,6 +3,8 @@ package com.paulcraciunas.screens.loading.vm
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.paulcraciunas.global.device.api.usecases.GetFreeDiskSpace
+import com.paulcraciunas.global.device.api.usecases.GetNetworkState
 import com.paulcraciunas.puzzles.api.usecases.FetchPuzzleDatabase
 import com.paulcraciunas.settings.application.AppSettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,8 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class LoadingViewModel @Inject constructor(
     private val appSettingsRepository: AppSettingsRepository,
-    // TODO Paul: add NetworkConnection UseCase
-    // TODO Paul: add EnoughDiskSpace UseCase
+    private val getNetworkState: GetNetworkState,
+    private val getFreeDiskSpace: GetFreeDiskSpace,
     private val fetchPuzzleDatabase: FetchPuzzleDatabase,
 ) : ViewModel() {
 
@@ -43,8 +45,8 @@ class LoadingViewModel @Inject constructor(
             } else if (ready.requiresPermission) {
                 _uiState.value = ready.copy(dialog = LoadingState.Dialog.Permission)
             } else {
-                _uiState.value = LoadingState.Downloading()
-                downloadPuzzles()
+                // Check device conditions before starting download
+                checkDeviceConditions()
             }
         }
     }
@@ -59,10 +61,39 @@ class LoadingViewModel @Inject constructor(
 
     fun onPermissionReceived(isGranted: Boolean) {
         if (isGranted) {
-            _uiState.value = LoadingState.Downloading()
-            downloadPuzzles()
+            // Check device conditions before starting download
+            checkDeviceConditions()
         } else {
             _uiState.value = LoadingState.permissionDenied()
+        }
+    }
+
+    fun onRetry() {
+        // TODO: integrate this in Loading UI
+        _uiState.asState<LoadingState.Ready> { ready ->
+            if (ready.error != LoadingState.Error.None) {
+                // Clear error and check device conditions again
+                _uiState.value = ready.copy(error = LoadingState.Error.None)
+                checkDeviceConditions()
+            }
+        }
+    }
+
+    private fun checkDeviceConditions() {
+        viewModelScope.launch {
+            if (getNetworkState() == GetNetworkState.NetworkState.Disconnected) {
+                _uiState.value = LoadingState.error(error = LoadingState.Error.NoInternet)
+                return@launch
+            }
+
+            if (!getFreeDiskSpace().hasEnoughSpace(REQUIRED_DISK_SPACE_BYTES)) {
+                _uiState.value = LoadingState.error(error = LoadingState.Error.NotEnoughDiskSpace)
+                return@launch
+            }
+
+            // All checks passed, start download
+            _uiState.value = LoadingState.Downloading()
+            downloadPuzzles()
         }
     }
 
@@ -88,6 +119,11 @@ class LoadingViewModel @Inject constructor(
                 _uiState.value = LoadingState.downloadError()
             }
         }
+    }
+
+    companion object {
+        // Required space for puzzle database: ~1.8GB for download, unpack, and final database
+        private const val REQUIRED_DISK_SPACE_BYTES = 1_800_000_000L
     }
 }
 
