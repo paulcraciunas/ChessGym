@@ -5,10 +5,11 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import androidx.core.content.getSystemService
 import com.paulcraciunas.global.device.api.usecases.GetNetworkState
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 class GetNetworkStateImpl @Inject constructor(
-    private val context: Context
+    @ApplicationContext private val context: Context
 ) : GetNetworkState {
 
     override operator fun invoke(): GetNetworkState.NetworkState {

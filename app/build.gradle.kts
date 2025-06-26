@@ -57,6 +57,7 @@ dependencies {
     implementation(project(":game:puzzles:di"))
     implementation(project(":game:logic:di"))
     implementation(project(":game:serializer:impl"))
+    implementation(project(":global:device:di"))
     implementation(project(":global:notifications"))
     implementation(project(":global:resources"))
     implementation(project(":settings:user"))
