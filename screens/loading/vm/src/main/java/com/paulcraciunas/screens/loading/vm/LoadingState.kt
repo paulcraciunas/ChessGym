@@ -1,7 +1,6 @@
 package com.paulcraciunas.screens.loading.vm
 
 sealed class LoadingState {
-    data object Loading : LoadingState()
     data class Downloading(val progress: Progress = Progress.empty()) : LoadingState() {
         data class Progress(
             val download: Int,

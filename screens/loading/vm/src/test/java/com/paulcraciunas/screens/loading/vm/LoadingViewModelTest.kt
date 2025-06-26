@@ -43,23 +43,7 @@ internal class LoadingViewModelTest {
     }
 
     @Test
-    fun given_puzzlesAlreadyDownloaded_WHEN_init_THEN_stateIsComplete() = runTest {
-        // Given
-        fakeAppSettingsRepository.updatePuzzlesDownloaded(true)
-
-        // When
-        underTest = createViewModel()
-        advanceUntilIdle()
-
-        // Then
-        assertEquals(LoadingState.Complete, underTest.uiState.value)
-    }
-
-    @Test
-    fun given_puzzlesNotDownloaded_WHEN_init_THEN_stateIsReady() = runTest {
-        // Given
-        fakeAppSettingsRepository.updatePuzzlesDownloaded(false)
-
+    fun given_viewModelCreated_WHEN_init_THEN_stateIsReady() = runTest {
         // When
         underTest = createViewModel()
         advanceUntilIdle()
@@ -71,7 +55,6 @@ internal class LoadingViewModelTest {
     @Test
     fun given_readyStateWithNoInternet_WHEN_onDownloadAfterConfirmationAndPermission_THEN_showsNoInternetError() = runTest {
         // Given
-        fakeAppSettingsRepository.updatePuzzlesDownloaded(false)
         fakeGetNetworkState.setState(GetNetworkState.NetworkState.Disconnected)
         underTest = createViewModel()
         advanceUntilIdle()
@@ -95,11 +78,10 @@ internal class LoadingViewModelTest {
     fun given_readyStateWithInsufficientDiskSpace_WHEN_onDownloadAfterConfirmationAndPermission_THEN_showsNotEnoughDiskSpaceError() =
         runTest {
             // Given
-            fakeAppSettingsRepository.updatePuzzlesDownloaded(false)
             fakeGetNetworkState.setState(GetNetworkState.NetworkState.Connected)
             fakeGetFreeDiskSpace.setDiskSpace(
                 GetFreeDiskSpace.DiskSpace(
-                    freeBytes = 500_000_000L, // Less than required 1.5GB
+                    freeBytes = 500_000_000L, // Less than required 1.8GB
                     totalBytes = 2_000_000_000L
                 )
             )
@@ -124,11 +106,10 @@ internal class LoadingViewModelTest {
     @Test
     fun given_readyStateWithGoodConditions_WHEN_onDownloadAfterConfirmationAndPermission_THEN_startDownloading() = runTest {
         // Given
-        fakeAppSettingsRepository.updatePuzzlesDownloaded(false)
         fakeGetNetworkState.setState(GetNetworkState.NetworkState.Connected)
         fakeGetFreeDiskSpace.setDiskSpace(
             GetFreeDiskSpace.DiskSpace(
-                freeBytes = 2_000_000_000L, // More than required 1.5GB
+                freeBytes = 2_000_000_000L, // More than required 1.8GB
                 totalBytes = 4_000_000_000L
             )
         )
@@ -147,7 +128,6 @@ internal class LoadingViewModelTest {
     @Test
     fun given_errorState_WHEN_onRetry_THEN_retriesDeviceConditionsCheck() = runTest {
         // Given
-        fakeAppSettingsRepository.updatePuzzlesDownloaded(false)
         fakeGetNetworkState.setState(GetNetworkState.NetworkState.Disconnected)
         underTest = createViewModel()
         advanceUntilIdle()
@@ -178,7 +158,6 @@ internal class LoadingViewModelTest {
     @Test
     fun given_noInternetError_WHEN_networkRecovers_THEN_errorAutomaticallyClears() = runTest {
         // Given - start with no internet
-        fakeAppSettingsRepository.updatePuzzlesDownloaded(false)
         fakeGetNetworkState.setState(GetNetworkState.NetworkState.Disconnected)
         underTest = createViewModel()
         advanceUntilIdle()
@@ -201,10 +180,10 @@ internal class LoadingViewModelTest {
     }
 
     private fun createViewModel() = LoadingViewModel(
-        appSettingsRepository = fakeAppSettingsRepository,
         getNetworkState = fakeGetNetworkState,
         getFreeDiskSpace = fakeGetFreeDiskSpace,
-        fetchPuzzleDatabase = fakeFetchPuzzleDatabase
+        fetchPuzzleDatabase = fakeFetchPuzzleDatabase,
+        appSettingsRepository = fakeAppSettingsRepository
     )
 }
 

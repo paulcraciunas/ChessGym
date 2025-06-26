@@ -17,33 +17,27 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoadingViewModel @Inject constructor(
-    private val appSettingsRepository: AppSettingsRepository,
     private val getNetworkState: GetNetworkState,
     private val getFreeDiskSpace: GetFreeDiskSpace,
     private val fetchPuzzleDatabase: FetchPuzzleDatabase,
+    private val appSettingsRepository: AppSettingsRepository,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<LoadingState>(LoadingState.Loading)
+    private val _uiState = MutableStateFlow<LoadingState>(LoadingState.ready())
     val uiState: StateFlow<LoadingState> = _uiState.asStateFlow()
 
     init {
         viewModelScope.launch {
-            // TODO Paul: lift this into the Loading UI so we can use the Splash Screen
-            val appSettings = appSettingsRepository.appSettings.first()
-            if (appSettings.puzzlesDownloaded) {
-                _uiState.value = LoadingState.Complete
-            } else {
-                _uiState.value = LoadingState.ready()
-                getNetworkState().collect { networkState ->
-                    val currentState = _uiState.value
+            // Monitor network state for reactive error handling
+            getNetworkState().collect { networkState ->
+                val currentState = _uiState.value
 
-                    // Only handle network changes when in Ready state with network error
-                    if (currentState is LoadingState.Ready && currentState.error == LoadingState.Error.NoInternet) {
-                        if (networkState == GetNetworkState.NetworkState.Connected) {
-                            // Network recovered - clear the error and re-check conditions
-                            _uiState.value = currentState.copy(error = LoadingState.Error.None)
-                            checkDeviceConditions()
-                        }
+                // Only handle network changes when in Ready state with network error
+                if (currentState is LoadingState.Ready && currentState.error == LoadingState.Error.NoInternet) {
+                    if (networkState == GetNetworkState.NetworkState.Connected) {
+                        // Network recovered - clear the error and re-check conditions
+                        _uiState.value = currentState.copy(error = LoadingState.Error.None)
+                        checkDeviceConditions()
                     }
                 }
             }

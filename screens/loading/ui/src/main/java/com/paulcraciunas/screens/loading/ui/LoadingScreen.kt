@@ -2,7 +2,6 @@ package com.paulcraciunas.screens.loading.ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,7 +21,6 @@ fun LoadingScreen(
         contentAlignment = Alignment.Center
     ) {
         when (uiState) {
-            is LoadingState.Loading -> CircularProgressIndicator() //TODO Paul: this will be replaced with splash screen
             is LoadingState.Ready -> LandingCard(
                 onDownload = onDownload,
                 onDownloadConfirmation = onDownloadConfirmation,
