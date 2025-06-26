@@ -1,12 +1,8 @@
 package com.paulcraciunas.chessgym.navigation
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -26,14 +22,9 @@ fun NavGraph(
     val navController = rememberNavController()
     val uiState by viewModel.uiState.collectAsState()
 
-    // Show loading indicator while checking app settings
+    // Splash screen handles the loading state, so we wait until it's ready
     if (uiState.isLoading) {
-        Box(
-            modifier = modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator()
-        }
+        // Return early - splash screen is still showing
         return
     }
 
