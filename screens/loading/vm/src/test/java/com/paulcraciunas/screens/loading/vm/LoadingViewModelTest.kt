@@ -1,5 +1,7 @@
 package com.paulcraciunas.screens.loading.vm
 
+import com.paulcraciunas.global.device.api.fakes.FakeGetFreeDiskSpace
+import com.paulcraciunas.global.device.api.fakes.FakeGetNetworkState
 import com.paulcraciunas.global.device.api.usecases.GetFreeDiskSpace
 import com.paulcraciunas.global.device.api.usecases.GetNetworkState
 import com.paulcraciunas.puzzles.api.usecases.FetchPuzzleDatabase
@@ -173,35 +175,37 @@ internal class LoadingViewModelTest {
         assertEquals(LoadingState.Complete, underTest.uiState.value)
     }
 
+    @Test
+    fun given_noInternetError_WHEN_networkRecovers_THEN_errorAutomaticallyClears() = runTest {
+        // Given - start with no internet
+        fakeAppSettingsRepository.updatePuzzlesDownloaded(false)
+        fakeGetNetworkState.setState(GetNetworkState.NetworkState.Disconnected)
+        underTest = createViewModel()
+        advanceUntilIdle()
+
+        // Trigger the error state
+        underTest.onDownloadConfirmation(true)
+        underTest.onPermissionReceived(true)
+        advanceUntilIdle()
+
+        // Verify error state
+        val errorState = underTest.uiState.value as LoadingState.Ready
+        assertEquals(LoadingState.Error.NoInternet, errorState.error)
+
+        // When - network recovers automatically
+        fakeGetNetworkState.setState(GetNetworkState.NetworkState.Connected)
+        advanceUntilIdle()
+
+        // Then - error should be automatically cleared and download should start
+        assertEquals(LoadingState.Complete, underTest.uiState.value)
+    }
+
     private fun createViewModel() = LoadingViewModel(
         appSettingsRepository = fakeAppSettingsRepository,
         getNetworkState = fakeGetNetworkState,
         getFreeDiskSpace = fakeGetFreeDiskSpace,
         fetchPuzzleDatabase = fakeFetchPuzzleDatabase
     )
-}
-
-private class FakeGetNetworkState : GetNetworkState {
-    private var currentState: GetNetworkState.NetworkState = GetNetworkState.NetworkState.Connected
-
-    fun setState(state: GetNetworkState.NetworkState) {
-        currentState = state
-    }
-
-    override fun invoke(): GetNetworkState.NetworkState = currentState
-}
-
-private class FakeGetFreeDiskSpace : GetFreeDiskSpace {
-    private var currentDiskSpace = GetFreeDiskSpace.DiskSpace(
-        freeBytes = 2_000_000_000L,
-        totalBytes = 4_000_000_000L
-    )
-
-    fun setDiskSpace(diskSpace: GetFreeDiskSpace.DiskSpace) {
-        currentDiskSpace = diskSpace
-    }
-
-    override fun invoke(): GetFreeDiskSpace.DiskSpace = currentDiskSpace
 }
 
 private class FakeFetchPuzzleDatabase : FetchPuzzleDatabase {

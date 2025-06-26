@@ -48,6 +48,7 @@ dependencies {
 
     testImplementation(libs.junit)
     testImplementation(project(":settings:testFixtures"))
+    testImplementation(testFixtures(project(":global:device:api")))
     testImplementation(libs.kotlinx.coroutines.test)
 
     androidTestImplementation(libs.androidx.junit)

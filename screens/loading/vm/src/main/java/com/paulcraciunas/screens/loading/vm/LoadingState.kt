@@ -27,7 +27,7 @@ sealed class LoadingState {
         NoInternet,
         NotEnoughDiskSpace,
         NoPermission,
-        Other, // TODO Paul: integrate failure reason into multiple error types
+        Runtime, // TODO Paul: integrate failure reason into multiple error types
         None
     }
 
@@ -51,7 +51,7 @@ sealed class LoadingState {
             requiresConfirmation = false,
             requiresPermission = false,
             dialog = Dialog.None,
-            error = Error.Other
+            error = Error.Runtime
         )
 
         fun downloadAccepted() = Ready(

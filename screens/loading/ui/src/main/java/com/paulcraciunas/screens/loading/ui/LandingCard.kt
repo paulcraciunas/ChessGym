@@ -42,7 +42,7 @@ internal fun LandingCard(
     state: LoadingState.Ready,
     modifier: Modifier = Modifier
 ) {
-    val canDownload = state.error != LoadingState.Error.NoInternet && state.error != LoadingState.Error.NotEnoughDiskSpace
+    val canDownload = state.error != LoadingState.Error.NoInternet
 
     Box(
         modifier = modifier
@@ -190,7 +190,7 @@ private fun LoadingState.Error.iconRes(): Int? = when (this) {
 
 @StringRes
 private fun LoadingState.Error.asDownloadRes(): Int = when (this) {
-    LoadingState.Error.Other -> R.string.generic_retry
+    LoadingState.Error.Runtime -> R.string.generic_retry
     else -> R.string.generic_download
 }
 

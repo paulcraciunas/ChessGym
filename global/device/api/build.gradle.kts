@@ -1,6 +1,7 @@
 plugins {
     id("java-library")
     alias(libs.plugins.jetbrains.kotlin.jvm)
+    id("java-test-fixtures")
 }
 
 java {
@@ -9,6 +10,11 @@ java {
 }
 
 dependencies {
+    implementation(libs.kotlinx.coroutines.core)
+    
+    testFixturesImplementation(libs.kotlinx.coroutines.core)
+    testFixturesImplementation(libs.kotlinx.coroutines.test)
+    
     testImplementation(libs.bundles.unit.tests)
     testRuntimeOnly(libs.junit.platform.launcher)
 }

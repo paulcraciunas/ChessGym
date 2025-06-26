@@ -27,13 +27,25 @@ class LoadingViewModel @Inject constructor(
     val uiState: StateFlow<LoadingState> = _uiState.asStateFlow()
 
     init {
-        // TODO Paul: lift this into the Loading UI so we can use the Splash Screen
         viewModelScope.launch {
+            // TODO Paul: lift this into the Loading UI so we can use the Splash Screen
             val appSettings = appSettingsRepository.appSettings.first()
             if (appSettings.puzzlesDownloaded) {
                 _uiState.value = LoadingState.Complete
             } else {
                 _uiState.value = LoadingState.ready()
+                getNetworkState().collect { networkState ->
+                    val currentState = _uiState.value
+
+                    // Only handle network changes when in Ready state with network error
+                    if (currentState is LoadingState.Ready && currentState.error == LoadingState.Error.NoInternet) {
+                        if (networkState == GetNetworkState.NetworkState.Connected) {
+                            // Network recovered - clear the error and re-check conditions
+                            _uiState.value = currentState.copy(error = LoadingState.Error.None)
+                            checkDeviceConditions()
+                        }
+                    }
+                }
             }
         }
     }
@@ -81,7 +93,8 @@ class LoadingViewModel @Inject constructor(
 
     private fun checkDeviceConditions() {
         viewModelScope.launch {
-            if (getNetworkState() == GetNetworkState.NetworkState.Disconnected) {
+            val currentNetworkState = getNetworkState().first()
+            if (currentNetworkState == GetNetworkState.NetworkState.Disconnected) {
                 _uiState.value = LoadingState.error(error = LoadingState.Error.NoInternet)
                 return@launch
             }

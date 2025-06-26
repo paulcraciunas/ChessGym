@@ -1,7 +1,10 @@
 package com.paulcraciunas.global.device.api.usecases
 
+import kotlinx.coroutines.flow.Flow
+
 interface GetNetworkState {
-    operator fun invoke(): NetworkState
+    fun start()
+    operator fun invoke(): Flow<NetworkState>
 
     sealed class NetworkState {
         data object Connected : NetworkState()
