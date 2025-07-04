@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.paulcraciunas.screens.loading.ui"
+    namespace = "com.paulcraciunas.screens.home.ui"
     compileSdk = 35
 
     defaultConfig {
@@ -39,7 +39,7 @@ android {
 dependencies {
     implementation(project(":global:resources"))
     implementation(project(":screens:common"))
-    api(project(":screens:loading:vm"))
+    api(project(":screens:home:vm"))
 
     implementation(libs.androidx.core.ktx)
     implementation(platform(libs.androidx.compose.bom))

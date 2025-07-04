@@ -1,4 +1,4 @@
-package com.paulcraciunas.chessgym.ui.screens.home
+package com.paulcraciunas.screens.home.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,27 +12,23 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.paulcraciunas.global.resources.R
+import com.paulcraciunas.screens.home.vm.HomeUiState
 
 @Composable
-internal fun HomeScreen(
-    modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = hiltViewModel()
+fun HomeScreen(
+    state: HomeUiState,
+    modifier: Modifier = Modifier
 ) {
-    val uiState by viewModel.uiState.collectAsState()
-
     when {
-        uiState.isLoading -> LoadingContent(modifier)
-        else -> HomeContent(uiState = uiState, modifier = modifier)
+        state.isLoading -> LoadingContent(modifier)
+        else -> HomeContent(uiState = state, modifier = modifier)
     }
 }
 

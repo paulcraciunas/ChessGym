@@ -1,11 +1,12 @@
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.google.hilt)
+    alias(libs.plugins.google.ksp)
 }
 
 android {
-    namespace = "com.paulcraciunas.screens.loading.ui"
+    namespace = "com.paulcraciunas.screens.home.vm"
     compileSdk = 35
 
     defaultConfig {
@@ -21,12 +22,6 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
-    buildFeatures {
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
-    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -37,17 +32,20 @@ android {
 }
 
 dependencies {
-    implementation(project(":global:resources"))
-    implementation(project(":screens:common"))
-    api(project(":screens:loading:vm"))
+    implementation(project(":settings:user"))
 
     implementation(libs.androidx.core.ktx)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.material)
-    implementation(libs.androidx.material3)
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.tooling.preview)
 
-    debugImplementation(libs.androidx.ui.tooling)
+    // Dependency injection
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+    ksp(libs.androidx.hilt.compiler)
+
+    testImplementation(libs.junit)
+
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
 }

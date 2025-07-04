@@ -100,7 +100,7 @@ internal fun LandingCard(
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.download_icon),
-                        contentDescription = stringResource(R.string.rated_puzzle_hint_description),
+                        contentDescription = stringResource(R.string.generic_download),
                         modifier = Modifier.size(20.dp)
                     )
                     Text(

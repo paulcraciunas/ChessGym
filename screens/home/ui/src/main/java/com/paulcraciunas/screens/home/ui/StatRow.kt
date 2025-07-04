@@ -1,4 +1,4 @@
-package com.paulcraciunas.chessgym.ui.screens.home
+package com.paulcraciunas.screens.home.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
