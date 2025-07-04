@@ -15,7 +15,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
-import com.paulcraciunas.chessgym.R
+import com.paulcraciunas.global.resources.R
 
 @Composable
 internal fun BottomNavigationBar(

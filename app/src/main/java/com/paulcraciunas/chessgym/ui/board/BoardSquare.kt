@@ -19,11 +19,11 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.paulcraciunas.chessgym.R
-import com.paulcraciunas.chessgym.ui.theme.BoardColors
-import com.paulcraciunas.chessgym.ui.theme.ChessGymTheme
+import com.paulcraciunas.screens.common.theme.BoardColors
+import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Piece
+import com.paulcraciunas.global.resources.R
 
 @Composable
 fun BoardSquare(

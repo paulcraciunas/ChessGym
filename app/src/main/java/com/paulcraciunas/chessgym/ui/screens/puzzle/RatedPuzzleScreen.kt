@@ -27,12 +27,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.paulcraciunas.chessgym.R
 import com.paulcraciunas.chessgym.ui.board.BoardOrientation
 import com.paulcraciunas.chessgym.ui.board.ChessBoard
 import com.paulcraciunas.chessgym.ui.model.BoardViewDataBuilder
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
+import com.paulcraciunas.global.resources.R
 
 @Composable
 internal fun RatedPuzzleScreen(

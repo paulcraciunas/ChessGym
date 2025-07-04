@@ -1,12 +1,8 @@
 package com.paulcraciunas.chessgym.navigation
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -15,7 +11,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.paulcraciunas.chessgym.MainScreen
 import com.paulcraciunas.chessgym.UnderConstruction
-import com.paulcraciunas.chessgym.ui.screens.loading.LoadingScreen
+import com.paulcraciunas.screens.loading.ui.LoadingScreen
+import com.paulcraciunas.screens.loading.vm.LoadingViewModel
 
 @Composable
 fun NavGraph(
@@ -25,14 +22,9 @@ fun NavGraph(
     val navController = rememberNavController()
     val uiState by viewModel.uiState.collectAsState()
 
-    // Show loading indicator while checking app settings
+    // Splash screen handles the loading state, so we wait until it's ready
     if (uiState.isLoading) {
-        Box(
-            modifier = modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator()
-        }
+        // Return early - splash screen is still showing
         return
     }
 
@@ -48,7 +40,15 @@ fun NavGraph(
         startDestination = startDestination,
     ) {
         composable<Screen.Loading> {
-            LoadingScreen(onComplete = { navController.navigateTo(Screen.Main) })
+            val vm: LoadingViewModel = hiltViewModel()
+            val loadingState by vm.uiState.collectAsState()
+            LoadingScreen(
+                onComplete = { navController.navigateTo(Screen.Main) },
+                onDownload = vm::onDownload,
+                onDownloadConfirmation = vm::onDownloadConfirmation,
+                onPermissionReceived = vm::onPermissionReceived,
+                uiState = loadingState
+            )
         }
         composable<Screen.Main> {
             MainScreen(

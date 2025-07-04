@@ -57,9 +57,14 @@ dependencies {
     implementation(project(":game:puzzles:di"))
     implementation(project(":game:logic:di"))
     implementation(project(":game:serializer:impl"))
+    implementation(project(":global:device:di"))
     implementation(project(":global:notifications"))
+    implementation(project(":global:resources"))
     implementation(project(":settings:user"))
     implementation(project(":settings:application"))
+    implementation(project(":screens:common"))
+    implementation(project(":screens:loading:ui"))
+    implementation(project(":screens:loading:vm"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
@@ -83,7 +88,6 @@ dependencies {
     // Dependency injection
     implementation(libs.hilt.android)
     implementation(libs.androidx.work.ktx)
-    implementation(libs.androidx.runtime.livedata)
     implementation(libs.androidx.hilt.work)
     implementation(libs.androidx.hilt.navigation)
     ksp(libs.hilt.compiler)
