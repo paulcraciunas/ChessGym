@@ -32,7 +32,6 @@ android {
 }
 
 dependencies {
-    implementation(project(":settings:application"))
     implementation(project(":game:puzzles:api"))
     implementation(project(":global:device:api"))
 
@@ -47,7 +46,6 @@ dependencies {
     ksp(libs.androidx.hilt.compiler)
 
     testImplementation(libs.junit)
-    testImplementation(project(":settings:testFixtures"))
     testImplementation(testFixtures(project(":global:device:api")))
     testImplementation(libs.kotlinx.coroutines.test)
 

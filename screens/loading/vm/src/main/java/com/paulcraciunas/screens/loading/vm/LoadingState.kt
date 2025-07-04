@@ -26,7 +26,10 @@ sealed class LoadingState {
         NoInternet,
         NotEnoughDiskSpace,
         NoPermission,
-        Runtime, // TODO Paul: integrate failure reason into multiple error types
+        DownloadFailed,
+        DecompressionFailed,
+        DatabaseWriteFailed,
+        GenericRuntime,
         None
     }
 
@@ -46,11 +49,11 @@ sealed class LoadingState {
             error = error
         )
 
-        fun downloadError() = Ready(
+        fun runtimeError(error: Error) = Ready(
             requiresConfirmation = false,
             requiresPermission = false,
             dialog = Dialog.None,
-            error = Error.Runtime
+            error = error
         )
 
         fun downloadAccepted() = Ready(

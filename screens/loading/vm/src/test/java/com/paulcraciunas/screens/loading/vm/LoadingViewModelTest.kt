@@ -5,7 +5,6 @@ import com.paulcraciunas.global.device.api.fakes.FakeGetNetworkState
 import com.paulcraciunas.global.device.api.usecases.GetFreeDiskSpace
 import com.paulcraciunas.global.device.api.usecases.GetNetworkState
 import com.paulcraciunas.puzzles.api.usecases.FetchPuzzleDatabase
-import com.paulcraciunas.settings.testutils.FakeAppSettingsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
@@ -24,8 +23,6 @@ internal class LoadingViewModelTest {
 
     private val testDispatcher = StandardTestDispatcher()
 
-    // Test fakes
-    private val fakeAppSettingsRepository = FakeAppSettingsRepository()
     private val fakeGetNetworkState = FakeGetNetworkState()
     private val fakeGetFreeDiskSpace = FakeGetFreeDiskSpace()
     private val fakeFetchPuzzleDatabase = FakeFetchPuzzleDatabase()
@@ -148,7 +145,7 @@ internal class LoadingViewModelTest {
                 totalBytes = 4_000_000_000L
             )
         )
-        underTest.onRetry()
+        underTest.onDownload()
         advanceUntilIdle()
 
         // Then - should be Complete since fake returns 100% progress immediately
@@ -183,7 +180,6 @@ internal class LoadingViewModelTest {
         getNetworkState = fakeGetNetworkState,
         getFreeDiskSpace = fakeGetFreeDiskSpace,
         fetchPuzzleDatabase = fakeFetchPuzzleDatabase,
-        appSettingsRepository = fakeAppSettingsRepository
     )
 }
 

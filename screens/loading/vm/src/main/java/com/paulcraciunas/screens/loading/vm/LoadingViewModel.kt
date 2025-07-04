@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.paulcraciunas.global.device.api.usecases.GetFreeDiskSpace
 import com.paulcraciunas.global.device.api.usecases.GetNetworkState
 import com.paulcraciunas.puzzles.api.usecases.FetchPuzzleDatabase
-import com.paulcraciunas.settings.application.AppSettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,7 +19,6 @@ class LoadingViewModel @Inject constructor(
     private val getNetworkState: GetNetworkState,
     private val getFreeDiskSpace: GetFreeDiskSpace,
     private val fetchPuzzleDatabase: FetchPuzzleDatabase,
-    private val appSettingsRepository: AppSettingsRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<LoadingState>(LoadingState.ready())
@@ -74,17 +72,6 @@ class LoadingViewModel @Inject constructor(
         }
     }
 
-    fun onRetry() {
-        // TODO: integrate this in Loading UI
-        _uiState.asState<LoadingState.Ready> { ready ->
-            if (ready.error != LoadingState.Error.None) {
-                // Clear error and check device conditions again
-                _uiState.value = ready.copy(error = LoadingState.Error.None)
-                checkDeviceConditions()
-            }
-        }
-    }
-
     private fun checkDeviceConditions() {
         viewModelScope.launch {
             val currentNetworkState = getNetworkState().first()
@@ -109,8 +96,15 @@ class LoadingViewModel @Inject constructor(
             try {
                 fetchPuzzleDatabase()
                     .collect { progress ->
-                        if (progress.isComplete()) {
-                            appSettingsRepository.updatePuzzlesDownloaded(true)
+                        if (progress.hasError()) {
+                            val error = when (progress.error) {
+                                FetchPuzzleDatabase.Error.DownloadFailed -> LoadingState.Error.DownloadFailed
+                                FetchPuzzleDatabase.Error.DecompressionFailed -> LoadingState.Error.DecompressionFailed
+                                else -> LoadingState.Error.DatabaseWriteFailed
+                            }
+                            _uiState.value = LoadingState.runtimeError(error)
+                            Log.w(TAG, "Download failed with error: $error")
+                        } else if (progress.isComplete()) {
                             _uiState.value = LoadingState.Complete
                         } else {
                             _uiState.value = LoadingState.Downloading(
@@ -123,7 +117,8 @@ class LoadingViewModel @Inject constructor(
                         }
                     }
             } catch (e: Exception) {
-                _uiState.value = LoadingState.downloadError()
+                Log.e(TAG, "Unexpected error during puzzle database provisioning", e)
+                _uiState.value = LoadingState.runtimeError(LoadingState.Error.GenericRuntime)
             }
         }
     }
@@ -131,6 +126,7 @@ class LoadingViewModel @Inject constructor(
     companion object {
         // Required space for puzzle database: ~1.8GB for download, unpack, and final database
         private const val REQUIRED_DISK_SPACE_BYTES = 1_800_000_000L
+        private const val TAG = "LoadingViewModel"
     }
 }
 

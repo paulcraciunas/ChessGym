@@ -175,6 +175,9 @@ private fun ErrorCard(
 
 @StringRes
 private fun LoadingState.Error.res(): Int = when (this) {
+    LoadingState.Error.DownloadFailed -> R.string.loading_error_download_failed
+    LoadingState.Error.DecompressionFailed -> R.string.loading_error_decompression_failed
+    LoadingState.Error.DatabaseWriteFailed -> R.string.loading_error_database_write_failed
     LoadingState.Error.NoPermission -> R.string.loading_error_permission
     LoadingState.Error.NoInternet -> R.string.loading_error_no_internet
     LoadingState.Error.NotEnoughDiskSpace -> R.string.loading_error_not_enough_disk_space
@@ -190,7 +193,10 @@ private fun LoadingState.Error.iconRes(): Int? = when (this) {
 
 @StringRes
 private fun LoadingState.Error.asDownloadRes(): Int = when (this) {
-    LoadingState.Error.Runtime -> R.string.generic_retry
+    LoadingState.Error.DownloadFailed,
+    LoadingState.Error.DecompressionFailed,
+    LoadingState.Error.DatabaseWriteFailed,
+    LoadingState.Error.GenericRuntime -> R.string.generic_retry
     else -> R.string.generic_download
 }
 
