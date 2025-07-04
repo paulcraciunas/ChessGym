@@ -180,14 +180,14 @@ internal class WorkInfoDataAdapterIntegrationTest {
         }
     }
 
-    // Helper function to create WorkInfo objects
     private fun createWorkInfo(
         state: WorkInfo.State,
         progressData: Data = Data.Builder().build()
     ) = WorkInfo(
-        UUID.randomUUID(),
-        state,
-        emptySet(), // tags
-        progress = progressData, // progress
+        id = UUID.randomUUID(),
+        state = state,
+        tags = emptySet(),
+        outputData = Data.Builder().build(),
+        progress = progressData,
     )
 }

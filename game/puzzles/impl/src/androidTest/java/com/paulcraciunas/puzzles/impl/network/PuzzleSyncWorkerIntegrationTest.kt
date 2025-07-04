@@ -14,7 +14,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class PuzzleSyncWorkerIntegrationTest {
+internal class PuzzleSyncWorkerIntegrationTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
     private val testDatabase = Room.inMemoryDatabaseBuilder(
@@ -39,7 +39,7 @@ class PuzzleSyncWorkerIntegrationTest {
     }
 
     @Test
-    fun given_failure_to_fetch_database_WHEN_doWork_is_called_THEN_worker_returns_retry() = runTest {
+    fun given_failure_to_fetch_database_WHEN_doWork_is_called_THEN_worker_returns_failure() = runTest {
         // Given
         factory.databaseSource.fail(RuntimeException("Can't connect"))
         val worker = createWorker()
@@ -49,12 +49,12 @@ class PuzzleSyncWorkerIntegrationTest {
         val puzzles = testDatabase.get(1)
 
         // Then
-        assertEquals(ListenableWorker.Result.retry(), result)
+        assertTrue("Worker should return failure", result is ListenableWorker.Result.Failure)
         assertTrue(puzzles.isEmpty())
     }
 
     @Test
-    fun given_failure_to_decompress_WHEN_doWork_is_called_THEN_worker_returns_retry() = runTest {
+    fun given_failure_to_decompress_WHEN_doWork_is_called_THEN_worker_returns_failure() = runTest {
         // Given
         factory.decompressor.fail(RuntimeException("Can't decompress"))
         val worker = createWorker()
@@ -64,7 +64,7 @@ class PuzzleSyncWorkerIntegrationTest {
         val puzzles = testDatabase.get(1)
 
         // Then
-        assertEquals(ListenableWorker.Result.retry(), result)
+        assertTrue("Worker should return failure", result is ListenableWorker.Result.Failure)
         assertTrue(puzzles.isEmpty())
     }
 

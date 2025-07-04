@@ -14,9 +14,16 @@ import com.paulcraciunas.serializer.api.PuzzleWriter
 import com.paulcraciunas.settings.testutils.FakeAppSettingsRepository
 
 // Test implementation of PuzzleWriter
-private class FakePuzzleWriter : PuzzleWriter {
-    override fun write(puzzleAndMoves: String): ByteArray = puzzleAndMoves.toByteArray()
-    override fun write(puzzle: String, moves: String): ByteArray = "$puzzle|$moves".toByteArray()
+internal class FakePuzzleWriter : Failable(), PuzzleWriter {
+    override fun write(puzzleAndMoves: String): ByteArray {
+        check()
+        return puzzleAndMoves.toByteArray()
+    }
+
+    override fun write(puzzle: String, moves: String): ByteArray {
+        check()
+        return "$puzzle|$moves".toByteArray()
+    }
 }
 
 // Test notification factory
@@ -36,10 +43,11 @@ private class FakeNotificationFactory : NotificationFactory {
 internal class FakeWorkerFactory(
     database: AbstractPuzzleDatabase
 ) : WorkerFactory() {
-    private val reporter = WorkerProgressReporter()
-    private val databaseWriter = CsvPuzzleDatabaseWriter(reporter, FakePuzzleWriter(), database, FakeAppSettingsRepository())
+    val writer = FakePuzzleWriter()
     val decompressor = FakeDecompressor()
     val databaseSource = FakeDatabaseSource()
+    private val reporter = WorkerProgressReporter()
+    private val databaseWriter = CsvPuzzleDatabaseWriter(reporter, writer, database, FakeAppSettingsRepository())
 
     override fun createWorker(
         appContext: Context,

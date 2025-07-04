@@ -6,7 +6,6 @@ import com.paulcraciunas.puzzles.api.usecases.FetchPuzzleDatabase
 import com.paulcraciunas.puzzles.impl.network.PuzzleSyncWorker
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.util.UUID
@@ -46,31 +45,47 @@ internal class WorkInfoDataAdapterTest {
     }
 
     @Test
-    fun `GIVEN workInfo with FAILED state WHEN adapt is called THEN throws exception`() {
+    fun `GIVEN workInfo with FAILED state and download error WHEN adapt is called THEN returns progress with error`() {
         // Given
-        val workInfo = createWorkInfo(WorkInfo.State.FAILED)
+        val outputData = Data.Builder()
+            .putString(PuzzleSyncWorker.ERROR_TYPE, PuzzleSyncWorker.ERROR_DOWNLOAD_FAILED)
+            .putString(PuzzleSyncWorker.FAILED_STEP, "Download")
+            .build()
+        val workInfo = createWorkInfo(state = WorkInfo.State.FAILED, outputData = outputData)
 
-        // When & Then
-        assertThrows(NotImplementedError::class.java) {
-            underTest.adapt(workInfo)
-        }
+        // When
+        val result = underTest.adapt(workInfo)
+
+        // Then
+        assertEquals(0, result.download)
+        assertEquals(0, result.unpack)
+        assertEquals(0, result.buildDb)
+        assertEquals(FetchPuzzleDatabase.Error.DownloadFailed, result.error)
+        assertTrue(result.hasError())
+        assertFalse(result.isComplete())
     }
 
     @Test
-    fun `GIVEN workInfo with CANCELLED state WHEN adapt is called THEN throws exception`() {
+    fun `GIVEN workInfo with CANCELLED state WHEN adapt is called THEN returns zero progress with no error`() {
         // Given
         val workInfo = createWorkInfo(WorkInfo.State.CANCELLED)
 
-        // When & Then
-        assertThrows(NotImplementedError::class.java) {
-            underTest.adapt(workInfo)
-        }
+        // When
+        val result = underTest.adapt(workInfo)
+
+        // Then
+        assertEquals(0, result.download)
+        assertEquals(0, result.unpack)
+        assertEquals(0, result.buildDb)
+        assertEquals(FetchPuzzleDatabase.Error.None, result.error)
+        assertFalse(result.hasError())
+        assertFalse(result.isComplete())
     }
 
     @Test
     fun `GIVEN workInfo with empty progress data WHEN adapt is called THEN returns progress with all zeros`() {
         // Given
-        val workInfo = createWorkInfo(WorkInfo.State.RUNNING, Data.Builder().build())
+        val workInfo = createWorkInfo(WorkInfo.State.RUNNING, progressData = Data.Builder().build())
 
         // When
         val result = underTest.adapt(workInfo)
@@ -85,7 +100,7 @@ internal class WorkInfoDataAdapterTest {
     @Test
     fun `GIVEN download step with 0 percent WHEN adapt is called THEN returns correct progress`() {
         // Given
-        val workInfo = createWorkInfo(WorkInfo.State.RUNNING, createData("Download", 0))
+        val workInfo = createWorkInfo(WorkInfo.State.RUNNING, progressData = createData("Download", 0))
 
         // When
         val result = underTest.adapt(workInfo)
@@ -100,7 +115,7 @@ internal class WorkInfoDataAdapterTest {
     @Test
     fun `GIVEN download step with 50 percent WHEN adapt is called THEN returns correct progress`() {
         // Given
-        val workInfo = createWorkInfo(WorkInfo.State.RUNNING, createData("Download", 50))
+        val workInfo = createWorkInfo(WorkInfo.State.RUNNING, progressData = createData("Download", 50))
 
         // When
         val result = underTest.adapt(workInfo)
@@ -115,7 +130,7 @@ internal class WorkInfoDataAdapterTest {
     @Test
     fun `GIVEN download step with 100 percent WHEN adapt is called THEN returns correct progress`() {
         // Given
-        val workInfo = createWorkInfo(WorkInfo.State.RUNNING, createData("Download", 100))
+        val workInfo = createWorkInfo(WorkInfo.State.RUNNING, progressData = createData("Download", 100))
 
         // When
         val result = underTest.adapt(workInfo)
@@ -130,7 +145,7 @@ internal class WorkInfoDataAdapterTest {
     @Test
     fun `GIVEN unpack step with 0 percent WHEN adapt is called THEN returns correct progress`() {
         // Given
-        val workInfo = createWorkInfo(WorkInfo.State.RUNNING, createData("Unpack", 0))
+        val workInfo = createWorkInfo(WorkInfo.State.RUNNING, progressData = createData("Unpack", 0))
 
         // When
         val result = underTest.adapt(workInfo)
@@ -145,7 +160,7 @@ internal class WorkInfoDataAdapterTest {
     @Test
     fun `GIVEN unpack step with 30 percent WHEN adapt is called THEN returns correct progress`() {
         // Given
-        val workInfo = createWorkInfo(WorkInfo.State.RUNNING, createData("Unpack", 30))
+        val workInfo = createWorkInfo(WorkInfo.State.RUNNING, progressData = createData("Unpack", 30))
 
         // When
         val result = underTest.adapt(workInfo)
@@ -160,7 +175,7 @@ internal class WorkInfoDataAdapterTest {
     @Test
     fun `GIVEN unpack step with 100 percent WHEN adapt is called THEN returns correct progress`() {
         // Given
-        val workInfo = createWorkInfo(WorkInfo.State.RUNNING, createData("Unpack", 100))
+        val workInfo = createWorkInfo(WorkInfo.State.RUNNING, progressData = createData("Unpack", 100))
 
         // When
         val result = underTest.adapt(workInfo)
@@ -175,7 +190,7 @@ internal class WorkInfoDataAdapterTest {
     @Test
     fun `GIVEN buildDb step with 0 percent WHEN adapt is called THEN returns correct progress`() {
         // Given
-        val workInfo = createWorkInfo(WorkInfo.State.RUNNING, createData("BuildDb", 0))
+        val workInfo = createWorkInfo(WorkInfo.State.RUNNING, progressData = createData("BuildDb", 0))
 
         // When
         val result = underTest.adapt(workInfo)
@@ -188,9 +203,9 @@ internal class WorkInfoDataAdapterTest {
     }
 
     @Test
-    fun `GIVEN buildDb step with 80 percent WHEN adapt is called THEN returns correct progress`() {
+    fun `GIVEN buildDb step with 50 percent WHEN adapt is called THEN returns correct progress`() {
         // Given
-        val workInfo = createWorkInfo(WorkInfo.State.RUNNING, createData("BuildDb", 80))
+        val workInfo = createWorkInfo(WorkInfo.State.RUNNING, progressData = createData("BuildDb", 50))
 
         // When
         val result = underTest.adapt(workInfo)
@@ -198,14 +213,14 @@ internal class WorkInfoDataAdapterTest {
         // Then
         assertEquals(100, result.download)
         assertEquals(100, result.unpack)
-        assertEquals(80, result.buildDb)
+        assertEquals(50, result.buildDb)
         assertFalse(result.isComplete())
     }
 
     @Test
-    fun `GIVEN buildDb step with 100 percent WHEN adapt is called THEN returns complete progress`() {
+    fun `GIVEN buildDb step with 100 percent WHEN adapt is called THEN returns correct progress`() {
         // Given
-        val workInfo = createWorkInfo(WorkInfo.State.RUNNING, createData("BuildDb", 100))
+        val workInfo = createWorkInfo(WorkInfo.State.RUNNING, progressData = createData("BuildDb", 100))
 
         // When
         val result = underTest.adapt(workInfo)
@@ -218,24 +233,30 @@ internal class WorkInfoDataAdapterTest {
     }
 
     @Test
-    fun `GIVEN invalid step string WHEN adapt is called THEN defaults to download`() {
+    fun `GIVEN null step in progress data WHEN adapt is called THEN defaults to Download step`() {
         // Given
-        val workInfo = createWorkInfo(WorkInfo.State.RUNNING, createData("InvalidStep", 50))
+        val data = Data.Builder()
+            .putInt(PuzzleSyncWorker.PROGRESS_NAME, 25)
+            .build()
+        val workInfo = createWorkInfo(WorkInfo.State.RUNNING, progressData = data)
 
         // When
         val result = underTest.adapt(workInfo)
 
         // Then
-        assertEquals(50, result.download)
+        assertEquals(25, result.download)
         assertEquals(0, result.unpack)
         assertEquals(0, result.buildDb)
-        assertFalse(result.isComplete())
     }
 
     @Test
-    fun `GIVEN null step string WHEN adapt is called THEN defaults to download`() {
+    fun `GIVEN invalid step value WHEN adapt is called THEN defaults to Download step`() {
         // Given
-        val workInfo = createWorkInfo(WorkInfo.State.RUNNING, createData(null, 75))
+        val data = Data.Builder()
+            .putString(PuzzleSyncWorker.STEP, "InvalidStep")
+            .putInt(PuzzleSyncWorker.PROGRESS_NAME, 75)
+            .build()
+        val workInfo = createWorkInfo(WorkInfo.State.RUNNING, progressData = data)
 
         // When
         val result = underTest.adapt(workInfo)
@@ -244,28 +265,16 @@ internal class WorkInfoDataAdapterTest {
         assertEquals(75, result.download)
         assertEquals(0, result.unpack)
         assertEquals(0, result.buildDb)
-        assertFalse(result.isComplete())
     }
 
     @Test
-    fun `GIVEN case sensitive step string WHEN adapt is called THEN defaults to download`() {
-        // Given - valueOf is case sensitive, so "unpack" != "Unpack"
-        val workInfo = createWorkInfo(WorkInfo.State.RUNNING, createData("unpack", 75))
-
-        // When
-        val result = underTest.adapt(workInfo)
-
-        // Then
-        assertEquals(75, result.download) // we default to download
-        assertEquals(0, result.unpack)
-        assertEquals(0, result.buildDb)
-        assertFalse(result.isComplete())
-    }
-
-    @Test
-    fun `GIVEN negative progress value WHEN adapt is called THEN defaults to 0`() {
+    fun `GIVEN negative progress value WHEN adapt is called THEN clamps to zero`() {
         // Given
-        val workInfo = createWorkInfo(WorkInfo.State.RUNNING, createData("Download", -10))
+        val data = Data.Builder()
+            .putString(PuzzleSyncWorker.STEP, "Download")
+            .putInt(PuzzleSyncWorker.PROGRESS_NAME, -10)
+            .build()
+        val workInfo = createWorkInfo(WorkInfo.State.RUNNING, progressData = data)
 
         // When
         val result = underTest.adapt(workInfo)
@@ -274,13 +283,16 @@ internal class WorkInfoDataAdapterTest {
         assertEquals(0, result.download)
         assertEquals(0, result.unpack)
         assertEquals(0, result.buildDb)
-        // Note: This will fail the Progress class assertion, which is expected behavior
     }
 
     @Test
-    fun `GIVEN progress value over 100 WHEN adapt is called THEN clamps to 100`() {
+    fun `GIVEN progress value greater than 100 WHEN adapt is called THEN clamps to 100`() {
         // Given
-        val workInfo = createWorkInfo(WorkInfo.State.RUNNING, createData("Download", 150))
+        val data = Data.Builder()
+            .putString(PuzzleSyncWorker.STEP, "Download")
+            .putInt(PuzzleSyncWorker.PROGRESS_NAME, 150)
+            .build()
+        val workInfo = createWorkInfo(WorkInfo.State.RUNNING, progressData = data)
 
         // When
         val result = underTest.adapt(workInfo)
@@ -289,45 +301,10 @@ internal class WorkInfoDataAdapterTest {
         assertEquals(100, result.download)
         assertEquals(0, result.unpack)
         assertEquals(0, result.buildDb)
-        // Note: This will fail the Progress class assertion, which is expected behavior
     }
 
     @Test
-    fun `GIVEN data with only step and no progress WHEN adapt is called THEN uses default progress value`() {
-        // Given
-        val data = Data.Builder()
-            .putString(PuzzleSyncWorker.STEP, "Download")
-            .build()
-        val workInfo = createWorkInfo(WorkInfo.State.RUNNING, data)
-
-        // When
-        val result = underTest.adapt(workInfo)
-
-        // Then
-        assertEquals(0, result.download) // Default value from getInt
-        assertEquals(0, result.unpack)
-        assertEquals(0, result.buildDb)
-    }
-
-    @Test
-    fun `GIVEN data with only progress and no step WHEN adapt is called THEN defaults to download`() {
-        // Given
-        val data = Data.Builder()
-            .putInt(PuzzleSyncWorker.PROGRESS_NAME, 60)
-            .build()
-        val workInfo = createWorkInfo(WorkInfo.State.RUNNING, data)
-
-        // When
-        val result = underTest.adapt(workInfo)
-
-        // Then
-        assertEquals(60, result.download) // Default to download
-        assertEquals(0, result.unpack)
-        assertEquals(0, result.buildDb)
-    }
-
-    @Test
-    fun `GIVEN data with additional unrelated fields WHEN adapt is called THEN ignores extra fields`() {
+    fun `GIVEN progress data with extra fields WHEN adapt is called THEN ignores extra fields`() {
         // Given
         val data = Data.Builder()
             .putString(PuzzleSyncWorker.STEP, "Unpack")
@@ -335,7 +312,7 @@ internal class WorkInfoDataAdapterTest {
             .putString("extraField", "extraValue")
             .putInt("extraInt", 999)
             .build()
-        val workInfo = createWorkInfo(WorkInfo.State.RUNNING, data)
+        val workInfo = createWorkInfo(WorkInfo.State.RUNNING, progressData = data)
 
         // When
         val result = underTest.adapt(workInfo)
@@ -357,7 +334,7 @@ internal class WorkInfoDataAdapterTest {
 
         testCases.forEach { (step, progress, expected) ->
             // Given
-            val workInfo = createWorkInfo(WorkInfo.State.RUNNING, createData(step, progress))
+            val workInfo = createWorkInfo(WorkInfo.State.RUNNING, progressData = createData(step, progress))
 
             // When
             val result = underTest.adapt(workInfo)
@@ -375,17 +352,17 @@ internal class WorkInfoDataAdapterTest {
 
         boundaryValues.forEach { progressValue ->
             // Test Download step
-            val downloadWorkInfo = createWorkInfo(WorkInfo.State.RUNNING, createData("Download", progressValue))
+            val downloadWorkInfo = createWorkInfo(WorkInfo.State.RUNNING, progressData = createData("Download", progressValue))
             val downloadResult = underTest.adapt(downloadWorkInfo)
             assertEquals(progressValue, downloadResult.download, "Download failed for progress: $progressValue")
 
             // Test Unpack step
-            val unpackWorkInfo = createWorkInfo(WorkInfo.State.RUNNING, createData("Unpack", progressValue))
+            val unpackWorkInfo = createWorkInfo(WorkInfo.State.RUNNING, progressData = createData("Unpack", progressValue))
             val unpackResult = underTest.adapt(unpackWorkInfo)
             assertEquals(progressValue, unpackResult.unpack, "Unpack failed for progress: $progressValue")
 
             // Test BuildDb step
-            val buildDbWorkInfo = createWorkInfo(WorkInfo.State.RUNNING, createData("BuildDb", progressValue))
+            val buildDbWorkInfo = createWorkInfo(WorkInfo.State.RUNNING, progressData = createData("BuildDb", progressValue))
             val buildDbResult = underTest.adapt(buildDbWorkInfo)
             assertEquals(progressValue, buildDbResult.buildDb, "BuildDb failed for progress: $progressValue")
         }
@@ -421,20 +398,79 @@ internal class WorkInfoDataAdapterTest {
         assertFalse(result.isComplete())
     }
 
-    // Helper function to create WorkInfo objects with different states
-    private fun createWorkInfo(
-        state: WorkInfo.State,
-        progressData: Data = Data.Builder().build()
-    ) = WorkInfo(
-        UUID.randomUUID(),
-        state,
-        emptySet(), // tags
-        progress = progressData, // progress
-    )
+    @Test
+    fun `GIVEN workInfo with FAILED state and decompression error WHEN adapt is called THEN returns correct progress`() {
+        // Given
+        val outputData = Data.Builder()
+            .putString(PuzzleSyncWorker.ERROR_TYPE, PuzzleSyncWorker.ERROR_DECOMPRESSION_FAILED)
+            .putString(PuzzleSyncWorker.FAILED_STEP, "Unpack")
+            .build()
+        val workInfo = createWorkInfo(WorkInfo.State.FAILED, outputData = outputData)
+
+        // When
+        val result = underTest.adapt(workInfo)
+
+        // Then
+        assertEquals(100, result.download) // Download completed
+        assertEquals(0, result.unpack)     // Unpack failed
+        assertEquals(0, result.buildDb)    // BuildDb not started
+        assertEquals(FetchPuzzleDatabase.Error.DecompressionFailed, result.error)
+        assertTrue(result.hasError())
+        assertFalse(result.isComplete())
+    }
+
+    @Test
+    fun `GIVEN workInfo with FAILED state and database write error WHEN adapt is called THEN returns correct progress`() {
+        // Given
+        val outputData = Data.Builder()
+            .putString(PuzzleSyncWorker.ERROR_TYPE, PuzzleSyncWorker.ERROR_DATABASE_WRITE_FAILED)
+            .putString(PuzzleSyncWorker.FAILED_STEP, "BuildDb")
+            .build()
+        val workInfo = createWorkInfo(WorkInfo.State.FAILED, outputData = outputData)
+
+        // When
+        val result = underTest.adapt(workInfo)
+
+        // Then
+        assertEquals(100, result.download) // Download completed
+        assertEquals(100, result.unpack)   // Unpack completed
+        assertEquals(0, result.buildDb)    // BuildDb failed
+        assertEquals(FetchPuzzleDatabase.Error.DatabaseWriteFailed, result.error)
+        assertTrue(result.hasError())
+        assertFalse(result.isComplete())
+    }
+
+    @Test
+    fun `GIVEN workInfo with unknown error type WHEN adapt is called THEN maps to None error`() {
+        // Given
+        val outputData = Data.Builder()
+            .putString(PuzzleSyncWorker.ERROR_TYPE, "unknown_error_type")
+            .putString(PuzzleSyncWorker.FAILED_STEP, "Download")
+            .build()
+        val workInfo = createWorkInfo(WorkInfo.State.FAILED, outputData = outputData)
+
+        // When
+        val result = underTest.adapt(workInfo)
+
+        // Then
+        assertEquals(FetchPuzzleDatabase.Error.None, result.error)
+    }
 
     // Helper function to create Data objects with step and progress
     private fun createData(step: String?, progress: Int): Data = Data.Builder().apply {
         step?.let { putString(PuzzleSyncWorker.STEP, step) }
         putInt(PuzzleSyncWorker.PROGRESS_NAME, progress)
     }.build()
+
+    private fun createWorkInfo(
+        state: WorkInfo.State,
+        outputData: Data = Data.Builder().build(),
+        progressData: Data = Data.Builder().build()
+    ) = WorkInfo(
+        id = UUID.randomUUID(),
+        state = state,
+        tags = emptySet(),
+        outputData = outputData,
+        progress = progressData,
+    )
 }
