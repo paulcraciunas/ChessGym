@@ -4,9 +4,9 @@
     <style name="Theme.ChessGym" parent="android:Theme.Material.Light.NoActionBar" />
     
     <!-- Splash Screen Theme -->
-    <style name="Theme.ChessGym.SplashScreen" parent="Theme.SplashScreen">
+    <style name="Theme.ChessGym.SplashScreen" parent="Theme.SplashScreen.IconBackground">
         <!-- Set the splash screen background color -->
-        <item name="windowSplashScreenBackground">@color/white</item>
+        <item name="windowSplashScreenBackground">@color/purple_40</item>
         
         <!-- Set the splash screen icon to use the app launcher icon -->
         <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
