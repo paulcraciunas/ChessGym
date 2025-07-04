@@ -23,10 +23,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             userStatsRepository.userStats
                 .collect { userStats ->
-                    _uiState.value = HomeUiState(
-                        userStats = stateAdapter.adapt(userStats),
-                        isLoading = false
-                    )
+                    _uiState.value = stateAdapter.adapt(userStats)
                 }
         }
     }
