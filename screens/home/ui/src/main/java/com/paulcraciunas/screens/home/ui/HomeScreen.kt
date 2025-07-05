@@ -21,7 +21,6 @@ import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.home.vm.HomeUiState
 import java.time.LocalDate
-import java.time.LocalDateTime
 
 @Composable
 fun HomeScreen(
@@ -69,7 +68,7 @@ private fun HomeContent(
         ) {
             item { UserProfileCard(userProfile = uiState.userProfile) }
             item { StatsSection(stats = uiState.userStats) }
-            item { ActivityTimeline(activityGroups = uiState.activityHistory) }
+            item { ActivityTimeline(history = uiState.history) }
         }
     }
 }
@@ -77,15 +76,22 @@ private fun HomeContent(
 @Composable
 private fun StatsSection(
     stats: HomeUiState.Stats,
+    modifier: Modifier = Modifier
 ) {
-    UserStatsCard(
-        title = stringResource(R.string.user_stats_title),
-        stats = stats
-    )
-    HighScoresCard(
-        title = stringResource(R.string.user_stats_high_score_title),
-        stats = stats
-    )
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        UserStatsCard(
+            title = stringResource(R.string.user_stats_title),
+            stats = stats
+        )
+
+        HighScoresCard(
+            title = stringResource(R.string.user_stats_high_score_title),
+            stats = stats
+        )
+    }
 }
 
 @Preview("HomeScreen")
@@ -110,27 +116,19 @@ private fun HomeScreenPreview() {
                     bestBlindModeScore = 8,
                     bestVisualizationScore = 12
                 ),
-                activityHistory = listOf(
-                    HomeUiState.ActivityGroup(
+                history = listOf(
+                    HomeUiState.HistoryGroup(
                         date = LocalDate.now(),
-                        activities = listOf(
-                            HomeUiState.ActivityEvent(
-                                id = "1",
-                                type = HomeUiState.ActivityType.PUZZLE_RUSH,
-                                title = "Puzzle Rush",
-                                description = "Completed 5 runs with best score 18",
-                                timestamp = LocalDateTime.now().minusHours(2),
-                                score = 18,
-                                count = 5
-                            ),
-                            HomeUiState.ActivityEvent(
-                                id = "2",
-                                type = HomeUiState.ActivityType.BOARD_VISUALIZATION,
-                                title = "Board Visualization",
-                                description = "Completed 2 sessions",
-                                timestamp = LocalDateTime.now().minusHours(4),
-                                count = 2
-                            )
+                        events = listOf(
+                            HomeUiState.HistoryEvent.PuzzleRushEvent(highScore = 18, runs = 5),
+                            HomeUiState.HistoryEvent.BoardVizEvent(runs = 2)
+                        )
+                    ),
+                    HomeUiState.HistoryGroup(
+                        date = LocalDate.now().minusDays(1),
+                        events = listOf(
+                            HomeUiState.HistoryEvent.RatedPuzzleEvent(ratingChange = 42, count = 12),
+                            HomeUiState.HistoryEvent.BlindModeEvent(completedMoves = 8, runs = 3)
                         )
                     )
                 ),

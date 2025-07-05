@@ -47,6 +47,28 @@
     <string name="home_timeline_title">Recent Activity</string>
     <string name="home_timeline_empty_title">No recent activity</string>
     <string name="home_timeline_empty_description">Start playing to see your activity timeline here</string>
+    
+    <!-- Activity titles -->
+    <string name="home_title_puzzle_rush">Puzzle Rush</string>
+    <string name="home_title_board_visualization">Board Visualization</string>
+    <string name="home_title_blind_mode">Blind Mode</string>
+    <string name="home_title_rated_puzzle">Rated Puzzles</string>
+
+    <!-- Timeline stat labels -->
+    <plurals name="home_timeline_stat_run">
+        <item quantity="one">Run</item>
+        <item quantity="other">Runs</item>
+    </plurals>
+    <plurals name="home_timeline_stat_session">
+        <item quantity="one">Session</item>
+        <item quantity="other">Sessions</item>
+    </plurals>
+    <plurals name="home_timeline_stat_puzzle">
+        <item quantity="one">Puzzle</item>
+        <item quantity="other">Puzzles</item>
+    </plurals>
+    <string name="home_timeline_stat_score">HighScore</string>
+    <string name="home_timeline_stat_moves">Moves</string>
     <!-- endregion -->
 
     <!-- region User stats -->

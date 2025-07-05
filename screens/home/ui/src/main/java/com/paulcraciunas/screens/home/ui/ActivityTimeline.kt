@@ -23,15 +23,14 @@ import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.home.vm.HomeUiState
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @Composable
 internal fun ActivityTimeline(
-    activityGroups: List<HomeUiState.ActivityGroup>,
+    history: List<HomeUiState.HistoryGroup>,
     modifier: Modifier = Modifier
 ) {
-    val innerPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp)
+    val innerPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp)
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -42,7 +41,6 @@ internal fun ActivityTimeline(
         Column(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Title
             Text(
                 text = stringResource(R.string.home_timeline_title),
                 style = MaterialTheme.typography.titleLarge,
@@ -50,18 +48,17 @@ internal fun ActivityTimeline(
                 fontWeight = FontWeight.Bold
             )
 
-            // Timeline Content
-            if (activityGroups.isEmpty()) {
+            if (history.isEmpty()) {
                 EmptyTimelineContent()
             } else {
                 Column(
                     modifier = Modifier.padding(vertical = 8.dp),
                     verticalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
-                    activityGroups.forEachIndexed { index, group ->
+                    history.forEachIndexed { index, group ->
                         ActivityGroupItem(
                             group = group,
-                            isLast = index == activityGroups.lastIndex
+                            isLast = index == history.lastIndex
                         )
                     }
                 }
@@ -72,7 +69,7 @@ internal fun ActivityTimeline(
 
 @Composable
 private fun ActivityGroupItem(
-    group: HomeUiState.ActivityGroup,
+    group: HomeUiState.HistoryGroup,
     isLast: Boolean,
     modifier: Modifier = Modifier
 ) {
@@ -89,10 +86,10 @@ private fun ActivityGroupItem(
         )
 
         // Activity Events
-        group.activities.forEachIndexed { index, activity ->
+        group.events.forEachIndexed { index, event ->
             TimelineEventItem(
-                event = activity,
-                isLast = index == group.activities.lastIndex && isLast
+                event = event,
+                isLast = index == group.events.lastIndex && isLast
             )
         }
     }
@@ -143,40 +140,19 @@ private val formatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy")
 private fun ActivityTimelinePreview() {
     ChessGymTheme {
         ActivityTimeline(
-            activityGroups = listOf(
-                HomeUiState.ActivityGroup(
+            history = listOf(
+                HomeUiState.HistoryGroup(
                     date = LocalDate.now(),
-                    activities = listOf(
-                        HomeUiState.ActivityEvent(
-                            id = "1",
-                            type = HomeUiState.ActivityType.PUZZLE_RUSH,
-                            title = "Puzzle Rush",
-                            description = "Completed 5 runs with best score 18",
-                            timestamp = LocalDateTime.now().minusHours(2),
-                            score = 18,
-                            count = 5
-                        ),
-                        HomeUiState.ActivityEvent(
-                            id = "2",
-                            type = HomeUiState.ActivityType.BOARD_VISUALIZATION,
-                            title = "Board Visualization",
-                            description = "Completed 2 sessions",
-                            timestamp = LocalDateTime.now().minusHours(4),
-                            count = 2
-                        )
+                    events = listOf(
+                        HomeUiState.HistoryEvent.PuzzleRushEvent(highScore = 18, runs = 5),
+                        HomeUiState.HistoryEvent.BoardVizEvent(runs = 2)
                     )
                 ),
-                HomeUiState.ActivityGroup(
+                HomeUiState.HistoryGroup(
                     date = LocalDate.now().minusDays(1),
-                    activities = listOf(
-                        HomeUiState.ActivityEvent(
-                            id = "3",
-                            type = HomeUiState.ActivityType.RATED_PUZZLE,
-                            title = "Rated Puzzles",
-                            description = "Solved 12 puzzles, rating improved",
-                            timestamp = LocalDateTime.now().minusDays(1),
-                            count = 12
-                        )
+                    events = listOf(
+                        HomeUiState.HistoryEvent.RatedPuzzleEvent(ratingChange = 42, count = 12),
+                        HomeUiState.HistoryEvent.BlindModeEvent(completedMoves = 8, runs = 3)
                     )
                 )
             ),
@@ -190,7 +166,7 @@ private fun ActivityTimelinePreview() {
 private fun ActivityTimelineEmptyPreview() {
     ChessGymTheme {
         ActivityTimeline(
-            activityGroups = emptyList(),
+            history = emptyList(),
             modifier = Modifier.padding(16.dp)
         )
     }

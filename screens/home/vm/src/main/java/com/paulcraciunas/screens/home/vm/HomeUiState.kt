@@ -1,12 +1,11 @@
 package com.paulcraciunas.screens.home.vm
 
 import java.time.LocalDate
-import java.time.LocalDateTime
 
 data class HomeUiState(
     val userProfile: UserProfile = UserProfile(),
     val userStats: Stats = Stats(),
-    val activityHistory: List<ActivityGroup> = emptyList(),
+    val history: List<HistoryGroup> = emptyList(),
     val isLoading: Boolean = true,
 ) {
     data class UserProfile(
@@ -26,26 +25,29 @@ data class HomeUiState(
         val bestVisualizationScore: Int = 0,
     )
 
-    data class ActivityGroup(
+    data class HistoryGroup(
         val date: LocalDate,
-        val activities: List<ActivityEvent>
+        val events: List<HistoryEvent>
     )
 
-    data class ActivityEvent(
-        val id: String,
-        val type: ActivityType,
-        val title: String,
-        val description: String,
-        val timestamp: LocalDateTime,
-        val score: Int? = null,
-        val count: Int? = null,
-    )
+    sealed class HistoryEvent {
+        data class PuzzleRushEvent(
+            val highScore: Int,
+            val runs: Int,
+        ) : HistoryEvent()
 
-    enum class ActivityType {
-        PUZZLE_RUSH,
-        BOARD_VISUALIZATION,
-        BLIND_MODE,
-        RATED_PUZZLE,
-        TRAINING_SESSION
+        data class BoardVizEvent(
+            val runs: Int,
+        ) : HistoryEvent()
+
+        data class RatedPuzzleEvent(
+            val ratingChange: Int,
+            val count: Int,
+        ) : HistoryEvent()
+
+        data class BlindModeEvent(
+            val completedMoves: Int,
+            val runs: Int,
+        ) : HistoryEvent()
     }
 }
