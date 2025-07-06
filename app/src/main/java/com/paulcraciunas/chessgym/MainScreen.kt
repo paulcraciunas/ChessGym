@@ -17,12 +17,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -30,10 +32,11 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.paulcraciunas.chessgym.navigation.BottomNavigationBar
 import com.paulcraciunas.chessgym.navigation.Screen
-import com.paulcraciunas.chessgym.ui.screens.home.HomeScreen
 import com.paulcraciunas.screens.common.AppBar
 import com.paulcraciunas.screens.common.AppBarAlignment
 import com.paulcraciunas.screens.common.AppDrawer
+import com.paulcraciunas.screens.home.ui.HomeScreen
+import com.paulcraciunas.screens.home.vm.HomeViewModel
 import kotlinx.coroutines.launch
 
 @Composable
@@ -111,7 +114,9 @@ fun MainScreen(
                     enterTransition = { enterTransition() },
                     exitTransition = { exitTransition() }
                 ) {
-                    HomeScreen()
+                    val vm: HomeViewModel = hiltViewModel()
+                    val homeState by vm.uiState.collectAsState()
+                    HomeScreen(state = homeState)
                 }
                 composable<Screen.PuzzleDashboard>(
                     enterTransition = { enterTransition() },

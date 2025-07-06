@@ -64,7 +64,8 @@ dependencies {
     implementation(project(":settings:application"))
     implementation(project(":screens:common"))
     implementation(project(":screens:loading:ui"))
-    implementation(project(":screens:loading:vm"))
+    implementation(project(":screens:home:ui"))
+    implementation(project(":user:di"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)

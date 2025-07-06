@@ -11,7 +11,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class UserStatsRepositoryTest {
+internal class UserStatsRepositoryTest {
     private lateinit var context: Context
     private lateinit var underTest: UserStatsRepository
 
@@ -148,4 +148,4 @@ class UserStatsRepositoryTest {
         assertEquals(250, stats.bestBlindModeScore)
         assertEquals(350, stats.bestVisualizationScore)
     }
-} 
+}
