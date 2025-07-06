@@ -52,12 +52,17 @@
     <string name="home_title_puzzle_rush">Puzzle Rush</string>
     <string name="home_title_board_visualization">Board Visualization</string>
     <string name="home_title_blind_mode">Blind Mode</string>
+    <string name="home_title_blind_mode_training">Blind Mode Training</string>
     <string name="home_title_rated_puzzle">Rated Puzzles</string>
 
     <!-- Timeline stat labels -->
     <plurals name="home_timeline_stat_run">
         <item quantity="one">Run</item>
         <item quantity="other">Runs</item>
+    </plurals>
+    <plurals name="home_timeline_stat_game">
+        <item quantity="one">Game</item>
+        <item quantity="other">Games</item>
     </plurals>
     <plurals name="home_timeline_stat_session">
         <item quantity="one">Session</item>
@@ -69,6 +74,7 @@
     </plurals>
     <string name="home_timeline_stat_score">HighScore</string>
     <string name="home_timeline_stat_moves">Moves</string>
+    <string name="home_timeline_stat_best_moves">Best Moves</string>
     <!-- endregion -->
 
     <!-- region User stats -->

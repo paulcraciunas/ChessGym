@@ -152,7 +152,7 @@ private fun ActivityTimelinePreview() {
                     date = LocalDate.now().minusDays(1),
                     events = listOf(
                         HomeUiState.HistoryEvent.RatedPuzzleEvent(ratingChange = 42, count = 12),
-                        HomeUiState.HistoryEvent.BlindModeEvent(completedMoves = 8, runs = 3)
+                        HomeUiState.HistoryEvent.BlindModeEvent(ratingChange = -15, gamesPlayed = 3)
                     )
                 )
             ),

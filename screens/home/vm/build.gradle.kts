@@ -32,7 +32,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":settings:user"))
+    implementation(project(":user:api"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -45,6 +45,8 @@ dependencies {
     ksp(libs.androidx.hilt.compiler)
 
     testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(project(":user:impl"))
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

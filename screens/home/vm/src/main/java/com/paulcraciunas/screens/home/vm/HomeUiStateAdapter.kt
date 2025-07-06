@@ -1,48 +1,79 @@
 package com.paulcraciunas.screens.home.vm
 
-import com.paulcraciunas.settings.user.UserStats
-import java.time.LocalDate
+import com.paulcraciunas.user.api.User
 import javax.inject.Inject
 
 class HomeUiStateAdapter @Inject constructor() {
-    fun adapt(userStats: UserStats) = HomeUiState(
-        userProfile = HomeUiState.UserProfile(
-            name = "Chess Player", // TODO: Get from user preferences
-            currentRating = userStats.currentRating,
-            totalActivities = userStats.puzzlesPlayed,
-            joinDate = LocalDate.now(), // TODO: Get from user preferences
-        ),
-        userStats = HomeUiState.Stats(
-            puzzlesPlayed = userStats.puzzlesPlayed,
-            puzzlesSolved = userStats.puzzlesSolved,
-            currentRating = userStats.currentRating,
-            bestRating = userStats.bestRating,
-            bestPuzzleRushScore = userStats.bestPuzzleRushScore,
-            bestBlindModeScore = userStats.bestBlindModeScore,
-            bestVisualizationScore = userStats.bestVisualizationScore,
-        ),
-        history = generateSampleHistory(), // TODO: Get from database
+
+    fun adapt(user: User) = HomeUiState(
+        userProfile = adaptUserProfile(user),
+        userStats = adaptUserStats(user),
+        history = adaptHistory(user.history),
         isLoading = false
     )
 
-    // TODO: Replace with actual data from database
-    private fun generateSampleHistory(): List<HomeUiState.HistoryGroup> {
-        val today = LocalDate.now()
-        return listOf(
-            HomeUiState.HistoryGroup(
-                date = today,
-                events = listOf(
-                    HomeUiState.HistoryEvent.PuzzleRushEvent(highScore = 18, runs = 5),
-                    HomeUiState.HistoryEvent.BoardVizEvent(runs = 2)
+    private fun adaptUserProfile(user: User) = HomeUiState.UserProfile(
+        name = "${user.profile.firstName} ${user.profile.lastName}",
+        currentRating = user.ratings.current,
+        totalActivities = user.history.size,
+        joinDate = user.profile.joinDate
+    )
+
+    private fun adaptUserStats(user: User) = HomeUiState.Stats(
+        puzzlesPlayed = user.statistics.puzzlesPlayed,
+        puzzlesSolved = user.statistics.puzzlesSolved,
+        currentRating = user.ratings.current,
+        bestRating = user.highScores.ratedPuzzle,
+        bestPuzzleRushScore = user.highScores.puzzleRush,
+        bestBlindModeScore = user.highScores.blindMode,
+        bestVisualizationScore = user.highScores.boardVisualization
+    )
+
+    private fun adaptHistory(history: List<User.HistoryItem>): List<HomeUiState.HistoryGroup> {
+        return history
+            .groupBy { it.timestamp }
+            .map { (date, items) ->
+                HomeUiState.HistoryGroup(
+                    date = date,
+                    events = items.map { adaptHistoryItem(it) }
                 )
-            ),
-            HomeUiState.HistoryGroup(
-                date = today.minusDays(1),
-                events = listOf(
-                    HomeUiState.HistoryEvent.RatedPuzzleEvent(ratingChange = 42, count = 12),
-                    HomeUiState.HistoryEvent.BlindModeEvent(completedMoves = 8, runs = 3)
-                )
+            }
+            .sortedByDescending { it.date }
+    }
+
+    private fun adaptHistoryItem(historyItem: User.HistoryItem): HomeUiState.HistoryEvent = when (val data = historyItem.data) {
+        is User.HistoryItem.HistoryItemData.PuzzleRushData -> {
+            HomeUiState.HistoryEvent.PuzzleRushEvent(
+                highScore = data.bestScore,
+                runs = data.tries
             )
-        )
+        }
+
+        is User.HistoryItem.HistoryItemData.BoardVisualizationData -> {
+            HomeUiState.HistoryEvent.BoardVizEvent(
+                runs = data.sessionsCompleted
+            )
+        }
+
+        is User.HistoryItem.HistoryItemData.BlindModeTrainingData -> {
+            HomeUiState.HistoryEvent.BlindModeTrainingEvent(
+                mostMovesCompleted = data.mostMovesCompleted,
+                runs = data.tries
+            )
+        }
+
+        is User.HistoryItem.HistoryItemData.BlindModeData -> {
+            HomeUiState.HistoryEvent.BlindModeEvent(
+                ratingChange = data.ratingChange,
+                gamesPlayed = data.played
+            )
+        }
+
+        is User.HistoryItem.HistoryItemData.RatedPuzzleData -> {
+            HomeUiState.HistoryEvent.RatedPuzzleEvent(
+                ratingChange = data.ratingChange,
+                count = data.puzzlesPlayed
+            )
+        }
     }
 }

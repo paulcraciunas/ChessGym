@@ -55,7 +55,7 @@ internal fun UserProfileCard(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = userProfile.name.take(2).uppercase(),
+                        text = userProfile.initials(),
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Bold

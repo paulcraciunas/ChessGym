@@ -113,6 +113,7 @@ private fun HomeUiState.HistoryEvent.iconRes(): Int = when (this) {
     is HomeUiState.HistoryEvent.PuzzleRushEvent -> R.drawable.puzzle_rush_icon
     is HomeUiState.HistoryEvent.BoardVizEvent -> R.drawable.board_visualization_icon
     is HomeUiState.HistoryEvent.BlindModeEvent -> R.drawable.blind_mode_icon
+    is HomeUiState.HistoryEvent.BlindModeTrainingEvent -> R.drawable.blind_mode_icon
     is HomeUiState.HistoryEvent.RatedPuzzleEvent -> R.drawable.puzzle_icon
 }
 
@@ -121,6 +122,7 @@ private fun HomeUiState.HistoryEvent.titleRes(): Int = when (this) {
     is HomeUiState.HistoryEvent.PuzzleRushEvent -> R.string.home_title_puzzle_rush
     is HomeUiState.HistoryEvent.BoardVizEvent -> R.string.home_title_board_visualization
     is HomeUiState.HistoryEvent.BlindModeEvent -> R.string.home_title_blind_mode
+    is HomeUiState.HistoryEvent.BlindModeTrainingEvent -> R.string.home_title_blind_mode_training
     is HomeUiState.HistoryEvent.RatedPuzzleEvent -> R.string.home_title_rated_puzzle
 }
 
@@ -149,7 +151,7 @@ private fun TimelineEventItemPreview() {
             )
 
             TimelineEventItem(
-                event = HomeUiState.HistoryEvent.BlindModeEvent(completedMoves = 8, runs = 3),
+                event = HomeUiState.HistoryEvent.BlindModeEvent(ratingChange = -15, gamesPlayed = 3),
                 isLast = false
             )
 

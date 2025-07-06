@@ -57,9 +57,16 @@ internal fun EventStats(
                 )
             }
             is HomeUiState.HistoryEvent.BlindModeEvent -> {
+                RatingChangeChip(ratingChange = event.ratingChange)
                 StatChip(
-                    label = stringResource(R.string.home_timeline_stat_moves),
-                    value = event.completedMoves.toString()
+                    label = pluralStringResource(R.plurals.home_timeline_stat_game, event.gamesPlayed),
+                    value = event.gamesPlayed.toString()
+                )
+            }
+            is HomeUiState.HistoryEvent.BlindModeTrainingEvent -> {
+                StatChip(
+                    label = stringResource(R.string.home_timeline_stat_best_moves),
+                    value = event.mostMovesCompleted.toString()
                 )
                 StatChip(
                     label = pluralStringResource(R.plurals.home_timeline_stat_session, event.runs),

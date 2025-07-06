@@ -13,7 +13,9 @@ data class HomeUiState(
         val currentRating: Int = 1200,
         val totalActivities: Int = 0,
         val joinDate: LocalDate = LocalDate.now(),
-    )
+    ) {
+        fun initials(): String = name.split(" ").map { it.first() }.joinToString(separator = "") { it.toString() }
+    }
 
     data class Stats(
         val puzzlesPlayed: Int = 0,
@@ -46,7 +48,12 @@ data class HomeUiState(
         ) : HistoryEvent()
 
         data class BlindModeEvent(
-            val completedMoves: Int,
+            val ratingChange: Int,
+            val gamesPlayed: Int,
+        ) : HistoryEvent()
+
+        data class BlindModeTrainingEvent(
+            val mostMovesCompleted: Int,
             val runs: Int,
         ) : HistoryEvent()
     }

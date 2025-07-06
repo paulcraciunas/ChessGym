@@ -2,7 +2,7 @@ package com.paulcraciunas.screens.home.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.paulcraciunas.settings.user.UserStatsRepository
+import com.paulcraciunas.user.api.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,7 +13,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val stateAdapter: HomeUiStateAdapter,
-    private val userStatsRepository: UserStatsRepository,
+    private val userRepository: UserRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -21,9 +21,9 @@ class HomeViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            userStatsRepository.userStats
-                .collect { userStats ->
-                    _uiState.value = stateAdapter.adapt(userStats)
+            userRepository.userUpdates()
+                .collect { user ->
+                    _uiState.value = stateAdapter.adapt(user)
                 }
         }
     }
