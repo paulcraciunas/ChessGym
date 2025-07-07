@@ -65,6 +65,7 @@ dependencies {
     implementation(project(":screens:common"))
     implementation(project(":screens:loading:ui"))
     implementation(project(":screens:home:ui"))
+    implementation(project(":screens:puzzles:dashboard:ui"))
     implementation(project(":user:di"))
 
     implementation(libs.androidx.core.ktx)

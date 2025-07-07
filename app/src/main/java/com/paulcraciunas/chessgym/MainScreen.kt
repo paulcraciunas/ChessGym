@@ -37,6 +37,8 @@ import com.paulcraciunas.screens.common.AppBarAlignment
 import com.paulcraciunas.screens.common.AppDrawer
 import com.paulcraciunas.screens.home.ui.HomeScreen
 import com.paulcraciunas.screens.home.vm.HomeViewModel
+import com.paulcraciunas.screens.puzzles.dashboard.ui.PuzzleDashboardScreen
+import com.paulcraciunas.screens.puzzles.dashboard.vm.PuzzleDashboardViewModel
 import kotlinx.coroutines.launch
 
 @Composable
@@ -122,7 +124,19 @@ fun MainScreen(
                     enterTransition = { enterTransition() },
                     exitTransition = { exitTransition() }
                 ) {
-                    UnderConstruction(title = "Puzzle Dashboard", innerPadding = innerPadding)
+                    val vm: PuzzleDashboardViewModel = hiltViewModel()
+                    val puzzleDashboardState by vm.uiState.collectAsState()
+                    PuzzleDashboardScreen(
+                        state = puzzleDashboardState,
+                        onPuzzleModeSelected = { mode ->
+                            vm.onPuzzleModeSelected(mode) { puzzleMode ->
+                                // TODO Paul: Navigate to specific puzzle screens based on mode
+                                // For now, these are placeholders until individual puzzle screens are implemented
+                            }
+                        },
+                        onPuzzleRushTimeChanged = vm::onPuzzleRushTimeChanged,
+                        onPuzzleRushMistakesChanged = vm::onPuzzleRushMistakesChanged
+                    )
                 }
                 composable<Screen.BoardVisualization>(
                     enterTransition = { enterTransition() },
