@@ -1,5 +1,6 @@
-package com.paulcraciunas.chessgym.ui.board
+package com.paulcraciunas.screens.common.board
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
@@ -69,8 +70,9 @@ private fun Piece.resource(of: Side): Int = when (this) {
 private fun PieceSet.of(side: Side) = if (side == Side.WHITE) white else black
 
 @Preview(showBackground = true)
+@Preview("Dark mode", uiMode = UI_MODE_NIGHT_YES)
 @Composable
-fun PiecePreview() {
+private fun PiecePreview() {
     ChessGymTheme {
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp)

@@ -1,4 +1,4 @@
-package com.paulcraciunas.chessgym.ui.model
+package com.paulcraciunas.screens.common.model
 
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File

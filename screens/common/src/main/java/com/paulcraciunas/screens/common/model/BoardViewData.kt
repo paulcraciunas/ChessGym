@@ -1,9 +1,9 @@
-package com.paulcraciunas.chessgym.ui.model
+package com.paulcraciunas.screens.common.model
 
 import com.paulcraciunas.game.logic.api.Side
-import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Piece
+import com.paulcraciunas.game.logic.api.board.Rank
 
 data class BoardViewData(
     val squares: Array<Array<SquareViewData>>,
@@ -26,11 +26,14 @@ data class SquareViewData(
     val piece: PieceViewData?,
     val canMoveTo: Boolean = false,
     val lastMove: Boolean = false,
-)
+) {
+    companion object {
+        fun simple(piece: Piece, side: Side) = SquareViewData(piece = PieceViewData(piece = piece, side = side))
+    }
+}
 
 data class PieceViewData(
     val piece: Piece,
     val side: Side,
     val isSelected: Boolean = false
 )
-

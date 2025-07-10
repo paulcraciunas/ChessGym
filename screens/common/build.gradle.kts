@@ -38,6 +38,7 @@ android {
 
 dependencies {
     implementation(project(":global:resources"))
+    implementation(project(":game:logic:api"))
 
     implementation(libs.androidx.core.ktx)
     implementation(platform(libs.androidx.compose.bom))

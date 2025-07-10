@@ -1,4 +1,4 @@
-package com.paulcraciunas.chessgym.ui.board
+package com.paulcraciunas.screens.common.board
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -110,7 +110,7 @@ class SquareScope internal constructor(
 
 @Preview(showBackground = true)
 @Composable
-fun PlainSquarePreview() {
+private fun PlainSquarePreview() {
     ChessGymTheme {
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -132,7 +132,7 @@ fun PlainSquarePreview() {
 
 @Preview(showBackground = true)
 @Composable
-fun PieceSquarePreview() {
+private fun PieceSquarePreview() {
     ChessGymTheme {
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -160,7 +160,7 @@ fun PieceSquarePreview() {
 
 @Preview(showBackground = true)
 @Composable
-fun MoveAvailablePreview() {
+private fun MoveAvailablePreview() {
     ChessGymTheme {
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp),
