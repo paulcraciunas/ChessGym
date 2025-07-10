@@ -39,6 +39,9 @@ import com.paulcraciunas.screens.home.ui.HomeScreen
 import com.paulcraciunas.screens.home.vm.HomeViewModel
 import com.paulcraciunas.screens.puzzles.dashboard.ui.PuzzleDashboardScreen
 import com.paulcraciunas.screens.puzzles.dashboard.vm.PuzzleDashboardViewModel
+import com.paulcraciunas.screens.puzzles.rated.ui.RatedPuzzleScreen
+import com.paulcraciunas.screens.puzzles.rated.vm.RatedPuzzleViewModel
+import com.paulcraciunas.screens.puzzles.rated.vm.RatedPuzzleUiState
 import kotlinx.coroutines.launch
 
 @Composable
@@ -130,12 +133,48 @@ fun MainScreen(
                         state = puzzleDashboardState,
                         onPuzzleModeSelected = { mode ->
                             vm.onPuzzleModeSelected(mode) { puzzleMode ->
-                                // TODO Paul: Navigate to specific puzzle screens based on mode
-                                // For now, these are placeholders until individual puzzle screens are implemented
+                                // Navigate to specific puzzle screens based on mode
+                                when (puzzleMode) {
+                                    com.paulcraciunas.screens.puzzles.dashboard.vm.PuzzleMode.RatedPuzzle -> {
+                                        tabNavController.navigate(Screen.RatedPuzzle)
+                                    }
+                                    else -> {
+                                        // TODO: Handle other puzzle modes when implemented
+                                    }
+                                }
                             }
                         },
                         onPuzzleRushTimeChanged = vm::onPuzzleRushTimeChanged,
                         onPuzzleRushMistakesChanged = vm::onPuzzleRushMistakesChanged
+                    )
+                }
+                composable<Screen.RatedPuzzle>(
+                    enterTransition = { enterTransition() },
+                    exitTransition = { exitTransition() }
+                ) {
+                    val vm: RatedPuzzleViewModel = hiltViewModel()
+                    val ratedPuzzleState by vm.uiState.collectAsState()
+                    RatedPuzzleScreen(
+                        uiState = ratedPuzzleState,
+                        showBorders = true, // TODO: Get this from app settings
+                        onNavigateBack = { 
+                            when (ratedPuzzleState) {
+                                is RatedPuzzleUiState.Playing -> vm.onAbandonRequested()
+                                else -> tabNavController.popBackStack()
+                            }
+                        },
+                        onSquareClicked = vm::onSquareClicked,
+                        onHintRequested = vm::onHintRequested,
+                        onAbandonConfirmed = {
+                            vm.onAbandonConfirmed()
+                            tabNavController.popBackStack()
+                        },
+                        onAbandonDismissed = vm::onAbandonCancelled,
+                        onPuzzleToStart = vm::onNavigateToStart,
+                        onPuzzleBack = vm::onNavigateBackMove,
+                        onPuzzleNext = vm::onNavigateNextMove,
+                        onPuzzleToEnd = vm::onNavigateToEnd,
+                        onPlayNext = vm::onNextPuzzle
                     )
                 }
                 composable<Screen.BoardVisualization>(
