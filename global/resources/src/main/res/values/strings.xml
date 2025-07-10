@@ -131,6 +131,21 @@
     <string name="rated_puzzle_white_to_move">White to move</string>
     <string name="rated_puzzle_black_to_move">Black to move</string>
     <string name="rated_puzzle_moves">Moves: %1$s</string>
+    <string name="rated_puzzle_title">Puzzle rating: %1$d</string>
+    <string name="navigate_back">Navigate back</string>
+    <string name="puzzle_hint">Hint</string>
+    <string name="puzzle_abandon">Abandon puzzle</string>
+    <string name="your_move">Your move</string>
+    <string name="abandon_puzzle_title">Abandon Puzzle?</string>
+    <string name="abandon_puzzle_message">Are you sure you want to abandon the current puzzle? Your progress will be lost.</string>
+    <string name="abandon_puzzle_confirm">Abandon</string>
+    <string name="abandon_puzzle_cancel">Continue</string>
+    <string name="puzzle_solved">Puzzle Solved!</string>
+    <string name="puzzle_failed">Puzzle Failed</string>
+    <string name="puzzle_abandoned">Puzzle Abandoned</string>
+    <string name="rating_gained">Rating gained: +%1$d</string>
+    <string name="rating_lost">Rating lost: -%1$d</string>
+    <string name="next_puzzle">Next Puzzle</string>
     <!-- endregion -->
 
     <!-- region generic text resources which can be reused across screens -->
