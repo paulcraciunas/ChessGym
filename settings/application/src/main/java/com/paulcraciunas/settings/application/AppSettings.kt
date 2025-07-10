@@ -8,6 +8,7 @@ data class AppSettings(
     val preferredTheme: Theme,
     val lightMode: LightMode,
     val autoPromote: Boolean,
+    val showBorders: Boolean,
 ) {
     enum class Theme {
         Wood,

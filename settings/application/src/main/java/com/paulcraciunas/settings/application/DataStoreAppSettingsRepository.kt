@@ -28,7 +28,8 @@ internal class DataStoreAppSettingsRepository @Inject constructor(
             playSoundOnMove = preferences[PLAY_SOUND_ON_MOVE] ?: true,
             preferredTheme = preferences[PREFERRED_THEME]?.let { AppSettings.Theme.valueOf(it) } ?: AppSettings.Theme.Wood,
             lightMode = preferences[LIGHT_MODE]?.let { AppSettings.LightMode.valueOf(it) } ?: AppSettings.LightMode.System,
-            autoPromote = preferences[AUTO_PROMOTE] ?: true
+            autoPromote = preferences[AUTO_PROMOTE] ?: true,
+            showBorders = preferences[SHOW_BORDERS] ?: true
         )
     }
 
@@ -75,6 +76,12 @@ internal class DataStoreAppSettingsRepository @Inject constructor(
         }
     }
 
+    override suspend fun updateShowBorders(enabled: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[SHOW_BORDERS] = enabled
+        }
+    }
+
     companion object {
         private val PUZZLES_DOWNLOADED = booleanPreferencesKey("puzzles_downloaded")
         private val TOTAL_PUZZLE_COUNT = intPreferencesKey("total_puzzle_count")
@@ -83,5 +90,6 @@ internal class DataStoreAppSettingsRepository @Inject constructor(
         private val PREFERRED_THEME = stringPreferencesKey("preferred_theme")
         private val LIGHT_MODE = stringPreferencesKey("light_mode")
         private val AUTO_PROMOTE = booleanPreferencesKey("auto_promote")
+        private val SHOW_BORDERS = booleanPreferencesKey("show_borders")
     }
 }

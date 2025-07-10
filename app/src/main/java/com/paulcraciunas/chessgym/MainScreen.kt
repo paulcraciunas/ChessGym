@@ -49,6 +49,9 @@ fun MainScreen(
     onDrawerScreen: (Screen) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val mainScreenViewModel: MainScreenViewModel = hiltViewModel()
+    val mainScreenState by mainScreenViewModel.uiState.collectAsState()
+    
     val tabNavController = rememberNavController()
     val navBackStackEntry by tabNavController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
@@ -156,7 +159,7 @@ fun MainScreen(
                     val ratedPuzzleState by vm.uiState.collectAsState()
                     RatedPuzzleScreen(
                         uiState = ratedPuzzleState,
-                        showBorders = true, // TODO: Get this from app settings
+                        showBorders = mainScreenState.appSettings?.showBorders ?: true,
                         onNavigateBack = { 
                             when (ratedPuzzleState) {
                                 is RatedPuzzleUiState.Playing -> vm.onAbandonRequested()

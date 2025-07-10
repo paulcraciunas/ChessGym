@@ -12,4 +12,5 @@ interface AppSettingsRepository {
     suspend fun updatePreferredTheme(theme: AppSettings.Theme)
     suspend fun updateLightMode(mode: AppSettings.LightMode)
     suspend fun updateAutoPromote(enabled: Boolean)
+    suspend fun updateShowBorders(enabled: Boolean)
 }

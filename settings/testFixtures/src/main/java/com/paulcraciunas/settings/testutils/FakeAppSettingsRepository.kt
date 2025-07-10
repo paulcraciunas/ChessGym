@@ -20,7 +20,8 @@ class FakeAppSettingsRepository : AppSettingsRepository {
             playSoundOnMove = true,
             preferredTheme = AppSettings.Theme.Wood,
             lightMode = AppSettings.LightMode.System,
-            autoPromote = true
+            autoPromote = true,
+            showBorders = true
         )
     )
 
@@ -54,6 +55,10 @@ class FakeAppSettingsRepository : AppSettingsRepository {
         _appSettings.value = _appSettings.value.copy(autoPromote = enabled)
     }
 
+    override suspend fun updateShowBorders(enabled: Boolean) {
+        _appSettings.value = _appSettings.value.copy(showBorders = enabled)
+    }
+
     // Test helper methods
     
     /**
@@ -68,7 +73,8 @@ class FakeAppSettingsRepository : AppSettingsRepository {
             playSoundOnMove = true,
             preferredTheme = AppSettings.Theme.Wood,
             lightMode = AppSettings.LightMode.System,
-            autoPromote = true
+            autoPromote = true,
+            showBorders = true
         )
     }
 
