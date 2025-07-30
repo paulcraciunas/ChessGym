@@ -48,6 +48,7 @@ dependencies {
 
     testImplementation(libs.bundles.unit.tests)
     testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(project(":settings:testFixtures"))
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }
