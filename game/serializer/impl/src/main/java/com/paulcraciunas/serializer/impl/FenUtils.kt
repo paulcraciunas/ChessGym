@@ -4,7 +4,7 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank
-import com.paulcraciunas.logic.di.Builder
+import com.paulcraciunas.game.logic.api.Builder
 import com.paulcraciunas.serializer.api.SerializeException
 
 internal const val MISSING = "-"

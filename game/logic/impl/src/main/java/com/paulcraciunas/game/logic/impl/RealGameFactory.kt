@@ -1,11 +1,10 @@
-package com.paulcraciunas.logic.di
+package com.paulcraciunas.game.logic.impl
 
+import com.paulcraciunas.game.logic.api.Builder
+import com.paulcraciunas.game.logic.api.GameFactory
 import com.paulcraciunas.game.logic.impl.plies.PlyFactory
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class RealGameFactory @Inject constructor(
+class RealGameFactory(
     private val plyFactory: PlyFactory
 ) : GameFactory {
     override fun builder(): Builder = RealBuilder(plyFactory)

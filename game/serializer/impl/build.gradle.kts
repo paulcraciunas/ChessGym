@@ -33,13 +33,13 @@ android {
 
 dependencies {
     implementation(project(":game:logic:api"))
-    implementation(project(":game:logic:di"))
     implementation(project(":game:serializer:api"))
 
     // Dependency injection
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
+    testImplementation(project(":game:logic:impl"))
     testImplementation(testFixtures(project(":game:logic:impl")))
     testImplementation(libs.bundles.unit.tests)
     testRuntimeOnly(libs.junit.platform.launcher)

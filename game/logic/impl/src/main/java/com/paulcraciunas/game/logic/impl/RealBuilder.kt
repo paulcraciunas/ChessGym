@@ -1,5 +1,6 @@
-package com.paulcraciunas.logic.di
+package com.paulcraciunas.game.logic.impl
 
+import com.paulcraciunas.game.logic.api.Builder
 import com.paulcraciunas.game.logic.api.CastleType
 import com.paulcraciunas.game.logic.api.Game
 import com.paulcraciunas.game.logic.api.Ply
@@ -8,9 +9,6 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.state.MetaData
-import com.paulcraciunas.game.logic.impl.MutableGame
-import com.paulcraciunas.game.logic.impl.MutableGameInfo
-import com.paulcraciunas.game.logic.impl.MutablePuzzle
 import com.paulcraciunas.game.logic.impl.board.Board
 import com.paulcraciunas.game.logic.impl.board.BoardFactory
 import com.paulcraciunas.game.logic.impl.plies.PlyFactory

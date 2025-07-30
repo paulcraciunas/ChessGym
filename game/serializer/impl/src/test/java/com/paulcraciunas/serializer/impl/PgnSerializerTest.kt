@@ -1,7 +1,7 @@
 package com.paulcraciunas.serializer.impl
 
+import com.paulcraciunas.game.logic.impl.RealGameFactory
 import com.paulcraciunas.game.logic.impl.plies.PlyFactory
-import com.paulcraciunas.logic.di.RealGameFactory
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest

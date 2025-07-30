@@ -10,10 +10,12 @@ import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.game.logic.api.state.GameInfo
-import com.paulcraciunas.logic.di.Builder
-import com.paulcraciunas.logic.di.GameFactory
+import com.paulcraciunas.game.logic.api.Builder
+import com.paulcraciunas.game.logic.api.GameFactory
+import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.serializer.api.SerializeException
 import com.paulcraciunas.serializer.api.Serializer
+import java.util.ArrayDeque
 import javax.inject.Inject
 
 /**
@@ -30,6 +32,21 @@ import javax.inject.Inject
 internal class FenSerializer @Inject constructor(
     private val gameFactory: GameFactory,
 ) : Serializer {
+    fun puzzleFrom(puzzleString: String, moves: String): Puzzle {
+        val fenParts = puzzleString.fenParts()
+        val rows = fenParts[0].rows()
+
+        return gameFactory.builder()
+            .withPieces(rows)
+            .withTurn(fenParts[1].loadSide())
+            .withCastling(fenParts[2].loadCastling())
+            .withEnPassent(fenParts[3])
+            .withPlieClock(fenParts[4].loadNumber())
+            .withMoveIndex(fenParts[5].loadNumber())
+            .withMoves(ArrayDeque<String>().apply { addAll(moves.split(',')) })
+            .buildPuzzle()
+    }
+
     override fun from(gameString: String): Game {
         val fenParts = gameString.fenParts()
         val rows = fenParts[0].rows()

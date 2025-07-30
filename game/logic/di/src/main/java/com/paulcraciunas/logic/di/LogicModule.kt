@@ -1,5 +1,7 @@
 package com.paulcraciunas.logic.di
 
+import com.paulcraciunas.game.logic.api.GameFactory
+import com.paulcraciunas.game.logic.impl.RealGameFactory
 import com.paulcraciunas.game.logic.impl.plies.PlyFactory
 import dagger.Module
 import dagger.Provides

@@ -11,7 +11,7 @@ import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.game.logic.api.board.toFile
 import com.paulcraciunas.game.logic.api.board.toRank
 import com.paulcraciunas.game.logic.api.state.MetaData
-import com.paulcraciunas.logic.di.GameFactory
+import com.paulcraciunas.game.logic.api.GameFactory
 import com.paulcraciunas.serializer.api.SerializeException
 import com.paulcraciunas.serializer.api.Serializer
 import javax.inject.Inject

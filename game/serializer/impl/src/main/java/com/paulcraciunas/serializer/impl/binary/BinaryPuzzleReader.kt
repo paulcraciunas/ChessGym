@@ -5,8 +5,8 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Rank
-import com.paulcraciunas.logic.di.Builder
-import com.paulcraciunas.logic.di.GameFactory
+import com.paulcraciunas.game.logic.api.Builder
+import com.paulcraciunas.game.logic.api.GameFactory
 import com.paulcraciunas.serializer.api.PuzzleReader
 import com.paulcraciunas.serializer.impl.withEnPassent
 import java.util.ArrayDeque

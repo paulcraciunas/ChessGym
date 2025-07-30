@@ -3,9 +3,9 @@ package com.paulcraciunas.serializer.impl
 import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.board.Piece
+import com.paulcraciunas.game.logic.impl.RealGameFactory
 import com.paulcraciunas.game.logic.impl.plies.PlyFactory
 import com.paulcraciunas.game.logic.loc
-import com.paulcraciunas.logic.di.RealGameFactory
 import com.paulcraciunas.serializer.impl.binary.BinaryAdapter
 import com.paulcraciunas.serializer.impl.binary.BinaryPuzzleReader
 import com.paulcraciunas.serializer.impl.binary.BinaryPuzzleWriter
