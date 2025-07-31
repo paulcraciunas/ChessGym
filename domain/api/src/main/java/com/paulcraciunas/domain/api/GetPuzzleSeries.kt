@@ -1,4 +1,4 @@
-package com.paulcraciunas.puzzles.api.usecases
+package com.paulcraciunas.domain.api
 
 import com.paulcraciunas.game.logic.api.Puzzle
 

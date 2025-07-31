@@ -1,5 +1,7 @@
-package com.paulcraciunas.puzzles.impl.usecases
+package com.paulcraciunas.domain.impl
 
+import com.paulcraciunas.domain.api.GetPuzzleSeries
+import com.paulcraciunas.domain.api.RandomFactory
 import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.Side
@@ -8,11 +10,9 @@ import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.state.GameInfo
 import com.paulcraciunas.puzzles.api.PuzzleRepository
-import com.paulcraciunas.puzzles.api.usecases.GetPuzzleSeries
-import com.paulcraciunas.puzzles.impl.impl.RandomFactory
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 
 internal class GetPuzzleSeriesImplTest {
     private val randomGen = FakeRandom()
@@ -90,7 +90,7 @@ internal class GetPuzzleSeriesImplTest {
         override val player: Side = Side.WHITE
         override val state: Puzzle.State = Puzzle.State.Idle
         override val info: GameInfo by lazy { throw NotImplementedError() }
-        override val board: IBoard  by lazy { throw NotImplementedError() }
+        override val board: IBoard by lazy { throw NotImplementedError() }
 
         override fun start() {}
         override fun play(ply: Ply) {}

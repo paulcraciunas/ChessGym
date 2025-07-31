@@ -1,9 +1,9 @@
-package com.paulcraciunas.puzzles.impl.usecases
+package com.paulcraciunas.domain.impl
 
+import com.paulcraciunas.domain.api.GetPuzzleSeries
+import com.paulcraciunas.domain.api.RandomFactory
 import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.puzzles.api.PuzzleRepository
-import com.paulcraciunas.puzzles.api.usecases.GetPuzzleSeries
-import com.paulcraciunas.puzzles.impl.impl.RandomFactory
 import javax.inject.Inject
 
 class GetPuzzleSeriesImpl @Inject constructor(
