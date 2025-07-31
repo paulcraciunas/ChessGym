@@ -39,7 +39,7 @@ dependencies {
     implementation(project(":game:logic:di"))
     implementation(project(":game:serializer:api"))
     implementation(project(":global:notifications"))
-    implementation(project(":settings:application"))
+    implementation(project(":settings:application:api"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -66,14 +66,14 @@ dependencies {
 
     testImplementation(libs.bundles.unit.tests)
     testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(project(":settings:testFixtures"))
+    testImplementation(testFixtures(project(":settings:application:api")))
     testRuntimeOnly(libs.junit.platform.launcher)
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.work.test)
-    androidTestImplementation(project(":settings:testFixtures"))
+    androidTestImplementation(testFixtures(project(":settings:application:api")))
 }
 
 tasks.withType<Test> {

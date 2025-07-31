@@ -1,4 +1,4 @@
-package com.paulcraciunas.settings.application
+package com.paulcraciunas.settings.application.impl
 
 import android.content.Context
 import androidx.datastore.core.DataStore
@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.paulcraciunas.settings.application.api.AppSettings
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -17,7 +18,7 @@ private val Context.appSettings: DataStore<Preferences> by preferencesDataStore(
 
 internal class DataStoreAppSettingsRepository @Inject constructor(
     @ApplicationContext private val context: Context
-) : AppSettingsRepository {
+) : com.paulcraciunas.settings.application.api.AppSettingsRepository {
     private val dataStore = context.appSettings
 
     override val appSettings: Flow<AppSettings> = dataStore.data.map { preferences ->
@@ -26,8 +27,10 @@ internal class DataStoreAppSettingsRepository @Inject constructor(
             totalPuzzleCount = preferences[TOTAL_PUZZLE_COUNT] ?: 0,
             maxPuzzleRating = preferences[PUZZLES_MAX_RATING] ?: 0,
             playSoundOnMove = preferences[PLAY_SOUND_ON_MOVE] ?: true,
-            preferredTheme = preferences[PREFERRED_THEME]?.let { AppSettings.Theme.valueOf(it) } ?: AppSettings.Theme.Wood,
-            lightMode = preferences[LIGHT_MODE]?.let { AppSettings.LightMode.valueOf(it) } ?: AppSettings.LightMode.System,
+            preferredTheme = preferences[PREFERRED_THEME]?.let { AppSettings.Theme.valueOf(it) }
+                ?: AppSettings.Theme.Wood,
+            lightMode = preferences[LIGHT_MODE]?.let { AppSettings.LightMode.valueOf(it) }
+                ?: AppSettings.LightMode.System,
             autoPromote = preferences[AUTO_PROMOTE] ?: true,
             showBorders = preferences[SHOW_BORDERS] ?: true
         )

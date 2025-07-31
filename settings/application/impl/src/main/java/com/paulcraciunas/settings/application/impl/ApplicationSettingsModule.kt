@@ -1,7 +1,6 @@
-package com.paulcraciunas.settings.application.di
+package com.paulcraciunas.settings.application.impl
 
-import com.paulcraciunas.settings.application.AppSettingsRepository
-import com.paulcraciunas.settings.application.DataStoreAppSettingsRepository
+import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

@@ -1,7 +1,5 @@
-package com.paulcraciunas.settings.testutils
+package com.paulcraciunas.settings.application.api
 
-import com.paulcraciunas.settings.application.AppSettings
-import com.paulcraciunas.settings.application.AppSettingsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

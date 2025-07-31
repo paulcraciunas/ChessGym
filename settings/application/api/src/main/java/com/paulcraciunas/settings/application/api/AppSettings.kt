@@ -1,4 +1,4 @@
-package com.paulcraciunas.settings.application
+package com.paulcraciunas.settings.application.api
 
 data class AppSettings(
     val puzzlesDownloaded: Boolean,

@@ -1,4 +1,4 @@
-package com.paulcraciunas.settings.application
+package com.paulcraciunas.settings.application.api
 
 import kotlinx.coroutines.flow.Flow
 

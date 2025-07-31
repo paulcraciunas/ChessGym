@@ -2,8 +2,8 @@ package com.paulcraciunas.chessgym
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.paulcraciunas.settings.application.AppSettings
-import com.paulcraciunas.settings.application.AppSettingsRepository
+import com.paulcraciunas.settings.application.api.AppSettings
+import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

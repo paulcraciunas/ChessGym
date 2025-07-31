@@ -60,7 +60,7 @@ dependencies {
     implementation(project(":global:device:di"))
     implementation(project(":global:notifications"))
     implementation(project(":global:resources"))
-    implementation(project(":settings:application"))
+    implementation(project(":settings:application:impl"))
     implementation(project(":screens:common"))
     implementation(project(":screens:loading:ui"))
     implementation(project(":screens:home:ui"))

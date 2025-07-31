@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.paulcraciunas.settings.application"
+    namespace = "com.paulcraciunas.settings.application.impl"
     compileSdk = 35
 
     defaultConfig {
@@ -35,6 +35,8 @@ android {
 }
 
 dependencies {
+    api(project(":settings:application:api"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.hilt.android)
@@ -43,4 +45,4 @@ dependencies {
     testImplementation(libs.bundles.unit.tests)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-} 
+}

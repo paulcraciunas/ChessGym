@@ -38,7 +38,7 @@ dependencies {
     implementation(project(":domain:api"))
     implementation(project(":game:logic:api"))
     implementation(project(":game:puzzles:api"))
-    implementation(project(":settings:application"))
+    implementation(project(":settings:application:api"))
     implementation(project(":user:api"))
     
     implementation(libs.androidx.core.ktx)
@@ -48,7 +48,7 @@ dependencies {
 
     testImplementation(libs.bundles.unit.tests)
     testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(project(":settings:testFixtures"))
+    testImplementation(testFixtures(project(":settings:application:api")))
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }

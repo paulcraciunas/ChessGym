@@ -35,7 +35,7 @@ android {
 dependencies {
     implementation(project(":game:logic:api"))
     implementation(project(":game:puzzles:api"))
-    implementation(project(":settings:application"))
+    implementation(project(":settings:application:api"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.kotlinx.coroutines.core)

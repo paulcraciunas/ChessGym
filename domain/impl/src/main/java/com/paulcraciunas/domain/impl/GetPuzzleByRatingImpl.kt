@@ -3,7 +3,7 @@ package com.paulcraciunas.domain.impl
 import com.paulcraciunas.domain.api.GetPuzzleByRating
 import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.puzzles.api.PuzzleRepository
-import com.paulcraciunas.settings.application.AppSettingsRepository
+import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 

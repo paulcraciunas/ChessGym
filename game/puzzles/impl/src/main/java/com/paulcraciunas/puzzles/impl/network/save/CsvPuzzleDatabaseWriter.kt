@@ -5,7 +5,7 @@ import com.paulcraciunas.puzzles.impl.db.Puzzle
 import com.paulcraciunas.puzzles.impl.impl.PuzzleDatabase
 import com.paulcraciunas.puzzles.impl.network.progress.ProgressReporter
 import com.paulcraciunas.serializer.api.PuzzleWriter
-import com.paulcraciunas.settings.application.AppSettingsRepository
+import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import java.io.File
 import javax.inject.Inject
 

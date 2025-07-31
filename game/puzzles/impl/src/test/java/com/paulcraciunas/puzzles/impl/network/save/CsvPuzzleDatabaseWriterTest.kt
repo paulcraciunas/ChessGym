@@ -3,13 +3,13 @@ package com.paulcraciunas.puzzles.impl.network.save
 import com.paulcraciunas.puzzles.impl.network.fakes.FakeProgressReporter
 import com.paulcraciunas.puzzles.impl.network.fakes.FakePuzzleDatabase
 import com.paulcraciunas.puzzles.impl.network.fakes.FakePuzzleWriter
+import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
-import com.paulcraciunas.settings.testutils.FakeAppSettingsRepository
 
 internal class CsvPuzzleDatabaseWriterTest {
 
