@@ -2,6 +2,7 @@ package com.paulcraciunas.serializer.impl
 
 import com.paulcraciunas.game.logic.api.CastleType
 import com.paulcraciunas.game.logic.api.Game
+import com.paulcraciunas.game.logic.api.GameFactory
 import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File
@@ -11,10 +12,8 @@ import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.game.logic.api.board.toFile
 import com.paulcraciunas.game.logic.api.board.toRank
 import com.paulcraciunas.game.logic.api.state.MetaData
-import com.paulcraciunas.game.logic.api.GameFactory
 import com.paulcraciunas.serializer.api.SerializeException
 import com.paulcraciunas.serializer.api.Serializer
-import javax.inject.Inject
 
 /**
  * Portable Game Notation serializer
@@ -27,7 +26,7 @@ import javax.inject.Inject
  *
  * @see <a href="https://en.wikipedia.org/wiki/Portable_Game_Notation">PGN Wiki</a>
  **/
-internal class PgnSerializer @Inject constructor(
+class PgnSerializer(
     private val gameFactory: GameFactory,
 ) : Serializer {
     // I hate regEx

@@ -11,7 +11,6 @@ import com.paulcraciunas.serializer.api.PuzzleReader
 import com.paulcraciunas.serializer.impl.withEnPassent
 import java.util.ArrayDeque
 import java.util.Queue
-import javax.inject.Inject
 
 /**
  * Read a puzzle written in binary, according to FEN format
@@ -39,7 +38,7 @@ import javax.inject.Inject
  * @see BinaryPuzzleWriter
  * @see BinaryAdapter
  */
-internal class BinaryPuzzleReader @Inject constructor(
+class BinaryPuzzleReader(
     private val gameFactory: GameFactory,
     private val adapter: BinaryAdapter,
 ) : PuzzleReader {

@@ -9,11 +9,9 @@ import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.game.logic.api.state.GameInfo
 import com.paulcraciunas.serializer.api.PuzzleWriter
 import com.paulcraciunas.serializer.api.Serializer
-import com.paulcraciunas.serializer.impl.di.SerializerFen
 import java.io.ByteArrayOutputStream
 import java.io.OutputStream
 import java.util.ArrayDeque
-import javax.inject.Inject
 
 /**
  * Write a puzzle written in FEN format, in binary.
@@ -42,8 +40,8 @@ import javax.inject.Inject
  * @see BinaryPuzzleReader
  * @see BinaryAdapter
  */
-internal class BinaryPuzzleWriter @Inject constructor(
-    @SerializerFen private val serializer: Serializer,
+class BinaryPuzzleWriter(
+    private val serializer: Serializer,
     private val adapter: BinaryAdapter,
 ) : PuzzleWriter {
     private var int: Int = 0 // So we don't keep allocating ints pointlessly

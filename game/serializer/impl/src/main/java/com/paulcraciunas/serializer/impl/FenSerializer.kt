@@ -16,7 +16,6 @@ import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.serializer.api.SerializeException
 import com.paulcraciunas.serializer.api.Serializer
 import java.util.ArrayDeque
-import javax.inject.Inject
 
 /**
  * Forsyth–Edwards Notation serializer
@@ -29,7 +28,7 @@ import javax.inject.Inject
  *
  * @see <a href="https://en.wikipedia.org/wiki/Forsyth–Edwards_Notation">FEN Wiki</a>
  **/
-internal class FenSerializer @Inject constructor(
+class FenSerializer(
     private val gameFactory: GameFactory,
 ) : Serializer {
     fun puzzleFrom(puzzleString: String, moves: String): Puzzle {

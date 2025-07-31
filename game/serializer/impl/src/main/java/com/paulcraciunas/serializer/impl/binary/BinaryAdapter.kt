@@ -6,7 +6,6 @@ import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank
-import javax.inject.Inject
 
 /**
  * Adapter for writing and reading game information into/from binary.
@@ -27,7 +26,7 @@ import javax.inject.Inject
  * @see BinaryPuzzleReader
  * @see BinaryPuzzleWriter
  */
-internal class BinaryAdapter @Inject constructor() {
+class BinaryAdapter {
     fun toBinary(data: SidedPiece): Int {
         val typeBits = data.piece.code and 0b111 // 3 bits for type
         val sideBit = data.side.code and 0b1 // 1 bit for side
