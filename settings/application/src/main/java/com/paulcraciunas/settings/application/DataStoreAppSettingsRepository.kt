@@ -33,52 +33,18 @@ internal class DataStoreAppSettingsRepository @Inject constructor(
         )
     }
 
-    override suspend fun updatePuzzlesDownloaded(downloaded: Boolean) {
-        dataStore.edit { preferences ->
-            preferences[PUZZLES_DOWNLOADED] = downloaded
-        }
-    }
+    override suspend fun updatePuzzlesDownloaded(downloaded: Boolean) = dataStore.update(PUZZLES_DOWNLOADED, downloaded)
+    override suspend fun updateTotalPuzzleCount(count: Int) = dataStore.update(TOTAL_PUZZLE_COUNT, count)
+    override suspend fun updateMaxPuzzleRating(maxRating: Int) = dataStore.update(PUZZLES_MAX_RATING, maxRating)
+    override suspend fun updatePlaySoundOnMove(enabled: Boolean) = dataStore.update(PLAY_SOUND_ON_MOVE, enabled)
+    override suspend fun updatePreferredTheme(theme: AppSettings.Theme) = dataStore.update(PREFERRED_THEME, theme.name)
+    override suspend fun updateLightMode(mode: AppSettings.LightMode) = dataStore.update(LIGHT_MODE, mode.name)
+    override suspend fun updateAutoPromote(enabled: Boolean) = dataStore.update(AUTO_PROMOTE, enabled)
+    override suspend fun updateShowBorders(enabled: Boolean) = dataStore.update(SHOW_BORDERS, enabled)
 
-    override suspend fun updateTotalPuzzleCount(count: Int) {
-        dataStore.edit { preferences ->
-            preferences[TOTAL_PUZZLE_COUNT] = count
-        }
-    }
-
-    override suspend fun updateMaxPuzzleRating(maxRating: Int) {
-        PUZZLES_MAX_RATING
-        dataStore.edit { preferences ->
-            preferences[PUZZLES_MAX_RATING] = maxRating
-        }
-    }
-
-    override suspend fun updatePlaySoundOnMove(enabled: Boolean) {
-        dataStore.edit { preferences ->
-            preferences[PLAY_SOUND_ON_MOVE] = enabled
-        }
-    }
-
-    override suspend fun updatePreferredTheme(theme: AppSettings.Theme) {
-        dataStore.edit { preferences ->
-            preferences[PREFERRED_THEME] = theme.name
-        }
-    }
-
-    override suspend fun updateLightMode(mode: AppSettings.LightMode) {
-        dataStore.edit { preferences ->
-            preferences[LIGHT_MODE] = mode.name
-        }
-    }
-
-    override suspend fun updateAutoPromote(enabled: Boolean) {
-        dataStore.edit { preferences ->
-            preferences[AUTO_PROMOTE] = enabled
-        }
-    }
-
-    override suspend fun updateShowBorders(enabled: Boolean) {
-        dataStore.edit { preferences ->
-            preferences[SHOW_BORDERS] = enabled
+    private suspend fun <T> DataStore<Preferences>.update(key: Preferences.Key<T>, with: T) {
+        edit { preferences ->
+            preferences[key] = with
         }
     }
 
