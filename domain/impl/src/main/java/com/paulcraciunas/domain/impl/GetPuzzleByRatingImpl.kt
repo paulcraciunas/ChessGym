@@ -21,12 +21,13 @@ class GetPuzzleByRatingImpl @Inject constructor(
         // Get max rating from settings
         val appSettings = appSettingsRepository.appSettings.first()
         val maxRating = appSettings.maxPuzzleRating
+        val minRating = appSettings.minPuzzleRating
 
         // Use systematic ±1 expansion logic
         var topRating = targetRating
         var bottomRating = targetRating
 
-        while (bottomRating > MIN_RATING && topRating < maxRating) {
+        while (bottomRating > minRating && topRating < maxRating) {
             // Expand by 1 in each direction
             topRating += 1
             bottomRating -= 1
@@ -38,9 +39,5 @@ class GetPuzzleByRatingImpl @Inject constructor(
         }
 
         throw IllegalArgumentException("Invalid rating $targetRating. No puzzles in database match within available rating range.")
-    }
-
-    private companion object {
-        private const val MIN_RATING = 1
     }
 }

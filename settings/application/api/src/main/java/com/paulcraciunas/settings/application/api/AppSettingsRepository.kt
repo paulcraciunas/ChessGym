@@ -8,6 +8,7 @@ interface AppSettingsRepository {
     suspend fun updatePuzzlesDownloaded(downloaded: Boolean)
     suspend fun updateTotalPuzzleCount(count: Int)
     suspend fun updateMaxPuzzleRating(maxRating: Int)
+    suspend fun updateMinPuzzleRating(minRating: Int)
     suspend fun updatePlaySoundOnMove(enabled: Boolean)
     suspend fun updatePreferredTheme(theme: AppSettings.Theme)
     suspend fun updateLightMode(mode: AppSettings.LightMode)

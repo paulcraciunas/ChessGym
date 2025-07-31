@@ -15,6 +15,7 @@ class FakeAppSettingsRepository : AppSettingsRepository {
             puzzlesDownloaded = false,
             totalPuzzleCount = 0,
             maxPuzzleRating = 0,
+            minPuzzleRating = 0,
             playSoundOnMove = true,
             preferredTheme = AppSettings.Theme.Wood,
             lightMode = AppSettings.LightMode.System,
@@ -35,6 +36,10 @@ class FakeAppSettingsRepository : AppSettingsRepository {
 
     override suspend fun updateMaxPuzzleRating(maxRating: Int) {
         _appSettings.value = _appSettings.value.copy(maxPuzzleRating = maxRating)
+    }
+
+    override suspend fun updateMinPuzzleRating(minRating: Int) {
+        _appSettings.value = _appSettings.value.copy(minPuzzleRating = minRating)
     }
 
     override suspend fun updatePlaySoundOnMove(enabled: Boolean) {
@@ -67,6 +72,7 @@ class FakeAppSettingsRepository : AppSettingsRepository {
             puzzlesDownloaded = false,
             totalPuzzleCount = 0,
             maxPuzzleRating = 0,
+            minPuzzleRating = 0,
             playSoundOnMove = true,
             preferredTheme = AppSettings.Theme.Wood,
             lightMode = AppSettings.LightMode.System,

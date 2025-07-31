@@ -53,6 +53,7 @@ internal class CsvPuzzleDatabaseWriterTest {
             val currentSettings = fakeAppSettingsRepository.getCurrentSettings()
             assertEquals(2, currentSettings.totalPuzzleCount)
             assertEquals(1454, currentSettings.maxPuzzleRating) // Higher of the two ratings
+            assertEquals(1411, currentSettings.minPuzzleRating) // Lower of the two ratings
             assertTrue(currentSettings.puzzlesDownloaded)
         }
 
@@ -79,6 +80,7 @@ internal class CsvPuzzleDatabaseWriterTest {
             val currentSettings = fakeAppSettingsRepository.getCurrentSettings()
             assertEquals(1, currentSettings.totalPuzzleCount)
             assertEquals(1411, currentSettings.maxPuzzleRating)
+            assertEquals(1411, currentSettings.minPuzzleRating)
             assertTrue(currentSettings.puzzlesDownloaded)
         }
 
@@ -101,7 +103,7 @@ internal class CsvPuzzleDatabaseWriterTest {
         // Verify settings still updated even with database error
         val currentSettings = fakeAppSettingsRepository.getCurrentSettings()
         assertEquals(0, currentSettings.totalPuzzleCount) // No puzzles written due to error
-        assertEquals(1411, currentSettings.maxPuzzleRating) // Rating tracked even if insert fails
+        assertEquals(0, currentSettings.maxPuzzleRating) // Rating not tracked if insert fails
         assertTrue(currentSettings.puzzlesDownloaded)
     }
 
@@ -135,6 +137,7 @@ internal class CsvPuzzleDatabaseWriterTest {
             // Verify app settings
             val currentSettings = fakeAppSettingsRepository.getCurrentSettings()
             assertEquals(100, currentSettings.totalPuzzleCount)
+            assertEquals(1400, currentSettings.minPuzzleRating)
             assertEquals(1499, currentSettings.maxPuzzleRating) // 1400 + 99
             assertTrue(currentSettings.puzzlesDownloaded)
         }
@@ -161,6 +164,7 @@ internal class CsvPuzzleDatabaseWriterTest {
             
             val currentSettings = fakeAppSettingsRepository.getCurrentSettings()
             assertEquals(3, currentSettings.totalPuzzleCount)
+            assertEquals(1200, currentSettings.minPuzzleRating) // Lowest rating
             assertEquals(2500, currentSettings.maxPuzzleRating) // Highest rating
             assertTrue(currentSettings.puzzlesDownloaded)
         }
