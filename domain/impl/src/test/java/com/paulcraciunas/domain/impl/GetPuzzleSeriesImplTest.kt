@@ -1,105 +1,52 @@
 package com.paulcraciunas.domain.impl
 
-import com.paulcraciunas.domain.api.GetPuzzleSeries
 import com.paulcraciunas.domain.api.RandomFactory
-import com.paulcraciunas.game.logic.api.Ply
-import com.paulcraciunas.game.logic.api.Puzzle
-import com.paulcraciunas.game.logic.api.Side
-import com.paulcraciunas.game.logic.api.board.IBoard
-import com.paulcraciunas.game.logic.api.board.Locus
-import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.api.state.GameInfo
-import com.paulcraciunas.puzzles.api.PuzzleRepository
+import com.paulcraciunas.puzzles.api.FakePuzzleRepository
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 internal class GetPuzzleSeriesImplTest {
-    private val randomGen = FakeRandom()
-    private val repository = FakeRepository()
+    private val repository = FakePuzzleRepository.default(ratingStart = RATING_START, increment = INCREMENT)
 
-    private val underTest = GetPuzzleSeriesImpl(repository, randomGen)
+    private val underTest = GetPuzzleSeriesImpl(repository, FakeRandom())
 
     @Test
     fun `WHEN puzzle repository is empty THEN no puzzles are returned`() = runBlocking {
-        val puzzles = underTest()
+        // GIVEN
+        repository.clear()
 
+        // WHEN
+        val puzzles = underTest(from = 1200)
+
+        // THEN
         assertEquals(0, puzzles.size)
     }
 
     @Test
     fun `WHEN puzzle repository does not contain desired puzzle THEN remaining puzzles are returned`() = runBlocking {
-        repository.load(10)
+        // WHEN
+        val puzzles = underTest(from = 1200)
 
-        val puzzles = underTest()
-
-        // then
-        assertEquals(10, puzzles.size)
+        // THEN
+        assertEquals(FakePuzzleRepository.SIZE, puzzles.size)
     }
 
     @Test
     fun `WHEN puzzle repository contains puzzles THEN return them`() = runBlocking {
-        repository.load(GetPuzzleSeries.COUNT)
+        val count = 5
 
-        val puzzles = underTest()
+        val puzzles = underTest(count = count, from = 1200)
 
-        assertEquals(GetPuzzleSeries.COUNT, puzzles.size)
-    }
-
-    private class FakeRepository : PuzzleRepository {
-        private val puzzles = mutableMapOf<Int, Puzzle>()
-
-        fun load(count: Int) {
-            var rating = GetPuzzleSeries.RATING_START
-            for (i in 0 until count) {
-                puzzles[rating] = PuzzleStub()
-                rating += NEXT_INT
-            }
-        }
-
-        override suspend fun get(count: Int): List<Puzzle> {
-            val result = mutableListOf<Puzzle>()
-            puzzles.values.forEachIndexed { index, iPuzzle ->
-                if (index < count) {
-                    result.add(iPuzzle)
-                } else {
-                    return@forEachIndexed
-                }
-            }
-            return result
-        }
-
-        override suspend fun getByRating(targetRating: Int): Puzzle? = puzzles[targetRating]
-        override suspend fun getByRatingRange(min: Int, max: Int): Puzzle? {
-            for (i in min until max) {
-                if (puzzles.contains(i)) {
-                    return puzzles[i]
-                }
-            }
-            return null
-        }
+        assertEquals(count, puzzles.size)
     }
 
     private class FakeRandom : RandomFactory {
-        override fun nextInt(from: Int, to: Int): Int = NEXT_INT
-    }
-
-    @Suppress("IMPLICIT_NOTHING_TYPE_ARGUMENT_IN_RETURN_POSITION")
-    private class PuzzleStub : Puzzle {
-        override val rating: Int = 420
-        override val player: Side = Side.WHITE
-        override val state: Puzzle.State = Puzzle.State.Idle
-        override val info: GameInfo by lazy { throw NotImplementedError() }
-        override val board: IBoard by lazy { throw NotImplementedError() }
-
-        override fun start() {}
-        override fun play(ply: Ply) {}
-        override fun play(from: Locus, to: Locus) {}
-        override fun abandon() {}
-        override fun hint(): Piece = Piece.King
+        override fun nextInt(from: Int, to: Int): Int = INCREMENT
     }
 
     private companion object {
-        const val NEXT_INT = 10 // Chosen randomly
+        const val RATING_START = 1200
+        const val INCREMENT = 50 // Chosen at random
     }
 }

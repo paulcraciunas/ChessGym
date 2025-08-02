@@ -31,7 +31,7 @@ import java.util.ArrayDeque
 class FenSerializer(
     private val gameFactory: GameFactory,
 ) : Serializer {
-    fun puzzleFrom(puzzleString: String, moves: String): Puzzle {
+    fun puzzleFrom(puzzleString: String, moves: String, rating: Int): Puzzle {
         val fenParts = puzzleString.fenParts()
         val rows = fenParts[0].rows()
 
@@ -43,6 +43,7 @@ class FenSerializer(
             .withPlieClock(fenParts[4].loadNumber())
             .withMoveIndex(fenParts[5].loadNumber())
             .withMoves(ArrayDeque<String>().apply { addAll(moves.split(',')) })
+            .withRating(rating)
             .buildPuzzle()
     }
 

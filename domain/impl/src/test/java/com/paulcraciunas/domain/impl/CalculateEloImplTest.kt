@@ -1,7 +1,7 @@
 package com.paulcraciunas.domain.impl
 
-import org.junit.Assert.assertEquals
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 
 internal class CalculateEloImplTest {
     private val underTest = CalculateEloImpl()
