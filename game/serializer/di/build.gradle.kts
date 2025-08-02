@@ -31,7 +31,6 @@ android {
 
 dependencies {
     implementation(project(":game:logic:api"))
-    implementation(project(":game:serializer:api"))
     implementation(project(":game:serializer:impl"))
 
     // Dependency injection

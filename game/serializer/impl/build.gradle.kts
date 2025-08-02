@@ -7,10 +7,13 @@ java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
 }
+kotlin {
+    jvmToolchain(17)
+}
 
 dependencies {
+    api(project(":game:serializer:api"))
     implementation(project(":game:logic:api"))
-    implementation(project(":game:serializer:api"))
 
     testImplementation(project(":game:logic:impl"))
     testImplementation(testFixtures(project(":game:logic:impl")))

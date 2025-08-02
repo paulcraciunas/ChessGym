@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.paulcraciunas.screens.puzzles.rated.vm"
-    compileSdk = 35
+    compileSdk = 35 // TODO Paul: Update to 36
 
     defaultConfig {
         minSdk = 27
@@ -35,7 +35,7 @@ dependencies {
     implementation(project(":user:api"))
     implementation(project(":game:logic:api"))
     implementation(project(":game:puzzles:api"))
-    implementation(project(":game:logic:impl"))
+    implementation(project(":game:logic:impl")) // TODO Paul: remove this. We shouldn't depend on impls
     implementation(project(":screens:common"))
 
     implementation(libs.androidx.core.ktx)

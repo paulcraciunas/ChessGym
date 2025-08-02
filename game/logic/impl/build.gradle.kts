@@ -8,9 +8,12 @@ java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
 }
+kotlin {
+    jvmToolchain(17)
+}
 
 dependencies {
-    implementation(project(":game:logic:api"))
+    api(project(":game:logic:api"))
 
     testImplementation(libs.bundles.unit.tests)
     testRuntimeOnly(libs.junit.platform.launcher)
