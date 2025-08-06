@@ -21,6 +21,8 @@ dependencyResolutionManagement {
     }
 }
 
+includeBuild("build-logic")
+
 rootProject.name = "ChessGym"
 include(":app")
 include(":game:logic:api")
