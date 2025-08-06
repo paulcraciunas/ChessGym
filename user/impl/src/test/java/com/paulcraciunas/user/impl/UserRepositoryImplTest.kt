@@ -7,10 +7,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 internal class UserRepositoryImplTest {
     private val fakeLocalDataSource = FakeUserLocalDataSource()
@@ -72,7 +73,7 @@ internal class UserRepositoryImplTest {
         assertEquals(user, fakeRemoteDataSource.getUser(user.authentication!!.userId))
     }
 
-    @Test(expected = RuntimeException::class)
+    @Test
     fun given_remoteDataSourceThrows_WHEN_updateSignedInUser_THEN_propagatesException() {
         runBlocking {
             // Given
@@ -80,7 +81,7 @@ internal class UserRepositoryImplTest {
             fakeRemoteDataSource.failAll(RuntimeException("Update failed"))
 
             // When & Then
-            underTest.update(user) // Should throw
+            assertThrows<RuntimeException> { underTest.update(user) }
         }
     }
 
@@ -143,7 +144,7 @@ internal class UserRepositoryImplTest {
         assertEquals(signedInUser, fakeRemoteDataSource.getUser("user_123"))
     }
 
-    @Test(expected = RuntimeException::class)
+    @Test
     fun given_remoteSignInFails_WHEN_signIn_THEN_propagatesException() {
         runBlocking {
             // Given
@@ -154,7 +155,7 @@ internal class UserRepositoryImplTest {
             fakeRemoteDataSource.failAll(RuntimeException("Sign in failed"))
 
             // When & Then
-            underTest.signIn(authState, "auth_token") // Should throw
+            assertThrows<RuntimeException> { underTest.signIn(authState, "auth_token") }
         }
     }
 
