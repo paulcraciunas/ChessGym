@@ -25,6 +25,7 @@ internal class TestFixturesDelegate(private val project: Project) {
 
                 dependencies {
                     testFixturesImplementation(project.libs.library("kotlinx-coroutines-core"))
+                    testFixturesImplementation(project.libs.library("kotlinx-coroutines-test"))
                 }
             }
         }

@@ -13,10 +13,10 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 @ExperimentalCoroutinesApi
 internal class LoadingViewModelTest {
@@ -29,12 +29,12 @@ internal class LoadingViewModelTest {
 
     private lateinit var underTest: LoadingViewModel
 
-    @Before
+    @BeforeEach
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
     }
 
-    @After
+    @AfterEach
     fun tearDown() {
         Dispatchers.resetMain()
     }
