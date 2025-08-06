@@ -7,10 +7,12 @@ import com.paulcraciunas.global.device.api.usecases.GetFreeDiskSpace
 import com.paulcraciunas.global.device.api.usecases.GetNetworkState
 import com.paulcraciunas.puzzles.api.usecases.FetchPuzzleDatabase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -93,33 +95,34 @@ class LoadingViewModel @Inject constructor(
 
     private fun downloadPuzzles() {
         viewModelScope.launch {
-            try {
-                fetchPuzzleDatabase()
-                    .collect { progress ->
-                        if (progress.hasError()) {
-                            val error = when (progress.error) {
-                                FetchPuzzleDatabase.Error.DownloadFailed -> LoadingState.Error.DownloadFailed
-                                FetchPuzzleDatabase.Error.DecompressionFailed -> LoadingState.Error.DecompressionFailed
-                                else -> LoadingState.Error.DatabaseWriteFailed
-                            }
-                            _uiState.value = LoadingState.runtimeError(error)
-                            Log.w(TAG, "Download failed with error: $error")
-                        } else if (progress.isComplete()) {
-                            _uiState.value = LoadingState.Complete
-                        } else {
-                            _uiState.value = LoadingState.Downloading(
-                                LoadingState.Downloading.Progress(
-                                    download = progress.download,
-                                    unpack = progress.unpack,
-                                    buildDb = progress.buildDb
-                                )
-                            )
-                        }
+            fetchPuzzleDatabase()
+                .onCompletion {
+                    if (it !is CancellationException) {
+                        Log.e(TAG, "Unexpected error during puzzle database provisioning", it)
+                        _uiState.value = LoadingState.runtimeError(LoadingState.Error.GenericRuntime)
                     }
-            } catch (e: Exception) {
-                Log.e(TAG, "Unexpected error during puzzle database provisioning", e)
-                _uiState.value = LoadingState.runtimeError(LoadingState.Error.GenericRuntime)
-            }
+                }
+                .collect { progress ->
+                    if (progress.hasError()) {
+                        val error = when (progress.error) {
+                            FetchPuzzleDatabase.Error.DownloadFailed -> LoadingState.Error.DownloadFailed
+                            FetchPuzzleDatabase.Error.DecompressionFailed -> LoadingState.Error.DecompressionFailed
+                            else -> LoadingState.Error.DatabaseWriteFailed
+                        }
+                        _uiState.value = LoadingState.runtimeError(error)
+                        Log.w(TAG, "Download failed with error: $error")
+                    } else if (progress.isComplete()) {
+                        _uiState.value = LoadingState.Complete
+                    } else {
+                        _uiState.value = LoadingState.Downloading(
+                            LoadingState.Downloading.Progress(
+                                download = progress.download,
+                                unpack = progress.unpack,
+                                buildDb = progress.buildDb
+                            )
+                        )
+                    }
+                }
         }
     }
 
