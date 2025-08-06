@@ -27,7 +27,7 @@ class AndroidApplicationPlugin : ConventionPlugin() {
 
     override fun apply(target: Project) {
         configuration = target.extension("chessGymApp")
-        target.afterEvaluate {
+        with(target) {
             configurePlugins()
             configureAndroid(extension = extensions.getByType<ApplicationExtension>())
             configureDependencies()

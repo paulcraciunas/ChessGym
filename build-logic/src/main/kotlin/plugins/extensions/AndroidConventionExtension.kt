@@ -13,4 +13,19 @@ open class AndroidConventionExtension(project: Project) : BaseAndroidExtension(p
     var room: Boolean by RoomDelegate(project)
     var serialization: Boolean by SerializationDelegate(project)
     var testFixtures: Boolean by AndroidTestFixturesDelegate(project)
+
+    fun consumerProguardFile(file: String) = project.android {
+        defaultConfig {
+            consumerProguardFiles(file)
+        }
+    }
+
+    fun proguardFile(file: String) = project.android {
+        buildTypes {
+            release {
+                proguardFiles(file)
+                Unit
+            }
+        }
+    }
 }
