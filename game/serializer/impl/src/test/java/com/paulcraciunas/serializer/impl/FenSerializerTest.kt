@@ -4,9 +4,7 @@ import com.paulcraciunas.game.logic.api.Game
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.assertDefaultBoard
-import com.paulcraciunas.game.logic.impl.MutableGame
 import com.paulcraciunas.game.logic.impl.RealGameFactory
-import com.paulcraciunas.game.logic.impl.plies.PlyFactory
 import com.paulcraciunas.game.logic.impl.plies.StandardPly
 import com.paulcraciunas.game.logic.loc
 import com.paulcraciunas.game.logic.plies.ExpectedPly
@@ -21,7 +19,9 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 
 internal class FenSerializerTest {
-    private val underTest = FenSerializer(RealGameFactory(PlyFactory()))
+    private val gameFactory = RealGameFactory()
+
+    private val underTest = FenSerializer(gameFactory)
 
     @Test
     fun `WHEN fen parts are missing THEN throw`() {
@@ -161,13 +161,13 @@ internal class FenSerializerTest {
     fun `WHEN serializing default starting position THEN fen string is correct`() {
         val fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
-        assertEquals(fen, underTest.of(MutableGame()))
+        assertEquals(fen, underTest.of(gameFactory.builder().withDefaultBoard().buildGame()))
     }
 
     @Test
     fun `WHEN serializing after pawn jump THEN fen string contains en-passent`() {
         val fen = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1"
-        val game = MutableGame().apply { start() }
+        val game = gameFactory.builder().withDefaultBoard().buildGame().apply { start() }
         game.play(game.info.plies("e2".loc()).first { it.to == "e4".loc() })
 
         assertEquals(fen, underTest.of(game))

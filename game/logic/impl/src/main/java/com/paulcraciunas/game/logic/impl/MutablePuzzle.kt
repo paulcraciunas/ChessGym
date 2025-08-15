@@ -10,7 +10,7 @@ import com.paulcraciunas.game.logic.impl.plies.Playable
 import com.paulcraciunas.game.logic.impl.plies.PlyFactory
 import java.util.Queue
 
-class MutablePuzzle(
+internal class MutablePuzzle(
     override val rating: Int,
     override val player: Side,
     override var state: Puzzle.State = Puzzle.State.Idle,
@@ -19,6 +19,8 @@ class MutablePuzzle(
     private val moves: Queue<String>,
     override val plyFactory: PlyFactory = PlyFactory(),
 ) : Puzzle, Executable() {
+
+    private val moveAdapter = MoveAdapter()
 
     override fun start() {
         state = Puzzle.State.InProgress
@@ -35,7 +37,6 @@ class MutablePuzzle(
         // check if the move is the first in the list of expected moves
         if (expected == "${ply.from}${ply.to}$promotedPiece") {
             execute(ply)
-            // TODO Paul: also play the move for the opponent?!
             if (moves.isEmpty()) { // Now check if we have any expected moves left
                 state = Puzzle.State.Success
             }
@@ -59,6 +60,17 @@ class MutablePuzzle(
 
         val from = Locus.from(moves.peek().substring(0, 2))!!
         return board.at(from)!!
+    }
+
+    override fun playNextMove() {
+        assert(state == Puzzle.State.InProgress)
+        assert(moves.isNotEmpty())
+
+        val move = moveAdapter.from(moves.peek())
+        info.plies(move.from).first { it.to == move.to }.apply {
+            move.promotion?.let { promote(it) }
+            play(this)
+        }
     }
 
     override fun isRunning(): Boolean = state == Puzzle.State.InProgress

@@ -17,7 +17,7 @@ import com.paulcraciunas.game.logic.impl.plies.CheckPly
 import com.paulcraciunas.game.logic.impl.plies.Playable
 import com.paulcraciunas.game.logic.impl.plies.PlyFactory
 
-class MutableGame(
+internal class MutableGame(
     override val metadata: MetaData = MetaData(),
     override val rating: Int? = null,
     override val info: MutableGameInfo = MutableGameInfo(),

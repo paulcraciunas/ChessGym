@@ -7,7 +7,7 @@ import com.paulcraciunas.game.logic.impl.board.Board
 import com.paulcraciunas.game.logic.impl.plies.Playable
 import com.paulcraciunas.game.logic.impl.plies.PlyFactory
 
-abstract class Executable {
+internal abstract class Executable {
     abstract val board: Board
     abstract val info: MutableGameInfo
     abstract val plyFactory: PlyFactory

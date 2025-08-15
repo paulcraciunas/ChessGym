@@ -38,4 +38,42 @@ internal class PieceTest {
             Piece.fromCode(Int.MAX_VALUE)
         }
     }
+
+    @Test
+    fun `WHEN creating from valid algebraic notation THEN return correct piece`() {
+        assertEquals(Piece.Pawn, Piece.fromAlgebraic(""))
+        assertEquals(Piece.Queen, Piece.fromAlgebraic("Q"))
+        assertEquals(Piece.Rook, Piece.fromAlgebraic("R"))
+        assertEquals(Piece.Knight, Piece.fromAlgebraic("N"))
+        assertEquals(Piece.Bishop, Piece.fromAlgebraic("B"))
+        assertEquals(Piece.King, Piece.fromAlgebraic("K"))
+    }
+
+    @Test
+    fun `WHEN creating from invalid algebraic notation THEN throw exception`() {
+        assertThrows<IllegalArgumentException> {
+            Piece.fromAlgebraic("P") // Pawn has no algebraic notation
+        }
+        assertThrows<IllegalArgumentException> {
+            Piece.fromAlgebraic("X") // Invalid piece
+        }
+        assertThrows<IllegalArgumentException> {
+            Piece.fromAlgebraic("1") // Number
+        }
+        assertThrows<IllegalArgumentException> {
+            Piece.fromAlgebraic("!") // Special character
+        }
+        assertThrows<IllegalArgumentException> {
+            Piece.fromAlgebraic("AB") // Multiple characters
+        }
+    }
+
+    @Test
+    fun `WHEN creating from algebraic notation with case sensitivity THEN return correct piece`() {
+        // Test that only uppercase works
+        assertEquals(Piece.Queen, Piece.fromAlgebraic("Q"))
+        assertEquals(Piece.Rook, Piece.fromAlgebraic("R"))
+        assertEquals(Piece.Knight, Piece.fromAlgebraic("N"))
+        assertEquals(Piece.Bishop, Piece.fromAlgebraic("B"))
+    }
 }

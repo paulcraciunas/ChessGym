@@ -11,7 +11,7 @@ import com.paulcraciunas.game.logic.impl.plies.CastlePly
 import com.paulcraciunas.game.logic.impl.plies.Playable
 import com.paulcraciunas.game.logic.impl.plies.StandardPly
 
-data class MutableGameInfo(
+internal data class MutableGameInfo(
     override var turn: Side = Side.WHITE,
     override var lastPly: Ply? = null,
     override var inCheckCount: CheckCount = CheckCount.None,

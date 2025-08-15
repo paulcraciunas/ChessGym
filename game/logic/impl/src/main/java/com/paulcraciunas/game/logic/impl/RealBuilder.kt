@@ -16,7 +16,7 @@ import com.paulcraciunas.game.logic.impl.plies.StandardPly
 import java.util.ArrayDeque
 import java.util.Queue
 
-class RealBuilder(private val plyFactory: PlyFactory) : Builder {
+internal class RealBuilder(private val plyFactory: PlyFactory) : Builder {
     private var board = Board()
     private var rating: Int? = null
     private var moves: Queue<String> = ArrayDeque()
@@ -31,6 +31,7 @@ class RealBuilder(private val plyFactory: PlyFactory) : Builder {
     override fun withMetadata(metaData: MetaData) = apply { this.metaData = metaData }
     override fun withRating(rating: Int) = apply { this.rating = rating }
     override fun withMoves(moves: Queue<String>) = apply { this.moves.addAll(moves) }
+    override fun withMoves(vararg moves: String) = apply { this.moves.addAll(moves) }
     override fun withTurn(side: Side) = apply { turn = side }
     override fun withWhiteCastling(casting: Set<CastleType>) = apply { whiteCastling = casting }
     override fun withBlackCastling(casting: Set<CastleType>) = apply { blackCastling = casting }

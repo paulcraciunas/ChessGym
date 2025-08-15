@@ -13,6 +13,7 @@ interface Puzzle {
     val board: IBoard
 
     fun start()
+    fun playNextMove()
     fun play(ply: Ply)
     fun play(from: Locus, to: Locus)
     fun abandon()

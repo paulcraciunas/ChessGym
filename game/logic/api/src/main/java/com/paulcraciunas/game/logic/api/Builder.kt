@@ -9,6 +9,7 @@ interface Builder {
     fun withMetadata(metaData: MetaData): Builder
     fun withRating(rating: Int): Builder
     fun withMoves(moves: Queue<String>): Builder
+    fun withMoves(vararg moves: String): Builder
     fun withTurn(side: Side): Builder
     fun withWhiteCastling(casting: Set<CastleType>): Builder
     fun withBlackCastling(casting: Set<CastleType>): Builder

@@ -2,13 +2,12 @@ package com.paulcraciunas.puzzles.api
 
 import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.impl.RealGameFactory
-import com.paulcraciunas.game.logic.impl.plies.PlyFactory
 import com.paulcraciunas.serializer.impl.FenSerializer
 
 class FakePuzzleRepository : PuzzleRepository {
     private var id = 1
     private val puzzles = mutableMapOf<Int, Puzzle>()
-    private val serializer = FenSerializer(RealGameFactory(PlyFactory()))
+    private val serializer = FenSerializer(RealGameFactory())
 
     fun withPuzzle(fen: String, moves: String, rating: Int) {
         puzzles[id++] = serializer.puzzleFrom(puzzleString = fen, moves = moves, rating = rating)

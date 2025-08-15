@@ -4,7 +4,6 @@ import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.impl.RealGameFactory
-import com.paulcraciunas.game.logic.impl.plies.PlyFactory
 import com.paulcraciunas.game.logic.loc
 import com.paulcraciunas.serializer.impl.binary.BinaryAdapter
 import com.paulcraciunas.serializer.impl.binary.BinaryPuzzleReader
@@ -16,7 +15,7 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 
 internal class MutablePuzzleTest {
-    private val factory = RealGameFactory(PlyFactory())
+    private val factory = RealGameFactory()
     private val adapter = BinaryAdapter()
     private val reader = BinaryPuzzleReader(factory, adapter)
     private val writer = BinaryPuzzleWriter(FenSerializer(factory), adapter)

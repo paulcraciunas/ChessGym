@@ -4,8 +4,8 @@ import com.paulcraciunas.game.logic.api.Builder
 import com.paulcraciunas.game.logic.api.GameFactory
 import com.paulcraciunas.game.logic.impl.plies.PlyFactory
 
-class RealGameFactory(
-    private val plyFactory: PlyFactory
-) : GameFactory {
+class RealGameFactory : GameFactory {
+    private val plyFactory: PlyFactory = PlyFactory()
+
     override fun builder(): Builder = RealBuilder(plyFactory)
 }
