@@ -19,7 +19,7 @@ internal class HomeUiStateAdapterTest {
         val result = underTest.adapt(user)
 
         // Then
-        assertEquals("Master Ego", result.userProfile.name)
+        assertEquals("Chess Enthusiast", result.userProfile.name)
         assertEquals(1200, result.userProfile.currentRating)
         assertEquals(0, result.userProfile.totalActivities)
         assertEquals(LocalDate.now(), result.userProfile.joinDate)

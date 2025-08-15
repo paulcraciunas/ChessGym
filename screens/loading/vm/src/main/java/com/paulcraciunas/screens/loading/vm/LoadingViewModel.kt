@@ -97,7 +97,7 @@ class LoadingViewModel @Inject constructor(
         viewModelScope.launch {
             fetchPuzzleDatabase()
                 .onCompletion {
-                    if (it !is CancellationException) {
+                    if (it != null && it !is CancellationException) {
                         Log.e(TAG, "Unexpected error during puzzle database provisioning", it)
                         _uiState.value = LoadingState.runtimeError(LoadingState.Error.GenericRuntime)
                     }

@@ -17,8 +17,8 @@ data class User(
 
     @Serializable
     data class Profile(
-        val firstName: String = "Master",
-        val lastName: String = "Ego",
+        val firstName: String = "Chess",
+        val lastName: String = "Enthusiast",
         @Serializable(with = LocalDateSerializer::class)
         val joinDate: LocalDate = LocalDate.now(),
         val avatarUrl: String? = null

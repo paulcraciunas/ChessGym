@@ -34,7 +34,7 @@ class OnPuzzleCompleteImpl @Inject constructor(
         val newBestRating = maxOf(currentUser.highScores.ratedPuzzle, newCurrentRating)
 
         // Update total time spent (convert to milliseconds)
-        val newTotalTimeSpent = currentUser.statistics.totalTimeSpent + completionResult.timeSpentSeconds * 1000L
+        val newTotalTimeSpent = currentUser.statistics.totalTimeSpent + completionResult.timeSpentMillis
 
         // Create updated user
         val updatedUser = currentUser.copy(
@@ -53,7 +53,7 @@ class OnPuzzleCompleteImpl @Inject constructor(
             puzzlesPlayed = 1,
             puzzlesSolved = if (completionResult.wasSuccessful) 1 else 0,
             ratingChange = completionResult.ratingChange,
-            timeSpent = completionResult.timeSpentSeconds * 1000L
+            timeSpent = completionResult.timeSpentMillis
         )
         val historyItem = User.HistoryItem(
             timestamp = today,
