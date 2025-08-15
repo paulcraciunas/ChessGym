@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.asStateFlow
  * Provides in-memory storage and allows easy manipulation of settings for tests.
  */
 class FakeAppSettingsRepository : AppSettingsRepository {
-
     private val _appSettings = MutableStateFlow(
         AppSettings(
             puzzlesDownloaded = false,
@@ -62,25 +61,6 @@ class FakeAppSettingsRepository : AppSettingsRepository {
         _appSettings.value = _appSettings.value.copy(showBorders = enabled)
     }
 
-
-    /**
-     * Resets all settings to their default values.
-     * Useful for cleaning up between tests.
-     */
-    fun reset() {
-        _appSettings.value = AppSettings(
-            puzzlesDownloaded = false,
-            totalPuzzleCount = 0,
-            maxPuzzleRating = 0,
-            minPuzzleRating = 0,
-            playSoundOnMove = true,
-            preferredTheme = AppSettings.Theme.Wood,
-            lightMode = AppSettings.LightMode.System,
-            autoPromote = true,
-            showBorders = true
-        )
-    }
-
     /**
      * Sets all settings at once.
      * Useful for setting up specific test scenarios.
@@ -94,16 +74,4 @@ class FakeAppSettingsRepository : AppSettingsRepository {
      * Useful for assertions in tests.
      */
     fun getCurrentSettings(): AppSettings = _appSettings.value
-
-    /**
-     * Sets up a scenario where puzzles are already downloaded.
-     * Common test setup.
-     */
-    fun setupPuzzlesDownloaded(count: Int = 1000, maxRating: Int = 2500) {
-        _appSettings.value = _appSettings.value.copy(
-            puzzlesDownloaded = true,
-            totalPuzzleCount = count,
-            maxPuzzleRating = maxRating
-        )
-    }
 }
