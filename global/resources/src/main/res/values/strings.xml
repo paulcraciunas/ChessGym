@@ -137,6 +137,7 @@
     <string name="puzzle_abandon">Abandon puzzle</string>
     <string name="your_move">Your move</string>
     <string name="abandon_puzzle_title">Abandon Puzzle?</string>
+    <string name="choose_promotion_title">Promote to</string>
     <string name="abandon_puzzle_message">Are you sure you want to abandon the current puzzle? Your progress will be lost.</string>
     <string name="abandon_puzzle_confirm">Abandon</string>
     <string name="abandon_puzzle_cancel">Continue</string>

@@ -34,6 +34,7 @@ fun RatedPuzzleScreen(
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit = {},
     onSquareClicked: (rank: Rank, file: File) -> Unit = { _, _ -> },
+    onPromote: (to: Piece) -> Unit = {},
     onHintRequested: () -> Unit = {},
     onAbandonConfirmed: () -> Unit = {},
     onAbandonDismissed: () -> Unit = {},
@@ -96,6 +97,12 @@ fun RatedPuzzleScreen(
                             onDismiss = onAbandonDismissed
                         )
                     }
+                    if (uiState.promotion != null) {
+                        PromotionDialog(
+                            side = data.player,
+                            onPieceChosen = onPromote
+                        )
+                    }
                 }
 
                 is RatedPuzzleUiState.Finished -> FinishedPuzzleControls(
@@ -133,6 +140,7 @@ private fun WhitePlayingPreview() {
                 ),
                 hintEnabled = true,
                 showAbandonDialog = false,
+                promotion = null,
             ),
             showBorders = true
         )
@@ -157,6 +165,7 @@ private fun BlackPlayingPreview() {
                 ),
                 hintEnabled = true,
                 showAbandonDialog = false,
+                promotion = null,
             ),
             showBorders = true
         )
