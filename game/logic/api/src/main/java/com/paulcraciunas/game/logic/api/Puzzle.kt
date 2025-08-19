@@ -10,16 +10,15 @@ interface Puzzle {
     val state: State
     val info: GameInfo
     val board: IBoard
+    val expectedMoves: List<String>
 
     fun start()
     fun plies(from: Locus): List<Ply>
-    // TODO Paul: probably should get rid of this
     fun ply(from: Locus, to: Locus): Ply?
-    fun playNextMove()
     fun play(ply: Ply)
     fun play(from: Locus, to: Locus)
+    fun playNextMove()
     fun resign()
-    fun hint(): Locus
 
     enum class State {
         Idle,

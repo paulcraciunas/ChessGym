@@ -7,6 +7,7 @@ import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.impl.board.Board
 import com.paulcraciunas.game.logic.impl.plies.Playable
 import com.paulcraciunas.game.logic.impl.plies.PlyFactory
+import java.util.ArrayDeque
 import java.util.Queue
 
 internal class MutablePuzzle(
@@ -15,12 +16,12 @@ internal class MutablePuzzle(
     override var state: Puzzle.State = Puzzle.State.Idle,
     override val info: MutableGameInfo,
     override val board: Board,
-    private val moves: Queue<String>,
+    override val expectedMoves: List<String>,
     override val plyFactory: PlyFactory = PlyFactory(),
     override val plies: MutableList<Playable> = mutableListOf()
 ) : Puzzle, Executable() {
-
     private val moveAdapter = MoveAdapter()
+    val moves: Queue<String> = ArrayDeque(expectedMoves)
 
     override fun start() {
         state = Puzzle.State.InProgress
@@ -31,8 +32,8 @@ internal class MutablePuzzle(
     override fun ply(from: Locus, to: Locus): Ply? = plies.firstOrNull { it.from == from && it.to == to }
 
     override fun play(ply: Ply) {
+        assert(isRunning())
         assert(moves.isNotEmpty())
-        assert(state == Puzzle.State.InProgress)
 
         val expected = moves.poll()
         val promotedPiece = if (ply.isPromotion()) ply.algebraic().last().lowercase() else ""
@@ -50,21 +51,8 @@ internal class MutablePuzzle(
 
     override fun play(from: Locus, to: Locus) = play(plies(from).first { it.to == to })
 
-    override fun resign() {
-        assert(state == Puzzle.State.InProgress)
-
-        state = Puzzle.State.Failed
-    }
-
-    override fun hint(): Locus {
-        assert(state == Puzzle.State.InProgress)
-        assert(moves.isNotEmpty())
-
-        return Locus.from(moves.peek().substring(0, 2))!!
-    }
-
     override fun playNextMove() {
-        assert(state == Puzzle.State.InProgress)
+        assert(isRunning())
         assert(moves.isNotEmpty())
 
         val move = moveAdapter.from(moves.peek())
@@ -72,6 +60,12 @@ internal class MutablePuzzle(
             move.promotion?.let { promote(it) }
             play(this)
         }
+    }
+
+    override fun resign() {
+        assert(isRunning())
+
+        state = Puzzle.State.Failed
     }
 
     override fun isRunning(): Boolean = state == Puzzle.State.InProgress

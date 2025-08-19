@@ -3,12 +3,11 @@ package com.paulcraciunas.game.logic.api
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.state.MetaData
-import java.util.Queue
 
 interface Builder {
     fun withMetadata(metaData: MetaData): Builder
     fun withRating(rating: Int): Builder
-    fun withMoves(moves: Queue<String>): Builder
+    fun withMoves(moves: List<String>): Builder
     fun withMoves(vararg moves: String): Builder
     fun withTurn(side: Side): Builder
     fun withWhiteCastling(casting: Set<CastleType>): Builder

@@ -13,13 +13,11 @@ import com.paulcraciunas.game.logic.impl.board.Board
 import com.paulcraciunas.game.logic.impl.board.BoardFactory
 import com.paulcraciunas.game.logic.impl.plies.PlyFactory
 import com.paulcraciunas.game.logic.impl.plies.StandardPly
-import java.util.ArrayDeque
-import java.util.Queue
 
 internal class RealBuilder(private val plyFactory: PlyFactory) : Builder {
     private var board = Board()
     private var rating: Int? = null
-    private var moves: Queue<String> = ArrayDeque()
+    private var moves: MutableList<String> = mutableListOf()
     private var metaData: MetaData = MetaData()
     private var turn: Side = Side.WHITE
     private var lastPly: Ply? = null
@@ -30,7 +28,7 @@ internal class RealBuilder(private val plyFactory: PlyFactory) : Builder {
 
     override fun withMetadata(metaData: MetaData) = apply { this.metaData = metaData }
     override fun withRating(rating: Int) = apply { this.rating = rating }
-    override fun withMoves(moves: Queue<String>) = apply { this.moves.addAll(moves) }
+    override fun withMoves(moves: List<String>) = apply { this.moves.addAll(moves) }
     override fun withMoves(vararg moves: String) = apply { this.moves.addAll(moves) }
     override fun withTurn(side: Side) = apply { turn = side }
     override fun withWhiteCastling(casting: Set<CastleType>) = apply { whiteCastling = casting }
@@ -76,7 +74,7 @@ internal class RealBuilder(private val plyFactory: PlyFactory) : Builder {
             moveIndex = moveIndex
         ),
         board = board,
-        moves = moves,
+        expectedMoves = moves,
         plyFactory = plyFactory
     )
 }

@@ -15,7 +15,6 @@ import com.paulcraciunas.game.logic.api.GameFactory
 import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.serializer.api.SerializeException
 import com.paulcraciunas.serializer.api.Serializer
-import java.util.ArrayDeque
 
 /**
  * Forsyth–Edwards Notation serializer
@@ -42,7 +41,7 @@ class FenSerializer(
             .withEnPassent(fenParts[3])
             .withPlieClock(fenParts[4].loadNumber())
             .withMoveIndex(fenParts[5].loadNumber())
-            .withMoves(ArrayDeque<String>().apply { addAll(moves.split(',')) })
+            .withMoves(moves.split(','))
             .withRating(rating)
             .buildPuzzle()
     }

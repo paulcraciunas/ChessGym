@@ -80,30 +80,6 @@ internal class MutablePuzzleTest {
     }
 
     @Test
-    fun `GIVEN puzzle in progress WHEN getting hint THEN returns correct location`() {
-        // Given
-        underTest = builder.withMoves("e2e4", "e7e5").buildPuzzle()
-        underTest.start()
-
-        // When
-        val at = underTest.hint()
-
-        // Then
-        assertEquals("e2".loc(), at)
-    }
-
-    @Test
-    fun `GIVEN puzzle not started WHEN getting hint THEN throws exception`() {
-        // Given
-        underTest = builder.withMoves("e2e4").buildPuzzle()
-
-        // When & Then
-        assertThrows(AssertionError::class.java) {
-            underTest.hint()
-        }
-    }
-
-    @Test
     fun `GIVEN puzzle in progress WHEN playing next move THEN opponent move is executed`() {
         // Given
         underTest = builder.withMoves("e2e4", "e7e5").buildPuzzle()

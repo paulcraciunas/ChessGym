@@ -10,7 +10,6 @@ import com.paulcraciunas.game.logic.api.GameFactory
 import com.paulcraciunas.serializer.api.PuzzleReader
 import com.paulcraciunas.serializer.impl.withEnPassent
 import java.util.ArrayDeque
-import java.util.Queue
 
 /**
  * Read a puzzle written in binary, according to FEN format
@@ -118,8 +117,8 @@ class BinaryPuzzleReader(
         return first.toLong() shl 32 or second.toLong()
     }
 
-    private fun ByteArray.loadMoves(): Queue<String> {
-        val movesList = ArrayDeque<String>()
+    private fun ByteArray.loadMoves(): List<String> {
+        val movesList = mutableListOf<String>()
         var move: Int
         while (int <= size - 2) { // Each move takes 2 bytes
             move = (((get(int++).toUInt() and 0xFFu) shl 8) or
