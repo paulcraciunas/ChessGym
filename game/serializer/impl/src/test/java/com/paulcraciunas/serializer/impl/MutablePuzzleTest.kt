@@ -33,9 +33,7 @@ internal class MutablePuzzleTest {
             moves.forEach { move ->
                 from = move.substring(0, 2)
                 to = move.substring(2, 4)
-                expectedMove = puzzle.info.plies(from.loc()).find { dest ->
-                    dest.to == to.loc()
-                }
+                expectedMove = puzzle.info.ply(from.loc(), to.loc())
                 // Verify promotions
                 if (move.length == 5) { // promotion
                     expectedMove?.promote(

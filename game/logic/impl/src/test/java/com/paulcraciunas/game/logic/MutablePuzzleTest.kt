@@ -80,16 +80,16 @@ internal class MutablePuzzleTest {
     }
 
     @Test
-    fun `GIVEN puzzle in progress WHEN getting hint THEN returns correct piece`() {
+    fun `GIVEN puzzle in progress WHEN getting hint THEN returns correct location`() {
         // Given
         underTest = builder.withMoves("e2e4", "e7e5").buildPuzzle()
         underTest.start()
 
         // When
-        val hintPiece = underTest.hint()
+        val at = underTest.hint()
 
         // Then
-        assertEquals(Piece.Pawn, hintPiece)
+        assertEquals("e2".loc(), at)
     }
 
     @Test
