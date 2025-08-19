@@ -1,9 +1,5 @@
 package com.paulcraciunas.chessgym
 
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -25,23 +21,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.paulcraciunas.chessgym.animations.enter
+import com.paulcraciunas.chessgym.animations.exit
 import com.paulcraciunas.chessgym.navigation.BottomNavigationBar
 import com.paulcraciunas.chessgym.navigation.Screen
+import com.paulcraciunas.chessgym.screens.PuzzleDashboard
+import com.paulcraciunas.chessgym.screens.RatedPuzzle
 import com.paulcraciunas.screens.common.AppBar
 import com.paulcraciunas.screens.common.AppBarAlignment
 import com.paulcraciunas.screens.common.AppDrawer
 import com.paulcraciunas.screens.home.ui.HomeScreen
 import com.paulcraciunas.screens.home.vm.HomeViewModel
-import com.paulcraciunas.screens.puzzles.dashboard.ui.PuzzleDashboardScreen
-import com.paulcraciunas.screens.puzzles.dashboard.vm.PuzzleDashboardViewModel
-import com.paulcraciunas.screens.puzzles.rated.ui.RatedPuzzleScreen
-import com.paulcraciunas.screens.puzzles.rated.vm.RatedPuzzleViewModel
-import com.paulcraciunas.screens.puzzles.rated.vm.RatedPuzzleUiState
 import kotlinx.coroutines.launch
 
 @Composable
@@ -103,10 +97,9 @@ fun MainScreen(
                             popUpTo(tabNavController.graph.startDestinationId) {
                                 saveState = true
                             }
-                            // Avoid multiple copies of the same destination when
-                            // reselecting the same item
+                            // Avoid multiple copies of the same destination when re-selecting the same item
                             launchSingleTop = true
-                            // Restore state when reselecting a previously selected item
+                            // Restore state when re-selecting a previously selected item
                             restoreState = true
                         }
                     }
@@ -119,76 +112,37 @@ fun MainScreen(
                 modifier = Modifier.padding(innerPadding)
             ) {
                 composable<Screen.Home>(
-                    enterTransition = { enterTransition() },
-                    exitTransition = { exitTransition() }
+                    enterTransition = { enter() },
+                    exitTransition = { exit() }
                 ) {
                     val vm: HomeViewModel = hiltViewModel()
                     val homeState by vm.uiState.collectAsState()
                     HomeScreen(state = homeState)
                 }
                 composable<Screen.PuzzleDashboard>(
-                    enterTransition = { enterTransition() },
-                    exitTransition = { exitTransition() }
+                    enterTransition = { enter() },
+                    exitTransition = { exit() }
                 ) {
-                    val vm: PuzzleDashboardViewModel = hiltViewModel()
-                    val puzzleDashboardState by vm.uiState.collectAsState()
-                    PuzzleDashboardScreen(
-                        state = puzzleDashboardState,
-                        onPuzzleModeSelected = { mode ->
-                            vm.onPuzzleModeSelected(mode) { puzzleMode ->
-                                // Navigate to specific puzzle screens based on mode
-                                when (puzzleMode) {
-                                    com.paulcraciunas.screens.puzzles.dashboard.vm.PuzzleMode.RatedPuzzle -> {
-                                        tabNavController.navigate(Screen.RatedPuzzle)
-                                    }
-                                    else -> {
-                                        // TODO: Handle other puzzle modes when implemented
-                                    }
-                                }
-                            }
-                        },
-                        onPuzzleRushTimeChanged = vm::onPuzzleRushTimeChanged,
-                        onPuzzleRushMistakesChanged = vm::onPuzzleRushMistakesChanged
-                    )
+                    PuzzleDashboard(tabNavController)
                 }
                 composable<Screen.RatedPuzzle>(
-                    enterTransition = { enterTransition() },
-                    exitTransition = { exitTransition() }
+                    enterTransition = { enter() },
+                    exitTransition = { exit() }
                 ) {
-                    val vm: RatedPuzzleViewModel = hiltViewModel()
-                    val ratedPuzzleState by vm.uiState.collectAsState()
-                    RatedPuzzleScreen(
-                        uiState = ratedPuzzleState,
+                    RatedPuzzle(
+                        tabNavController = tabNavController,
                         showBorders = mainScreenState.appSettings?.showBorders ?: true,
-                        onNavigateBack = { 
-                            when (ratedPuzzleState) {
-                                is RatedPuzzleUiState.Playing -> vm.onAbandonRequested()
-                                else -> tabNavController.popBackStack()
-                            }
-                        },
-                        onSquareClicked = vm::onSquareClicked,
-                        onHintRequested = vm::onHintRequested,
-                        onAbandonConfirmed = {
-                            vm.onAbandonConfirmed()
-                            tabNavController.popBackStack()
-                        },
-                        onAbandonDismissed = vm::onAbandonCancelled,
-                        onPuzzleToStart = vm::onNavigateToStart,
-                        onPuzzleBack = vm::onNavigateBackMove,
-                        onPuzzleNext = vm::onNavigateNextMove,
-                        onPuzzleToEnd = vm::onNavigateToEnd,
-                        onPlayNext = vm::onNextPuzzle
                     )
                 }
                 composable<Screen.BoardVisualization>(
-                    enterTransition = { enterTransition() },
-                    exitTransition = { exitTransition() }
+                    enterTransition = { enter() },
+                    exitTransition = { exit() }
                 ) {
                     UnderConstruction(title = "Board Visualisation", innerPadding = innerPadding)
                 }
                 composable<Screen.BlindMode>(
-                    enterTransition = { enterTransition() },
-                    exitTransition = { exitTransition() }
+                    enterTransition = { enter() },
+                    exitTransition = { exit() }
                 ) {
                     UnderConstruction(title = "Blind Mode", innerPadding = innerPadding)
                 }
@@ -219,28 +173,4 @@ private fun UnderConstruction(
             style = MaterialTheme.typography.bodyMedium,
         )
     }
-}
-
-private fun AnimatedContentTransitionScope<NavBackStackEntry>.exitTransition() = slideOutHorizontally(
-    animationSpec = tween(300),
-    targetOffsetX = { if (isNavigatingToHigherIndex(targetState, initialState)) -it else it }
-)
-
-private fun AnimatedContentTransitionScope<NavBackStackEntry>.enterTransition() = slideInHorizontally(
-    animationSpec = tween(300),
-    initialOffsetX = { if (isNavigatingToHigherIndex(targetState, initialState)) it else -it }
-)
-
-private fun isNavigatingToHigherIndex(targetState: NavBackStackEntry, initialState: NavBackStackEntry): Boolean {
-    val targetIndex = getTabIndexFromRoute(targetState.destination.route)
-    val initialIndex = getTabIndexFromRoute(initialState.destination.route)
-    return targetIndex > initialIndex
-}
-
-private fun getTabIndexFromRoute(route: String?): Int = when {
-    route?.contains("Home") == true -> 0
-    route?.contains("PuzzleDashboard") == true -> 1
-    route?.contains("BoardVisualization") == true -> 2
-    route?.contains("BlindMode") == true -> 3
-    else -> -1
 }
