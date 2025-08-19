@@ -17,6 +17,7 @@ internal class MutablePuzzle(
     override val board: Board,
     private val moves: Queue<String>,
     override val plyFactory: PlyFactory = PlyFactory(),
+    override val plies: MutableList<Playable> = mutableListOf()
 ) : Puzzle, Executable() {
 
     private val moveAdapter = MoveAdapter()
@@ -26,6 +27,8 @@ internal class MutablePuzzle(
         info.inCheckCount = checkCount(info.turn)
         updateState()
     }
+    override fun plies(from: Locus): List<Ply> = plies.filter { it.from == from }
+    override fun ply(from: Locus, to: Locus): Ply? = plies.firstOrNull { it.from == from && it.to == to }
 
     override fun play(ply: Ply) {
         assert(moves.isNotEmpty())
@@ -45,9 +48,9 @@ internal class MutablePuzzle(
         }
     }
 
-    override fun play(from: Locus, to: Locus) = play(info.plies(from).first { it.to == to })
+    override fun play(from: Locus, to: Locus) = play(plies(from).first { it.to == to })
 
-    override fun abandon() {
+    override fun resign() {
         assert(state == Puzzle.State.InProgress)
 
         state = Puzzle.State.Failed
@@ -65,7 +68,7 @@ internal class MutablePuzzle(
         assert(moves.isNotEmpty())
 
         val move = moveAdapter.from(moves.peek())
-        info.plies(move.from).first { it.to == move.to }.apply {
+        plies(move.from).first { it.to == move.to }.apply {
             move.promotion?.let { promote(it) }
             play(this)
         }

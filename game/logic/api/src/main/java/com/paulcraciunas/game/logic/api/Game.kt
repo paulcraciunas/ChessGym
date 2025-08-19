@@ -15,6 +15,8 @@ interface Game {
     val history: List<Ply>
 
     fun start()
+    fun plies(): List<Ply>
+    fun plies(from: Locus): List<Ply>
 
     fun play(ply: Ply)
     fun play(from: Locus, to: Locus)

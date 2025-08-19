@@ -59,7 +59,7 @@ class PgnSerializer(
                 moves.groupValues[3].takeIf { it.isNotBlank() }?.let { loadPly(it) }
             }
             // Match ending if we didn't already compute it
-            if (info.plies.isNotEmpty()) {
+            if (plies().isNotEmpty()) {
                 endingRegex.find(gameString)?.let {
                     if (it.groupValues[1].replace(" ", "") == "1/2-1/2") {
                         draw()
@@ -102,7 +102,7 @@ private fun Game.loadPly(plyString: String) = when {
 private fun Game.findCastlePly(side: Side, castle: CastleType): Ply {
     val kingLoc = this.board.king(side)
         ?: throw SerializeException("Found castling move but can't find king for $side")
-    val ply = info.plies(kingLoc).find { it.to == castle.end(side) }
+    val ply = plies(kingLoc).find { it.to == castle.end(side) }
         ?: throw SerializeException("Can't find castling move for $side")
     return ply
 }
@@ -113,7 +113,7 @@ private fun Game.findPly(plyString: String): Ply {
     val to = Locus.from(bits.groupValues[4] + bits.groupValues[5])
         ?: throw SerializeException("Invalid destination at $plyString")
 
-    return info.plies
+    return plies()
         .filter {
             it.to == to &&
                     it.piece == pieceMap[bits.groupValues[1]]!!

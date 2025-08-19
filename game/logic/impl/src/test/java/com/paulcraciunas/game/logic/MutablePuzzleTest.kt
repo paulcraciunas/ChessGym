@@ -67,13 +67,13 @@ internal class MutablePuzzleTest {
     }
 
     @Test
-    fun `GIVEN puzzle in progress WHEN abandoning THEN state becomes Failed`() {
+    fun `GIVEN puzzle in progress WHEN resigning THEN state becomes Failed`() {
         // Given
         underTest = builder.withMoves("e2e4", "e7e5").buildPuzzle()
         underTest.start()
 
         // When
-        underTest.abandon()
+        underTest.resign()
 
         // Then
         assertEquals(Puzzle.State.Failed, underTest.state)

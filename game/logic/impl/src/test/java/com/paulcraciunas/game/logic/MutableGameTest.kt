@@ -28,7 +28,7 @@ internal class MutableGameTest {
                 add(StandardPly(Side.WHITE, Piece.Pawn, "e2".loc(), "e4".loc()))
             }.map { ExpectedPly(it) }
 
-        val actual = underTest.info.plies("e2".loc())
+        val actual = underTest.plies("e2".loc())
             .map { ExpectedPly(it) }
 
         assertEquals(Side.WHITE, underTest.info.turn)
@@ -42,7 +42,7 @@ internal class MutableGameTest {
     fun `GIVEN default starting board WHEN getting plies for black THEN return all correct plies`() {
         underTest = MutableGame(board = on).apply { start() }
         underTest.play(
-            underTest.info.plies("e2".loc()).first { it.to == "e4".loc() }
+            underTest.plies("e2".loc()).first { it.to == "e4".loc() }
         )
         val expected = mutableListOf<StandardPly>()
             .apply {
@@ -50,7 +50,7 @@ internal class MutableGameTest {
                 add(StandardPly(Side.BLACK, Piece.Pawn, "e7".loc(), "e5".loc()))
             }.map { ExpectedPly(it) }
 
-        val actual = underTest.info.plies("e7".loc())
+        val actual = underTest.plies("e7".loc())
             .map { ExpectedPly(it) }
 
         assertEquals(Side.BLACK, underTest.info.turn)
@@ -69,7 +69,7 @@ internal class MutableGameTest {
             .play("d8", "h4")
 
         Locus.all { // No move from anywhere
-            assertTrue(underTest.info.plies(it).isEmpty())
+            assertTrue(underTest.plies(it).isEmpty())
         }
         assertEquals(Side.WHITE, underTest.info.turn)
         assertEquals(Game.GameState.Finished(Result.CheckMate), underTest.state)
@@ -87,7 +87,7 @@ internal class MutableGameTest {
             .play("h5", "f7")
 
         Locus.all { // No move from anywhere
-            assertTrue(underTest.info.plies(it).isEmpty())
+            assertTrue(underTest.plies(it).isEmpty())
         }
         assertEquals(Side.BLACK, underTest.info.turn)
         assertEquals(Game.GameState.Finished(Result.CheckMate), underTest.state)
@@ -106,7 +106,7 @@ internal class MutableGameTest {
             .play("f3", "g1").play("c6", "b8")
 
         Locus.all { // No move from anywhere
-            assertTrue(underTest.info.plies(it).isEmpty())
+            assertTrue(underTest.plies(it).isEmpty())
         }
         assertEquals(Side.WHITE, underTest.info.turn)
         assertEquals(Game.GameState.Finished(Result.DrawByRepetition), underTest.state)
@@ -122,7 +122,7 @@ internal class MutableGameTest {
         underTest = MutableGame(board = board, turn = Side.BLACK).apply { start() }
 
         Locus.all { // No move from anywhere
-            assertTrue(underTest.info.plies(it).isEmpty())
+            assertTrue(underTest.plies(it).isEmpty())
         }
         assertEquals(Side.BLACK, underTest.info.turn)
         assertEquals(Game.GameState.Finished(Result.StaleMate), underTest.state)
@@ -138,7 +138,7 @@ internal class MutableGameTest {
         underTest = MutableGame(board = board).apply { start() }
 
         Locus.all { // No move from anywhere
-            assertTrue(underTest.info.plies(it).isEmpty())
+            assertTrue(underTest.plies(it).isEmpty())
         }
         assertEquals(Side.WHITE, underTest.info.turn)
         assertEquals(Game.GameState.Finished(Result.StaleMate), underTest.state)
@@ -188,7 +188,7 @@ internal class MutableGameTest {
         underTest = MutableGame(board = board).apply { start() }
 
         Locus.all { // No move from anywhere
-            assertTrue(underTest.info.plies(it).isEmpty())
+            assertTrue(underTest.plies(it).isEmpty())
         }
         assertEquals(Side.WHITE, underTest.info.turn)
         assertEquals(Game.GameState.Finished(Result.DrawByInsufficientMaterial), underTest.state)
@@ -196,7 +196,7 @@ internal class MutableGameTest {
 
     private fun MutableGame.play(from: String, to: String): MutableGame = apply {
         play(
-            info.plies(from.loc()).firstOrNull { it.to == to.loc() }
+            plies(from.loc()).firstOrNull { it.to == to.loc() }
                 ?: throw AssertionError("Wrong move")
         )
     }

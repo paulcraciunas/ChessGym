@@ -25,6 +25,7 @@ internal class MutableGame(
     override var state: Game.GameState = Game.GameState.Ready,
     override val history: MutableList<Playable> = mutableListOf(),
     override val plyFactory: PlyFactory = PlyFactory(),
+    override val plies: MutableList<Playable> = mutableListOf()
 ) : Game, Executable() {
     constructor(board: Board, turn: Side) : this(board = board, info = MutableGameInfo(turn = turn))
 
@@ -36,13 +37,15 @@ internal class MutableGame(
         updateState()
     }
 
+    override fun plies(): List<Ply> = plies
+    override fun plies(from: Locus): List<Ply> = plies.filter { it.from == from }
     override fun play(ply: Ply) {
         assert(state == Game.GameState.InProgress)
 
         execute(ply)
     }
 
-    override fun play(from: Locus, to: Locus) = play(info.plies(from).first { it.to == to })
+    override fun play(from: Locus, to: Locus) = play(plies(from).first { it.to == to })
     override fun resign() = finish(Result.Resigned)
     override fun draw() = finish(Result.DrawByAgreement)
     override fun isRunning(): Boolean = state == Game.GameState.InProgress

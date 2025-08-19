@@ -11,17 +11,18 @@ internal abstract class Executable {
     abstract val board: Board
     abstract val info: MutableGameInfo
     abstract val plyFactory: PlyFactory
+    abstract val plies: MutableList<Playable>
 
     abstract fun isRunning(): Boolean
     abstract fun recomputeState()
     abstract fun savePly(playable: Playable)
 
     fun execute(ply: Ply) {
-        assert(info.plies.contains(ply))
-        val playable = info.plies.find { it == ply }!!
+        assert(plies.contains(ply))
+        val playable = plies.find { it == ply }!!
 
         // Execute and keep track
-        playable.resolve(info.plies.filter { it.piece == ply.piece && it.to == ply.to }
+        playable.resolve(plies.filter { it.piece == ply.piece && it.to == ply.to }
             .disambiguate())
         playable.exec(board)
         savePly(playable)
@@ -42,13 +43,13 @@ internal abstract class Executable {
     private fun updateResolution() { // Important to call after updating game state
         recomputeState()
         if (!isRunning()) {
-            info.plies.clear()
+            plies.clear()
         }
     }
 
     private fun computeAvailablePlies() {
-        info.plies.clear()
-        info.plies.addAll(plyFactory.allLegalPlies(board, info))
+        plies.clear()
+        plies.addAll(plyFactory.allLegalPlies(board, info))
     }
 }
 

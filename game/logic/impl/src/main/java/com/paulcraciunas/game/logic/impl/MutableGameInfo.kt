@@ -3,7 +3,6 @@ package com.paulcraciunas.game.logic.impl
 import com.paulcraciunas.game.logic.api.CastleType
 import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Side
-import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.state.CheckCount
 import com.paulcraciunas.game.logic.api.state.GameInfo
@@ -19,11 +18,7 @@ internal data class MutableGameInfo(
     override var blackCastling: Set<CastleType> = CastleType.entries.toSet(),
     override var plieClock: Int = 0,
     override var moveIndex: Int = 1,
-    override val plies: MutableList<Playable> = mutableListOf()
 ) : GameInfo {
-
-    override fun plies(from: Locus): List<Playable> = plies.filter { it.from == from }
-    override fun ply(from: Locus, to: Locus): Ply? = plies.firstOrNull { it.from == from && it.to == to }
 
     override fun castling(turn: Side): Set<CastleType> =
         if (turn == Side.WHITE) whiteCastling else blackCastling
@@ -36,7 +31,6 @@ internal data class MutableGameInfo(
         whiteCastling = updateCastling(Side.WHITE, ply)
         blackCastling = updateCastling(Side.BLACK, ply)
         plieClock = if (!ply.isPawnMoveOrCapture()) plieClock + 1 else 0
-        plies.clear()
     }
 
     private fun updateCastling(side: Side, ply: Ply): Set<CastleType> =
