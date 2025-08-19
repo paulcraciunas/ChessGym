@@ -30,6 +30,7 @@ interface GameInfo {
     val plies: List<Ply>
 
     fun plies(from: Locus): List<Ply>
+    fun ply(from: Locus, to: Locus): Ply?
 
     fun castling(turn: Side): Set<CastleType>
 }

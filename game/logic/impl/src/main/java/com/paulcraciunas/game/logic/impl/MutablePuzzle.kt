@@ -4,7 +4,6 @@ import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
-import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.impl.board.Board
 import com.paulcraciunas.game.logic.impl.plies.Playable
 import com.paulcraciunas.game.logic.impl.plies.PlyFactory
@@ -54,12 +53,11 @@ internal class MutablePuzzle(
         state = Puzzle.State.Failed
     }
 
-    override fun hint(): Piece {
+    override fun hint(): Locus {
         assert(state == Puzzle.State.InProgress)
         assert(moves.isNotEmpty())
 
-        val from = Locus.from(moves.peek().substring(0, 2))!!
-        return board.at(from)!!
+        return Locus.from(moves.peek().substring(0, 2))!!
     }
 
     override fun playNextMove() {

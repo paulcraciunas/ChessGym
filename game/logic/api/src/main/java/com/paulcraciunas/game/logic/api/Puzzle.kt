@@ -2,7 +2,6 @@ package com.paulcraciunas.game.logic.api
 
 import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
-import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.state.GameInfo
 
 interface Puzzle {
@@ -17,12 +16,14 @@ interface Puzzle {
     fun play(ply: Ply)
     fun play(from: Locus, to: Locus)
     fun abandon()
-    fun hint(): Piece
+    fun hint(): Locus
 
     enum class State {
         Idle,
         InProgress,
         Failed,
-        Success
+        Success;
+
+        fun isOver(): Boolean = this == Failed || this == Success
     }
 }

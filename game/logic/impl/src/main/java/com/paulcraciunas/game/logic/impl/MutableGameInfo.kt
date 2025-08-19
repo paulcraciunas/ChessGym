@@ -23,6 +23,7 @@ internal data class MutableGameInfo(
 ) : GameInfo {
 
     override fun plies(from: Locus): List<Playable> = plies.filter { it.from == from }
+    override fun ply(from: Locus, to: Locus): Ply? = plies.firstOrNull { it.from == from && it.to == to }
 
     override fun castling(turn: Side): Set<CastleType> =
         if (turn == Side.WHITE) whiteCastling else blackCastling
