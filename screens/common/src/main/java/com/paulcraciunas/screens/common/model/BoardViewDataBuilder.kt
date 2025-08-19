@@ -1,19 +1,21 @@
 package com.paulcraciunas.screens.common.model
 
+import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Rank
 
-// TODO Paul: rethink this class when cleaning up the repo structure
 class BoardViewDataBuilder {
     private val squares: Array<Array<SquareViewData>> = Array(Rank.entries.size) {
         Array(File.entries.size) { SquareViewData(piece = null) }
     }
-    private var selection: Locus? = null
-    private var lastMove: Pair<Locus, Locus>? = null
-    private var moves: List<Locus> = emptyList()
+
+    fun load(puzzle: Puzzle) {
+        loadBoard(puzzle.board)
+        withLastMove(puzzle.info.lastPly!!.from, puzzle.info.lastPly!!.to)
+    }
 
     fun loadBoard(board: IBoard) {
         // Clear the squares first
@@ -32,29 +34,9 @@ class BoardViewDataBuilder {
     }
 
     fun withSelection(from: Locus, availableMoves: List<Locus>): BoardViewDataBuilder = apply {
-        selection = from
-        moves = availableMoves
-    }
-
-    fun withLastMove(from: Locus, to: Locus): BoardViewDataBuilder = apply {
-        lastMove = Pair(from, to)
-    }
-
-    fun build(): BoardViewData {
-        selection?.let { at ->
-            // Mark the selected square piece as selected
-            squares.update(at) { it.copy(piece = it.piece!!.copy(isSelected = true)) }
-            setAvailableMoves()
-        }
-        lastMove?.let { pair ->
-            squares.update(pair.first) { it.copy(lastMove = true) }
-            squares.update(pair.second) { it.copy(lastMove = true) }
-        }
-        return BoardViewData(squares)
-    }
-
-    private fun setAvailableMoves() {
-        moves.forEach { to ->
+        // Mark the selected square piece as selected
+        squares.update(from) { it.copy(piece = it.piece!!.copy(isSelected = true)) }
+        availableMoves.forEach { to ->
             squares.update(to) { square ->
                 square.piece?.let { // if we have a piece, we can attack it; mark selected
                     square.copy(piece = square.piece.copy(isSelected = true))
@@ -62,6 +44,24 @@ class BoardViewDataBuilder {
             }
         }
     }
+
+    fun clearSelection(from: Locus, availableMoves: List<Locus>) {
+        squares.update(from) { it.copy(piece = it.piece!!.copy(isSelected = false)) }
+        availableMoves.forEach { to ->
+            squares.update(to) { square ->
+                square.piece?.let { // if we have a piece, we can attack it; mark selected
+                    square.copy(piece = square.piece.copy(isSelected = false))
+                } ?: square.copy(canMoveTo = false) // otherwise mark that we can move there
+            }
+        }
+    }
+
+    fun withLastMove(from: Locus, to: Locus): BoardViewDataBuilder = apply {
+        squares.update(from) { it.copy(lastMove = true) }
+        squares.update(to) { it.copy(lastMove = true) }
+    }
+
+    fun build(): BoardViewData = BoardViewData(squares)
 }
 
 private fun Array<Array<SquareViewData>>.update(
