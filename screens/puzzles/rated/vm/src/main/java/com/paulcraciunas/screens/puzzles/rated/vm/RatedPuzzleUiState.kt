@@ -20,7 +20,7 @@ sealed class RatedPuzzleUiState {
 
         data class Promotion(
             val showChooser: Boolean,
-            val locus: Locus,
+            val at: Locus,
         )
     }
 
