@@ -21,7 +21,7 @@ internal class MutablePuzzle(
     override val plies: MutableList<Playable> = mutableListOf()
 ) : Puzzle, Executable() {
     private val moveAdapter = MoveAdapter()
-    val moves: Queue<String> = ArrayDeque(expectedMoves)
+    private val remainingMoves: Queue<String> = ArrayDeque(expectedMoves)
 
     override fun start() {
         state = Puzzle.State.InProgress
@@ -33,14 +33,14 @@ internal class MutablePuzzle(
 
     override fun play(ply: Ply) {
         assert(isRunning())
-        assert(moves.isNotEmpty())
+        assert(remainingMoves.isNotEmpty())
 
-        val expected = moves.poll()
+        val expected = remainingMoves.poll()
         val promotedPiece = if (ply.isPromotion()) ply.algebraic().last().lowercase() else ""
+        execute(ply)
         // check if the move is the first in the list of expected moves
         if (expected == "${ply.from}${ply.to}$promotedPiece") {
-            execute(ply)
-            if (moves.isEmpty()) { // Now check if we have any expected moves left
+            if (remainingMoves.isEmpty()) { // Now check if we have any expected moves left
                 state = Puzzle.State.Success
             }
         } else {
@@ -53,12 +53,12 @@ internal class MutablePuzzle(
 
     override fun playNextMove() {
         assert(isRunning())
-        assert(moves.isNotEmpty())
+        assert(remainingMoves.isNotEmpty())
 
-        val move = moveAdapter.from(moves.peek())
+        val move = moveAdapter.from(remainingMoves.peek()) // We just peek here
         plies(move.from).first { it.to == move.to }.apply {
             move.promotion?.let { promote(it) }
-            play(this)
+            play(this) // we remove the move from 'remainingMoves' inside
         }
     }
 
@@ -68,10 +68,15 @@ internal class MutablePuzzle(
         state = Puzzle.State.Failed
     }
 
+    override fun nextExpectedMove(): Pair<Locus, Locus>? = remainingMoves.peek()?.let {
+        val move = moveAdapter.from(it)
+        move.from to move.to
+    }
+
     override fun isRunning(): Boolean = state == Puzzle.State.InProgress
 
     override fun recomputeState() {
-        if (moves.isEmpty()) {
+        if (remainingMoves.isEmpty()) {
             state = Puzzle.State.Success
         }
     }

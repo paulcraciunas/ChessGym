@@ -19,6 +19,7 @@ interface Puzzle {
     fun play(from: Locus, to: Locus)
     fun playNextMove()
     fun resign()
+    fun nextExpectedMove(): Pair<Locus, Locus>?
 
     enum class State {
         Idle,
