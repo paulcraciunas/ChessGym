@@ -5,10 +5,12 @@ import com.paulcraciunas.domain.api.GetPuzzleByRating
 import com.paulcraciunas.domain.api.GetPuzzleSeries
 import com.paulcraciunas.domain.api.OnPuzzleComplete
 import com.paulcraciunas.domain.api.RandomFactory
+import com.paulcraciunas.domain.api.Timer
 import com.paulcraciunas.domain.impl.CalculateEloImpl
 import com.paulcraciunas.domain.impl.GetPuzzleByRatingImpl
 import com.paulcraciunas.domain.impl.GetPuzzleSeriesImpl
 import com.paulcraciunas.domain.impl.OnPuzzleCompleteImpl
+import com.paulcraciunas.domain.impl.SimpleTimer
 import com.paulcraciunas.domain.impl.TLRandomFactory
 import dagger.Binds
 import dagger.Module
@@ -39,4 +41,7 @@ internal abstract class DomainModule {
     @Binds
     @Singleton
     abstract fun bindGetPuzzleByRatingUseCase(impl: GetPuzzleByRatingImpl): GetPuzzleByRating
+
+    @Binds
+    abstract fun bindTimer(impl: SimpleTimer): Timer
 }
