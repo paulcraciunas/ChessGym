@@ -53,15 +53,6 @@ internal fun RatedPuzzle(
                 tabNavController.popBackStack()
             }
         },
-        onSquareClicked = vm::onSquareClicked,
-        onPromote = vm::onPromote,
-        onHintRequested = vm::onHintRequested,
-        onAbandonConfirmed = vm::onAbandonConfirmed,
-        onAbandonDismissed = vm::onAbandonCancelled,
-        onPuzzleToStart = vm::onNavigateToStart,
-        onPuzzleBack = vm::onNavigateBackMove,
-        onPuzzleNext = vm::onNavigateNextMove,
-        onPuzzleToEnd = vm::onNavigateToEnd,
-        onPlayNext = vm::onNextPuzzle
+        interactions = vm,
     )
 }

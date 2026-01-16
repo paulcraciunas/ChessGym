@@ -25,7 +25,9 @@ import com.paulcraciunas.screens.common.board.ChessBoard
 import com.paulcraciunas.screens.common.model.BoardViewData
 import com.paulcraciunas.screens.common.model.SquareViewData
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
+import com.paulcraciunas.screens.puzzles.rated.vm.RatedPuzzleScreenInteractor
 import com.paulcraciunas.screens.puzzles.rated.vm.RatedPuzzleUiState
+import com.paulcraciunas.screens.puzzles.rated.vm.StubRatedPuzzleScreenInteractor
 
 @Composable
 fun RatedPuzzleScreen(
@@ -33,16 +35,7 @@ fun RatedPuzzleScreen(
     showBorders: Boolean,
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit = {},
-    onSquareClicked: (rank: Rank, file: File) -> Unit = { _, _ -> },
-    onPromote: (to: Piece) -> Unit = {},
-    onHintRequested: () -> Unit = {},
-    onAbandonConfirmed: () -> Unit = {},
-    onAbandonDismissed: () -> Unit = {},
-    onPuzzleToStart: () -> Unit = {},
-    onPuzzleBack: () -> Unit = {},
-    onPuzzleNext: () -> Unit = {},
-    onPuzzleToEnd: () -> Unit = {},
-    onPlayNext: () -> Unit = {},
+    interactions: RatedPuzzleScreenInteractor = StubRatedPuzzleScreenInteractor(),
 ) {
     if (uiState is RatedPuzzleUiState.Loading) {
         LoadingContent(modifier = Modifier.fillMaxSize())
@@ -71,7 +64,7 @@ fun RatedPuzzleScreen(
             ChessBoard(
                 board = data.boardData,
                 orientation = BoardOrientation.fromSide(data.player),
-                onClick = onSquareClicked,
+                onClick = interactions::onSquareClicked,
                 showBorders = showBorders,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -86,21 +79,21 @@ fun RatedPuzzleScreen(
                     PuzzleControls(
                         hintEnabled = uiState.hintEnabled,
                         toMove = data.player,
-                        onHintRequested = onHintRequested,
-                        onAbandonRequested = onNavigateBack,
+                        onHintRequested = interactions::onHintRequested,
+                        onAbandonRequested = interactions::onAbandon,
                         modifier = Modifier.fillMaxWidth()
                     )
                     // Abandon confirmation dialog
                     if (uiState.showAbandonDialog) {
                         AbandonConfirmationDialog(
-                            onConfirm = onAbandonConfirmed,
-                            onDismiss = onAbandonDismissed
+                            onConfirm = interactions::onAbandonConfirmed,
+                            onDismiss = interactions::onAbandonDismissed
                         )
                     }
                     if (uiState.promotion != null) {
                         PromotionDialog(
                             side = data.player,
-                            onPieceChosen = onPromote
+                            onPieceChosen = interactions::onPromote
                         )
                     }
                 }
@@ -108,11 +101,11 @@ fun RatedPuzzleScreen(
                 is RatedPuzzleUiState.Finished -> FinishedPuzzleControls(
                     ratingChange = uiState.ratingChange,
                     modifier = Modifier.fillMaxWidth(),
-                    onNavigateToStart = onPuzzleToStart,
-                    onNavigateBack = onPuzzleBack,
-                    onNavigateNext = onPuzzleNext,
-                    onNavigateToEnd = onPuzzleToEnd,
-                    onPlayNext = onPlayNext,
+                    onNavigateToStart = interactions::onNavigateToStart,
+                    onNavigateBack = interactions::onNavigateBack,
+                    onNavigateNext = interactions::onNavigateNext,
+                    onNavigateToEnd = interactions::onNavigateToEnd,
+                    onPlayNext = interactions::onNextPuzzle,
                 )
 
                 else -> {}
