@@ -1,10 +1,12 @@
 package com.paulcraciunas.screens.common.model
 
+import androidx.compose.runtime.Stable
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank
 
+@Stable
 data class BoardViewData(
     val squares: Array<Array<SquareViewData>>,
 ) {
@@ -22,6 +24,7 @@ data class BoardViewData(
     override fun hashCode(): Int = squares.contentDeepHashCode()
 }
 
+@Stable
 data class SquareViewData(
     val piece: PieceViewData?,
     val canMoveTo: Boolean = false,
@@ -32,6 +35,7 @@ data class SquareViewData(
     }
 }
 
+@Stable
 data class PieceViewData(
     val piece: Piece,
     val side: Side,
