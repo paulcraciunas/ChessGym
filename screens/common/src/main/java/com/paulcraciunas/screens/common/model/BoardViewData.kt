@@ -3,6 +3,7 @@ package com.paulcraciunas.screens.common.model
 import androidx.compose.runtime.Stable
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File
+import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank
 
@@ -11,6 +12,7 @@ data class BoardViewData(
     val squares: Array<Array<SquareViewData>>,
 ) {
     fun at(rank: Rank, file: File): SquareViewData = squares[rank.dec()][file.dec()]
+    fun at(loc: Locus): SquareViewData = at(loc.rank, loc.file)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
