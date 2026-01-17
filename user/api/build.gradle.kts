@@ -4,4 +4,5 @@ plugins {
 
 library {
     serialization = true
+    testFixtures = true
 }

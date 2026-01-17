@@ -1,14 +1,10 @@
 package com.paulcraciunas.screens.puzzles.dashboard.vm
 
+import com.paulcraciunas.user.api.FakeUserRepository
 import com.paulcraciunas.user.api.User
-import com.paulcraciunas.user.api.UserLocalDataSource
-import com.paulcraciunas.user.api.UserRemoteDataSource
-import com.paulcraciunas.user.impl.UserRepositoryImpl
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -20,10 +16,7 @@ import org.junit.jupiter.api.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class PuzzleDashboardViewModelTest {
-
-    private val fakeLocalDataSource = FakeUserLocalDataSource()
-    private val fakeRemoteDataSource = FakeUserRemoteDataSource()
-    private val userRepository = UserRepositoryImpl(fakeLocalDataSource, fakeRemoteDataSource)
+    private val userRepository = FakeUserRepository()
 
     private lateinit var underTest: PuzzleDashboardViewModel
 
@@ -46,7 +39,7 @@ internal class PuzzleDashboardViewModelTest {
             ratings = User.Ratings(current = 1650),
             failedPuzzles = listOf(1, 2, 3)
         )
-        fakeLocalDataSource.saveUser(user)
+        userRepository.local.saveUser(user)
 
         // When
         underTest = PuzzleDashboardViewModel(userRepository)
@@ -152,7 +145,7 @@ internal class PuzzleDashboardViewModelTest {
             ratings = User.Ratings(current = 1200),
             failedPuzzles = emptyList()
         )
-        fakeLocalDataSource.saveUser(user)
+        userRepository.local.saveUser(user)
 
         // When
         underTest = PuzzleDashboardViewModel(userRepository)
@@ -165,35 +158,8 @@ internal class PuzzleDashboardViewModelTest {
 
     private fun setupViewModel() = runTest {
         val user = User()
-        fakeLocalDataSource.saveUser(user)
+        userRepository.local.saveUser(user)
         underTest = PuzzleDashboardViewModel(userRepository)
         testDispatcher.scheduler.advanceUntilIdle()
     }
-}
-
-//TODO Paul: move these to the user test fixtures
-private class FakeUserLocalDataSource : UserLocalDataSource {
-    private var user = User()
-
-    override fun userUpdates(): Flow<User> = flowOf(user)
-    override suspend fun getUser(): User = user
-    override suspend fun saveUser(user: User) {
-        this.user = user
-    }
-
-    override suspend fun updateUser(updater: (User) -> User) {
-        this.user = updater(this.user)
-    }
-
-    override suspend fun clearUserData() {
-        this.user = User()
-    }
-}
-
-private class FakeUserRemoteDataSource : UserRemoteDataSource {
-    override suspend fun getUser(userId: String): User = throw NotImplementedError()
-    override suspend fun updateUser(user: User) = Unit
-    override suspend fun addToHistory(userId: String, history: List<User.HistoryItem>) = Unit
-    override suspend fun signIn(auth: User.AuthenticationState, token: String): User = User(authentication = auth)
-    override suspend fun deleteUser(userId: String) = Unit
 }

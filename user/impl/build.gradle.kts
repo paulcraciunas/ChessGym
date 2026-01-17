@@ -15,4 +15,6 @@ dependencies {
 
     implementation(libs.androidx.datastore)
     implementation(libs.androidx.datastore.preferences)
+
+    testImplementation(testFixtures(project(":user:api")))
 }
