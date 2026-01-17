@@ -58,7 +58,7 @@ private object UserSerializer : Serializer<User> {
 
     override suspend fun readFrom(input: InputStream): User = try {
         Json.decodeFromString(User.serializer(), input.readBytes().decodeToString())
-    } catch (serialization: SerializationException) {
+    } catch (_: SerializationException) {
         defaultValue
     }
 
