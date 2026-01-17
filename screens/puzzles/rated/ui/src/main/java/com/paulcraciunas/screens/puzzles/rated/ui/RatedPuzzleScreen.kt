@@ -19,6 +19,7 @@ import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.AppBar
+import com.paulcraciunas.screens.common.FailedContent
 import com.paulcraciunas.screens.common.LoadingContent
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
@@ -39,6 +40,10 @@ fun RatedPuzzleScreen(
 ) {
     if (uiState is RatedPuzzleUiState.Loading) {
         LoadingContent(modifier = Modifier.fillMaxSize())
+        return
+    }
+    if (uiState is RatedPuzzleUiState.Failed) {
+        FailedContent(modifier = Modifier.fillMaxSize())
         return
     }
     val data = (uiState as RatedPuzzleUiState.BoardState).data

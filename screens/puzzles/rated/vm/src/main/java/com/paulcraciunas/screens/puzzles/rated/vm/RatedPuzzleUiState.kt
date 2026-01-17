@@ -7,6 +7,7 @@ import com.paulcraciunas.screens.common.model.BoardViewData
 
 sealed class RatedPuzzleUiState {
     data object Loading : RatedPuzzleUiState()
+    data object Failed : RatedPuzzleUiState()
     abstract class BoardState : RatedPuzzleUiState() {
         abstract val data: PuzzleData
     }

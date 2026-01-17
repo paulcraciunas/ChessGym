@@ -1,0 +1,329 @@
+package com.paulcraciunas.screens.puzzles.rated.vm
+
+import com.paulcraciunas.domain.api.EloResult
+import com.paulcraciunas.domain.api.GetRatedPuzzle
+import com.paulcraciunas.domain.api.OnPuzzleComplete
+import com.paulcraciunas.domain.api.PuzzleCompletionResult
+import com.paulcraciunas.domain.api.Timer
+import com.paulcraciunas.game.logic.api.Puzzle
+import com.paulcraciunas.game.logic.api.Side
+import com.paulcraciunas.game.logic.api.board.File
+import com.paulcraciunas.game.logic.api.board.Locus
+import com.paulcraciunas.game.logic.api.board.Piece
+import com.paulcraciunas.game.logic.api.board.Rank
+import com.paulcraciunas.game.logic.api.board.loc
+import com.paulcraciunas.game.logic.impl.RealGameFactory
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+
+@OptIn(ExperimentalCoroutinesApi::class)
+internal class RatedPuzzleViewModelTest {
+    private val testDispatcher: TestDispatcher = StandardTestDispatcher()
+
+    private val getRatedPuzzle = FakeGetRatedPuzzle()
+    private val onPuzzleComplete = FakeOnPuzzleComplete()
+    private val timer = FakeTimer()
+
+    @BeforeEach
+    fun setUp() {
+        Dispatchers.setMain(testDispatcher)
+    }
+
+    @AfterEach
+    fun tearDown() {
+        Dispatchers.resetMain()
+    }
+
+    @Test
+    fun `GIVEN puzzle loaded WHEN viewModel initialized THEN uiState is playing`() = runTest {
+        // Given
+        val withPuzzle = buildStandardPuzzle()
+
+        // When
+        val underTest = buildVm(withPuzzle)
+
+        // Then
+        assertTrue(underTest.uiState.value is RatedPuzzleUiState.Playing)
+        (underTest.uiState.value as RatedPuzzleUiState.Playing).apply {
+            assertEquals(DEFAULT_RATING, data.rating)
+            assertEquals(Side.BLACK, data.player)
+            assertTrue(hintEnabled)
+            assertFalse(showAbandonDialog)
+            assertNull(promotion)
+        }
+        assertEquals(1, timer.startCallCount)
+    }
+
+    @Test
+    fun `GIVEN getRatedPuzzle throws WHEN viewModel initialized THEN uiState is failed`() = runTest {
+        // Given
+        getRatedPuzzle.withFailure(RuntimeException("boom"))
+
+        // When
+        val underTest = buildVm(buildStandardPuzzle())
+
+        // Then
+        assertTrue(underTest.uiState.value is RatedPuzzleUiState.Failed)
+    }
+
+    @Test
+    fun `GIVEN no selection WHEN onSquareClicked THEN selection and moves are marked`() = runTest {
+        // Given
+        val underTest = buildVm(buildStandardPuzzle())
+
+        // When
+        underTest.onSquareClicked(Rank.`7`, File.e)
+
+        // Then
+        val playingState = underTest.uiState.value as RatedPuzzleUiState.Playing
+        val selectedSquare = playingState.data.boardData.at(Rank.`7`, File.e)
+        assertEquals(true, selectedSquare.piece?.isSelected)
+        assertTrue(playingState.data.boardData.at(Rank.`5`, File.e).canMoveTo)
+    }
+
+    @Test
+    fun `GIVEN selected square WHEN onSquareClicked invalid target THEN selection is cleared`() = runTest {
+        // Given
+        val underTest = buildVm(buildStandardPuzzle())
+        underTest.onSquareClicked(Rank.`7`, File.e)
+
+        // When
+        underTest.onSquareClicked(Rank.`4`, File.e)
+
+        // Then
+        val playingState = underTest.uiState.value as RatedPuzzleUiState.Playing
+        val selectedSquare = playingState.data.boardData.at(Rank.`7`, File.e)
+        assertEquals(false, selectedSquare.piece?.isSelected)
+        assertFalse(playingState.data.boardData.at(Rank.`5`, File.e).canMoveTo)
+    }
+
+    @Test
+    fun `GIVEN promotion move WHEN onSquareClicked THEN promotion chooser is shown`() = runTest {
+        // Given
+        val underTest = buildVm(buildPromotionPuzzle())
+        underTest.onSquareClicked(Rank.`7`, File.a)
+
+        // When
+        underTest.onSquareClicked(Rank.`8`, File.a)
+
+        // Then
+        val playingState = underTest.uiState.value as RatedPuzzleUiState.Playing
+        assertNotNull(playingState.promotion)
+        val promotion = playingState.promotion!!
+        assertTrue(promotion.showChooser)
+        assertEquals(Locus(File.a, Rank.`8`), promotion.at)
+    }
+
+    @Test
+    fun `GIVEN promotion chooser WHEN onPromote THEN pawn is promoted and state updated`() = runTest {
+        // Given
+        val underTest = buildVm(buildPromotionPuzzle())
+        underTest.onSquareClicked(Rank.`7`, File.a)
+        underTest.onSquareClicked(Rank.`8`, File.a)
+
+        // When
+        underTest.onPromote(Piece.Queen)
+
+        // Then
+        val playingState = underTest.uiState.value as RatedPuzzleUiState.Finished
+        val promotedSquare = playingState.data.boardData.at("a8".loc())
+        assertEquals(Piece.Queen, promotedSquare.piece?.piece)
+        assertEquals(Side.WHITE, promotedSquare.piece?.side)
+    }
+
+    @Test
+    fun `GIVEN puzzle loaded WHEN onHintRequested THEN selection matches hint`() = runTest {
+        // Given
+        val underTest = buildVm(buildStandardPuzzle())
+
+        // When
+        underTest.onHintRequested()
+
+        // Then
+        val playingState = underTest.uiState.value as RatedPuzzleUiState.Playing
+        val selectedSquare = playingState.data.boardData.at("e7".loc())
+        assertEquals(true, selectedSquare.piece?.isSelected)
+        assertTrue(playingState.data.boardData.at("e5".loc()).canMoveTo)
+    }
+
+    @Test
+    fun `GIVEN playing state WHEN onAbandon THEN abandon dialog is shown`() = runTest {
+        // Given
+        val underTest = buildVm(buildStandardPuzzle())
+
+        // When
+        underTest.onAbandon()
+
+        // Then
+        val playingState = underTest.uiState.value as RatedPuzzleUiState.Playing
+        assertTrue(playingState.showAbandonDialog)
+    }
+
+    @Test
+    fun `GIVEN abandon dialog shown WHEN onAbandonDismissed THEN dialog is hidden`() = runTest {
+        // Given
+        val underTest = buildVm(buildStandardPuzzle())
+        underTest.onAbandon()
+
+        // When
+        underTest.onAbandonDismissed()
+
+        // Then
+        val playingState: RatedPuzzleUiState.Playing = underTest.uiState.value as RatedPuzzleUiState.Playing
+        assertFalse(playingState.showAbandonDialog)
+    }
+
+    @Test
+    fun `GIVEN playing state WHEN onAbandonConfirmed THEN puzzle is finished and result logged`() = runTest {
+        // Given
+        val underTest = buildVm(buildStandardPuzzle())
+
+        // When
+        underTest.onAbandonConfirmed()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Then
+        val finishedState = underTest.uiState.value as RatedPuzzleUiState.Finished
+        assertFalse(finishedState.success)
+        assertEquals(-10, finishedState.ratingChange)
+
+        assertNotNull(onPuzzleComplete.lastResult)
+        val loggedResult = onPuzzleComplete.lastResult!!
+        assertEquals(DEFAULT_RATING, loggedResult.puzzleRating)
+        assertEquals(false, loggedResult.wasSuccessful)
+        assertEquals(-10, loggedResult.ratingChange)
+        assertEquals(timer.elapsedMillis, loggedResult.timeSpentMillis)
+    }
+
+    @Test
+    fun `GIVEN playing state WHEN onNavigateBackPressed THEN returns true and shows abandon dialog`() = runTest {
+        // Given
+        val underTest = buildVm(buildStandardPuzzle())
+
+        // When
+        val handled = underTest.onNavigateBackPressed()
+
+        // Then
+        assertTrue(handled)
+        val playingState = underTest.uiState.value as RatedPuzzleUiState.Playing
+        assertTrue(playingState.showAbandonDialog)
+    }
+
+    @Test
+    fun `GIVEN failed state WHEN onNavigateBackPressed THEN returns false`() = runTest {
+        // Given
+        getRatedPuzzle.withFailure(RuntimeException("boom"))
+        val underTest = buildVm(buildStandardPuzzle())
+
+        // When
+        val handled = underTest.onNavigateBackPressed()
+
+        // Then
+        assertFalse(handled)
+    }
+
+    @Test
+    fun `GIVEN multiple puzzles WHEN onNextPuzzle THEN loads next puzzle`() = runTest {
+        // Given
+        getRatedPuzzle.enqueue(GetRatedPuzzle.Data(buildStandardPuzzle(), ratingChange = EloResult(20, -10)))
+        val underTest = buildVm(buildStandardPuzzle(rating = 1300))
+
+        // When
+        underTest.onNextPuzzle()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Then
+        val playingState: RatedPuzzleUiState.Playing = underTest.uiState.value as RatedPuzzleUiState.Playing
+        assertEquals(1300, playingState.data.rating)
+    }
+
+    private fun buildVm(withPuzzle: Puzzle): RatedPuzzleViewModel {
+        getRatedPuzzle.enqueue(GetRatedPuzzle.Data(withPuzzle, ratingChange = EloResult(20, -10)))
+        val underTest = RatedPuzzleViewModel(
+            getRatedPuzzle = getRatedPuzzle,
+            onPuzzleComplete = onPuzzleComplete,
+            timer = timer,
+            gameFactory = RealGameFactory()
+        )
+        testDispatcher.scheduler.advanceUntilIdle()
+        return underTest
+    }
+
+    private fun buildStandardPuzzle(
+        rating: Int = DEFAULT_RATING,
+        moves: List<String> = listOf("e2e4", "e7e5", "g1f3", "b8c6"),
+    ): Puzzle = RealGameFactory().builder()
+        .withDefaultBoard()
+        .withRating(rating)
+        .withMoves(moves)
+        .buildPuzzle()
+
+    private fun buildPromotionPuzzle(): Puzzle = RealGameFactory().builder()
+        .withRating(DEFAULT_RATING)
+        .withTurn(Side.BLACK)
+        .withPiece(Piece.King, Side.WHITE, "e1".loc())
+        .withPiece(Piece.King, Side.BLACK, "e8".loc())
+        .withPiece(Piece.Pawn, Side.WHITE, "a7".loc())
+        .withMoves(listOf("e8e7", "a7a8q", "e7e6"))
+        .buildPuzzle()
+
+    private companion object {
+        private const val DEFAULT_RATING: Int = 1200
+    }
+}
+
+private class FakeGetRatedPuzzle : GetRatedPuzzle {
+    private val results: ArrayDeque<GetRatedPuzzle.Data> = ArrayDeque()
+    private var exception: Exception? = null
+
+    fun enqueue(data: GetRatedPuzzle.Data) {
+        results.addLast(data)
+    }
+
+    fun withFailure(exception: Exception) = apply {
+        this.exception = exception
+    }
+
+    override suspend fun invoke(): GetRatedPuzzle.Data {
+        exception?.let { throw it }
+        return results.removeFirst()
+    }
+}
+
+private class FakeOnPuzzleComplete : OnPuzzleComplete {
+    var lastResult: PuzzleCompletionResult? = null
+        private set
+
+    override suspend fun invoke(completionResult: PuzzleCompletionResult) {
+        lastResult = completionResult
+    }
+}
+
+private class FakeTimer : Timer {
+    var startCallCount: Int = 0
+        private set
+    var elapsedMillis: Long = 500
+
+    override fun start() {
+        startCallCount += 1
+    }
+
+    override fun pause() = Unit
+
+    override fun resume() = Unit
+
+    override fun elapsed(): Long = if (startCallCount == 1) elapsedMillis else 0
+}

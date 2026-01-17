@@ -2,12 +2,16 @@ package com.paulcraciunas.screens.puzzles.rated.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.paulcraciunas.game.logic.api.Side
+import com.paulcraciunas.domain.api.EloResult
+import com.paulcraciunas.domain.api.GetRatedPuzzle
+import com.paulcraciunas.domain.api.OnPuzzleComplete
+import com.paulcraciunas.domain.api.PuzzleCompletionResult
+import com.paulcraciunas.domain.api.Timer
+import com.paulcraciunas.game.logic.api.GameFactory
 import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank
-import com.paulcraciunas.game.logic.impl.board.BoardFactory
 import com.paulcraciunas.screens.common.model.BoardViewDataBuilder
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,11 +22,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RatedPuzzleViewModel @Inject constructor(
-    // TODO: Inject actual repositories when ready
-) : ViewModel() {
+    private val getRatedPuzzle: GetRatedPuzzle,
+    private val onPuzzleComplete: OnPuzzleComplete,
+    private val timer: Timer,
+    gameFactory: GameFactory,
+) : ViewModel(), RatedPuzzleScreenInteractor {
+    private val boardViewBuilder = BoardViewDataBuilder()
+    private val puzzleInteractor = gameFactory.puzzleInteractor()
 
     private val _uiState = MutableStateFlow<RatedPuzzleUiState>(RatedPuzzleUiState.Loading)
     val uiState: StateFlow<RatedPuzzleUiState> = _uiState.asStateFlow()
+    private var puzzleData: GetRatedPuzzle.Data? = null
 
     init {
         loadPuzzle()
@@ -30,163 +40,139 @@ class RatedPuzzleViewModel @Inject constructor(
 
     private fun loadPuzzle() {
         viewModelScope.launch {
-            _uiState.value = RatedPuzzleUiState.Loading
-            
-            // TODO: Replace with actual puzzle fetching logic
-            val dummyPuzzleData = createDummyPuzzleData()
-            
-            _uiState.value = RatedPuzzleUiState.Playing(
-                data = dummyPuzzleData,
-                hintEnabled = true,
-                showAbandonDialog = false
-            )
-        }
-    }
-
-    fun onSquareClicked(rank: Rank, file: File) {
-        val currentState = _uiState.value
-        if (currentState !is RatedPuzzleUiState.Playing) return
-        
-        val locus = Locus(file, rank)
-        // TODO: Implement actual move logic
-        println("Square clicked: $locus")
-        
-        // Simulate puzzle completion (randomly for demo)
-        val random = (0..100).random()
-        when {
-            random < 70 -> {
-                // Simulate successful puzzle solve
-                _uiState.value = RatedPuzzleUiState.Finished(
-                    data = currentState.data,
-                    success = true,
-                    ratingChange = calculateRatingGain(currentState.data.rating)
+            try {
+                puzzleData = getRatedPuzzle()
+                puzzleInteractor.load(puzzleData!!.puzzle)
+                boardViewBuilder.load(puzzleData!!.puzzle)
+                timer.start()
+                _uiState.value = RatedPuzzleUiState.Playing(
+                    data = RatedPuzzleUiState.PuzzleData(
+                        rating = puzzleInteractor.rating,
+                        player = puzzleInteractor.player,
+                        boardData = boardViewBuilder.build(),
+                        captured = puzzleInteractor.captured
+                    ),
+                    hintEnabled = true,
+                    showAbandonDialog = false,
+                    promotion = null
                 )
-            }
-            random < 90 -> {
-                // Continue playing - no state change needed for now
-                // TODO: Update board position when actual move logic is implemented
-                println("Continue playing")
-            }
-            else -> {
-                // Simulate puzzle failure
-                _uiState.value = RatedPuzzleUiState.Finished(
-                    data = currentState.data,
-                    success = false,
-                    ratingChange = calculateRatingLoss(currentState.data.rating)
-                )
-            }
-        }
-    }
-    
-    private fun calculateRatingGain(puzzleRating: Int): Int {
-        // Dummy logic for rating gain - in reality this would be more complex
-        return when {
-            puzzleRating > 1600 -> 12
-            puzzleRating > 1400 -> 15
-            else -> 18
-        }
-    }
-    
-    private fun calculateRatingLoss(puzzleRating: Int): Int {
-        // Dummy logic for rating loss - in reality this would be more complex
-        return when {
-            puzzleRating > 1600 -> -8
-            puzzleRating > 1400 -> -12
-            else -> -15
-        }
-    }
-
-    fun onHintRequested() {
-        val currentState = _uiState.value
-        if (currentState !is RatedPuzzleUiState.Playing) return
-        
-        // TODO: Implement actual hint logic
-        _uiState.value = currentState.copy(hintEnabled = false)
-        // For now, just disable the hint button after use
-        // TODO: Show actual hint UI when hint system is implemented
-        println("Hint requested - not yet implemented")
-    }
-
-    fun onAbandonRequested() {
-        val currentState = _uiState.value
-        if (currentState is RatedPuzzleUiState.Playing) {
-            _uiState.value = currentState.copy(showAbandonDialog = true)
-        }
-    }
-
-    fun onAbandonConfirmed() {
-        val currentState = _uiState.value
-        if (currentState is RatedPuzzleUiState.Playing) {
-            _uiState.value = RatedPuzzleUiState.Finished(
-                data = currentState.data,
-                success = false,
-                ratingChange = -10 // Dummy rating loss for abandoning
-            )
-        }
-    }
-
-    fun onAbandonCancelled() {
-        val currentState = _uiState.value
-        if (currentState is RatedPuzzleUiState.Playing) {
-            _uiState.value = currentState.copy(showAbandonDialog = false)
-        }
-    }
-
-    fun onNavigateBackPressed() {
-        when (_uiState.value) {
-            is RatedPuzzleUiState.Playing -> {
-                // Show abandon dialog
-                onAbandonRequested()
-            }
-            else -> {
-                // Navigation is handled externally
-                // This method is kept for compatibility but actual navigation
-                // is handled by the composable's onNavigateBack parameter
+            } catch (_: Exception) {
+                _uiState.value = RatedPuzzleUiState.Failed
             }
         }
     }
 
-    fun onNextPuzzle() {
-        // Reset state and load next puzzle
+    override fun onSquareClicked(rank: Rank, file: File) {
+        val newSelection = Locus(file, rank)
+        if (boardViewBuilder.selected != null) {
+            val current = boardViewBuilder.selected!!
+            // Are we selecting the same location, or something we can't move to?
+            if (current == newSelection || !puzzleInteractor.canPlay(current, newSelection)) {
+                boardViewBuilder.clearSelection()
+                _uiState.value = playingState.copy(data = updatedBoardData())
+            } else if (puzzleInteractor.canPromote(current, newSelection)) {
+                _uiState.value = playingState.copy(promotion = RatedPuzzleUiState.Playing.Promotion(showChooser = true, at = newSelection))
+            } else {
+                // If we can move to this location, and we don't require promotion, play it
+                puzzleInteractor.play(current, newSelection)
+                boardViewBuilder.refresh()
+                updateState(playingState.copy(data = updatedBoardData(), promotion = null))
+            }
+        } else { // Otherwise, we have a new selected square
+            boardViewBuilder.withSelection(newSelection, puzzleInteractor.moves(newSelection))
+            _uiState.value = playingState.copy(data = updatedBoardData())
+        }
+    }
+
+    override fun onPromote(to: Piece) {
+        puzzleInteractor.promote(boardViewBuilder.selected!!, playingState.promotion!!.at, to)
+        boardViewBuilder.refresh()
+        updateState(playingState.copy(data = updatedBoardData(), promotion = null))
+    }
+
+    override fun onHintRequested() {
+        val selection = puzzleInteractor.hint()
+        val newMoves = puzzleInteractor.moves(selection)
+        boardViewBuilder.withSelection(selection, newMoves)
+        _uiState.value = playingState.copy(data = updatedBoardData())
+    }
+
+    override fun onAbandon() {
+        _uiState.value = playingState.copy(showAbandonDialog = true)
+    }
+
+    override fun onAbandonConfirmed() {
+        puzzleInteractor.resign()
+        updateState(playingState)
+    }
+
+    override fun onAbandonDismissed() {
+        _uiState.value = playingState.copy(showAbandonDialog = false)
+    }
+
+    override fun onNavigateToStart() {
+        TODO("integrate navigation later")
+    }
+
+    override fun onNavigateBack() {
+        TODO("Paul: Implement me")
+    }
+
+    override fun onNavigateNext() {
+        TODO("Paul: Implement me")
+    }
+
+    override fun onNavigateToEnd() {
+        TODO("Paul: Implement me")
+    }
+
+    override fun onNextPuzzle() {
         loadPuzzle()
     }
 
-    fun onNavigateToStart() {
-        // TODO: Navigate to the starting position of the puzzle
-        println("Navigate to start")
+    // Returns true if back press was handled, false otherwise
+    fun onNavigateBackPressed(): Boolean {
+        if (_uiState.value is RatedPuzzleUiState.Playing) {
+            onAbandon()
+            return true
+        }
+        return false
     }
 
-    fun onNavigateBackMove() {
-        // TODO: Navigate to previous move in solution
-        println("Navigate back move")
+    private fun updateState(state: RatedPuzzleUiState.Playing) {
+        if (puzzleInteractor.isOver()) {
+            finishPuzzle(state)
+        } else {
+            _uiState.value = state
+        }
     }
 
-    fun onNavigateNextMove() {
-        // TODO: Navigate to next move in solution
-        println("Navigate next move")
-    }
-
-    fun onNavigateToEnd() {
-        // TODO: Navigate to the final position of the puzzle
-        println("Navigate to end")
-    }
-
-    private fun createDummyPuzzleData(): RatedPuzzleUiState.PuzzleData {
-        // Create a dummy puzzle with a standard chess position
-        val board = BoardFactory.defaultBoard()
-        val boardViewData = BoardViewDataBuilder().apply {
-            loadBoard(board)
-            // TODO: Add highlighting for last move or hints
-        }.build()
-        
-        return RatedPuzzleUiState.PuzzleData(
-            rating = 1450,
-            player = Side.WHITE,
-            boardData = boardViewData,
-            captured = mapOf(
-                Side.WHITE to listOf(Piece.Pawn, Piece.Knight, Piece.Pawn), // Dummy captured pieces
-                Side.BLACK to listOf(Piece.Bishop, Piece.Pawn, Piece.Pawn, Piece.Rook) // Dummy captured pieces
-            )
+    private fun finishPuzzle(state: RatedPuzzleUiState.Playing) {
+        val success = puzzleInteractor.isSuccess()
+        _uiState.value = RatedPuzzleUiState.Finished(
+            data = state.data.copy(),
+            success = success,
+            ratingChange = puzzleData!!.ratingChange.get(success = success),
         )
+        logResult(success, puzzleData!!.ratingChange)
     }
+
+    private fun logResult(success: Boolean, eloResult: EloResult) {
+        viewModelScope.launch {
+            onPuzzleComplete(
+                PuzzleCompletionResult(
+                    puzzleRating = puzzleInteractor.rating,
+                    wasSuccessful = success,
+                    ratingChange = eloResult.get(success = success),
+                    timeSpentMillis = timer.elapsed(),
+                )
+            )
+        }
+    }
+
+    private fun updatedBoardData(): RatedPuzzleUiState.PuzzleData =
+        playingState.data.copy(boardData = boardViewBuilder.build())
+
+    private val playingState: RatedPuzzleUiState.Playing
+        get() = _uiState.value as RatedPuzzleUiState.Playing
 }
