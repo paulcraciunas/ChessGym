@@ -12,4 +12,5 @@ androidLibrary {
 dependencies {
     implementation(project(":global:resources"))
     implementation(project(":game:logic:api"))
+    testImplementation(project(":game:logic:impl"))
 }
