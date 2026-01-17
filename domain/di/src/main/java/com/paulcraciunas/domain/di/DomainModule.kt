@@ -3,12 +3,14 @@ package com.paulcraciunas.domain.di
 import com.paulcraciunas.domain.api.CalculateElo
 import com.paulcraciunas.domain.api.GetPuzzleByRating
 import com.paulcraciunas.domain.api.GetPuzzleSeries
+import com.paulcraciunas.domain.api.GetRatedPuzzle
 import com.paulcraciunas.domain.api.OnPuzzleComplete
 import com.paulcraciunas.domain.api.RandomFactory
 import com.paulcraciunas.domain.api.Timer
 import com.paulcraciunas.domain.impl.CalculateEloImpl
 import com.paulcraciunas.domain.impl.GetPuzzleByRatingImpl
 import com.paulcraciunas.domain.impl.GetPuzzleSeriesImpl
+import com.paulcraciunas.domain.impl.GetRatedPuzzleImpl
 import com.paulcraciunas.domain.impl.OnPuzzleCompleteImpl
 import com.paulcraciunas.domain.impl.SimpleTimer
 import com.paulcraciunas.domain.impl.TLRandomFactory
@@ -41,6 +43,10 @@ internal abstract class DomainModule {
     @Binds
     @Singleton
     abstract fun bindGetPuzzleByRatingUseCase(impl: GetPuzzleByRatingImpl): GetPuzzleByRating
+
+    @Binds
+    @Singleton
+    abstract fun bindGetRatedPuzzleUseCase(impl: GetRatedPuzzleImpl): GetRatedPuzzle
 
     @Binds
     abstract fun bindTimer(impl: SimpleTimer): Timer
