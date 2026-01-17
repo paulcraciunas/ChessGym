@@ -3,8 +3,9 @@ package com.paulcraciunas.domain.impl
 import com.paulcraciunas.domain.api.Timer
 import java.time.Duration
 import java.time.LocalDateTime
+import javax.inject.Inject
 
-class SimpleTimer : Timer {
+class SimpleTimer @Inject constructor() : Timer {
     private var startTime = LocalDateTime.now()
     private val intervals = mutableListOf<Long>()
     private var isPaused = true
