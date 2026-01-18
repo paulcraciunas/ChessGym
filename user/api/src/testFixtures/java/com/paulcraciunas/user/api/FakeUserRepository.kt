@@ -22,11 +22,9 @@ class FakeUserRepository(
     }
 
     override suspend fun logHistory(history: List<User.HistoryItem>) {
-        // Get current user and add history items
         val currentUser = get()
-        val updatedUser = currentUser.copy(
-            history = currentUser.history + history
-        )
+        val mergedHistory = mergeHistory(currentUser.history, history)
+        val updatedUser = currentUser.copy(history = mergedHistory)
 
         // Save locally
         local.saveUser(updatedUser)
@@ -35,6 +33,22 @@ class FakeUserRepository(
         if (updatedUser.isSignedIn()) {
             remote.addToHistory(updatedUser.authentication!!.userId, history)
         }
+    }
+
+    private fun mergeHistory(
+        existing: List<User.HistoryItem>,
+        new: List<User.HistoryItem>
+    ): List<User.HistoryItem> {
+        val result = existing.toMutableList()
+        for (newItem in new) {
+            val existingIndex = result.indexOfFirst { it.canMergeWith(newItem) }
+            if (existingIndex >= 0) {
+                result[existingIndex] = result[existingIndex].mergeWith(newItem)
+            } else {
+                result.add(newItem)
+            }
+        }
+        return result
     }
 
     override suspend fun signIn(auth: User.AuthenticationState, token: String): User {

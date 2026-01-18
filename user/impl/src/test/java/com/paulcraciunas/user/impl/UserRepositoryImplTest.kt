@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import java.time.LocalDate
 
 internal class UserRepositoryImplTest {
     private val fakeLocalDataSource = FakeUserLocalDataSource()
@@ -18,7 +19,7 @@ internal class UserRepositoryImplTest {
     private val underTest = UserRepositoryImpl(fakeLocalDataSource, fakeRemoteDataSource)
 
     @Test
-    fun given_localDataSource_WHEN_userUpdates_THEN_delegatesToLocalDataSource() = runBlocking {
+    fun `GIVEN local data source WHEN userUpdates THEN delegates to local data source`() = runBlocking {
         // Given
         val expectedUser = UserTestFixtures.createDefaultUser()
         fakeLocalDataSource.saveUser(expectedUser)
@@ -31,7 +32,7 @@ internal class UserRepositoryImplTest {
     }
 
     @Test
-    fun given_localDataSource_WHEN_get_THEN_delegatesToLocalDataSource() = runBlocking {
+    fun `GIVEN local data source WHEN get THEN delegates to local data source`() = runBlocking {
         // Given
         val expectedUser = UserTestFixtures.createDefaultUser()
         fakeLocalDataSource.saveUser(expectedUser)
@@ -44,7 +45,7 @@ internal class UserRepositoryImplTest {
     }
 
     @Test
-    fun given_unsignedUser_WHEN_update_THEN_savesLocallyOnly() = runBlocking {
+    fun `GIVEN unsigned user WHEN update THEN saves locally only`() = runBlocking {
         // Given
         val user = UserTestFixtures.createDefaultUser() // Not signed in
 
@@ -57,7 +58,7 @@ internal class UserRepositoryImplTest {
     }
 
     @Test
-    fun given_signedInUser_WHEN_update_THEN_savesLocallyAndSyncsRemote() = runBlocking {
+    fun `GIVEN signed in user WHEN update THEN saves locally and syncs remote`() = runBlocking {
         // Given
         var user = UserTestFixtures.createSignedUpUser()
         fakeRemoteDataSource.with(user)
@@ -72,7 +73,7 @@ internal class UserRepositoryImplTest {
     }
 
     @Test
-    fun given_remoteDataSourceThrows_WHEN_updateSignedInUser_THEN_propagatesException() {
+    fun `GIVEN remote data source throws WHEN update signed in user THEN propagates exception`() {
         runBlocking {
             // Given
             val user = UserTestFixtures.createSignedUpUser()
@@ -84,7 +85,7 @@ internal class UserRepositoryImplTest {
     }
 
     @Test
-    fun given_unsignedUser_WHEN_logHistory_THEN_addsToLocalHistoryOnly() = runBlocking {
+    fun `GIVEN unsigned user WHEN logHistory THEN adds to local history only`() = runBlocking {
         // Given
         val originalUser = UserTestFixtures.createDefaultUser()
         val newHistoryItems = listOf(UserTestFixtures.createSampleRatedPuzzleHistoryItem())
@@ -102,7 +103,7 @@ internal class UserRepositoryImplTest {
     }
 
     @Test
-    fun given_signedInUser_WHEN_logHistory_THEN_addsToLocalAndSyncsRemote() = runBlocking {
+    fun `GIVEN signed in user WHEN logHistory THEN adds to local and syncs remote`() = runBlocking {
         // Given
         val originalUser = UserTestFixtures.createSignedUpUser()
         val newHistoryItems = listOf(UserTestFixtures.createSampleRatedPuzzleHistoryItem())
@@ -124,7 +125,7 @@ internal class UserRepositoryImplTest {
     }
 
     @Test
-    fun given_authStateAndToken_WHEN_signIn_THEN_callsRemoteAndSavesLocally() = runBlocking {
+    fun `GIVEN auth state and token WHEN signIn THEN calls remote and saves locally`() = runBlocking {
         // Given
         val authState = User.AuthenticationState(
             provider = User.AuthenticationState.AuthProvider.APPLE,
@@ -143,7 +144,7 @@ internal class UserRepositoryImplTest {
     }
 
     @Test
-    fun given_remoteSignInFails_WHEN_signIn_THEN_propagatesException() {
+    fun `GIVEN remote signIn fails WHEN signIn THEN propagates exception`() {
         runBlocking {
             // Given
             val authState = User.AuthenticationState(
@@ -158,7 +159,7 @@ internal class UserRepositoryImplTest {
     }
 
     @Test
-    fun given_repository_WHEN_signOut_THEN_clearsLocalDataOnly() = runBlocking {
+    fun `GIVEN repository WHEN signOut THEN clears local data only`() = runBlocking {
         // Given
         val signedInUser = UserTestFixtures.createSignedUpUser()
         fakeLocalDataSource.saveUser(signedInUser)
@@ -172,7 +173,7 @@ internal class UserRepositoryImplTest {
     }
 
     @Test
-    fun given_repository_WHEN_clear_THEN_clearsLocalDataAndRemote() = runBlocking {
+    fun `GIVEN repository WHEN clear THEN clears local data and remote`() = runBlocking {
         // Given
         val signedInUser = UserTestFixtures.createSignedUpUser()
         fakeLocalDataSource.saveUser(signedInUser)
@@ -187,7 +188,7 @@ internal class UserRepositoryImplTest {
     }
 
     @Test
-    fun given_unsignedUser_WHEN_sync_THEN_doesNotSyncToRemote() = runBlocking {
+    fun `GIVEN unsigned user WHEN sync THEN does not sync to remote`() = runBlocking {
         // Given
         val user = UserTestFixtures.createDefaultUser() // Not signed in
         fakeLocalDataSource.saveUser(user)
@@ -201,7 +202,7 @@ internal class UserRepositoryImplTest {
     }
 
     @Test
-    fun given_signedInUser_WHEN_sync_THEN_syncsToRemote() = runBlocking {
+    fun `GIVEN signed in user WHEN sync THEN syncs to remote`() = runBlocking {
         // Given
         val user = UserTestFixtures.createSignedUpUser()
         val updated = user.copy(failedPuzzles = emptyList())
@@ -214,5 +215,112 @@ internal class UserRepositoryImplTest {
         // Then
         assertEquals(updated, fakeRemoteDataSource.getUser(user.authentication!!.userId))
         assertEquals(updated, fakeLocalDataSource.getUser())
+    }
+
+    @Test
+    fun `GIVEN same type same day history WHEN logHistory THEN merges items`() = runBlocking {
+        // Given
+        val today = LocalDate.now()
+        val existingItem = User.HistoryItem(
+            timestamp = today,
+            data = User.HistoryItem.HistoryItemData.RatedPuzzleData(
+                puzzlesPlayed = 3,
+                puzzlesSolved = 2,
+                ratingChange = 15,
+                timeSpent = 1000L
+            )
+        )
+        val user = User(history = listOf(existingItem))
+        fakeLocalDataSource.saveUser(user)
+
+        val newItem = User.HistoryItem(
+            timestamp = today,
+            data = User.HistoryItem.HistoryItemData.RatedPuzzleData(
+                puzzlesPlayed = 2,
+                puzzlesSolved = 1,
+                ratingChange = 10,
+                timeSpent = 500L
+            )
+        )
+
+        // When
+        underTest.logHistory(listOf(newItem))
+
+        // Then
+        val updatedUser = fakeLocalDataSource.getUser()
+        assertEquals(1, updatedUser.history.size)
+        val mergedData = updatedUser.history.first().data as User.HistoryItem.HistoryItemData.RatedPuzzleData
+        assertEquals(5, mergedData.puzzlesPlayed)
+        assertEquals(3, mergedData.puzzlesSolved)
+        assertEquals(25, mergedData.ratingChange)
+        assertEquals(1500L, mergedData.timeSpent)
+    }
+
+    @Test
+    fun `GIVEN same type different day history WHEN logHistory THEN adds new item`() = runBlocking {
+        // Given
+        val yesterday = LocalDate.now().minusDays(1)
+        val today = LocalDate.now()
+        val existingItem = User.HistoryItem(
+            timestamp = yesterday,
+            data = User.HistoryItem.HistoryItemData.RatedPuzzleData(
+                puzzlesPlayed = 3,
+                puzzlesSolved = 2,
+                ratingChange = 15,
+                timeSpent = 1000L
+            )
+        )
+        val user = User(history = listOf(existingItem))
+        fakeLocalDataSource.saveUser(user)
+
+        val newItem = User.HistoryItem(
+            timestamp = today,
+            data = User.HistoryItem.HistoryItemData.RatedPuzzleData(
+                puzzlesPlayed = 2,
+                puzzlesSolved = 1,
+                ratingChange = 10,
+                timeSpent = 500L
+            )
+        )
+
+        // When
+        underTest.logHistory(listOf(newItem))
+
+        // Then
+        val updatedUser = fakeLocalDataSource.getUser()
+        assertEquals(2, updatedUser.history.size)
+    }
+
+    @Test
+    fun `GIVEN different type same day history WHEN logHistory THEN adds new item`() = runBlocking {
+        // Given
+        val today = LocalDate.now()
+        val existingItem = User.HistoryItem(
+            timestamp = today,
+            data = User.HistoryItem.HistoryItemData.RatedPuzzleData(
+                puzzlesPlayed = 3,
+                puzzlesSolved = 2,
+                ratingChange = 15,
+                timeSpent = 1000L
+            )
+        )
+        val user = User(history = listOf(existingItem))
+        fakeLocalDataSource.saveUser(user)
+
+        val newItem = User.HistoryItem(
+            timestamp = today,
+            data = User.HistoryItem.HistoryItemData.PuzzleRushData(
+                tries = 1,
+                bestScore = 50,
+                timeSpent = 500L
+            )
+        )
+
+        // When
+        underTest.logHistory(listOf(newItem))
+
+        // Then
+        val updatedUser = fakeLocalDataSource.getUser()
+        assertEquals(2, updatedUser.history.size)
     }
 }
