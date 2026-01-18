@@ -153,19 +153,35 @@ internal class RealPuzzleInteractorTest {
     }
 
     @Test
-    fun `GIVEN loaded puzzle WHEN playing capture THEN captured list is updated`() {
-        // Given
+    fun `GIVEN loaded puzzle WHEN white captures black piece THEN captured is in white list`() {
+        // Given - e2e4, d7d5, e4d5 means WHITE captures BLACK's pawn
         val puzzle = buildDefaultPuzzle(listOf("e2e4", "d7d5", "e4d5"))
         val underTest = RealPuzzleInteractor().apply { load(puzzle) }
 
         // When
         underTest.play("d7".loc(), "d5".loc())
 
-        // Then
-        val capturedBlack: List<Piece> = underTest.captured[Side.BLACK] ?: emptyList()
-        val capturedWhite: List<Piece> = underTest.captured[Side.WHITE] ?: emptyList()
-        assertEquals(listOf(Piece.Pawn), capturedBlack)
-        assertTrue(capturedWhite.isEmpty())
+        // Then - WHITE captured BLACK's pawn, so it appears in WHITE's captured list
+        val capturedByWhite = underTest.captured[Side.WHITE] ?: emptyList()
+        val capturedByBlack = underTest.captured[Side.BLACK] ?: emptyList()
+        assertEquals(listOf(Piece.Pawn), capturedByWhite)
+        assertTrue(capturedByBlack.isEmpty())
+    }
+
+    @Test
+    fun `GIVEN loaded puzzle WHEN black captures white piece THEN captured is in black list`() {
+        // Given - e2e4, d7d5, g1f3, d5e4 means BLACK captures WHITE's pawn
+        val puzzle = buildDefaultPuzzle(listOf("e2e4", "d7d5", "g1f3", "d5e4"))
+        val underTest = RealPuzzleInteractor().apply { load(puzzle) }
+
+        // When
+        underTest.play("d7".loc(), "d5".loc())
+
+        // Then - BLACK captured WHITE's pawn, so it appears in BLACK's captured list
+        val capturedByWhite = underTest.captured[Side.WHITE] ?: emptyList()
+        val capturedByBlack = underTest.captured[Side.BLACK] ?: emptyList()
+        assertTrue(capturedByWhite.isEmpty())
+        assertEquals(listOf(Piece.Pawn), capturedByBlack)
     }
 
     @Test
@@ -177,6 +193,19 @@ internal class RealPuzzleInteractorTest {
         underTest.resign()
 
         // Then
+        assertTrue(underTest.isOver())
+        assertFalse(underTest.isSuccess())
+    }
+
+    @Test
+    fun `GIVEN loaded puzzle WHEN playing wrong move THEN puzzle fails without crash`() {
+        // Given
+        loadDefaultPuzzle(listOf("e2e4", "e7e5", "g1f3"))
+
+        // When - play a valid but incorrect move (e6 instead of expected e5)
+        underTest.play("e7".loc(), "e6".loc())
+
+        // Then - puzzle should be failed, no crash from attempting playNextMove
         assertTrue(underTest.isOver())
         assertFalse(underTest.isSuccess())
     }

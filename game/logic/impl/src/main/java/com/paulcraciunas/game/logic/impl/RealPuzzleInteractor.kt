@@ -38,7 +38,9 @@ class RealPuzzleInteractor : PuzzleInteractor {
         // to show the puzzle actually progressing?!
         // TODO Paul: test how it looks without the flow and then decide
         puzzle.play(from, to)
-        puzzle.playNextMove()
+        if (!isOver()) {
+            puzzle.playNextMove()
+        }
         updateCaptured()
     }
 
@@ -70,8 +72,8 @@ class RealPuzzleInteractor : PuzzleInteractor {
         for (side in Side.entries) {
             for (piece in Piece.entries) {
                 val missing = piece.startingCount() - puzzle.board.pieces(side, piece).size
-                (0 until missing).forEach { i ->
-                    _captured[side]!!.add(piece)
+                (0 until missing).forEach { _ ->
+                    _captured[side.other()]!!.add(piece)
                 }
             }
         }
