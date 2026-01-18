@@ -50,7 +50,7 @@ internal fun RatedPuzzle(
         showBorders = showBorders,
         onNavigateBack = {
             if (!vm.onNavigateBackPressed()) {
-                tabNavController.popBackStack()
+                tabNavController.popBackStack(Screen.PuzzleDashboard, inclusive = false)
             }
         },
         interactions = vm,
