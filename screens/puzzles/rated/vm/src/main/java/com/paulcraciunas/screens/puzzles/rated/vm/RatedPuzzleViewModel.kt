@@ -8,10 +8,8 @@ import com.paulcraciunas.domain.api.OnPuzzleComplete
 import com.paulcraciunas.domain.api.PuzzleCompletionResult
 import com.paulcraciunas.domain.api.Timer
 import com.paulcraciunas.game.logic.api.GameFactory
-import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.screens.common.model.BoardViewDataBuilder
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -62,24 +60,23 @@ class RatedPuzzleViewModel @Inject constructor(
         }
     }
 
-    override fun onSquareClicked(rank: Rank, file: File) {
-        val newSelection = Locus(file, rank)
+    override fun onSquareClicked(selection: Locus) {
         if (boardViewBuilder.selected != null) {
             val current = boardViewBuilder.selected!!
             // Are we selecting the same location, or something we can't move to?
-            if (current == newSelection || !puzzleInteractor.canPlay(current, newSelection)) {
+            if (current == selection || !puzzleInteractor.canPlay(current, selection)) {
                 boardViewBuilder.clearSelection()
                 _uiState.value = playingState.copy(data = updatedBoardData())
-            } else if (puzzleInteractor.canPromote(current, newSelection)) {
-                _uiState.value = playingState.copy(promotion = RatedPuzzleUiState.Playing.Promotion(showChooser = true, at = newSelection))
+            } else if (puzzleInteractor.canPromote(current, selection)) {
+                _uiState.value = playingState.copy(promotion = RatedPuzzleUiState.Playing.Promotion(showChooser = true, at = selection))
             } else {
                 // If we can move to this location, and we don't require promotion, play it
-                puzzleInteractor.play(current, newSelection)
+                puzzleInteractor.play(current, selection)
                 boardViewBuilder.refresh()
                 updateState(playingState.copy(data = updatedBoardData(), promotion = null))
             }
         } else { // Otherwise, we have a new selected square
-            boardViewBuilder.withSelection(newSelection, puzzleInteractor.moves(newSelection))
+            boardViewBuilder.withSelection(selection, puzzleInteractor.moves(selection))
             _uiState.value = playingState.copy(data = updatedBoardData())
         }
     }

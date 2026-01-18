@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File
+import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.screens.common.model.BoardViewData
 import com.paulcraciunas.screens.common.model.BoardViewDataBuilder
@@ -38,9 +39,9 @@ enum class BoardOrientation(val ranks: List<Rank>, val files: List<File>) {
 fun ChessBoard(
     board: BoardViewData,
     orientation: BoardOrientation,
-    onClick: (Rank, File) -> Unit,
+    onClick: (Locus) -> Unit,
     showBorders: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     if (!showBorders) {
         ChessBoardContents(
@@ -74,7 +75,7 @@ fun ChessBoard(
 private fun ChessBoardContents(
     board: BoardViewData,
     orientation: BoardOrientation,
-    onClick: (Rank, File) -> Unit,
+    onClick: (Locus) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
@@ -90,7 +91,7 @@ private fun ChessBoardContents(
                         modifier = Modifier
                             .weight(1f)
                             .aspectRatio(1f)
-                            .clickable { onClick(rank, file) },
+                            .clickable { onClick(Locus(file, rank)) },
                     )
                 }
             }
@@ -121,7 +122,7 @@ private fun WhitePerspectivePreview() {
         ChessBoard(
             board = BoardViewDataBuilder().build(),
             orientation = BoardOrientation.White,
-            onClick = { _, _ -> },
+            onClick = { _ -> },
             showBorders = false
         )
     }
@@ -134,7 +135,7 @@ private fun BlackPerspectivePreview() {
         ChessBoard(
             board = BoardViewDataBuilder().build(),
             orientation = BoardOrientation.Black,
-            onClick = { _, _ -> },
+            onClick = { _ -> },
             showBorders = false
         )
     }
@@ -149,7 +150,7 @@ private fun GreyThemePreview() {
         ChessBoard(
             board = BoardViewDataBuilder().build(),
             orientation = BoardOrientation.Black,
-            onClick = { _, _ -> },
+            onClick = { _ -> },
             showBorders = false
         )
     }
@@ -162,7 +163,7 @@ private fun WhitePerspectiveBordersPreview() {
         ChessBoard(
             board = BoardViewDataBuilder().build(),
             orientation = BoardOrientation.White,
-            onClick = { _, _ -> },
+            onClick = { _ -> },
             showBorders = true
         )
     }

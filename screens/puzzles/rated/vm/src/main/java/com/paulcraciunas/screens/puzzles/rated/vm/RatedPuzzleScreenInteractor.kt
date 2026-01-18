@@ -1,11 +1,10 @@
 package com.paulcraciunas.screens.puzzles.rated.vm
 
-import com.paulcraciunas.game.logic.api.board.File
+import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.api.board.Rank
 
 interface RatedPuzzleScreenInteractor {
-    fun onSquareClicked(rank: Rank, file: File)
+    fun onSquareClicked(selection: Locus)
     fun onPromote(to: Piece)
     fun onHintRequested()
     fun onAbandon()
@@ -19,7 +18,7 @@ interface RatedPuzzleScreenInteractor {
 }
 
 class StubRatedPuzzleScreenInteractor : RatedPuzzleScreenInteractor {
-    override fun onSquareClicked(rank: Rank, file: File) {}
+    override fun onSquareClicked(selection: Locus) {}
     override fun onPromote(to: Piece) {}
     override fun onHintRequested() {}
     override fun onAbandon() {}
