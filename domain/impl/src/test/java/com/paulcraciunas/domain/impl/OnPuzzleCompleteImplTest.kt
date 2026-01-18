@@ -55,7 +55,7 @@ internal class OnPuzzleCompleteImplTest {
         val completionResult = PuzzleCompletionResult(
             puzzleRating = 1450,
             wasSuccessful = false,
-            ratingChange = -15,
+            ratingChange = 15,
             timeSpentMillis = 800L
         )
         fakeUserRepository.update(currentUser)
@@ -68,7 +68,7 @@ internal class OnPuzzleCompleteImplTest {
             assertEquals(UserDefaults.STATISTICS_PLAYED + 1, statistics.puzzlesPlayed)
             assertEquals(UserDefaults.STATISTICS_SOLVED, statistics.puzzlesSolved)
             assertEquals(UserDefaults.STATISTICS_TIME_PLAYED + completionResult.timeSpentMillis, statistics.totalTimeSpent)
-            assertEquals(UserDefaults.RATING + completionResult.ratingChange, ratings.current)
+            assertEquals(UserDefaults.RATING - completionResult.ratingChange, ratings.current)
             assertEquals(UserDefaults.HIGH_SCORE_RATED, highScores.ratedPuzzle)
 
             assertTrue(history.isNotEmpty())

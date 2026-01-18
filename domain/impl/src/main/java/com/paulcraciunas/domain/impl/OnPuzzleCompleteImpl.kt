@@ -13,22 +13,19 @@ import javax.inject.Inject
  * Integrates with UserRepository to update ratings, statistics, and history.
  */
 class OnPuzzleCompleteImpl @Inject constructor(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
 ) : OnPuzzleComplete {
 
     override suspend operator fun invoke(completionResult: PuzzleCompletionResult) {
         val currentUser = userRepository.get()
+        val won = completionResult.wasSuccessful
 
         // Update puzzles played and solved count
         val newPuzzlesPlayed = currentUser.statistics.puzzlesPlayed + 1
-        val newPuzzlesSolved = if (completionResult.wasSuccessful) {
-            currentUser.statistics.puzzlesSolved + 1
-        } else {
-            currentUser.statistics.puzzlesSolved
-        }
+        val newPuzzlesSolved = currentUser.statistics.puzzlesSolved + if (won) 1 else 0
 
         // Update current rating
-        val newCurrentRating = currentUser.ratings.current + completionResult.ratingChange
+        val newCurrentRating = currentUser.ratings.current + completionResult.ratingChange * if (won) 1 else -1
 
         // Update best rating if this is a new personal best
         val newBestRating = maxOf(currentUser.highScores.ratedPuzzle, newCurrentRating)
@@ -51,7 +48,7 @@ class OnPuzzleCompleteImpl @Inject constructor(
         val today = LocalDate.now()
         val historyData = User.HistoryItem.HistoryItemData.RatedPuzzleData(
             puzzlesPlayed = 1,
-            puzzlesSolved = if (completionResult.wasSuccessful) 1 else 0,
+            puzzlesSolved = if (won) 1 else 0,
             ratingChange = completionResult.ratingChange,
             timeSpent = completionResult.timeSpentMillis
         )
