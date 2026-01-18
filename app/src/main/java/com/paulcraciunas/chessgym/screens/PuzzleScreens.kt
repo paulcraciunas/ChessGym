@@ -1,8 +1,8 @@
 package com.paulcraciunas.chessgym.screens
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.paulcraciunas.chessgym.navigation.Screen
@@ -18,7 +18,7 @@ internal fun PuzzleDashboard(
     onDrawerToggle: () -> Unit,
 ) {
     val vm: PuzzleDashboardViewModel = hiltViewModel()
-    val puzzleDashboardState by vm.uiState.collectAsState()
+    val puzzleDashboardState by vm.uiState.collectAsStateWithLifecycle()
     PuzzleDashboardScreen(
         state = puzzleDashboardState,
         onDrawerToggle = onDrawerToggle,
@@ -46,7 +46,7 @@ internal fun RatedPuzzle(
     showBorders: Boolean,
 ) {
     val vm: RatedPuzzleViewModel = hiltViewModel()
-    val ratedPuzzleState by vm.uiState.collectAsState()
+    val ratedPuzzleState by vm.uiState.collectAsStateWithLifecycle()
     RatedPuzzleScreen(
         uiState = ratedPuzzleState,
         showBorders = showBorders,

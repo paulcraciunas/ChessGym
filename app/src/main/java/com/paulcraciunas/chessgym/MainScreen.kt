@@ -13,8 +13,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,7 +45,7 @@ fun MainScreen(
     modifier: Modifier = Modifier,
 ) {
     val mainScreenViewModel: MainScreenViewModel = hiltViewModel()
-    val mainScreenState by mainScreenViewModel.uiState.collectAsState()
+    val mainScreenState by mainScreenViewModel.uiState.collectAsStateWithLifecycle()
 
     val tabNavController = rememberNavController()
     val navBackStackEntry by tabNavController.currentBackStackEntryAsState()
@@ -104,7 +104,7 @@ fun MainScreen(
             ) {
                 animatedComposable<Screen.Home> {
                     val vm: HomeViewModel = hiltViewModel()
-                    val homeState by vm.uiState.collectAsState()
+                    val homeState by vm.uiState.collectAsStateWithLifecycle()
                     HomeScreen(state = homeState, onDrawerToggle = onDrawerToggle)
                 }
                 animatedComposable<Screen.PuzzleDashboard> {
