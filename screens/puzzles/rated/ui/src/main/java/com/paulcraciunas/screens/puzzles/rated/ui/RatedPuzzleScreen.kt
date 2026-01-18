@@ -104,6 +104,7 @@ fun RatedPuzzleScreen(
                 }
 
                 is RatedPuzzleUiState.Finished -> FinishedPuzzleControls(
+                    success = uiState.success,
                     ratingChange = uiState.ratingChange,
                     modifier = Modifier.fillMaxWidth(),
                     onNavigateToStart = interactions::onNavigateToStart,

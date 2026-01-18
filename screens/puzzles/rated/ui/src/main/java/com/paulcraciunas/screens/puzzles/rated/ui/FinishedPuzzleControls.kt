@@ -30,6 +30,7 @@ import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
 internal fun FinishedPuzzleControls(
+    success: Boolean,
     ratingChange: Int,
     modifier: Modifier = Modifier,
     onNavigateToStart: () -> Unit = {},
@@ -47,10 +48,10 @@ internal fun FinishedPuzzleControls(
     ) {
         // Finished state: rating change + navigation controls + play next
         Text(
-            text = if (ratingChange >= 0) "+$ratingChange" else "$ratingChange",
+            text = if (success) "+$ratingChange" else "-$ratingChange",
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
-            color = if (ratingChange >= 0) {
+            color = if (success) {
                 MaterialTheme.colorScheme.primary
             } else {
                 MaterialTheme.colorScheme.error
@@ -111,6 +112,7 @@ internal fun FinishedPuzzleControls(
 private fun PuzzleControlsSolvedPreview() {
     ChessGymTheme {
         FinishedPuzzleControls(
+            success = true,
             ratingChange = 15,
         )
     }
@@ -122,7 +124,8 @@ private fun PuzzleControlsSolvedPreview() {
 private fun PuzzleControlsFailedPreview() {
     ChessGymTheme {
         FinishedPuzzleControls(
-            ratingChange = -12,
+            success = false,
+            ratingChange = 12,
         )
     }
 }
