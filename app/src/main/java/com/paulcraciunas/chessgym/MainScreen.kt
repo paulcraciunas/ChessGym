@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
@@ -21,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -45,10 +47,11 @@ fun MainScreen(
 ) {
     val mainScreenViewModel: MainScreenViewModel = hiltViewModel()
     val mainScreenState by mainScreenViewModel.uiState.collectAsState()
-    
+
     val tabNavController = rememberNavController()
     val navBackStackEntry by tabNavController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
+    val isTopLevelScreen = currentDestination?.route?.isTopLevelRoute() ?: true
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -70,21 +73,16 @@ fun MainScreen(
                 closeDrawer = { scope.launch { drawerState.close() } }
             )
         },
-        drawerState = drawerState
+        drawerState = drawerState,
+        gesturesEnabled = isTopLevelScreen
     ) {
         Scaffold(
             modifier = modifier,
             topBar = {
-                AppBar(titleAlign = AppBarAlignment.Center) {
-                    Home(onClick = {
-                        scope.launch {
-                            if (drawerState.isClosed) {
-                                drawerState.open()
-                            } else {
-                                drawerState.close()
-                            }
-                        }
-                    })
+                if (isTopLevelScreen) {
+                    AppBar(titleAlign = AppBarAlignment.Center) {
+                        Home(onClick = { scope.launch { drawerState.toggle() } })
+                    }
                 }
             },
             bottomBar = {
@@ -106,44 +104,34 @@ fun MainScreen(
                 )
             },
         ) { innerPadding ->
+            val contentPadding = if (isTopLevelScreen) {
+                innerPadding
+            } else {
+                PaddingValues(bottom = innerPadding.calculateBottomPadding())
+            }
             NavHost(
                 navController = tabNavController,
                 startDestination = Screen.Home,
-                modifier = Modifier.padding(innerPadding)
+                modifier = Modifier.padding(contentPadding)
             ) {
-                composable<Screen.Home>(
-                    enterTransition = { enter() },
-                    exitTransition = { exit() }
-                ) {
+                animatedComposable<Screen.Home> {
                     val vm: HomeViewModel = hiltViewModel()
                     val homeState by vm.uiState.collectAsState()
                     HomeScreen(state = homeState)
                 }
-                composable<Screen.PuzzleDashboard>(
-                    enterTransition = { enter() },
-                    exitTransition = { exit() }
-                ) {
+                animatedComposable<Screen.PuzzleDashboard> {
                     PuzzleDashboard(tabNavController)
                 }
-                composable<Screen.RatedPuzzle>(
-                    enterTransition = { enter() },
-                    exitTransition = { exit() }
-                ) {
+                animatedComposable<Screen.RatedPuzzle> {
                     RatedPuzzle(
                         tabNavController = tabNavController,
                         showBorders = mainScreenState.appSettings?.showBorders ?: true,
                     )
                 }
-                composable<Screen.BoardVisualization>(
-                    enterTransition = { enter() },
-                    exitTransition = { exit() }
-                ) {
+                animatedComposable<Screen.BoardVisualization> {
                     UnderConstruction(title = "Board Visualisation", innerPadding = innerPadding)
                 }
-                composable<Screen.BlindMode>(
-                    enterTransition = { enter() },
-                    exitTransition = { exit() }
-                ) {
+                animatedComposable<Screen.BlindMode> {
                     UnderConstruction(title = "Blind Mode", innerPadding = innerPadding)
                 }
             }
@@ -151,11 +139,22 @@ fun MainScreen(
     }
 }
 
+private inline fun <reified T : Any> NavGraphBuilder.animatedComposable(
+    noinline content: (@Composable () -> Unit) = {},
+) {
+    composable<T>(
+        enterTransition = { enter() },
+        exitTransition = { exit() }
+    ) {
+        content()
+    }
+}
+
 @Composable
 private fun UnderConstruction(
     title: String,
     innerPadding: PaddingValues,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.padding(innerPadding)) {
         Text(
@@ -172,5 +171,22 @@ private fun UnderConstruction(
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.bodyMedium,
         )
+    }
+}
+
+private val topLevelRoutes = setOf(
+    Screen.Home::class.qualifiedName,
+    Screen.PuzzleDashboard::class.qualifiedName,
+    Screen.BoardVisualization::class.qualifiedName,
+    Screen.BlindMode::class.qualifiedName
+)
+
+private fun String.isTopLevelRoute(): Boolean = topLevelRoutes.contains(this)
+
+private suspend fun DrawerState.toggle() {
+    if (isClosed) {
+        open()
+    } else {
+        close()
     }
 }
