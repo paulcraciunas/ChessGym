@@ -64,7 +64,9 @@ class BoardViewDataBuilder {
         }
     }
 
-    fun build(): BoardViewData = BoardViewData(squares)
+    fun build(): BoardViewData = BoardViewData(squares.map { row ->
+        row.map { it.copy() }.toTypedArray()
+    }.toTypedArray())
 
     private fun loadBoard(board: IBoard) {
         // Clear the squares first
