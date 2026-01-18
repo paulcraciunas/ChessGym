@@ -10,7 +10,7 @@ data class User(
     val highScores: HighScores = HighScores(),
     val statistics: Statistics = Statistics(),
     val history: List<HistoryItem> = emptyList(),
-    val failedPuzzles: List<Int> = emptyList(), // Puzzle IDs for retry
+    val failedPuzzles: List<Int> = emptyList(), // Puzzle IDs for retry; This is not persistable across Network, as DB IDs might differ
     val authentication: AuthenticationState? = null
 ) {
     fun isSignedIn(): Boolean = authentication != null

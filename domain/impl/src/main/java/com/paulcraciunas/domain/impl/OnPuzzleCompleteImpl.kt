@@ -34,6 +34,13 @@ class OnPuzzleCompleteImpl @Inject constructor(
         // Update total time spent (convert to milliseconds)
         val newTotalTimeSpent = currentUser.statistics.totalTimeSpent + completionResult.timeSpentMillis
 
+        // Update failed puzzles list if the puzzle was failed and has an ID
+        val newFailedPuzzles = if (!won && completionResult.puzzleId != null) {
+            currentUser.failedPuzzles + completionResult.puzzleId!!
+        } else {
+            currentUser.failedPuzzles
+        }
+
         // Create updated user
         val updatedUser = currentUser.copy(
             ratings = currentUser.ratings.copy(current = newCurrentRating),
@@ -42,7 +49,8 @@ class OnPuzzleCompleteImpl @Inject constructor(
                 puzzlesPlayed = newPuzzlesPlayed,
                 puzzlesSolved = newPuzzlesSolved,
                 totalTimeSpent = newTotalTimeSpent
-            )
+            ),
+            failedPuzzles = newFailedPuzzles
         )
 
         // Create history entry for today

@@ -162,8 +162,8 @@ internal class RealPuzzleInteractorTest {
         underTest.play("d7".loc(), "d5".loc())
 
         // Then - WHITE captured BLACK's pawn, so it appears in WHITE's captured list
-        val capturedByWhite = underTest.captured[Side.WHITE] ?: emptyList()
-        val capturedByBlack = underTest.captured[Side.BLACK] ?: emptyList()
+        val capturedByWhite = underTest.captured[Side.WHITE]!!
+        val capturedByBlack = underTest.captured[Side.BLACK]!!
         assertEquals(listOf(Piece.Pawn), capturedByWhite)
         assertTrue(capturedByBlack.isEmpty())
     }
@@ -176,10 +176,11 @@ internal class RealPuzzleInteractorTest {
 
         // When
         underTest.play("d7".loc(), "d5".loc())
+        underTest.play("d5".loc(), "e4".loc())
 
         // Then - BLACK captured WHITE's pawn, so it appears in BLACK's captured list
-        val capturedByWhite = underTest.captured[Side.WHITE] ?: emptyList()
-        val capturedByBlack = underTest.captured[Side.BLACK] ?: emptyList()
+        val capturedByWhite = underTest.captured[Side.WHITE]!!
+        val capturedByBlack = underTest.captured[Side.BLACK]!!
         assertTrue(capturedByWhite.isEmpty())
         assertEquals(listOf(Piece.Pawn), capturedByBlack)
     }

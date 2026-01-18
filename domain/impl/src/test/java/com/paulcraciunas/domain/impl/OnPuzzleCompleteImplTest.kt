@@ -19,6 +19,7 @@ internal class OnPuzzleCompleteImplTest {
         // Given
         val currentUser = UserDefaults.signedInUser()
         val completionResult = PuzzleCompletionResult(
+            puzzleId = 42,
             puzzleRating = 1400,
             wasSuccessful = true,
             ratingChange = 200,
@@ -45,6 +46,9 @@ internal class OnPuzzleCompleteImplTest {
             assertEquals(1, historyData.puzzlesSolved)
             assertEquals(completionResult.ratingChange, historyData.ratingChange)
             assertEquals(completionResult.timeSpentMillis, historyData.timeSpent)
+
+            // Successful puzzle should not be added to failedPuzzles
+            assertTrue(failedPuzzles.isEmpty())
         }
     }
 
@@ -53,6 +57,7 @@ internal class OnPuzzleCompleteImplTest {
         // Given
         val currentUser = UserDefaults.signedInUser()
         val completionResult = PuzzleCompletionResult(
+            puzzleId = 123,
             puzzleRating = 1450,
             wasSuccessful = false,
             ratingChange = 15,
@@ -77,6 +82,32 @@ internal class OnPuzzleCompleteImplTest {
             assertEquals(0, historyData.puzzlesSolved)
             assertEquals(-completionResult.ratingChange, historyData.ratingChange)
             assertEquals(completionResult.timeSpentMillis, historyData.timeSpent)
+
+            // Failed puzzle with ID should be added to failedPuzzles
+            assertTrue(failedPuzzles.contains(123))
+        }
+    }
+
+    @Test
+    fun `GIVEN failed completion without puzzle id WHEN invoke THEN does not add to failedPuzzles`() = runTest {
+        // Given
+        val currentUser = UserDefaults.signedInUser()
+        val completionResult = PuzzleCompletionResult(
+            puzzleId = null,
+            puzzleRating = 1450,
+            wasSuccessful = false,
+            ratingChange = 15,
+            timeSpentMillis = 800L
+        )
+        fakeUserRepository.update(currentUser)
+
+        // When
+        underTest(completionResult)
+
+        // Then
+        fakeUserRepository.get().apply {
+            // Failed puzzle without ID should not add anything to failedPuzzles
+            assertTrue(failedPuzzles.isEmpty())
         }
     }
 }

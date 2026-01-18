@@ -85,7 +85,7 @@ internal class RatedPuzzleViewModelTest {
         val underTest = buildVm(buildStandardPuzzle())
 
         // When
-        underTest.onSquareClicked(Rank.`7`, File.e)
+        underTest.onSquareClicked("e7".loc())
 
         // Then
         val playingState = underTest.uiState.value as RatedPuzzleUiState.Playing
@@ -98,10 +98,10 @@ internal class RatedPuzzleViewModelTest {
     fun `GIVEN selected square WHEN onSquareClicked invalid target THEN selection is cleared`() = runTest {
         // Given
         val underTest = buildVm(buildStandardPuzzle())
-        underTest.onSquareClicked(Rank.`7`, File.e)
+        underTest.onSquareClicked("e7".loc())
 
         // When
-        underTest.onSquareClicked(Rank.`4`, File.e)
+        underTest.onSquareClicked("e4".loc())
 
         // Then
         val playingState = underTest.uiState.value as RatedPuzzleUiState.Playing
@@ -114,10 +114,10 @@ internal class RatedPuzzleViewModelTest {
     fun `GIVEN promotion move WHEN onSquareClicked THEN promotion chooser is shown`() = runTest {
         // Given
         val underTest = buildVm(buildPromotionPuzzle())
-        underTest.onSquareClicked(Rank.`7`, File.a)
+        underTest.onSquareClicked("a7".loc())
 
         // When
-        underTest.onSquareClicked(Rank.`8`, File.a)
+        underTest.onSquareClicked("a8".loc())
 
         // Then
         val playingState = underTest.uiState.value as RatedPuzzleUiState.Playing
@@ -131,8 +131,8 @@ internal class RatedPuzzleViewModelTest {
     fun `GIVEN promotion chooser WHEN onPromote THEN pawn is promoted and state updated`() = runTest {
         // Given
         val underTest = buildVm(buildPromotionPuzzle())
-        underTest.onSquareClicked(Rank.`7`, File.a)
-        underTest.onSquareClicked(Rank.`8`, File.a)
+        underTest.onSquareClicked("a7".loc())
+        underTest.onSquareClicked("a8".loc())
 
         // When
         underTest.onPromote(Piece.Queen)

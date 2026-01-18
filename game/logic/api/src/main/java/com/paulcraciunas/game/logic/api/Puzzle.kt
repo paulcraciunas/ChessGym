@@ -5,6 +5,7 @@ import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.state.GameInfo
 
 interface Puzzle {
+    val id: Int?
     val rating: Int
     val player: Side
     val state: State

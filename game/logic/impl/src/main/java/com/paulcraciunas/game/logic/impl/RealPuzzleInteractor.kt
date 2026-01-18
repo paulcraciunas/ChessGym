@@ -15,6 +15,8 @@ class RealPuzzleInteractor : PuzzleInteractor {
     private val puzzle: Puzzle
         get() = _puzzle!!
     override var captured = _captured
+    override val id: Int?
+        get() = puzzle.id
     override val rating: Int
         get() = puzzle.rating
     override val player: Side

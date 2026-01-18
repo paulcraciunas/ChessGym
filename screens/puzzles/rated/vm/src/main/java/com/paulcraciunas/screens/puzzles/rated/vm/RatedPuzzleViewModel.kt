@@ -158,6 +158,7 @@ class RatedPuzzleViewModel @Inject constructor(
         viewModelScope.launch {
             onPuzzleComplete(
                 PuzzleCompletionResult(
+                    puzzleId = puzzleInteractor.id,
                     puzzleRating = puzzleInteractor.rating,
                     wasSuccessful = success,
                     ratingChange = eloResult.get(success = success),

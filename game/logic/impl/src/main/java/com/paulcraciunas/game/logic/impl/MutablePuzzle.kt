@@ -11,6 +11,7 @@ import java.util.ArrayDeque
 import java.util.Queue
 
 internal class MutablePuzzle(
+    override val id: Int? = null,
     override val rating: Int,
     override val player: Side,
     override var state: Puzzle.State = Puzzle.State.Idle,

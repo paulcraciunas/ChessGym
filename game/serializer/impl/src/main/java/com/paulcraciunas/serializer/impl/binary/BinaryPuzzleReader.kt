@@ -46,10 +46,11 @@ class BinaryPuzzleReader(
     private var int: Int = 0
     private var long: Long = 0L
 
-    override fun readPuzzle(rating: Int, bytes: ByteArray): Puzzle {
+    override fun readPuzzle(rating: Int, bytes: ByteArray, id: Int?): Puzzle {
         int = 0
         // Order here matters. Ye be warned
         return gameFactory.builder()
+            .withId(id)
             .withBoard(bytes)
             .withRating(rating)
             .withPlieClock(bytes[int++].toInt())

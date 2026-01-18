@@ -4,6 +4,7 @@ import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 
 interface PuzzleInteractor {
+    val id: Int?
     val rating: Int
     val player: Side
     val captured: Map<Side, List<Piece>>

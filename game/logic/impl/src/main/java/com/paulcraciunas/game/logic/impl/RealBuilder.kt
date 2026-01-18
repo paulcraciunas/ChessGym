@@ -16,6 +16,7 @@ import com.paulcraciunas.game.logic.impl.plies.StandardPly
 
 internal class RealBuilder(private val plyFactory: PlyFactory) : Builder {
     private var board = Board()
+    private var id: Int? = null
     private var rating: Int? = null
     private var moves: MutableList<String> = mutableListOf()
     private var metaData: MetaData = MetaData()
@@ -26,6 +27,7 @@ internal class RealBuilder(private val plyFactory: PlyFactory) : Builder {
     private var plieClock: Int = 0
     private var moveIndex: Int = 1
 
+    override fun withId(id: Int?) = apply { this.id = id }
     override fun withMetadata(metaData: MetaData) = apply { this.metaData = metaData }
     override fun withRating(rating: Int) = apply { this.rating = rating }
     override fun withMoves(moves: List<String>) = apply { this.moves.addAll(moves) }
@@ -63,6 +65,7 @@ internal class RealBuilder(private val plyFactory: PlyFactory) : Builder {
     )
 
     override fun buildPuzzle(): Puzzle = MutablePuzzle(
+        id = id,
         rating = rating!!,
         player = turn.other(),
         info = MutableGameInfo(

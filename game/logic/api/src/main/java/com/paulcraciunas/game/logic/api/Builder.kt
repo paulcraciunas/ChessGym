@@ -5,6 +5,7 @@ import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.state.MetaData
 
 interface Builder {
+    fun withId(id: Int?): Builder
     fun withMetadata(metaData: MetaData): Builder
     fun withRating(rating: Int): Builder
     fun withMoves(moves: List<String>): Builder
