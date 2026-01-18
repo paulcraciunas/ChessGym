@@ -19,13 +19,14 @@ class OnPuzzleCompleteImpl @Inject constructor(
     override suspend operator fun invoke(completionResult: PuzzleCompletionResult) {
         val currentUser = userRepository.get()
         val won = completionResult.wasSuccessful
+        val ratingChange = completionResult.ratingChange * if (won) 1 else -1
 
         // Update puzzles played and solved count
         val newPuzzlesPlayed = currentUser.statistics.puzzlesPlayed + 1
         val newPuzzlesSolved = currentUser.statistics.puzzlesSolved + if (won) 1 else 0
 
         // Update current rating
-        val newCurrentRating = currentUser.ratings.current + completionResult.ratingChange * if (won) 1 else -1
+        val newCurrentRating = currentUser.ratings.current + ratingChange
 
         // Update best rating if this is a new personal best
         val newBestRating = maxOf(currentUser.highScores.ratedPuzzle, newCurrentRating)
@@ -49,7 +50,7 @@ class OnPuzzleCompleteImpl @Inject constructor(
         val historyData = User.HistoryItem.HistoryItemData.RatedPuzzleData(
             puzzlesPlayed = 1,
             puzzlesSolved = if (won) 1 else 0,
-            ratingChange = completionResult.ratingChange,
+            ratingChange = ratingChange,
             timeSpent = completionResult.timeSpentMillis
         )
         val historyItem = User.HistoryItem(

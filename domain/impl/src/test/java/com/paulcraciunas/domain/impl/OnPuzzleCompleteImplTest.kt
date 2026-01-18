@@ -75,7 +75,7 @@ internal class OnPuzzleCompleteImplTest {
             val historyData = history.first().data as User.HistoryItem.HistoryItemData.RatedPuzzleData
             assertEquals(1, historyData.puzzlesPlayed)
             assertEquals(0, historyData.puzzlesSolved)
-            assertEquals(completionResult.ratingChange, historyData.ratingChange)
+            assertEquals(-completionResult.ratingChange, historyData.ratingChange)
             assertEquals(completionResult.timeSpentMillis, historyData.timeSpent)
         }
     }
