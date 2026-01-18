@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -19,6 +21,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
+import com.paulcraciunas.screens.common.AppBar
+import com.paulcraciunas.screens.common.AppBarAlignment
 import com.paulcraciunas.screens.common.LoadingContent
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.puzzles.dashboard.vm.PuzzleDashboardUiState
@@ -30,17 +34,27 @@ fun PuzzleDashboardScreen(
     onPuzzleModeSelected: (PuzzleMode) -> Unit,
     onPuzzleRushTimeChanged: (PuzzleDashboardUiState.PuzzleRushConfig.TimeLimit) -> Unit,
     onPuzzleRushMistakesChanged: (PuzzleDashboardUiState.PuzzleRushConfig.MistakesAllowed) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onDrawerToggle: () -> Unit = {},
 ) {
-    when {
-        state.isLoading -> LoadingContent(modifier)
-        else -> DashboardContent(
-            state = state,
-            onPuzzleModeSelected = onPuzzleModeSelected,
-            onPuzzleRushTimeChanged = onPuzzleRushTimeChanged,
-            onPuzzleRushMistakesChanged = onPuzzleRushMistakesChanged,
-            modifier = modifier
-        )
+    Scaffold(
+        topBar = {
+            AppBar(titleAlign = AppBarAlignment.Center) {
+                Home(onClick = onDrawerToggle)
+            }
+        },
+        modifier = modifier
+    ) { innerPadding ->
+        when {
+            state.isLoading -> LoadingContent(Modifier.padding(innerPadding))
+            else -> DashboardContent(
+                state = state,
+                onPuzzleModeSelected = onPuzzleModeSelected,
+                onPuzzleRushTimeChanged = onPuzzleRushTimeChanged,
+                onPuzzleRushMistakesChanged = onPuzzleRushMistakesChanged,
+                modifier = Modifier.padding(innerPadding)
+            )
+        }
     }
 }
 

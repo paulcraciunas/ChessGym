@@ -15,11 +15,13 @@ import com.paulcraciunas.screens.puzzles.rated.vm.RatedPuzzleViewModel
 @Composable
 internal fun PuzzleDashboard(
     tabNavController: NavHostController,
+    onDrawerToggle: () -> Unit,
 ) {
     val vm: PuzzleDashboardViewModel = hiltViewModel()
     val puzzleDashboardState by vm.uiState.collectAsState()
     PuzzleDashboardScreen(
         state = puzzleDashboardState,
+        onDrawerToggle = onDrawerToggle,
         onPuzzleModeSelected = { mode ->
             vm.onPuzzleModeSelected(mode) { puzzleMode ->
                 // Navigate to specific puzzle screens based on mode

@@ -1,7 +1,6 @@
 package com.paulcraciunas.chessgym
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -55,6 +54,7 @@ fun MainScreen(
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    val onDrawerToggle: () -> Unit = { scope.launch { drawerState.toggle() } }
 
     ModalNavigationDrawer(
         drawerContent = {
@@ -78,13 +78,6 @@ fun MainScreen(
     ) {
         Scaffold(
             modifier = modifier,
-            topBar = {
-                if (isTopLevelScreen) {
-                    AppBar(titleAlign = AppBarAlignment.Center) {
-                        Home(onClick = { scope.launch { drawerState.toggle() } })
-                    }
-                }
-            },
             bottomBar = {
                 BottomNavigationBar(
                     currentDestination = currentDestination,
@@ -104,23 +97,18 @@ fun MainScreen(
                 )
             },
         ) { innerPadding ->
-            val contentPadding = if (isTopLevelScreen) {
-                innerPadding
-            } else {
-                PaddingValues(bottom = innerPadding.calculateBottomPadding())
-            }
             NavHost(
                 navController = tabNavController,
                 startDestination = Screen.Home,
-                modifier = Modifier.padding(contentPadding)
+                modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding())
             ) {
                 animatedComposable<Screen.Home> {
                     val vm: HomeViewModel = hiltViewModel()
                     val homeState by vm.uiState.collectAsState()
-                    HomeScreen(state = homeState)
+                    HomeScreen(state = homeState, onDrawerToggle = onDrawerToggle)
                 }
                 animatedComposable<Screen.PuzzleDashboard> {
-                    PuzzleDashboard(tabNavController)
+                    PuzzleDashboard(tabNavController, onDrawerToggle = onDrawerToggle)
                 }
                 animatedComposable<Screen.RatedPuzzle> {
                     RatedPuzzle(
@@ -129,10 +117,10 @@ fun MainScreen(
                     )
                 }
                 animatedComposable<Screen.BoardVisualization> {
-                    UnderConstruction(title = "Board Visualisation", innerPadding = innerPadding)
+                    UnderConstruction(title = "Board Visualisation", onDrawerToggle = onDrawerToggle)
                 }
                 animatedComposable<Screen.BlindMode> {
-                    UnderConstruction(title = "Blind Mode", innerPadding = innerPadding)
+                    UnderConstruction(title = "Blind Mode", onDrawerToggle = onDrawerToggle)
                 }
             }
         }
@@ -153,24 +141,33 @@ private inline fun <reified T : Any> NavGraphBuilder.animatedComposable(
 @Composable
 private fun UnderConstruction(
     title: String,
-    innerPadding: PaddingValues,
+    onDrawerToggle: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier.padding(innerPadding)) {
-        Text(
-            text = title,
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.titleLarge,
-        )
-        Spacer(modifier = Modifier.height(24.dp))
-        Text(
-            text = "Under Construction",
-            color = Color.Yellow,
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.bodyMedium,
-        )
+    Scaffold(
+        topBar = {
+            AppBar(titleAlign = AppBarAlignment.Center) {
+                Home(onClick = onDrawerToggle)
+            }
+        },
+        modifier = modifier
+    ) { innerPadding ->
+        Column(modifier = Modifier.padding(innerPadding)) {
+            Text(
+                text = title,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.titleLarge,
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+            Text(
+                text = "Under Construction",
+                color = Color.Yellow,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
     }
 }
 
