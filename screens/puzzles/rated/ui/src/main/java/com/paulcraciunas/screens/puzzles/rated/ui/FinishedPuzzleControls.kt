@@ -2,6 +2,7 @@ package com.paulcraciunas.screens.puzzles.rated.ui
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -46,7 +47,10 @@ internal fun FinishedPuzzleControls(
         ) {
             // Finished state: rating change + navigation controls + play next
             RatingChangeChip(
-                if (success) ratingChange else -ratingChange,
+                ratingChange = if (success) ratingChange else -ratingChange,
+                iconSize = 24.dp,
+                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
+                textStyle = MaterialTheme.typography.titleMedium
             )
             Text(
                 text = stringResource(if (success) R.string.generic_success else R.string.generic_failed),
