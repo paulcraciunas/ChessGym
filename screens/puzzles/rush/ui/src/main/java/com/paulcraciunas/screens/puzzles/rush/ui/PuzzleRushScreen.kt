@@ -1,5 +1,6 @@
 package com.paulcraciunas.screens.puzzles.rush.ui
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
@@ -79,6 +80,7 @@ fun PuzzleRushScreen(
                 .padding(innerPadding)
         ) {
             // Animate board transition when puzzle count changes
+            @SuppressLint("UnusedContentLambdaTargetStateParameter")
             AnimatedContent(
                 targetState = boardState.results.size,
                 transitionSpec = {
