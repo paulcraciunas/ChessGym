@@ -10,10 +10,6 @@ interface RatedPuzzleScreenInteractor {
     fun onAbandon()
     fun onAbandonConfirmed()
     fun onAbandonDismissed()
-    fun onNavigateToStart()
-    fun onNavigateBack()
-    fun onNavigateNext()
-    fun onNavigateToEnd()
     fun onNextPuzzle()
 }
 
@@ -24,9 +20,5 @@ class StubRatedPuzzleScreenInteractor : RatedPuzzleScreenInteractor {
     override fun onAbandon() {}
     override fun onAbandonConfirmed() {}
     override fun onAbandonDismissed() {}
-    override fun onNavigateToStart() {}
-    override fun onNavigateBack() {}
-    override fun onNavigateNext() {}
-    override fun onNavigateToEnd() {}
     override fun onNextPuzzle() {}
 }

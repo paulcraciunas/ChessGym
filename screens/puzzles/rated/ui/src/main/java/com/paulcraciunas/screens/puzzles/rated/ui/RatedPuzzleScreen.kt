@@ -107,10 +107,6 @@ fun RatedPuzzleScreen(
                     success = uiState.success,
                     ratingChange = uiState.ratingChange,
                     modifier = Modifier.fillMaxWidth(),
-                    onNavigateToStart = interactions::onNavigateToStart,
-                    onNavigateBack = interactions::onNavigateBack,
-                    onNavigateNext = interactions::onNavigateNext,
-                    onNavigateToEnd = interactions::onNavigateToEnd,
                     onPlayNext = interactions::onNextPuzzle,
                 )
 

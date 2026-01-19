@@ -107,22 +107,6 @@ class RatedPuzzleViewModel @Inject constructor(
         _uiState.value = playingState.copy(showAbandonDialog = false)
     }
 
-    override fun onNavigateToStart() {
-        TODO("integrate navigation later")
-    }
-
-    override fun onNavigateBack() {
-        TODO("Paul: Implement me")
-    }
-
-    override fun onNavigateNext() {
-        TODO("Paul: Implement me")
-    }
-
-    override fun onNavigateToEnd() {
-        TODO("Paul: Implement me")
-    }
-
     override fun onNextPuzzle() {
         loadPuzzle()
     }
