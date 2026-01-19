@@ -23,7 +23,7 @@ import com.paulcraciunas.screens.common.theme.ChessGymTheme
 @Composable
 internal fun YourMoveIndicator(
     toMove: Side,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -37,7 +37,10 @@ internal fun YourMoveIndicator(
         )
 
         Text(
-            text = stringResource(R.string.your_move),
+            text = stringResource(
+                if (toMove == Side.WHITE) R.string.rated_puzzle_find_best_move_white
+                else R.string.rated_puzzle_find_best_move_black
+            ),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Medium,
             color = MaterialTheme.colorScheme.onSurface,

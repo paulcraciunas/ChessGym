@@ -128,14 +128,13 @@
     <string name="rated_puzzle_abandon_description">Abandon</string>
     <string name="rated_puzzle_next_description">Next</string>
     <string name="rated_puzzle_rating_title">Puzzle rating %1$d</string>
-    <string name="rated_puzzle_white_to_move">White to move</string>
-    <string name="rated_puzzle_black_to_move">Black to move</string>
     <string name="rated_puzzle_moves">Moves: %1$s</string>
     <string name="rated_puzzle_title">Puzzle rating: %1$d</string>
     <string name="navigate_back">Navigate back</string>
     <string name="puzzle_hint">Hint</string>
     <string name="puzzle_abandon">Abandon puzzle</string>
-    <string name="your_move">Your move</string>
+    <string name="rated_puzzle_find_best_move_white">Find the best move for white</string>
+    <string name="rated_puzzle_find_best_move_black">Find the best move for black</string>
     <string name="abandon_puzzle_title">Abandon Puzzle?</string>
     <string name="choose_promotion_title">Promote to</string>
     <string name="abandon_puzzle_message">Are you sure you want to abandon the current puzzle? Your progress will be lost.</string>
@@ -156,6 +155,8 @@
     <string name="generic_retry">Retry</string>
     <string name="generic_today">Today</string>
     <string name="generic_yesterday">Yesterday</string>
+    <string name="generic_success">Success</string>
+    <string name="generic_failed">Failed</string>
     <!-- endregion -->
 
     <!-- region Puzzle Dashboard -->

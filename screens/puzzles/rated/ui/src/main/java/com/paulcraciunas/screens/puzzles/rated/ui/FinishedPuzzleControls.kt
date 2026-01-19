@@ -9,34 +9,28 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
+import com.paulcraciunas.screens.common.controls.RatingChangeChip
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
+import com.paulcraciunas.screens.common.theme.LoadingTheme
 
 @Composable
 internal fun FinishedPuzzleControls(
     success: Boolean,
     ratingChange: Int,
     modifier: Modifier = Modifier,
-    onNavigateToStart: () -> Unit = {},
-    onNavigateBack: () -> Unit = {},
-    onNavigateNext: () -> Unit = {},
-    onNavigateToEnd: () -> Unit = {},
     onPlayNext: () -> Unit = {},
 ) {
     Row(
@@ -46,51 +40,25 @@ internal fun FinishedPuzzleControls(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Finished state: rating change + navigation controls + play next
-        Text(
-            text = if (success) "+$ratingChange" else "-$ratingChange",
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            color = if (success) {
-                MaterialTheme.colorScheme.primary
-            } else {
-                MaterialTheme.colorScheme.error
-            }
-        )
-
-        // Navigation controls
         Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.Absolute.Left,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(onClick = onNavigateToStart) {
-                Icon(
-                    painter = painterResource(R.drawable.keyboard_double_arrow_left),
-                    contentDescription = "Go to start",
-                    tint = MaterialTheme.colorScheme.onSurface
-                )
-            }
-            IconButton(onClick = onNavigateBack) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                    contentDescription = "Previous move",
-                    tint = MaterialTheme.colorScheme.onSurface
-                )
-            }
-            IconButton(onClick = onNavigateNext) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                    contentDescription = "Next move",
-                    tint = MaterialTheme.colorScheme.onSurface
-                )
-            }
-            IconButton(onClick = onNavigateToEnd) {
-                Icon(
-                    painter = painterResource(R.drawable.keyboard_double_arrow_right),
-                    contentDescription = "Go to end",
-                    tint = MaterialTheme.colorScheme.onSurface
-                )
-            }
+            // Finished state: rating change + navigation controls + play next
+            RatingChangeChip(
+                if (success) ratingChange else -ratingChange,
+            )
+            Text(
+                text = stringResource(if (success) R.string.generic_success else R.string.generic_failed),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = if (success) {
+                    LoadingTheme.colors.success
+                } else {
+                    MaterialTheme.colorScheme.error
+                },
+                modifier = Modifier.padding(horizontal = 10.dp)
+            )
         }
 
         FilledTonalButton(onClick = onPlayNext) {
@@ -104,7 +72,6 @@ internal fun FinishedPuzzleControls(
         }
     }
 }
-
 
 @Preview(showBackground = true)
 @Preview("Dark mode", uiMode = UI_MODE_NIGHT_YES)
