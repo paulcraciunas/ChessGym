@@ -37,11 +37,6 @@ class RealPuzzleInteractor : PuzzleInteractor {
     override fun moves(from: Locus): List<Locus> = puzzle.plies(from).map { it.to }
     override fun play(from: Locus, to: Locus) {
         assert(canPlay(from, to))
-        // TODO Paul: maybe we should change this to exposing a flow
-        // so that we can push these 2 states separately
-        // and then in the UI, we can add a delay of 100ms or something
-        // to show the puzzle actually progressing?!
-        // TODO Paul: test how it looks without the flow and then decide
         puzzle.play(from, to)
         if (!isOver()) {
             puzzle.playNextMove()
