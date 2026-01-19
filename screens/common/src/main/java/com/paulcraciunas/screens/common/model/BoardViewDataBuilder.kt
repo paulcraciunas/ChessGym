@@ -15,6 +15,7 @@ class BoardViewDataBuilder {
     private val puzzle: Puzzle
         get() = _puzzle!!
     private val availableMoves: MutableList<Locus> = mutableListOf()
+    private var animatingPiece: AnimatingPiece? = null
 
     var selected: Locus? = null
         private set
@@ -28,9 +29,22 @@ class BoardViewDataBuilder {
         // clear selection first
         selected = null
         availableMoves.clear()
+        animatingPiece = null
         // update from the puzzle
         loadBoard(puzzle.board)
         withLastMove(puzzle.info.lastPly!!.from, puzzle.info.lastPly!!.to)
+    }
+
+    fun withAnimatingPiece(from: Locus, to: Locus): BoardViewDataBuilder = apply {
+        val pieceData = squares[to.rank.dec()][to.file.dec()].piece
+        if (pieceData != null) {
+            animatingPiece = AnimatingPiece(
+                piece = pieceData.piece,
+                side = pieceData.side,
+                from = from,
+                to = to,
+            )
+        }
     }
 
     fun clearSelection() {
@@ -64,9 +78,12 @@ class BoardViewDataBuilder {
         }
     }
 
-    fun build(): BoardViewData = BoardViewData(squares.map { row ->
-        row.map { it.copy() }.toTypedArray()
-    }.toTypedArray())
+    fun build(): BoardViewData = BoardViewData(
+        squares = squares.map { row ->
+            row.map { it.copy() }.toTypedArray()
+        }.toTypedArray(),
+        animatingPiece = animatingPiece,
+    )
 
     private fun loadBoard(board: IBoard) {
         // Clear the squares first

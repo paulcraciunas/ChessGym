@@ -1,5 +1,6 @@
 package com.paulcraciunas.game.logic.impl
 
+import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.PuzzleInteractor
 import com.paulcraciunas.game.logic.api.Side
@@ -21,6 +22,8 @@ class RealPuzzleInteractor : PuzzleInteractor {
         get() = puzzle.rating
     override val player: Side
         get() = puzzle.player
+    override val lastPly: Ply?
+        get() = puzzle.info.lastPly
 
     override fun load(puzzle: Puzzle) {
         _puzzle = puzzle as MutablePuzzle

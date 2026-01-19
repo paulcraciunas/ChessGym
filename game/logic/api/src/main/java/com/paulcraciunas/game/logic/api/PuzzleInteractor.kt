@@ -8,6 +8,7 @@ interface PuzzleInteractor {
     val rating: Int
     val player: Side
     val captured: Map<Side, List<Piece>>
+    val lastPly: Ply?
 
     fun load(puzzle: Puzzle)
 

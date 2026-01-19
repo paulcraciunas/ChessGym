@@ -42,6 +42,7 @@ class RatedPuzzleViewModel @Inject constructor(
                 puzzleData = getRatedPuzzle()
                 puzzleInteractor.load(puzzleData!!.puzzle)
                 boardViewBuilder.load(puzzleData!!.puzzle)
+                refreshBoardWithAnimation()
                 timer.start()
                 _uiState.value = RatedPuzzleUiState.Playing(
                     data = RatedPuzzleUiState.PuzzleData(
@@ -72,7 +73,7 @@ class RatedPuzzleViewModel @Inject constructor(
             } else {
                 // If we can move to this location, and we don't require promotion, play it
                 puzzleInteractor.play(current, selection)
-                boardViewBuilder.refresh()
+                refreshBoardWithAnimation()
                 updateState(playingState.copy(data = updatedBoardData(), promotion = null))
             }
         } else { // Otherwise, we have a new selected square
@@ -83,7 +84,7 @@ class RatedPuzzleViewModel @Inject constructor(
 
     override fun onPromote(to: Piece) {
         puzzleInteractor.promote(boardViewBuilder.selected!!, playingState.promotion!!.at, to)
-        boardViewBuilder.refresh()
+        refreshBoardWithAnimation()
         updateState(playingState.copy(data = updatedBoardData(), promotion = null))
     }
 
@@ -157,6 +158,13 @@ class RatedPuzzleViewModel @Inject constructor(
                     timeSpentMillis = timer.elapsed(),
                 )
             )
+        }
+    }
+
+    private fun refreshBoardWithAnimation() {
+        boardViewBuilder.refresh()
+        puzzleInteractor.lastPly?.let { lastPly ->
+            boardViewBuilder.withAnimatingPiece(lastPly.from, lastPly.to)
         }
     }
 

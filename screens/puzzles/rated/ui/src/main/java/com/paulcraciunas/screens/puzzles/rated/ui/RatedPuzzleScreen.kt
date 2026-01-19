@@ -1,6 +1,12 @@
 package com.paulcraciunas.screens.puzzles.rated.ui
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -79,8 +85,22 @@ fun RatedPuzzleScreen(
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(8.dp))
-            when (uiState) {
-                is RatedPuzzleUiState.Playing -> {
+            AnimatedContent(
+                targetState = uiState is RatedPuzzleUiState.Finished,
+                transitionSpec = {
+                    (slideInVertically { height -> height } + fadeIn())
+                        .togetherWith(slideOutVertically { height -> -height } + fadeOut())
+                },
+                label = "ControlsAnimation"
+            ) { isFinished ->
+                if (isFinished && uiState is RatedPuzzleUiState.Finished) {
+                    FinishedPuzzleControls(
+                        success = uiState.success,
+                        ratingChange = uiState.ratingChange,
+                        modifier = Modifier.fillMaxWidth(),
+                        onPlayNext = interactions::onNextPuzzle,
+                    )
+                } else if (uiState is RatedPuzzleUiState.Playing) {
                     PuzzleControls(
                         hintEnabled = uiState.hintEnabled,
                         toMove = data.player,
@@ -88,29 +108,22 @@ fun RatedPuzzleScreen(
                         onAbandonRequested = interactions::onAbandon,
                         modifier = Modifier.fillMaxWidth()
                     )
-                    // Abandon confirmation dialog
-                    if (uiState.showAbandonDialog) {
-                        AbandonConfirmationDialog(
-                            onConfirm = interactions::onAbandonConfirmed,
-                            onDismiss = interactions::onAbandonDismissed
-                        )
-                    }
-                    if (uiState.promotion != null) {
-                        PromotionDialog(
-                            side = data.player,
-                            onPieceChosen = interactions::onPromote
-                        )
-                    }
                 }
-
-                is RatedPuzzleUiState.Finished -> FinishedPuzzleControls(
-                    success = uiState.success,
-                    ratingChange = uiState.ratingChange,
-                    modifier = Modifier.fillMaxWidth(),
-                    onPlayNext = interactions::onNextPuzzle,
-                )
-
-                else -> {}
+            }
+            // Dialogs for playing state
+            if (uiState is RatedPuzzleUiState.Playing) {
+                if (uiState.showAbandonDialog) {
+                    AbandonConfirmationDialog(
+                        onConfirm = interactions::onAbandonConfirmed,
+                        onDismiss = interactions::onAbandonDismissed
+                    )
+                }
+                if (uiState.promotion != null) {
+                    PromotionDialog(
+                        side = data.player,
+                        onPieceChosen = interactions::onPromote
+                    )
+                }
             }
             Spacer(modifier = Modifier.height(8.dp))
         }

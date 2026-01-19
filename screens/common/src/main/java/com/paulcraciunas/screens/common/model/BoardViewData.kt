@@ -10,6 +10,7 @@ import com.paulcraciunas.game.logic.api.board.Rank
 @Stable
 data class BoardViewData(
     val squares: Array<Array<SquareViewData>>,
+    val animatingPiece: AnimatingPiece? = null,
 ) {
     fun at(rank: Rank, file: File): SquareViewData = squares[rank.dec()][file.dec()]
     fun at(loc: Locus): SquareViewData = at(loc.rank, loc.file)
@@ -20,11 +21,30 @@ data class BoardViewData(
 
         other as BoardViewData
 
-        return squares.contentDeepEquals(other.squares)
+        if (!squares.contentDeepEquals(other.squares)) return false
+        if (animatingPiece != other.animatingPiece) return false
+
+        return true
     }
 
-    override fun hashCode(): Int = squares.contentDeepHashCode()
+    override fun hashCode(): Int {
+        var result = squares.contentDeepHashCode()
+        result = 31 * result + (animatingPiece?.hashCode() ?: 0)
+        return result
+    }
 }
+
+/**
+ * Represents a piece that should be animated from one square to another.
+ * The piece at [to] should not be rendered in the static board during animation.
+ */
+@Stable
+data class AnimatingPiece(
+    val piece: Piece,
+    val side: Side,
+    val from: Locus,
+    val to: Locus,
+)
 
 @Stable
 data class SquareViewData(
