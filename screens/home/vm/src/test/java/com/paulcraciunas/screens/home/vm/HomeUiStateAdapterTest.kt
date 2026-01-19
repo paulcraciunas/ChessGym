@@ -1,9 +1,9 @@
 package com.paulcraciunas.screens.home.vm
 
 import com.paulcraciunas.user.api.User
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
 internal class HomeUiStateAdapterTest {
@@ -19,7 +19,7 @@ internal class HomeUiStateAdapterTest {
         val result = underTest.adapt(user)
 
         // Then
-        assertEquals("Master Ego", result.userProfile.name)
+        assertEquals("Chess Enthusiast", result.userProfile.name)
         assertEquals(1200, result.userProfile.currentRating)
         assertEquals(0, result.userProfile.totalActivities)
         assertEquals(LocalDate.now(), result.userProfile.joinDate)

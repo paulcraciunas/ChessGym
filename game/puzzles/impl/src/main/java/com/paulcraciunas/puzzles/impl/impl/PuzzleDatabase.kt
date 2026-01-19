@@ -9,6 +9,8 @@ interface PuzzleDatabase {
 
     suspend fun get(count: Int): List<Puzzle>
 
+    suspend fun getById(id: Int): Puzzle?
+
     suspend fun getByRating(rating: Int): Puzzle?
 
     suspend fun getInRatingRange(min: Int, max: Int): Puzzle?

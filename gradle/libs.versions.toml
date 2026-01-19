@@ -1,6 +1,8 @@
 [versions]
 agp = "8.10.1"
+gradle = "8.11.1"
 kotlin = "2.1.21"
+compose-compiler = "1.5.15"
 kotlin-ksp = "2.1.21-2.0.1"
 coreKtx = "1.16.0"
 core-splash = "1.0.1"
@@ -38,9 +40,15 @@ junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 
+## Gradle plugins
+android-tools-build-gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
+google-ksp-gradle-plugin = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "kotlin-ksp" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+
 ## Core Libraries
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityCompose" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "core-splash" }
 androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
@@ -48,6 +56,7 @@ androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecyc
 androidx-work-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workKtx" }
 androidx-work-test = { group = "androidx.work", name = "work-testing", version.ref = "workKtx" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "androidx-navigation" }
+javax-inject = { module = "javax.inject:javax.inject", version = "1" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
@@ -63,6 +72,7 @@ androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 
 ## Other
@@ -76,8 +86,6 @@ room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 ## Dependency injection
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-hilt-common = { group = "androidx.hilt", name = "hilt-common", version.ref = "hiltCommon" }
 androidx-hilt-work = { group = "androidx.hilt", name = "hilt-work", version.ref = "hiltCommon" }
 androidx-hilt-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hiltCommon" }
@@ -89,7 +97,7 @@ android-library = { id = "com.android.library", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 jetbrains-kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
-jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin"}
+jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 google-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 google-ksp = { id = "com.google.devtools.ksp", version.ref = "kotlin-ksp" }

@@ -1,15 +1,17 @@
+import plugins.extensions.testFixturesImplementation
+
 plugins {
-    id("java-library")
-    alias(libs.plugins.jetbrains.kotlin.jvm)
+    id("conventions.library")
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+library {
+    testFixtures = true
 }
 
 dependencies {
     implementation(project(":game:logic:api"))
-
     implementation(libs.kotlinx.coroutines.core)
+
+    testFixturesImplementation(project(":game:logic:impl"))
+    testFixturesImplementation(project(":game:serializer:impl"))
 }

@@ -1,50 +1,16 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.jetbrains.kotlin.android)
+    id("conventions.android.library")
 }
 
-android {
+androidLibrary {
     namespace = "com.paulcraciunas.screens.common"
-    compileSdk = 35
-
-    defaultConfig {
-        minSdk = 27
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-        }
-    }
-    buildFeatures {
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
+    consumerProguardFile("consumer-rules.pro")
+    proguardFile("proguard-rules.pro")
+    compose = true
 }
 
 dependencies {
     implementation(project(":global:resources"))
-
-    implementation(libs.androidx.core.ktx)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.material)
-    implementation(libs.androidx.material3)
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.tooling.preview)
-
-    debugImplementation(libs.androidx.ui.tooling)
+    implementation(project(":game:logic:api"))
+    testImplementation(project(":game:logic:impl"))
 }

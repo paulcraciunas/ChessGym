@@ -31,7 +31,7 @@ internal class StaleMateStrategyTest {
 
         // Set stalemate conditions
         game.info.inCheckCount = CheckCount.None
-        game.info.plies.clear()
+        game.plies.clear()
 
         // When
         val result = underTest(game)
@@ -49,7 +49,7 @@ internal class StaleMateStrategyTest {
 
         // Set checkmate conditions
         game.info.inCheckCount = CheckCount.One
-        game.info.plies.clear()
+        game.plies.clear()
         val originalState = game.state
 
         // When
@@ -90,7 +90,7 @@ internal class StaleMateStrategyTest {
 
         // Set double check conditions
         game.info.inCheckCount = CheckCount.Two
-        game.info.plies.clear()
+        game.plies.clear()
         val originalState = game.state
 
         // When

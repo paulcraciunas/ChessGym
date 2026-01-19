@@ -5,13 +5,11 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Rank
-import com.paulcraciunas.logic.di.Builder
-import com.paulcraciunas.logic.di.GameFactory
+import com.paulcraciunas.game.logic.api.Builder
+import com.paulcraciunas.game.logic.api.GameFactory
 import com.paulcraciunas.serializer.api.PuzzleReader
 import com.paulcraciunas.serializer.impl.withEnPassent
 import java.util.ArrayDeque
-import java.util.Queue
-import javax.inject.Inject
 
 /**
  * Read a puzzle written in binary, according to FEN format
@@ -39,7 +37,7 @@ import javax.inject.Inject
  * @see BinaryPuzzleWriter
  * @see BinaryAdapter
  */
-internal class BinaryPuzzleReader @Inject constructor(
+class BinaryPuzzleReader(
     private val gameFactory: GameFactory,
     private val adapter: BinaryAdapter,
 ) : PuzzleReader {
@@ -48,10 +46,11 @@ internal class BinaryPuzzleReader @Inject constructor(
     private var int: Int = 0
     private var long: Long = 0L
 
-    override fun readPuzzle(rating: Int, bytes: ByteArray): Puzzle {
+    override fun readPuzzle(rating: Int, bytes: ByteArray, id: Int?): Puzzle {
         int = 0
         // Order here matters. Ye be warned
         return gameFactory.builder()
+            .withId(id)
             .withBoard(bytes)
             .withRating(rating)
             .withPlieClock(bytes[int++].toInt())
@@ -119,8 +118,8 @@ internal class BinaryPuzzleReader @Inject constructor(
         return first.toLong() shl 32 or second.toLong()
     }
 
-    private fun ByteArray.loadMoves(): Queue<String> {
-        val movesList = ArrayDeque<String>()
+    private fun ByteArray.loadMoves(): List<String> {
+        val movesList = mutableListOf<String>()
         var move: Int
         while (int <= size - 2) { // Each move takes 2 bytes
             move = (((get(int++).toUInt() and 0xFFu) shl 8) or

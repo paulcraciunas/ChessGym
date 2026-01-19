@@ -17,6 +17,8 @@ abstract class AbstractPuzzleDatabase : RoomDatabase(), PuzzleDatabase {
 
     override suspend fun get(count: Int): List<Puzzle> = withContext(Dispatchers.IO) { puzzleDao().get(count) }
 
+    override suspend fun getById(id: Int): Puzzle? = withContext(Dispatchers.IO) { puzzleDao().getById(id) }
+
     override suspend fun getByRating(rating: Int): Puzzle? = withContext(Dispatchers.IO) { puzzleDao().getByRating(rating) }
 
     override suspend fun getInRatingRange(min: Int, max: Int): Puzzle? = withContext(Dispatchers.IO) { puzzleDao().getInRange(min, max) }

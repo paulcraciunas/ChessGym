@@ -1,34 +1,12 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.jetbrains.kotlin.android)
-    alias(libs.plugins.google.hilt)
-    alias(libs.plugins.google.ksp)
+    id("conventions.android.library")
 }
 
-android {
+androidLibrary {
     namespace = "com.paulcraciunas.puzzles.di"
-    compileSdk = 35
-
-    defaultConfig {
-        minSdk = 27
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-        }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
+    consumerProguardFile("consumer-rules.pro")
+    proguardFile("proguard-rules.pro")
+    di = true
 }
 
 dependencies {
@@ -40,20 +18,7 @@ dependencies {
 
     // Database
     implementation(libs.room.runtime)
-    implementation(libs.room.ktx)
-    implementation(libs.androidx.hilt.common)
-    ksp(libs.room.compiler)
 
     // Dependency injection
-    implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.work)
-    ksp(libs.hilt.compiler)
-    ksp(libs.androidx.hilt.compiler)
-
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
 }

@@ -1,16 +1,16 @@
 package com.paulcraciunas.user.impl
 
+import com.paulcraciunas.user.api.FakeUserLocalDataSource
+import com.paulcraciunas.user.api.FakeUserRemoteDataSource
 import com.paulcraciunas.user.api.User
-import com.paulcraciunas.user.api.UserLocalDataSource
-import com.paulcraciunas.user.api.UserRemoteDataSource
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+import java.time.LocalDate
 
 internal class UserRepositoryImplTest {
     private val fakeLocalDataSource = FakeUserLocalDataSource()
@@ -19,7 +19,7 @@ internal class UserRepositoryImplTest {
     private val underTest = UserRepositoryImpl(fakeLocalDataSource, fakeRemoteDataSource)
 
     @Test
-    fun given_localDataSource_WHEN_userUpdates_THEN_delegatesToLocalDataSource() = runBlocking {
+    fun `GIVEN local data source WHEN userUpdates THEN delegates to local data source`() = runBlocking {
         // Given
         val expectedUser = UserTestFixtures.createDefaultUser()
         fakeLocalDataSource.saveUser(expectedUser)
@@ -32,7 +32,7 @@ internal class UserRepositoryImplTest {
     }
 
     @Test
-    fun given_localDataSource_WHEN_get_THEN_delegatesToLocalDataSource() = runBlocking {
+    fun `GIVEN local data source WHEN get THEN delegates to local data source`() = runBlocking {
         // Given
         val expectedUser = UserTestFixtures.createDefaultUser()
         fakeLocalDataSource.saveUser(expectedUser)
@@ -45,7 +45,7 @@ internal class UserRepositoryImplTest {
     }
 
     @Test
-    fun given_unsignedUser_WHEN_update_THEN_savesLocallyOnly() = runBlocking {
+    fun `GIVEN unsigned user WHEN update THEN saves locally only`() = runBlocking {
         // Given
         val user = UserTestFixtures.createDefaultUser() // Not signed in
 
@@ -58,7 +58,7 @@ internal class UserRepositoryImplTest {
     }
 
     @Test
-    fun given_signedInUser_WHEN_update_THEN_savesLocallyAndSyncsRemote() = runBlocking {
+    fun `GIVEN signed in user WHEN update THEN saves locally and syncs remote`() = runBlocking {
         // Given
         var user = UserTestFixtures.createSignedUpUser()
         fakeRemoteDataSource.with(user)
@@ -72,20 +72,20 @@ internal class UserRepositoryImplTest {
         assertEquals(user, fakeRemoteDataSource.getUser(user.authentication!!.userId))
     }
 
-    @Test(expected = RuntimeException::class)
-    fun given_remoteDataSourceThrows_WHEN_updateSignedInUser_THEN_propagatesException() {
+    @Test
+    fun `GIVEN remote data source throws WHEN update signed in user THEN propagates exception`() {
         runBlocking {
             // Given
             val user = UserTestFixtures.createSignedUpUser()
             fakeRemoteDataSource.failAll(RuntimeException("Update failed"))
 
             // When & Then
-            underTest.update(user) // Should throw
+            assertThrows<RuntimeException> { underTest.update(user) }
         }
     }
 
     @Test
-    fun given_unsignedUser_WHEN_logHistory_THEN_addsToLocalHistoryOnly() = runBlocking {
+    fun `GIVEN unsigned user WHEN logHistory THEN adds to local history only`() = runBlocking {
         // Given
         val originalUser = UserTestFixtures.createDefaultUser()
         val newHistoryItems = listOf(UserTestFixtures.createSampleRatedPuzzleHistoryItem())
@@ -103,7 +103,7 @@ internal class UserRepositoryImplTest {
     }
 
     @Test
-    fun given_signedInUser_WHEN_logHistory_THEN_addsToLocalAndSyncsRemote() = runBlocking {
+    fun `GIVEN signed in user WHEN logHistory THEN adds to local and syncs remote`() = runBlocking {
         // Given
         val originalUser = UserTestFixtures.createSignedUpUser()
         val newHistoryItems = listOf(UserTestFixtures.createSampleRatedPuzzleHistoryItem())
@@ -125,7 +125,7 @@ internal class UserRepositoryImplTest {
     }
 
     @Test
-    fun given_authStateAndToken_WHEN_signIn_THEN_callsRemoteAndSavesLocally() = runBlocking {
+    fun `GIVEN auth state and token WHEN signIn THEN calls remote and saves locally`() = runBlocking {
         // Given
         val authState = User.AuthenticationState(
             provider = User.AuthenticationState.AuthProvider.APPLE,
@@ -143,8 +143,8 @@ internal class UserRepositoryImplTest {
         assertEquals(signedInUser, fakeRemoteDataSource.getUser("user_123"))
     }
 
-    @Test(expected = RuntimeException::class)
-    fun given_remoteSignInFails_WHEN_signIn_THEN_propagatesException() {
+    @Test
+    fun `GIVEN remote signIn fails WHEN signIn THEN propagates exception`() {
         runBlocking {
             // Given
             val authState = User.AuthenticationState(
@@ -154,12 +154,12 @@ internal class UserRepositoryImplTest {
             fakeRemoteDataSource.failAll(RuntimeException("Sign in failed"))
 
             // When & Then
-            underTest.signIn(authState, "auth_token") // Should throw
+            assertThrows<RuntimeException> { underTest.signIn(authState, "auth_token") }
         }
     }
 
     @Test
-    fun given_repository_WHEN_signOut_THEN_clearsLocalDataOnly() = runBlocking {
+    fun `GIVEN repository WHEN signOut THEN clears local data only`() = runBlocking {
         // Given
         val signedInUser = UserTestFixtures.createSignedUpUser()
         fakeLocalDataSource.saveUser(signedInUser)
@@ -173,7 +173,7 @@ internal class UserRepositoryImplTest {
     }
 
     @Test
-    fun given_repository_WHEN_clear_THEN_clearsLocalDataAndRemote() = runBlocking {
+    fun `GIVEN repository WHEN clear THEN clears local data and remote`() = runBlocking {
         // Given
         val signedInUser = UserTestFixtures.createSignedUpUser()
         fakeLocalDataSource.saveUser(signedInUser)
@@ -188,7 +188,7 @@ internal class UserRepositoryImplTest {
     }
 
     @Test
-    fun given_unsignedUser_WHEN_sync_THEN_doesNotSyncToRemote() = runBlocking {
+    fun `GIVEN unsigned user WHEN sync THEN does not sync to remote`() = runBlocking {
         // Given
         val user = UserTestFixtures.createDefaultUser() // Not signed in
         fakeLocalDataSource.saveUser(user)
@@ -202,7 +202,7 @@ internal class UserRepositoryImplTest {
     }
 
     @Test
-    fun given_signedInUser_WHEN_sync_THEN_syncsToRemote() = runBlocking {
+    fun `GIVEN signed in user WHEN sync THEN syncs to remote`() = runBlocking {
         // Given
         val user = UserTestFixtures.createSignedUpUser()
         val updated = user.copy(failedPuzzles = emptyList())
@@ -216,73 +216,111 @@ internal class UserRepositoryImplTest {
         assertEquals(updated, fakeRemoteDataSource.getUser(user.authentication!!.userId))
         assertEquals(updated, fakeLocalDataSource.getUser())
     }
-}
 
-// Fake implementations for testing
-private class FakeUserLocalDataSource : UserLocalDataSource {
-    private var user = User()
+    @Test
+    fun `GIVEN same type same day history WHEN logHistory THEN merges items`() = runBlocking {
+        // Given
+        val today = LocalDate.now()
+        val existingItem = User.HistoryItem(
+            timestamp = today,
+            data = User.HistoryItem.HistoryItemData.RatedPuzzleData(
+                puzzlesPlayed = 3,
+                puzzlesSolved = 2,
+                ratingChange = 15,
+                timeSpent = 1000L
+            )
+        )
+        val user = User(history = listOf(existingItem))
+        fakeLocalDataSource.saveUser(user)
 
-    override fun userUpdates(): Flow<User> = flowOf(user)
-    override suspend fun getUser(): User = user
-    override suspend fun saveUser(user: User) {
-        this.user = user
+        val newItem = User.HistoryItem(
+            timestamp = today,
+            data = User.HistoryItem.HistoryItemData.RatedPuzzleData(
+                puzzlesPlayed = 2,
+                puzzlesSolved = 1,
+                ratingChange = 10,
+                timeSpent = 500L
+            )
+        )
+
+        // When
+        underTest.logHistory(listOf(newItem))
+
+        // Then
+        val updatedUser = fakeLocalDataSource.getUser()
+        assertEquals(1, updatedUser.history.size)
+        val mergedData = updatedUser.history.first().data as User.HistoryItem.HistoryItemData.RatedPuzzleData
+        assertEquals(5, mergedData.puzzlesPlayed)
+        assertEquals(3, mergedData.puzzlesSolved)
+        assertEquals(25, mergedData.ratingChange)
+        assertEquals(1500L, mergedData.timeSpent)
     }
 
-    override suspend fun updateUser(updater: (User) -> User) {
-        this.user = updater(this.user)
+    @Test
+    fun `GIVEN same type different day history WHEN logHistory THEN adds new item`() = runBlocking {
+        // Given
+        val yesterday = LocalDate.now().minusDays(1)
+        val today = LocalDate.now()
+        val existingItem = User.HistoryItem(
+            timestamp = yesterday,
+            data = User.HistoryItem.HistoryItemData.RatedPuzzleData(
+                puzzlesPlayed = 3,
+                puzzlesSolved = 2,
+                ratingChange = 15,
+                timeSpent = 1000L
+            )
+        )
+        val user = User(history = listOf(existingItem))
+        fakeLocalDataSource.saveUser(user)
+
+        val newItem = User.HistoryItem(
+            timestamp = today,
+            data = User.HistoryItem.HistoryItemData.RatedPuzzleData(
+                puzzlesPlayed = 2,
+                puzzlesSolved = 1,
+                ratingChange = 10,
+                timeSpent = 500L
+            )
+        )
+
+        // When
+        underTest.logHistory(listOf(newItem))
+
+        // Then
+        val updatedUser = fakeLocalDataSource.getUser()
+        assertEquals(2, updatedUser.history.size)
     }
 
-    override suspend fun clearUserData() {
-        this.user = User()
-    }
-}
+    @Test
+    fun `GIVEN different type same day history WHEN logHistory THEN adds new item`() = runBlocking {
+        // Given
+        val today = LocalDate.now()
+        val existingItem = User.HistoryItem(
+            timestamp = today,
+            data = User.HistoryItem.HistoryItemData.RatedPuzzleData(
+                puzzlesPlayed = 3,
+                puzzlesSolved = 2,
+                ratingChange = 15,
+                timeSpent = 1000L
+            )
+        )
+        val user = User(history = listOf(existingItem))
+        fakeLocalDataSource.saveUser(user)
 
-private class FakeUserRemoteDataSource : UserRemoteDataSource {
-    private var exception: Throwable? = null
-    private var user: User? = null
+        val newItem = User.HistoryItem(
+            timestamp = today,
+            data = User.HistoryItem.HistoryItemData.PuzzleRushData(
+                tries = 1,
+                bestScore = 50,
+                timeSpent = 500L
+            )
+        )
 
-    fun hasUser(): Boolean = user != null
+        // When
+        underTest.logHistory(listOf(newItem))
 
-    override suspend fun getUser(userId: String): User = if (user?.authentication?.userId == userId) {
-        user!!
-    } else {
-        throw NoSuchElementException("No remote user found")
-    }
-
-    override suspend fun updateUser(user: User) {
-        exception?.let { throw it }
-        if (user.authentication?.userId != null && this.user?.authentication?.userId == user.authentication?.userId) {
-            this.user = user
-        }
-    }
-
-    override suspend fun addToHistory(userId: String, history: List<User.HistoryItem>) {
-        exception?.let { throw it }
-        user?.let { user ->
-            user.authentication?.userId?.let {
-                if (it == userId) {
-                    this.user = user.copy(history = user.history.toMutableList().apply { addAll(history) })
-                }
-            }
-        }
-    }
-
-    override suspend fun signIn(auth: User.AuthenticationState, token: String): User {
-        exception?.let { throw it }
-        user = User(authentication = auth)
-        return user!!
-    }
-
-    override suspend fun deleteUser(userId: String) {
-        exception?.let { throw it }
-        if (this.user?.authentication?.userId == userId) {
-            this.user = null
-        }
-    }
-
-    fun with(with: User) = apply { this.user = with }
-    fun failAll() = failAll(with = RuntimeException("Unexpected operation occurred"))
-    fun failAll(with: Throwable) {
-        exception = with
+        // Then
+        val updatedUser = fakeLocalDataSource.getUser()
+        assertEquals(2, updatedUser.history.size)
     }
 }

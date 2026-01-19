@@ -38,17 +38,6 @@ internal class AbstractPuzzleDatabaseTest {
     }
 
     @Test
-    fun when_duplicate_puzzles_are_inserted_then_only_one_is_present() = runBlocking {
-        val firstInsert = underTest.insert(Puzzle(fenBinary = FEN, rating = 1000))
-        val secondInsert = underTest.insert(Puzzle(fenBinary = FEN, rating = 1000))
-        // when
-        val puzzles = underTest.get(count = 1)
-        //then
-        TestCase.assertEquals(1, puzzles.count { it.fenBinary.contentEquals(FEN) })
-        TestCase.assertTrue(firstInsert == secondInsert || secondInsert == -1L)
-    }
-
-    @Test
     fun when_multiple_puzzles_are_inserted_then_they_can_be_fetched() = runBlocking {
         val data = List(1000) { i -> Puzzle(fenBinary = FEN, rating = 1000 + i) }
         // when

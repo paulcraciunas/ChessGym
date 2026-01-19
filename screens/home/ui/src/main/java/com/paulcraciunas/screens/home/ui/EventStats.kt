@@ -1,26 +1,24 @@
 package com.paulcraciunas.screens.home.ui
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
+import com.paulcraciunas.screens.common.controls.RatingChangeChip
+import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.home.vm.HomeUiState
 
 @Composable
@@ -78,46 +76,6 @@ internal fun EventStats(
 }
 
 @Composable
-private fun RatingChangeChip(
-    ratingChange: Int,
-    modifier: Modifier = Modifier
-) {
-    val isPositive = ratingChange > 0
-    val backgroundColor = if (isPositive) {
-        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
-    } else {
-        MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.3f)
-    }
-    val contentColor = if (isPositive) {
-        Color(0xFF4CAF50)
-    } else {
-        MaterialTheme.colorScheme.error
-    }
-
-    Row(
-        modifier = modifier
-            .clip(MaterialTheme.shapes.small)
-            .background(backgroundColor)
-            .padding(horizontal = 8.dp, vertical = 4.dp),
-        horizontalArrangement = Arrangement.spacedBy(2.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            imageVector = if (isPositive) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-            contentDescription = null,
-            tint = contentColor,
-            modifier = Modifier.size(16.dp)
-        )
-        Text(
-            text = if (isPositive) "+$ratingChange" else ratingChange.toString(),
-            style = MaterialTheme.typography.labelMedium,
-            color = contentColor,
-            fontWeight = FontWeight.Bold
-        )
-    }
-}
-
-@Composable
 private fun StatChip(
     label: String,
     value: String,
@@ -141,6 +99,72 @@ private fun StatChip(
             text = label,
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Preview("Dark mode", showBackground = false, uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun EventStatsPuzzleRushPreview() {
+    ChessGymTheme {
+        EventStats(
+            event = HomeUiState.HistoryEvent.PuzzleRushEvent(highScore = 23, runs = 5)
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Preview("Dark mode", showBackground = false, uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun EventStatsBoardVizPreview() {
+    ChessGymTheme {
+        EventStats(
+            event = HomeUiState.HistoryEvent.BoardVizEvent(runs = 3)
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Preview("Dark mode", showBackground = false, uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun EventStatsRatedPuzzlePositivePreview() {
+    ChessGymTheme {
+        EventStats(
+            event = HomeUiState.HistoryEvent.RatedPuzzleEvent(ratingChange = 42, count = 12)
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Preview("Dark mode", showBackground = false, uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun EventStatsRatedPuzzleNegativePreview() {
+    ChessGymTheme {
+        EventStats(
+            event = HomeUiState.HistoryEvent.RatedPuzzleEvent(ratingChange = -15, count = 8)
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Preview("Dark mode", showBackground = false, uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun EventStatsBlindModePreview() {
+    ChessGymTheme {
+        EventStats(
+            event = HomeUiState.HistoryEvent.BlindModeEvent(ratingChange = -10, gamesPlayed = 3)
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Preview("Dark mode", showBackground = false, uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun EventStatsBlindModeTrainingPreview() {
+    ChessGymTheme {
+        EventStats(
+            event = HomeUiState.HistoryEvent.BlindModeTrainingEvent(mostMovesCompleted = 15, runs = 2)
         )
     }
 }

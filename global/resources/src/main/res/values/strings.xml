@@ -47,7 +47,7 @@
     <string name="home_timeline_title">Recent Activity</string>
     <string name="home_timeline_empty_title">No recent activity</string>
     <string name="home_timeline_empty_description">Start playing to see your activity timeline here</string>
-    
+
     <!-- Activity titles -->
     <string name="home_title_puzzle_rush">Puzzle Rush</string>
     <string name="home_title_board_visualization">Board Visualization</string>
@@ -128,17 +128,64 @@
     <string name="rated_puzzle_abandon_description">Abandon</string>
     <string name="rated_puzzle_next_description">Next</string>
     <string name="rated_puzzle_rating_title">Puzzle rating %1$d</string>
-    <string name="rated_puzzle_white_to_move">White to move</string>
-    <string name="rated_puzzle_black_to_move">Black to move</string>
     <string name="rated_puzzle_moves">Moves: %1$s</string>
+    <string name="rated_puzzle_title">Puzzle rating: %1$d</string>
+    <string name="navigate_back">Navigate back</string>
+    <string name="puzzle_hint">Hint</string>
+    <string name="puzzle_abandon">Abandon puzzle</string>
+    <string name="rated_puzzle_find_best_move_white">Find the best move for white</string>
+    <string name="rated_puzzle_find_best_move_black">Find the best move for black</string>
+    <string name="abandon_puzzle_title">Abandon Puzzle?</string>
+    <string name="choose_promotion_title">Promote to</string>
+    <string name="abandon_puzzle_message">Are you sure you want to abandon the current puzzle? Your progress will be lost.</string>
+    <string name="abandon_puzzle_confirm">Abandon</string>
+    <string name="abandon_puzzle_cancel">Continue</string>
+    <string name="puzzle_solved">Puzzle Solved!</string>
+    <string name="puzzle_failed">Puzzle Failed</string>
+    <string name="puzzle_abandoned">Puzzle Abandoned</string>
+    <string name="rating_gained">Rating gained: +%1$d</string>
+    <string name="rating_lost">Rating lost: -%1$d</string>
+    <string name="next_puzzle">Next Puzzle</string>
     <!-- endregion -->
 
     <!-- region generic text resources which can be reused across screens -->
     <string name="generic_continue">Continue</string>
     <string name="generic_download">Download</string>
+    <string name="generic_error_try_again">Woops, something went wrong. Please try again.</string>
     <string name="generic_retry">Retry</string>
     <string name="generic_today">Today</string>
     <string name="generic_yesterday">Yesterday</string>
+    <string name="generic_success">Success</string>
+    <string name="generic_failed">Failed</string>
+    <!-- endregion -->
+
+    <!-- region Puzzle Dashboard -->
+    <string name="puzzle_dashboard_title">Choose Your Challenge</string>
+    <string name="puzzle_dashboard_subtitle">Select a puzzle mode to train your tactical skills</string>
+
+    <!-- Rated Puzzle Mode -->
+    <string name="puzzle_mode_rated_title">Rated Puzzles</string>
+    <string name="puzzle_mode_rated_description">Solve puzzles at your skill level</string>
+    <string name="puzzle_mode_rated_rating">Your rating: %1$d</string>
+
+    <!-- Puzzle Rush Mode -->
+    <string name="puzzle_mode_rush_title">Puzzle Rush</string>
+    <string name="puzzle_mode_rush_description">Solve as many puzzles as possible in time</string>
+    <string name="puzzle_rush_limit_minutes">%1$d minutes</string>
+    <string name="puzzle_rush_no_mistakes">Perfect play</string>
+    <string name="puzzle_rush_mistakes_count">%1$d mistakes</string>
+
+    <!-- Failed Puzzles Mode -->
+    <string name="puzzle_mode_failed_title">Failed Puzzles</string>
+    <string name="puzzle_mode_failed_description">Review and retry puzzles you got wrong</string>
+    <string name="puzzle_mode_failed_none_available">No failed puzzles available</string>
+    <plurals name="puzzle_mode_failed_count">
+        <item quantity="one">%1$d puzzle to retry</item>
+        <item quantity="other">%1$d puzzles to retry</item>
+    </plurals>
+
+    <!-- Common -->
+    <string name="puzzle_mode_start">Start puzzle mode</string>
     <!-- endregion -->
 
     <!-- temporary values; these will be deleted as we build features -->

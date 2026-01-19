@@ -1,15 +1,11 @@
 package com.paulcraciunas.chessgym
 
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
@@ -17,21 +13,25 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.paulcraciunas.chessgym.animations.enter
+import com.paulcraciunas.chessgym.animations.exit
 import com.paulcraciunas.chessgym.navigation.BottomNavigationBar
 import com.paulcraciunas.chessgym.navigation.Screen
+import com.paulcraciunas.chessgym.screens.PuzzleDashboard
+import com.paulcraciunas.chessgym.screens.RatedPuzzle
 import com.paulcraciunas.screens.common.AppBar
 import com.paulcraciunas.screens.common.AppBarAlignment
 import com.paulcraciunas.screens.common.AppDrawer
@@ -44,12 +44,17 @@ fun MainScreen(
     onDrawerScreen: (Screen) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val mainScreenViewModel: MainScreenViewModel = hiltViewModel()
+    val mainScreenState by mainScreenViewModel.uiState.collectAsStateWithLifecycle()
+
     val tabNavController = rememberNavController()
     val navBackStackEntry by tabNavController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
+    val isTopLevelScreen = currentDestination?.route?.isTopLevelRoute() ?: true
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    val onDrawerToggle: () -> Unit = { scope.launch { drawerState.toggle() } }
 
     ModalNavigationDrawer(
         drawerContent = {
@@ -68,23 +73,11 @@ fun MainScreen(
                 closeDrawer = { scope.launch { drawerState.close() } }
             )
         },
-        drawerState = drawerState
+        drawerState = drawerState,
+        gesturesEnabled = isTopLevelScreen
     ) {
         Scaffold(
             modifier = modifier,
-            topBar = {
-                AppBar(titleAlign = AppBarAlignment.Center) {
-                    Home(onClick = {
-                        scope.launch {
-                            if (drawerState.isClosed) {
-                                drawerState.open()
-                            } else {
-                                drawerState.close()
-                            }
-                        }
-                    })
-                }
-            },
             bottomBar = {
                 BottomNavigationBar(
                     currentDestination = currentDestination,
@@ -95,10 +88,9 @@ fun MainScreen(
                             popUpTo(tabNavController.graph.startDestinationId) {
                                 saveState = true
                             }
-                            // Avoid multiple copies of the same destination when
-                            // reselecting the same item
+                            // Avoid multiple copies of the same destination when re-selecting the same item
                             launchSingleTop = true
-                            // Restore state when reselecting a previously selected item
+                            // Restore state when re-selecting a previously selected item
                             restoreState = true
                         }
                     }
@@ -108,83 +100,90 @@ fun MainScreen(
             NavHost(
                 navController = tabNavController,
                 startDestination = Screen.Home,
-                modifier = Modifier.padding(innerPadding)
+                modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding())
             ) {
-                composable<Screen.Home>(
-                    enterTransition = { enterTransition() },
-                    exitTransition = { exitTransition() }
-                ) {
+                animatedComposable<Screen.Home> {
                     val vm: HomeViewModel = hiltViewModel()
-                    val homeState by vm.uiState.collectAsState()
-                    HomeScreen(state = homeState)
+                    val homeState by vm.uiState.collectAsStateWithLifecycle()
+                    HomeScreen(state = homeState, onDrawerToggle = onDrawerToggle)
                 }
-                composable<Screen.PuzzleDashboard>(
-                    enterTransition = { enterTransition() },
-                    exitTransition = { exitTransition() }
-                ) {
-                    UnderConstruction(title = "Puzzle Dashboard", innerPadding = innerPadding)
+                animatedComposable<Screen.PuzzleDashboard> {
+                    PuzzleDashboard(tabNavController, onDrawerToggle = onDrawerToggle)
                 }
-                composable<Screen.BoardVisualization>(
-                    enterTransition = { enterTransition() },
-                    exitTransition = { exitTransition() }
-                ) {
-                    UnderConstruction(title = "Board Visualisation", innerPadding = innerPadding)
+                animatedComposable<Screen.RatedPuzzle> {
+                    RatedPuzzle(
+                        tabNavController = tabNavController,
+                        showBorders = mainScreenState.appSettings?.showBorders ?: true,
+                    )
                 }
-                composable<Screen.BlindMode>(
-                    enterTransition = { enterTransition() },
-                    exitTransition = { exitTransition() }
-                ) {
-                    UnderConstruction(title = "Blind Mode", innerPadding = innerPadding)
+                animatedComposable<Screen.BoardVisualization> {
+                    UnderConstruction(title = "Board Visualisation", onDrawerToggle = onDrawerToggle)
+                }
+                animatedComposable<Screen.BlindMode> {
+                    UnderConstruction(title = "Blind Mode", onDrawerToggle = onDrawerToggle)
                 }
             }
         }
     }
 }
 
-@Composable
-private fun UnderConstruction(
-    title: String,
-    innerPadding: PaddingValues,
-    modifier: Modifier = Modifier
+private inline fun <reified T : Any> NavGraphBuilder.animatedComposable(
+    noinline content: (@Composable () -> Unit) = {},
 ) {
-    Column(modifier = modifier.padding(innerPadding)) {
-        Text(
-            text = title,
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.titleLarge,
-        )
-        Spacer(modifier = Modifier.height(24.dp))
-        Text(
-            text = "Under Construction",
-            color = Color.Yellow,
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.bodyMedium,
-        )
+    composable<T>(
+        enterTransition = { enter() },
+        exitTransition = { exit() }
+    ) {
+        content()
     }
 }
 
-private fun AnimatedContentTransitionScope<NavBackStackEntry>.exitTransition() = slideOutHorizontally(
-    animationSpec = tween(300),
-    targetOffsetX = { if (isNavigatingToHigherIndex(targetState, initialState)) -it else it }
-)
-
-private fun AnimatedContentTransitionScope<NavBackStackEntry>.enterTransition() = slideInHorizontally(
-    animationSpec = tween(300),
-    initialOffsetX = { if (isNavigatingToHigherIndex(targetState, initialState)) it else -it }
-)
-
-private fun isNavigatingToHigherIndex(targetState: NavBackStackEntry, initialState: NavBackStackEntry): Boolean {
-    val targetIndex = getTabIndexFromRoute(targetState.destination.route)
-    val initialIndex = getTabIndexFromRoute(initialState.destination.route)
-    return targetIndex > initialIndex
+@Composable
+private fun UnderConstruction(
+    title: String,
+    onDrawerToggle: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Scaffold(
+        topBar = {
+            AppBar(titleAlign = AppBarAlignment.Center) {
+                Home(onClick = onDrawerToggle)
+            }
+        },
+        modifier = modifier
+    ) { innerPadding ->
+        Column(modifier = Modifier.padding(innerPadding)) {
+            Text(
+                text = title,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.titleLarge,
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+            Text(
+                text = "Under Construction",
+                color = Color.Yellow,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+    }
 }
 
-private fun getTabIndexFromRoute(route: String?): Int = when {
-    route?.contains("Home") == true -> 0
-    route?.contains("PuzzleDashboard") == true -> 1
-    route?.contains("BoardVisualization") == true -> 2
-    route?.contains("BlindMode") == true -> 3
-    else -> -1
+private val topLevelRoutes = setOf(
+    Screen.Home::class.qualifiedName,
+    Screen.PuzzleDashboard::class.qualifiedName,
+    Screen.BoardVisualization::class.qualifiedName,
+    Screen.BlindMode::class.qualifiedName
+)
+
+private fun String.isTopLevelRoute(): Boolean = topLevelRoutes.contains(this)
+
+private suspend fun DrawerState.toggle() {
+    if (isClosed) {
+        open()
+    } else {
+        close()
+    }
 }

@@ -8,7 +8,7 @@ import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.game.logic.impl.MutableGame
 import com.paulcraciunas.game.logic.impl.board.Board
 
-class GameTestHelper {
+internal class GameTestHelper {
     fun createGameWithKingsOnly(
         whiteKingAt: Locus = Locus(File.e, Rank.`1`),
         blackKingAt: Locus = Locus(File.e, Rank.`8`),

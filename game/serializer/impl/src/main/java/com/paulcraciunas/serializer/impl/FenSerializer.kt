@@ -10,11 +10,11 @@ import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.game.logic.api.state.GameInfo
-import com.paulcraciunas.logic.di.Builder
-import com.paulcraciunas.logic.di.GameFactory
+import com.paulcraciunas.game.logic.api.Builder
+import com.paulcraciunas.game.logic.api.GameFactory
+import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.serializer.api.SerializeException
 import com.paulcraciunas.serializer.api.Serializer
-import javax.inject.Inject
 
 /**
  * Forsyth–Edwards Notation serializer
@@ -27,9 +27,25 @@ import javax.inject.Inject
  *
  * @see <a href="https://en.wikipedia.org/wiki/Forsyth–Edwards_Notation">FEN Wiki</a>
  **/
-internal class FenSerializer @Inject constructor(
+class FenSerializer(
     private val gameFactory: GameFactory,
 ) : Serializer {
+    fun puzzleFrom(puzzleString: String, moves: String, rating: Int): Puzzle {
+        val fenParts = puzzleString.fenParts()
+        val rows = fenParts[0].rows()
+
+        return gameFactory.builder()
+            .withPieces(rows)
+            .withTurn(fenParts[1].loadSide())
+            .withCastling(fenParts[2].loadCastling())
+            .withEnPassent(fenParts[3])
+            .withPlieClock(fenParts[4].loadNumber())
+            .withMoveIndex(fenParts[5].loadNumber())
+            .withMoves(moves.split(','))
+            .withRating(rating)
+            .buildPuzzle()
+    }
+
     override fun from(gameString: String): Game {
         val fenParts = gameString.fenParts()
         val rows = fenParts[0].rows()

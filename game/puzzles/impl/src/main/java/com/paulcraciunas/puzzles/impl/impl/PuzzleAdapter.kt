@@ -10,6 +10,6 @@ class PuzzleAdapter @Inject constructor(
     private val puzzleReader: PuzzleReader
 ) {
     fun adapt(puzzle: DbPuzzle): DomainPuzzle {
-        return puzzleReader.readPuzzle(puzzle.rating, puzzle.fenBinary)
+        return puzzleReader.readPuzzle(puzzle.rating, puzzle.fenBinary, puzzle.id)
     }
 }

@@ -5,7 +5,7 @@ import com.paulcraciunas.puzzles.impl.db.Puzzle
 import com.paulcraciunas.puzzles.impl.impl.PuzzleDatabase
 import com.paulcraciunas.puzzles.impl.network.progress.ProgressReporter
 import com.paulcraciunas.serializer.api.PuzzleWriter
-import com.paulcraciunas.settings.application.AppSettingsRepository
+import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import java.io.File
 import javax.inject.Inject
 
@@ -15,12 +15,27 @@ class CsvPuzzleDatabaseWriter @Inject constructor(
     private val db: PuzzleDatabase,
     private val appSettingsRepository: AppSettingsRepository
 ) : PuzzleDatabaseWriter {
+    private var totalWritten = 0
+    private var maxRating = 0
+    private var minRating = Integer.MAX_VALUE
 
     override suspend fun writePuzzlesToDatabase(csvSource: File) {
         val puzzles = ArrayList<Puzzle>(BULK_INSERT_COUNT)
-        var written = 0
-        var maxRating = 0
+        var written: Int
+        var currentMax = maxRating
+        var currentMin = minRating
         var currentRating: Int
+
+        suspend fun updateValues() {
+            written = insertBulk(puzzles)
+            if (written > 0) {
+                totalWritten += written
+                maxRating = maxRating.coerceAtLeast(currentMax)
+                minRating = minRating.coerceAtMost(currentMin)
+                currentMax = maxRating
+                currentMin = minRating
+            }
+        }
 
         csvSource.reader(Charsets.UTF_8).buffered(BUFFER_SIZE).use { reader ->
             val lines = reader.lineSequence().drop(1) // Skip header
@@ -35,21 +50,23 @@ class CsvPuzzleDatabaseWriter @Inject constructor(
                             rating = currentRating
                         )
                     )
-                    maxRating = maxRating.coerceAtLeast(currentRating)
+                    currentMax = currentMax.coerceAtLeast(currentRating)
+                    currentMin = currentMin.coerceAtMost(currentRating)
 
                     if (puzzles.size == BULK_INSERT_COUNT) {
-                        written += insertBulk(puzzles)
+                        updateValues()
                     }
                 }
             }
 
             // Insert remaining puzzles
             if (puzzles.isNotEmpty()) {
-                written += insertBulk(puzzles)
+                updateValues()
             }
         }
-        appSettingsRepository.updateTotalPuzzleCount(written)
+        appSettingsRepository.updateTotalPuzzleCount(totalWritten)
         appSettingsRepository.updateMaxPuzzleRating(maxRating)
+        appSettingsRepository.updateMinPuzzleRating(minRating)
         appSettingsRepository.updatePuzzlesDownloaded(true)
     }
 

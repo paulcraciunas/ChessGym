@@ -1,8 +1,8 @@
 package com.paulcraciunas.chessgym.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -20,7 +20,7 @@ fun NavGraph(
     viewModel: NavGraphViewModel = hiltViewModel()
 ) {
     val navController = rememberNavController()
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     // Splash screen handles the loading state, so we wait until it's ready
     if (uiState.isLoading) {
@@ -41,7 +41,7 @@ fun NavGraph(
     ) {
         composable<Screen.Loading> {
             val vm: LoadingViewModel = hiltViewModel()
-            val loadingState by vm.uiState.collectAsState()
+            val loadingState by vm.uiState.collectAsStateWithLifecycle()
             LoadingScreen(
                 onComplete = { navController.navigateTo(Screen.Main) },
                 onDownload = vm::onDownload,

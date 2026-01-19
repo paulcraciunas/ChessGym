@@ -1,28 +1,16 @@
+import plugins.extensions.testFixturesImplementation
+
 plugins {
-    id("java-library")
-    id("java-test-fixtures")
-    alias(libs.plugins.jetbrains.kotlin.jvm)
+    id("conventions.library")
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+library {
+    testFixtures = true
 }
 
 dependencies {
-    implementation(project(":game:logic:api"))
-
-    testImplementation(libs.bundles.unit.tests)
-    testRuntimeOnly(libs.junit.platform.launcher)
+    api(project(":game:logic:api"))
 
     testFixturesImplementation(project(":game:logic:api"))
-    testFixturesImplementation(libs.junit)
     testFixturesImplementation(libs.junit.jupiter.api)
-    testFixturesImplementation(libs.junit.jupiter.engine)
-    testFixturesImplementation(libs.junit.jupiter.params)
-    testFixturesImplementation(libs.junit.jupiter)
-}
-
-tasks.withType<Test> {
-    useJUnitPlatform()
 }

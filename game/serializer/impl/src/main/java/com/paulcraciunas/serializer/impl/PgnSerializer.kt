@@ -2,6 +2,7 @@ package com.paulcraciunas.serializer.impl
 
 import com.paulcraciunas.game.logic.api.CastleType
 import com.paulcraciunas.game.logic.api.Game
+import com.paulcraciunas.game.logic.api.GameFactory
 import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File
@@ -11,10 +12,8 @@ import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.game.logic.api.board.toFile
 import com.paulcraciunas.game.logic.api.board.toRank
 import com.paulcraciunas.game.logic.api.state.MetaData
-import com.paulcraciunas.logic.di.GameFactory
 import com.paulcraciunas.serializer.api.SerializeException
 import com.paulcraciunas.serializer.api.Serializer
-import javax.inject.Inject
 
 /**
  * Portable Game Notation serializer
@@ -27,7 +26,7 @@ import javax.inject.Inject
  *
  * @see <a href="https://en.wikipedia.org/wiki/Portable_Game_Notation">PGN Wiki</a>
  **/
-internal class PgnSerializer @Inject constructor(
+class PgnSerializer(
     private val gameFactory: GameFactory,
 ) : Serializer {
     // I hate regEx
@@ -60,7 +59,7 @@ internal class PgnSerializer @Inject constructor(
                 moves.groupValues[3].takeIf { it.isNotBlank() }?.let { loadPly(it) }
             }
             // Match ending if we didn't already compute it
-            if (info.plies.isNotEmpty()) {
+            if (plies().isNotEmpty()) {
                 endingRegex.find(gameString)?.let {
                     if (it.groupValues[1].replace(" ", "") == "1/2-1/2") {
                         draw()
@@ -103,7 +102,7 @@ private fun Game.loadPly(plyString: String) = when {
 private fun Game.findCastlePly(side: Side, castle: CastleType): Ply {
     val kingLoc = this.board.king(side)
         ?: throw SerializeException("Found castling move but can't find king for $side")
-    val ply = info.plies(kingLoc).find { it.to == castle.end(side) }
+    val ply = plies(kingLoc).find { it.to == castle.end(side) }
         ?: throw SerializeException("Can't find castling move for $side")
     return ply
 }
@@ -114,7 +113,7 @@ private fun Game.findPly(plyString: String): Ply {
     val to = Locus.from(bits.groupValues[4] + bits.groupValues[5])
         ?: throw SerializeException("Invalid destination at $plyString")
 
-    return info.plies
+    return plies()
         .filter {
             it.to == to &&
                     it.piece == pieceMap[bits.groupValues[1]]!!

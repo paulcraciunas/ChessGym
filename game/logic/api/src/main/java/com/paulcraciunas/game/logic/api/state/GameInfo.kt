@@ -3,7 +3,6 @@ package com.paulcraciunas.game.logic.api.state
 import com.paulcraciunas.game.logic.api.CastleType
 import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Side
-import com.paulcraciunas.game.logic.api.board.Locus
 
 /**
  * Non-computable information about the current state of the game.
@@ -27,9 +26,6 @@ interface GameInfo {
     val blackCastling: Set<CastleType>
     val plieClock: Int // Since last pawn move or capture
     val moveIndex: Int
-    val plies: List<Ply>
-
-    fun plies(from: Locus): List<Ply>
 
     fun castling(turn: Side): Set<CastleType>
 }

@@ -16,6 +16,9 @@ interface PuzzleDao {
     @Query("SELECT * FROM Puzzle ORDER BY RANDOM() LIMIT :count")
     suspend fun get(count: Int): List<Puzzle>
 
+    @Query("SELECT * FROM Puzzle WHERE id = :id")
+    suspend fun getById(id: Int): Puzzle?
+
     @Query("SELECT * FROM Puzzle WHERE rating = :targetRating ORDER BY RANDOM() LIMIT 1")
     suspend fun getByRating(targetRating: Int): Puzzle?
 

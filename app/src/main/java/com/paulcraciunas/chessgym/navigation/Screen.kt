@@ -16,9 +16,9 @@ sealed class Screen {
     @Serializable
     data object PuzzleDashboard : Screen()
 
-// TODO Paul: Integrate this in the Puzzle Dashboard screen
-//    @Serializable
-//    data object RatedPuzzle : Screen()
+    @Serializable
+    data object RatedPuzzle : Screen()
+
 // TODO Paul: Integrate this in the Puzzle Dashboard screen
 //    @Serializable
 //    data object PuzzleRush : Screen()
