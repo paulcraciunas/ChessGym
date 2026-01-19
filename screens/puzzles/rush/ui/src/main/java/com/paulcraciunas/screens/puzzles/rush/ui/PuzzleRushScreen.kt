@@ -4,6 +4,8 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -76,13 +78,23 @@ fun PuzzleRushScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            ChessBoard(
-                board = data.boardData,
-                orientation = BoardOrientation.fromSide(data.player),
-                onClick = interactions::onSquareClicked,
-                showBorders = showBorders,
-                modifier = Modifier.fillMaxWidth()
-            )
+            // Animate board transition when puzzle count changes
+            AnimatedContent(
+                targetState = boardState.results.size,
+                transitionSpec = {
+                    (slideInHorizontally { width -> width } + fadeIn())
+                        .togetherWith(slideOutHorizontally { width -> -width } + fadeOut())
+                },
+                label = "BoardTransition"
+            ) { _ ->
+                ChessBoard(
+                    board = data.boardData,
+                    orientation = BoardOrientation.fromSide(data.player),
+                    onClick = interactions::onSquareClicked,
+                    showBorders = showBorders,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
             Spacer(modifier = Modifier.height(8.dp))
 
