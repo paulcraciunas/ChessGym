@@ -31,6 +31,7 @@ import com.paulcraciunas.chessgym.animations.exit
 import com.paulcraciunas.chessgym.navigation.BottomNavigationBar
 import com.paulcraciunas.chessgym.navigation.Screen
 import com.paulcraciunas.chessgym.screens.PuzzleDashboard
+import com.paulcraciunas.chessgym.screens.PuzzleRush
 import com.paulcraciunas.chessgym.screens.RatedPuzzle
 import com.paulcraciunas.screens.common.AppBar
 import com.paulcraciunas.screens.common.AppBarAlignment
@@ -112,6 +113,12 @@ fun MainScreen(
                 }
                 animatedComposable<Screen.RatedPuzzle> {
                     RatedPuzzle(
+                        tabNavController = tabNavController,
+                        showBorders = mainScreenState.appSettings?.showBorders ?: true,
+                    )
+                }
+                animatedComposable<Screen.PuzzleRush> {
+                    PuzzleRush(
                         tabNavController = tabNavController,
                         showBorders = mainScreenState.appSettings?.showBorders ?: true,
                     )

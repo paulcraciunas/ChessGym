@@ -1,5 +1,6 @@
 package com.paulcraciunas.chessgym.screens
 
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -31,14 +32,16 @@ internal fun PuzzleDashboard(
                     PuzzleMode.RatedPuzzle -> {
                         tabNavController.navigate(Screen.RatedPuzzle)
                     }
+                    PuzzleMode.PuzzleRush -> {
+                        tabNavController.navigate(Screen.PuzzleRush)
+                    }
                     else -> {
-                        // TODO: Handle other puzzle modes when implemented
+                        // TODO Paul: Handle puzzle streak
+                        // TODO Paul: Handle failed puzzles
                     }
                 }
             }
         },
-        onPuzzleRushTimeChanged = vm::onPuzzleRushTimeChanged,
-        onPuzzleRushMistakesChanged = vm::onPuzzleRushMistakesChanged
     )
 }
 
@@ -62,5 +65,15 @@ internal fun RatedPuzzle(
             }
         },
         interactions = vm,
+    )
+}
+
+@Composable
+internal fun PuzzleRush(
+    tabNavController: NavHostController,
+    showBorders: Boolean,
+) {
+    Text(
+        text = "Under Construction",
     )
 }
