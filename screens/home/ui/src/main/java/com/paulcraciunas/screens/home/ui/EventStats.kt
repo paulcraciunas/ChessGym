@@ -1,5 +1,6 @@
 package com.paulcraciunas.screens.home.ui
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -13,9 +14,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.controls.RatingChangeChip
+import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.home.vm.HomeUiState
 
 @Composable
@@ -96,6 +99,72 @@ private fun StatChip(
             text = label,
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Preview("Dark mode", showBackground = false, uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun EventStatsPuzzleRushPreview() {
+    ChessGymTheme {
+        EventStats(
+            event = HomeUiState.HistoryEvent.PuzzleRushEvent(highScore = 23, runs = 5)
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Preview("Dark mode", showBackground = false, uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun EventStatsBoardVizPreview() {
+    ChessGymTheme {
+        EventStats(
+            event = HomeUiState.HistoryEvent.BoardVizEvent(runs = 3)
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Preview("Dark mode", showBackground = false, uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun EventStatsRatedPuzzlePositivePreview() {
+    ChessGymTheme {
+        EventStats(
+            event = HomeUiState.HistoryEvent.RatedPuzzleEvent(ratingChange = 42, count = 12)
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Preview("Dark mode", showBackground = false, uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun EventStatsRatedPuzzleNegativePreview() {
+    ChessGymTheme {
+        EventStats(
+            event = HomeUiState.HistoryEvent.RatedPuzzleEvent(ratingChange = -15, count = 8)
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Preview("Dark mode", showBackground = false, uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun EventStatsBlindModePreview() {
+    ChessGymTheme {
+        EventStats(
+            event = HomeUiState.HistoryEvent.BlindModeEvent(ratingChange = -10, gamesPlayed = 3)
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Preview("Dark mode", showBackground = false, uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun EventStatsBlindModeTrainingPreview() {
+    ChessGymTheme {
+        EventStats(
+            event = HomeUiState.HistoryEvent.BlindModeTrainingEvent(mostMovesCompleted = 15, runs = 2)
         )
     }
 }
