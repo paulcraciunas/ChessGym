@@ -1,4 +1,4 @@
-package com.paulcraciunas.screens.puzzles.rated.ui
+package com.paulcraciunas.screens.common.dialogs
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
@@ -32,7 +32,7 @@ import com.paulcraciunas.screens.common.board.ChessPiece
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
-internal fun PromotionDialog(
+fun PromotionDialog(
     side: Side,
     onPieceChosen: (result: Piece) -> Unit,
 ) {
@@ -64,7 +64,8 @@ internal fun PromotionDialog(
                     listOf(Piece.Queen, Piece.Rook, Piece.Bishop, Piece.Knight).forEach { piece ->
                         IconButton(
                             onClick = { onPieceChosen(piece) },
-                            modifier = Modifier.clip(RoundedCornerShape(16.dp))
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(16.dp))
                                 .background(if (side == Side.BLACK) Color.White else Color.Black)
                         ) {
                             ChessPiece(
