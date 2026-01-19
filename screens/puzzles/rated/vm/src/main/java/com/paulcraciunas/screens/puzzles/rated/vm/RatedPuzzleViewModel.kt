@@ -120,6 +120,14 @@ class RatedPuzzleViewModel @Inject constructor(
         return false
     }
 
+    fun onStop() {
+        timer.pause()
+    }
+
+    fun onStart() {
+        timer.resume()
+    }
+
     private fun updateState(state: RatedPuzzleUiState.Playing) {
         if (puzzleInteractor.isOver()) {
             finishPuzzle(state)

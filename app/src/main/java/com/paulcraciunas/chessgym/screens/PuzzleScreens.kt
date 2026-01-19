@@ -2,8 +2,10 @@ package com.paulcraciunas.chessgym.screens
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.paulcraciunas.chessgym.navigation.Screen
 import com.paulcraciunas.screens.puzzles.dashboard.ui.PuzzleDashboardScreen
@@ -47,6 +49,10 @@ internal fun RatedPuzzle(
 ) {
     val vm: RatedPuzzleViewModel = hiltViewModel()
     val ratedPuzzleState by vm.uiState.collectAsStateWithLifecycle()
+
+    LifecycleEventEffect(Lifecycle.Event.ON_STOP) { vm.onStop() }
+    LifecycleEventEffect(Lifecycle.Event.ON_START) { vm.onStart() }
+
     RatedPuzzleScreen(
         uiState = ratedPuzzleState,
         showBorders = showBorders,

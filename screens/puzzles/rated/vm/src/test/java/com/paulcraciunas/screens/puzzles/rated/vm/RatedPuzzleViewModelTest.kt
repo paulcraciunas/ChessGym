@@ -250,6 +250,46 @@ internal class RatedPuzzleViewModelTest {
         assertEquals(1300, playingState.data.rating)
     }
 
+    @Test
+    fun `GIVEN playing state WHEN onStop THEN timer is paused`() = runTest {
+        // Given
+        val underTest = buildVm(buildStandardPuzzle())
+        assertEquals(0, timer.pauseCallCount)
+
+        // When
+        underTest.onStop()
+
+        // Then
+        assertEquals(1, timer.pauseCallCount)
+    }
+
+    @Test
+    fun `GIVEN playing state WHEN onStart THEN timer is resumed`() = runTest {
+        // Given
+        val underTest = buildVm(buildStandardPuzzle())
+        assertEquals(0, timer.resumeCallCount)
+
+        // When
+        underTest.onStart()
+
+        // Then
+        assertEquals(1, timer.resumeCallCount)
+    }
+
+    @Test
+    fun `GIVEN app backgrounded WHEN onStop then onStart THEN timer pauses and resumes`() = runTest {
+        // Given
+        val underTest = buildVm(buildStandardPuzzle())
+
+        // When - simulate app going to background and coming back
+        underTest.onStop()
+        underTest.onStart()
+
+        // Then
+        assertEquals(1, timer.pauseCallCount)
+        assertEquals(1, timer.resumeCallCount)
+    }
+
     private fun buildVm(withPuzzle: Puzzle): RatedPuzzleViewModel {
         getRatedPuzzle.enqueue(GetRatedPuzzle.Data(withPuzzle, ratingChange = EloResult(20, -10)))
         val underTest = RatedPuzzleViewModel(
@@ -315,15 +355,23 @@ private class FakeOnPuzzleComplete : OnPuzzleComplete {
 private class FakeTimer : Timer {
     var startCallCount: Int = 0
         private set
+    var pauseCallCount: Int = 0
+        private set
+    var resumeCallCount: Int = 0
+        private set
     var elapsedMillis: Long = 500
 
     override fun start() {
         startCallCount += 1
     }
 
-    override fun pause() = Unit
+    override fun pause() {
+        pauseCallCount += 1
+    }
 
-    override fun resume() = Unit
+    override fun resume() {
+        resumeCallCount += 1
+    }
 
     override fun elapsed(): Long = if (startCallCount == 1) elapsedMillis else 0
 }
