@@ -173,6 +173,13 @@
     <!-- Puzzle Rush Mode -->
     <string name="puzzle_mode_rush_title">Puzzle Rush</string>
     <string name="puzzle_mode_rush_description">Solve as many puzzles as possible in 3 minutes</string>
+    <string name="puzzle_rush_play_to_start">Play a move to start</string>
+    <string name="puzzle_rush_play_again">Play Again</string>
+    <string name="puzzle_rush_summary_title">Puzzle Rush Complete!</string>
+    <string name="puzzle_rush_summary_puzzles_solved">Puzzles Solved</string>
+    <string name="puzzle_rush_summary_new_high_score">New High Score!</string>
+    <string name="puzzle_rush_time_up">Time\'s Up!</string>
+    <string name="puzzle_rush_puzzle_failed">Puzzle Failed!</string>
     <!-- endregion -->
 
     <!-- Puzzle Streak Mode -->
