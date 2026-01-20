@@ -1,4 +1,4 @@
-package com.paulcraciunas.screens.puzzles.rush.ui
+package com.paulcraciunas.screens.puzzles.failed.ui
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
@@ -8,6 +8,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,8 +19,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.game.logic.api.Side
@@ -38,37 +41,45 @@ import com.paulcraciunas.screens.common.model.BoardViewData
 import com.paulcraciunas.screens.common.model.PuzzleResult
 import com.paulcraciunas.screens.common.model.SquareViewData
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
-import com.paulcraciunas.screens.puzzles.rush.vm.PuzzleRushScreenInteractor
-import com.paulcraciunas.screens.puzzles.rush.vm.PuzzleRushUiState
-import com.paulcraciunas.screens.puzzles.rush.vm.StubPuzzleRushScreenInteractor
+import com.paulcraciunas.screens.puzzles.failed.vm.FailedPuzzlesScreenInteractor
+import com.paulcraciunas.screens.puzzles.failed.vm.FailedPuzzlesUiState
+import com.paulcraciunas.screens.puzzles.failed.vm.StubFailedPuzzlesScreenInteractor
 
 @Composable
-fun PuzzleRushScreen(
-    uiState: PuzzleRushUiState,
+fun FailedPuzzlesScreen(
+    uiState: FailedPuzzlesUiState,
     showBorders: Boolean,
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit = {},
-    interactions: PuzzleRushScreenInteractor = StubPuzzleRushScreenInteractor(),
+    interactions: FailedPuzzlesScreenInteractor = StubFailedPuzzlesScreenInteractor(),
 ) {
-    if (uiState is PuzzleRushUiState.Loading) {
+    if (uiState is FailedPuzzlesUiState.Loading) {
         LoadingContent(modifier = Modifier.fillMaxSize())
         return
     }
-    if (uiState is PuzzleRushUiState.Failed) {
+    if (uiState is FailedPuzzlesUiState.Failed) {
         FailedContent(modifier = Modifier.fillMaxSize())
         return
     }
-    val boardState = uiState as PuzzleRushUiState.BoardState
+    if (uiState is FailedPuzzlesUiState.Empty) {
+        EmptyFailedPuzzlesContent(
+            onNavigateBack = onNavigateBack,
+            modifier = Modifier.fillMaxSize()
+        )
+        return
+    }
+
+    val boardState = uiState as FailedPuzzlesUiState.BoardState
     val data = boardState.data
 
     Scaffold(
         topBar = {
             AppBar(
-                title = stringResource(R.string.screen_puzzle_rush),
+                title = stringResource(R.string.puzzle_mode_failed_title),
                 navButton = { Back(onClick = onNavigateBack) },
                 actions = {
-                    CountdownTimer(
-                        timeRemainingSeconds = boardState.timeRemainingSeconds,
+                    ProgressIndicator(
+                        progress = boardState.progress,
                         modifier = Modifier.padding(end = 16.dp)
                     )
                 }
@@ -100,32 +111,6 @@ fun PuzzleRushScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Controls section with animation
-            AnimatedContent(
-                targetState = uiState,
-                transitionSpec = { fadeIn() togetherWith fadeOut() },
-                label = "RushControlsAnimation"
-            ) { state ->
-                when (state) {
-                    is PuzzleRushUiState.Ready -> {
-                        ReadyControls(modifier = Modifier.fillMaxWidth())
-                    }
-                    is PuzzleRushUiState.Playing -> {
-                        // Empty space while playing - no controls needed
-                        Spacer(modifier = Modifier.height(48.dp))
-                    }
-                    is PuzzleRushUiState.Finished -> {
-                        FinishedRushControls(
-                            onPlayAgain = interactions::onPlayAgain,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-                    else -> {}
-                }
-            }
-
             Spacer(modifier = Modifier.height(16.dp))
 
             // Results grid
@@ -139,19 +124,18 @@ fun PuzzleRushScreen(
             }
 
             // Promotion dialog
-            if (uiState is PuzzleRushUiState.Playing && uiState.promotion != null) {
+            if (uiState is FailedPuzzlesUiState.Playing && uiState.promotion != null) {
                 PromotionDialog(
                     side = data.player,
                     onPieceChosen = interactions::onPromote
                 )
             }
 
-            // Summary dialog when finished
-            if (uiState is PuzzleRushUiState.Finished && uiState.showSummaryDialog) {
-                RushSummaryDialog(
-                    puzzlesSolved = boardState.results.count { it.success },
-                    isNewHighScore = uiState.isNewHighScore,
-                    onDismiss = interactions::onDismissSummary,
+            // Completion dialog when finished
+            if (uiState is FailedPuzzlesUiState.Finished && uiState.showCompletionDialog) {
+                FailedPuzzlesCompletionDialog(
+                    puzzlesSolved = boardState.progress.solved,
+                    onDismiss = interactions::onDismissCompletion,
                 )
             }
         }
@@ -159,22 +143,53 @@ fun PuzzleRushScreen(
 }
 
 @Composable
-private fun CountdownTimer(
-    timeRemainingSeconds: Int,
+private fun EmptyFailedPuzzlesContent(
+    onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val minutes = timeRemainingSeconds / 60
-    val seconds = timeRemainingSeconds % 60
-    val timeText = "%d:%02d".format(minutes, seconds)
-
-    Text(
-        text = timeText,
-        style = MaterialTheme.typography.titleLarge,
-        color = if (timeRemainingSeconds <= 30) {
-            MaterialTheme.colorScheme.error
-        } else {
-            MaterialTheme.colorScheme.primary
+    Scaffold(
+        topBar = {
+            AppBar(
+                title = stringResource(R.string.puzzle_mode_failed_title),
+                navButton = { Back(onClick = onNavigateBack) },
+            )
         },
+        modifier = modifier
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(32.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = stringResource(R.string.failed_puzzles_empty_title),
+                style = MaterialTheme.typography.headlineMedium,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = stringResource(R.string.failed_puzzles_empty_description),
+                style = MaterialTheme.typography.bodyLarge,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+@Composable
+private fun ProgressIndicator(
+    progress: FailedPuzzlesUiState.Progress,
+    modifier: Modifier = Modifier,
+) {
+    Text(
+        text = stringResource(R.string.failed_puzzles_progress, progress.solved, progress.total),
+        style = MaterialTheme.typography.titleMedium,
+        color = MaterialTheme.colorScheme.primary,
         modifier = modifier
     )
 }
@@ -217,17 +232,10 @@ private fun Array<Array<SquareViewData>>.addStartingPieces(side: Side, rank: Ran
 @Preview
 @Preview("Dark mode", uiMode = UI_MODE_NIGHT_YES)
 @Composable
-private fun ReadyPreview() {
+private fun EmptyPreview() {
     ChessGymTheme {
-        PuzzleRushScreen(
-            uiState = PuzzleRushUiState.Ready(
-                data = PuzzleRushUiState.PuzzleData(
-                    rating = 1200,
-                    player = Side.WHITE,
-                    boardData = sampleBoard(),
-                ),
-                timeRemainingSeconds = 180,
-            ),
+        FailedPuzzlesScreen(
+            uiState = FailedPuzzlesUiState.Empty,
             showBorders = true
         )
     }
@@ -238,14 +246,14 @@ private fun ReadyPreview() {
 @Composable
 private fun PlayingPreview() {
     ChessGymTheme {
-        PuzzleRushScreen(
-            uiState = PuzzleRushUiState.Playing(
-                data = PuzzleRushUiState.PuzzleData(
+        FailedPuzzlesScreen(
+            uiState = FailedPuzzlesUiState.Playing(
+                data = FailedPuzzlesUiState.PuzzleData(
                     rating = 1350,
                     player = Side.BLACK,
                     boardData = sampleBoard(),
                 ),
-                timeRemainingSeconds = 142,
+                progress = FailedPuzzlesUiState.Progress(solved = 3, total = 10),
                 results = listOf(
                     PuzzleResult(id = 1, rating = 1200, success = true),
                     PuzzleResult(id = 2, rating = 1250, success = true),
@@ -263,14 +271,14 @@ private fun PlayingPreview() {
 @Composable
 private fun FinishedPreview() {
     ChessGymTheme {
-        PuzzleRushScreen(
-            uiState = PuzzleRushUiState.Finished(
-                data = PuzzleRushUiState.PuzzleData(
+        FailedPuzzlesScreen(
+            uiState = FailedPuzzlesUiState.Finished(
+                data = FailedPuzzlesUiState.PuzzleData(
                     rating = 1400,
                     player = Side.WHITE,
                     boardData = sampleBoard(),
                 ),
-                timeRemainingSeconds = 0,
+                progress = FailedPuzzlesUiState.Progress(solved = 4, total = 5),
                 results = listOf(
                     PuzzleResult(id = 1, rating = 1200, success = true),
                     PuzzleResult(id = 2, rating = 1250, success = true),
@@ -278,31 +286,7 @@ private fun FinishedPreview() {
                     PuzzleResult(id = 4, rating = 1320, success = true),
                     PuzzleResult(id = 5, rating = 1350, success = false),
                 ),
-                showSummaryDialog = false,
-                isNewHighScore = false,
-            ),
-            showBorders = true
-        )
-    }
-}
-
-@Preview
-@Preview("Dark mode", uiMode = UI_MODE_NIGHT_YES)
-@Composable
-private fun ManyResultsPreview() {
-    ChessGymTheme {
-        PuzzleRushScreen(
-            uiState = PuzzleRushUiState.Playing(
-                data = PuzzleRushUiState.PuzzleData(
-                    rating = 1500,
-                    player = Side.WHITE,
-                    boardData = sampleBoard(),
-                ),
-                timeRemainingSeconds = 45,
-                results = (1..12).map { i ->
-                    PuzzleResult(id = i, rating = 1200 + i * 20, success = i % 3 != 0)
-                },
-                promotion = null,
+                showCompletionDialog = false,
             ),
             showBorders = true
         )

@@ -1,29 +1,24 @@
-package com.paulcraciunas.screens.puzzles.rush.vm
+package com.paulcraciunas.screens.puzzles.failed.vm
 
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.screens.common.model.BoardViewData
 import com.paulcraciunas.screens.common.model.PuzzleResult
 
-sealed class PuzzleRushUiState {
-    data object Loading : PuzzleRushUiState()
-    data object Failed : PuzzleRushUiState()
+sealed class FailedPuzzlesUiState {
+    data object Loading : FailedPuzzlesUiState()
+    data object Failed : FailedPuzzlesUiState()
+    data object Empty : FailedPuzzlesUiState()
 
-    abstract class BoardState : PuzzleRushUiState() {
+    abstract class BoardState : FailedPuzzlesUiState() {
         abstract val data: PuzzleData
-        abstract val timeRemainingSeconds: Int
+        abstract val progress: Progress
         abstract val results: List<PuzzleResult>
     }
 
-    data class Ready(
-        override val data: PuzzleData,
-        override val timeRemainingSeconds: Int,
-        override val results: List<PuzzleResult> = emptyList(),
-    ) : BoardState()
-
     data class Playing(
         override val data: PuzzleData,
-        override val timeRemainingSeconds: Int,
+        override val progress: Progress,
         override val results: List<PuzzleResult>,
         val promotion: Promotion?,
     ) : BoardState() {
@@ -36,15 +31,19 @@ sealed class PuzzleRushUiState {
 
     data class Finished(
         override val data: PuzzleData,
-        override val timeRemainingSeconds: Int,
+        override val progress: Progress,
         override val results: List<PuzzleResult>,
-        val showSummaryDialog: Boolean,
-        val isNewHighScore: Boolean,
+        val showCompletionDialog: Boolean,
     ) : BoardState()
 
     data class PuzzleData(
         val rating: Int,
         val player: Side,
         val boardData: BoardViewData,
+    )
+
+    data class Progress(
+        val solved: Int,
+        val total: Int,
     )
 }

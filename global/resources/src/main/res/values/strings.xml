@@ -197,6 +197,15 @@
         <item quantity="one">%1$d puzzle to retry</item>
         <item quantity="other">%1$d puzzles to retry</item>
     </plurals>
+    <string name="failed_puzzles_progress">%1$d / %2$d solved</string>
+    <string name="failed_puzzles_empty_title">No Failed Puzzles</string>
+    <string name="failed_puzzles_empty_description">Great job! You don\'t have any failed puzzles to retry.</string>
+    <string name="failed_puzzles_complete_title">All Puzzles Complete!</string>
+    <string name="failed_puzzles_complete_message">You\'ve finished reviewing all your failed puzzles.</string>
+    <plurals name="failed_puzzles_solved_count">
+        <item quantity="one">%1$d puzzle solved</item>
+        <item quantity="other">%1$d puzzles solved</item>
+    </plurals>
     <!-- endregion -->
 
     <!-- Common -->
