@@ -18,7 +18,7 @@ class GetPuzzleSeriesImpl @Inject constructor(
         repeat(count) {
             repository.getByRating(rating)?.let {
                 result.add(it)
-                rating += randomFactory.nextInt(1, GetPuzzleSeries.INCREMENT)
+                rating += randomFactory.nextInt(1, increment)
             } ?: return@repeat // If we can't find a desired puzzle, we have to stop
         }
         return result
