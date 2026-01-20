@@ -24,9 +24,9 @@ import com.paulcraciunas.screens.common.theme.ChessGymTheme
 @Composable
 internal fun RushSummaryDialog(
     puzzlesSolved: Int,
+    isNewHighScore: Boolean,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
-    isNewHighScore: Boolean = false,
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -82,6 +82,7 @@ private fun RushSummaryDialogPreview() {
     ChessGymTheme {
         RushSummaryDialog(
             puzzlesSolved = 12,
+            isNewHighScore = false,
             onDismiss = {},
         )
     }
@@ -94,8 +95,8 @@ private fun RushSummaryDialogHighScorePreview() {
     ChessGymTheme {
         RushSummaryDialog(
             puzzlesSolved = 18,
-            onDismiss = {},
             isNewHighScore = true,
+            onDismiss = {},
         )
     }
 }

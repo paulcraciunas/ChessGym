@@ -15,9 +15,11 @@ dependencies {
     implementation(project(":game:puzzles:api"))
     implementation(project(":screens:common"))
     implementation(project(":settings:application:api"))
+    implementation(project(":user:api"))
 
     implementation(libs.androidx.lifecycle.runtime.ktx)
 
     testImplementation(testFixtures(project(":settings:application:api")))
+    testImplementation(testFixtures(project(":user:api")))
     testImplementation(project(":game:logic:impl"))
 }

@@ -148,7 +148,8 @@ fun PuzzleRushScreen(
             if (uiState is PuzzleRushUiState.Finished && uiState.showSummaryDialog) {
                 RushSummaryDialog(
                     puzzlesSolved = boardState.results.count { it.success },
-                    onDismiss = interactions::onDismissSummary
+                    isNewHighScore = uiState.isNewHighScore,
+                    onDismiss = interactions::onDismissSummary,
                 )
             }
         }
@@ -276,6 +277,7 @@ private fun FinishedPreview() {
                     PuzzleRushUiState.PuzzleResult(id = 5, rating = 1350, success = false),
                 ),
                 showSummaryDialog = false,
+                isNewHighScore = false,
             ),
             showBorders = true
         )

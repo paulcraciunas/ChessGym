@@ -80,28 +80,34 @@ fun MainScreen(
         Scaffold(
             modifier = modifier,
             bottomBar = {
-                BottomNavigationBar(
-                    currentDestination = currentDestination,
-                    onItemSelected = { item ->
-                        tabNavController.navigate(item.screen) {
-                            // Pop up to the start destination of the graph to
-                            // avoid building up a large stack of destinations
-                            popUpTo(tabNavController.graph.startDestinationId) {
-                                saveState = true
+                if (isTopLevelScreen) {
+                    BottomNavigationBar(
+                        currentDestination = currentDestination,
+                        onItemSelected = { item ->
+                            tabNavController.navigate(item.screen) {
+                                // Pop up to the start destination of the graph to
+                                // avoid building up a large stack of destinations
+                                popUpTo(tabNavController.graph.startDestinationId) {
+                                    saveState = true
+                                }
+                                // Avoid multiple copies of the same destination when re-selecting the same item
+                                launchSingleTop = true
+                                // Restore state when re-selecting a previously selected item
+                                restoreState = true
                             }
-                            // Avoid multiple copies of the same destination when re-selecting the same item
-                            launchSingleTop = true
-                            // Restore state when re-selecting a previously selected item
-                            restoreState = true
                         }
-                    }
-                )
+                    )
+                }
             },
         ) { innerPadding ->
             NavHost(
                 navController = tabNavController,
                 startDestination = Screen.Home,
-                modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding())
+                modifier = if (isTopLevelScreen) {
+                    Modifier.padding(bottom = innerPadding.calculateBottomPadding())
+                } else {
+                    Modifier
+                }
             ) {
                 animatedComposable<Screen.Home> {
                     val vm: HomeViewModel = hiltViewModel()

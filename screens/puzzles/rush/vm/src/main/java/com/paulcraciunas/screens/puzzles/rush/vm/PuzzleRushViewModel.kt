@@ -11,6 +11,7 @@ import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.screens.common.model.BoardViewDataBuilder
+import com.paulcraciunas.user.api.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -25,6 +26,7 @@ class PuzzleRushViewModel @Inject constructor(
     private val puzzleSeries: GetBufferedPuzzleSeries,
     private val onPuzzleRushComplete: OnPuzzleRushComplete,
     private val countdownTimer: CountdownTimer,
+    private val userRepository: UserRepository,
     gameFactory: GameFactory,
 ) : ViewModel(), PuzzleRushScreenInteractor {
     private val boardViewBuilder = BoardViewDataBuilder()
@@ -37,7 +39,8 @@ class PuzzleRushViewModel @Inject constructor(
     ) { gameState, remainingSeconds ->
         // Handle time expiry during playing
         val state = if (gameState is GameState.Playing && remainingSeconds <= 0) {
-            finishRush(gameState)
+            _gameState.value = finishRush(gameState)
+            _gameState.value
         } else gameState
         state.toUiState(remainingSeconds)
     }.stateIn(
@@ -46,6 +49,8 @@ class PuzzleRushViewModel @Inject constructor(
         initialValue = PuzzleRushUiState.Loading
     )
 
+    private var currentHighScore: Int = 0
+
     init {
         loadPuzzles()
     }
@@ -53,6 +58,7 @@ class PuzzleRushViewModel @Inject constructor(
     private fun loadPuzzles() {
         viewModelScope.launch {
             try {
+                currentHighScore = userRepository.get().highScores.puzzleRush
                 puzzleSeries()
                 val puzzle = puzzleSeries.next()
                 _gameState.value = if (puzzle == null) {
@@ -163,12 +169,18 @@ class PuzzleRushViewModel @Inject constructor(
     private fun finishRush(playingState: GameState.Playing): GameState {
         countdownTimer.stop()
 
+        // Clear selection and animation for final board state
+        val finalBoardData = boardViewBuilder.build()
+
         val results = playingState.results
+        val puzzlesSolved = results.count { it.success }
+        val isNewHighScore = puzzlesSolved > currentHighScore
+
         // Log the result
         viewModelScope.launch {
             onPuzzleRushComplete(
                 PuzzleRushResult(
-                    puzzlesSolved = results.count { it.success },
+                    puzzlesSolved = puzzlesSolved,
                     puzzlesFailed = results.count { !it.success },
                     failedPuzzleIds = results.filter { !it.success }.mapNotNull { it.id },
                     timeSpentMillis = countdownTimer.elapsedMillis(),
@@ -176,9 +188,10 @@ class PuzzleRushViewModel @Inject constructor(
             )
         }
         return GameState.Finished(
-            puzzleData = playingState.puzzleData,
+            puzzleData = playingState.puzzleData.copy(boardData = finalBoardData),
             results = results,
             showSummaryDialog = true,
+            isNewHighScore = isNewHighScore,
         )
     }
 
@@ -243,12 +256,14 @@ class PuzzleRushViewModel @Inject constructor(
             val puzzleData: PuzzleRushUiState.PuzzleData,
             val results: List<PuzzleRushUiState.PuzzleResult>,
             val showSummaryDialog: Boolean,
+            val isNewHighScore: Boolean,
         ) : GameState() {
             override fun toUiState(remainingSeconds: Int) = PuzzleRushUiState.Finished(
                 data = puzzleData,
                 timeRemainingSeconds = remainingSeconds,
                 results = results,
                 showSummaryDialog = showSummaryDialog,
+                isNewHighScore = isNewHighScore,
             )
         }
     }

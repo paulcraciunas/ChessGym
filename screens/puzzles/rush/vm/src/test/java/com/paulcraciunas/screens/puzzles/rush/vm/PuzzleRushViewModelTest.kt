@@ -8,6 +8,7 @@ import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.loc
 import com.paulcraciunas.game.logic.impl.RealGameFactory
+import com.paulcraciunas.user.api.FakeUserRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -33,6 +34,7 @@ internal class PuzzleRushViewModelTest {
     private val puzzleSeries = FakeGetBufferedPuzzleSeries()
     private val onPuzzleRushComplete = FakeOnPuzzleRushComplete()
     private val countdownTimer = FakeCountdownTimer()
+    private val userRepository = FakeUserRepository()
 
     @BeforeEach
     fun setUp() {
@@ -251,6 +253,7 @@ internal class PuzzleRushViewModelTest {
             puzzleSeries = puzzleSeries,
             onPuzzleRushComplete = onPuzzleRushComplete,
             countdownTimer = countdownTimer,
+            userRepository = userRepository,
             gameFactory = RealGameFactory(),
         )
         testDispatcher.scheduler.advanceUntilIdle()

@@ -38,6 +38,7 @@ sealed class PuzzleRushUiState {
         override val timeRemainingSeconds: Int,
         override val results: List<PuzzleResult>,
         val showSummaryDialog: Boolean,
+        val isNewHighScore: Boolean,
     ) : BoardState()
 
     data class PuzzleData(
