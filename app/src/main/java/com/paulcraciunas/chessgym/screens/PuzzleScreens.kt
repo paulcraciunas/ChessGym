@@ -1,6 +1,5 @@
 package com.paulcraciunas.chessgym.screens
 
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -14,6 +13,8 @@ import com.paulcraciunas.screens.puzzles.dashboard.vm.PuzzleDashboardViewModel
 import com.paulcraciunas.screens.puzzles.dashboard.vm.PuzzleMode
 import com.paulcraciunas.screens.puzzles.rated.ui.RatedPuzzleScreen
 import com.paulcraciunas.screens.puzzles.rated.vm.RatedPuzzleViewModel
+import com.paulcraciunas.screens.puzzles.rush.ui.PuzzleRushScreen
+import com.paulcraciunas.screens.puzzles.rush.vm.PuzzleRushViewModel
 
 @Composable
 internal fun PuzzleDashboard(
@@ -73,7 +74,15 @@ internal fun PuzzleRush(
     tabNavController: NavHostController,
     showBorders: Boolean,
 ) {
-    Text(
-        text = "Under Construction",
+    val vm: PuzzleRushViewModel = hiltViewModel()
+    val puzzleRushState by vm.uiState.collectAsStateWithLifecycle()
+
+    PuzzleRushScreen(
+        uiState = puzzleRushState,
+        showBorders = showBorders,
+        onNavigateBack = {
+            tabNavController.popBackStack(Screen.PuzzleDashboard, inclusive = false)
+        },
+        interactions = vm,
     )
 }
