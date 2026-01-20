@@ -13,6 +13,8 @@ import com.paulcraciunas.screens.puzzles.dashboard.vm.PuzzleDashboardViewModel
 import com.paulcraciunas.screens.puzzles.dashboard.vm.PuzzleMode
 import com.paulcraciunas.screens.puzzles.rated.ui.RatedPuzzleScreen
 import com.paulcraciunas.screens.puzzles.rated.vm.RatedPuzzleViewModel
+import com.paulcraciunas.screens.puzzles.rush.ui.PuzzleRushScreen
+import com.paulcraciunas.screens.puzzles.rush.vm.PuzzleRushViewModel
 
 @Composable
 internal fun PuzzleDashboard(
@@ -31,14 +33,16 @@ internal fun PuzzleDashboard(
                     PuzzleMode.RatedPuzzle -> {
                         tabNavController.navigate(Screen.RatedPuzzle)
                     }
+                    PuzzleMode.PuzzleRush -> {
+                        tabNavController.navigate(Screen.PuzzleRush)
+                    }
                     else -> {
-                        // TODO: Handle other puzzle modes when implemented
+                        // TODO Paul: Handle puzzle streak
+                        // TODO Paul: Handle failed puzzles
                     }
                 }
             }
         },
-        onPuzzleRushTimeChanged = vm::onPuzzleRushTimeChanged,
-        onPuzzleRushMistakesChanged = vm::onPuzzleRushMistakesChanged
     )
 }
 
@@ -60,6 +64,24 @@ internal fun RatedPuzzle(
             if (!vm.onNavigateBackPressed()) {
                 tabNavController.popBackStack(Screen.PuzzleDashboard, inclusive = false)
             }
+        },
+        interactions = vm,
+    )
+}
+
+@Composable
+internal fun PuzzleRush(
+    tabNavController: NavHostController,
+    showBorders: Boolean,
+) {
+    val vm: PuzzleRushViewModel = hiltViewModel()
+    val puzzleRushState by vm.uiState.collectAsStateWithLifecycle()
+
+    PuzzleRushScreen(
+        uiState = puzzleRushState,
+        showBorders = showBorders,
+        onNavigateBack = {
+            tabNavController.popBackStack(Screen.PuzzleDashboard, inclusive = false)
         },
         interactions = vm,
     )

@@ -31,7 +31,8 @@ import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
-internal fun PuzzleRushCard(
+internal fun PuzzleStreakCard(
+    currentStreak: Int,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -81,16 +82,31 @@ internal fun PuzzleRushCard(
                     verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     Text(
-                        text = stringResource(R.string.puzzle_mode_rush_title),
+                        text = stringResource(R.string.puzzle_mode_streak_title),
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Text(
-                        text = stringResource(R.string.puzzle_mode_rush_description),
+                        text = stringResource(R.string.puzzle_mode_streak_description),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
+                    if (currentStreak == 0) {
+                        Text(
+                            text = stringResource(R.string.puzzle_mode_streak_new),
+                            style = MaterialTheme.typography.bodySmall,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    } else {
+                        Text(
+                            text = stringResource(R.string.puzzle_mode_streak_continue, currentStreak),
+                            style = MaterialTheme.typography.bodySmall,
+                            fontWeight = FontWeight.Normal,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
 
                 // Arrow
@@ -105,12 +121,26 @@ internal fun PuzzleRushCard(
     }
 }
 
-@Preview("PuzzleRushCard")
-@Preview("PuzzleRushCard (dark)", uiMode = UI_MODE_NIGHT_YES)
+@Preview("PuzzleRushCard new streak")
+@Preview("PuzzleRushCard new streak (dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
-private fun PuzzleRushCardPreview() {
+private fun NewPuzzleStreakCardPreview() {
     ChessGymTheme {
-        PuzzleRushCard(
+        PuzzleStreakCard(
+            currentStreak = 0,
+            onClick = {},
+            modifier = Modifier.padding(16.dp)
+        )
+    }
+}
+
+@Preview("PuzzleRushCard continue streak")
+@Preview("PuzzleRushCard continue streak (dark)", uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun ContinuePuzzleStreakCardPreview() {
+    ChessGymTheme {
+        PuzzleStreakCard(
+            currentStreak = 42,
             onClick = {},
             modifier = Modifier.padding(16.dp)
         )

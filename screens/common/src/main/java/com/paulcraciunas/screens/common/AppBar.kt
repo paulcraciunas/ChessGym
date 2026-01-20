@@ -32,7 +32,8 @@ fun AppBar(
     modifier: Modifier = Modifier,
     title: String = stringResource(R.string.app_name),
     titleAlign: AppBarAlignment = AppBarAlignment.Beginning,
-    navButton: (@Composable AppBarScope.() -> Unit) = {}
+    navButton: (@Composable AppBarScope.() -> Unit) = {},
+    actions: (@Composable AppBarScope.() -> Unit) = {},
 ) {
     val appBarScope = remember { AppBarScope() }
 
@@ -46,6 +47,7 @@ fun AppBar(
                 colors = colors,
                 title = { Text(text = title) },
                 navigationIcon = { navButton(appBarScope) },
+                actions = { actions(appBarScope) },
                 modifier = modifier
             )
         }
@@ -55,6 +57,7 @@ fun AppBar(
                 colors = colors,
                 title = { Text(text = title) },
                 navigationIcon = { navButton(appBarScope) },
+                actions = { actions(appBarScope) },
                 modifier = modifier
             )
         }

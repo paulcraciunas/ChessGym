@@ -162,18 +162,32 @@
     <!-- region Puzzle Dashboard -->
     <string name="puzzle_dashboard_title">Choose Your Challenge</string>
     <string name="puzzle_dashboard_subtitle">Select a puzzle mode to train your tactical skills</string>
+    <!-- endregion -->
 
     <!-- Rated Puzzle Mode -->
     <string name="puzzle_mode_rated_title">Rated Puzzles</string>
     <string name="puzzle_mode_rated_description">Solve puzzles at your skill level</string>
     <string name="puzzle_mode_rated_rating">Your rating: %1$d</string>
+    <!-- endregion -->
 
     <!-- Puzzle Rush Mode -->
     <string name="puzzle_mode_rush_title">Puzzle Rush</string>
-    <string name="puzzle_mode_rush_description">Solve as many puzzles as possible in time</string>
-    <string name="puzzle_rush_limit_minutes">%1$d minutes</string>
-    <string name="puzzle_rush_no_mistakes">Perfect play</string>
-    <string name="puzzle_rush_mistakes_count">%1$d mistakes</string>
+    <string name="puzzle_mode_rush_description">Solve as many puzzles as possible in 3 minutes</string>
+    <string name="puzzle_rush_play_to_start">Play a move to start</string>
+    <string name="puzzle_rush_play_again">Play Again</string>
+    <string name="puzzle_rush_summary_title">Puzzle Rush Complete!</string>
+    <string name="puzzle_rush_summary_puzzles_solved">Puzzles Solved</string>
+    <string name="puzzle_rush_summary_new_high_score">New High Score!</string>
+    <string name="puzzle_rush_time_up">Time\'s Up!</string>
+    <string name="puzzle_rush_puzzle_failed">Puzzle Failed!</string>
+    <!-- endregion -->
+
+    <!-- Puzzle Streak Mode -->
+    <string name="puzzle_mode_streak_title">Puzzle Streak</string>
+    <string name="puzzle_mode_streak_description">Solve as many puzzles in a row as possible</string>
+    <string name="puzzle_mode_streak_new">Start a new Streak</string>
+    <string name="puzzle_mode_streak_continue">Continue your %1$d Puzzle Streak</string>
+    <!-- endregion -->
 
     <!-- Failed Puzzles Mode -->
     <string name="puzzle_mode_failed_title">Failed Puzzles</string>
@@ -183,6 +197,7 @@
         <item quantity="one">%1$d puzzle to retry</item>
         <item quantity="other">%1$d puzzles to retry</item>
     </plurals>
+    <!-- endregion -->
 
     <!-- Common -->
     <string name="puzzle_mode_start">Start puzzle mode</string>

@@ -32,8 +32,6 @@ import com.paulcraciunas.screens.puzzles.dashboard.vm.PuzzleMode
 fun PuzzleDashboardScreen(
     state: PuzzleDashboardUiState,
     onPuzzleModeSelected: (PuzzleMode) -> Unit,
-    onPuzzleRushTimeChanged: (PuzzleDashboardUiState.PuzzleRushConfig.TimeLimit) -> Unit,
-    onPuzzleRushMistakesChanged: (PuzzleDashboardUiState.PuzzleRushConfig.MistakesAllowed) -> Unit,
     modifier: Modifier = Modifier,
     onDrawerToggle: () -> Unit = {},
 ) {
@@ -50,8 +48,6 @@ fun PuzzleDashboardScreen(
             else -> DashboardContent(
                 state = state,
                 onPuzzleModeSelected = onPuzzleModeSelected,
-                onPuzzleRushTimeChanged = onPuzzleRushTimeChanged,
-                onPuzzleRushMistakesChanged = onPuzzleRushMistakesChanged,
                 modifier = Modifier.padding(innerPadding)
             )
         }
@@ -62,8 +58,6 @@ fun PuzzleDashboardScreen(
 private fun DashboardContent(
     state: PuzzleDashboardUiState,
     onPuzzleModeSelected: (PuzzleMode) -> Unit,
-    onPuzzleRushTimeChanged: (PuzzleDashboardUiState.PuzzleRushConfig.TimeLimit) -> Unit,
-    onPuzzleRushMistakesChanged: (PuzzleDashboardUiState.PuzzleRushConfig.MistakesAllowed) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -91,10 +85,15 @@ private fun DashboardContent(
             
             item {
                 PuzzleRushCard(
-                    config = state.puzzleRushConfig,
-                    onTimeChanged = onPuzzleRushTimeChanged,
-                    onMistakesChanged = onPuzzleRushMistakesChanged,
-                    onClick = { onPuzzleModeSelected(PuzzleMode.PuzzleRush(state.puzzleRushConfig)) }
+                    onClick = { onPuzzleModeSelected(PuzzleMode.PuzzleRush) }
+                )
+            }
+
+            item {
+                PuzzleStreakCard(
+                    // TODO Paul: integrate me
+                    currentStreak = 0,
+                    onClick = { onPuzzleModeSelected(PuzzleMode.PuzzleStreak) }
                 )
             }
             
@@ -143,8 +142,6 @@ private fun PuzzleDashboardScreenPreview() {
                 isLoading = false
             ),
             onPuzzleModeSelected = {},
-            onPuzzleRushTimeChanged = {},
-            onPuzzleRushMistakesChanged = {}
         )
     }
 }

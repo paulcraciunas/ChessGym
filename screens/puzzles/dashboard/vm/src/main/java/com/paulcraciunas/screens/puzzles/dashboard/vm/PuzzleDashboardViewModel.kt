@@ -30,18 +30,6 @@ class PuzzleDashboardViewModel @Inject constructor(
         }
     }
 
-    fun onPuzzleRushTimeChanged(timeLimit: PuzzleDashboardUiState.PuzzleRushConfig.TimeLimit) {
-        _uiState.value = _uiState.value.copy(
-            puzzleRushConfig = _uiState.value.puzzleRushConfig.copy(timeLimit = timeLimit)
-        )
-    }
-
-    fun onPuzzleRushMistakesChanged(mistakesAllowed: PuzzleDashboardUiState.PuzzleRushConfig.MistakesAllowed) {
-        _uiState.value = _uiState.value.copy(
-            puzzleRushConfig = _uiState.value.puzzleRushConfig.copy(mistakesAllowed = mistakesAllowed)
-        )
-    }
-
     fun onPuzzleModeSelected(mode: PuzzleMode, onNavigate: (PuzzleMode) -> Unit) {
         // For now, just trigger navigation
         // In the future, this might trigger analytics, state updates, etc.
