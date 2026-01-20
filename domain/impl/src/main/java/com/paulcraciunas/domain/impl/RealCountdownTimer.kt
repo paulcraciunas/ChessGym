@@ -30,11 +30,16 @@ class RealCountdownTimer @Inject constructor() : CountdownTimer {
     private var durationSeconds: Int = 0
     private var countdownJob: Job? = null
 
-    override fun start(scope: CoroutineScope, durationSeconds: Int) {
+    override fun set(durationSeconds: Int) {
+        if (countdownJob == null) {
+            this.durationSeconds = durationSeconds
+            _remainingSeconds.value = durationSeconds
+        }
+    }
+
+    override fun start(scope: CoroutineScope) {
         stop()
-        this.durationSeconds = durationSeconds
         this.startInstant = Instant.now()
-        _remainingSeconds.value = durationSeconds
 
         countdownJob = scope.launch {
             while (isActive && _remainingSeconds.value > 0) {

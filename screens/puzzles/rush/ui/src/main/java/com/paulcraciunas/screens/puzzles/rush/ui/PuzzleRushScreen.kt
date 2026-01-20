@@ -224,7 +224,6 @@ private fun ReadyPreview() {
                     boardData = sampleBoard(),
                 ),
                 timeRemainingSeconds = 180,
-                results = emptyList(),
             ),
             showBorders = true
         )
@@ -245,9 +244,9 @@ private fun PlayingPreview() {
                 ),
                 timeRemainingSeconds = 142,
                 results = listOf(
-                    PuzzleRushUiState.PuzzleResult(1200, true),
-                    PuzzleRushUiState.PuzzleResult(1250, true),
-                    PuzzleRushUiState.PuzzleResult(1300, false),
+                    PuzzleRushUiState.PuzzleResult(id = 1, rating = 1200, success = true),
+                    PuzzleRushUiState.PuzzleResult(id = 2, rating = 1250, success = true),
+                    PuzzleRushUiState.PuzzleResult(id = 3, rating = 1300, success = false),
                 ),
                 promotion = null,
             ),
@@ -270,11 +269,11 @@ private fun FinishedPreview() {
                 ),
                 timeRemainingSeconds = 0,
                 results = listOf(
-                    PuzzleRushUiState.PuzzleResult(1200, true),
-                    PuzzleRushUiState.PuzzleResult(1250, true),
-                    PuzzleRushUiState.PuzzleResult(1300, true),
-                    PuzzleRushUiState.PuzzleResult(1320, true),
-                    PuzzleRushUiState.PuzzleResult(1350, false),
+                    PuzzleRushUiState.PuzzleResult(id = 1, rating = 1200, success = true),
+                    PuzzleRushUiState.PuzzleResult(id = 2, rating = 1250, success = true),
+                    PuzzleRushUiState.PuzzleResult(id = 3, rating = 1300, success = true),
+                    PuzzleRushUiState.PuzzleResult(id = 4, rating = 1320, success = true),
+                    PuzzleRushUiState.PuzzleResult(id = 5, rating = 1350, success = false),
                 ),
                 showSummaryDialog = false,
             ),
@@ -297,7 +296,7 @@ private fun ManyResultsPreview() {
                 ),
                 timeRemainingSeconds = 45,
                 results = (1..12).map { i ->
-                    PuzzleRushUiState.PuzzleResult(1200 + i * 20, i % 3 != 0)
+                    PuzzleRushUiState.PuzzleResult(id = i, rating = 1200 + i * 20, success = i % 3 != 0)
                 },
                 promotion = null,
             ),

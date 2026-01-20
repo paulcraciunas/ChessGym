@@ -93,11 +93,11 @@ private fun PuzzleResultsGridPreview() {
     ChessGymTheme {
         PuzzleResultsGrid(
             results = listOf(
-                PuzzleRushUiState.PuzzleResult(1200, true),
-                PuzzleRushUiState.PuzzleResult(1250, true),
-                PuzzleRushUiState.PuzzleResult(1300, false),
-                PuzzleRushUiState.PuzzleResult(1280, true),
-                PuzzleRushUiState.PuzzleResult(1320, true),
+                PuzzleRushUiState.PuzzleResult(id = 1, rating = 1200, success = true),
+                PuzzleRushUiState.PuzzleResult(id = 2, rating = 1250, success = true),
+                PuzzleRushUiState.PuzzleResult(id = 3, rating = 1300, success = false),
+                PuzzleRushUiState.PuzzleResult(id = 4, rating = 1280, success = true),
+                PuzzleRushUiState.PuzzleResult(id = 5, rating = 1320, success = true),
             ),
             modifier = Modifier.padding(16.dp)
         )
@@ -111,7 +111,7 @@ private fun PuzzleResultsGridManyPreview() {
     ChessGymTheme {
         PuzzleResultsGrid(
             results = (1..15).map { i ->
-                PuzzleRushUiState.PuzzleResult(1100 + i * 25, i % 4 != 0)
+                PuzzleRushUiState.PuzzleResult(id = i, rating = 1100 + i * 25, success = i % 4 != 0)
             },
             modifier = Modifier.padding(16.dp)
         )
@@ -123,7 +123,7 @@ private fun PuzzleResultsGridManyPreview() {
 private fun PuzzleResultItemSuccessPreview() {
     ChessGymTheme {
         PuzzleResultItem(
-            result = PuzzleRushUiState.PuzzleResult(1350, true)
+            result = PuzzleRushUiState.PuzzleResult(id = 1, rating = 1350, success = true)
         )
     }
 }
@@ -133,7 +133,7 @@ private fun PuzzleResultItemSuccessPreview() {
 private fun PuzzleResultItemFailedPreview() {
     ChessGymTheme {
         PuzzleResultItem(
-            result = PuzzleRushUiState.PuzzleResult(1400, false)
+            result = PuzzleRushUiState.PuzzleResult(id = 2, rating = 1400, success = false)
         )
     }
 }

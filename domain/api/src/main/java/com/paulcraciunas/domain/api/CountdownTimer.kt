@@ -30,13 +30,20 @@ interface CountdownTimer {
     val isExpired: Boolean
 
     /**
-     * Starts the countdown with the specified duration.
+     * Prepares the timer for a new countdown.
+     * If the timer is already running, calling this method has no effect
+     *
+     * @param durationSeconds Total duration in seconds
+     */
+    fun set(durationSeconds: Int)
+
+    /**
+     * Starts the countdown with the duration specified by [set].
      * If already running, cancels the previous countdown and starts a new one.
      *
      * @param scope CoroutineScope to run the countdown in (typically viewModelScope)
-     * @param durationSeconds Total duration in seconds
      */
-    fun start(scope: CoroutineScope, durationSeconds: Int)
+    fun start(scope: CoroutineScope)
 
     /**
      * Stops the countdown. The remaining time will freeze at its current value.

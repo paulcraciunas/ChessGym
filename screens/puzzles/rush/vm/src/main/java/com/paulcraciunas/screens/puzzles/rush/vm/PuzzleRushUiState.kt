@@ -17,7 +17,7 @@ sealed class PuzzleRushUiState {
     data class Ready(
         override val data: PuzzleData,
         override val timeRemainingSeconds: Int,
-        override val results: List<PuzzleResult>,
+        override val results: List<PuzzleResult> = emptyList(),
     ) : BoardState()
 
     data class Playing(
@@ -47,6 +47,7 @@ sealed class PuzzleRushUiState {
     )
 
     data class PuzzleResult(
+        val id: Int?,
         val rating: Int,
         val success: Boolean,
     )
