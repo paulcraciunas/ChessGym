@@ -9,6 +9,7 @@ import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.screens.common.model.BoardViewDataBuilder
+import com.paulcraciunas.screens.common.model.PuzzleResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -113,7 +114,7 @@ class FailedPuzzlesViewModel @Inject constructor(
     private fun handleMoveResult(currentState: FailedPuzzlesUiState.Playing) {
         if (puzzleInteractor.isOver()) {
             val success = puzzleInteractor.isSuccess()
-            val newResult = FailedPuzzlesUiState.PuzzleResult(
+            val newResult = PuzzleResult(
                 id = puzzleInteractor.id,
                 rating = puzzleInteractor.rating,
                 success = success

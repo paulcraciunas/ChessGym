@@ -11,6 +11,7 @@ import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.screens.common.model.BoardViewDataBuilder
+import com.paulcraciunas.screens.common.model.PuzzleResult
 import com.paulcraciunas.user.api.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -136,7 +137,7 @@ class PuzzleRushViewModel @Inject constructor(
     private fun handleMoveResult(currentState: GameState.Playing) {
         if (puzzleInteractor.isOver()) {
             val success = puzzleInteractor.isSuccess()
-            val newResult = PuzzleRushUiState.PuzzleResult(
+            val newResult = PuzzleResult(
                 id = puzzleInteractor.id,
                 rating = puzzleInteractor.rating,
                 success = success
@@ -241,7 +242,7 @@ class PuzzleRushViewModel @Inject constructor(
 
         data class Playing(
             val puzzleData: PuzzleRushUiState.PuzzleData,
-            val results: List<PuzzleRushUiState.PuzzleResult>,
+            val results: List<PuzzleResult>,
             val promotion: PuzzleRushUiState.Playing.Promotion?,
         ) : GameState() {
             override fun toUiState(remainingSeconds: Int) = PuzzleRushUiState.Playing(
@@ -254,7 +255,7 @@ class PuzzleRushViewModel @Inject constructor(
 
         data class Finished(
             val puzzleData: PuzzleRushUiState.PuzzleData,
-            val results: List<PuzzleRushUiState.PuzzleResult>,
+            val results: List<PuzzleResult>,
             val showSummaryDialog: Boolean,
             val isNewHighScore: Boolean,
         ) : GameState() {

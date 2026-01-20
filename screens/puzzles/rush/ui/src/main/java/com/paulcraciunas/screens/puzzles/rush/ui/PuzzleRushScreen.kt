@@ -32,8 +32,10 @@ import com.paulcraciunas.screens.common.FailedContent
 import com.paulcraciunas.screens.common.LoadingContent
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
+import com.paulcraciunas.screens.common.controls.PuzzleResultsGrid
 import com.paulcraciunas.screens.common.dialogs.PromotionDialog
 import com.paulcraciunas.screens.common.model.BoardViewData
+import com.paulcraciunas.screens.common.model.PuzzleResult
 import com.paulcraciunas.screens.common.model.SquareViewData
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.puzzles.rush.vm.PuzzleRushScreenInteractor
@@ -245,9 +247,9 @@ private fun PlayingPreview() {
                 ),
                 timeRemainingSeconds = 142,
                 results = listOf(
-                    PuzzleRushUiState.PuzzleResult(id = 1, rating = 1200, success = true),
-                    PuzzleRushUiState.PuzzleResult(id = 2, rating = 1250, success = true),
-                    PuzzleRushUiState.PuzzleResult(id = 3, rating = 1300, success = false),
+                    PuzzleResult(id = 1, rating = 1200, success = true),
+                    PuzzleResult(id = 2, rating = 1250, success = true),
+                    PuzzleResult(id = 3, rating = 1300, success = false),
                 ),
                 promotion = null,
             ),
@@ -270,11 +272,11 @@ private fun FinishedPreview() {
                 ),
                 timeRemainingSeconds = 0,
                 results = listOf(
-                    PuzzleRushUiState.PuzzleResult(id = 1, rating = 1200, success = true),
-                    PuzzleRushUiState.PuzzleResult(id = 2, rating = 1250, success = true),
-                    PuzzleRushUiState.PuzzleResult(id = 3, rating = 1300, success = true),
-                    PuzzleRushUiState.PuzzleResult(id = 4, rating = 1320, success = true),
-                    PuzzleRushUiState.PuzzleResult(id = 5, rating = 1350, success = false),
+                    PuzzleResult(id = 1, rating = 1200, success = true),
+                    PuzzleResult(id = 2, rating = 1250, success = true),
+                    PuzzleResult(id = 3, rating = 1300, success = true),
+                    PuzzleResult(id = 4, rating = 1320, success = true),
+                    PuzzleResult(id = 5, rating = 1350, success = false),
                 ),
                 showSummaryDialog = false,
                 isNewHighScore = false,
@@ -298,7 +300,7 @@ private fun ManyResultsPreview() {
                 ),
                 timeRemainingSeconds = 45,
                 results = (1..12).map { i ->
-                    PuzzleRushUiState.PuzzleResult(id = i, rating = 1200 + i * 20, success = i % 3 != 0)
+                    PuzzleResult(id = i, rating = 1200 + i * 20, success = i % 3 != 0)
                 },
                 promotion = null,
             ),

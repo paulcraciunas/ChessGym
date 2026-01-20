@@ -35,8 +35,10 @@ import com.paulcraciunas.screens.common.FailedContent
 import com.paulcraciunas.screens.common.LoadingContent
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
+import com.paulcraciunas.screens.common.controls.PuzzleResultsGrid
 import com.paulcraciunas.screens.common.dialogs.PromotionDialog
 import com.paulcraciunas.screens.common.model.BoardViewData
+import com.paulcraciunas.screens.common.model.PuzzleResult
 import com.paulcraciunas.screens.common.model.SquareViewData
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.puzzles.failed.vm.FailedPuzzlesScreenInteractor
@@ -113,7 +115,7 @@ fun FailedPuzzlesScreen(
 
             // Results grid
             if (boardState.results.isNotEmpty()) {
-                FailedPuzzleResultsGrid(
+                PuzzleResultsGrid(
                     results = boardState.results,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -253,9 +255,9 @@ private fun PlayingPreview() {
                 ),
                 progress = FailedPuzzlesUiState.Progress(solved = 3, total = 10),
                 results = listOf(
-                    FailedPuzzlesUiState.PuzzleResult(id = 1, rating = 1200, success = true),
-                    FailedPuzzlesUiState.PuzzleResult(id = 2, rating = 1250, success = true),
-                    FailedPuzzlesUiState.PuzzleResult(id = 3, rating = 1300, success = false),
+                    PuzzleResult(id = 1, rating = 1200, success = true),
+                    PuzzleResult(id = 2, rating = 1250, success = true),
+                    PuzzleResult(id = 3, rating = 1300, success = false),
                 ),
                 promotion = null,
             ),
@@ -278,11 +280,11 @@ private fun FinishedPreview() {
                 ),
                 progress = FailedPuzzlesUiState.Progress(solved = 4, total = 5),
                 results = listOf(
-                    FailedPuzzlesUiState.PuzzleResult(id = 1, rating = 1200, success = true),
-                    FailedPuzzlesUiState.PuzzleResult(id = 2, rating = 1250, success = true),
-                    FailedPuzzlesUiState.PuzzleResult(id = 3, rating = 1300, success = true),
-                    FailedPuzzlesUiState.PuzzleResult(id = 4, rating = 1320, success = true),
-                    FailedPuzzlesUiState.PuzzleResult(id = 5, rating = 1350, success = false),
+                    PuzzleResult(id = 1, rating = 1200, success = true),
+                    PuzzleResult(id = 2, rating = 1250, success = true),
+                    PuzzleResult(id = 3, rating = 1300, success = true),
+                    PuzzleResult(id = 4, rating = 1320, success = true),
+                    PuzzleResult(id = 5, rating = 1350, success = false),
                 ),
                 showCompletionDialog = false,
             ),

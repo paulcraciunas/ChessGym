@@ -3,6 +3,7 @@ package com.paulcraciunas.screens.puzzles.rush.vm
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.screens.common.model.BoardViewData
+import com.paulcraciunas.screens.common.model.PuzzleResult
 
 sealed class PuzzleRushUiState {
     data object Loading : PuzzleRushUiState()
@@ -45,11 +46,5 @@ sealed class PuzzleRushUiState {
         val rating: Int,
         val player: Side,
         val boardData: BoardViewData,
-    )
-
-    data class PuzzleResult(
-        val id: Int?,
-        val rating: Int,
-        val success: Boolean,
     )
 }

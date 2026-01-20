@@ -3,6 +3,7 @@ package com.paulcraciunas.screens.puzzles.failed.vm
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.screens.common.model.BoardViewData
+import com.paulcraciunas.screens.common.model.PuzzleResult
 
 sealed class FailedPuzzlesUiState {
     data object Loading : FailedPuzzlesUiState()
@@ -44,11 +45,5 @@ sealed class FailedPuzzlesUiState {
     data class Progress(
         val solved: Int,
         val total: Int,
-    )
-
-    data class PuzzleResult(
-        val id: Int?,
-        val rating: Int,
-        val success: Boolean,
     )
 }

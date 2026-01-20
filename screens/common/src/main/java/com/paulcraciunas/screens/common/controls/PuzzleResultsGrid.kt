@@ -1,4 +1,4 @@
-package com.paulcraciunas.screens.puzzles.failed.ui
+package com.paulcraciunas.screens.common.controls
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
@@ -22,14 +22,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.paulcraciunas.screens.common.model.PuzzleResult
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.common.theme.LoadingTheme
-import com.paulcraciunas.screens.puzzles.failed.vm.FailedPuzzlesUiState
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-internal fun FailedPuzzleResultsGrid(
-    results: List<FailedPuzzlesUiState.PuzzleResult>,
+fun PuzzleResultsGrid(
+    results: List<PuzzleResult>,
     modifier: Modifier = Modifier,
 ) {
     FlowRow(
@@ -45,7 +45,7 @@ internal fun FailedPuzzleResultsGrid(
 
 @Composable
 private fun PuzzleResultItem(
-    result: FailedPuzzlesUiState.PuzzleResult,
+    result: PuzzleResult,
     modifier: Modifier = Modifier,
 ) {
     val backgroundColor = if (result.success) {
@@ -89,15 +89,15 @@ private fun PuzzleResultItem(
 @Preview(showBackground = true)
 @Preview("Dark mode", uiMode = UI_MODE_NIGHT_YES)
 @Composable
-private fun FailedPuzzleResultsGridPreview() {
+private fun PuzzleResultsGridPreview() {
     ChessGymTheme {
-        FailedPuzzleResultsGrid(
+        PuzzleResultsGrid(
             results = listOf(
-                FailedPuzzlesUiState.PuzzleResult(id = 1, rating = 1200, success = true),
-                FailedPuzzlesUiState.PuzzleResult(id = 2, rating = 1250, success = true),
-                FailedPuzzlesUiState.PuzzleResult(id = 3, rating = 1300, success = false),
-                FailedPuzzlesUiState.PuzzleResult(id = 4, rating = 1280, success = true),
-                FailedPuzzlesUiState.PuzzleResult(id = 5, rating = 1320, success = true),
+                PuzzleResult(id = 1, rating = 1200, success = true),
+                PuzzleResult(id = 2, rating = 1250, success = true),
+                PuzzleResult(id = 3, rating = 1300, success = false),
+                PuzzleResult(id = 4, rating = 1280, success = true),
+                PuzzleResult(id = 5, rating = 1320, success = true),
             ),
             modifier = Modifier.padding(16.dp)
         )
@@ -107,13 +107,33 @@ private fun FailedPuzzleResultsGridPreview() {
 @Preview(showBackground = true)
 @Preview("Dark mode", uiMode = UI_MODE_NIGHT_YES)
 @Composable
-private fun FailedPuzzleResultsGridManyPreview() {
+private fun PuzzleResultsGridManyPreview() {
     ChessGymTheme {
-        FailedPuzzleResultsGrid(
+        PuzzleResultsGrid(
             results = (1..15).map { i ->
-                FailedPuzzlesUiState.PuzzleResult(id = i, rating = 1100 + i * 25, success = i % 4 != 0)
+                PuzzleResult(id = i, rating = 1100 + i * 25, success = i % 4 != 0)
             },
             modifier = Modifier.padding(16.dp)
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun PuzzleResultItemSuccessPreview() {
+    ChessGymTheme {
+        PuzzleResultItem(
+            result = PuzzleResult(id = 1, rating = 1350, success = true)
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun PuzzleResultItemFailedPreview() {
+    ChessGymTheme {
+        PuzzleResultItem(
+            result = PuzzleResult(id = 2, rating = 1400, success = false)
         )
     }
 }
