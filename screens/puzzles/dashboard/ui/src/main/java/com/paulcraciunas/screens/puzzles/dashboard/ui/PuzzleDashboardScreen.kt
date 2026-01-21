@@ -91,8 +91,7 @@ private fun DashboardContent(
 
             item {
                 PuzzleStreakCard(
-                    // TODO Paul: integrate me
-                    currentStreak = 0,
+                    currentStreak = state.currentStreakCount,
                     onClick = { onPuzzleModeSelected(PuzzleMode.PuzzleStreak) }
                 )
             }
@@ -139,6 +138,7 @@ private fun PuzzleDashboardScreenPreview() {
             state = PuzzleDashboardUiState(
                 userRating = 1547,
                 failedPuzzlesCount = 12,
+                currentStreakCount = 7,
                 isLoading = false
             ),
             onPuzzleModeSelected = {},

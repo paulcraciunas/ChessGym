@@ -24,6 +24,7 @@ class PuzzleDashboardViewModel @Inject constructor(
                 _uiState.value = _uiState.value.copy(
                     userRating = user.ratings.current,
                     failedPuzzlesCount = user.failedPuzzles.size,
+                    currentStreakCount = user.puzzleStreak.currentCount,
                     isLoading = false
                 )
             }

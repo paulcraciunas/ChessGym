@@ -3,6 +3,7 @@ package com.paulcraciunas.screens.puzzles.dashboard.vm
 data class PuzzleDashboardUiState(
     val userRating: Int = 1200,
     val failedPuzzlesCount: Int = 0,
+    val currentStreakCount: Int = 0,
     val isLoading: Boolean = true
 )
 
