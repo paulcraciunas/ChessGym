@@ -43,6 +43,8 @@ class PuzzleStreakViewModel @Inject constructor(
                 _uiState.value = PuzzleStreakUiState.Playing(
                     data = helper.load(data.puzzle),
                     streakCount = currentStreakCount,
+                    hintEnabled = true,
+                    showAbandonDialog = false,
                     promotion = null,
                 )
             } catch (_: Exception) {
@@ -67,10 +69,43 @@ class PuzzleStreakViewModel @Inject constructor(
 
     override fun onHintRequested() {
         val state = _uiState.value
-        if (state !is PuzzleStreakUiState.Playing) return
+        if (state !is PuzzleStreakUiState.Playing || !state.hintEnabled) return
 
         helper.hint()
-        _uiState.value = state.copy(data = helper.buildPuzzleData())
+        _uiState.value = state.copy(
+            data = helper.buildPuzzleData(),
+            hintEnabled = false,
+        )
+    }
+
+    override fun onAbandon() {
+        val state = _uiState.value
+        if (state !is PuzzleStreakUiState.Playing) return
+
+        _uiState.value = state.copy(showAbandonDialog = true)
+    }
+
+    override fun onAbandonConfirmed() {
+        val state = _uiState.value
+        if (state !is PuzzleStreakUiState.Playing) return
+
+        helper.resign()
+        viewModelScope.launch {
+            val isNewHighScore = onStreakComplete(currentStreakCount)
+            _uiState.value = PuzzleStreakUiState.StreakEnded(
+                data = helper.buildPuzzleData(),
+                finalStreakCount = currentStreakCount,
+                isNewHighScore = isNewHighScore,
+                showSummary = true,
+            )
+        }
+    }
+
+    override fun onAbandonDismissed() {
+        val state = _uiState.value
+        if (state !is PuzzleStreakUiState.Playing) return
+
+        _uiState.value = state.copy(showAbandonDialog = false)
     }
 
     override fun onNewStreak() {
@@ -125,6 +160,8 @@ class PuzzleStreakViewModel @Inject constructor(
             _uiState.value = PuzzleStreakUiState.Playing(
                 data = helper.load(getStreakPuzzle().puzzle),
                 streakCount = currentStreakCount,
+                hintEnabled = true,
+                showAbandonDialog = false,
                 promotion = null,
             )
         } catch (_: Exception) {

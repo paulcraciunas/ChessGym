@@ -14,6 +14,8 @@ sealed class PuzzleStreakUiState {
     data class Playing(
         override val data: PuzzleData,
         val streakCount: Int,
+        val hintEnabled: Boolean = true,
+        val showAbandonDialog: Boolean = false,
         val promotion: PuzzleViewModelHelper.Promotion?,
     ) : BoardState()
 
