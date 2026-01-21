@@ -26,6 +26,9 @@ sealed class Screen {
     data object FailedPuzzles : Screen()
 
     @Serializable
+    data object PuzzleStreak : Screen()
+
+    @Serializable
     data object BoardVisualization : Screen()
 
     @Serializable
