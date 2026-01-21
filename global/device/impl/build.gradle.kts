@@ -1,4 +1,3 @@
-// TODO Paul: migrate this to regular library
 plugins {
     id("conventions.android.library")
 }
