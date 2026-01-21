@@ -103,8 +103,8 @@ internal fun PuzzleStreakCard(
                         Text(
                             text = stringResource(R.string.puzzle_mode_streak_continue, currentStreak),
                             style = MaterialTheme.typography.bodySmall,
-                            fontWeight = FontWeight.Normal,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.primary
                         )
                     }
                 }
