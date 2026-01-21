@@ -181,4 +181,46 @@ internal class MutablePuzzleTest {
         underTest.play("e2".loc(), "e4".loc())
         assertEquals(Puzzle.State.Success, underTest.state)
     }
+
+    @Test
+    fun `GIVEN alternate checkmate move WHEN playing wrong but checkmate move THEN state becomes Success`() {
+        // Given - Position where both Qh4 and Qf2 are checkmate
+        // White: King on g1, Queen on d8
+        // Black: King on e8
+        // Expected move is d8h4 (Queen to h4 checkmate), but d8f2 also delivers checkmate
+        underTest = RealBuilder(PlyFactory())
+            .withRating(1200)
+            .withPiece(Piece.King, com.paulcraciunas.game.logic.api.Side.WHITE, "g1".loc())
+            .withPiece(Piece.Queen, com.paulcraciunas.game.logic.api.Side.WHITE, "h5".loc())
+            .withPiece(Piece.King, com.paulcraciunas.game.logic.api.Side.BLACK, "h8".loc())
+            .withPiece(Piece.Rook, com.paulcraciunas.game.logic.api.Side.WHITE, "a8".loc())
+            .withMoves("h5f7") // Expected move: Queen to f7 checkmate
+            .buildPuzzle()
+        underTest.start()
+
+        // When - play alternate checkmate: Queen to h7 (also checkmate)
+        underTest.play("h5".loc(), "h7".loc())
+
+        // Then
+        assertEquals(Puzzle.State.Success, underTest.state)
+    }
+
+    @Test
+    fun `GIVEN non-checkmate alternate move WHEN playing wrong move THEN state becomes Failed`() {
+        // Given
+        underTest = RealBuilder(PlyFactory())
+            .withRating(1200)
+            .withPiece(Piece.King, com.paulcraciunas.game.logic.api.Side.WHITE, "e1".loc())
+            .withPiece(Piece.Queen, com.paulcraciunas.game.logic.api.Side.WHITE, "d1".loc())
+            .withPiece(Piece.King, com.paulcraciunas.game.logic.api.Side.BLACK, "e8".loc())
+            .withMoves("d1d4") // Expected move
+            .buildPuzzle()
+        underTest.start()
+
+        // When - play a different move that doesn't result in checkmate
+        underTest.play("d1".loc(), "d2".loc())
+
+        // Then
+        assertEquals(Puzzle.State.Failed, underTest.state)
+    }
 }
