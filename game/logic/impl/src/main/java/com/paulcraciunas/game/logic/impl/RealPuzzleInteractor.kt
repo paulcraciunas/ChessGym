@@ -12,7 +12,7 @@ class RealPuzzleInteractor : PuzzleInteractor {
         this[Side.WHITE] = mutableListOf()
         this[Side.BLACK] = mutableListOf()
     }
-    private var _puzzle: MutablePuzzle? = null
+    private var _puzzle: Puzzle? = null
     private val puzzle: Puzzle
         get() = _puzzle!!
     override var captured = _captured
@@ -26,7 +26,7 @@ class RealPuzzleInteractor : PuzzleInteractor {
         get() = puzzle.info.lastPly
 
     override fun load(puzzle: Puzzle) {
-        _puzzle = puzzle as MutablePuzzle
+        _puzzle = puzzle
 
         puzzle.start()
         puzzle.playNextMove() // The first move always belongs to the opponent
