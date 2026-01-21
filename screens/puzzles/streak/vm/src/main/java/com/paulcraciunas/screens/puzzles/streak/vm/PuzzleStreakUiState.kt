@@ -1,9 +1,7 @@
 package com.paulcraciunas.screens.puzzles.streak.vm
 
-import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
-import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.screens.common.model.BoardViewData
+import com.paulcraciunas.screens.common.model.PuzzleData
 
 sealed class PuzzleStreakUiState {
     data object Loading : PuzzleStreakUiState()
@@ -31,11 +29,4 @@ sealed class PuzzleStreakUiState {
         val isNewHighScore: Boolean,
         val showSummary: Boolean,
     ) : BoardState()
-
-    data class PuzzleData(
-        val rating: Int,
-        val player: Side,
-        val boardData: BoardViewData,
-        val captured: Map<Side, List<Piece>>,
-    )
 }

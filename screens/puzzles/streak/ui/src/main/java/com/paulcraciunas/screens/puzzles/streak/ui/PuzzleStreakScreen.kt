@@ -32,6 +32,7 @@ import com.paulcraciunas.screens.common.board.ChessBoard
 import com.paulcraciunas.screens.common.controls.CapturedPieces
 import com.paulcraciunas.screens.common.dialogs.PromotionDialog
 import com.paulcraciunas.screens.common.model.BoardViewData
+import com.paulcraciunas.screens.common.model.PuzzleData
 import com.paulcraciunas.screens.common.model.SquareViewData
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.puzzles.streak.vm.PuzzleStreakScreenInteractor
@@ -137,7 +138,7 @@ private fun PlayingPreview() {
     ChessGymTheme {
         PuzzleStreakScreen(
             uiState = PuzzleStreakUiState.Playing(
-                data = PuzzleStreakUiState.PuzzleData(
+                data = PuzzleData(
                     rating = 650,
                     player = Side.WHITE,
                     boardData = sampleBoard(),
@@ -161,7 +162,7 @@ private fun StreakEndedPreview() {
     ChessGymTheme {
         PuzzleStreakScreen(
             uiState = PuzzleStreakUiState.StreakEnded(
-                data = PuzzleStreakUiState.PuzzleData(
+                data = PuzzleData(
                     rating = 850,
                     player = Side.BLACK,
                     boardData = sampleBoard(),
