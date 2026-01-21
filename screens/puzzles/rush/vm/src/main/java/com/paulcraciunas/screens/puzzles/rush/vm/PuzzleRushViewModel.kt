@@ -150,7 +150,7 @@ class PuzzleRushViewModel @Inject constructor(
                 // Move to next puzzle
                 viewModelScope.launch {
                     val nextPuzzle = puzzleSeries.next()
-                    if (nextPuzzle != null) {
+                    if (nextPuzzle != null && _gameState.value !is GameState.Finished) {
                         loadPuzzleIntoInteractor(nextPuzzle)
                         _gameState.value = currentState.copy(
                             puzzleData = currentPuzzleData(),

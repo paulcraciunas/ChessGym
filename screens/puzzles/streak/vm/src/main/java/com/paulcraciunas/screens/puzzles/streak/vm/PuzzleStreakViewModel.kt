@@ -91,22 +91,13 @@ class PuzzleStreakViewModel @Inject constructor(
         if (state !is PuzzleStreakUiState.Playing) return
 
         when {
-            result.promotionRequiredAt != null -> showPromotion(state, result.promotionRequiredAt!!)
+            result.promotion != null -> _uiState.value = state.copy(promotion = result.promotion)
             !result.isOver -> _uiState.value = state.copy(
                 data = helper.buildPuzzleData(),
                 promotion = null
             )
             else -> handlePuzzleOver(result.isSuccess)
         }
-    }
-
-    private fun showPromotion(state: PuzzleStreakUiState.Playing, at: Locus) {
-        _uiState.value = state.copy(
-            promotion = PuzzleStreakUiState.Playing.Promotion(
-                showChooser = true,
-                at = at
-            )
-        )
     }
 
     private fun handlePuzzleOver(isSuccess: Boolean) {

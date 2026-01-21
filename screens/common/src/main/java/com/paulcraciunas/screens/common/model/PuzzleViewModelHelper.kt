@@ -71,7 +71,7 @@ class PuzzleViewModelHelper(
         }
         return OnSquareClick(
             data = buildPuzzleData(),
-            promotionRequiredAt = promotionAt,
+            promotion = promotionAt?.let { Promotion(showChooser = true, at = it) },
             isOver = puzzleInteractor.isOver(),
             isSuccess = puzzleInteractor.isSuccess(),
         )
@@ -83,7 +83,7 @@ class PuzzleViewModelHelper(
 
         return OnSquareClick(
             data = buildPuzzleData(),
-            promotionRequiredAt = null,
+            promotion = null,
             isOver = puzzleInteractor.isOver(),
             isSuccess = puzzleInteractor.isSuccess(),
         )
@@ -109,8 +109,13 @@ class PuzzleViewModelHelper(
 
     data class OnSquareClick(
         val data: PuzzleData,
-        val promotionRequiredAt: Locus?,
+        val promotion: Promotion?,
         val isOver: Boolean,
         val isSuccess: Boolean,
+    )
+
+    data class Promotion(
+        val showChooser: Boolean,
+        val at: Locus,
     )
 }

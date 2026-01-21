@@ -1,7 +1,7 @@
 package com.paulcraciunas.screens.puzzles.streak.vm
 
-import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.screens.common.model.PuzzleData
+import com.paulcraciunas.screens.common.model.PuzzleViewModelHelper
 
 sealed class PuzzleStreakUiState {
     data object Loading : PuzzleStreakUiState()
@@ -14,14 +14,8 @@ sealed class PuzzleStreakUiState {
     data class Playing(
         override val data: PuzzleData,
         val streakCount: Int,
-        val promotion: Promotion?,
-    ) : BoardState() {
-
-        data class Promotion(
-            val showChooser: Boolean,
-            val at: Locus,
-        )
-    }
+        val promotion: PuzzleViewModelHelper.Promotion?,
+    ) : BoardState()
 
     data class StreakEnded(
         override val data: PuzzleData,
