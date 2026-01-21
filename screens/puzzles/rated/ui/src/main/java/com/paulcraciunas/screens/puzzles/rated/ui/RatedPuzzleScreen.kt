@@ -29,6 +29,8 @@ import com.paulcraciunas.screens.common.FailedContent
 import com.paulcraciunas.screens.common.LoadingContent
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
+import com.paulcraciunas.screens.common.controls.CapturedPieces
+import com.paulcraciunas.screens.common.controls.DefaultPuzzleControls
 import com.paulcraciunas.screens.common.dialogs.PromotionDialog
 import com.paulcraciunas.screens.common.model.BoardViewData
 import com.paulcraciunas.screens.common.model.SquareViewData
@@ -102,7 +104,7 @@ fun RatedPuzzleScreen(
                         onPlayNext = interactions::onNextPuzzle,
                     )
                 } else if (uiState is RatedPuzzleUiState.Playing) {
-                    PuzzleControls(
+                    DefaultPuzzleControls(
                         hintEnabled = uiState.hintEnabled,
                         toMove = data.player,
                         onHintRequested = interactions::onHintRequested,

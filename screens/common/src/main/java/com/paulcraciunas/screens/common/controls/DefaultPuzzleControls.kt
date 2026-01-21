@@ -1,4 +1,4 @@
-package com.paulcraciunas.screens.puzzles.rated.ui
+package com.paulcraciunas.screens.common.controls
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Arrangement
@@ -20,7 +20,7 @@ import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
-internal fun PuzzleControls(
+fun DefaultPuzzleControls(
     hintEnabled: Boolean,
     toMove: Side,
     onHintRequested: () -> Unit,
@@ -63,7 +63,7 @@ internal fun PuzzleControls(
 @Composable
 private fun PuzzleControlsPlayingPreview() {
     ChessGymTheme {
-        PuzzleControls(
+        DefaultPuzzleControls(
             hintEnabled = true,
             toMove = Side.WHITE,
             onHintRequested = {},
@@ -77,7 +77,7 @@ private fun PuzzleControlsPlayingPreview() {
 @Composable
 private fun PuzzleControlsHintUsedPreview() {
     ChessGymTheme {
-        PuzzleControls(
+        DefaultPuzzleControls(
             hintEnabled = false,
             toMove = Side.BLACK,
             onHintRequested = {},
