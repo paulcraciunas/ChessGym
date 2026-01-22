@@ -334,13 +334,10 @@ private class FakeOnStreakPuzzleComplete : OnStreakPuzzleComplete {
 private class FakeOnStreakComplete : OnStreakComplete {
     var wasCalled: Boolean = false
         private set
-    var lastStreakCount: Int? = null
-        private set
     var returnNewHighScore: Boolean = false
 
-    override suspend fun invoke(finalStreakCount: Int): Boolean {
+    override suspend fun invoke(): Boolean {
         wasCalled = true
-        lastStreakCount = finalStreakCount
         return returnNewHighScore
     }
 }

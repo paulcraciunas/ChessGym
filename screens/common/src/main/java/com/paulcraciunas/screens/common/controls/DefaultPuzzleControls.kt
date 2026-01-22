@@ -26,6 +26,7 @@ fun DefaultPuzzleControls(
     onHintRequested: () -> Unit,
     onAbandonRequested: () -> Unit,
     modifier: Modifier = Modifier,
+    abandonEnabled: Boolean = true,
 ) {
     Row(
         modifier = modifier
@@ -46,11 +47,15 @@ fun DefaultPuzzleControls(
                 modifier = Modifier.size(24.dp)
             )
         }
-        OutlinedIconButton(onClick = onAbandonRequested) {
+        OutlinedIconButton(onClick = onAbandonRequested, enabled = abandonEnabled) {
             Icon(
                 painter = painterResource(R.drawable.flag_icon),
                 contentDescription = stringResource(R.string.puzzle_abandon),
-                tint = MaterialTheme.colorScheme.error,
+                tint = if (!abandonEnabled) {
+                    MaterialTheme.colorScheme.outline
+                } else {
+                    MaterialTheme.colorScheme.error
+                },
                 modifier = Modifier.size(24.dp)
             )
         }

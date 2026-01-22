@@ -29,8 +29,6 @@ class PuzzleStreakViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<PuzzleStreakUiState>(PuzzleStreakUiState.Loading)
     val uiState: StateFlow<PuzzleStreakUiState> = _uiState.asStateFlow()
 
-    private var currentStreakCount: Int = 0
-
     init {
         loadPuzzle()
     }
@@ -38,34 +36,25 @@ class PuzzleStreakViewModel @Inject constructor(
     private fun loadPuzzle() {
         viewModelScope.launch {
             try {
-                val data = getStreakPuzzle()
-                currentStreakCount = data.currentStreakCount
-                _uiState.value = PuzzleStreakUiState.Playing(
-                    data = helper.load(data.puzzle),
-                    streakCount = currentStreakCount,
-                    hintEnabled = true,
-                    showAbandonDialog = false,
-                    promotion = null,
-                )
+                loadNextPuzzle()
             } catch (_: Exception) {
                 _uiState.value = PuzzleStreakUiState.Failed
             }
         }
     }
 
-    override fun onSquareClicked(selection: Locus) = whilePlaying {
+    override fun onSquareClicked(selection: Locus) = whilePlayingInteractive {
         handleMoveResult(helper.handleSquareClick(selection))
     }
 
-    override fun onPromote(to: Piece) = whilePlaying { state->
+    override fun onPromote(to: Piece) = whilePlayingInteractive { state ->
         state.promotion?.let {
             handleMoveResult(helper.promote(to, state.promotion.at))
         }
     }
 
-    override fun onHintRequested() {
-        val state = _uiState.value
-        if (state !is PuzzleStreakUiState.Playing || !state.hintEnabled) return
+    override fun onHintRequested() = whilePlayingInteractive { state ->
+        if (!state.hintEnabled) return@whilePlayingInteractive
 
         helper.hint()
         _uiState.value = state.copy(
@@ -74,20 +63,26 @@ class PuzzleStreakViewModel @Inject constructor(
         )
     }
 
-    override fun onAbandon() = whilePlaying { state ->
+    override fun onAbandon() = whilePlayingInteractive { state ->
         _uiState.value = state.copy(showAbandonDialog = true)
     }
 
-    override fun onAbandonConfirmed() = whilePlaying {
-        helper.resign()
+    override fun onAbandonConfirmed() = whilePlaying { state ->
+        // Start showing solution animation
+        _uiState.value = state.copy(
+            showAbandonDialog = false,
+            isShowingSolution = true,
+        )
+
         viewModelScope.launch {
-            val isNewHighScore = onStreakComplete(currentStreakCount)
-            _uiState.value = PuzzleStreakUiState.StreakEnded(
-                data = helper.buildPuzzleData(),
-                finalStreakCount = currentStreakCount,
-                isNewHighScore = isNewHighScore,
-                showSummary = true,
-            )
+            helper.playSolution { data ->
+                val currentState = _uiState.value
+                val canUpdate = currentState is PuzzleStreakUiState.Playing && currentState.isShowingSolution
+                canUpdate.also { if (canUpdate) _uiState.value = currentState.copy(data = data) }
+            }
+
+            // After solution shown, end the streak
+            endStreak()
         }
     }
 
@@ -96,7 +91,6 @@ class PuzzleStreakViewModel @Inject constructor(
     }
 
     override fun onNewStreak() {
-        currentStreakCount = 0
         _uiState.value = PuzzleStreakUiState.Loading
         loadPuzzle()
     }
@@ -117,49 +111,52 @@ class PuzzleStreakViewModel @Inject constructor(
     }
 
     private fun handlePuzzleOver(isSuccess: Boolean) {
-        if (isSuccess) { // continue streak
-            currentStreakCount++
-            viewModelScope.launch {
+        viewModelScope.launch {
+            if (isSuccess) { // continue streak
                 onStreakPuzzleComplete()
-                loadNextPuzzle()
-            }
-        } else { // streak ends
-            viewModelScope.launch {
-                val isNewHighScore = onStreakComplete(currentStreakCount)
-                _uiState.value = PuzzleStreakUiState.StreakEnded(
-                    data = helper.buildPuzzleData(),
-                    finalStreakCount = currentStreakCount,
-                    isNewHighScore = isNewHighScore,
-                    showSummary = true,
-                )
+                try {
+                    loadNextPuzzle()
+                } catch (_: Exception) { // If we can't load next puzzle, end the streak
+                    endStreak()
+                }
+            } else { // streak ends
+                endStreak()
             }
         }
     }
 
     private suspend fun loadNextPuzzle() {
-        try {
-            _uiState.value = PuzzleStreakUiState.Playing(
-                data = helper.load(getStreakPuzzle().puzzle),
-                streakCount = currentStreakCount,
-                hintEnabled = true,
-                showAbandonDialog = false,
-                promotion = null,
-            )
-        } catch (_: Exception) {
-            // If we can't load next puzzle, end the streak
-            val isNewHighScore = onStreakComplete(currentStreakCount)
-            _uiState.value = PuzzleStreakUiState.StreakEnded(
-                data = helper.buildPuzzleData(),
-                finalStreakCount = currentStreakCount,
-                isNewHighScore = isNewHighScore,
-                showSummary = true,
-            )
-        }
+        val data = getStreakPuzzle()
+        _uiState.value = PuzzleStreakUiState.Playing(
+            data = helper.load(data.puzzle),
+            streakCount = data.currentStreakCount,
+            hintEnabled = true,
+            showAbandonDialog = false,
+            promotion = null,
+        )
+    }
+
+    private suspend fun endStreak() {
+        val isNewHighScore = onStreakComplete()
+        val currentStreakCount = (_uiState.value as? PuzzleStreakUiState.Playing)?.streakCount ?: 0
+        _uiState.value = PuzzleStreakUiState.StreakEnded(
+            data = helper.buildPuzzleData(),
+            finalStreakCount = currentStreakCount,
+            isNewHighScore = isNewHighScore,
+            showSummary = true,
+        )
     }
 
     private fun whilePlaying(block: (PuzzleStreakUiState.Playing) -> Unit) {
         val state = _uiState.value
         if (state !is PuzzleStreakUiState.Playing) return
+        block(state)
+    }
+
+    /** Same as [whilePlaying] but also blocks interaction while showing solution */
+    private fun whilePlayingInteractive(block: (PuzzleStreakUiState.Playing) -> Unit) {
+        val state = _uiState.value
+        if (state !is PuzzleStreakUiState.Playing || state.isShowingSolution) return
         block(state)
     }
 }

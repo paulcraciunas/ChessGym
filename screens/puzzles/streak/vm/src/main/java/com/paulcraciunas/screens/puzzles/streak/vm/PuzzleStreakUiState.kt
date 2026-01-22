@@ -16,6 +16,7 @@ sealed class PuzzleStreakUiState {
         val streakCount: Int,
         val hintEnabled: Boolean = true,
         val showAbandonDialog: Boolean = false,
+        val isShowingSolution: Boolean = false,
         val promotion: PuzzleViewModelHelper.Promotion?,
     ) : BoardState()
 

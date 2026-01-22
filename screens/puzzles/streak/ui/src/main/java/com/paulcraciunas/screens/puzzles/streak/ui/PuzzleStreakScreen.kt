@@ -100,6 +100,7 @@ private fun PuzzleStreakContent(
     modifier: Modifier = Modifier,
 ) {
     val data = uiState.data
+    val isShowingSolution = uiState is PuzzleStreakUiState.Playing && uiState.isShowingSolution
     Column(
         modifier = modifier.fillMaxSize()
     ) {
@@ -111,7 +112,7 @@ private fun PuzzleStreakContent(
         ChessBoard(
             board = data.boardData,
             orientation = BoardOrientation.fromSide(data.player),
-            onClick = interactions::onSquareClicked,
+            onClick = if (isShowingSolution) { _ -> } else interactions::onSquareClicked,
             showBorders = showBorders,
             modifier = Modifier.fillMaxWidth()
         )
@@ -137,17 +138,18 @@ private fun PuzzleStreakContent(
                 )
             } else if (uiState is PuzzleStreakUiState.Playing) {
                 DefaultPuzzleControls(
-                    hintEnabled = uiState.hintEnabled,
+                    hintEnabled = uiState.hintEnabled && !isShowingSolution,
                     toMove = data.player,
                     onHintRequested = interactions::onHintRequested,
                     onAbandonRequested = interactions::onAbandon,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    abandonEnabled = !isShowingSolution,
                 )
             }
         }
 
         // Dialogs
-        if (uiState is PuzzleStreakUiState.Playing) {
+        if (uiState is PuzzleStreakUiState.Playing && !isShowingSolution) {
             if (uiState.showAbandonDialog) {
                 AbandonConfirmationDialog(
                     onConfirm = interactions::onAbandonConfirmed,
