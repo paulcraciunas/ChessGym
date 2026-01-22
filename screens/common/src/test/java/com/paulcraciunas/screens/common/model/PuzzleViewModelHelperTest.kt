@@ -341,6 +341,98 @@ internal class PuzzleViewModelHelperTest {
         }
     }
 
+    @Nested
+    inner class PlayNextSolutionMove {
+        @Test
+        fun `GIVEN puzzle in progress WHEN playNextSolutionMove THEN plays expected move`() {
+            // Given - Standard puzzle: e2e4, e7e5, g1f3, b8c6
+            // After load, opponent plays e2e4, so next expected is e7e5
+            underTest.load(buildStandardPuzzle())
+
+            // When
+            val result = underTest.playNextSolutionMove()
+
+            // Then - e7 pawn should move to e5
+            assertNotNull(result)
+            val e5Square = result!!.boardData.at(Rank.`5`, File.e)
+            assertNotNull(e5Square.piece)
+            assertEquals(Piece.Pawn, e5Square.piece?.piece)
+        }
+
+        @Test
+        fun `GIVEN puzzle over WHEN playNextSolutionMove THEN returns null`() {
+            // Given
+            underTest.load(buildStandardPuzzle())
+            underTest.resign()
+
+            // When
+            val result = underTest.playNextSolutionMove()
+
+            // Then
+            assertNull(result)
+        }
+
+        @Test
+        fun `GIVEN puzzle WHEN multiple playNextSolutionMove THEN plays all moves`() {
+            // Given - Standard puzzle: e2e4, e7e5, g1f3, b8c6
+            underTest.load(buildStandardPuzzle())
+
+            // When - play all remaining moves
+            underTest.playNextSolutionMove() // e7e5
+            underTest.playNextSolutionMove() // g1f3
+            val result = underTest.playNextSolutionMove() // b8c6
+
+            // Then - knight should be on c6
+            assertNotNull(result)
+            val c6Square = result!!.boardData.at(Rank.`6`, File.c)
+            assertNotNull(c6Square.piece)
+            assertEquals(Piece.Knight, c6Square.piece?.piece)
+        }
+    }
+
+    @Nested
+    inner class HasSolutionMoves {
+        @Test
+        fun `GIVEN puzzle in progress WHEN hasSolutionMoves THEN returns true`() {
+            // Given
+            underTest.load(buildStandardPuzzle())
+
+            // When
+            val result = underTest.hasSolutionMoves()
+
+            // Then
+            assertTrue(result)
+        }
+
+        @Test
+        fun `GIVEN puzzle over WHEN hasSolutionMoves THEN returns false`() {
+            // Given
+            underTest.load(buildStandardPuzzle())
+            underTest.resign()
+
+            // When
+            val result = underTest.hasSolutionMoves()
+
+            // Then
+            assertFalse(result)
+        }
+
+        @Test
+        fun `GIVEN all solution moves played WHEN hasSolutionMoves THEN returns false`() {
+            // Given - Standard puzzle: e2e4, e7e5, g1f3, b8c6
+            underTest.load(buildStandardPuzzle())
+            underTest.playNextSolutionMove() // e7e5
+            underTest.playNextSolutionMove() // g1f3
+            underTest.playNextSolutionMove() // b8c6
+
+            // When
+            val result = underTest.hasSolutionMoves()
+
+            // Then
+            assertFalse(result)
+        }
+    }
+
     private fun buildStandardPuzzle(
         rating: Int = DEFAULT_RATING,
         moves: List<String> = listOf("e2e4", "e7e5", "g1f3", "b8c6"),

@@ -62,6 +62,12 @@ class RealPuzzleInteractor : PuzzleInteractor {
         puzzle.resign()
     }
 
+    override fun playNextMove() {
+        if (isOver()) return
+        puzzle.playNextMove()
+        updateCaptured()
+    }
+
     override fun isOver(): Boolean = puzzle.state.isOver()
 
     override fun isSuccess(): Boolean = puzzle.state == Puzzle.State.Success

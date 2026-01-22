@@ -5,6 +5,7 @@ import com.paulcraciunas.game.logic.api.PuzzleInteractor
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
+import kotlinx.coroutines.delay
 
 /**
  * Helper class that encapsulates common puzzle ViewModel logic.
@@ -100,6 +101,32 @@ class PuzzleViewModelHelper(
         puzzleInteractor.resign()
     }
 
+    suspend fun playSolution(updateUiState: (PuzzleData) -> Boolean) {
+        while (hasSolutionMoves()) {
+            delay(SOLUTION_MOVE_DELAY_MS)
+            val nextData = playNextSolutionMove() ?: break
+            // Update board state if still showing solution
+            if (!updateUiState(nextData)) {
+                break // User navigated away or state changed
+            }
+        }
+    }
+
+    /**
+     * Plays the next expected move in the solution sequence.
+     * This is used to animate the solution when the user resigns.
+     *
+     * @return The updated [PuzzleData] after playing the move, or null if the puzzle is already over.
+     */
+    fun playNextSolutionMove(): PuzzleData? {
+        if (puzzleInteractor.isOver()) return null
+        puzzleInteractor.playNextMove()
+        refreshBoardWithAnimation()
+        return buildPuzzleData()
+    }
+
+    fun hasSolutionMoves(): Boolean = !puzzleInteractor.isOver()
+
     private fun refreshBoardWithAnimation() {
         boardViewBuilder.refresh()
         puzzleInteractor.lastPly?.let { lastPly ->
@@ -119,3 +146,5 @@ class PuzzleViewModelHelper(
         val at: Locus,
     )
 }
+
+private const val SOLUTION_MOVE_DELAY_MS = 600L
