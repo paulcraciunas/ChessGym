@@ -54,32 +54,44 @@ class RatedPuzzleViewModel @Inject constructor(
         }
     }
 
-    override fun onSquareClicked(selection: Locus) = whilePlaying {
+    override fun onSquareClicked(selection: Locus) = whilePlayingInteractive {
         handleMoveResult(helper.handleSquareClick(selection))
     }
 
-    override fun onPromote(to: Piece) {
-        val state = _uiState.value
-        if (state !is RatedPuzzleUiState.Playing || state.promotion == null) return
-
+    override fun onPromote(to: Piece) = whilePlayingInteractive { state ->
+        if (state.promotion == null) return@whilePlayingInteractive
         handleMoveResult(helper.promote(to, state.promotion.at))
     }
 
-    override fun onHintRequested() = whilePlaying { state ->
+    override fun onHintRequested() = whilePlayingInteractive { state ->
         helper.hint()
         _uiState.value = state.copy(data = helper.buildPuzzleData(), hintEnabled = false)
     }
 
-    override fun onAbandon() = whilePlaying { state ->
+    override fun onAbandon() = whilePlayingInteractive { state ->
         _uiState.value = state.copy(showAbandonDialog = true)
     }
 
-    override fun onAbandonConfirmed() = whilePlaying {
-        helper.resign()
-        finishPuzzle(isSuccess = false)
+    override fun onAbandonConfirmed() = whilePlaying { state ->
+        // Start showing solution animation
+        _uiState.value = state.copy(
+            showAbandonDialog = false,
+            isShowingSolution = true,
+        )
+
+        viewModelScope.launch {
+            helper.playSolution { data ->
+                val currentState = _uiState.value
+                val canUpdate = currentState is RatedPuzzleUiState.Playing && currentState.isShowingSolution
+                canUpdate.also { if (canUpdate) _uiState.value = currentState.copy(data = data) }
+            }
+
+            // After solution shown, finish the puzzle as failed
+            finishPuzzle(isSuccess = false)
+        }
     }
 
-    override fun onAbandonDismissed() = whilePlaying { state ->
+    override fun onAbandonDismissed() = whilePlayingInteractive { state ->
         _uiState.value = state.copy(showAbandonDialog = false)
     }
 
@@ -138,6 +150,14 @@ class RatedPuzzleViewModel @Inject constructor(
     private fun whilePlaying(block: (RatedPuzzleUiState.Playing) -> Unit) {
         val state = _uiState.value
         if (state !is RatedPuzzleUiState.Playing) return
+
+        block(state)
+    }
+
+    /** Same as [whilePlaying] but also blocks interaction while showing solution */
+    private fun whilePlayingInteractive(block: (RatedPuzzleUiState.Playing) -> Unit) {
+        val state = _uiState.value
+        if (state !is RatedPuzzleUiState.Playing || state.isShowingSolution) return
 
         block(state)
     }

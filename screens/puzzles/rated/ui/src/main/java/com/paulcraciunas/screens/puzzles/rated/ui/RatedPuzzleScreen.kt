@@ -85,6 +85,7 @@ private fun RatedPuzzleContent(
     modifier: Modifier = Modifier,
 ) {
     val data = uiState.data
+    val isShowingSolution = uiState is RatedPuzzleUiState.Playing && uiState.isShowingSolution
     Column(
         modifier = modifier.fillMaxSize()
     ) {
@@ -96,7 +97,7 @@ private fun RatedPuzzleContent(
         ChessBoard(
             board = data.boardData,
             orientation = BoardOrientation.fromSide(data.player),
-            onClick = interactions::onSquareClicked,
+            onClick = if (isShowingSolution) { _ -> } else interactions::onSquareClicked,
             showBorders = showBorders,
             modifier = Modifier.fillMaxWidth()
         )
@@ -123,16 +124,17 @@ private fun RatedPuzzleContent(
                 )
             } else if (uiState is RatedPuzzleUiState.Playing) {
                 DefaultPuzzleControls(
-                    hintEnabled = uiState.hintEnabled,
+                    hintEnabled = uiState.hintEnabled && !isShowingSolution,
                     toMove = data.player,
                     onHintRequested = interactions::onHintRequested,
                     onAbandonRequested = interactions::onAbandon,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    abandonEnabled = !isShowingSolution,
                 )
             }
         }
         // Dialogs for playing state
-        if (uiState is RatedPuzzleUiState.Playing) {
+        if (uiState is RatedPuzzleUiState.Playing && !isShowingSolution) {
             if (uiState.showAbandonDialog) {
                 AbandonConfirmationDialog(
                     onConfirm = interactions::onAbandonConfirmed,

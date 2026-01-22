@@ -14,6 +14,7 @@ sealed class RatedPuzzleUiState {
         override val data: PuzzleData,
         val hintEnabled: Boolean,
         val showAbandonDialog: Boolean,
+        val isShowingSolution: Boolean = false,
         val promotion: PuzzleViewModelHelper.Promotion?,
     ) : BoardState()
 
