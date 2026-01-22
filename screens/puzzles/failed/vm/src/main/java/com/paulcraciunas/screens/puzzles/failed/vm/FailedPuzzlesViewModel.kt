@@ -9,7 +9,9 @@ import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.screens.common.model.BoardViewDataBuilder
+import com.paulcraciunas.screens.common.model.PuzzleData
 import com.paulcraciunas.screens.common.model.PuzzleResult
+import com.paulcraciunas.screens.common.model.PuzzleViewModelHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -79,7 +81,7 @@ class FailedPuzzlesViewModel @Inject constructor(
                 updatePlayingState(state)
             } else if (puzzleInteractor.canPromote(current, selection)) {
                 _uiState.value = state.copy(
-                    promotion = FailedPuzzlesUiState.Playing.Promotion(
+                    promotion = PuzzleViewModelHelper.Promotion(
                         showChooser = true,
                         at = selection
                     )
@@ -169,12 +171,12 @@ class FailedPuzzlesViewModel @Inject constructor(
         )
     }
 
-    private fun currentPuzzleData(): FailedPuzzlesUiState.PuzzleData =
-        FailedPuzzlesUiState.PuzzleData(
-            rating = puzzleInteractor.rating,
-            player = puzzleInteractor.player,
-            boardData = boardViewBuilder.build(),
-        )
+    private fun currentPuzzleData(): PuzzleData = PuzzleData(
+        rating = puzzleInteractor.rating,
+        player = puzzleInteractor.player,
+        boardData = boardViewBuilder.build(),
+        captured = puzzleInteractor.captured,
+    )
 
     private fun currentProgress(): FailedPuzzlesUiState.Progress =
         FailedPuzzlesUiState.Progress(
