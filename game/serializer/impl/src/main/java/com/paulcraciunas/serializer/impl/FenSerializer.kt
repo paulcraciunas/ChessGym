@@ -30,11 +30,12 @@ import com.paulcraciunas.serializer.api.Serializer
 class FenSerializer(
     private val gameFactory: GameFactory,
 ) : Serializer {
-    fun puzzleFrom(puzzleString: String, moves: String, rating: Int): Puzzle {
+    fun puzzleFrom(puzzleString: String, moves: String, rating: Int, id:Int?): Puzzle {
         val fenParts = puzzleString.fenParts()
         val rows = fenParts[0].rows()
 
         return gameFactory.builder()
+            .withId(id)
             .withPieces(rows)
             .withTurn(fenParts[1].loadSide())
             .withCastling(fenParts[2].loadCastling())

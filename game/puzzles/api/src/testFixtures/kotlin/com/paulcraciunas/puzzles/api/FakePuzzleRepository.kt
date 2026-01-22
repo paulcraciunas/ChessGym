@@ -5,12 +5,12 @@ import com.paulcraciunas.game.logic.impl.RealGameFactory
 import com.paulcraciunas.serializer.impl.FenSerializer
 
 class FakePuzzleRepository : PuzzleRepository {
-    private var id = 1
+    private var id = 0
     private val puzzles = mutableMapOf<Int, Puzzle>()
     private val serializer = FenSerializer(RealGameFactory())
 
     fun withPuzzle(fen: String, moves: String, rating: Int) {
-        puzzles[id++] = serializer.puzzleFrom(puzzleString = fen, moves = moves, rating = rating)
+        puzzles[++id] = serializer.puzzleFrom(puzzleString = fen, moves = moves, rating = rating, id = id)
     }
 
     fun clear() {
