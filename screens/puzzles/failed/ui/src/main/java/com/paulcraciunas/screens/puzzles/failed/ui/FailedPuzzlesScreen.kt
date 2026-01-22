@@ -31,6 +31,7 @@ import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
 import com.paulcraciunas.screens.common.controls.PuzzleResultsGrid
 import com.paulcraciunas.screens.common.dialogs.PromotionDialog
+import com.paulcraciunas.screens.common.model.PuzzleData
 import com.paulcraciunas.screens.common.model.PuzzleResult
 import com.paulcraciunas.screens.common.previews.SampleBoardViewData
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
@@ -181,10 +182,11 @@ private fun PlayingPreview() {
     ChessGymTheme {
         FailedPuzzlesScreen(
             uiState = FailedPuzzlesUiState.Playing(
-                data = FailedPuzzlesUiState.PuzzleData(
+                data = PuzzleData(
                     rating = 1350,
                     player = Side.BLACK,
                     boardData = SampleBoardViewData.defaultBoard(),
+                    captured = emptyMap(),
                 ),
                 progress = FailedPuzzlesUiState.Progress(solved = 3, total = 10),
                 results = listOf(
@@ -206,10 +208,11 @@ private fun FinishedPreview() {
     ChessGymTheme {
         FailedPuzzlesScreen(
             uiState = FailedPuzzlesUiState.Finished(
-                data = FailedPuzzlesUiState.PuzzleData(
+                data = PuzzleData(
                     rating = 1400,
                     player = Side.WHITE,
                     boardData = SampleBoardViewData.defaultBoard(),
+                    captured = emptyMap(),
                 ),
                 progress = FailedPuzzlesUiState.Progress(solved = 4, total = 5),
                 results = listOf(
