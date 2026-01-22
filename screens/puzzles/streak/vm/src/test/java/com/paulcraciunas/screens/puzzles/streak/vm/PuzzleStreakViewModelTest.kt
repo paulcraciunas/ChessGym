@@ -150,7 +150,6 @@ internal class PuzzleStreakViewModelTest {
         val playingState = underTest.uiState.value as PuzzleStreakUiState.Playing
         assertEquals(1, playingState.streakCount)
         assertEquals(450, playingState.data.rating)
-        assertEquals(PROMOTION_ID, onStreakPuzzleComplete.lastPuzzleId)
     }
 
     @Test
@@ -184,7 +183,6 @@ internal class PuzzleStreakViewModelTest {
         val playingState = underTest.uiState.value as PuzzleStreakUiState.Playing
         assertEquals(1, playingState.streakCount)
         assertEquals(450, playingState.data.rating)
-        assertEquals(ONE_MOVE_WIN_ID, onStreakPuzzleComplete.lastPuzzleId)
     }
 
     @Test
@@ -330,12 +328,7 @@ private class FakeGetStreakPuzzle : GetStreakPuzzle {
 }
 
 private class FakeOnStreakPuzzleComplete : OnStreakPuzzleComplete {
-    var lastPuzzleId: Int? = null
-        private set
-
-    override suspend fun invoke(puzzleId: Int) {
-        lastPuzzleId = puzzleId
-    }
+    override suspend fun invoke() {}
 }
 
 private class FakeOnStreakComplete : OnStreakComplete {

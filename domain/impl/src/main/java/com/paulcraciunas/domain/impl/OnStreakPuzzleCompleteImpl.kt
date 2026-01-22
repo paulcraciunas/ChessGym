@@ -10,13 +10,16 @@ import javax.inject.Inject
  *
  * Updates:
  * - Increments current streak count
- * - Stores the completed puzzle ID for continuation
+ * - Clears lastPuzzleId so the next puzzle fetch will get a new one
+ *
+ * Note: The lastPuzzleId is managed by GetStreakPuzzle when loading a new puzzle,
+ * so we only clear it here to signal that the current puzzle was completed.
  */
 class OnStreakPuzzleCompleteImpl @Inject constructor(
     private val userRepository: UserRepository,
 ) : OnStreakPuzzleComplete {
 
-    override suspend fun invoke(puzzleId: Int) {
+    override suspend fun invoke() {
         val currentUser = userRepository.get()
 
         val newStreakCount = currentUser.puzzleStreak.currentCount + 1
@@ -24,7 +27,7 @@ class OnStreakPuzzleCompleteImpl @Inject constructor(
         val updatedUser = currentUser.copy(
             puzzleStreak = currentUser.puzzleStreak.copy(
                 currentCount = newStreakCount,
-                lastPuzzleId = puzzleId,
+                lastPuzzleId = null, // Clear so next fetch gets a new puzzle
             )
         )
 

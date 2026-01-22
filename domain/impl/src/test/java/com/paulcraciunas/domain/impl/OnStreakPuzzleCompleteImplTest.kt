@@ -5,6 +5,7 @@ import com.paulcraciunas.user.api.User
 import com.paulcraciunas.user.api.UserDefaults
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 
 internal class OnStreakPuzzleCompleteImplTest {
@@ -18,15 +19,13 @@ internal class OnStreakPuzzleCompleteImplTest {
             puzzleStreak = User.PuzzleStreak(currentCount = 0, lastPuzzleId = null)
         )
         fakeUserRepository.update(user)
-        val puzzleId = 42
 
         // When
-        underTest(puzzleId)
+        underTest()
 
         // Then
         fakeUserRepository.get().apply {
             assertEquals(1, puzzleStreak.currentCount)
-            assertEquals(puzzleId, puzzleStreak.lastPuzzleId)
         }
     }
 
@@ -38,34 +37,31 @@ internal class OnStreakPuzzleCompleteImplTest {
             puzzleStreak = User.PuzzleStreak(currentCount = initialCount, lastPuzzleId = 41)
         )
         fakeUserRepository.update(user)
-        val newPuzzleId = 42
 
         // When
-        underTest(newPuzzleId)
+        underTest()
 
         // Then
         fakeUserRepository.get().apply {
             assertEquals(initialCount + 1, puzzleStreak.currentCount)
-            assertEquals(newPuzzleId, puzzleStreak.lastPuzzleId)
         }
     }
 
     @Test
-    fun `GIVEN streak in progress WHEN invoke THEN updates lastPuzzleId`() = runTest {
+    fun `GIVEN streak in progress WHEN invoke THEN clears lastPuzzleId`() = runTest {
         // Given
         val oldPuzzleId = 100
         val user = UserDefaults.signedInUser().copy(
             puzzleStreak = User.PuzzleStreak(currentCount = 3, lastPuzzleId = oldPuzzleId)
         )
         fakeUserRepository.update(user)
-        val newPuzzleId = 200
 
         // When
-        underTest(newPuzzleId)
+        underTest()
 
-        // Then
+        // Then - lastPuzzleId is cleared so next fetch gets a new puzzle
         fakeUserRepository.get().apply {
-            assertEquals(newPuzzleId, puzzleStreak.lastPuzzleId)
+            assertNull(puzzleStreak.lastPuzzleId)
         }
     }
 
@@ -77,15 +73,14 @@ internal class OnStreakPuzzleCompleteImplTest {
             puzzleStreak = User.PuzzleStreak(currentCount = largeStreak, lastPuzzleId = 999)
         )
         fakeUserRepository.update(user)
-        val newPuzzleId = 1000
 
         // When
-        underTest(newPuzzleId)
+        underTest()
 
         // Then
         fakeUserRepository.get().apply {
             assertEquals(largeStreak + 1, puzzleStreak.currentCount)
-            assertEquals(newPuzzleId, puzzleStreak.lastPuzzleId)
+            assertNull(puzzleStreak.lastPuzzleId)
         }
     }
 }

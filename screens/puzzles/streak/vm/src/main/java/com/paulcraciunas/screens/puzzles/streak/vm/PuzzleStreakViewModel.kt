@@ -139,7 +139,7 @@ class PuzzleStreakViewModel @Inject constructor(
         if (isSuccess) { // continue streak
             currentStreakCount++
             viewModelScope.launch {
-                helper.id?.let { onStreakPuzzleComplete(it) }
+                onStreakPuzzleComplete()
                 loadNextPuzzle()
             }
         } else { // streak ends
