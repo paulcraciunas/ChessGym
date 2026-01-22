@@ -1,4 +1,4 @@
-package com.paulcraciunas.screens.puzzles.rated.ui
+package com.paulcraciunas.screens.common.controls
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Box
@@ -22,7 +22,7 @@ import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
-internal fun CapturedPieces(
+fun CapturedPieces(
     capturedPieces: List<Piece>,
     side: Side,
     modifier: Modifier = Modifier

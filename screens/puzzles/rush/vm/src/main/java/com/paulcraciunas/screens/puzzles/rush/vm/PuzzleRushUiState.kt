@@ -1,9 +1,8 @@
 package com.paulcraciunas.screens.puzzles.rush.vm
 
-import com.paulcraciunas.game.logic.api.Side
-import com.paulcraciunas.game.logic.api.board.Locus
-import com.paulcraciunas.screens.common.model.BoardViewData
+import com.paulcraciunas.screens.common.model.PuzzleData
 import com.paulcraciunas.screens.common.model.PuzzleResult
+import com.paulcraciunas.screens.common.model.PuzzleViewModelHelper
 
 sealed class PuzzleRushUiState {
     data object Loading : PuzzleRushUiState()
@@ -25,14 +24,8 @@ sealed class PuzzleRushUiState {
         override val data: PuzzleData,
         override val timeRemainingSeconds: Int,
         override val results: List<PuzzleResult>,
-        val promotion: Promotion?,
-    ) : BoardState() {
-
-        data class Promotion(
-            val showChooser: Boolean,
-            val at: Locus,
-        )
-    }
+        val promotion: PuzzleViewModelHelper.Promotion?,
+    ) : BoardState()
 
     data class Finished(
         override val data: PuzzleData,
@@ -41,10 +34,4 @@ sealed class PuzzleRushUiState {
         val showSummaryDialog: Boolean,
         val isNewHighScore: Boolean,
     ) : BoardState()
-
-    data class PuzzleData(
-        val rating: Int,
-        val player: Side,
-        val boardData: BoardViewData,
-    )
 }

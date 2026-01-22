@@ -17,6 +17,8 @@ import com.paulcraciunas.screens.puzzles.failed.ui.FailedPuzzlesScreen
 import com.paulcraciunas.screens.puzzles.failed.vm.FailedPuzzlesViewModel
 import com.paulcraciunas.screens.puzzles.rush.ui.PuzzleRushScreen
 import com.paulcraciunas.screens.puzzles.rush.vm.PuzzleRushViewModel
+import com.paulcraciunas.screens.puzzles.streak.ui.PuzzleStreakScreen
+import com.paulcraciunas.screens.puzzles.streak.vm.PuzzleStreakViewModel
 
 @Composable
 internal fun PuzzleDashboard(
@@ -41,8 +43,8 @@ internal fun PuzzleDashboard(
                     PuzzleMode.FailedPuzzles -> {
                         tabNavController.navigate(Screen.FailedPuzzles)
                     }
-                    else -> {
-                        // TODO Paul: Handle puzzle streak
+                    PuzzleMode.PuzzleStreak -> {
+                        tabNavController.navigate(Screen.PuzzleStreak)
                     }
                 }
             }
@@ -101,6 +103,24 @@ internal fun FailedPuzzles(
 
     FailedPuzzlesScreen(
         uiState = failedPuzzlesState,
+        showBorders = showBorders,
+        onNavigateBack = {
+            tabNavController.popBackStack(Screen.PuzzleDashboard, inclusive = false)
+        },
+        interactions = vm,
+    )
+}
+
+@Composable
+internal fun PuzzleStreak(
+    tabNavController: NavHostController,
+    showBorders: Boolean,
+) {
+    val vm: PuzzleStreakViewModel = hiltViewModel()
+    val puzzleStreakState by vm.uiState.collectAsStateWithLifecycle()
+
+    PuzzleStreakScreen(
+        uiState = puzzleStreakState,
         showBorders = showBorders,
         onNavigateBack = {
             tabNavController.popBackStack(Screen.PuzzleDashboard, inclusive = false)

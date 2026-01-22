@@ -4,6 +4,7 @@ import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
+import com.paulcraciunas.game.logic.api.state.CheckCount
 import com.paulcraciunas.game.logic.impl.board.Board
 import com.paulcraciunas.game.logic.impl.plies.Playable
 import com.paulcraciunas.game.logic.impl.plies.PlyFactory
@@ -45,8 +46,13 @@ internal class MutablePuzzle(
                 state = Puzzle.State.Success
             }
         } else {
-            // If the move played wasn't the expected one, we failed
-            state = Puzzle.State.Failed
+            // If the move played wasn't the expected one, check if it resulted in checkmate
+            // (alternate checkmate moves should be accepted as success)
+            state = if (info.inCheckCount != CheckCount.None && plies.isEmpty()) {
+                Puzzle.State.Success
+            } else {
+                Puzzle.State.Failed
+            }
         }
     }
 

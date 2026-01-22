@@ -11,7 +11,8 @@ data class User(
     val statistics: Statistics = Statistics(),
     val history: List<HistoryItem> = emptyList(),
     val failedPuzzles: List<Int> = emptyList(), // Puzzle IDs for retry; This is not persistable across Network, as DB IDs might differ
-    val authentication: AuthenticationState? = null
+    val authentication: AuthenticationState? = null,
+    val puzzleStreak: PuzzleStreak = PuzzleStreak(),
 ) {
     fun isSignedIn(): Boolean = authentication != null
 
@@ -34,6 +35,7 @@ data class User(
     data class HighScores(
         val ratedPuzzle: Int = 1200,
         val puzzleRush: Int = 0,
+        val puzzleStreak: Int = 0,
         val boardVisualization: Int = 0,
         val blindMode: Int = 400
     )
@@ -113,4 +115,10 @@ data class User(
             FACEBOOK,
         }
     }
+
+    @Serializable
+    data class PuzzleStreak(
+        val currentCount: Int = 0,
+        val lastPuzzleId: Int? = null,
+    )
 }

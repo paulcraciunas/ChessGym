@@ -1,4 +1,4 @@
-package com.paulcraciunas.screens.puzzles.rated.ui
+package com.paulcraciunas.screens.common.controls
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Arrangement
@@ -20,12 +20,13 @@ import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
-internal fun PuzzleControls(
+fun DefaultPuzzleControls(
     hintEnabled: Boolean,
     toMove: Side,
     onHintRequested: () -> Unit,
     onAbandonRequested: () -> Unit,
     modifier: Modifier = Modifier,
+    abandonEnabled: Boolean = true,
 ) {
     Row(
         modifier = modifier
@@ -46,11 +47,15 @@ internal fun PuzzleControls(
                 modifier = Modifier.size(24.dp)
             )
         }
-        OutlinedIconButton(onClick = onAbandonRequested) {
+        OutlinedIconButton(onClick = onAbandonRequested, enabled = abandonEnabled) {
             Icon(
                 painter = painterResource(R.drawable.flag_icon),
                 contentDescription = stringResource(R.string.puzzle_abandon),
-                tint = MaterialTheme.colorScheme.error,
+                tint = if (!abandonEnabled) {
+                    MaterialTheme.colorScheme.outline
+                } else {
+                    MaterialTheme.colorScheme.error
+                },
                 modifier = Modifier.size(24.dp)
             )
         }
@@ -63,7 +68,7 @@ internal fun PuzzleControls(
 @Composable
 private fun PuzzleControlsPlayingPreview() {
     ChessGymTheme {
-        PuzzleControls(
+        DefaultPuzzleControls(
             hintEnabled = true,
             toMove = Side.WHITE,
             onHintRequested = {},
@@ -77,7 +82,7 @@ private fun PuzzleControlsPlayingPreview() {
 @Composable
 private fun PuzzleControlsHintUsedPreview() {
     ChessGymTheme {
-        PuzzleControls(
+        DefaultPuzzleControls(
             hintEnabled = false,
             toMove = Side.BLACK,
             onHintRequested = {},

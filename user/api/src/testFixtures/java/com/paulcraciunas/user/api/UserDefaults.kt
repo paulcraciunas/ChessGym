@@ -17,6 +17,7 @@ object UserDefaults {
         highScores = User.HighScores(
             ratedPuzzle = HIGH_SCORE_RATED,
             puzzleRush = HIGH_SCORE_RUSH,
+            puzzleStreak = HIGH_SCORE_STREAK,
             boardVisualization = HIGH_SCORE_BOARD,
             blindMode = RATING_BLIND_MODE
         ),
@@ -42,6 +43,7 @@ object UserDefaults {
     const val RATING_BLIND_MODE = 400
     const val HIGH_SCORE_RATED = 1350
     const val HIGH_SCORE_RUSH = 85
+    const val HIGH_SCORE_STREAK = 42
     const val HIGH_SCORE_BOARD = 92
     const val STATISTICS_PLAYED = 5
     const val STATISTICS_SOLVED = 2

@@ -1,9 +1,9 @@
 package com.paulcraciunas.domain.impl
 
 import com.paulcraciunas.domain.api.GetBufferedPuzzleSeries
+import com.paulcraciunas.domain.api.GetPuzzleByRating
 import com.paulcraciunas.domain.api.RandomFactory
 import com.paulcraciunas.game.logic.api.Puzzle
-import com.paulcraciunas.puzzles.api.PuzzleRepository
 import java.util.ArrayDeque
 import java.util.Deque
 import javax.inject.Inject
@@ -15,7 +15,7 @@ import javax.inject.Inject
  * but in smaller batches for memory efficiency.
  */
 class GetBufferedPuzzleSeriesImpl @Inject constructor(
-    private val repository: PuzzleRepository,
+    private val getPuzzleByRating: GetPuzzleByRating,
     private val randomFactory: RandomFactory,
 ) : GetBufferedPuzzleSeries {
 
@@ -43,11 +43,11 @@ class GetBufferedPuzzleSeriesImpl @Inject constructor(
 
     private suspend fun loadNextBatch() {
         repeat(batchSize) {
-            val puzzle = repository.getByRating(currentRating)
-            if (puzzle != null) {
+            try {
+                val puzzle = getPuzzleByRating(currentRating)
                 buffer.addLast(puzzle)
                 currentRating += randomFactory.nextInt(1, increment)
-            } else {
+            } catch (_: Exception) {
                 exhausted = true
                 return
             }

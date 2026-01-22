@@ -1,4 +1,4 @@
-package com.paulcraciunas.screens.puzzles.rated.ui
+package com.paulcraciunas.screens.common.controls
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -21,7 +21,7 @@ import com.paulcraciunas.screens.common.board.ChessPiece
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
-internal fun YourMoveIndicator(
+fun YourMoveIndicator(
     toMove: Side,
     modifier: Modifier = Modifier,
 ) {

@@ -1,9 +1,7 @@
 package com.paulcraciunas.screens.puzzles.rated.vm
 
-import com.paulcraciunas.game.logic.api.Side
-import com.paulcraciunas.game.logic.api.board.Locus
-import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.screens.common.model.BoardViewData
+import com.paulcraciunas.screens.common.model.PuzzleData
+import com.paulcraciunas.screens.common.model.PuzzleViewModelHelper
 
 sealed class RatedPuzzleUiState {
     data object Loading : RatedPuzzleUiState()
@@ -16,25 +14,13 @@ sealed class RatedPuzzleUiState {
         override val data: PuzzleData,
         val hintEnabled: Boolean,
         val showAbandonDialog: Boolean,
-        val promotion: Promotion?,
-    ) : BoardState() {
-
-        data class Promotion(
-            val showChooser: Boolean,
-            val at: Locus,
-        )
-    }
+        val isShowingSolution: Boolean = false,
+        val promotion: PuzzleViewModelHelper.Promotion?,
+    ) : BoardState()
 
     data class Finished(
         override val data: PuzzleData,
         val success: Boolean,
         val ratingChange: Int
     ) : BoardState()
-
-    data class PuzzleData(
-        val rating: Int,
-        val player: Side,
-        val boardData: BoardViewData,
-        val captured: Map<Side, List<Piece>>,
-    )
 }

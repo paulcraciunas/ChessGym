@@ -33,6 +33,7 @@ import com.paulcraciunas.chessgym.navigation.Screen
 import com.paulcraciunas.chessgym.screens.FailedPuzzles
 import com.paulcraciunas.chessgym.screens.PuzzleDashboard
 import com.paulcraciunas.chessgym.screens.PuzzleRush
+import com.paulcraciunas.chessgym.screens.PuzzleStreak
 import com.paulcraciunas.chessgym.screens.RatedPuzzle
 import com.paulcraciunas.screens.common.AppBar
 import com.paulcraciunas.screens.common.AppBarAlignment
@@ -132,6 +133,12 @@ fun MainScreen(
                 }
                 animatedComposable<Screen.FailedPuzzles> {
                     FailedPuzzles(
+                        tabNavController = tabNavController,
+                        showBorders = mainScreenState.appSettings?.showBorders ?: true,
+                    )
+                }
+                animatedComposable<Screen.PuzzleStreak> {
+                    PuzzleStreak(
                         tabNavController = tabNavController,
                         showBorders = mainScreenState.appSettings?.showBorders ?: true,
                     )

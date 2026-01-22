@@ -20,6 +20,12 @@ interface PuzzleInteractor {
     fun hint(): Locus
     fun resign()
 
+    /**
+     * Plays the next expected move in the solution sequence.
+     * This is used to show the solution when the user resigns.
+     */
+    fun playNextMove()
+
     fun isOver(): Boolean
     fun isSuccess(): Boolean
 }

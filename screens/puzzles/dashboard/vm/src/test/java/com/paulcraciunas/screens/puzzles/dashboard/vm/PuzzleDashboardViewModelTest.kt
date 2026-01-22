@@ -89,6 +89,42 @@ internal class PuzzleDashboardViewModelTest {
         assertEquals(0, uiState.failedPuzzlesCount)
     }
 
+    @Test
+    fun `GIVEN user with active streak WHEN viewModel initialized THEN currentStreakCount is updated`() = runTest {
+        // Given
+        val user = User(
+            ratings = User.Ratings(current = 1400),
+            puzzleStreak = User.PuzzleStreak(currentCount = 15, lastPuzzleId = 42)
+        )
+        userRepository.local.saveUser(user)
+
+        // When
+        underTest = PuzzleDashboardViewModel(userRepository)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Then
+        val uiState = underTest.uiState.value
+        assertEquals(15, uiState.currentStreakCount)
+    }
+
+    @Test
+    fun `GIVEN user with no active streak WHEN viewModel initialized THEN currentStreakCount is zero`() = runTest {
+        // Given
+        val user = User(
+            ratings = User.Ratings(current = 1200),
+            puzzleStreak = User.PuzzleStreak(currentCount = 0, lastPuzzleId = null)
+        )
+        userRepository.local.saveUser(user)
+
+        // When
+        underTest = PuzzleDashboardViewModel(userRepository)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Then
+        val uiState = underTest.uiState.value
+        assertEquals(0, uiState.currentStreakCount)
+    }
+
     private fun setupViewModel() = runTest {
         val user = User()
         userRepository.local.saveUser(user)

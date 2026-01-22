@@ -187,6 +187,14 @@
     <string name="puzzle_mode_streak_description">Solve as many puzzles in a row as possible</string>
     <string name="puzzle_mode_streak_new">Start a new Streak</string>
     <string name="puzzle_mode_streak_continue">Continue your %1$d Puzzle Streak</string>
+    <string name="puzzle_streak_title">Puzzle Streak - Rating: %1$d</string>
+    <string name="puzzle_streak_ended">Streak Ended</string>
+    <string name="puzzle_streak_new">New Streak</string>
+    <string name="puzzle_streak_summary_title">Streak Complete!</string>
+    <string name="puzzle_streak_summary_puzzles_solved">Puzzles Solved</string>
+    <string name="puzzle_streak_summary_new_high_score">New High Score!</string>
+    <string name="puzzle_white_to_move">White to move</string>
+    <string name="puzzle_black_to_move">Black to move</string>
     <!-- endregion -->
 
     <!-- Failed Puzzles Mode -->

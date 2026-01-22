@@ -74,4 +74,22 @@ class FakeAppSettingsRepository : AppSettingsRepository {
      * Useful for assertions in tests.
      */
     fun getCurrentSettings(): AppSettings = _appSettings.value
+
+    companion object {
+        fun default() = FakeAppSettingsRepository().apply {
+            setAppSettings(
+                AppSettings(
+                    puzzlesDownloaded = true,
+                    totalPuzzleCount = 1000,
+                    maxPuzzleRating = 2500,
+                    minPuzzleRating = 400,
+                    playSoundOnMove = true,
+                    preferredTheme = AppSettings.Theme.Wood,
+                    lightMode = AppSettings.LightMode.System,
+                    autoPromote = true,
+                    showBorders = true
+                )
+            )
+        }
+    }
 }
