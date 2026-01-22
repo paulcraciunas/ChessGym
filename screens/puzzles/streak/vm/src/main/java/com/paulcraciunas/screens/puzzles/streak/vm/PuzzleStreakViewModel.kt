@@ -53,18 +53,14 @@ class PuzzleStreakViewModel @Inject constructor(
         }
     }
 
-    override fun onSquareClicked(selection: Locus) {
-        val state = _uiState.value
-        if (state !is PuzzleStreakUiState.Playing) return
-
+    override fun onSquareClicked(selection: Locus) = whilePlaying {
         handleMoveResult(helper.handleSquareClick(selection))
     }
 
-    override fun onPromote(to: Piece) {
-        val state = _uiState.value
-        if (state !is PuzzleStreakUiState.Playing || state.promotion == null) return
-
-        handleMoveResult(helper.promote(to, state.promotion.at))
+    override fun onPromote(to: Piece) = whilePlaying { state->
+        state.promotion?.let {
+            handleMoveResult(helper.promote(to, state.promotion.at))
+        }
     }
 
     override fun onHintRequested() {
@@ -78,17 +74,11 @@ class PuzzleStreakViewModel @Inject constructor(
         )
     }
 
-    override fun onAbandon() {
-        val state = _uiState.value
-        if (state !is PuzzleStreakUiState.Playing) return
-
+    override fun onAbandon() = whilePlaying { state ->
         _uiState.value = state.copy(showAbandonDialog = true)
     }
 
-    override fun onAbandonConfirmed() {
-        val state = _uiState.value
-        if (state !is PuzzleStreakUiState.Playing) return
-
+    override fun onAbandonConfirmed() = whilePlaying {
         helper.resign()
         viewModelScope.launch {
             val isNewHighScore = onStreakComplete(currentStreakCount)
@@ -101,10 +91,7 @@ class PuzzleStreakViewModel @Inject constructor(
         }
     }
 
-    override fun onAbandonDismissed() {
-        val state = _uiState.value
-        if (state !is PuzzleStreakUiState.Playing) return
-
+    override fun onAbandonDismissed() = whilePlaying { state ->
         _uiState.value = state.copy(showAbandonDialog = false)
     }
 
@@ -121,16 +108,10 @@ class PuzzleStreakViewModel @Inject constructor(
         }
     }
 
-    private fun handleMoveResult(result: OnSquareClick) {
-        val state = _uiState.value
-        if (state !is PuzzleStreakUiState.Playing) return
-
+    private fun handleMoveResult(result: OnSquareClick) = whilePlaying { state ->
         when {
             result.promotion != null -> _uiState.value = state.copy(promotion = result.promotion)
-            !result.isOver -> _uiState.value = state.copy(
-                data = helper.buildPuzzleData(),
-                promotion = null
-            )
+            !result.isOver -> _uiState.value = state.copy(data = helper.buildPuzzleData(), promotion = null)
             else -> handlePuzzleOver(result.isSuccess)
         }
     }
@@ -174,5 +155,11 @@ class PuzzleStreakViewModel @Inject constructor(
                 showSummary = true,
             )
         }
+    }
+
+    private fun whilePlaying(block: (PuzzleStreakUiState.Playing) -> Unit) {
+        val state = _uiState.value
+        if (state !is PuzzleStreakUiState.Playing) return
+        block(state)
     }
 }
