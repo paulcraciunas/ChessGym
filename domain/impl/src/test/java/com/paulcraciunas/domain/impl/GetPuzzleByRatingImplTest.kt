@@ -1,27 +1,20 @@
 package com.paulcraciunas.domain.impl
 
 import com.paulcraciunas.puzzles.api.FakePuzzleRepository
-import com.paulcraciunas.settings.application.api.AppSettings
 import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 internal class GetPuzzleByRatingImplTest {
     private val fakePuzzleRepository = FakePuzzleRepository()
-    private val fakeAppSettingsRepository = FakeAppSettingsRepository()
+    private val fakeAppSettingsRepository = FakeAppSettingsRepository.default()
 
     private val underTest = GetPuzzleByRatingImpl(
         puzzleRepository = fakePuzzleRepository,
         appSettingsRepository = fakeAppSettingsRepository
     )
-
-    @BeforeEach
-    fun setUp() {
-        fakeAppSettingsRepository.setAppSettings(defaultSettings())
-    }
 
     @Test
     fun `GIVEN exactRatingMatch WHEN invoke THEN returnsExactMatch`() = runTest {
@@ -314,16 +307,4 @@ internal class GetPuzzleByRatingImplTest {
         // THEN
         assertEquals(existingPuzzleRating, result.rating)
     }
-
-    private fun defaultSettings(): AppSettings = AppSettings(
-        puzzlesDownloaded = true,
-        totalPuzzleCount = 1000,
-        maxPuzzleRating = 2500,
-        minPuzzleRating = 400,
-        playSoundOnMove = true,
-        preferredTheme = AppSettings.Theme.Wood,
-        lightMode = AppSettings.LightMode.System,
-        autoPromote = true,
-        showBorders = true
-    )
 }
