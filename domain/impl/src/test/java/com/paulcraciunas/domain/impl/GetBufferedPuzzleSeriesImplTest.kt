@@ -2,23 +2,21 @@ package com.paulcraciunas.domain.impl
 
 import com.paulcraciunas.domain.api.RandomFactory
 import com.paulcraciunas.puzzles.api.FakePuzzleRepository
+import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 internal class GetBufferedPuzzleSeriesImplTest {
     private val repository = FakePuzzleRepository.default(ratingStart = RATING_START, increment = INCREMENT)
     private val fakeRandom = FakeRandom()
 
-    private lateinit var underTest: GetBufferedPuzzleSeriesImpl
-
-    @BeforeEach
-    fun setUp() {
-        underTest = GetBufferedPuzzleSeriesImpl(repository, fakeRandom)
-    }
+    private val underTest = GetBufferedPuzzleSeriesImpl(
+        getPuzzleByRating = GetPuzzleByRatingImpl(repository, FakeAppSettingsRepository.default()),
+        randomFactory = fakeRandom
+    )
 
     @Test
     fun `GIVEN initialized WHEN next without invoke THEN returns null`() = runBlocking {
@@ -79,10 +77,8 @@ internal class GetBufferedPuzzleSeriesImplTest {
     @Test
     fun `GIVEN no more puzzles available WHEN next THEN returns null`() = runBlocking {
         // Given
+        repository.clear()
         underTest(batchSize = BATCH_SIZE, ratingStart = RATING_START, increment = INCREMENT)
-
-        // Consume all available puzzles
-        repeat(FakePuzzleRepository.SIZE) { underTest.next() }
 
         // When
         val puzzle = underTest.next()
