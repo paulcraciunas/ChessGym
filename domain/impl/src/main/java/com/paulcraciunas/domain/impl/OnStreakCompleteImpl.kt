@@ -17,8 +17,9 @@ class OnStreakCompleteImpl @Inject constructor(
     private val userRepository: UserRepository,
 ) : OnStreakComplete {
 
-    override suspend fun invoke(finalStreakCount: Int): Boolean {
+    override suspend fun invoke(): Boolean {
         val currentUser = userRepository.get()
+        val finalStreakCount = currentUser.puzzleStreak.currentCount
         val previousHighScore = currentUser.highScores.puzzleStreak
         val isNewHighScore = finalStreakCount > previousHighScore
 

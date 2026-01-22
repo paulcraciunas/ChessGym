@@ -14,8 +14,7 @@ interface OnStreakComplete {
     /**
      * Processes the end of a puzzle streak.
      *
-     * @param finalStreakCount The final number of puzzles solved in the streak
      * @return true if this was a new high score
      */
-    suspend operator fun invoke(finalStreakCount: Int): Boolean
+    suspend operator fun invoke(): Boolean
 }
