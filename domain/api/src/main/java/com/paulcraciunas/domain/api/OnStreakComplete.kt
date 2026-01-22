@@ -16,5 +16,10 @@ interface OnStreakComplete {
      *
      * @return true if this was a new high score
      */
-    suspend operator fun invoke(): Boolean
+    suspend operator fun invoke(): StreakCompleteResult
+
+    data class StreakCompleteResult(
+        val isNewHighScore: Boolean,
+        val finalStreakCount: Int,
+    )
 }

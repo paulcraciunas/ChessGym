@@ -25,7 +25,7 @@ internal class OnStreakCompleteImplTest {
         fakeUserRepository.update(user)
 
         // When
-        val isNewHighScore = underTest()
+        val isNewHighScore = underTest().isNewHighScore
 
         // Then
         assertTrue(isNewHighScore)
@@ -45,7 +45,7 @@ internal class OnStreakCompleteImplTest {
         fakeUserRepository.update(user)
 
         // When
-        val isNewHighScore = underTest()
+        val isNewHighScore = underTest().isNewHighScore
 
         // Then
         assertFalse(isNewHighScore)
@@ -64,7 +64,7 @@ internal class OnStreakCompleteImplTest {
         fakeUserRepository.update(user)
 
         // When
-        val isNewHighScore = underTest()
+        val isNewHighScore = underTest().isNewHighScore
 
         // Then
         assertFalse(isNewHighScore)
@@ -117,7 +117,7 @@ internal class OnStreakCompleteImplTest {
         fakeUserRepository.update(user)
 
         // When
-        val isNewHighScore = underTest()
+        val isNewHighScore = underTest().isNewHighScore
 
         // Then
         assertTrue(isNewHighScore)
@@ -136,7 +136,7 @@ internal class OnStreakCompleteImplTest {
         fakeUserRepository.update(user)
 
         // When
-        val isNewHighScore = underTest()
+        val isNewHighScore = underTest().isNewHighScore
 
         // Then
         assertFalse(isNewHighScore)

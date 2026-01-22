@@ -189,6 +189,7 @@ internal class PuzzleStreakViewModelTest {
     fun `GIVEN puzzle failed WHEN wrong move played THEN streak ends`() = runTest {
         // Given
         val underTest = buildVm(buildStandardPuzzle())
+        onStreakComplete.streakCount = 0
 
         // When - play wrong move (not e7e5)
         underTest.onSquareClicked("d7".loc())
@@ -335,9 +336,10 @@ private class FakeOnStreakComplete : OnStreakComplete {
     var wasCalled: Boolean = false
         private set
     var returnNewHighScore: Boolean = false
+    var streakCount = 10
 
-    override suspend fun invoke(): Boolean {
+    override suspend fun invoke(): OnStreakComplete.StreakCompleteResult {
         wasCalled = true
-        return returnNewHighScore
+        return OnStreakComplete.StreakCompleteResult(returnNewHighScore, streakCount)
     }
 }

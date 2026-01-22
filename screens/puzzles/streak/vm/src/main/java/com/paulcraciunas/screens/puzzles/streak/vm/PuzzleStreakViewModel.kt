@@ -137,14 +137,15 @@ class PuzzleStreakViewModel @Inject constructor(
     }
 
     private suspend fun endStreak() {
-        val isNewHighScore = onStreakComplete()
-        val currentStreakCount = (_uiState.value as? PuzzleStreakUiState.Playing)?.streakCount ?: 0
-        _uiState.value = PuzzleStreakUiState.StreakEnded(
-            data = helper.buildPuzzleData(),
-            finalStreakCount = currentStreakCount,
-            isNewHighScore = isNewHighScore,
-            showSummary = true,
-        )
+        val result = onStreakComplete()
+        whilePlaying { state ->
+            _uiState.value = PuzzleStreakUiState.StreakEnded(
+                data = helper.buildPuzzleData(),
+                finalStreakCount = result.finalStreakCount,
+                isNewHighScore = result.isNewHighScore,
+                showSummary = true,
+            )
+        }
     }
 
     private fun whilePlaying(block: (PuzzleStreakUiState.Playing) -> Unit) {
