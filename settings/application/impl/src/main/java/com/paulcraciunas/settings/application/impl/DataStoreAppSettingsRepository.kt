@@ -34,7 +34,8 @@ internal class DataStoreAppSettingsRepository @Inject constructor(
             lightMode = preferences[LIGHT_MODE]?.let { AppSettings.LightMode.valueOf(it) }
                 ?: AppSettings.LightMode.System,
             autoPromote = preferences[AUTO_PROMOTE] ?: true,
-            showBorders = preferences[SHOW_BORDERS] ?: true
+            showBorders = preferences[SHOW_BORDERS] ?: true,
+            enableVibrations = preferences[ENABLE_VIBRATIONS] ?: true
         )
     }
 
@@ -47,6 +48,7 @@ internal class DataStoreAppSettingsRepository @Inject constructor(
     override suspend fun updateLightMode(mode: AppSettings.LightMode) = dataStore.update(LIGHT_MODE, mode.name)
     override suspend fun updateAutoPromote(enabled: Boolean) = dataStore.update(AUTO_PROMOTE, enabled)
     override suspend fun updateShowBorders(enabled: Boolean) = dataStore.update(SHOW_BORDERS, enabled)
+    override suspend fun updateEnableVibrations(enabled: Boolean) = dataStore.update(ENABLE_VIBRATIONS, enabled)
 
     private suspend fun <T> DataStore<Preferences>.update(key: Preferences.Key<T>, with: T) {
         edit { preferences ->
@@ -64,5 +66,6 @@ internal class DataStoreAppSettingsRepository @Inject constructor(
         private val LIGHT_MODE = stringPreferencesKey("light_mode")
         private val AUTO_PROMOTE = booleanPreferencesKey("auto_promote")
         private val SHOW_BORDERS = booleanPreferencesKey("show_borders")
+        private val ENABLE_VIBRATIONS = booleanPreferencesKey("enable_vibrations")
     }
 }

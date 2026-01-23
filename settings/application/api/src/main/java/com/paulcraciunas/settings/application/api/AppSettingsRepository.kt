@@ -14,4 +14,5 @@ interface AppSettingsRepository {
     suspend fun updateLightMode(mode: AppSettings.LightMode)
     suspend fun updateAutoPromote(enabled: Boolean)
     suspend fun updateShowBorders(enabled: Boolean)
+    suspend fun updateEnableVibrations(enabled: Boolean)
 }

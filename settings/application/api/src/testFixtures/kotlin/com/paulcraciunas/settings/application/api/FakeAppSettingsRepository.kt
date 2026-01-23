@@ -19,7 +19,8 @@ class FakeAppSettingsRepository : AppSettingsRepository {
             preferredTheme = AppSettings.Theme.Wood,
             lightMode = AppSettings.LightMode.System,
             autoPromote = true,
-            showBorders = true
+            showBorders = true,
+            enableVibrations = true
         )
     )
 
@@ -61,6 +62,10 @@ class FakeAppSettingsRepository : AppSettingsRepository {
         _appSettings.value = _appSettings.value.copy(showBorders = enabled)
     }
 
+    override suspend fun updateEnableVibrations(enabled: Boolean) {
+        _appSettings.value = _appSettings.value.copy(enableVibrations = enabled)
+    }
+
     /**
      * Sets all settings at once.
      * Useful for setting up specific test scenarios.
@@ -87,7 +92,8 @@ class FakeAppSettingsRepository : AppSettingsRepository {
                     preferredTheme = AppSettings.Theme.Wood,
                     lightMode = AppSettings.LightMode.System,
                     autoPromote = true,
-                    showBorders = true
+                    showBorders = true,
+                    enableVibrations = true
                 )
             )
         }
