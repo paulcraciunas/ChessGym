@@ -18,11 +18,7 @@ internal fun UnderConstruction(
     modifier: Modifier = Modifier
 ) {
     Scaffold(
-        topBar = {
-            AppBar {
-                Back(onClick = navController::popBackStack)
-            }
-        },
+        topBar = { AppBar(navButton = { Back(onClick = navController::popBackStack) }) },
         modifier = modifier.fillMaxSize()
     ) { innerPadding ->
         Surface(

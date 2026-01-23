@@ -37,9 +37,10 @@ fun BoardVisDashboardScreen(
 ) {
     Scaffold(
         topBar = {
-            AppBar(titleAlign = AppBarAlignment.Center) {
-                Home(onClick = onDrawerToggle)
-            }
+            AppBar(
+                titleAlign = AppBarAlignment.Center,
+                navButton = { Home(onClick = onDrawerToggle) }
+            )
         },
         modifier = modifier
     ) { innerPadding ->
