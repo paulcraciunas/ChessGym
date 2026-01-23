@@ -220,6 +220,34 @@
     <string name="puzzle_mode_start">Start puzzle mode</string>
     <!-- endregion -->
 
+    <!-- region Board Visualization Dashboard -->
+    <string name="boardvis_dashboard_title">Board Visualization</string>
+    <string name="boardvis_dashboard_subtitle">Train your board awareness and visualization skills</string>
+    <string name="boardvis_mode_start">Start visualization mode</string>
+    <string name="boardvis_coming_soon">Coming soon</string>
+    <!-- endregion -->
+
+    <!-- region Find the Square -->
+    <string name="boardvis_find_square_title">Find the Square</string>
+    <string name="boardvis_find_square_description">Click the square shown on the board as fast as you can</string>
+    <string name="boardvis_find_square_high_score">High score: %1$d</string>
+    <string name="boardvis_find_square_score">Score: %1$d</string>
+    <string name="boardvis_play_as_white">Play as white</string>
+    <string name="boardvis_play_as_black">Play as black</string>
+    <string name="boardvis_play_random">Random side</string>
+    <string name="boardvis_play">Play</string>
+    <string name="boardvis_play_again">Play Again</string>
+    <string name="boardvis_game_over">Time\'s Up!</string>
+    <string name="boardvis_final_score">Final Score: %1$d</string>
+    <string name="boardvis_new_high_score">New High Score!</string>
+    <string name="boardvis_high_score">High Score: %1$d</string>
+    <!-- endregion -->
+
+    <!-- region Move the Piece -->
+    <string name="boardvis_move_piece_title">Move the Piece</string>
+    <string name="boardvis_move_piece_description">Visualize and make the correct moves on the board</string>
+    <!-- endregion -->
+
     <!-- temporary values; these will be deleted as we build features -->
     <string name="under_construction">Under Construction</string>
 
