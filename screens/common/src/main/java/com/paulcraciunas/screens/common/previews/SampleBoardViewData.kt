@@ -8,11 +8,8 @@ import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.screens.common.model.BoardViewData
 import com.paulcraciunas.screens.common.model.SquareViewData
 
-// Preview helpers - R8 will remove these in release builds if unused
-@Suppress("unused") // Used only in @Preview composable functions
 object SampleBoardViewData {
-    @Composable
-    fun defaultBoard(): BoardViewData {
+    fun startingBoard(): BoardViewData {
         val squares: Array<Array<SquareViewData>> = Array(Rank.entries.size) {
             Array(File.entries.size) { SquareViewData(piece = null) }
         }
@@ -20,6 +17,9 @@ object SampleBoardViewData {
         squares.addBlackPieces()
         return BoardViewData(squares)
     }
+
+    @Composable
+    fun startingBoardComposable(): BoardViewData = startingBoard()
 
     private fun Array<Array<SquareViewData>>.addWhitePieces() = apply {
         File.entries.forEach { file ->

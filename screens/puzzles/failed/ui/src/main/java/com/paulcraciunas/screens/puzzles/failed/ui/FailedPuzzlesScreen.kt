@@ -185,7 +185,7 @@ private fun PlayingPreview() {
                 data = PuzzleData(
                     rating = 1350,
                     player = Side.BLACK,
-                    boardData = SampleBoardViewData.defaultBoard(),
+                    boardData = SampleBoardViewData.startingBoardComposable(),
                     captured = emptyMap(),
                 ),
                 progress = FailedPuzzlesUiState.Progress(solved = 3, total = 10),
@@ -211,7 +211,7 @@ private fun FinishedPreview() {
                 data = PuzzleData(
                     rating = 1400,
                     player = Side.WHITE,
-                    boardData = SampleBoardViewData.defaultBoard(),
+                    boardData = SampleBoardViewData.startingBoardComposable(),
                     captured = emptyMap(),
                 ),
                 progress = FailedPuzzlesUiState.Progress(solved = 4, total = 5),
