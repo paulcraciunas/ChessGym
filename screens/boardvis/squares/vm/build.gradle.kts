@@ -13,6 +13,7 @@ dependencies {
     implementation(project(":domain:api"))
     implementation(project(":game:logic:api"))
     implementation(project(":user:api"))
+    implementation(project(":screens:common"))
 
     implementation(libs.androidx.lifecycle.runtime.ktx)
 
