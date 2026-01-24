@@ -60,7 +60,7 @@ private fun Screen.isCurrent(route: String?): Boolean = when (this) {
 private fun BottomNavItem.iconPainter() = when (this) {
     BottomNavItem.Home -> rememberVectorPainter(Icons.Default.Home)
     BottomNavItem.PuzzleDashboard -> painterResource(R.drawable.puzzle_icon)
-    BottomNavItem.BoardVisualization -> painterResource(R.drawable.board_viz_icon)
+    BottomNavItem.BoardVisualization -> painterResource(R.drawable.board_visualization_icon)
     BottomNavItem.BlindMode -> painterResource(R.drawable.blind_mode_icon)
 }
 
