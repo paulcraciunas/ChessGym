@@ -30,7 +30,9 @@ import com.paulcraciunas.chessgym.animations.enter
 import com.paulcraciunas.chessgym.animations.exit
 import com.paulcraciunas.chessgym.navigation.BottomNavigationBar
 import com.paulcraciunas.chessgym.navigation.Screen
+import com.paulcraciunas.chessgym.screens.BoardVisDashboard
 import com.paulcraciunas.chessgym.screens.FailedPuzzles
+import com.paulcraciunas.chessgym.screens.FindTheSquare
 import com.paulcraciunas.chessgym.screens.PuzzleDashboard
 import com.paulcraciunas.chessgym.screens.PuzzleRush
 import com.paulcraciunas.chessgym.screens.PuzzleStreak
@@ -144,7 +146,14 @@ fun MainScreen(
                     )
                 }
                 animatedComposable<Screen.BoardVisualization> {
-                    UnderConstruction(title = "Board Visualisation", onDrawerToggle = onDrawerToggle)
+                    BoardVisDashboard(tabNavController, onDrawerToggle = onDrawerToggle)
+                }
+                animatedComposable<Screen.FindTheSquare> {
+                    FindTheSquare(
+                        tabNavController = tabNavController,
+                        showBorders = mainScreenState.appSettings?.showBorders ?: true,
+                        enableVibrations = mainScreenState.appSettings?.enableVibrations ?: true,
+                    )
                 }
                 animatedComposable<Screen.BlindMode> {
                     UnderConstruction(title = "Blind Mode", onDrawerToggle = onDrawerToggle)
@@ -173,9 +182,10 @@ private fun UnderConstruction(
 ) {
     Scaffold(
         topBar = {
-            AppBar(titleAlign = AppBarAlignment.Center) {
-                Home(onClick = onDrawerToggle)
-            }
+            AppBar(
+                titleAlign = AppBarAlignment.Center,
+                navButton = { Home(onClick = onDrawerToggle) }
+            )
         },
         modifier = modifier
     ) { innerPadding ->

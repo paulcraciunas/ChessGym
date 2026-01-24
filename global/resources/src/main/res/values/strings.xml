@@ -231,7 +231,7 @@
     <string name="boardvis_find_square_title">Find the Square</string>
     <string name="boardvis_find_square_description">Click the square shown on the board as fast as you can</string>
     <string name="boardvis_find_square_high_score">High score: %1$d</string>
-    <string name="boardvis_find_square_score">Score: %1$d</string>
+    <string name="boardvis_find_square_score">Current Score: %1$d</string>
     <string name="boardvis_play_as_white">Play as white</string>
     <string name="boardvis_play_as_black">Play as black</string>
     <string name="boardvis_play_random">Random side</string>
