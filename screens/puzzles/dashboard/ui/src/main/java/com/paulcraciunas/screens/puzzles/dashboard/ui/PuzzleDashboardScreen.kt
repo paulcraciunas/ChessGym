@@ -3,7 +3,6 @@ package com.paulcraciunas.screens.puzzles.dashboard.ui
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -59,57 +58,54 @@ fun PuzzleDashboardScreen(
 private fun DashboardContent(
     state: PuzzleDashboardUiState,
     onPuzzleModeSelected: (PuzzleMode) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-    Box(
+    LazyColumn(
+        contentPadding = PaddingValues(
+            horizontal = 20.dp,
+            vertical = 24.dp
+        ),
+        verticalArrangement = Arrangement.spacedBy(20.dp),
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        LazyColumn(
-            contentPadding = PaddingValues(
-                horizontal = 20.dp,
-                vertical = 24.dp
-            ),
-            verticalArrangement = Arrangement.spacedBy(20.dp)
-        ) {
-            item {
-                DashboardHeader()
-            }
-            
-            item {
-                RatedPuzzleCard(
-                    userRating = state.userRating,
-                    onClick = { onPuzzleModeSelected(PuzzleMode.RatedPuzzle) }
-                )
-            }
-            
-            item {
-                PuzzleRushCard(
-                    onClick = { onPuzzleModeSelected(PuzzleMode.PuzzleRush) }
-                )
-            }
+        item {
+            DashboardHeader()
+        }
 
-            item {
-                PuzzleStreakCard(
-                    currentStreak = state.currentStreakCount,
-                    onClick = { onPuzzleModeSelected(PuzzleMode.PuzzleStreak) }
-                )
-            }
-            
-            item {
-                FailedPuzzlesCard(
-                    failedCount = state.failedPuzzlesCount,
-                    onClick = { onPuzzleModeSelected(PuzzleMode.FailedPuzzles) }
-                )
-            }
+        item {
+            RatedPuzzleCard(
+                userRating = state.userRating,
+                onClick = { onPuzzleModeSelected(PuzzleMode.RatedPuzzle) },
+            )
+        }
+
+        item {
+            PuzzleRushCard(
+                onClick = { onPuzzleModeSelected(PuzzleMode.PuzzleRush) }
+            )
+        }
+
+        item {
+            PuzzleStreakCard(
+                currentStreak = state.currentStreakCount,
+                onClick = { onPuzzleModeSelected(PuzzleMode.PuzzleStreak) }
+            )
+        }
+
+        item {
+            FailedPuzzlesCard(
+                failedCount = state.failedPuzzlesCount,
+                onClick = { onPuzzleModeSelected(PuzzleMode.FailedPuzzles) }
+            )
         }
     }
 }
 
 @Composable
 private fun DashboardHeader(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
