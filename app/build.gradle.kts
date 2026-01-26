@@ -25,6 +25,8 @@ dependencies {
     implementation(project(":screens:puzzles:rush:ui"))
     implementation(project(":screens:puzzles:failed:ui"))
     implementation(project(":screens:puzzles:streak:ui"))
+    implementation(project(":screens:boardvis:dashboard:ui"))
+    implementation(project(":screens:boardvis:squares:ui"))
     implementation(project(":user:di"))
 
     implementation(libs.androidx.lifecycle.runtime.compose)

@@ -37,6 +37,7 @@ data class User(
         val puzzleRush: Int = 0,
         val puzzleStreak: Int = 0,
         val boardVisualization: Int = 0,
+        val findTheSquare: Int = 0,
         val blindMode: Int = 400
     )
 

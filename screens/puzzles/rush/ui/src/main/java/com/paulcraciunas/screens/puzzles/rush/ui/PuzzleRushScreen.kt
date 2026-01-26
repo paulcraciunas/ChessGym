@@ -202,7 +202,7 @@ private fun ReadyPreview() {
                 data = PuzzleData(
                     rating = 1200,
                     player = Side.WHITE,
-                    boardData = SampleBoardViewData.defaultBoard(),
+                    boardData = SampleBoardViewData.startingBoardComposable(),
                     captured = emptyMap(),
                 ),
                 timeRemainingSeconds = 180,
@@ -222,7 +222,7 @@ private fun PlayingPreview() {
                 data = PuzzleData(
                     rating = 1350,
                     player = Side.BLACK,
-                    boardData = SampleBoardViewData.defaultBoard(),
+                    boardData = SampleBoardViewData.startingBoardComposable(),
                     captured = emptyMap(),
                 ),
                 timeRemainingSeconds = 142,
@@ -248,7 +248,7 @@ private fun FinishedPreview() {
                 data = PuzzleData(
                     rating = 1400,
                     player = Side.WHITE,
-                    boardData = SampleBoardViewData.defaultBoard(),
+                    boardData = SampleBoardViewData.startingBoardComposable(),
                     captured = emptyMap(),
                 ),
                 timeRemainingSeconds = 0,
@@ -277,7 +277,7 @@ private fun ManyResultsPreview() {
                 data = PuzzleData(
                     rating = 1500,
                     player = Side.WHITE,
-                    boardData = SampleBoardViewData.defaultBoard(),
+                    boardData = SampleBoardViewData.startingBoardComposable(),
                     captured = emptyMap(),
                 ),
                 timeRemainingSeconds = 45,

@@ -33,7 +33,7 @@ fun AppBar(
     title: String = stringResource(R.string.app_name),
     titleAlign: AppBarAlignment = AppBarAlignment.Beginning,
     navButton: (@Composable AppBarScope.() -> Unit) = {},
-    actions: (@Composable AppBarScope.() -> Unit) = {},
+    actions: (@Composable () -> Unit) = {},
 ) {
     val appBarScope = remember { AppBarScope() }
 
@@ -47,7 +47,7 @@ fun AppBar(
                 colors = colors,
                 title = { Text(text = title) },
                 navigationIcon = { navButton(appBarScope) },
-                actions = { actions(appBarScope) },
+                actions = { actions() },
                 modifier = modifier
             )
         }
@@ -57,7 +57,7 @@ fun AppBar(
                 colors = colors,
                 title = { Text(text = title) },
                 navigationIcon = { navButton(appBarScope) },
-                actions = { actions(appBarScope) },
+                actions = { actions() },
                 modifier = modifier
             )
         }
@@ -100,7 +100,9 @@ class AppBarScope internal constructor() {
 @Composable
 internal fun Preview_Home() {
     ChessGymTheme {
-        AppBar { Home(onClick = {}) }
+        AppBar(
+            navButton = { Home(onClick = {}) }
+        )
     }
 }
 
@@ -109,7 +111,10 @@ internal fun Preview_Home() {
 @Composable
 internal fun Preview_Home_Centered() {
     ChessGymTheme {
-        AppBar(titleAlign = AppBarAlignment.Center) { Home(onClick = {}) }
+        AppBar(
+            titleAlign = AppBarAlignment.Center,
+            navButton = { Home(onClick = {}) }
+        )
     }
 }
 
@@ -120,8 +125,9 @@ internal fun Preview_Home_Centered() {
 internal fun Preview_Back() {
     ChessGymTheme {
         AppBar(
-            title = "Back"
-        ) { Back(onClick = {}) }
+            title = "Back",
+            navButton = { Back(onClick = {}) }
+        )
     }
 }
 
