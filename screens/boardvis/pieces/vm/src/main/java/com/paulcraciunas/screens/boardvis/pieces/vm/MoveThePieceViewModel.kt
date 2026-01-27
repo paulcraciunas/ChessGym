@@ -169,7 +169,7 @@ class MoveThePieceViewModel @Inject constructor(
 
         data class Setup(
             val isTrainingMode: Boolean = true,
-            val selectedPiece: Piece = Piece.Rook
+            val selectedPiece: Piece = Piece.Rook,
         ) : ViewState() {
             override fun toUiState(remainingSeconds: Int) = MoveThePieceUiState.Setup(
                 isTrainingMode = isTrainingMode,
@@ -182,7 +182,7 @@ class MoveThePieceViewModel @Inject constructor(
             val boardState: MoveThePieceBoardState,
             val movesRemaining: Int,
             val currentScore: Int,
-            val isTrainingMode: Boolean
+            val isTrainingMode: Boolean,
         ) : ViewState() {
             override fun toUiState(remainingSeconds: Int) = MoveThePieceUiState.Playing(
                 boardData = boardState.toBoardViewData(),
@@ -201,7 +201,7 @@ class MoveThePieceViewModel @Inject constructor(
             val finalScore: Int,
             val isNewHighScore: Boolean,
             val previousHighScore: Int,
-            val wasCaptured: Boolean
+            val wasCaptured: Boolean,
         ) : ViewState() {
             override fun toUiState(remainingSeconds: Int) = MoveThePieceUiState.GameOver(
                 boardData = lastBoardState.toBoardViewData(),
