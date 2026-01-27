@@ -6,6 +6,7 @@ import com.paulcraciunas.game.logic.api.Game
 import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.Side
+import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.state.MetaData
@@ -48,6 +49,8 @@ internal class RealBuilder(private val plyFactory: PlyFactory) : Builder {
 
     override fun withCastling(castling: Pair<Set<CastleType>, Set<CastleType>>) = withWhiteCastling(castling.first)
         .withBlackCastling(castling.second)
+
+    override fun buildBoard(): IBoard = board
 
     override fun buildGame(): Game = MutableGame(
         metadata = metaData,
