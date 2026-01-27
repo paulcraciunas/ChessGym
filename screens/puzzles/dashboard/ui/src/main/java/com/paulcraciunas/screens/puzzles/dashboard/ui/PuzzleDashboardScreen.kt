@@ -69,7 +69,7 @@ private fun DashboardContent(
             horizontal = 20.dp,
             vertical = 24.dp
         ),
-        verticalArrangement = Arrangement.spacedBy(20.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)

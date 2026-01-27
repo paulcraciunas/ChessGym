@@ -26,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -60,6 +61,7 @@ internal fun DashboardCard(
                 shape = RoundedCornerShape(16.dp)
             )
             .background(MaterialTheme.colorScheme.surface.copy(alpha = alpha))
+            .shadow(elevation = 1.dp)
             .then(
                 if (isEnabled) {
                     Modifier.clickable { onClick() }
@@ -71,7 +73,7 @@ internal fun DashboardCard(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp),
+                .padding(16.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
