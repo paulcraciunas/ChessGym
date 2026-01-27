@@ -35,6 +35,9 @@ sealed class Screen {
     data object FindTheSquare : Screen()
 
     @Serializable
+    data object MoveThePiece : Screen()
+
+    @Serializable
     data object BlindMode : Screen()
 
     @Serializable
