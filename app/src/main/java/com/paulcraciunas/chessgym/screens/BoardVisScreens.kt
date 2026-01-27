@@ -9,6 +9,8 @@ import com.paulcraciunas.chessgym.navigation.Screen
 import com.paulcraciunas.screens.boardvis.dashboard.ui.BoardVisDashboardScreen
 import com.paulcraciunas.screens.boardvis.dashboard.vm.BoardVisDashboardViewModel
 import com.paulcraciunas.screens.boardvis.dashboard.vm.BoardVisMode
+import com.paulcraciunas.screens.boardvis.pieces.ui.MoveThePieceScreen
+import com.paulcraciunas.screens.boardvis.pieces.vm.MoveThePieceViewModel
 import com.paulcraciunas.screens.boardvis.squares.ui.FindTheSquareScreen
 import com.paulcraciunas.screens.boardvis.squares.vm.FindTheSquareViewModel
 
@@ -29,7 +31,7 @@ internal fun BoardVisDashboard(
                         tabNavController.navigate(Screen.FindTheSquare)
                     }
                     BoardVisMode.MoveThePiece -> {
-                        // Not implemented yet - will navigate to MoveThePiece screen
+                        tabNavController.navigate(Screen.MoveThePiece)
                     }
                 }
             }
@@ -50,6 +52,24 @@ internal fun FindTheSquare(
         uiState = findSquareState,
         showBorders = showBorders,
         enableVibrations = enableVibrations,
+        onNavigateBack = {
+            tabNavController.popBackStack(Screen.BoardVisualization, inclusive = false)
+        },
+        interactions = vm,
+    )
+}
+
+@Composable
+internal fun MoveThePiece(
+    tabNavController: NavHostController,
+    showBorders: Boolean,
+) {
+    val vm: MoveThePieceViewModel = hiltViewModel()
+    val moveThePieceState by vm.uiState.collectAsStateWithLifecycle()
+
+    MoveThePieceScreen(
+        uiState = moveThePieceState,
+        showBorders = showBorders,
         onNavigateBack = {
             tabNavController.popBackStack(Screen.BoardVisualization, inclusive = false)
         },
