@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.paulcraciunas.domain.api.GetFailedPuzzles
 import com.paulcraciunas.domain.api.OnFailedPuzzleComplete
-import com.paulcraciunas.game.logic.api.GameFactory
+import com.paulcraciunas.game.logic.api.PuzzleInteractor
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.screens.common.model.PuzzleResult
@@ -21,9 +21,9 @@ import javax.inject.Inject
 class FailedPuzzlesViewModel @Inject constructor(
     private val getFailedPuzzles: GetFailedPuzzles,
     private val onFailedPuzzleComplete: OnFailedPuzzleComplete,
-    gameFactory: GameFactory,
+    puzzleInteractor: PuzzleInteractor,
 ) : ViewModel(), FailedPuzzlesScreenInteractor {
-    private val helper = PuzzleViewModelHelper(puzzleInteractor = gameFactory.puzzleInteractor())
+    private val helper = PuzzleViewModelHelper(puzzleInteractor = puzzleInteractor)
 
     private val _uiState = MutableStateFlow<FailedPuzzlesUiState>(FailedPuzzlesUiState.Loading)
     val uiState: StateFlow<FailedPuzzlesUiState> = _uiState.asStateFlow()

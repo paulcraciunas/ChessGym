@@ -288,7 +288,7 @@ internal class FailedPuzzlesViewModelTest {
         val underTest = FailedPuzzlesViewModel(
             getFailedPuzzles = getFailedPuzzles,
             onFailedPuzzleComplete = onFailedPuzzleComplete,
-            gameFactory = RealGameFactory(),
+            puzzleInteractor = RealGameFactory().puzzleInteractor(),
         )
         // Don't advance dispatcher - state is still loading
 
@@ -328,7 +328,7 @@ internal class FailedPuzzlesViewModelTest {
         val underTest = FailedPuzzlesViewModel(
             getFailedPuzzles = getFailedPuzzles,
             onFailedPuzzleComplete = onFailedPuzzleComplete,
-            gameFactory = RealGameFactory(),
+            puzzleInteractor = RealGameFactory().puzzleInteractor(),
         )
         testDispatcher.scheduler.advanceUntilIdle()
         return underTest

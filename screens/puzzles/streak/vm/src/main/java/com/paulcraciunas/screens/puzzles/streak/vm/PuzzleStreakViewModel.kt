@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.paulcraciunas.domain.api.GetStreakPuzzle
 import com.paulcraciunas.domain.api.OnStreakComplete
 import com.paulcraciunas.domain.api.OnStreakPuzzleComplete
-import com.paulcraciunas.game.logic.api.GameFactory
+import com.paulcraciunas.game.logic.api.PuzzleInteractor
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.screens.common.model.PuzzleViewModelHelper
@@ -22,9 +22,9 @@ class PuzzleStreakViewModel @Inject constructor(
     private val getStreakPuzzle: GetStreakPuzzle,
     private val onStreakPuzzleComplete: OnStreakPuzzleComplete,
     private val onStreakComplete: OnStreakComplete,
-    gameFactory: GameFactory,
+    puzzleInteractor: PuzzleInteractor,
 ) : ViewModel(), PuzzleStreakScreenInteractor {
-    private val helper = PuzzleViewModelHelper(puzzleInteractor = gameFactory.puzzleInteractor())
+    private val helper = PuzzleViewModelHelper(puzzleInteractor = puzzleInteractor)
 
     private val _uiState = MutableStateFlow<PuzzleStreakUiState>(PuzzleStreakUiState.Loading)
     val uiState: StateFlow<PuzzleStreakUiState> = _uiState.asStateFlow()

@@ -251,7 +251,7 @@ internal class PuzzleRushViewModelTest {
             onPuzzleRushComplete = onPuzzleRushComplete,
             countdownTimer = countdownTimer,
             userRepository = userRepository,
-            gameFactory = RealGameFactory(),
+            puzzleInteractor = RealGameFactory().puzzleInteractor(),
         )
         testDispatcher.scheduler.advanceUntilIdle()
         return underTest

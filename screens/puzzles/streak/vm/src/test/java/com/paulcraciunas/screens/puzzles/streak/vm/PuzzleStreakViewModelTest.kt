@@ -268,7 +268,7 @@ internal class PuzzleStreakViewModelTest {
             getStreakPuzzle = getStreakPuzzle,
             onStreakPuzzleComplete = onStreakPuzzleComplete,
             onStreakComplete = onStreakComplete,
-            gameFactory = RealGameFactory()
+            puzzleInteractor = RealGameFactory().puzzleInteractor()
         )
         testDispatcher.scheduler.advanceUntilIdle()
         return underTest
