@@ -86,12 +86,6 @@ internal fun MoveThePieceCard(
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                Text(
-                    text = stringResource(R.string.boardvis_coming_soon),
-                    style = MaterialTheme.typography.bodySmall,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.tertiary
-                )
             }
 
             // Arrow

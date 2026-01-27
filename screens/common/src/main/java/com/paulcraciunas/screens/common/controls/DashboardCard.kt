@@ -33,6 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
+import com.paulcraciunas.screens.common.extensions.alpha
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
@@ -47,7 +48,7 @@ internal fun DashboardCard(
     modifier: Modifier = Modifier,
 ) {
     val iconScope = remember { DashboardCardIconScope(isEnabled) }
-    val alpha = if (isEnabled) 1f else 0.6f
+    val alpha = isEnabled.alpha
 
     Box(
         modifier = modifier
