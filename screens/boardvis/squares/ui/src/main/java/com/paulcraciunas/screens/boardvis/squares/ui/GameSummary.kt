@@ -59,7 +59,7 @@ internal fun GameSummary(
 
         if (isNewHighScore) {
             Text(
-                text = stringResource(R.string.boardvis_new_high_score),
+                text = stringResource(R.string.generic_new_high_score),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
