@@ -14,9 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -30,6 +28,7 @@ import com.paulcraciunas.screens.common.LoadingContent
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
 import com.paulcraciunas.screens.common.controls.PuzzleResultsGrid
+import com.paulcraciunas.screens.common.controls.TimerDisplay
 import com.paulcraciunas.screens.common.dialogs.PromotionDialog
 import com.paulcraciunas.screens.common.model.PuzzleData
 import com.paulcraciunas.screens.common.model.PuzzleResult
@@ -57,8 +56,8 @@ fun PuzzleRushScreen(
                 title = stringResource(R.string.screen_puzzle_rush),
                 navButton = { Back(onClick = onNavigateBack) },
                 actions = {
-                    CountdownTimer(
-                        timeRemainingSeconds = timeRemainingSeconds,
+                    TimerDisplay(
+                        seconds = timeRemainingSeconds,
                         modifier = Modifier.padding(end = 16.dp)
                     )
                 }
@@ -169,27 +168,6 @@ private fun PuzzleRushContent(
             )
         }
     }
-}
-
-@Composable
-private fun CountdownTimer(
-    timeRemainingSeconds: Int,
-    modifier: Modifier = Modifier,
-) {
-    val minutes = timeRemainingSeconds / 60
-    val seconds = timeRemainingSeconds % 60
-    val timeText = "%d:%02d".format(minutes, seconds)
-
-    Text(
-        text = timeText,
-        style = MaterialTheme.typography.titleLarge,
-        color = if (timeRemainingSeconds <= 30) {
-            MaterialTheme.colorScheme.error
-        } else {
-            MaterialTheme.colorScheme.primary
-        },
-        modifier = modifier
-    )
 }
 
 @Preview

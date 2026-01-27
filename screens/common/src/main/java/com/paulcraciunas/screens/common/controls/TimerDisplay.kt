@@ -1,4 +1,4 @@
-package com.paulcraciunas.screens.boardvis.squares.ui
+package com.paulcraciunas.screens.common.controls
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -9,13 +9,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
-internal fun TimerDisplay(
+fun TimerDisplay(
     seconds: Int,
     modifier: Modifier = Modifier
 ) {
     val color = when {
-        seconds <= 5 -> MaterialTheme.colorScheme.error
-        seconds <= 10 -> MaterialTheme.colorScheme.tertiary
+        seconds <= 10 -> MaterialTheme.colorScheme.error
+        seconds <= 20 -> MaterialTheme.colorScheme.tertiary
         else -> MaterialTheme.colorScheme.onSurface
     }
 
@@ -38,7 +38,7 @@ private fun formatTime(totalSeconds: Int): String {
 @Composable
 private fun TimerDisplayNormalPreview() {
     ChessGymTheme {
-        TimerDisplay(seconds = 25)
+        TimerDisplay(seconds = 45)
     }
 }
 
@@ -46,7 +46,7 @@ private fun TimerDisplayNormalPreview() {
 @Composable
 private fun TimerDisplayWarningPreview() {
     ChessGymTheme {
-        TimerDisplay(seconds = 8)
+        TimerDisplay(seconds = 15)
     }
 }
 
@@ -54,6 +54,6 @@ private fun TimerDisplayWarningPreview() {
 @Composable
 private fun TimerDisplayCriticalPreview() {
     ChessGymTheme {
-        TimerDisplay(seconds = 3)
+        TimerDisplay(seconds = 5)
     }
 }

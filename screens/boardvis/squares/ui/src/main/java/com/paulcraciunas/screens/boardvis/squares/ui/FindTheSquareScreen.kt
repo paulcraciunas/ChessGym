@@ -24,6 +24,7 @@ import com.paulcraciunas.screens.boardvis.squares.vm.FindTheSquareScreenInteract
 import com.paulcraciunas.screens.boardvis.squares.vm.FindTheSquareUiState
 import com.paulcraciunas.screens.boardvis.squares.vm.SideSelection
 import com.paulcraciunas.screens.common.AppBar
+import com.paulcraciunas.screens.common.controls.TimerDisplay
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
