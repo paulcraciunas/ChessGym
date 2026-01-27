@@ -2,7 +2,9 @@ package com.paulcraciunas.domain.di
 
 import com.paulcraciunas.domain.api.CalculateElo
 import com.paulcraciunas.domain.api.CountdownTimer
+import com.paulcraciunas.domain.api.GenerateMoveThePieceBoard
 import com.paulcraciunas.domain.api.GenerateRandomLoci
+import com.paulcraciunas.domain.api.MoveThePieceGameEngine
 import com.paulcraciunas.domain.api.GetBufferedPuzzleSeries
 import com.paulcraciunas.domain.api.GetFailedPuzzles
 import com.paulcraciunas.domain.api.GetPuzzleByRating
@@ -11,6 +13,7 @@ import com.paulcraciunas.domain.api.GetRatedPuzzle
 import com.paulcraciunas.domain.api.GetStreakPuzzle
 import com.paulcraciunas.domain.api.OnFailedPuzzleComplete
 import com.paulcraciunas.domain.api.OnFindSquareComplete
+import com.paulcraciunas.domain.api.OnMoveThePieceComplete
 import com.paulcraciunas.domain.api.OnPuzzleComplete
 import com.paulcraciunas.domain.api.OnPuzzleRushComplete
 import com.paulcraciunas.domain.api.OnStreakComplete
@@ -18,7 +21,9 @@ import com.paulcraciunas.domain.api.OnStreakPuzzleComplete
 import com.paulcraciunas.domain.api.RandomFactory
 import com.paulcraciunas.domain.api.Timer
 import com.paulcraciunas.domain.impl.CalculateEloImpl
+import com.paulcraciunas.domain.impl.GenerateMoveThePieceBoardImpl
 import com.paulcraciunas.domain.impl.GenerateRandomLociImpl
+import com.paulcraciunas.domain.impl.MoveThePieceGameEngineImpl
 import com.paulcraciunas.domain.impl.GetBufferedPuzzleSeriesImpl
 import com.paulcraciunas.domain.impl.GetFailedPuzzlesImpl
 import com.paulcraciunas.domain.impl.GetPuzzleByRatingImpl
@@ -27,6 +32,7 @@ import com.paulcraciunas.domain.impl.GetRatedPuzzleImpl
 import com.paulcraciunas.domain.impl.GetStreakPuzzleImpl
 import com.paulcraciunas.domain.impl.OnFailedPuzzleCompleteImpl
 import com.paulcraciunas.domain.impl.OnFindSquareCompleteImpl
+import com.paulcraciunas.domain.impl.OnMoveThePieceCompleteImpl
 import com.paulcraciunas.domain.impl.OnPuzzleCompleteImpl
 import com.paulcraciunas.domain.impl.OnPuzzleRushCompleteImpl
 import com.paulcraciunas.domain.impl.OnStreakCompleteImpl
@@ -108,4 +114,15 @@ internal abstract class DomainModule {
     @Binds
     @Singleton
     abstract fun bindOnFindSquareComplete(impl: OnFindSquareCompleteImpl): OnFindSquareComplete
+
+    @Binds
+    @Singleton
+    abstract fun bindGenerateMoveThePieceBoard(impl: GenerateMoveThePieceBoardImpl): GenerateMoveThePieceBoard
+
+    @Binds
+    @Singleton
+    abstract fun bindOnMoveThePieceComplete(impl: OnMoveThePieceCompleteImpl): OnMoveThePieceComplete
+
+    @Binds
+    abstract fun bindMoveThePieceGameEngine(impl: MoveThePieceGameEngineImpl): MoveThePieceGameEngine
 }
