@@ -3,9 +3,9 @@ package com.paulcraciunas.screens.puzzles.rated.vm
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.paulcraciunas.domain.api.general.EloResult
-import com.paulcraciunas.domain.api.GetRatedPuzzle
-import com.paulcraciunas.domain.api.OnPuzzleComplete
-import com.paulcraciunas.domain.api.PuzzleCompletionResult
+import com.paulcraciunas.domain.api.puzzles.GetRatedPuzzle
+import com.paulcraciunas.domain.api.puzzles.OnPuzzleComplete
+import com.paulcraciunas.domain.api.puzzles.PuzzleCompletionResult
 import com.paulcraciunas.domain.api.general.Timer
 import com.paulcraciunas.game.logic.api.PuzzleInteractor
 import com.paulcraciunas.game.logic.api.board.Locus

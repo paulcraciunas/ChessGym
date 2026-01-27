@@ -2,8 +2,8 @@ package com.paulcraciunas.screens.puzzles.failed.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.paulcraciunas.domain.api.GetFailedPuzzles
-import com.paulcraciunas.domain.api.OnFailedPuzzleComplete
+import com.paulcraciunas.domain.api.puzzles.GetFailedPuzzles
+import com.paulcraciunas.domain.api.puzzles.OnFailedPuzzleComplete
 import com.paulcraciunas.game.logic.api.PuzzleInteractor
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece

@@ -1,7 +1,7 @@
 package com.paulcraciunas.screens.puzzles.failed.vm
 
-import com.paulcraciunas.domain.api.GetFailedPuzzles
-import com.paulcraciunas.domain.api.OnFailedPuzzleComplete
+import com.paulcraciunas.domain.api.puzzles.GetFailedPuzzles
+import com.paulcraciunas.domain.api.puzzles.OnFailedPuzzleComplete
 import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.loc

@@ -2,9 +2,9 @@ package com.paulcraciunas.screens.puzzles.streak.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.paulcraciunas.domain.api.GetStreakPuzzle
-import com.paulcraciunas.domain.api.OnStreakComplete
-import com.paulcraciunas.domain.api.OnStreakPuzzleComplete
+import com.paulcraciunas.domain.api.puzzles.GetStreakPuzzle
+import com.paulcraciunas.domain.api.puzzles.OnStreakComplete
+import com.paulcraciunas.domain.api.puzzles.OnStreakPuzzleComplete
 import com.paulcraciunas.game.logic.api.PuzzleInteractor
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece

@@ -1,8 +1,8 @@
 package com.paulcraciunas.screens.puzzles.streak.vm
 
-import com.paulcraciunas.domain.api.GetStreakPuzzle
-import com.paulcraciunas.domain.api.OnStreakComplete
-import com.paulcraciunas.domain.api.OnStreakPuzzleComplete
+import com.paulcraciunas.domain.api.puzzles.GetStreakPuzzle
+import com.paulcraciunas.domain.api.puzzles.OnStreakComplete
+import com.paulcraciunas.domain.api.puzzles.OnStreakPuzzleComplete
 import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File

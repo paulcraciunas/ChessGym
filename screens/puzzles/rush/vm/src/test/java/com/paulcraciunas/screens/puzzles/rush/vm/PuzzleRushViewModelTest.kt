@@ -1,9 +1,9 @@
 package com.paulcraciunas.screens.puzzles.rush.vm
 
 import com.paulcraciunas.domain.api.general.FakeCountdownTimer
-import com.paulcraciunas.domain.api.GetBufferedPuzzleSeries
-import com.paulcraciunas.domain.api.OnPuzzleRushComplete
-import com.paulcraciunas.domain.api.PuzzleRushResult
+import com.paulcraciunas.domain.api.puzzles.GetBufferedPuzzleSeries
+import com.paulcraciunas.domain.api.puzzles.OnPuzzleRushComplete
+import com.paulcraciunas.domain.api.puzzles.PuzzleRushResult
 import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.loc
