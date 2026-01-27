@@ -224,7 +224,6 @@
     <string name="boardvis_dashboard_title">Board Visualization</string>
     <string name="boardvis_dashboard_subtitle">Train your board awareness and visualization skills</string>
     <string name="boardvis_mode_start">Start visualization mode</string>
-    <string name="boardvis_coming_soon">Coming soon</string>
     <!-- endregion -->
 
     <!-- region Find the Square -->
@@ -246,6 +245,12 @@
     <!-- region Move the Piece -->
     <string name="boardvis_move_piece_title">Move the Piece</string>
     <string name="boardvis_move_piece_description">Visualize and make the correct moves on the board</string>
+    <string name="boardvis_move_piece_training_mode">Training Mode</string>
+    <string name="boardvis_move_piece_moves_remaining">Moves Remaining: %1$d</string>
+    <string name="boardvis_move_piece_current_score">Score: %1$d</string>
+    <string name="boardvis_move_piece_rules">Move your piece without landing on a square attacked by the opponent. Complete the required moves to advance to the next level!</string>
+    <string name="boardvis_move_piece_captured">Captured!</string>
+    <string name="boardvis_move_piece_high_score">High Score: %1$d</string>
     <!-- endregion -->
 
     <!-- temporary values; these will be deleted as we build features -->
