@@ -1,6 +1,6 @@
 package com.paulcraciunas.domain.impl
 
-import com.paulcraciunas.domain.api.RandomFactory
+import com.paulcraciunas.domain.api.FixedRandomFactory
 import com.paulcraciunas.puzzles.api.FakePuzzleRepository
 import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
 import kotlinx.coroutines.runBlocking
@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test
 
 internal class GetBufferedPuzzleSeriesImplTest {
     private val repository = FakePuzzleRepository.default(ratingStart = RATING_START, increment = INCREMENT)
-    private val fakeRandom = FakeRandom()
+    private val fakeRandom = FixedRandomFactory(returnValue = INCREMENT)
 
     private val underTest = GetBufferedPuzzleSeriesImpl(
         getPuzzleByRating = GetPuzzleByRatingImpl(repository, FakeAppSettingsRepository.default()),
@@ -158,12 +158,6 @@ internal class GetBufferedPuzzleSeriesImplTest {
 
         // Then
         assertEquals(5, puzzles.size)
-    }
-
-    private class FakeRandom : RandomFactory {
-        var returnValue: Int = INCREMENT
-
-        override fun nextInt(from: Int, to: Int): Int = returnValue
     }
 
     private companion object {

@@ -1,6 +1,7 @@
 package com.paulcraciunas.domain.impl
 
-import com.paulcraciunas.domain.api.RandomFactory
+import com.paulcraciunas.domain.api.FixedRandomFactory
+import com.paulcraciunas.domain.api.GetPuzzleSeries
 import com.paulcraciunas.puzzles.api.FakePuzzleRepository
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -8,7 +9,7 @@ import org.junit.jupiter.api.Test
 
 internal class GetPuzzleSeriesImplTest {
     private val repository = FakePuzzleRepository.default(ratingStart = RATING_START, increment = INCREMENT)
-    private val fakeRandom = FakeRandom()
+    private val fakeRandom = FixedRandomFactory(returnValue = INCREMENT)
 
     private val underTest = GetPuzzleSeriesImpl(repository, fakeRandom)
 
@@ -52,30 +53,26 @@ internal class GetPuzzleSeriesImplTest {
         fakeRandom.returnValue = customIncrement
         
         // When - request 3 puzzles with custom increment
-        underTest(count = 3, increment = customIncrement, from = RATING_START)
+        val puzzles = underTest(count = 3, increment = customIncrement, from = RATING_START)
 
-        // Then - verify random was called with correct increment bounds
-        assertEquals(3, fakeRandom.callCount)
-        fakeRandom.capturedBounds.forEach { (from, to) ->
-            assertEquals(1, from)
-            assertEquals(customIncrement, to)
-        }
+        // Then
+        assertEquals(3, puzzles.size)
+        assertEquals(RATING_START, puzzles[0].rating)
+        assertEquals(RATING_START + customIncrement, puzzles[1].rating)
+        assertEquals(RATING_START + 2 * customIncrement, puzzles[2].rating)
     }
 
     @Test
     fun `GIVEN default increment WHEN invoke without increment THEN uses default increment`() = runBlocking {
         // Given
-        val defaultIncrement = 60 // GetPuzzleSeries.INCREMENT
-        fakeRandom.returnValue = INCREMENT
+        fakeRandom.returnValue = GetPuzzleSeries.INCREMENT
 
         // When
-        underTest(count = 2, from = RATING_START)
+        val puzzles = underTest(count = 2, from = RATING_START)
 
-        // Then - verify random was called with default increment bounds
-        fakeRandom.capturedBounds.forEach { (from, to) ->
-            assertEquals(1, from)
-            assertEquals(defaultIncrement, to)
-        }
+        // Then - we should only have 1 puzzle; the FakePuzzleRepository only has puzzles every 50 rating points, for simplicity
+        assertEquals(1, puzzles.size)
+        assertEquals(RATING_START, puzzles[0].rating)
     }
 
     @Test
@@ -95,19 +92,6 @@ internal class GetPuzzleSeriesImplTest {
             RATING_START + INCREMENT * 3,
             RATING_START + INCREMENT * 4
         ), ratings)
-    }
-
-    private class FakeRandom : RandomFactory {
-        var returnValue: Int = INCREMENT
-        var callCount: Int = 0
-            private set
-        val capturedBounds = mutableListOf<Pair<Int, Int>>()
-
-        override fun nextInt(from: Int, to: Int): Int {
-            callCount++
-            capturedBounds.add(from to to)
-            return returnValue
-        }
     }
 
     private companion object {

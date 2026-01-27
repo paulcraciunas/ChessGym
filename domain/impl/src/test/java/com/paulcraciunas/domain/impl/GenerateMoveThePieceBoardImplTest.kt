@@ -1,6 +1,6 @@
 package com.paulcraciunas.domain.impl
 
-import com.paulcraciunas.domain.api.RandomFactory
+import com.paulcraciunas.domain.api.SequentialRandomFactory
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.impl.RealGameFactory
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -145,22 +145,6 @@ internal class GenerateMoveThePieceBoardImplTest {
         // When
         assertThrows<IllegalStateException> {
             underTest(piece = Piece.Rook, requiredMoves = 1, opposingPieceCount = 64)
-        }
-    }
-
-    /**
-     * A simple sequential random factory for testing.
-     * Returns predictable values for reproducible tests.
-     */
-    private class SequentialRandomFactory : RandomFactory {
-        private var counter = 0
-
-        override fun nextInt(from: Int, to: Int): Int {
-            val range = to - from
-            if (range <= 0) return from
-            val result = from + (counter % range)
-            counter++
-            return result
         }
     }
 }

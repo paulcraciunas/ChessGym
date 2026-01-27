@@ -2,9 +2,9 @@ package com.paulcraciunas.screens.boardvis.squares.vm
 
 import com.paulcraciunas.domain.api.CountdownTimer
 import com.paulcraciunas.domain.api.FindSquareResult
+import com.paulcraciunas.domain.api.FixedRandomFactory
 import com.paulcraciunas.domain.api.GenerateRandomLoci
 import com.paulcraciunas.domain.api.OnFindSquareComplete
-import com.paulcraciunas.domain.api.RandomFactory
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test
 internal class FindTheSquareViewModelTest {
     private val userRepository = FakeUserRepository()
     private val fakeCountdownTimer = FakeCountdownTimer()
-    private val fakeRandomFactory = FakeRandomFactory()
+    private val fakeRandomFactory = FixedRandomFactory()
     private val fakeGenerateRandomLoci = FakeGenerateRandomLoci()
     private val fakeOnFindSquareComplete = FakeOnFindSquareComplete()
 
@@ -120,7 +120,7 @@ internal class FindTheSquareViewModelTest {
         setupViewModel()
         underTest.onSideSelected(SideSelection.RANDOM)
         testDispatcher.scheduler.advanceUntilIdle()
-        fakeRandomFactory.nextValue = 1 // Will result in black orientation
+        fakeRandomFactory.returnValue = 1 // Will result in black orientation
         fakeGenerateRandomLoci.nextLocus = Locus(File.a, Rank.`1`)
 
         // When
@@ -358,11 +358,6 @@ private class FakeCountdownTimer : CountdownTimer {
         _remainingSeconds.value = seconds
         elapsedTime = ((FindTheSquareUiState.DEFAULT_DURATION_SECONDS - seconds) * 1000).toLong()
     }
-}
-
-private class FakeRandomFactory : RandomFactory {
-    var nextValue = 0
-    override fun nextInt(from: Int, to: Int): Int = nextValue
 }
 
 private class FakeGenerateRandomLoci : GenerateRandomLoci {
