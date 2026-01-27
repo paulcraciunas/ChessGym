@@ -1,6 +1,6 @@
 package com.paulcraciunas.screens.puzzles.rush.vm
 
-import com.paulcraciunas.domain.api.FakeCountdownTimer
+import com.paulcraciunas.domain.api.general.FakeCountdownTimer
 import com.paulcraciunas.domain.api.GetBufferedPuzzleSeries
 import com.paulcraciunas.domain.api.OnPuzzleRushComplete
 import com.paulcraciunas.domain.api.PuzzleRushResult

@@ -1,4 +1,4 @@
-package com.paulcraciunas.domain.impl
+package com.paulcraciunas.domain.impl.general
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

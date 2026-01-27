@@ -1,4 +1,4 @@
-package com.paulcraciunas.domain.api
+package com.paulcraciunas.domain.api.general
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow

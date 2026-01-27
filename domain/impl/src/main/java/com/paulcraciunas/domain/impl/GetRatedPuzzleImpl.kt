@@ -1,6 +1,6 @@
 package com.paulcraciunas.domain.impl
 
-import com.paulcraciunas.domain.api.CalculateElo
+import com.paulcraciunas.domain.api.general.CalculateElo
 import com.paulcraciunas.domain.api.GetPuzzleByRating
 import com.paulcraciunas.domain.api.GetRatedPuzzle
 import com.paulcraciunas.user.api.UserRepository

@@ -2,7 +2,7 @@ package com.paulcraciunas.screens.boardvis.pieces.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.paulcraciunas.domain.api.CountdownTimer
+import com.paulcraciunas.domain.api.general.CountdownTimer
 import com.paulcraciunas.domain.api.GameEngineState
 import com.paulcraciunas.domain.api.MoveResult
 import com.paulcraciunas.domain.api.MoveThePieceGameEngine

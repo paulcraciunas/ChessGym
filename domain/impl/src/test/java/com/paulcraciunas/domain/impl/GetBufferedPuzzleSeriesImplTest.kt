@@ -1,6 +1,6 @@
 package com.paulcraciunas.domain.impl
 
-import com.paulcraciunas.domain.api.FixedRandomFactory
+import com.paulcraciunas.domain.api.general.FixedRandomFactory
 import com.paulcraciunas.puzzles.api.FakePuzzleRepository
 import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
 import kotlinx.coroutines.runBlocking

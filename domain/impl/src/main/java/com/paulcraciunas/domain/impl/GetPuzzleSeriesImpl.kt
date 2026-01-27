@@ -1,7 +1,7 @@
 package com.paulcraciunas.domain.impl
 
 import com.paulcraciunas.domain.api.GetPuzzleSeries
-import com.paulcraciunas.domain.api.RandomFactory
+import com.paulcraciunas.domain.api.general.RandomFactory
 import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.puzzles.api.PuzzleRepository
 import javax.inject.Inject

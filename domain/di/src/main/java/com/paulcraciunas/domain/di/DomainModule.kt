@@ -1,7 +1,7 @@
 package com.paulcraciunas.domain.di
 
-import com.paulcraciunas.domain.api.CalculateElo
-import com.paulcraciunas.domain.api.CountdownTimer
+import com.paulcraciunas.domain.api.general.CalculateElo
+import com.paulcraciunas.domain.api.general.CountdownTimer
 import com.paulcraciunas.domain.api.GenerateMoveThePieceBoard
 import com.paulcraciunas.domain.api.GenerateRandomLoci
 import com.paulcraciunas.domain.api.MoveThePieceGameEngine
@@ -18,9 +18,9 @@ import com.paulcraciunas.domain.api.OnPuzzleComplete
 import com.paulcraciunas.domain.api.OnPuzzleRushComplete
 import com.paulcraciunas.domain.api.OnStreakComplete
 import com.paulcraciunas.domain.api.OnStreakPuzzleComplete
-import com.paulcraciunas.domain.api.RandomFactory
-import com.paulcraciunas.domain.api.Timer
-import com.paulcraciunas.domain.impl.CalculateEloImpl
+import com.paulcraciunas.domain.api.general.RandomFactory
+import com.paulcraciunas.domain.api.general.Timer
+import com.paulcraciunas.domain.impl.general.CalculateEloImpl
 import com.paulcraciunas.domain.impl.GenerateMoveThePieceBoardImpl
 import com.paulcraciunas.domain.impl.GenerateRandomLociImpl
 import com.paulcraciunas.domain.impl.MoveThePieceGameEngineImpl
@@ -37,9 +37,9 @@ import com.paulcraciunas.domain.impl.OnPuzzleCompleteImpl
 import com.paulcraciunas.domain.impl.OnPuzzleRushCompleteImpl
 import com.paulcraciunas.domain.impl.OnStreakCompleteImpl
 import com.paulcraciunas.domain.impl.OnStreakPuzzleCompleteImpl
-import com.paulcraciunas.domain.impl.RealCountdownTimer
-import com.paulcraciunas.domain.impl.SimpleTimer
-import com.paulcraciunas.domain.impl.TLRandomFactory
+import com.paulcraciunas.domain.impl.general.RealCountdownTimer
+import com.paulcraciunas.domain.impl.general.SimpleTimer
+import com.paulcraciunas.domain.impl.general.TLRandomFactory
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

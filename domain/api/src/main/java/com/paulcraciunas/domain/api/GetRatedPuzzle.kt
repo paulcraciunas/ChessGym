@@ -1,5 +1,6 @@
 package com.paulcraciunas.domain.api
 
+import com.paulcraciunas.domain.api.general.EloResult
 import com.paulcraciunas.game.logic.api.Puzzle
 
 interface GetRatedPuzzle {

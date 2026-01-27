@@ -1,7 +1,7 @@
 package com.paulcraciunas.domain.impl
 
 import com.paulcraciunas.domain.api.GenerateRandomLoci
-import com.paulcraciunas.domain.api.RandomFactory
+import com.paulcraciunas.domain.api.general.RandomFactory
 import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Rank

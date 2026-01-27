@@ -2,7 +2,7 @@ package com.paulcraciunas.domain.impl
 
 import com.paulcraciunas.domain.api.GetBufferedPuzzleSeries
 import com.paulcraciunas.domain.api.GetPuzzleByRating
-import com.paulcraciunas.domain.api.RandomFactory
+import com.paulcraciunas.domain.api.general.RandomFactory
 import com.paulcraciunas.game.logic.api.Puzzle
 import java.util.ArrayDeque
 import java.util.Deque

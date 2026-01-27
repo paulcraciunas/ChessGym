@@ -1,4 +1,4 @@
-package com.paulcraciunas.domain.api
+package com.paulcraciunas.domain.api.general
 
 /**
  * Use case for calculating ELO rating changes based on the standard ELO algorithm.

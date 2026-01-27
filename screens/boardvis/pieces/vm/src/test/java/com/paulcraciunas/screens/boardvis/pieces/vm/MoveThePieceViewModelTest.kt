@@ -1,6 +1,6 @@
 package com.paulcraciunas.screens.boardvis.pieces.vm
 
-import com.paulcraciunas.domain.api.FakeCountdownTimer
+import com.paulcraciunas.domain.api.general.FakeCountdownTimer
 import com.paulcraciunas.domain.api.GameEngineState
 import com.paulcraciunas.domain.api.MoveResult
 import com.paulcraciunas.domain.api.MoveThePieceGameEngine

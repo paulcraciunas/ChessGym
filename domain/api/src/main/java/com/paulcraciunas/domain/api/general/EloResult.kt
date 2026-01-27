@@ -1,4 +1,4 @@
-package com.paulcraciunas.domain.api
+package com.paulcraciunas.domain.api.general
 
 data class EloResult(
     val potentialGain: Int,

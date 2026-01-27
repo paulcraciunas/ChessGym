@@ -1,6 +1,6 @@
 package com.paulcraciunas.domain.impl
 
-import com.paulcraciunas.domain.api.RandomFactory
+import com.paulcraciunas.domain.api.general.RandomFactory
 import com.paulcraciunas.game.logic.api.board.loc
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

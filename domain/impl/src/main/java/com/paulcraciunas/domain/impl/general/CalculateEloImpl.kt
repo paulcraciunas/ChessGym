@@ -1,7 +1,7 @@
-package com.paulcraciunas.domain.impl
+package com.paulcraciunas.domain.impl.general
 
-import com.paulcraciunas.domain.api.EloResult
-import com.paulcraciunas.domain.api.CalculateElo
+import com.paulcraciunas.domain.api.general.CalculateElo
+import com.paulcraciunas.domain.api.general.EloResult
 import javax.inject.Inject
 import kotlin.math.pow
 import kotlin.math.round

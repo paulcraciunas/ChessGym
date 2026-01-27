@@ -2,7 +2,7 @@ package com.paulcraciunas.screens.puzzles.rush.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.paulcraciunas.domain.api.CountdownTimer
+import com.paulcraciunas.domain.api.general.CountdownTimer
 import com.paulcraciunas.domain.api.GetBufferedPuzzleSeries
 import com.paulcraciunas.domain.api.OnPuzzleRushComplete
 import com.paulcraciunas.domain.api.PuzzleRushResult

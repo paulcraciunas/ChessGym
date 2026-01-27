@@ -2,7 +2,7 @@ package com.paulcraciunas.domain.impl
 
 import com.paulcraciunas.domain.api.GenerateMoveThePieceBoard
 import com.paulcraciunas.domain.api.MoveThePieceBoardData
-import com.paulcraciunas.domain.api.RandomFactory
+import com.paulcraciunas.domain.api.general.RandomFactory
 import com.paulcraciunas.game.logic.api.GameFactory
 import com.paulcraciunas.game.logic.api.MoveValidator
 import com.paulcraciunas.game.logic.api.Side

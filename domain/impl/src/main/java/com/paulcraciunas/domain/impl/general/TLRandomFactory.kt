@@ -1,6 +1,6 @@
-package com.paulcraciunas.domain.impl
+package com.paulcraciunas.domain.impl.general
 
-import com.paulcraciunas.domain.api.RandomFactory
+import com.paulcraciunas.domain.api.general.RandomFactory
 import java.util.concurrent.ThreadLocalRandom
 import javax.inject.Inject
 

@@ -1,6 +1,6 @@
-package com.paulcraciunas.domain.impl
+package com.paulcraciunas.domain.impl.general
 
-import com.paulcraciunas.domain.api.Timer
+import com.paulcraciunas.domain.api.general.Timer
 import java.time.Duration
 import java.time.LocalDateTime
 import javax.inject.Inject

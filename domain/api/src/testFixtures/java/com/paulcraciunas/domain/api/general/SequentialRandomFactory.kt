@@ -1,4 +1,4 @@
-package com.paulcraciunas.domain.api
+package com.paulcraciunas.domain.api.general
 
 /**
  * A simple sequential random factory for testing.

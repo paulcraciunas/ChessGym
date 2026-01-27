@@ -1,6 +1,6 @@
-package com.paulcraciunas.domain.impl
+package com.paulcraciunas.domain.impl.general
 
-import com.paulcraciunas.domain.api.CountdownTimer
+import com.paulcraciunas.domain.api.general.CountdownTimer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
