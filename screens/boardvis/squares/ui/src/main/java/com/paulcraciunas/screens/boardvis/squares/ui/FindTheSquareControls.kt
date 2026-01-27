@@ -14,10 +14,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.boardvis.squares.vm.SideSelection
+import com.paulcraciunas.screens.common.controls.PlayButton
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.common.theme.GlobalTokens
 
@@ -75,13 +74,7 @@ internal fun FindTheSquareControls(
                 )
             }
 
-            FilledTonalButton(onClick = onPlayClicked) {
-                Text(
-                    text = stringResource(R.string.boardvis_play),
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(vertical = 4.dp)
-                )
-            }
+            PlayButton(onClick = onPlayClicked)
         }
     }
 }
