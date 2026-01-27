@@ -23,6 +23,10 @@ import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.AppBar
 import com.paulcraciunas.screens.common.AppBarAlignment
 import com.paulcraciunas.screens.common.LoadingContent
+import com.paulcraciunas.screens.common.controls.FailedPuzzlesCard
+import com.paulcraciunas.screens.common.controls.PuzzleRushCard
+import com.paulcraciunas.screens.common.controls.PuzzleStreakCard
+import com.paulcraciunas.screens.common.controls.RatedPuzzleCard
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.puzzles.dashboard.vm.PuzzleDashboardUiState
 import com.paulcraciunas.screens.puzzles.dashboard.vm.PuzzleMode

@@ -150,3 +150,80 @@ private fun MoveThePieceCardPreview() {
         )
     }
 }
+
+@Preview("RatedPuzzleCard")
+@Preview("RatedPuzzleCard (dark)", uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun RatedPuzzleCardPreview() {
+    ChessGymTheme {
+        RatedPuzzleCard(
+            userRating = 1547,
+            onClick = {},
+            modifier = Modifier.padding(16.dp)
+        )
+    }
+}
+
+
+@Preview("PuzzleRushCard")
+@Preview("PuzzleRushCard (dark)", uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun PuzzleRushCardPreview() {
+    ChessGymTheme {
+        PuzzleRushCard(
+            onClick = {},
+            modifier = Modifier.padding(16.dp)
+        )
+    }
+}
+
+@Preview("PuzzleRushCard new streak")
+@Preview("PuzzleRushCard new streak (dark)", uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun NewPuzzleStreakCardPreview() {
+    ChessGymTheme {
+        PuzzleStreakCard(
+            currentStreak = 0,
+            onClick = {},
+            modifier = Modifier.padding(16.dp)
+        )
+    }
+}
+
+@Preview("PuzzleRushCard continue streak")
+@Preview("PuzzleRushCard continue streak (dark)", uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun ContinuePuzzleStreakCardPreview() {
+    ChessGymTheme {
+        PuzzleStreakCard(
+            currentStreak = 42,
+            onClick = {},
+            modifier = Modifier.padding(16.dp)
+        )
+    }
+}
+
+@Preview("FailedPuzzlesCard - With Failed Puzzles")
+@Preview("FailedPuzzlesCard - With Failed Puzzles (dark)", uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun FailedPuzzlesCardWithFailuresPreview() {
+    ChessGymTheme {
+        FailedPuzzlesCard(
+            failedCount = 12,
+            onClick = {},
+            modifier = Modifier.padding(16.dp)
+        )
+    }
+}
+
+@Preview("FailedPuzzlesCard - No Failed Puzzles")
+@Composable
+private fun FailedPuzzlesCardEmptyPreview() {
+    ChessGymTheme {
+        FailedPuzzlesCard(
+            failedCount = 0,
+            onClick = {},
+            modifier = Modifier.padding(16.dp)
+        )
+    }
+}
