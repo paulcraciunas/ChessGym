@@ -1,6 +1,6 @@
-package com.paulcraciunas.domain.impl
+package com.paulcraciunas.domain.impl.boardvis
 
-import com.paulcraciunas.domain.api.MoveThePieceResult
+import com.paulcraciunas.domain.api.boardvis.FindSquareResult
 import com.paulcraciunas.user.api.FakeUserRepository
 import com.paulcraciunas.user.api.User
 import com.paulcraciunas.user.api.UserDefaults
@@ -10,20 +10,19 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
-internal class OnMoveThePieceCompleteImplTest {
+internal class OnFindSquareCompleteImplTest {
     private val fakeUserRepository = FakeUserRepository()
-    private val underTest = OnMoveThePieceCompleteImpl(fakeUserRepository)
+    private val underTest = OnFindSquareCompleteImpl(fakeUserRepository)
 
     @Test
-    fun `GIVEN non-training mode with score above high score WHEN invoke THEN updates high score`() = runTest {
+    fun `GIVEN score above high score WHEN invoke THEN updates high score`() = runTest {
         // Given
         val currentUser = UserDefaults.signedInUser()
         fakeUserRepository.update(currentUser)
-        val newHighScore = UserDefaults.HIGH_SCORE_MOVE_PIECE + 10
-        val result = MoveThePieceResult(
+        val newHighScore = UserDefaults.HIGH_SCORE_FIND_SQUARE + 10
+        val result = FindSquareResult(
             score = newHighScore,
-            timeSpentMillis = 60_000L,
-            isTrainingMode = false
+            timeSpentMillis = 30_000L
         )
 
         // When
@@ -31,41 +30,19 @@ internal class OnMoveThePieceCompleteImplTest {
 
         // Then
         fakeUserRepository.get().apply {
-            assertEquals(newHighScore, highScores.moveThePiece)
+            assertEquals(newHighScore, highScores.findTheSquare)
         }
     }
 
     @Test
-    fun `GIVEN training mode with score above high score WHEN invoke THEN does not update high score`() = runTest {
+    fun `GIVEN score below high score WHEN invoke THEN does not update high score`() = runTest {
         // Given
         val currentUser = UserDefaults.signedInUser()
         fakeUserRepository.update(currentUser)
-        val newHighScore = UserDefaults.HIGH_SCORE_MOVE_PIECE + 10
-        val result = MoveThePieceResult(
-            score = newHighScore,
-            timeSpentMillis = 60_000L,
-            isTrainingMode = true
-        )
-
-        // When
-        underTest(result)
-
-        // Then
-        fakeUserRepository.get().apply {
-            assertEquals(UserDefaults.HIGH_SCORE_MOVE_PIECE, highScores.moveThePiece)
-        }
-    }
-
-    @Test
-    fun `GIVEN non-training mode with score below high score WHEN invoke THEN does not update high score`() = runTest {
-        // Given
-        val currentUser = UserDefaults.signedInUser()
-        fakeUserRepository.update(currentUser)
-        val belowHighScore = UserDefaults.HIGH_SCORE_MOVE_PIECE - 5
-        val result = MoveThePieceResult(
+        val belowHighScore = UserDefaults.HIGH_SCORE_FIND_SQUARE - 5
+        val result = FindSquareResult(
             score = belowHighScore,
-            timeSpentMillis = 60_000L,
-            isTrainingMode = false
+            timeSpentMillis = 30_000L
         )
 
         // When
@@ -73,7 +50,26 @@ internal class OnMoveThePieceCompleteImplTest {
 
         // Then
         fakeUserRepository.get().apply {
-            assertEquals(UserDefaults.HIGH_SCORE_MOVE_PIECE, highScores.moveThePiece)
+            assertEquals(UserDefaults.HIGH_SCORE_FIND_SQUARE, highScores.findTheSquare)
+        }
+    }
+
+    @Test
+    fun `GIVEN score equal to high score WHEN invoke THEN does not update high score`() = runTest {
+        // Given
+        val currentUser = UserDefaults.signedInUser()
+        fakeUserRepository.update(currentUser)
+        val result = FindSquareResult(
+            score = UserDefaults.HIGH_SCORE_FIND_SQUARE,
+            timeSpentMillis = 30_000L
+        )
+
+        // When
+        underTest(result)
+
+        // Then
+        fakeUserRepository.get().apply {
+            assertEquals(UserDefaults.HIGH_SCORE_FIND_SQUARE, highScores.findTheSquare)
         }
     }
 
@@ -82,36 +78,9 @@ internal class OnMoveThePieceCompleteImplTest {
         // Given
         val currentUser = UserDefaults.signedInUser()
         fakeUserRepository.update(currentUser)
-        val result = MoveThePieceResult(
+        val result = FindSquareResult(
             score = 15,
-            timeSpentMillis = 60_000L,
-            isTrainingMode = false
-        )
-
-        // When
-        underTest(result)
-
-        // Then
-        fakeUserRepository.get().apply {
-            assertTrue(history.isNotEmpty())
-            val todayHistory = history.find { it.timestamp == LocalDate.now() }
-            assertTrue(todayHistory != null)
-
-            val historyData = todayHistory!!.data as User.HistoryItem.HistoryItemData.BoardVisualizationData
-            assertEquals(1, historyData.sessionsCompleted)
-            assertEquals(result.timeSpentMillis, historyData.timeSpent)
-        }
-    }
-
-    @Test
-    fun `GIVEN training mode result WHEN invoke THEN still logs history entry`() = runTest {
-        // Given
-        val currentUser = UserDefaults.signedInUser()
-        fakeUserRepository.update(currentUser)
-        val result = MoveThePieceResult(
-            score = 15,
-            timeSpentMillis = 45_000L,
-            isTrainingMode = true
+            timeSpentMillis = 30_000L
         )
 
         // When
@@ -135,15 +104,13 @@ internal class OnMoveThePieceCompleteImplTest {
         val currentUser = UserDefaults.signedInUser()
         fakeUserRepository.update(currentUser)
 
-        val firstResult = MoveThePieceResult(
+        val firstResult = FindSquareResult(
             score = 10,
-            timeSpentMillis = 30_000L,
-            isTrainingMode = false
+            timeSpentMillis = 30_000L
         )
-        val secondResult = MoveThePieceResult(
+        val secondResult = FindSquareResult(
             score = 20,
-            timeSpentMillis = 30_000L,
-            isTrainingMode = false
+            timeSpentMillis = 30_000L
         )
 
         // When
@@ -156,20 +123,19 @@ internal class OnMoveThePieceCompleteImplTest {
             assertEquals(1, todayHistory.size) // Should be merged
 
             val historyData = todayHistory.first().data as User.HistoryItem.HistoryItemData.BoardVisualizationData
-            assertEquals(2, historyData.sessionsCompleted)
-            assertEquals(60_000L, historyData.timeSpent)
+            assertEquals(2, historyData.sessionsCompleted) // 1 + 1
+            assertEquals(60_000L, historyData.timeSpent) // 30_000 + 30_000
         }
     }
 
     @Test
-    fun `GIVEN user with zero high score WHEN invoke non-training mode THEN updates high score`() = runTest {
+    fun `GIVEN user with zero high score WHEN invoke with positive score THEN updates high score`() = runTest {
         // Given
         val currentUser = User()
         fakeUserRepository.update(currentUser)
-        val result = MoveThePieceResult(
+        val result = FindSquareResult(
             score = 5,
-            timeSpentMillis = 60_000L,
-            isTrainingMode = false
+            timeSpentMillis = 30_000L
         )
 
         // When
@@ -177,7 +143,7 @@ internal class OnMoveThePieceCompleteImplTest {
 
         // Then
         fakeUserRepository.get().apply {
-            assertEquals(5, highScores.moveThePiece)
+            assertEquals(5, highScores.findTheSquare)
         }
     }
 
@@ -186,10 +152,9 @@ internal class OnMoveThePieceCompleteImplTest {
         // Given
         val currentUser = UserDefaults.signedInUser()
         fakeUserRepository.update(currentUser)
-        val result = MoveThePieceResult(
+        val result = FindSquareResult(
             score = 100,
-            timeSpentMillis = 60_000L,
-            isTrainingMode = false
+            timeSpentMillis = 30_000L
         )
 
         // When
@@ -201,7 +166,6 @@ internal class OnMoveThePieceCompleteImplTest {
             assertEquals(UserDefaults.HIGH_SCORE_RUSH, highScores.puzzleRush)
             assertEquals(UserDefaults.HIGH_SCORE_STREAK, highScores.puzzleStreak)
             assertEquals(UserDefaults.HIGH_SCORE_BOARD, highScores.boardVisualization)
-            assertEquals(UserDefaults.HIGH_SCORE_FIND_SQUARE, highScores.findTheSquare)
             assertEquals(UserDefaults.RATING_BLIND_MODE, highScores.blindMode)
         }
     }

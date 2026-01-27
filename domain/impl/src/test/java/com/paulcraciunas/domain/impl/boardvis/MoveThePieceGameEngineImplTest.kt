@@ -1,8 +1,8 @@
-package com.paulcraciunas.domain.impl
+package com.paulcraciunas.domain.impl.boardvis
 
-import com.paulcraciunas.domain.api.GenerateMoveThePieceBoard
-import com.paulcraciunas.domain.api.MoveResult
-import com.paulcraciunas.domain.api.MoveThePieceBoardData
+import com.paulcraciunas.domain.api.boardvis.GenerateMoveThePieceBoard
+import com.paulcraciunas.domain.api.boardvis.MoveResult
+import com.paulcraciunas.domain.api.boardvis.MoveThePieceBoardData
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus

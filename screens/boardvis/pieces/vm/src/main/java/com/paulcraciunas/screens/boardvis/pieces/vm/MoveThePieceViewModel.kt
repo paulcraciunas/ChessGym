@@ -3,11 +3,11 @@ package com.paulcraciunas.screens.boardvis.pieces.vm
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.paulcraciunas.domain.api.general.CountdownTimer
-import com.paulcraciunas.domain.api.GameEngineState
-import com.paulcraciunas.domain.api.MoveResult
-import com.paulcraciunas.domain.api.MoveThePieceGameEngine
-import com.paulcraciunas.domain.api.MoveThePieceResult
-import com.paulcraciunas.domain.api.OnMoveThePieceComplete
+import com.paulcraciunas.domain.api.boardvis.GameEngineState
+import com.paulcraciunas.domain.api.boardvis.MoveResult
+import com.paulcraciunas.domain.api.boardvis.MoveThePieceGameEngine
+import com.paulcraciunas.domain.api.boardvis.MoveThePieceResult
+import com.paulcraciunas.domain.api.boardvis.OnMoveThePieceComplete
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.user.api.UserRepository

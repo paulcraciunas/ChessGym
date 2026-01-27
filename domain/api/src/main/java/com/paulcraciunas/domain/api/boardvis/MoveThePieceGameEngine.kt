@@ -1,4 +1,4 @@
-package com.paulcraciunas.domain.api
+package com.paulcraciunas.domain.api.boardvis
 
 import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus

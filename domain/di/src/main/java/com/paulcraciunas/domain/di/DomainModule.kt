@@ -2,9 +2,9 @@ package com.paulcraciunas.domain.di
 
 import com.paulcraciunas.domain.api.general.CalculateElo
 import com.paulcraciunas.domain.api.general.CountdownTimer
-import com.paulcraciunas.domain.api.GenerateMoveThePieceBoard
+import com.paulcraciunas.domain.api.boardvis.GenerateMoveThePieceBoard
 import com.paulcraciunas.domain.api.GenerateRandomLoci
-import com.paulcraciunas.domain.api.MoveThePieceGameEngine
+import com.paulcraciunas.domain.api.boardvis.MoveThePieceGameEngine
 import com.paulcraciunas.domain.api.puzzles.GetBufferedPuzzleSeries
 import com.paulcraciunas.domain.api.puzzles.GetFailedPuzzles
 import com.paulcraciunas.domain.api.puzzles.GetPuzzleByRating
@@ -12,8 +12,8 @@ import com.paulcraciunas.domain.api.puzzles.GetPuzzleSeries
 import com.paulcraciunas.domain.api.puzzles.GetRatedPuzzle
 import com.paulcraciunas.domain.api.puzzles.GetStreakPuzzle
 import com.paulcraciunas.domain.api.puzzles.OnFailedPuzzleComplete
-import com.paulcraciunas.domain.api.OnFindSquareComplete
-import com.paulcraciunas.domain.api.OnMoveThePieceComplete
+import com.paulcraciunas.domain.api.boardvis.OnFindSquareComplete
+import com.paulcraciunas.domain.api.boardvis.OnMoveThePieceComplete
 import com.paulcraciunas.domain.api.puzzles.OnPuzzleComplete
 import com.paulcraciunas.domain.api.puzzles.OnPuzzleRushComplete
 import com.paulcraciunas.domain.api.puzzles.OnStreakComplete
@@ -21,9 +21,9 @@ import com.paulcraciunas.domain.api.puzzles.OnStreakPuzzleComplete
 import com.paulcraciunas.domain.api.general.RandomFactory
 import com.paulcraciunas.domain.api.general.Timer
 import com.paulcraciunas.domain.impl.general.CalculateEloImpl
-import com.paulcraciunas.domain.impl.GenerateMoveThePieceBoardImpl
+import com.paulcraciunas.domain.impl.boardvis.GenerateMoveThePieceBoardImpl
 import com.paulcraciunas.domain.impl.GenerateRandomLociImpl
-import com.paulcraciunas.domain.impl.MoveThePieceGameEngineImpl
+import com.paulcraciunas.domain.impl.boardvis.MoveThePieceGameEngineImpl
 import com.paulcraciunas.domain.impl.puzzles.GetBufferedPuzzleSeriesImpl
 import com.paulcraciunas.domain.impl.puzzles.GetFailedPuzzlesImpl
 import com.paulcraciunas.domain.impl.puzzles.GetPuzzleByRatingImpl
@@ -31,8 +31,8 @@ import com.paulcraciunas.domain.impl.puzzles.GetPuzzleSeriesImpl
 import com.paulcraciunas.domain.impl.puzzles.GetRatedPuzzleImpl
 import com.paulcraciunas.domain.impl.puzzles.GetStreakPuzzleImpl
 import com.paulcraciunas.domain.impl.puzzles.OnFailedPuzzleCompleteImpl
-import com.paulcraciunas.domain.impl.OnFindSquareCompleteImpl
-import com.paulcraciunas.domain.impl.OnMoveThePieceCompleteImpl
+import com.paulcraciunas.domain.impl.boardvis.OnFindSquareCompleteImpl
+import com.paulcraciunas.domain.impl.boardvis.OnMoveThePieceCompleteImpl
 import com.paulcraciunas.domain.impl.puzzles.OnPuzzleCompleteImpl
 import com.paulcraciunas.domain.impl.puzzles.OnPuzzleRushCompleteImpl
 import com.paulcraciunas.domain.impl.puzzles.OnStreakCompleteImpl

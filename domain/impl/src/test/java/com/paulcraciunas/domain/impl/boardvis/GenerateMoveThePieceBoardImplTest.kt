@@ -1,6 +1,7 @@
-package com.paulcraciunas.domain.impl
+package com.paulcraciunas.domain.impl.boardvis
 
 import com.paulcraciunas.domain.api.general.SequentialRandomFactory
+import com.paulcraciunas.domain.impl.GenerateRandomLociImpl
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.impl.RealGameFactory
 import org.junit.jupiter.api.Assertions.assertEquals

@@ -3,9 +3,9 @@ package com.paulcraciunas.screens.boardvis.squares.vm
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.paulcraciunas.domain.api.general.CountdownTimer
-import com.paulcraciunas.domain.api.FindSquareResult
+import com.paulcraciunas.domain.api.boardvis.FindSquareResult
 import com.paulcraciunas.domain.api.GenerateRandomLoci
-import com.paulcraciunas.domain.api.OnFindSquareComplete
+import com.paulcraciunas.domain.api.boardvis.OnFindSquareComplete
 import com.paulcraciunas.domain.api.general.RandomFactory
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus

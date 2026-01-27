@@ -1,10 +1,10 @@
 package com.paulcraciunas.screens.boardvis.squares.vm
 
 import com.paulcraciunas.domain.api.general.FakeCountdownTimer
-import com.paulcraciunas.domain.api.FindSquareResult
+import com.paulcraciunas.domain.api.boardvis.FindSquareResult
 import com.paulcraciunas.domain.api.general.FixedRandomFactory
 import com.paulcraciunas.domain.api.GenerateRandomLoci
-import com.paulcraciunas.domain.api.OnFindSquareComplete
+import com.paulcraciunas.domain.api.boardvis.OnFindSquareComplete
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus

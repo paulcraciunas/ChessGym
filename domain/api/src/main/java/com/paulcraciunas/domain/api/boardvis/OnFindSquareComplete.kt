@@ -1,4 +1,4 @@
-package com.paulcraciunas.domain.api
+package com.paulcraciunas.domain.api.boardvis
 
 /**
  * Use case for handling completion of a "Find the Square" game session.

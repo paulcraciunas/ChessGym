@@ -1,9 +1,9 @@
-package com.paulcraciunas.domain.impl
+package com.paulcraciunas.domain.impl.boardvis
 
-import com.paulcraciunas.domain.api.GameEngineState
-import com.paulcraciunas.domain.api.GenerateMoveThePieceBoard
-import com.paulcraciunas.domain.api.MoveResult
-import com.paulcraciunas.domain.api.MoveThePieceGameEngine
+import com.paulcraciunas.domain.api.boardvis.GameEngineState
+import com.paulcraciunas.domain.api.boardvis.GenerateMoveThePieceBoard
+import com.paulcraciunas.domain.api.boardvis.MoveResult
+import com.paulcraciunas.domain.api.boardvis.MoveThePieceGameEngine
 import com.paulcraciunas.game.logic.api.GameFactory
 import com.paulcraciunas.game.logic.api.MoveValidator
 import com.paulcraciunas.game.logic.api.Side

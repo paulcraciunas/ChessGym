@@ -1,7 +1,7 @@
-package com.paulcraciunas.domain.impl
+package com.paulcraciunas.domain.impl.boardvis
 
-import com.paulcraciunas.domain.api.MoveThePieceResult
-import com.paulcraciunas.domain.api.OnMoveThePieceComplete
+import com.paulcraciunas.domain.api.boardvis.MoveThePieceResult
+import com.paulcraciunas.domain.api.boardvis.OnMoveThePieceComplete
 import com.paulcraciunas.user.api.User
 import com.paulcraciunas.user.api.UserRepository
 import java.time.LocalDate

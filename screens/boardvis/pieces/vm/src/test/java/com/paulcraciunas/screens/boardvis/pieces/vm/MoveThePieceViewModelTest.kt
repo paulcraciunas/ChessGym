@@ -1,11 +1,11 @@
 package com.paulcraciunas.screens.boardvis.pieces.vm
 
 import com.paulcraciunas.domain.api.general.FakeCountdownTimer
-import com.paulcraciunas.domain.api.GameEngineState
-import com.paulcraciunas.domain.api.MoveResult
-import com.paulcraciunas.domain.api.MoveThePieceGameEngine
-import com.paulcraciunas.domain.api.MoveThePieceResult
-import com.paulcraciunas.domain.api.OnMoveThePieceComplete
+import com.paulcraciunas.domain.api.boardvis.GameEngineState
+import com.paulcraciunas.domain.api.boardvis.MoveResult
+import com.paulcraciunas.domain.api.boardvis.MoveThePieceGameEngine
+import com.paulcraciunas.domain.api.boardvis.MoveThePieceResult
+import com.paulcraciunas.domain.api.boardvis.OnMoveThePieceComplete
 import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus

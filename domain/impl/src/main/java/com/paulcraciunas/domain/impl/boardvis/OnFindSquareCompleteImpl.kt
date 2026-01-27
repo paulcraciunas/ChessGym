@@ -1,7 +1,7 @@
-package com.paulcraciunas.domain.impl
+package com.paulcraciunas.domain.impl.boardvis
 
-import com.paulcraciunas.domain.api.FindSquareResult
-import com.paulcraciunas.domain.api.OnFindSquareComplete
+import com.paulcraciunas.domain.api.boardvis.FindSquareResult
+import com.paulcraciunas.domain.api.boardvis.OnFindSquareComplete
 import com.paulcraciunas.user.api.User
 import com.paulcraciunas.user.api.UserRepository
 import java.time.LocalDate
