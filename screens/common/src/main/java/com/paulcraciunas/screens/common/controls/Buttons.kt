@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -21,7 +22,7 @@ import com.paulcraciunas.global.resources.R
 fun PlayButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    @StringRes text: Int = R.string.boardvis_play
+    @StringRes text: Int = R.string.boardvis_play,
 ) {
     FilledTonalButton(
         onClick = onClick,
@@ -29,6 +30,30 @@ fun PlayButton(
     ) {
         Icon(
             imageVector = Icons.Filled.PlayArrow,
+            contentDescription = null,
+            modifier = Modifier.size(18.dp)
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            text = stringResource(text),
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(vertical = 4.dp)
+        )
+    }
+}
+
+@Composable
+fun RefreshButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    @StringRes text: Int = R.string.boardvis_play_again,
+) {
+    FilledTonalButton(
+        onClick = onClick,
+        modifier = modifier
+    ) {
+        Icon(
+            imageVector = Icons.Filled.Refresh,
             contentDescription = null,
             modifier = Modifier.size(18.dp)
         )
