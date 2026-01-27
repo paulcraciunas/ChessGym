@@ -20,6 +20,7 @@ object UserDefaults {
             puzzleStreak = HIGH_SCORE_STREAK,
             boardVisualization = HIGH_SCORE_BOARD,
             findTheSquare = HIGH_SCORE_FIND_SQUARE,
+            moveThePiece = HIGH_SCORE_MOVE_PIECE,
             blindMode = RATING_BLIND_MODE
         ),
         statistics = User.Statistics(
@@ -47,6 +48,7 @@ object UserDefaults {
     const val HIGH_SCORE_STREAK = 42
     const val HIGH_SCORE_BOARD = 92
     const val HIGH_SCORE_FIND_SQUARE = 25
+    const val HIGH_SCORE_MOVE_PIECE = 15
     const val STATISTICS_PLAYED = 5
     const val STATISTICS_SOLVED = 2
     const val STATISTICS_TIME_PLAYED = 1_000L
