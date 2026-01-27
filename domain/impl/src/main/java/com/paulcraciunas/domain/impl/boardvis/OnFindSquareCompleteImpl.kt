@@ -22,9 +22,11 @@ class OnFindSquareCompleteImpl @Inject constructor(
 
         // Update high score if this is a new personal best
         val newHighScore = maxOf(currentUser.highScores.findTheSquare, result.score)
+        val newTimeSpent = currentUser.statistics.totalTimeSpent + result.timeSpentMillis
 
         // Create updated user with potentially new high score
         val updatedUser = currentUser.copy(
+            statistics = currentUser.statistics.copy(totalTimeSpent = newTimeSpent),
             highScores = currentUser.highScores.copy(findTheSquare = newHighScore)
         )
 

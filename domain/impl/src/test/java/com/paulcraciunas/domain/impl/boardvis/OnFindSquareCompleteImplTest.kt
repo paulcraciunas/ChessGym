@@ -74,6 +74,48 @@ internal class OnFindSquareCompleteImplTest {
     }
 
     @Test
+    fun `GIVEN score below high score WHEN invoke THEN update to total time spent`() = runTest {
+        // Given
+        val timeSpent = 30_000L
+        val currentUser = UserDefaults.signedInUser()
+        fakeUserRepository.update(currentUser)
+        val belowHighScore = UserDefaults.HIGH_SCORE_FIND_SQUARE - 5
+        val result = FindSquareResult(
+            score = belowHighScore,
+            timeSpentMillis = timeSpent
+        )
+
+        // When
+        underTest(result)
+
+        // Then
+        fakeUserRepository.get().apply {
+            assertEquals(UserDefaults.STATISTICS_TIME_PLAYED + timeSpent, statistics.totalTimeSpent)
+        }
+    }
+
+    @Test
+    fun `GIVEN score above high score WHEN invoke THEN update to total time spent`() = runTest {
+        // Given
+        val timeSpent = 4_200L
+        val currentUser = UserDefaults.signedInUser()
+        fakeUserRepository.update(currentUser)
+        val belowHighScore = UserDefaults.HIGH_SCORE_FIND_SQUARE + 5
+        val result = FindSquareResult(
+            score = belowHighScore,
+            timeSpentMillis = timeSpent
+        )
+
+        // When
+        underTest(result)
+
+        // Then
+        fakeUserRepository.get().apply {
+            assertEquals(UserDefaults.STATISTICS_TIME_PLAYED + timeSpent, statistics.totalTimeSpent)
+        }
+    }
+
+    @Test
     fun `GIVEN result WHEN invoke THEN logs history entry`() = runTest {
         // Given
         val currentUser = UserDefaults.signedInUser()
