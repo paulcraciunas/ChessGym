@@ -64,19 +64,15 @@ fun FindTheSquareScreen(
         },
         modifier = modifier
     ) { innerPadding ->
-        Column(
+        FindTheSquareScreenContents(
+            state = uiState,
+            showBorders = showBorders,
+            interactions = interactions,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
                 .background(MaterialTheme.colorScheme.background),
-        ) {
-            FindTheSquareScreenContents(
-                state = uiState,
-                showBorders = showBorders,
-                interactions = interactions,
-                modifier = Modifier.fillMaxSize()
-            )
-        }
+        )
     }
 }
 
