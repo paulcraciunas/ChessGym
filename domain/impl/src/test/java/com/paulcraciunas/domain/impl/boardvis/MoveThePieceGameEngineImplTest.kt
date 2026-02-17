@@ -98,8 +98,9 @@ internal class MoveThePieceGameEngineImplTest {
 
     @Test
     fun `GIVEN move to attacked square WHEN makeMove THEN returns Captured`() {
-        // Given - place a black rook that attacks d1
+        // Given - white rook at d4, black rook at d1 attacks along d-file
         val board = Board().apply {
+            add(Piece.Rook, side = Side.WHITE, playerLocus)
             add(Piece.Rook, side = Side.BLACK, "d1".loc())
         }
         val generateBoard = FakeGenerateMoveThePieceBoard(MoveThePieceBoardData(playerLocus, board))
@@ -178,6 +179,28 @@ internal class MoveThePieceGameEngineImplTest {
         assertTrue(result is MoveResult.LevelComplete)
         val state = (result as MoveResult.LevelComplete).newState
         assertEquals(Piece.Bishop, state.playerPiece) // Same piece in training mode
+    }
+
+    @Test
+    fun `GIVEN move unblocks attack line WHEN makeMove THEN returns Captured`() {
+        // Given - Black rook at a4, player Rook at d4.
+        // d4 blocks the a4 rook from reaching f4. Moving to f4 unblocks the line.
+        val board = Board().apply {
+            add(Piece.Rook, side = Side.BLACK, "a4".loc())
+            add(Piece.Rook, side = Side.WHITE, playerLocus)
+        }
+        val generateBoard = FakeGenerateMoveThePieceBoard(MoveThePieceBoardData(playerLocus, board))
+        val underTest = MoveThePieceGameEngineImpl(generateBoard, gameFactory)
+        underTest.startGame(Piece.Rook, 2, 1, true)
+
+        // When - move to f4 (unblocks rank 4 for the black rook)
+        val result = underTest.makeMove("f4".loc())
+
+        // Then - f4 is attacked along rank 4 after the player vacates d4
+        assertTrue(result is MoveResult.Captured)
+        val state = underTest.getState()
+        assertTrue(state.isGameOver)
+        assertTrue(state.wasCaptured)
     }
 
     @Test

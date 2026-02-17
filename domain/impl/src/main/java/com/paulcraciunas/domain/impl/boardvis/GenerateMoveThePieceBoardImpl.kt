@@ -36,7 +36,7 @@ class GenerateMoveThePieceBoardImpl @Inject constructor(
         opposingPieceCount: Int,
     ): MoveThePieceBoardData {
         val path = generateRandomPath(piece, requiredMoves)
-        val opposingPieces = placeOpposingPieces(path, opposingPieceCount)
+        val opposingPieces = placeOpposingPieces(piece, path, opposingPieceCount)
         val board = buildBoard(piece, path.first(), opposingPieces)
 
         return MoveThePieceBoardData(playerPieceLocus = path.first(), board = board)
@@ -75,15 +75,15 @@ class GenerateMoveThePieceBoardImpl @Inject constructor(
 
     /**
      * Places opposing pieces randomly on the board such that none of them
-     * attack any square in the predetermined [path].
+     * attack or block any square in the predetermined [path].
      */
     private fun placeOpposingPieces(
+        playerPiece: Piece,
         path: List<Locus>,
         count: Int,
     ): Map<Locus, Piece> {
-        val pathSquares = path.toSet()
         val placedPieces = mutableMapOf<Locus, Piece>()
-        val occupiedSquares = pathSquares.toMutableSet()
+        val occupiedSquares = path.toMutableSet()
 
         var placed = 0
         var attempts = 0
@@ -95,7 +95,9 @@ class GenerateMoveThePieceBoardImpl @Inject constructor(
             if (candidateLocus in occupiedSquares) continue
 
             val candidatePiece = randomOpposingPiece()
-            if (isOpposingPieceSafe(candidatePiece, candidateLocus, pathSquares, placedPieces)) {
+            val candidatePieces = placedPieces + (candidateLocus to candidatePiece)
+
+            if (isPathTraversable(playerPiece, path, candidatePieces)) {
                 placedPieces[candidateLocus] = candidatePiece
                 occupiedSquares.add(candidateLocus)
                 placed++
@@ -106,29 +108,41 @@ class GenerateMoveThePieceBoardImpl @Inject constructor(
     }
 
     /**
-     * Checks whether placing [piece] at [locus] would attack any square in the [pathSquares].
-     * Uses a temporary board with already placed opposing pieces for accurate validation.
+     * Verifies that the white piece can traverse the entire [path] in sequence
+     * on a board containing the given [opposingPieces], and that no path square
+     * is under attack.
      */
-    private fun isOpposingPieceSafe(
-        piece: Piece,
-        locus: Locus,
-        pathSquares: Set<Locus>,
-        existingPieces: Map<Locus, Piece>,
+    private fun isPathTraversable(
+        playerPiece: Piece,
+        path: List<Locus>,
+        opposingPieces: Map<Locus, Piece>,
     ): Boolean {
-        val tempBoard = gameFactory.builder().buildBoard()
+        val tempBoard = buildBoard(playerPiece, path.first(), opposingPieces)
+        val visited = mutableSetOf(path.first())
 
-        existingPieces.forEach { (loc, p) -> tempBoard.add(p, Side.BLACK, loc) }
-        tempBoard.add(piece, Side.BLACK, locus)
+        for (i in 1 until path.size) {
+            val from = path[i - 1]
+            val to = path[i]
 
-        return pathSquares.none { square ->
-            moveValidator.canAttack(
-                piece = piece,
-                side = Side.BLACK,
-                from = locus,
-                to = square,
-                board = tempBoard
+            val validMoves = moveValidator.getValidMoves(
+                piece = playerPiece,
+                side = Side.WHITE,
+                from = from,
+                board = tempBoard,
+                blockers = visited + opposingPieces.keys
             )
+
+            if (to !in validMoves) return false
+
+            // Move the piece first so the old position no longer blocks attack lines
+            tempBoard.move(from, to, Side.WHITE)
+
+            if (moveValidator.isSquareUnderAttack(to, Side.BLACK, tempBoard)) return false
+
+            visited.add(to)
         }
+
+        return true
     }
 
     private fun buildBoard(

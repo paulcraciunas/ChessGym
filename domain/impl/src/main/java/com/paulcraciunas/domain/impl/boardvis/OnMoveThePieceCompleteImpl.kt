@@ -26,9 +26,11 @@ class OnMoveThePieceCompleteImpl @Inject constructor(
         } else {
             maxOf(currentUser.highScores.moveThePiece, result.score)
         }
+        val newTimeSpent = currentUser.statistics.totalTimeSpent + result.timeSpentMillis
 
-        // Create updated user with potentially new high score
+        // Create updated user with potentially new high score and updated time spent
         val updatedUser = currentUser.copy(
+            statistics = currentUser.statistics.copy(totalTimeSpent = newTimeSpent),
             highScores = currentUser.highScores.copy(moveThePiece = newHighScore)
         )
 

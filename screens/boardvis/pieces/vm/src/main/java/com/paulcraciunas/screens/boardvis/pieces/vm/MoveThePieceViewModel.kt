@@ -36,9 +36,9 @@ class MoveThePieceViewModel @Inject constructor(
         _viewState,
         countdownTimer.remainingSeconds
     ) { viewState, remainingSeconds ->
-        // Handle time expiry during playing
         if (viewState is ViewState.Playing && remainingSeconds <= 0) {
             finishGame(wasCaptured = false)
+            return@combine _viewState.value.toUiState(remainingSeconds)
         }
         viewState.toUiState(remainingSeconds)
     }.stateIn(

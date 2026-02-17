@@ -48,7 +48,6 @@ internal class GenerateMoveThePieceBoardImplTest {
         )
 
         // Then
-        assertTrue(result.opposingPieces.isNotEmpty())
         assertTrue(result.opposingPieces.size <= requestedCount)
         assertPathIsSafe(Piece.Bishop, result)
     }

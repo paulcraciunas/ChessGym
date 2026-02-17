@@ -76,7 +76,10 @@ class MoveThePieceGameEngineImpl @Inject constructor(
             return MoveResult.Invalid
         }
 
-        // Check if the destination is under attack
+        // Move the piece first so the player's old position no longer blocks attack lines
+        currentBoard.move(currentState.playerPieceLocus, to, Side.WHITE)
+
+        // Check if the destination is under attack on the post-move board
         val isUnderAttack = moveValidator.isSquareUnderAttack(
             square = to,
             attackingSide = Side.BLACK,
@@ -87,9 +90,6 @@ class MoveThePieceGameEngineImpl @Inject constructor(
             state = currentState.copy(isGameOver = true, wasCaptured = true)
             return MoveResult.Captured
         }
-
-        // Valid move - update board and state
-        currentBoard.move(currentState.playerPieceLocus, to, Side.WHITE)
 
         val newVisitedSquares = currentState.visitedSquares + to
         val newMovesRemaining = currentState.movesRemaining - 1

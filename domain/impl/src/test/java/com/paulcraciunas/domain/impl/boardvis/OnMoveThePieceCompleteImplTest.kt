@@ -182,6 +182,73 @@ internal class OnMoveThePieceCompleteImplTest {
     }
 
     @Test
+    fun `GIVEN non-training result WHEN invoke THEN updates totalTimeSpent`() = runTest {
+        // Given
+        val currentUser = UserDefaults.signedInUser()
+        fakeUserRepository.update(currentUser)
+        val result = MoveThePieceResult(
+            score = 10,
+            timeSpentMillis = 45_000L,
+            isTrainingMode = false
+        )
+
+        // When
+        underTest(result)
+
+        // Then
+        fakeUserRepository.get().apply {
+            assertEquals(
+                UserDefaults.STATISTICS_TIME_PLAYED + result.timeSpentMillis,
+                statistics.totalTimeSpent
+            )
+        }
+    }
+
+    @Test
+    fun `GIVEN training mode result WHEN invoke THEN still updates totalTimeSpent`() = runTest {
+        // Given
+        val currentUser = UserDefaults.signedInUser()
+        fakeUserRepository.update(currentUser)
+        val result = MoveThePieceResult(
+            score = 10,
+            timeSpentMillis = 30_000L,
+            isTrainingMode = true
+        )
+
+        // When
+        underTest(result)
+
+        // Then
+        fakeUserRepository.get().apply {
+            assertEquals(
+                UserDefaults.STATISTICS_TIME_PLAYED + result.timeSpentMillis,
+                statistics.totalTimeSpent
+            )
+        }
+    }
+
+    @Test
+    fun `GIVEN multiple completions WHEN invoke twice THEN totalTimeSpent accumulates`() = runTest {
+        // Given
+        val currentUser = UserDefaults.signedInUser()
+        fakeUserRepository.update(currentUser)
+        val firstResult = MoveThePieceResult(score = 5, timeSpentMillis = 20_000L, isTrainingMode = false)
+        val secondResult = MoveThePieceResult(score = 10, timeSpentMillis = 30_000L, isTrainingMode = false)
+
+        // When
+        underTest(firstResult)
+        underTest(secondResult)
+
+        // Then
+        fakeUserRepository.get().apply {
+            assertEquals(
+                UserDefaults.STATISTICS_TIME_PLAYED + 20_000L + 30_000L,
+                statistics.totalTimeSpent
+            )
+        }
+    }
+
+    @Test
     fun `GIVEN result WHEN invoke THEN does not affect other high scores`() = runTest {
         // Given
         val currentUser = UserDefaults.signedInUser()
