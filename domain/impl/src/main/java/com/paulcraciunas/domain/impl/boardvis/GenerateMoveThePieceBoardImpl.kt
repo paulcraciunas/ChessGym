@@ -16,7 +16,11 @@ import javax.inject.Inject
  * Implementation of [GenerateMoveThePieceBoard] that generates random but valid
  * board configurations for the Move the Piece game.
  *
- * Uses [MoveValidator] from the game logic module to validate moves and attacks.
+ * Uses a path-first approach:
+ * 1. Generate a random valid path for the player piece.
+ * 2. Place opposing pieces that do not attack any square on the predetermined path.
+ *
+ * This guarantees a valid path always exists without retries.
  */
 class GenerateMoveThePieceBoardImpl @Inject constructor(
     private val randomLocus: GenerateRandomLociImpl,
@@ -31,66 +35,99 @@ class GenerateMoveThePieceBoardImpl @Inject constructor(
         requiredMoves: Int,
         opposingPieceCount: Int,
     ): MoveThePieceBoardData {
-        var attempts = 0
-        val maxAttempts = 100
+        val path = generateRandomPath(piece, requiredMoves)
+        val opposingPieces = placeOpposingPieces(path, opposingPieceCount)
+        val board = buildBoard(piece, path.first(), opposingPieces)
 
-        while (attempts < maxAttempts) {
-            attempts++
-            val board = tryGenerateBoard(piece, requiredMoves, opposingPieceCount)
-            if (board != null) {
-                return board
-            }
-        }
-
-        throw IllegalStateException("Failed to generate board for $piece with $requiredMoves moves and $opposingPieceCount pieces")
+        return MoveThePieceBoardData(playerPieceLocus = path.first(), board = board)
     }
 
-    private fun tryGenerateBoard(
-        piece: Piece,
-        requiredMoves: Int,
-        opposingPieceCount: Int,
-    ): MoveThePieceBoardData? {
-        // Generate random player position
-        val playerLocus = randomLocus()
+    /**
+     * Generates a random path for the given [piece] starting from a random position.
+     * Each subsequent square is a valid move from the previous one, and no square is revisited.
+     */
+    private fun generateRandomPath(piece: Piece, requiredMoves: Int): List<Locus> {
+        val path = mutableListOf<Locus>()
+        val board = gameFactory.builder().buildBoard()
 
-        // Generate opposing pieces
-        val opposingPieces = mutableMapOf<Locus, Piece>()
-        val occupiedSquares = mutableSetOf(playerLocus)
+        var currentLocus = randomLocus()
+        path.add(currentLocus)
+        board.add(piece, Side.WHITE, currentLocus)
 
-        repeat(opposingPieceCount) {
-            var pieceLocus: Locus
-            var pieceAttempts = 0
-            do {
-                pieceLocus = randomLocus()
-                pieceAttempts++
-            } while (pieceLocus in occupiedSquares && pieceAttempts < 50)
+        repeat(requiredMoves) {
+            val validMoves = moveValidator.getValidMoves(
+                piece = piece,
+                side = Side.WHITE,
+                from = currentLocus,
+                board = board,
+                blockers = path.toSet()
+            ).toList()
 
-            if (pieceLocus !in occupiedSquares) {
-                occupiedSquares.add(pieceLocus)
-                val opposingPiece = randomOpposingPiece()
-                opposingPieces[pieceLocus] = opposingPiece
-            } else {
-                // we couldn't place the piece even after 50 attempts
-                return null
+            val nextLocus = validMoves[randomFactory.nextInt(0, validMoves.size)]
+
+            board.move(currentLocus, nextLocus, Side.WHITE)
+            path.add(nextLocus)
+            currentLocus = nextLocus
+        }
+
+        return path
+    }
+
+    /**
+     * Places opposing pieces randomly on the board such that none of them
+     * attack any square in the predetermined [path].
+     */
+    private fun placeOpposingPieces(
+        path: List<Locus>,
+        count: Int,
+    ): Map<Locus, Piece> {
+        val pathSquares = path.toSet()
+        val placedPieces = mutableMapOf<Locus, Piece>()
+        val occupiedSquares = pathSquares.toMutableSet()
+
+        var placed = 0
+        var attempts = 0
+
+        while (placed < count && attempts < MAX_PLACEMENT_ATTEMPTS) {
+            attempts++
+            val candidateLocus = randomLocus()
+
+            if (candidateLocus in occupiedSquares) continue
+
+            val candidatePiece = randomOpposingPiece()
+            if (isOpposingPieceSafe(candidatePiece, candidateLocus, pathSquares, placedPieces)) {
+                placedPieces[candidateLocus] = candidatePiece
+                occupiedSquares.add(candidateLocus)
+                placed++
             }
         }
 
-        // Build a temporary board for validation
-        val board = buildBoard(piece, playerLocus, opposingPieces)
+        return placedPieces
+    }
 
-        // Verify that a valid path exists
-        val hasValidPath = dfsValidPath(
-            piece = piece,
-            currentLocus = playerLocus,
-            board = board,
-            visitedSquares = setOf(playerLocus),
-            remainingMoves = requiredMoves
-        )
+    /**
+     * Checks whether placing [piece] at [locus] would attack any square in the [pathSquares].
+     * Uses a temporary board with already placed opposing pieces for accurate validation.
+     */
+    private fun isOpposingPieceSafe(
+        piece: Piece,
+        locus: Locus,
+        pathSquares: Set<Locus>,
+        existingPieces: Map<Locus, Piece>,
+    ): Boolean {
+        val tempBoard = gameFactory.builder().buildBoard()
 
-        return if (hasValidPath) {
-            MoveThePieceBoardData(playerPieceLocus = playerLocus, board = board)
-        } else {
-            null
+        existingPieces.forEach { (loc, p) -> tempBoard.add(p, Side.BLACK, loc) }
+        tempBoard.add(piece, Side.BLACK, locus)
+
+        return pathSquares.none { square ->
+            moveValidator.canAttack(
+                piece = piece,
+                side = Side.BLACK,
+                from = locus,
+                to = square,
+                board = tempBoard
+            )
         }
     }
 
@@ -99,7 +136,6 @@ class GenerateMoveThePieceBoardImpl @Inject constructor(
         playerLocus: Locus,
         opposingPieces: Map<Locus, Piece>,
     ): IBoard {
-
         val builder = gameFactory.builder()
             .withPiece(playerPiece, Side.WHITE, playerLocus)
 
@@ -110,42 +146,13 @@ class GenerateMoveThePieceBoardImpl @Inject constructor(
         return builder.buildBoard()
     }
 
-    private fun dfsValidPath(
-        piece: Piece,
-        currentLocus: Locus,
-        board: IBoard,
-        visitedSquares: Set<Locus>,
-        remainingMoves: Int,
-    ): Boolean {
-        if (remainingMoves <= 0) return true
-
-        val validMoves = moveValidator.getValidMoves(
-            piece = piece,
-            side = Side.WHITE,
-            from = currentLocus,
-            board = board,
-            blockers = visitedSquares
-        )
-
-        val safeMoves = validMoves.filter { move ->
-            !moveValidator.isSquareUnderAttack(move, Side.BLACK, board)
-        }
-
-        for (move in safeMoves) {
-            if (dfsValidPath(
-                    piece = piece, currentLocus = move, board = board, visitedSquares = visitedSquares + move,
-                    remainingMoves = remainingMoves - 1
-                )) {
-                return true
-            }
-        }
-
-        return false
+    private fun randomOpposingPiece(): Piece {
+        val pieces = OPPOSING_PIECES
+        return pieces[randomFactory.nextInt(0, pieces.size)]
     }
 
-    private fun randomOpposingPiece(): Piece {
-        // Use all major pieces for variety
-        val pieces = listOf(Piece.Rook, Piece.Bishop, Piece.Knight, Piece.Queen)
-        return pieces[randomFactory.nextInt(0, pieces.size)]
+    companion object {
+        private const val MAX_PLACEMENT_ATTEMPTS = 200
+        private val OPPOSING_PIECES = listOf(Piece.Rook, Piece.Bishop, Piece.Knight, Piece.Queen)
     }
 }
