@@ -129,7 +129,6 @@ private fun MoveThePieceScreenGameOverPreview() {
                 boardData = MoveThePieceUiState.Setup().boardData,
                 finalScore = 12,
                 isNewHighScore = true,
-                previousHighScore = 10,
                 wasCaptured = false
             ),
             showBorders = true,
