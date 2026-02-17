@@ -7,7 +7,6 @@ import com.paulcraciunas.domain.api.puzzles.GetRatedPuzzle
 import com.paulcraciunas.user.api.UserRepository
 import javax.inject.Inject
 
-// TODO Paul: Unit test me
 class GetRatedPuzzleImpl @Inject constructor(
     private val userRepository: UserRepository,
     private val randomFactory: RandomFactory,
