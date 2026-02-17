@@ -1,10 +1,10 @@
 package com.paulcraciunas.screens.puzzles.rated.vm
 
 import com.paulcraciunas.domain.api.general.EloResult
+import com.paulcraciunas.domain.api.general.FakeTimer
 import com.paulcraciunas.domain.api.puzzles.GetRatedPuzzle
 import com.paulcraciunas.domain.api.puzzles.OnPuzzleComplete
 import com.paulcraciunas.domain.api.puzzles.PuzzleCompletionResult
-import com.paulcraciunas.domain.api.general.Timer
 import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File
@@ -64,7 +64,7 @@ internal class RatedPuzzleViewModelTest {
             assertFalse(showAbandonDialog)
             assertNull(promotion)
         }
-        assertEquals(1, timer.startCallCount)
+        assertTrue(timer.isRunning())
     }
 
     @Test
@@ -190,9 +190,11 @@ internal class RatedPuzzleViewModelTest {
     fun `GIVEN playing state WHEN onAbandonConfirmed THEN puzzle is finished and result logged`() = runTest {
         // Given
         val underTest = buildVm(buildStandardPuzzle())
+        val elapsedMillis = 500L
 
         // When
         underTest.onAbandonConfirmed()
+        timer.advanceTimeBy(elapsedMillis)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
@@ -205,7 +207,7 @@ internal class RatedPuzzleViewModelTest {
         assertEquals(DEFAULT_RATING, loggedResult.puzzleRating)
         assertEquals(false, loggedResult.wasSuccessful)
         assertEquals(-10, loggedResult.ratingChange)
-        assertEquals(timer.elapsedMillis, loggedResult.timeSpentMillis)
+        assertEquals(timer.elapsed(), loggedResult.timeSpentMillis)
     }
 
     @Test
@@ -254,26 +256,13 @@ internal class RatedPuzzleViewModelTest {
     fun `GIVEN playing state WHEN onStop THEN timer is paused`() = runTest {
         // Given
         val underTest = buildVm(buildStandardPuzzle())
-        assertEquals(0, timer.pauseCallCount)
+        assertTrue(timer.isRunning())
 
         // When
         underTest.onStop()
 
         // Then
-        assertEquals(1, timer.pauseCallCount)
-    }
-
-    @Test
-    fun `GIVEN playing state WHEN onStart THEN timer is resumed`() = runTest {
-        // Given
-        val underTest = buildVm(buildStandardPuzzle())
-        assertEquals(0, timer.resumeCallCount)
-
-        // When
-        underTest.onStart()
-
-        // Then
-        assertEquals(1, timer.resumeCallCount)
+        assertFalse(timer.isRunning())
     }
 
     @Test
@@ -286,8 +275,7 @@ internal class RatedPuzzleViewModelTest {
         underTest.onStart()
 
         // Then
-        assertEquals(1, timer.pauseCallCount)
-        assertEquals(1, timer.resumeCallCount)
+        assertTrue(timer.isRunning())
     }
 
     private fun buildVm(withPuzzle: Puzzle): RatedPuzzleViewModel {
@@ -350,28 +338,4 @@ private class FakeOnPuzzleComplete : OnPuzzleComplete {
     override suspend fun invoke(completionResult: PuzzleCompletionResult) {
         lastResult = completionResult
     }
-}
-
-private class FakeTimer : Timer {
-    var startCallCount: Int = 0
-        private set
-    var pauseCallCount: Int = 0
-        private set
-    var resumeCallCount: Int = 0
-        private set
-    var elapsedMillis: Long = 500
-
-    override fun start() {
-        startCallCount += 1
-    }
-
-    override fun pause() {
-        pauseCallCount += 1
-    }
-
-    override fun resume() {
-        resumeCallCount += 1
-    }
-
-    override fun elapsed(): Long = if (startCallCount == 1) elapsedMillis else 0
 }
