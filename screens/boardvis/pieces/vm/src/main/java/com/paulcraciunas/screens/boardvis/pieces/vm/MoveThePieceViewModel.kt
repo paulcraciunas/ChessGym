@@ -29,6 +29,7 @@ class MoveThePieceViewModel @Inject constructor(
     private val userRepository: UserRepository,
 ) : ViewModel(), MoveThePieceScreenInteractor {
 
+    private var currentHighScore: Int = 0
     private val _viewState = MutableStateFlow<ViewState>(ViewState.Setup())
 
     val uiState: StateFlow<MoveThePieceUiState> = combine(
@@ -46,7 +47,6 @@ class MoveThePieceViewModel @Inject constructor(
         initialValue = MoveThePieceUiState.Setup()
     )
 
-    private var currentHighScore: Int = 0
 
     init {
         viewModelScope.launch {
@@ -159,7 +159,6 @@ class MoveThePieceViewModel @Inject constructor(
             lastBoardState = playingState.boardState,
             finalScore = score,
             isNewHighScore = isNewHighScore,
-            previousHighScore = currentHighScore,
             wasCaptured = wasCaptured
         )
     }
@@ -200,14 +199,12 @@ class MoveThePieceViewModel @Inject constructor(
             val lastBoardState: MoveThePieceBoardState,
             val finalScore: Int,
             val isNewHighScore: Boolean,
-            val previousHighScore: Int,
             val wasCaptured: Boolean,
         ) : ViewState() {
             override fun toUiState(remainingSeconds: Int) = MoveThePieceUiState.GameOver(
                 boardData = lastBoardState.toBoardViewData(),
                 finalScore = finalScore,
                 isNewHighScore = isNewHighScore,
-                previousHighScore = previousHighScore,
                 wasCaptured = wasCaptured
             )
         }

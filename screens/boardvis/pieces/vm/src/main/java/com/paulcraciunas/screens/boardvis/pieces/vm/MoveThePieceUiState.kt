@@ -33,7 +33,6 @@ sealed class MoveThePieceUiState {
         override val boardData: BoardViewData,
         val finalScore: Int,
         val isNewHighScore: Boolean,
-        val previousHighScore: Int,
         val wasCaptured: Boolean,
     ) : MoveThePieceUiState()
 

@@ -183,7 +183,6 @@ internal fun MoveThePiecePlayingControls(
 internal fun MoveThePieceGameOverControls(
     finalScore: Int,
     isNewHighScore: Boolean,
-    previousHighScore: Int,
     wasCaptured: Boolean,
     onPlayAgain: () -> Unit,
     modifier: Modifier = Modifier,
@@ -225,12 +224,6 @@ internal fun MoveThePieceGameOverControls(
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
-            )
-        } else {
-            Text(
-                text = stringResource(R.string.boardvis_high_score, previousHighScore),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
 
@@ -288,7 +281,6 @@ private fun MoveThePieceGameOverNewHighScorePreview() {
         MoveThePieceGameOverControls(
             finalScore = 15,
             isNewHighScore = true,
-            previousHighScore = 12,
             wasCaptured = false,
             onPlayAgain = {},
             modifier = Modifier.padding(16.dp)
@@ -303,7 +295,6 @@ private fun MoveThePieceGameOverCapturedPreview() {
         MoveThePieceGameOverControls(
             finalScore = 8,
             isNewHighScore = false,
-            previousHighScore = 15,
             wasCaptured = true,
             onPlayAgain = {},
             modifier = Modifier.padding(16.dp)

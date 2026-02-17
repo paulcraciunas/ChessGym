@@ -67,7 +67,6 @@ internal fun MoveThePieceScreenContents(
                 MoveThePieceGameOverControls(
                     finalScore = state.finalScore,
                     isNewHighScore = state.isNewHighScore,
-                    previousHighScore = state.previousHighScore,
                     wasCaptured = state.wasCaptured,
                     onPlayAgain = interactions::onPlayAgain,
                     modifier = Modifier.padding(16.dp)
