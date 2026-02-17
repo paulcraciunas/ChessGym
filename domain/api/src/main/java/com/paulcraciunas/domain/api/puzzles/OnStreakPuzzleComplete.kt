@@ -10,5 +10,5 @@ interface OnStreakPuzzleComplete {
     /**
      * Processes a successfully completed puzzle in streak mode.
      */
-    suspend operator fun invoke()
+    suspend operator fun invoke(timeSpentMillis: Long)
 }

@@ -31,7 +31,7 @@ class OnPuzzleCompleteImpl @Inject constructor(
         // Update best rating if this is a new personal best
         val newBestRating = maxOf(currentUser.highScores.ratedPuzzle, newCurrentRating)
 
-        // Update total time spent (convert to milliseconds)
+        // Update total time spent
         val newTotalTimeSpent = currentUser.statistics.totalTimeSpent + completionResult.timeSpentMillis
 
         // Update failed puzzles list if the puzzle was failed and has an ID

@@ -18,14 +18,16 @@ internal class OnStreakPuzzleCompleteImplTest {
         val user = UserDefaults.signedInUser().copy(
             puzzleStreak = User.PuzzleStreak(currentCount = 0, lastPuzzleId = null)
         )
+        val timeSpentMillis = 42L
         fakeUserRepository.update(user)
 
         // When
-        underTest()
+        underTest(timeSpentMillis)
 
         // Then
         fakeUserRepository.get().apply {
             assertEquals(1, puzzleStreak.currentCount)
+            assertEquals(UserDefaults.STATISTICS_TIME_PLAYED + timeSpentMillis, statistics.totalTimeSpent)
         }
     }
 
@@ -36,14 +38,16 @@ internal class OnStreakPuzzleCompleteImplTest {
         val user = UserDefaults.signedInUser().copy(
             puzzleStreak = User.PuzzleStreak(currentCount = initialCount, lastPuzzleId = 41)
         )
+        val timeSpentMillis = 42L
         fakeUserRepository.update(user)
 
         // When
-        underTest()
+        underTest(timeSpentMillis)
 
         // Then
         fakeUserRepository.get().apply {
             assertEquals(initialCount + 1, puzzleStreak.currentCount)
+            assertEquals(UserDefaults.STATISTICS_TIME_PLAYED + timeSpentMillis, statistics.totalTimeSpent)
         }
     }
 
@@ -54,14 +58,16 @@ internal class OnStreakPuzzleCompleteImplTest {
         val user = UserDefaults.signedInUser().copy(
             puzzleStreak = User.PuzzleStreak(currentCount = 3, lastPuzzleId = oldPuzzleId)
         )
+        val timeSpentMillis = 42L
         fakeUserRepository.update(user)
 
         // When
-        underTest()
+        underTest(timeSpentMillis)
 
         // Then - lastPuzzleId is cleared so next fetch gets a new puzzle
         fakeUserRepository.get().apply {
             assertNull(puzzleStreak.lastPuzzleId)
+            assertEquals(UserDefaults.STATISTICS_TIME_PLAYED + timeSpentMillis, statistics.totalTimeSpent)
         }
     }
 
@@ -72,14 +78,16 @@ internal class OnStreakPuzzleCompleteImplTest {
         val user = UserDefaults.signedInUser().copy(
             puzzleStreak = User.PuzzleStreak(currentCount = largeStreak, lastPuzzleId = 999)
         )
+        val timeSpentMillis = 42L
         fakeUserRepository.update(user)
 
         // When
-        underTest()
+        underTest(timeSpentMillis)
 
         // Then
         fakeUserRepository.get().apply {
             assertEquals(largeStreak + 1, puzzleStreak.currentCount)
+            assertEquals(UserDefaults.STATISTICS_TIME_PLAYED + timeSpentMillis, statistics.totalTimeSpent)
             assertNull(puzzleStreak.lastPuzzleId)
         }
     }
