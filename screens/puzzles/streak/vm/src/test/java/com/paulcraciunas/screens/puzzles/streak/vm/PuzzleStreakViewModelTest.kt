@@ -1,5 +1,6 @@
 package com.paulcraciunas.screens.puzzles.streak.vm
 
+import com.paulcraciunas.domain.api.general.FakeTimer
 import com.paulcraciunas.domain.api.puzzles.GetStreakPuzzle
 import com.paulcraciunas.domain.api.puzzles.OnStreakComplete
 import com.paulcraciunas.domain.api.puzzles.OnStreakPuzzleComplete
@@ -34,6 +35,7 @@ internal class PuzzleStreakViewModelTest {
     private val getStreakPuzzle = FakeGetStreakPuzzle()
     private val onStreakPuzzleComplete = FakeOnStreakPuzzleComplete()
     private val onStreakComplete = FakeOnStreakComplete()
+    private val timer = FakeTimer()
 
     @BeforeEach
     fun setUp() {
@@ -268,6 +270,7 @@ internal class PuzzleStreakViewModelTest {
             getStreakPuzzle = getStreakPuzzle,
             onStreakPuzzleComplete = onStreakPuzzleComplete,
             onStreakComplete = onStreakComplete,
+            timer = timer,
             puzzleInteractor = RealGameFactory().puzzleInteractor()
         )
         testDispatcher.scheduler.advanceUntilIdle()
@@ -329,7 +332,7 @@ private class FakeGetStreakPuzzle : GetStreakPuzzle {
 }
 
 private class FakeOnStreakPuzzleComplete : OnStreakPuzzleComplete {
-    override suspend fun invoke() {}
+    override suspend fun invoke(timeSpentMillis: Long) {}
 }
 
 private class FakeOnStreakComplete : OnStreakComplete {
