@@ -33,6 +33,7 @@ import com.paulcraciunas.chessgym.navigation.Screen
 import com.paulcraciunas.chessgym.screens.BoardVisDashboard
 import com.paulcraciunas.chessgym.screens.FailedPuzzles
 import com.paulcraciunas.chessgym.screens.FindTheSquare
+import com.paulcraciunas.chessgym.screens.MoveThePiece
 import com.paulcraciunas.chessgym.screens.PuzzleDashboard
 import com.paulcraciunas.chessgym.screens.PuzzleRush
 import com.paulcraciunas.chessgym.screens.PuzzleStreak
@@ -153,6 +154,12 @@ fun MainScreen(
                         tabNavController = tabNavController,
                         showBorders = mainScreenState.appSettings?.showBorders ?: true,
                         enableVibrations = mainScreenState.appSettings?.enableVibrations ?: true,
+                    )
+                }
+                animatedComposable<Screen.MoveThePiece> {
+                    MoveThePiece(
+                        tabNavController = tabNavController,
+                        showBorders = mainScreenState.appSettings?.showBorders ?: true,
                     )
                 }
                 animatedComposable<Screen.BlindMode> {

@@ -21,5 +21,6 @@ dependencies {
 
     testImplementation(testFixtures(project(":settings:application:api")))
     testImplementation(testFixtures(project(":user:api")))
+    testImplementation(testFixtures(project(":domain:api")))
     testImplementation(project(":game:logic:impl"))
 }

@@ -1,21 +1,18 @@
 package com.paulcraciunas.screens.boardvis.squares.vm
 
-import com.paulcraciunas.domain.api.CountdownTimer
-import com.paulcraciunas.domain.api.FindSquareResult
+import com.paulcraciunas.domain.api.general.FakeCountdownTimer
+import com.paulcraciunas.domain.api.boardvis.FindSquareResult
+import com.paulcraciunas.domain.api.general.FixedRandomFactory
 import com.paulcraciunas.domain.api.GenerateRandomLoci
-import com.paulcraciunas.domain.api.OnFindSquareComplete
-import com.paulcraciunas.domain.api.RandomFactory
+import com.paulcraciunas.domain.api.boardvis.OnFindSquareComplete
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.user.api.FakeUserRepository
 import com.paulcraciunas.user.api.User
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -31,7 +28,7 @@ import org.junit.jupiter.api.Test
 internal class FindTheSquareViewModelTest {
     private val userRepository = FakeUserRepository()
     private val fakeCountdownTimer = FakeCountdownTimer()
-    private val fakeRandomFactory = FakeRandomFactory()
+    private val fakeRandomFactory = FixedRandomFactory()
     private val fakeGenerateRandomLoci = FakeGenerateRandomLoci()
     private val fakeOnFindSquareComplete = FakeOnFindSquareComplete()
 
@@ -92,7 +89,7 @@ internal class FindTheSquareViewModelTest {
         assertEquals(Locus(File.e, Rank.`4`), playingState.currentSquare)
         assertEquals(0, playingState.score)
         assertEquals(Side.WHITE,playingState.orientation)
-        assertTrue(fakeCountdownTimer.started)
+        assertTrue(fakeCountdownTimer.isRunning)
     }
 
     @Test
@@ -120,7 +117,7 @@ internal class FindTheSquareViewModelTest {
         setupViewModel()
         underTest.onSideSelected(SideSelection.RANDOM)
         testDispatcher.scheduler.advanceUntilIdle()
-        fakeRandomFactory.nextValue = 1 // Will result in black orientation
+        fakeRandomFactory.returnValue = 1 // Will result in black orientation
         fakeGenerateRandomLoci.nextLocus = Locus(File.a, Rank.`1`)
 
         // When
@@ -211,7 +208,7 @@ internal class FindTheSquareViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
 
         // When - simulate timer expiry
-        fakeCountdownTimer.setRemainingSeconds(0)
+        fakeCountdownTimer.advanceUntilIdle()
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
@@ -219,7 +216,7 @@ internal class FindTheSquareViewModelTest {
         assertTrue(uiState is FindTheSquareUiState.GameOver)
         val gameOverState = uiState as FindTheSquareUiState.GameOver
         assertEquals(1, gameOverState.score)
-        assertTrue(fakeCountdownTimer.stopped)
+        assertFalse(fakeCountdownTimer.isRunning)
     }
 
     @Test
@@ -240,7 +237,7 @@ internal class FindTheSquareViewModelTest {
         }
 
         // When - simulate timer expiry
-        fakeCountdownTimer.setRemainingSeconds(0)
+        fakeCountdownTimer.advanceUntilIdle()
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
@@ -261,7 +258,7 @@ internal class FindTheSquareViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
 
         // When - simulate timer expiry with score of 0
-        fakeCountdownTimer.setRemainingSeconds(0)
+        fakeCountdownTimer.advanceUntilIdle()
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
@@ -278,7 +275,7 @@ internal class FindTheSquareViewModelTest {
         fakeGenerateRandomLoci.nextLocus = Locus(File.e, Rank.`4`)
         underTest.onPlayClicked()
         testDispatcher.scheduler.advanceUntilIdle()
-        fakeCountdownTimer.setRemainingSeconds(0)
+        fakeCountdownTimer.advanceUntilIdle()
         testDispatcher.scheduler.advanceUntilIdle()
 
         // When
@@ -304,7 +301,7 @@ internal class FindTheSquareViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
 
         // When - timer expires
-        fakeCountdownTimer.setRemainingSeconds(0)
+        fakeCountdownTimer.advanceUntilIdle()
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
@@ -323,46 +320,6 @@ internal class FindTheSquareViewModelTest {
         )
         testDispatcher.scheduler.advanceUntilIdle()
     }
-}
-
-private class FakeCountdownTimer : CountdownTimer {
-    private val _remainingSeconds = MutableStateFlow(FindTheSquareUiState.DEFAULT_DURATION_SECONDS)
-    override val remainingSeconds: StateFlow<Int> = _remainingSeconds
-
-    override val isExpired: Boolean get() = _remainingSeconds.value <= 0
-
-    var started = false
-        private set
-    var stopped = false
-        private set
-    private var elapsedTime = 0L
-
-    override fun set(durationSeconds: Int) {
-        _remainingSeconds.value = durationSeconds
-        stopped = false
-        started = false
-    }
-
-    override fun start(scope: CoroutineScope) {
-        started = true
-        elapsedTime = 0L
-    }
-
-    override fun stop() {
-        stopped = true
-    }
-
-    override fun elapsedMillis(): Long = elapsedTime
-
-    fun setRemainingSeconds(seconds: Int) {
-        _remainingSeconds.value = seconds
-        elapsedTime = ((FindTheSquareUiState.DEFAULT_DURATION_SECONDS - seconds) * 1000).toLong()
-    }
-}
-
-private class FakeRandomFactory : RandomFactory {
-    var nextValue = 0
-    override fun nextInt(from: Int, to: Int): Int = nextValue
 }
 
 private class FakeGenerateRandomLoci : GenerateRandomLoci {

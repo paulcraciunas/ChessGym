@@ -1,5 +1,6 @@
 package com.paulcraciunas.game.logic.api
 
+import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.state.MetaData
@@ -20,6 +21,7 @@ interface Builder {
     fun withPiece(piece: Piece, side: Side, at: Locus): Builder
     fun withCastling(castling: Pair<Set<CastleType>, Set<CastleType>>): Builder
 
+    fun buildBoard(): IBoard
     fun buildGame(): Game
     fun buildPuzzle(): Puzzle
 }

@@ -19,5 +19,6 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
 
     testImplementation(testFixtures(project(":settings:application:api")))
+    testImplementation(testFixtures(project(":domain:api")))
     testImplementation(project(":game:logic:impl"))
 }

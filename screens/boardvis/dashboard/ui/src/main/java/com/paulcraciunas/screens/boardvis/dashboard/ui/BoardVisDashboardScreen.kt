@@ -26,6 +26,8 @@ import com.paulcraciunas.screens.boardvis.dashboard.vm.BoardVisMode
 import com.paulcraciunas.screens.common.AppBar
 import com.paulcraciunas.screens.common.AppBarAlignment
 import com.paulcraciunas.screens.common.LoadingContent
+import com.paulcraciunas.screens.common.controls.FindTheSquareCard
+import com.paulcraciunas.screens.common.controls.MoveThePieceCard
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
@@ -71,7 +73,7 @@ private fun DashboardContent(
                 horizontal = 20.dp,
                 vertical = 24.dp
             ),
-            verticalArrangement = Arrangement.spacedBy(20.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             item {
                 DashboardHeader()

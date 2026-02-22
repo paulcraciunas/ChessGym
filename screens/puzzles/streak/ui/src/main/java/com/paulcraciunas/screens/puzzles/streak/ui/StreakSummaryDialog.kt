@@ -58,7 +58,7 @@ internal fun StreakSummaryDialog(
                 if (isNewHighScore) {
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
-                        text = stringResource(R.string.puzzle_streak_summary_new_high_score),
+                        text = stringResource(R.string.generic_new_high_score),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.tertiary,

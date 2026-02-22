@@ -26,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -33,6 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
+import com.paulcraciunas.screens.common.extensions.alpha
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
@@ -47,7 +49,7 @@ internal fun DashboardCard(
     modifier: Modifier = Modifier,
 ) {
     val iconScope = remember { DashboardCardIconScope(isEnabled) }
-    val alpha = if (isEnabled) 1f else 0.6f
+    val alpha = isEnabled.alpha
 
     Box(
         modifier = modifier
@@ -59,6 +61,7 @@ internal fun DashboardCard(
                 shape = RoundedCornerShape(16.dp)
             )
             .background(MaterialTheme.colorScheme.surface.copy(alpha = alpha))
+            .shadow(elevation = 1.dp)
             .then(
                 if (isEnabled) {
                     Modifier.clickable { onClick() }
@@ -70,7 +73,7 @@ internal fun DashboardCard(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp),
+                .padding(16.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {

@@ -2,7 +2,6 @@ package com.paulcraciunas.screens.boardvis.squares.ui
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -24,6 +23,7 @@ import com.paulcraciunas.screens.boardvis.squares.vm.FindTheSquareScreenInteract
 import com.paulcraciunas.screens.boardvis.squares.vm.FindTheSquareUiState
 import com.paulcraciunas.screens.boardvis.squares.vm.SideSelection
 import com.paulcraciunas.screens.common.AppBar
+import com.paulcraciunas.screens.common.controls.TimerDisplay
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
@@ -63,19 +63,15 @@ fun FindTheSquareScreen(
         },
         modifier = modifier
     ) { innerPadding ->
-        Column(
+        FindTheSquareScreenContents(
+            state = uiState,
+            showBorders = showBorders,
+            interactions = interactions,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
                 .background(MaterialTheme.colorScheme.background),
-        ) {
-            FindTheSquareScreenContents(
-                state = uiState,
-                showBorders = showBorders,
-                interactions = interactions,
-                modifier = Modifier.fillMaxSize()
-            )
-        }
+        )
     }
 }
 

@@ -1,7 +1,7 @@
 package com.paulcraciunas.domain.impl
 
 import com.paulcraciunas.domain.api.GenerateRandomLoci
-import com.paulcraciunas.domain.api.RandomFactory
+import com.paulcraciunas.domain.api.general.RandomFactory
 import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Rank
@@ -16,17 +16,12 @@ class GenerateRandomLociImpl @Inject constructor(
 ) : GenerateRandomLoci {
 
     override fun invoke(): Locus {
-        val fileIndex = randomFactory.nextInt(from = 0, to = FILE_COUNT)
-        val rankIndex = randomFactory.nextInt(from = 0, to = RANK_COUNT)
+        val fileIndex = randomFactory.nextInt(from = 0, to = File.entries.size)
+        val rankIndex = randomFactory.nextInt(from = 0, to = Rank.entries.size)
 
         return Locus(
             file = File.fromDec(fileIndex),
             rank = Rank.fromDec(rankIndex)
         )
-    }
-
-    companion object {
-        private const val FILE_COUNT = 8
-        private const val RANK_COUNT = 8
     }
 }

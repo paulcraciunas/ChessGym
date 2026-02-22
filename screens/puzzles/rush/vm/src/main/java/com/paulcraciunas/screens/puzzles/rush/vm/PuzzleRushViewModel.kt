@@ -2,11 +2,11 @@ package com.paulcraciunas.screens.puzzles.rush.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.paulcraciunas.domain.api.CountdownTimer
-import com.paulcraciunas.domain.api.GetBufferedPuzzleSeries
-import com.paulcraciunas.domain.api.OnPuzzleRushComplete
-import com.paulcraciunas.domain.api.PuzzleRushResult
-import com.paulcraciunas.game.logic.api.GameFactory
+import com.paulcraciunas.domain.api.general.CountdownTimer
+import com.paulcraciunas.domain.api.puzzles.GetBufferedPuzzleSeries
+import com.paulcraciunas.domain.api.puzzles.OnPuzzleRushComplete
+import com.paulcraciunas.domain.api.puzzles.PuzzleRushResult
+import com.paulcraciunas.game.logic.api.PuzzleInteractor
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.screens.common.model.PuzzleData
@@ -29,9 +29,9 @@ class PuzzleRushViewModel @Inject constructor(
     private val onPuzzleRushComplete: OnPuzzleRushComplete,
     private val countdownTimer: CountdownTimer,
     private val userRepository: UserRepository,
-    gameFactory: GameFactory,
+    puzzleInteractor: PuzzleInteractor,
 ) : ViewModel(), PuzzleRushScreenInteractor {
-    private val helper = PuzzleViewModelHelper(puzzleInteractor = gameFactory.puzzleInteractor())
+    private val helper = PuzzleViewModelHelper(puzzleInteractor = puzzleInteractor)
 
     private val _gameState = MutableStateFlow<GameState>(GameState.Loading)
     val uiState: StateFlow<PuzzleRushUiState> = combine(

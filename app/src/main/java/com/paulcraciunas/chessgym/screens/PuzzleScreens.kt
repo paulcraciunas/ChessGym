@@ -119,6 +119,9 @@ internal fun PuzzleStreak(
     val vm: PuzzleStreakViewModel = hiltViewModel()
     val puzzleStreakState by vm.uiState.collectAsStateWithLifecycle()
 
+    LifecycleEventEffect(Lifecycle.Event.ON_STOP) { vm.onStop() }
+    LifecycleEventEffect(Lifecycle.Event.ON_START) { vm.onStart() }
+
     PuzzleStreakScreen(
         uiState = puzzleStreakState,
         showBorders = showBorders,

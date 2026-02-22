@@ -2,10 +2,11 @@ package com.paulcraciunas.screens.puzzles.streak.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.paulcraciunas.domain.api.GetStreakPuzzle
-import com.paulcraciunas.domain.api.OnStreakComplete
-import com.paulcraciunas.domain.api.OnStreakPuzzleComplete
-import com.paulcraciunas.game.logic.api.GameFactory
+import com.paulcraciunas.domain.api.general.Timer
+import com.paulcraciunas.domain.api.puzzles.GetStreakPuzzle
+import com.paulcraciunas.domain.api.puzzles.OnStreakComplete
+import com.paulcraciunas.domain.api.puzzles.OnStreakPuzzleComplete
+import com.paulcraciunas.game.logic.api.PuzzleInteractor
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.screens.common.model.PuzzleViewModelHelper
@@ -22,15 +23,24 @@ class PuzzleStreakViewModel @Inject constructor(
     private val getStreakPuzzle: GetStreakPuzzle,
     private val onStreakPuzzleComplete: OnStreakPuzzleComplete,
     private val onStreakComplete: OnStreakComplete,
-    gameFactory: GameFactory,
+    private val timer: Timer,
+    puzzleInteractor: PuzzleInteractor,
 ) : ViewModel(), PuzzleStreakScreenInteractor {
-    private val helper = PuzzleViewModelHelper(puzzleInteractor = gameFactory.puzzleInteractor())
+    private val helper = PuzzleViewModelHelper(puzzleInteractor = puzzleInteractor)
 
     private val _uiState = MutableStateFlow<PuzzleStreakUiState>(PuzzleStreakUiState.Loading)
     val uiState: StateFlow<PuzzleStreakUiState> = _uiState.asStateFlow()
 
     init {
         loadPuzzle()
+    }
+
+    fun onStop() {
+        timer.pause()
+    }
+
+    fun onStart() {
+        timer.resume()
     }
 
     private fun loadPuzzle() {
@@ -113,7 +123,8 @@ class PuzzleStreakViewModel @Inject constructor(
     private fun handlePuzzleOver(isSuccess: Boolean) {
         viewModelScope.launch {
             if (isSuccess) { // continue streak
-                onStreakPuzzleComplete()
+                val timeSpent = timer.elapsed()
+                onStreakPuzzleComplete(timeSpent)
                 try {
                     loadNextPuzzle()
                 } catch (_: Exception) { // If we can't load next puzzle, end the streak
@@ -126,6 +137,7 @@ class PuzzleStreakViewModel @Inject constructor(
     }
 
     private suspend fun loadNextPuzzle() {
+        timer.start()
         val data = getStreakPuzzle()
         _uiState.value = PuzzleStreakUiState.Playing(
             data = helper.load(data.puzzle),

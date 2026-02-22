@@ -1,19 +1,16 @@
 package com.paulcraciunas.screens.puzzles.rush.vm
 
-import com.paulcraciunas.domain.api.CountdownTimer
-import com.paulcraciunas.domain.api.GetBufferedPuzzleSeries
-import com.paulcraciunas.domain.api.OnPuzzleRushComplete
-import com.paulcraciunas.domain.api.PuzzleRushResult
+import com.paulcraciunas.domain.api.general.FakeCountdownTimer
+import com.paulcraciunas.domain.api.puzzles.GetBufferedPuzzleSeries
+import com.paulcraciunas.domain.api.puzzles.OnPuzzleRushComplete
+import com.paulcraciunas.domain.api.puzzles.PuzzleRushResult
 import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.loc
 import com.paulcraciunas.game.logic.impl.RealGameFactory
 import com.paulcraciunas.user.api.FakeUserRepository
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -97,7 +94,7 @@ internal class PuzzleRushViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
-        assertEquals(1, countdownTimer.startCallCount)
+        assertTrue(countdownTimer.isRunning)
         assertTrue(underTest.uiState.value is PuzzleRushUiState.Playing)
     }
 
@@ -158,12 +155,12 @@ internal class PuzzleRushViewModelTest {
         underTest.onSquareClicked("e7".loc())
 
         // When - time expires
-        countdownTimer.simulateTimeExpired()
+        countdownTimer.advanceUntilIdle() // make sure to move this before the scheduler, to take notice of effects
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
         assertTrue(underTest.uiState.value is PuzzleRushUiState.Finished)
-        assertEquals(1, countdownTimer.stopCallCount)
+        assertFalse(countdownTimer.isRunning)
     }
 
     @Test
@@ -254,7 +251,7 @@ internal class PuzzleRushViewModelTest {
             onPuzzleRushComplete = onPuzzleRushComplete,
             countdownTimer = countdownTimer,
             userRepository = userRepository,
-            gameFactory = RealGameFactory(),
+            puzzleInteractor = RealGameFactory().puzzleInteractor(),
         )
         testDispatcher.scheduler.advanceUntilIdle()
         return underTest
@@ -304,36 +301,5 @@ private class FakeOnPuzzleRushComplete : OnPuzzleRushComplete {
 
     override suspend fun invoke(result: PuzzleRushResult) {
         lastResult = result
-    }
-}
-
-private class FakeCountdownTimer : CountdownTimer {
-    private val _remainingSeconds = MutableStateFlow(PuzzleRushViewModel.DURATION_SECONDS)
-    override val remainingSeconds: StateFlow<Int> = _remainingSeconds
-
-    override val isExpired: Boolean
-        get() = _remainingSeconds.value <= 0
-
-    var startCallCount: Int = 0
-        private set
-    var stopCallCount: Int = 0
-        private set
-
-    override fun set(durationSeconds: Int) {
-        _remainingSeconds.value = durationSeconds
-    }
-
-    override fun start(scope: CoroutineScope) {
-        startCallCount++
-    }
-
-    override fun stop() {
-        stopCallCount++
-    }
-
-    override fun elapsedMillis(): Long = 60_000L
-
-    fun simulateTimeExpired() {
-        _remainingSeconds.value = 0
     }
 }

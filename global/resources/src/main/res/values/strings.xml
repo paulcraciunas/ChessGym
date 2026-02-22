@@ -157,6 +157,7 @@
     <string name="generic_yesterday">Yesterday</string>
     <string name="generic_success">Success</string>
     <string name="generic_failed">Failed</string>
+    <string name="generic_new_high_score">🎉 New High Score! 🎉</string>
     <!-- endregion -->
 
     <!-- region Puzzle Dashboard -->
@@ -177,7 +178,6 @@
     <string name="puzzle_rush_play_again">Play Again</string>
     <string name="puzzle_rush_summary_title">Puzzle Rush Complete!</string>
     <string name="puzzle_rush_summary_puzzles_solved">Puzzles Solved</string>
-    <string name="puzzle_rush_summary_new_high_score">New High Score!</string>
     <string name="puzzle_rush_time_up">Time\'s Up!</string>
     <string name="puzzle_rush_puzzle_failed">Puzzle Failed!</string>
     <!-- endregion -->
@@ -192,7 +192,6 @@
     <string name="puzzle_streak_new">New Streak</string>
     <string name="puzzle_streak_summary_title">Streak Complete!</string>
     <string name="puzzle_streak_summary_puzzles_solved">Puzzles Solved</string>
-    <string name="puzzle_streak_summary_new_high_score">New High Score!</string>
     <string name="puzzle_white_to_move">White to move</string>
     <string name="puzzle_black_to_move">Black to move</string>
     <!-- endregion -->
@@ -224,7 +223,6 @@
     <string name="boardvis_dashboard_title">Board Visualization</string>
     <string name="boardvis_dashboard_subtitle">Train your board awareness and visualization skills</string>
     <string name="boardvis_mode_start">Start visualization mode</string>
-    <string name="boardvis_coming_soon">Coming soon</string>
     <!-- endregion -->
 
     <!-- region Find the Square -->
@@ -239,13 +237,18 @@
     <string name="boardvis_play_again">Play Again</string>
     <string name="boardvis_game_over">Time\'s Up!</string>
     <string name="boardvis_final_score">Final Score: %1$d</string>
-    <string name="boardvis_new_high_score">New High Score!</string>
     <string name="boardvis_high_score">High Score: %1$d</string>
     <!-- endregion -->
 
     <!-- region Move the Piece -->
     <string name="boardvis_move_piece_title">Move the Piece</string>
     <string name="boardvis_move_piece_description">Visualize and make the correct moves on the board</string>
+    <string name="boardvis_move_piece_training_mode">Training Mode</string>
+    <string name="boardvis_move_piece_moves_remaining">Moves Remaining: %1$d</string>
+    <string name="boardvis_move_piece_current_score">Score: %1$d</string>
+    <string name="boardvis_move_piece_rules">Move your piece without landing on a square attacked by the opponent. Complete the required moves to advance to the next level!</string>
+    <string name="boardvis_move_piece_captured">Captured!</string>
+    <string name="boardvis_move_piece_high_score">High Score: %1$d</string>
     <!-- endregion -->
 
     <!-- temporary values; these will be deleted as we build features -->
