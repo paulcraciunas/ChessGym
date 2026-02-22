@@ -11,6 +11,7 @@ import com.paulcraciunas.game.logic.impl.RealGameFactory
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertDoesNotThrow
 
 internal class GenerateMoveThePieceBoardImplTest {
     private val randomFactory = SequentialRandomFactory()
@@ -222,6 +223,27 @@ internal class GenerateMoveThePieceBoardImplTest {
                 "Opposing piece $piece at $locus should be black"
             }
         }
+    }
+
+    @Test
+    fun `GIVEN knight with many required moves WHEN invoke THEN retries dead ends and succeeds`() {
+        // Given - a Knight with 6 moves is very likely to hit a dead end on some attempts,
+        // since Knights have limited moves from corners and edges.
+        val requiredMoves = 6
+
+        // When - should not throw despite potential dead-end random walks
+        val result = assertDoesNotThrow {
+            underTest(
+                piece = Piece.Knight,
+                requiredMoves = requiredMoves,
+                opposingPieceCount = 2
+            )
+        }
+
+        // Then
+        assertNotNull(result.playerPieceLocus)
+        assertTrue(result.board.has(Piece.Knight, Side.WHITE, result.playerPieceLocus))
+        assertPathIsSafe(Piece.Knight, result)
     }
 
     // Verifies that a valid path exists from the player's starting position using DFS.

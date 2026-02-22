@@ -17,10 +17,10 @@ import javax.inject.Inject
  * board configurations for the Move the Piece game.
  *
  * Uses a path-first approach:
- * 1. Generate a random valid path for the player piece.
- * 2. Place opposing pieces that do not attack any square on the predetermined path.
- *
- * This guarantees a valid path always exists without retries.
+ * 1. Generate a random valid path for the player piece (retrying if the random
+ *    walk reaches a dead end where no unvisited moves remain).
+ * 2. Place opposing pieces that do not attack or block any square on the
+ *    predetermined path.
  */
 class GenerateMoveThePieceBoardImpl @Inject constructor(
     private val randomLocus: GenerateRandomLociImpl,
@@ -35,18 +35,26 @@ class GenerateMoveThePieceBoardImpl @Inject constructor(
         requiredMoves: Int,
         opposingPieceCount: Int,
     ): MoveThePieceBoardData {
-        val path = generateRandomPath(piece, requiredMoves)
-        val opposingPieces = placeOpposingPieces(piece, path, opposingPieceCount)
-        val board = buildBoard(piece, path.first(), opposingPieces)
+        repeat(MAX_PATH_ATTEMPTS) {
+            val path = generateRandomPath(piece, requiredMoves) ?: return@repeat
+            val opposingPieces = placeOpposingPieces(piece, path, opposingPieceCount)
+            val board = buildBoard(piece, path.first(), opposingPieces)
 
-        return MoveThePieceBoardData(playerPieceLocus = path.first(), board = board)
+            return MoveThePieceBoardData(playerPieceLocus = path.first(), board = board)
+        }
+
+        throw IllegalStateException(
+            "Failed to generate a valid path for $piece with $requiredMoves moves after $MAX_PATH_ATTEMPTS attempts"
+        )
     }
 
     /**
      * Generates a random path for the given [piece] starting from a random position.
      * Each subsequent square is a valid move from the previous one, and no square is revisited.
+     *
+     * @return the path, or null if the random walk reached a dead end
      */
-    private fun generateRandomPath(piece: Piece, requiredMoves: Int): List<Locus> {
+    private fun generateRandomPath(piece: Piece, requiredMoves: Int): List<Locus>? {
         val path = mutableListOf<Locus>()
         val board = gameFactory.builder().buildBoard()
 
@@ -62,6 +70,8 @@ class GenerateMoveThePieceBoardImpl @Inject constructor(
                 board = board,
                 blockers = path.toSet()
             ).toList()
+
+            if (validMoves.isEmpty()) return null
 
             val nextLocus = validMoves[randomFactory.nextInt(0, validMoves.size)]
 
@@ -166,6 +176,7 @@ class GenerateMoveThePieceBoardImpl @Inject constructor(
     }
 
     companion object {
+        private const val MAX_PATH_ATTEMPTS = 20
         private const val MAX_PLACEMENT_ATTEMPTS = 200
         private val OPPOSING_PIECES = listOf(Piece.Rook, Piece.Bishop, Piece.Knight, Piece.Queen)
     }
