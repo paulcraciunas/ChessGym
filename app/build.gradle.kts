@@ -8,6 +8,27 @@ chessGymApp {
     proguardFile("proguard-rules.pro")
 }
 
+android {
+    buildFeatures {
+        buildConfig = true
+    }
+    defaultConfig {
+        val majorVersion = "1"
+        val minorVersion = "0"
+        buildConfigField("String", "APP_VERSION", "\"$majorVersion.$minorVersion\"")
+    }
+    buildTypes {
+        debug {
+            val debugBuildNumber = "100"
+            buildConfigField("String", "BUILD_NUMBER", "\"$debugBuildNumber\"")
+        }
+        release {
+            val releaseBuildNumber: String = project.findProperty("buildNumber") as? String ?: "0"
+            buildConfigField("String", "BUILD_NUMBER", "\"$releaseBuildNumber\"")
+        }
+    }
+}
+
 dependencies {
     implementation(project(":game:puzzles:di"))
     implementation(project(":game:logic:di"))
@@ -28,6 +49,7 @@ dependencies {
     implementation(project(":screens:boardvis:dashboard:ui"))
     implementation(project(":screens:boardvis:squares:ui"))
     implementation(project(":screens:boardvis:pieces:ui"))
+    implementation(project(":screens:settings:ui"))
     implementation(project(":user:di"))
 
     implementation(libs.androidx.lifecycle.runtime.compose)
