@@ -178,8 +178,10 @@ private fun UserStatsCardPreview() {
                 currentRating = 1547,
                 bestRating = 1623,
                 bestPuzzleRushScore = 23,
+                bestPuzzleStreakScore = 15,
+                bestFindTheSquareScore = 42,
+                bestMoveThePieceScore = 18,
                 bestBlindModeScore = 8,
-                bestVisualizationScore = 12
             ),
             modifier = Modifier.padding(16.dp)
         )

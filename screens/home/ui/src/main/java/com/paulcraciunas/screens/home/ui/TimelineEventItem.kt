@@ -40,7 +40,7 @@ internal fun TimelineEventItem(
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         TimelineConnector(
             event = event,
@@ -49,16 +49,15 @@ internal fun TimelineEventItem(
 
         Column(
             modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Text(
                 text = stringResource(event.titleRes()),
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.SemiBold
             )
 
-            // Event stats
             EventStats(event = event)
         }
     }
@@ -74,10 +73,9 @@ private fun TimelineConnector(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Activity icon
         Box(
             modifier = Modifier
-                .size(40.dp)
+                .size(32.dp)
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
                 .border(
@@ -91,17 +89,16 @@ private fun TimelineConnector(
                 painter = painterResource(event.iconRes()),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(20.dp)
+                modifier = Modifier.size(16.dp)
             )
         }
 
-        // Vertical line (if not last)
         if (!isLast) {
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Box(
                 modifier = Modifier
                     .width(2.dp)
-                    .height(40.dp)
+                    .height(24.dp)
                     .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.3f))
             )
         }
@@ -115,6 +112,8 @@ private fun HomeUiState.HistoryEvent.iconRes(): Int = when (this) {
     is HomeUiState.HistoryEvent.BlindModeEvent -> R.drawable.blind_mode_icon
     is HomeUiState.HistoryEvent.BlindModeTrainingEvent -> R.drawable.blind_mode_icon
     is HomeUiState.HistoryEvent.RatedPuzzleEvent -> R.drawable.puzzle_icon
+    is HomeUiState.HistoryEvent.PuzzleStreakEvent -> R.drawable.puzzle_icon
+    is HomeUiState.HistoryEvent.FailedPuzzleEvent -> R.drawable.retry_icon
 }
 
 @StringRes
@@ -124,6 +123,8 @@ private fun HomeUiState.HistoryEvent.titleRes(): Int = when (this) {
     is HomeUiState.HistoryEvent.BlindModeEvent -> R.string.home_title_blind_mode
     is HomeUiState.HistoryEvent.BlindModeTrainingEvent -> R.string.home_title_blind_mode_training
     is HomeUiState.HistoryEvent.RatedPuzzleEvent -> R.string.home_title_rated_puzzle
+    is HomeUiState.HistoryEvent.PuzzleStreakEvent -> R.string.home_title_puzzle_streak
+    is HomeUiState.HistoryEvent.FailedPuzzleEvent -> R.string.home_title_failed_puzzles
 }
 
 @Preview("TimelineEventItem")
@@ -133,7 +134,7 @@ private fun TimelineEventItemPreview() {
     ChessGymTheme {
         Column(
             modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             TimelineEventItem(
                 event = HomeUiState.HistoryEvent.PuzzleRushEvent(highScore = 18, runs = 5),
@@ -146,12 +147,12 @@ private fun TimelineEventItemPreview() {
             )
 
             TimelineEventItem(
-                event = HomeUiState.HistoryEvent.RatedPuzzleEvent(ratingChange = -15, count = 3),
+                event = HomeUiState.HistoryEvent.PuzzleStreakEvent(finalStreakCount = 8),
                 isLast = false
             )
 
             TimelineEventItem(
-                event = HomeUiState.HistoryEvent.BlindModeEvent(ratingChange = -15, gamesPlayed = 3),
+                event = HomeUiState.HistoryEvent.FailedPuzzleEvent(puzzlesSolved = 3),
                 isLast = false
             )
 

@@ -54,6 +54,8 @@
     <string name="home_title_blind_mode">Blind Mode</string>
     <string name="home_title_blind_mode_training">Blind Mode Training</string>
     <string name="home_title_rated_puzzle">Rated Puzzles</string>
+    <string name="home_title_puzzle_streak">Puzzle Streak</string>
+    <string name="home_title_failed_puzzles">Failed Puzzles</string>
 
     <!-- Timeline stat labels -->
     <plurals name="home_timeline_stat_run">
@@ -75,6 +77,8 @@
     <string name="home_timeline_stat_score">HighScore</string>
     <string name="home_timeline_stat_moves">Moves</string>
     <string name="home_timeline_stat_best_moves">Best Moves</string>
+    <string name="home_timeline_stat_streak">Streak</string>
+    <string name="home_timeline_stat_solved">Solved</string>
     <!-- endregion -->
 
     <!-- region User stats -->
@@ -91,7 +95,9 @@
     <string name="user_stat_high_score_rated_puzzle">Best Rated Puzzle</string>
     <string name="user_stat_high_score_puzzles_rush">Best Puzzle Rush</string>
     <string name="user_stat_high_score_blind_mode">Best Blind Mode</string>
-    <string name="user_stat_high_score_board_visualisation">Best Board Visualization</string>
+    <string name="user_stat_high_score_puzzle_streak">Best Puzzle Streak</string>
+    <string name="user_stat_high_score_find_the_square">Best Find the Square</string>
+    <string name="user_stat_high_score_move_the_piece">Best Move the Piece</string>
     <!-- endregion -->
 
     <!-- region Loading -->
@@ -155,6 +161,10 @@
     <string name="generic_retry">Retry</string>
     <string name="generic_today">Today</string>
     <string name="generic_yesterday">Yesterday</string>
+    <string name="generic_this_week">This Week</string>
+    <string name="generic_this_month">This Month</string>
+    <string name="generic_this_year">This Year</string>
+    <string name="generic_older">Older</string>
     <string name="generic_success">Success</string>
     <string name="generic_failed">Failed</string>
     <string name="generic_new_high_score">🎉 New High Score! 🎉</string>

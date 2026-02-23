@@ -63,7 +63,6 @@ internal fun HighScoresCard(
             .animateContentSize()
     ) {
         Column {
-            // Header with title and chevron
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -96,7 +95,6 @@ internal fun HighScoresCard(
                 )
             }
 
-            // Collapsible content
             AnimatedVisibility(
                 visible = isExpanded,
                 enter = expandVertically(animationSpec = tween(300)) + fadeIn(animationSpec = tween(300)),
@@ -115,12 +113,20 @@ internal fun HighScoresCard(
                         value = stats.bestPuzzleRushScore.toString()
                     )
                     StatRow(
+                        label = stringResource(R.string.user_stat_high_score_puzzle_streak),
+                        value = stats.bestPuzzleStreakScore.toString()
+                    )
+                    StatRow(
                         label = stringResource(R.string.user_stat_high_score_blind_mode),
                         value = stats.bestBlindModeScore.toString()
                     )
                     StatRow(
-                        label = stringResource(R.string.user_stat_high_score_board_visualisation),
-                        value = stats.bestVisualizationScore.toString()
+                        label = stringResource(R.string.user_stat_high_score_find_the_square),
+                        value = stats.bestFindTheSquareScore.toString()
+                    )
+                    StatRow(
+                        label = stringResource(R.string.user_stat_high_score_move_the_piece),
+                        value = stats.bestMoveThePieceScore.toString()
                     )
                 }
             }
@@ -141,8 +147,10 @@ private fun HighScoresCardPreview() {
                 currentRating = 1547,
                 bestRating = 1623,
                 bestPuzzleRushScore = 23,
+                bestPuzzleStreakScore = 15,
+                bestFindTheSquareScore = 42,
+                bestMoveThePieceScore = 18,
                 bestBlindModeScore = 8,
-                bestVisualizationScore = 12
             ),
             modifier = Modifier.padding(16.dp)
         )

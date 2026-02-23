@@ -3,12 +3,14 @@ package com.paulcraciunas.screens.home.vm
 import com.paulcraciunas.user.api.User
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
 internal class HomeUiStateAdapterTest {
 
     private val underTest = HomeUiStateAdapter()
+    private val today = LocalDate.of(2026, 2, 17) // Tuesday
 
     @Test
     fun `GIVEN defaultUser WHEN adapt THEN returnsCorrectUiState`() {
@@ -16,28 +18,29 @@ internal class HomeUiStateAdapterTest {
         val user = User()
 
         // When
-        val result = underTest.adapt(user)
+        val result = underTest.adapt(user, today)
 
         // Then
         assertEquals("Chess Enthusiast", result.userProfile.name)
         assertEquals(1200, result.userProfile.currentRating)
         assertEquals(0, result.userProfile.totalActivities)
-        assertEquals(LocalDate.now(), result.userProfile.joinDate)
 
         assertEquals(0, result.userStats.puzzlesPlayed)
         assertEquals(0, result.userStats.puzzlesSolved)
         assertEquals(1200, result.userStats.currentRating)
         assertEquals(1200, result.userStats.bestRating)
         assertEquals(0, result.userStats.bestPuzzleRushScore)
+        assertEquals(0, result.userStats.bestPuzzleStreakScore)
+        assertEquals(0, result.userStats.bestFindTheSquareScore)
+        assertEquals(0, result.userStats.bestMoveThePieceScore)
         assertEquals(400, result.userStats.bestBlindModeScore)
-        assertEquals(0, result.userStats.bestVisualizationScore)
 
         assertEquals(emptyList<HomeUiState.HistoryGroup>(), result.history)
         assertFalse(result.isLoading)
     }
 
     @Test
-    fun `GIVEN userWithCustomProfile_WHEN_adapt_THEN_userProfileCorrectlyMapped`() {
+    fun `GIVEN userWithCustomProfile WHEN adapt THEN userProfileCorrectlyMapped`() {
         // Given
         val user = User(
             profile = User.Profile(
@@ -50,17 +53,17 @@ internal class HomeUiStateAdapterTest {
         )
 
         // When
-        val result = underTest.adapt(user)
+        val result = underTest.adapt(user, today)
 
         // Then
         assertEquals("John Doe", result.userProfile.name)
         assertEquals(1450, result.userProfile.currentRating)
-        assertEquals(0, result.userProfile.totalActivities) // No history items
+        assertEquals(0, result.userProfile.totalActivities)
         assertEquals(LocalDate.of(2023, 5, 15), result.userProfile.joinDate)
     }
 
     @Test
-    fun `GIVEN userWithStatistics_WHEN_adapt_THEN_userStatsCorrectlyMapped`() {
+    fun `GIVEN userWithStatistics WHEN adapt THEN userStatsCorrectlyMapped`() {
         // Given
         val user = User(
             statistics = User.Statistics(
@@ -72,13 +75,15 @@ internal class HomeUiStateAdapterTest {
             highScores = User.HighScores(
                 ratedPuzzle = 1600,
                 puzzleRush = 85,
-                boardVisualization = 92,
+                puzzleStreak = 42,
+                findTheSquare = 25,
+                moveThePiece = 15,
                 blindMode = 800
             )
         )
 
         // When
-        val result = underTest.adapt(user)
+        val result = underTest.adapt(user, today)
 
         // Then
         assertEquals(150, result.userStats.puzzlesPlayed)
@@ -86,17 +91,19 @@ internal class HomeUiStateAdapterTest {
         assertEquals(1550, result.userStats.currentRating)
         assertEquals(1600, result.userStats.bestRating)
         assertEquals(85, result.userStats.bestPuzzleRushScore)
+        assertEquals(42, result.userStats.bestPuzzleStreakScore)
+        assertEquals(25, result.userStats.bestFindTheSquareScore)
+        assertEquals(15, result.userStats.bestMoveThePieceScore)
         assertEquals(800, result.userStats.bestBlindModeScore)
-        assertEquals(92, result.userStats.bestVisualizationScore)
     }
 
     @Test
-    fun `GIVEN userWithPuzzleRushHistory_WHEN_adapt_THEN_puzzleRushEventCorrectlyMapped`() {
+    fun `GIVEN userWithPuzzleRushHistory WHEN adapt THEN puzzleRushEventCorrectlyMapped`() {
         // Given
         val user = User(
             history = listOf(
                 User.HistoryItem(
-                    timestamp = LocalDate.of(2024, 1, 15),
+                    timestamp = today,
                     data = User.HistoryItem.HistoryItemData.PuzzleRushData(
                         tries = 3,
                         bestScore = 85,
@@ -107,11 +114,11 @@ internal class HomeUiStateAdapterTest {
         )
 
         // When
-        val result = underTest.adapt(user)
+        val result = underTest.adapt(user, today)
 
         // Then
         assertEquals(1, result.history.size)
-        assertEquals(LocalDate.of(2024, 1, 15), result.history[0].date)
+        assertEquals(HomeUiStateAdapter.LABEL_TODAY, result.history[0].label)
         assertEquals(1, result.history[0].events.size)
 
         val event = result.history[0].events[0] as HomeUiState.HistoryEvent.PuzzleRushEvent
@@ -120,12 +127,12 @@ internal class HomeUiStateAdapterTest {
     }
 
     @Test
-    fun `GIVEN userWithBoardVisualizationHistory_WHEN_adapt_THEN_boardVizEventCorrectlyMapped`() {
+    fun `GIVEN userWithBoardVisualizationHistory WHEN adapt THEN boardVizEventCorrectlyMapped`() {
         // Given
         val user = User(
             history = listOf(
                 User.HistoryItem(
-                    timestamp = LocalDate.of(2024, 1, 14),
+                    timestamp = today,
                     data = User.HistoryItem.HistoryItemData.BoardVisualizationData(
                         sessionsCompleted = 5,
                         timeSpent = 900000L
@@ -135,7 +142,7 @@ internal class HomeUiStateAdapterTest {
         )
 
         // When
-        val result = underTest.adapt(user)
+        val result = underTest.adapt(user, today)
 
         // Then
         assertEquals(1, result.history.size)
@@ -144,12 +151,12 @@ internal class HomeUiStateAdapterTest {
     }
 
     @Test
-    fun `GIVEN userWithBlindModeTrainingHistory_WHEN_adapt_THEN_blindModeTrainingEventCorrectlyMapped`() {
+    fun `GIVEN userWithBlindModeTrainingHistory WHEN adapt THEN blindModeTrainingEventCorrectlyMapped`() {
         // Given
         val user = User(
             history = listOf(
                 User.HistoryItem(
-                    timestamp = LocalDate.of(2024, 1, 13),
+                    timestamp = today,
                     data = User.HistoryItem.HistoryItemData.BlindModeTrainingData(
                         tries = 4,
                         mostMovesCompleted = 18,
@@ -160,7 +167,7 @@ internal class HomeUiStateAdapterTest {
         )
 
         // When
-        val result = underTest.adapt(user)
+        val result = underTest.adapt(user, today)
 
         // Then
         assertEquals(1, result.history.size)
@@ -170,12 +177,12 @@ internal class HomeUiStateAdapterTest {
     }
 
     @Test
-    fun `GIVEN userWithBlindModeRatedHistory_WHEN_adapt_THEN_blindModeEventCorrectlyMapped`() {
+    fun `GIVEN userWithBlindModeRatedHistory WHEN adapt THEN blindModeEventCorrectlyMapped`() {
         // Given
         val user = User(
             history = listOf(
                 User.HistoryItem(
-                    timestamp = LocalDate.of(2024, 1, 12),
+                    timestamp = today,
                     data = User.HistoryItem.HistoryItemData.BlindModeData(
                         played = 2,
                         ratingChange = -25,
@@ -186,7 +193,7 @@ internal class HomeUiStateAdapterTest {
         )
 
         // When
-        val result = underTest.adapt(user)
+        val result = underTest.adapt(user, today)
 
         // Then
         assertEquals(1, result.history.size)
@@ -196,12 +203,12 @@ internal class HomeUiStateAdapterTest {
     }
 
     @Test
-    fun `GIVEN userWithRatedPuzzleHistory_WHEN_adapt_THEN_ratedPuzzleEventCorrectlyMapped`() {
+    fun `GIVEN userWithRatedPuzzleHistory WHEN adapt THEN ratedPuzzleEventCorrectlyMapped`() {
         // Given
         val user = User(
             history = listOf(
                 User.HistoryItem(
-                    timestamp = LocalDate.of(2024, 1, 11),
+                    timestamp = today,
                     data = User.HistoryItem.HistoryItemData.RatedPuzzleData(
                         puzzlesPlayed = 15,
                         puzzlesSolved = 12,
@@ -213,7 +220,7 @@ internal class HomeUiStateAdapterTest {
         )
 
         // When
-        val result = underTest.adapt(user)
+        val result = underTest.adapt(user, today)
 
         // Then
         assertEquals(1, result.history.size)
@@ -223,243 +230,352 @@ internal class HomeUiStateAdapterTest {
     }
 
     @Test
-    fun `GIVEN userWithMultipleHistoryItemsOnSameDate_WHEN_adapt_THEN_eventsGroupedByDate`() {
+    fun `GIVEN userWithPuzzleStreakHistory WHEN adapt THEN puzzleStreakEventCorrectlyMapped`() {
         // Given
-        val date = LocalDate.of(2024, 1, 15)
         val user = User(
             history = listOf(
                 User.HistoryItem(
-                    timestamp = date,
-                    data = User.HistoryItem.HistoryItemData.PuzzleRushData(
-                        tries = 2,
-                        bestScore = 75,
-                        timeSpent = 900000L
-                    )
-                ),
-                User.HistoryItem(
-                    timestamp = date,
-                    data = User.HistoryItem.HistoryItemData.BoardVisualizationData(
-                        sessionsCompleted = 3,
-                        timeSpent = 600000L
+                    timestamp = today,
+                    data = User.HistoryItem.HistoryItemData.PuzzleStreakData(
+                        finalStreakCount = 12,
+                        timeSpent = 3600000L
                     )
                 )
             )
         )
 
         // When
-        val result = underTest.adapt(user)
+        val result = underTest.adapt(user, today)
 
         // Then
-        assertEquals(1, result.history.size) // Same date, so grouped together
-        assertEquals(date, result.history[0].date)
-        assertEquals(2, result.history[0].events.size)
-
-        val puzzleRushEvent = result.history[0].events[0] as HomeUiState.HistoryEvent.PuzzleRushEvent
-        assertEquals(75, puzzleRushEvent.highScore)
-        assertEquals(2, puzzleRushEvent.runs)
-
-        val boardVizEvent = result.history[0].events[1] as HomeUiState.HistoryEvent.BoardVizEvent
-        assertEquals(3, boardVizEvent.runs)
+        assertEquals(1, result.history.size)
+        val event = result.history[0].events[0] as HomeUiState.HistoryEvent.PuzzleStreakEvent
+        assertEquals(12, event.finalStreakCount)
     }
 
     @Test
-    fun `GIVEN userWithMultipleHistoryItemsOnDifferentDates_WHEN_adapt_THEN_eventsGroupedAndSortedByDate`() {
+    fun `GIVEN userWithFailedPuzzleHistory WHEN adapt THEN failedPuzzleEventCorrectlyMapped`() {
         // Given
-        val today = LocalDate.of(2024, 1, 15)
-        val yesterday = LocalDate.of(2024, 1, 14)
-        val twoDaysAgo = LocalDate.of(2024, 1, 13)
-
         val user = User(
             history = listOf(
-                // Add items in non-chronological order to test sorting
                 User.HistoryItem(
-                    timestamp = yesterday,
+                    timestamp = today,
+                    data = User.HistoryItem.HistoryItemData.FailedPuzzleData(
+                        puzzlesSolved = 5,
+                        timeSpent = 1500000L
+                    )
+                )
+            )
+        )
+
+        // When
+        val result = underTest.adapt(user, today)
+
+        // Then
+        assertEquals(1, result.history.size)
+        val event = result.history[0].events[0] as HomeUiState.HistoryEvent.FailedPuzzleEvent
+        assertEquals(5, event.puzzlesSolved)
+    }
+
+    @Test
+    fun `GIVEN itemsOnSameDate WHEN adapt THEN eventsGroupedTogether`() {
+        // Given
+        val user = User(
+            history = listOf(
+                User.HistoryItem(
+                    timestamp = today,
                     data = User.HistoryItem.HistoryItemData.PuzzleRushData(
-                        tries = 1,
-                        bestScore = 60,
-                        timeSpent = 300000L
+                        tries = 2, bestScore = 75, timeSpent = 900000L
                     )
                 ),
                 User.HistoryItem(
                     timestamp = today,
                     data = User.HistoryItem.HistoryItemData.BoardVisualizationData(
-                        sessionsCompleted = 2,
-                        timeSpent = 400000L
-                    )
-                ),
-                User.HistoryItem(
-                    timestamp = twoDaysAgo,
-                    data = User.HistoryItem.HistoryItemData.RatedPuzzleData(
-                        puzzlesPlayed = 5,
-                        puzzlesSolved = 4,
-                        ratingChange = 15,
-                        timeSpent = 1000000L
+                        sessionsCompleted = 3, timeSpent = 600000L
                     )
                 )
             )
         )
 
         // When
-        val result = underTest.adapt(user)
-
-        // Then
-        assertEquals(3, result.history.size)
-
-        // Should be sorted by date descending (most recent first)
-        assertEquals(today, result.history[0].date)
-        assertEquals(yesterday, result.history[1].date)
-        assertEquals(twoDaysAgo, result.history[2].date)
-
-        // Check each group has correct events
-        assertEquals(1, result.history[0].events.size) // Today: 1 event
-        assertEquals(1, result.history[1].events.size) // Yesterday: 1 event  
-        assertEquals(1, result.history[2].events.size) // Two days ago: 1 event
-    }
-
-    @Test
-    fun `GIVEN userWithAllHistoryEventTypes_WHEN_adapt_THEN_allEventsCorrectlyMapped`() {
-        // Given
-        val date = LocalDate.of(2024, 1, 15)
-        val user = User(
-            history = listOf(
-                User.HistoryItem(
-                    timestamp = date,
-                    data = User.HistoryItem.HistoryItemData.PuzzleRushData(
-                        tries = 3,
-                        bestScore = 85,
-                        timeSpent = 900000L
-                    )
-                ),
-                User.HistoryItem(
-                    timestamp = date,
-                    data = User.HistoryItem.HistoryItemData.BoardVisualizationData(
-                        sessionsCompleted = 4,
-                        timeSpent = 800000L
-                    )
-                ),
-                User.HistoryItem(
-                    timestamp = date,
-                    data = User.HistoryItem.HistoryItemData.BlindModeTrainingData(
-                        tries = 2,
-                        mostMovesCompleted = 12,
-                        timeSpent = 700000L
-                    )
-                ),
-                User.HistoryItem(
-                    timestamp = date,
-                    data = User.HistoryItem.HistoryItemData.BlindModeData(
-                        played = 1,
-                        ratingChange = 20,
-                        timeSpent = 500000L
-                    )
-                ),
-                User.HistoryItem(
-                    timestamp = date,
-                    data = User.HistoryItem.HistoryItemData.RatedPuzzleData(
-                        puzzlesPlayed = 10,
-                        puzzlesSolved = 8,
-                        ratingChange = 25,
-                        timeSpent = 1200000L
-                    )
-                )
-            )
-        )
-
-        // When
-        val result = underTest.adapt(user)
+        val result = underTest.adapt(user, today)
 
         // Then
         assertEquals(1, result.history.size)
-        assertEquals(5, result.history[0].events.size)
-
-        val events = result.history[0].events
-
-        // Verify each event type is correctly mapped
-        val puzzleRushEvent = events[0] as HomeUiState.HistoryEvent.PuzzleRushEvent
-        assertEquals(85, puzzleRushEvent.highScore)
-        assertEquals(3, puzzleRushEvent.runs)
-
-        val boardVizEvent = events[1] as HomeUiState.HistoryEvent.BoardVizEvent
-        assertEquals(4, boardVizEvent.runs)
-
-        val blindTrainingEvent = events[2] as HomeUiState.HistoryEvent.BlindModeTrainingEvent
-        assertEquals(12, blindTrainingEvent.mostMovesCompleted)
-        assertEquals(2, blindTrainingEvent.runs)
-
-        val blindModeEvent = events[3] as HomeUiState.HistoryEvent.BlindModeEvent
-        assertEquals(20, blindModeEvent.ratingChange)
-        assertEquals(1, blindModeEvent.gamesPlayed)
-
-        val ratedPuzzleEvent = events[4] as HomeUiState.HistoryEvent.RatedPuzzleEvent
-        assertEquals(25, ratedPuzzleEvent.ratingChange)
-        assertEquals(10, ratedPuzzleEvent.count)
+        assertEquals(HomeUiStateAdapter.LABEL_TODAY, result.history[0].label)
+        assertEquals(2, result.history[0].events.size)
+        assertTrue(result.history[0].events[0] is HomeUiState.HistoryEvent.PuzzleRushEvent)
+        assertTrue(result.history[0].events[1] is HomeUiState.HistoryEvent.BoardVizEvent)
     }
 
     @Test
-    fun `GIVEN userWithHistoryItems_WHEN_adapt_THEN_totalActivitiesMatchesHistorySize`() {
-        // Given
+    fun `GIVEN itemsAcrossTimePeriods WHEN adapt THEN groupedByPeriodAndSorted`() {
+        // Given - use Thursday Feb 19 so there's room for "This Week" entries
+        val thursday = LocalDate.of(2026, 2, 19) // Thursday
+        val yesterday = thursday.minusDays(1) // Wednesday Feb 18
+        val thisWeek = thursday.minusDays(3) // Monday Feb 16 (start of week)
+        val thisMonth = thursday.minusDays(12) // Feb 7
+        val thisYear = LocalDate.of(2026, 1, 5) // January
+        val older = LocalDate.of(2025, 6, 15) // Last year
+
         val user = User(
             history = listOf(
                 User.HistoryItem(
-                    timestamp = LocalDate.of(2024, 1, 15),
+                    timestamp = older,
                     data = User.HistoryItem.HistoryItemData.PuzzleRushData(
-                        tries = 1,
-                        bestScore = 50,
-                        timeSpent = 300000L
+                        tries = 1, bestScore = 50, timeSpent = 300000L
                     )
                 ),
                 User.HistoryItem(
-                    timestamp = LocalDate.of(2024, 1, 14),
+                    timestamp = thursday,
                     data = User.HistoryItem.HistoryItemData.BoardVisualizationData(
-                        sessionsCompleted = 1,
-                        timeSpent = 200000L
+                        sessionsCompleted = 2, timeSpent = 400000L
                     )
                 ),
                 User.HistoryItem(
-                    timestamp = LocalDate.of(2024, 1, 13),
+                    timestamp = thisMonth,
                     data = User.HistoryItem.HistoryItemData.RatedPuzzleData(
-                        puzzlesPlayed = 5,
-                        puzzlesSolved = 3,
-                        ratingChange = 10,
-                        timeSpent = 600000L
+                        puzzlesPlayed = 5, puzzlesSolved = 4, ratingChange = 15, timeSpent = 1000000L
+                    )
+                ),
+                User.HistoryItem(
+                    timestamp = yesterday,
+                    data = User.HistoryItem.HistoryItemData.BlindModeData(
+                        played = 1, ratingChange = 10, timeSpent = 500000L
+                    )
+                ),
+                User.HistoryItem(
+                    timestamp = thisWeek,
+                    data = User.HistoryItem.HistoryItemData.PuzzleStreakData(
+                        finalStreakCount = 8, timeSpent = 2000000L
+                    )
+                ),
+                User.HistoryItem(
+                    timestamp = thisYear,
+                    data = User.HistoryItem.HistoryItemData.FailedPuzzleData(
+                        puzzlesSolved = 3, timeSpent = 900000L
                     )
                 )
             )
         )
 
         // When
-        val result = underTest.adapt(user)
+        val result = underTest.adapt(user, thursday)
+
+        // Then - sorted by period order
+        assertEquals(6, result.history.size)
+        assertEquals(HomeUiStateAdapter.LABEL_TODAY, result.history[0].label)
+        assertEquals(HomeUiStateAdapter.LABEL_YESTERDAY, result.history[1].label)
+        assertEquals(HomeUiStateAdapter.LABEL_THIS_WEEK, result.history[2].label)
+        assertEquals(HomeUiStateAdapter.LABEL_THIS_MONTH, result.history[3].label)
+        assertEquals(HomeUiStateAdapter.LABEL_THIS_YEAR, result.history[4].label)
+        assertEquals(HomeUiStateAdapter.LABEL_OLDER, result.history[5].label)
+    }
+
+    @Test
+    fun `GIVEN multipleItemsInSamePeriod WHEN adapt THEN groupedUnderSameLabel`() {
+        // Given - use Thursday so there are "This Week" days between yesterday and start of week
+        val thursday = LocalDate.of(2026, 2, 19) // Thursday
+        val tuesday = thursday.minusDays(2) // Tuesday Feb 17 - this week, not today/yesterday
+        val monday = thursday.minusDays(3) // Monday Feb 16 - this week, not today/yesterday
+
+        val user = User(
+            history = listOf(
+                User.HistoryItem(
+                    timestamp = tuesday,
+                    data = User.HistoryItem.HistoryItemData.PuzzleRushData(
+                        tries = 1, bestScore = 30, timeSpent = 200000L
+                    )
+                ),
+                User.HistoryItem(
+                    timestamp = monday,
+                    data = User.HistoryItem.HistoryItemData.BoardVisualizationData(
+                        sessionsCompleted = 1, timeSpent = 100000L
+                    )
+                )
+            )
+        )
+
+        // When
+        val result = underTest.adapt(user, thursday)
+
+        // Then - both should be in "This Week"
+        assertEquals(1, result.history.size)
+        assertEquals(HomeUiStateAdapter.LABEL_THIS_WEEK, result.history[0].label)
+        assertEquals(2, result.history[0].events.size)
+    }
+
+    @Test
+    fun `GIVEN userWithAllHistoryEventTypes WHEN adapt THEN allEventsCorrectlyMapped`() {
+        // Given
+        val user = User(
+            history = listOf(
+                User.HistoryItem(
+                    timestamp = today,
+                    data = User.HistoryItem.HistoryItemData.PuzzleRushData(
+                        tries = 3, bestScore = 85, timeSpent = 900000L
+                    )
+                ),
+                User.HistoryItem(
+                    timestamp = today,
+                    data = User.HistoryItem.HistoryItemData.BoardVisualizationData(
+                        sessionsCompleted = 4, timeSpent = 800000L
+                    )
+                ),
+                User.HistoryItem(
+                    timestamp = today,
+                    data = User.HistoryItem.HistoryItemData.BlindModeTrainingData(
+                        tries = 2, mostMovesCompleted = 12, timeSpent = 700000L
+                    )
+                ),
+                User.HistoryItem(
+                    timestamp = today,
+                    data = User.HistoryItem.HistoryItemData.BlindModeData(
+                        played = 1, ratingChange = 20, timeSpent = 500000L
+                    )
+                ),
+                User.HistoryItem(
+                    timestamp = today,
+                    data = User.HistoryItem.HistoryItemData.RatedPuzzleData(
+                        puzzlesPlayed = 10, puzzlesSolved = 8, ratingChange = 25, timeSpent = 1200000L
+                    )
+                ),
+                User.HistoryItem(
+                    timestamp = today,
+                    data = User.HistoryItem.HistoryItemData.PuzzleStreakData(
+                        finalStreakCount = 7, timeSpent = 2000000L
+                    )
+                ),
+                User.HistoryItem(
+                    timestamp = today,
+                    data = User.HistoryItem.HistoryItemData.FailedPuzzleData(
+                        puzzlesSolved = 3, timeSpent = 800000L
+                    )
+                )
+            )
+        )
+
+        // When
+        val result = underTest.adapt(user, today)
+
+        // Then
+        assertEquals(1, result.history.size)
+        assertEquals(7, result.history[0].events.size)
+
+        val events = result.history[0].events
+        assertTrue(events[0] is HomeUiState.HistoryEvent.PuzzleRushEvent)
+        assertTrue(events[1] is HomeUiState.HistoryEvent.BoardVizEvent)
+        assertTrue(events[2] is HomeUiState.HistoryEvent.BlindModeTrainingEvent)
+        assertTrue(events[3] is HomeUiState.HistoryEvent.BlindModeEvent)
+        assertTrue(events[4] is HomeUiState.HistoryEvent.RatedPuzzleEvent)
+        assertTrue(events[5] is HomeUiState.HistoryEvent.PuzzleStreakEvent)
+        assertTrue(events[6] is HomeUiState.HistoryEvent.FailedPuzzleEvent)
+    }
+
+    @Test
+    fun `GIVEN userWithHistoryItems WHEN adapt THEN totalActivitiesMatchesHistorySize`() {
+        // Given
+        val user = User(
+            history = listOf(
+                User.HistoryItem(
+                    timestamp = today,
+                    data = User.HistoryItem.HistoryItemData.PuzzleRushData(
+                        tries = 1, bestScore = 50, timeSpent = 300000L
+                    )
+                ),
+                User.HistoryItem(
+                    timestamp = today.minusDays(1),
+                    data = User.HistoryItem.HistoryItemData.BoardVisualizationData(
+                        sessionsCompleted = 1, timeSpent = 200000L
+                    )
+                ),
+                User.HistoryItem(
+                    timestamp = today.minusDays(2),
+                    data = User.HistoryItem.HistoryItemData.RatedPuzzleData(
+                        puzzlesPlayed = 5, puzzlesSolved = 3, ratingChange = 10, timeSpent = 600000L
+                    )
+                )
+            )
+        )
+
+        // When
+        val result = underTest.adapt(user, today)
 
         // Then
         assertEquals(3, result.userProfile.totalActivities)
-        assertEquals(3, result.history.size) // 3 different dates
     }
 
     @Test
-    fun `GIVEN userWithExtremeDateValues WHEN adapt THEN datesCorrectlyHandled`() {
+    fun `GIVEN emptyHistory WHEN adapt THEN historyIsEmpty`() {
         // Given
-        val farPast = LocalDate.of(1970, 1, 1)
-        val farFuture = LocalDate.of(2099, 12, 31)
-
-        val user = User(
-            profile = User.Profile(joinDate = farPast),
-            history = listOf(
-                User.HistoryItem(
-                    timestamp = farFuture,
-                    data = User.HistoryItem.HistoryItemData.PuzzleRushData(
-                        tries = 1,
-                        bestScore = 100,
-                        timeSpent = 300000L
-                    )
-                )
-            )
-        )
+        val user = User(history = emptyList())
 
         // When
-        val result = underTest.adapt(user)
+        val result = underTest.adapt(user, today)
 
         // Then
-        assertEquals(farPast, result.userProfile.joinDate)
-        assertEquals(farFuture, result.history[0].date)
+        assertEquals(emptyList<HomeUiState.HistoryGroup>(), result.history)
     }
-} 
+
+    @Test
+    fun `GIVEN timePeriod WHEN dateIsToday THEN returnsToday`() {
+        assertEquals(
+            HomeUiStateAdapter.LABEL_TODAY,
+            HomeUiStateAdapter.timePeriod(today, today)
+        )
+    }
+
+    @Test
+    fun `GIVEN timePeriod WHEN dateIsYesterday THEN returnsYesterday`() {
+        assertEquals(
+            HomeUiStateAdapter.LABEL_YESTERDAY,
+            HomeUiStateAdapter.timePeriod(today.minusDays(1), today)
+        )
+    }
+
+    @Test
+    fun `GIVEN timePeriod WHEN dateIsThisWeek THEN returnsThisWeek`() {
+        // today is Tuesday Feb 17, Monday is Feb 16
+        // Sunday Feb 15 is in this week (starts Monday Feb 16)... actually no.
+        // Feb 17 is Tuesday, start of week (Monday) is Feb 16.
+        // Feb 15 (Sunday) would be before Monday Feb 16 -> not This Week
+        // Feb 16 (Monday) is yesterday. So "This Week" means Monday..Saturday excluding today/yesterday
+        // Actually Monday is yesterday in this case.
+        // Let's test with a date that's clearly in the week but not today/yesterday
+        // Today is Tuesday, so nothing is "This Week" that isn't today or yesterday
+        // Let's use a Wednesday as today so we have more room
+        val wednesday = LocalDate.of(2026, 2, 18)
+        val monday = wednesday.minusDays(2) // Not yesterday, still this week
+        assertEquals(
+            HomeUiStateAdapter.LABEL_THIS_WEEK,
+            HomeUiStateAdapter.timePeriod(monday, wednesday)
+        )
+    }
+
+    @Test
+    fun `GIVEN timePeriod WHEN dateIsThisMonth THEN returnsThisMonth`() {
+        val earlyFeb = LocalDate.of(2026, 2, 5)
+        assertEquals(
+            HomeUiStateAdapter.LABEL_THIS_MONTH,
+            HomeUiStateAdapter.timePeriod(earlyFeb, today)
+        )
+    }
+
+    @Test
+    fun `GIVEN timePeriod WHEN dateIsThisYear THEN returnsThisYear`() {
+        val january = LocalDate.of(2026, 1, 10)
+        assertEquals(
+            HomeUiStateAdapter.LABEL_THIS_YEAR,
+            HomeUiStateAdapter.timePeriod(january, today)
+        )
+    }
+
+    @Test
+    fun `GIVEN timePeriod WHEN dateIsOlder THEN returnsOlder`() {
+        val lastYear = LocalDate.of(2025, 6, 15)
+        assertEquals(
+            HomeUiStateAdapter.LABEL_OLDER,
+            HomeUiStateAdapter.timePeriod(lastYear, today)
+        )
+    }
+}
