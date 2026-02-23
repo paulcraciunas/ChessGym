@@ -261,6 +261,27 @@
     <string name="boardvis_move_piece_high_score">High Score: %1$d</string>
     <!-- endregion -->
 
+    <!-- region Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_section_general">General</string>
+    <string name="settings_section_ui">Appearance</string>
+    <string name="settings_haptic_feedback">Haptic feedback</string>
+    <string name="settings_haptic_feedback_description">Vibrate on interactions</string>
+    <string name="settings_auto_promote">Auto-promote</string>
+    <string name="settings_auto_promote_description">Automatically promote pawns to queen</string>
+    <string name="settings_show_borders">Show borders</string>
+    <string name="settings_show_borders_description">Display coordinates around the board</string>
+    <string name="settings_highlight_legal_moves">Highlight legal moves</string>
+    <string name="settings_highlight_legal_moves_description">Show available squares when a piece is selected</string>
+    <string name="settings_light_mode">Theme</string>
+    <string name="settings_light_mode_light">Light</string>
+    <string name="settings_light_mode_dark">Dark</string>
+    <string name="settings_light_mode_system">System</string>
+    <string name="settings_enable_animations">Animations</string>
+    <string name="settings_enable_animations_description">Enable UI animations</string>
+    <string name="settings_build_version">Version %1$s-%2$s</string>
+    <!-- endregion -->
+
     <!-- temporary values; these will be deleted as we build features -->
     <string name="under_construction">Under Construction</string>
 
