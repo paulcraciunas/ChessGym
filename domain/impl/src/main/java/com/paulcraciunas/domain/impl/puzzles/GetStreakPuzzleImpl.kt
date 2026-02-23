@@ -24,8 +24,8 @@ class GetStreakPuzzleImpl @Inject constructor(
 
     override suspend fun invoke(): GetStreakPuzzle.Data {
         val user = userRepository.get()
-        val currentCount = user.puzzleStreak.currentCount
-        val lastPuzzleId = user.puzzleStreak.lastPuzzleId
+        val currentCount = user.ratings.puzzleStreak.currentCount
+        val lastPuzzleId = user.ratings.puzzleStreak.lastPuzzleId
 
         // If we have a saved puzzle ID, load that puzzle to continue the streak
         if (lastPuzzleId != null) {
@@ -45,7 +45,9 @@ class GetStreakPuzzleImpl @Inject constructor(
 
         // Save the puzzle ID so user can continue later
         val updatedUser = user.copy(
-            puzzleStreak = user.puzzleStreak.copy(lastPuzzleId = puzzle.id)
+            ratings = user.ratings.copy(
+                puzzleStreak = user.ratings.puzzleStreak.copy(lastPuzzleId = puzzle.id)
+            )
         )
         userRepository.update(updatedUser)
 
