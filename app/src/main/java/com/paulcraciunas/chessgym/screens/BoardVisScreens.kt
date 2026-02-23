@@ -44,6 +44,7 @@ internal fun FindTheSquare(
     tabNavController: NavHostController,
     showBorders: Boolean,
     enableVibrations: Boolean,
+    enableAnimations: Boolean,
 ) {
     val vm: FindTheSquareViewModel = hiltViewModel()
     val findSquareState by vm.uiState.collectAsStateWithLifecycle()
@@ -52,6 +53,7 @@ internal fun FindTheSquare(
         uiState = findSquareState,
         showBorders = showBorders,
         enableVibrations = enableVibrations,
+        enableAnimations = enableAnimations,
         onNavigateBack = {
             tabNavController.popBackStack(Screen.BoardVisualization, inclusive = false)
         },
@@ -63,6 +65,8 @@ internal fun FindTheSquare(
 internal fun MoveThePiece(
     tabNavController: NavHostController,
     showBorders: Boolean,
+    highlightLegalMoves: Boolean,
+    enableAnimations: Boolean,
 ) {
     val vm: MoveThePieceViewModel = hiltViewModel()
     val moveThePieceState by vm.uiState.collectAsStateWithLifecycle()
@@ -70,6 +74,8 @@ internal fun MoveThePiece(
     MoveThePieceScreen(
         uiState = moveThePieceState,
         showBorders = showBorders,
+        highlightLegalMoves = highlightLegalMoves,
+        enableAnimations = enableAnimations,
         onNavigateBack = {
             tabNavController.popBackStack(Screen.BoardVisualization, inclusive = false)
         },

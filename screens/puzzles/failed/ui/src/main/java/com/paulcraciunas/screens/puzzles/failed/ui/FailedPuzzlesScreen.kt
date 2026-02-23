@@ -43,6 +43,8 @@ import com.paulcraciunas.screens.puzzles.failed.vm.StubFailedPuzzlesScreenIntera
 fun FailedPuzzlesScreen(
     uiState: FailedPuzzlesUiState,
     showBorders: Boolean,
+    highlightLegalMoves: Boolean,
+    enableAnimations: Boolean,
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit = {},
     interactions: FailedPuzzlesScreenInteractor = StubFailedPuzzlesScreenInteractor(),
@@ -93,6 +95,8 @@ fun FailedPuzzlesScreen(
                 FailedPuzzlesContent(
                     uiState = uiState,
                     showBorders = showBorders,
+                    highlightLegalMoves = highlightLegalMoves,
+                    enableAnimations = enableAnimations,
                     interactions = interactions,
                     modifier = Modifier.padding(innerPadding)
                 )
@@ -107,6 +111,8 @@ fun FailedPuzzlesScreen(
 private fun FailedPuzzlesContent(
     uiState: FailedPuzzlesUiState.BoardState,
     showBorders: Boolean,
+    highlightLegalMoves: Boolean,
+    enableAnimations: Boolean,
     interactions: FailedPuzzlesScreenInteractor,
     modifier: Modifier = Modifier,
 ) {
@@ -128,6 +134,8 @@ private fun FailedPuzzlesContent(
                 orientation = BoardOrientation.fromSide(data.player),
                 onClick = interactions::onSquareClicked,
                 showBorders = showBorders,
+                highlightLegalMoves = highlightLegalMoves,
+                enableAnimations = enableAnimations,
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -196,7 +204,9 @@ private fun PlayingPreview() {
                 ),
                 promotion = null,
             ),
-            showBorders = true
+            showBorders = true,
+            highlightLegalMoves = true,
+            enableAnimations = true
         )
     }
 }
@@ -224,7 +234,9 @@ private fun FinishedPreview() {
                 ),
                 showCompletionDialog = false,
             ),
-            showBorders = true
+            showBorders = true,
+            highlightLegalMoves = true,
+            enableAnimations = true
         )
     }
 }

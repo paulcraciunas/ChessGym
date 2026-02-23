@@ -31,6 +31,7 @@ fun FindTheSquareScreen(
     uiState: FindTheSquareUiState,
     showBorders: Boolean,
     enableVibrations: Boolean,
+    enableAnimations: Boolean,
     onNavigateBack: () -> Unit,
     interactions: FindTheSquareScreenInteractor,
     modifier: Modifier = Modifier,
@@ -66,6 +67,7 @@ fun FindTheSquareScreen(
         FindTheSquareScreenContents(
             state = uiState,
             showBorders = showBorders,
+            enableAnimations = enableAnimations,
             interactions = interactions,
             modifier = Modifier
                 .fillMaxSize()
@@ -87,6 +89,7 @@ private fun FindTheSquareScreenSetupPreview() {
             ),
             showBorders = true,
             enableVibrations = true,
+            enableAnimations = true,
             onNavigateBack = {},
             interactions = PreviewInteractions
         )
@@ -107,6 +110,7 @@ private fun FindTheSquareScreenPlayingPreview() {
             ),
             showBorders = true,
             enableVibrations = true,
+            enableAnimations = true,
             onNavigateBack = {},
             interactions = PreviewInteractions
         )
@@ -126,6 +130,7 @@ private fun FindTheSquareScreenGameOverPreview() {
             ),
             showBorders = true,
             enableVibrations = true,
+            enableAnimations = true,
             onNavigateBack = {},
             interactions = PreviewInteractions
         )

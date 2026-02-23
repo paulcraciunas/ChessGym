@@ -56,6 +56,8 @@ internal fun PuzzleDashboard(
 internal fun RatedPuzzle(
     tabNavController: NavHostController,
     showBorders: Boolean,
+    highlightLegalMoves: Boolean,
+    enableAnimations: Boolean,
 ) {
     val vm: RatedPuzzleViewModel = hiltViewModel()
     val ratedPuzzleState by vm.uiState.collectAsStateWithLifecycle()
@@ -66,6 +68,8 @@ internal fun RatedPuzzle(
     RatedPuzzleScreen(
         uiState = ratedPuzzleState,
         showBorders = showBorders,
+        highlightLegalMoves = highlightLegalMoves,
+        enableAnimations = enableAnimations,
         onNavigateBack = {
             if (!vm.onNavigateBackPressed()) {
                 tabNavController.popBackStack(Screen.PuzzleDashboard, inclusive = false)
@@ -79,6 +83,8 @@ internal fun RatedPuzzle(
 internal fun PuzzleRush(
     tabNavController: NavHostController,
     showBorders: Boolean,
+    highlightLegalMoves: Boolean,
+    enableAnimations: Boolean,
 ) {
     val vm: PuzzleRushViewModel = hiltViewModel()
     val puzzleRushState by vm.uiState.collectAsStateWithLifecycle()
@@ -86,6 +92,8 @@ internal fun PuzzleRush(
     PuzzleRushScreen(
         uiState = puzzleRushState,
         showBorders = showBorders,
+        highlightLegalMoves = highlightLegalMoves,
+        enableAnimations = enableAnimations,
         onNavigateBack = {
             tabNavController.popBackStack(Screen.PuzzleDashboard, inclusive = false)
         },
@@ -97,6 +105,8 @@ internal fun PuzzleRush(
 internal fun FailedPuzzles(
     tabNavController: NavHostController,
     showBorders: Boolean,
+    highlightLegalMoves: Boolean,
+    enableAnimations: Boolean,
 ) {
     val vm: FailedPuzzlesViewModel = hiltViewModel()
     val failedPuzzlesState by vm.uiState.collectAsStateWithLifecycle()
@@ -107,6 +117,8 @@ internal fun FailedPuzzles(
     FailedPuzzlesScreen(
         uiState = failedPuzzlesState,
         showBorders = showBorders,
+        highlightLegalMoves = highlightLegalMoves,
+        enableAnimations = enableAnimations,
         onNavigateBack = {
             tabNavController.popBackStack(Screen.PuzzleDashboard, inclusive = false)
         },
@@ -118,6 +130,8 @@ internal fun FailedPuzzles(
 internal fun PuzzleStreak(
     tabNavController: NavHostController,
     showBorders: Boolean,
+    highlightLegalMoves: Boolean,
+    enableAnimations: Boolean,
 ) {
     val vm: PuzzleStreakViewModel = hiltViewModel()
     val puzzleStreakState by vm.uiState.collectAsStateWithLifecycle()
@@ -128,6 +142,8 @@ internal fun PuzzleStreak(
     PuzzleStreakScreen(
         uiState = puzzleStreakState,
         showBorders = showBorders,
+        highlightLegalMoves = highlightLegalMoves,
+        enableAnimations = enableAnimations,
         onNavigateBack = {
             tabNavController.popBackStack(Screen.PuzzleDashboard, inclusive = false)
         },

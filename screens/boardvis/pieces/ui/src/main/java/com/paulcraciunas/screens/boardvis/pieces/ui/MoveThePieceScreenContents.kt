@@ -21,6 +21,8 @@ import com.paulcraciunas.screens.common.board.ChessBoard
 internal fun MoveThePieceScreenContents(
     state: MoveThePieceUiState,
     showBorders: Boolean,
+    highlightLegalMoves: Boolean,
+    enableAnimations: Boolean,
     interactions: MoveThePieceScreenInteractor,
     modifier: Modifier = Modifier,
 ) {
@@ -39,6 +41,8 @@ internal fun MoveThePieceScreenContents(
                 orientation = BoardOrientation.fromSide(Side.WHITE),
                 onClick = interactions::onSquareClicked,
                 showBorders = showBorders,
+                highlightLegalMoves = highlightLegalMoves,
+                enableAnimations = enableAnimations,
                 modifier = Modifier.fillMaxWidth()
             )
         }

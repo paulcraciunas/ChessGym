@@ -42,6 +42,8 @@ import com.paulcraciunas.screens.puzzles.rush.vm.StubPuzzleRushScreenInteractor
 fun PuzzleRushScreen(
     uiState: PuzzleRushUiState,
     showBorders: Boolean,
+    highlightLegalMoves: Boolean,
+    enableAnimations: Boolean,
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit = {},
     interactions: PuzzleRushScreenInteractor = StubPuzzleRushScreenInteractor(),
@@ -76,6 +78,8 @@ fun PuzzleRushScreen(
                 PuzzleRushContent(
                     uiState = uiState,
                     showBorders = showBorders,
+                    highlightLegalMoves = highlightLegalMoves,
+                    enableAnimations = enableAnimations,
                     interactions = interactions,
                     modifier = Modifier.padding(innerPadding)
                 )
@@ -89,6 +93,8 @@ fun PuzzleRushScreen(
 private fun PuzzleRushContent(
     uiState: PuzzleRushUiState.BoardState,
     showBorders: Boolean,
+    highlightLegalMoves: Boolean,
+    enableAnimations: Boolean,
     interactions: PuzzleRushScreenInteractor,
     modifier: Modifier = Modifier,
 ) {
@@ -110,6 +116,8 @@ private fun PuzzleRushContent(
                 orientation = BoardOrientation.fromSide(data.player),
                 onClick = interactions::onSquareClicked,
                 showBorders = showBorders,
+                highlightLegalMoves = highlightLegalMoves,
+                enableAnimations = enableAnimations,
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -185,7 +193,9 @@ private fun ReadyPreview() {
                 ),
                 timeRemainingSeconds = 180,
             ),
-            showBorders = true
+            showBorders = true,
+            highlightLegalMoves = true,
+            enableAnimations = true
         )
     }
 }
@@ -211,7 +221,9 @@ private fun PlayingPreview() {
                 ),
                 promotion = null,
             ),
-            showBorders = true
+            showBorders = true,
+            highlightLegalMoves = true,
+            enableAnimations = true
         )
     }
 }
@@ -240,7 +252,9 @@ private fun FinishedPreview() {
                 showSummaryDialog = false,
                 isNewHighScore = false,
             ),
-            showBorders = true
+            showBorders = true,
+            highlightLegalMoves = true,
+            enableAnimations = true
         )
     }
 }
@@ -264,7 +278,9 @@ private fun ManyResultsPreview() {
                 },
                 promotion = null,
             ),
-            showBorders = true
+            showBorders = true,
+            highlightLegalMoves = true,
+            enableAnimations = true
         )
     }
 }

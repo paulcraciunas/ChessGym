@@ -59,12 +59,16 @@ fun ChessBoard(
     onClick: (Locus) -> Unit,
     showBorders: Boolean,
     modifier: Modifier = Modifier,
+    highlightLegalMoves: Boolean = true,
+    enableAnimations: Boolean = true,
 ) {
     if (!showBorders) {
         ChessBoardWithAnimation(
             board = board,
             orientation = orientation,
             onClick = onClick,
+            highlightLegalMoves = highlightLegalMoves,
+            enableAnimations = enableAnimations,
             modifier = modifier
         )
     } else {
@@ -80,6 +84,8 @@ fun ChessBoard(
                 board = board,
                 orientation = orientation,
                 onClick = onClick,
+                highlightLegalMoves = highlightLegalMoves,
+                enableAnimations = enableAnimations,
                 modifier = modifier.padding(borderSize)
             )
             BorderFiles(orientation = orientation, modifier = Modifier.align(Alignment.BottomCenter), height = borderSize)
@@ -93,28 +99,33 @@ private fun ChessBoardWithAnimation(
     board: BoardViewData,
     orientation: BoardOrientation,
     onClick: (Locus) -> Unit,
+    highlightLegalMoves: Boolean,
+    enableAnimations: Boolean,
     modifier: Modifier = Modifier,
 ) {
     BoxWithConstraints(modifier = modifier) {
         // The modifier already has padding applied when borders are shown,
         // so maxWidth/maxHeight are already the board content size
         val squareSize = minOf(this.maxWidth, this.maxHeight) / 8
+        val activeAnimatingPiece = if (enableAnimations) board.animatingPiece else null
 
         ChessBoardContents(
             board = board,
             orientation = orientation,
             onClick = onClick,
-            animatingPiece = board.animatingPiece,
+            highlightLegalMoves = highlightLegalMoves,
+            animatingPiece = activeAnimatingPiece,
             modifier = Modifier
         )
 
-        // Animated piece overlay
-        board.animatingPiece?.let { animating ->
-            AnimatedPieceOverlay(
-                animatingPiece = animating,
-                orientation = orientation,
-                squareSize = squareSize,
-            )
+        if (enableAnimations) {
+            board.animatingPiece?.let { animating ->
+                AnimatedPieceOverlay(
+                    animatingPiece = animating,
+                    orientation = orientation,
+                    squareSize = squareSize,
+                )
+            }
         }
     }
 }
@@ -189,6 +200,7 @@ private fun ChessBoardContents(
     board: BoardViewData,
     orientation: BoardOrientation,
     onClick: (Locus) -> Unit,
+    highlightLegalMoves: Boolean,
     animatingPiece: AnimatingPiece?,
     modifier: Modifier = Modifier,
 ) {
@@ -198,7 +210,6 @@ private fun ChessBoardContents(
                 for (file in orientation.files) {
                     val square = board.at(rank, file)
                     val squareSide = squareSide(file, rank)
-                    // Hide the piece at the destination while animating
                     val isAnimatingTo = animatingPiece?.to?.let {
                         it.file == file && it.rank == rank
                     } ?: false
@@ -207,10 +218,9 @@ private fun ChessBoardContents(
                         highlight = square.lastMove,
                         content = {
                             if (isAnimatingTo) {
-                                // Just render the background, piece is shown in overlay
                                 Plain()
                             } else {
-                                SquareContent(square)
+                                SquareContent(square, highlightLegalMoves)
                             }
                         },
                         modifier = Modifier
@@ -225,14 +235,17 @@ private fun ChessBoardContents(
 }
 
 @Composable
-private fun SquareScope.SquareContent(square: SquareViewData) = when {
+private fun SquareScope.SquareContent(
+    square: SquareViewData,
+    highlightLegalMoves: Boolean,
+) = when {
     square.piece != null -> Piece(
         piece = square.piece.piece,
         side = square.piece.side,
         selected = square.piece.isSelected
     )
 
-    square.canMoveTo -> MoveAvailable()
+    square.canMoveTo && highlightLegalMoves -> MoveAvailable()
     else -> Plain()
 }
 
