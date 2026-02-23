@@ -11,6 +11,7 @@ androidLibrary {
 
 dependencies {
     implementation(project(":global:resources"))
+    implementation(project(":settings:application:api"))
     implementation(project(":screens:common"))
     api(project(":screens:settings:vm"))
 }
