@@ -20,7 +20,9 @@ class FakeAppSettingsRepository : AppSettingsRepository {
             lightMode = AppSettings.LightMode.System,
             autoPromote = true,
             showBorders = true,
-            enableVibrations = true
+            enableVibrations = true,
+            highlightLegalMoves = true,
+            enableAnimations = true
         )
     )
 
@@ -66,6 +68,14 @@ class FakeAppSettingsRepository : AppSettingsRepository {
         _appSettings.value = _appSettings.value.copy(enableVibrations = enabled)
     }
 
+    override suspend fun updateHighlightLegalMoves(enabled: Boolean) {
+        _appSettings.value = _appSettings.value.copy(highlightLegalMoves = enabled)
+    }
+
+    override suspend fun updateEnableAnimations(enabled: Boolean) {
+        _appSettings.value = _appSettings.value.copy(enableAnimations = enabled)
+    }
+
     /**
      * Sets all settings at once.
      * Useful for setting up specific test scenarios.
@@ -93,7 +103,9 @@ class FakeAppSettingsRepository : AppSettingsRepository {
                     lightMode = AppSettings.LightMode.System,
                     autoPromote = true,
                     showBorders = true,
-                    enableVibrations = true
+                    enableVibrations = true,
+                    highlightLegalMoves = true,
+                    enableAnimations = true
                 )
             )
         }
