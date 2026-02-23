@@ -12,7 +12,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
@@ -22,15 +21,13 @@ import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.home.vm.HomeUiState
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 @Composable
 internal fun ActivityTimeline(
     history: List<HomeUiState.HistoryGroup>,
     modifier: Modifier = Modifier
 ) {
-    val innerPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp)
+    val innerPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 16.dp)
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -39,11 +36,11 @@ internal fun ActivityTimeline(
             .padding(innerPadding)
     ) {
         Column(
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
                 text = stringResource(R.string.home_timeline_title),
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Bold
             )
@@ -53,7 +50,7 @@ internal fun ActivityTimeline(
             } else {
                 Column(
                     modifier = Modifier.padding(vertical = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(20.dp)
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     history.forEachIndexed { index, group ->
                         ActivityGroupItem(
@@ -75,17 +72,15 @@ private fun ActivityGroupItem(
 ) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        // Date Header
         Text(
-            text = formatDate(group.date),
+            text = group.label,
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.SemiBold
         )
 
-        // Activity Events
         group.events.forEachIndexed { index, event ->
             TimelineEventItem(
                 event = event,
@@ -117,23 +112,6 @@ private fun EmptyTimelineContent(
     }
 }
 
-@Composable
-@Stable
-private fun formatDate(date: LocalDate): String {
-    val today = LocalDate.now()
-    val yesterday = today.minusDays(1)
-
-    return when (date) {
-        today -> stringResource(R.string.generic_today)
-        yesterday -> stringResource(R.string.generic_yesterday)
-        else -> {
-            date.format(formatter)
-        }
-    }
-}
-
-private val formatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy")
-
 @Preview("ActivityTimeline")
 @Preview("ActivityTimeline (dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
@@ -142,17 +120,24 @@ private fun ActivityTimelinePreview() {
         ActivityTimeline(
             history = listOf(
                 HomeUiState.HistoryGroup(
-                    date = LocalDate.now(),
+                    label = "Today",
                     events = listOf(
                         HomeUiState.HistoryEvent.PuzzleRushEvent(highScore = 18, runs = 5),
                         HomeUiState.HistoryEvent.BoardVizEvent(runs = 2)
                     )
                 ),
                 HomeUiState.HistoryGroup(
-                    date = LocalDate.now().minusDays(1),
+                    label = "Yesterday",
                     events = listOf(
                         HomeUiState.HistoryEvent.RatedPuzzleEvent(ratingChange = 42, count = 12),
                         HomeUiState.HistoryEvent.BlindModeEvent(ratingChange = -15, gamesPlayed = 3)
+                    )
+                ),
+                HomeUiState.HistoryGroup(
+                    label = "This Week",
+                    events = listOf(
+                        HomeUiState.HistoryEvent.PuzzleStreakEvent(finalStreakCount = 8),
+                        HomeUiState.HistoryEvent.FailedPuzzleEvent(puzzlesSolved = 3)
                     )
                 )
             ),

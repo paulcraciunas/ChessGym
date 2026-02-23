@@ -23,12 +23,14 @@ data class HomeUiState(
         val currentRating: Int = 1200,
         val bestRating: Int = 1200,
         val bestPuzzleRushScore: Int = 0,
+        val bestPuzzleStreakScore: Int = 0,
+        val bestFindTheSquareScore: Int = 0,
+        val bestMoveThePieceScore: Int = 0,
         val bestBlindModeScore: Int = 0,
-        val bestVisualizationScore: Int = 0,
     )
 
     data class HistoryGroup(
-        val date: LocalDate,
+        val label: String,
         val events: List<HistoryEvent>
     )
 
@@ -55,6 +57,14 @@ data class HomeUiState(
         data class BlindModeTrainingEvent(
             val mostMovesCompleted: Int,
             val runs: Int,
+        ) : HistoryEvent()
+
+        data class PuzzleStreakEvent(
+            val finalStreakCount: Int,
+        ) : HistoryEvent()
+
+        data class FailedPuzzleEvent(
+            val puzzlesSolved: Int,
         ) : HistoryEvent()
     }
 }

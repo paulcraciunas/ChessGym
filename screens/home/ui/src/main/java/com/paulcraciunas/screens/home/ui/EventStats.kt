@@ -28,7 +28,7 @@ internal fun EventStats(
 ) {
     Row(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         when (event) {
             is HomeUiState.HistoryEvent.PuzzleRushEvent -> {
@@ -69,6 +69,18 @@ internal fun EventStats(
                 StatChip(
                     label = pluralStringResource(R.plurals.home_timeline_stat_session, event.runs),
                     value = event.runs.toString()
+                )
+            }
+            is HomeUiState.HistoryEvent.PuzzleStreakEvent -> {
+                StatChip(
+                    label = stringResource(R.string.home_timeline_stat_streak),
+                    value = event.finalStreakCount.toString()
+                )
+            }
+            is HomeUiState.HistoryEvent.FailedPuzzleEvent -> {
+                StatChip(
+                    label = stringResource(R.string.home_timeline_stat_solved),
+                    value = event.puzzlesSolved.toString()
                 )
             }
         }
@@ -165,6 +177,28 @@ private fun EventStatsBlindModeTrainingPreview() {
     ChessGymTheme {
         EventStats(
             event = HomeUiState.HistoryEvent.BlindModeTrainingEvent(mostMovesCompleted = 15, runs = 2)
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Preview("Dark mode", showBackground = false, uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun EventStatsPuzzleStreakPreview() {
+    ChessGymTheme {
+        EventStats(
+            event = HomeUiState.HistoryEvent.PuzzleStreakEvent(finalStreakCount = 8)
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Preview("Dark mode", showBackground = false, uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun EventStatsFailedPuzzlePreview() {
+    ChessGymTheme {
+        EventStats(
+            event = HomeUiState.HistoryEvent.FailedPuzzleEvent(puzzlesSolved = 3)
         )
     }
 }

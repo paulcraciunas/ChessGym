@@ -101,6 +101,9 @@ internal fun FailedPuzzles(
     val vm: FailedPuzzlesViewModel = hiltViewModel()
     val failedPuzzlesState by vm.uiState.collectAsStateWithLifecycle()
 
+    LifecycleEventEffect(Lifecycle.Event.ON_STOP) { vm.onStop() }
+    LifecycleEventEffect(Lifecycle.Event.ON_START) { vm.onStart() }
+
     FailedPuzzlesScreen(
         uiState = failedPuzzlesState,
         showBorders = showBorders,

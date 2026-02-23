@@ -2,6 +2,7 @@ package com.paulcraciunas.screens.puzzles.failed.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.paulcraciunas.domain.api.general.Timer
 import com.paulcraciunas.domain.api.puzzles.GetFailedPuzzles
 import com.paulcraciunas.domain.api.puzzles.OnFailedPuzzleComplete
 import com.paulcraciunas.game.logic.api.PuzzleInteractor
@@ -21,6 +22,7 @@ import javax.inject.Inject
 class FailedPuzzlesViewModel @Inject constructor(
     private val getFailedPuzzles: GetFailedPuzzles,
     private val onFailedPuzzleComplete: OnFailedPuzzleComplete,
+    private val timer: Timer,
     puzzleInteractor: PuzzleInteractor,
 ) : ViewModel(), FailedPuzzlesScreenInteractor {
     private val helper = PuzzleViewModelHelper(puzzleInteractor = puzzleInteractor)
@@ -32,6 +34,14 @@ class FailedPuzzlesViewModel @Inject constructor(
 
     init {
         loadPuzzles()
+    }
+
+    fun onStop() {
+        timer.pause()
+    }
+
+    fun onStart() {
+        timer.resume()
     }
 
     private fun loadPuzzles() {
@@ -48,6 +58,7 @@ class FailedPuzzlesViewModel @Inject constructor(
                 if (puzzle == null) {
                     _uiState.value = FailedPuzzlesUiState.Empty
                 } else {
+                    timer.start()
                     _uiState.value = FailedPuzzlesUiState.Playing(
                         data = helper.load(puzzle),
                         progress = currentProgress(),
@@ -87,6 +98,7 @@ class FailedPuzzlesViewModel @Inject constructor(
     }
 
     private fun handlePuzzleOver(isSuccess: Boolean) = whilePlaying { state ->
+        val timeSpent = timer.elapsed()
         val updatedResults = state.results + PuzzleResult(
             id = helper.id,
             rating = helper.rating,
@@ -95,16 +107,15 @@ class FailedPuzzlesViewModel @Inject constructor(
 
         if (isSuccess) {
             solvedCount++
-            // Remove from failed puzzles list
             viewModelScope.launch {
-                helper.id?.let { onFailedPuzzleComplete(it) }
+                helper.id?.let { onFailedPuzzleComplete(it, timeSpent) }
             }
         }
 
-        // Move to next puzzle or finish
         viewModelScope.launch {
             val nextPuzzle = getFailedPuzzles.next()
             if (nextPuzzle != null) {
+                timer.start()
                 _uiState.value = FailedPuzzlesUiState.Playing(
                     data = helper.load(nextPuzzle),
                     progress = currentProgress(),
@@ -112,7 +123,6 @@ class FailedPuzzlesViewModel @Inject constructor(
                     promotion = null,
                 )
             } else {
-                // All puzzles completed
                 _uiState.value = FailedPuzzlesUiState.Finished(
                     data = helper.buildPuzzleData(),
                     progress = currentProgress(),

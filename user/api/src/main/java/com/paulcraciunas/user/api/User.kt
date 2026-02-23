@@ -12,7 +12,6 @@ data class User(
     val history: List<HistoryItem> = emptyList(),
     val failedPuzzles: List<Int> = emptyList(), // Puzzle IDs for retry; This is not persistable across Network, as DB IDs might differ
     val authentication: AuthenticationState? = null,
-    val puzzleStreak: PuzzleStreak = PuzzleStreak(),
 ) {
     fun isSignedIn(): Boolean = authentication != null
 
@@ -29,6 +28,7 @@ data class User(
     data class Ratings(
         val current: Int = 1200,
         val blindMode: Int = 400,
+        val puzzleStreak: PuzzleStreak = PuzzleStreak(),
     )
 
     @Serializable
@@ -36,7 +36,6 @@ data class User(
         val ratedPuzzle: Int = 1200,
         val puzzleRush: Int = 0,
         val puzzleStreak: Int = 0,
-        val boardVisualization: Int = 0,
         val findTheSquare: Int = 0,
         val moveThePiece: Int = 0,
         val blindMode: Int = 400
@@ -47,15 +46,6 @@ data class User(
         val puzzlesPlayed: Int = 0,
         val puzzlesSolved: Int = 0,
         val totalTimeSpent: Long = 0, // in milliseconds
-        val streaks: Streaks = Streaks()
-    )
-
-    @Serializable
-    data class Streaks(
-        val current: Int = 0,
-        val longest: Int = 0,
-        @Serializable(with = LocalDateSerializer::class)
-        val lastActivityDate: LocalDate? = null
     )
 
     @Serializable
@@ -99,6 +89,18 @@ data class User(
                 val puzzlesSolved: Int,
                 val ratingChange: Int,
                 val timeSpent: Long
+            ) : HistoryItemData()
+
+            @Serializable
+            data class PuzzleStreakData(
+                val finalStreakCount: Int,
+                val timeSpent: Long,
+            ) : HistoryItemData()
+
+            @Serializable
+            data class FailedPuzzleData(
+                val puzzlesSolved: Int,
+                val timeSpent: Long,
             ) : HistoryItemData()
         }
     }

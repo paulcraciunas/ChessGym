@@ -20,15 +20,17 @@ internal class OnStreakCompleteImplTest {
         val currentHighScore = UserDefaults.HIGH_SCORE_STREAK
         val newStreakCount = currentHighScore + 10
         val user = UserDefaults.signedInUser().copy(
-            puzzleStreak = User.PuzzleStreak(currentCount = newStreakCount, lastPuzzleId = 42)
+            ratings = UserDefaults.signedInUser().ratings.copy(
+                puzzleStreak = User.PuzzleStreak(currentCount = newStreakCount, lastPuzzleId = 42)
+            )
         )
         fakeUserRepository.update(user)
 
         // When
-        val isNewHighScore = underTest().isNewHighScore
+        val result = underTest(TIME_SPENT)
 
         // Then
-        assertTrue(isNewHighScore)
+        assertTrue(result.isNewHighScore)
         fakeUserRepository.get().apply {
             assertEquals(newStreakCount, highScores.puzzleStreak)
         }
@@ -40,15 +42,17 @@ internal class OnStreakCompleteImplTest {
         val currentHighScore = UserDefaults.HIGH_SCORE_STREAK
         val lowerStreakCount = currentHighScore - 10
         val user = UserDefaults.signedInUser().copy(
-            puzzleStreak = User.PuzzleStreak(currentCount = lowerStreakCount, lastPuzzleId = 42)
+            ratings = UserDefaults.signedInUser().ratings.copy(
+                puzzleStreak = User.PuzzleStreak(currentCount = lowerStreakCount, lastPuzzleId = 42)
+            )
         )
         fakeUserRepository.update(user)
 
         // When
-        val isNewHighScore = underTest().isNewHighScore
+        val result = underTest(TIME_SPENT)
 
         // Then
-        assertFalse(isNewHighScore)
+        assertFalse(result.isNewHighScore)
         fakeUserRepository.get().apply {
             assertEquals(currentHighScore, highScores.puzzleStreak)
         }
@@ -59,15 +63,17 @@ internal class OnStreakCompleteImplTest {
         // Given
         val currentHighScore = UserDefaults.HIGH_SCORE_STREAK
         val user = UserDefaults.signedInUser().copy(
-            puzzleStreak = User.PuzzleStreak(currentCount = currentHighScore, lastPuzzleId = 42)
+            ratings = UserDefaults.signedInUser().ratings.copy(
+                puzzleStreak = User.PuzzleStreak(currentCount = currentHighScore, lastPuzzleId = 42)
+            )
         )
         fakeUserRepository.update(user)
 
         // When
-        val isNewHighScore = underTest().isNewHighScore
+        val result = underTest(TIME_SPENT)
 
         // Then
-        assertFalse(isNewHighScore)
+        assertFalse(result.isNewHighScore)
         fakeUserRepository.get().apply {
             assertEquals(currentHighScore, highScores.puzzleStreak)
         }
@@ -77,16 +83,18 @@ internal class OnStreakCompleteImplTest {
     fun `GIVEN active streak WHEN invoke THEN resets streak count to zero`() = runTest {
         // Given
         val user = UserDefaults.signedInUser().copy(
-            puzzleStreak = User.PuzzleStreak(currentCount = 15, lastPuzzleId = 42)
+            ratings = UserDefaults.signedInUser().ratings.copy(
+                puzzleStreak = User.PuzzleStreak(currentCount = 15, lastPuzzleId = 42)
+            )
         )
         fakeUserRepository.update(user)
 
         // When
-        underTest()
+        underTest(TIME_SPENT)
 
         // Then
         fakeUserRepository.get().apply {
-            assertEquals(0, puzzleStreak.currentCount)
+            assertEquals(0, ratings.puzzleStreak.currentCount)
         }
     }
 
@@ -94,16 +102,18 @@ internal class OnStreakCompleteImplTest {
     fun `GIVEN active streak WHEN invoke THEN clears lastPuzzleId`() = runTest {
         // Given
         val user = UserDefaults.signedInUser().copy(
-            puzzleStreak = User.PuzzleStreak(currentCount = 10, lastPuzzleId = 99)
+            ratings = UserDefaults.signedInUser().ratings.copy(
+                puzzleStreak = User.PuzzleStreak(currentCount = 10, lastPuzzleId = 99)
+            )
         )
         fakeUserRepository.update(user)
 
         // When
-        underTest()
+        underTest(TIME_SPENT)
 
         // Then
         fakeUserRepository.get().apply {
-            assertNull(puzzleStreak.lastPuzzleId)
+            assertNull(ratings.puzzleStreak.lastPuzzleId)
         }
     }
 
@@ -112,15 +122,17 @@ internal class OnStreakCompleteImplTest {
         // Given
         val user = UserDefaults.signedInUser().copy(
             highScores = UserDefaults.signedInUser().highScores.copy(puzzleStreak = 0),
-            puzzleStreak = User.PuzzleStreak(currentCount = 5, lastPuzzleId = 42)
+            ratings = UserDefaults.signedInUser().ratings.copy(
+                puzzleStreak = User.PuzzleStreak(currentCount = 5, lastPuzzleId = 42)
+            )
         )
         fakeUserRepository.update(user)
 
         // When
-        val isNewHighScore = underTest().isNewHighScore
+        val result = underTest(TIME_SPENT)
 
         // Then
-        assertTrue(isNewHighScore)
+        assertTrue(result.isNewHighScore)
         fakeUserRepository.get().apply {
             assertEquals(5, highScores.puzzleStreak)
         }
@@ -131,17 +143,47 @@ internal class OnStreakCompleteImplTest {
         // Given
         val currentHighScore = UserDefaults.HIGH_SCORE_STREAK
         val user = UserDefaults.signedInUser().copy(
-            puzzleStreak = User.PuzzleStreak(currentCount = 0, lastPuzzleId = null)
+            ratings = UserDefaults.signedInUser().ratings.copy(
+                puzzleStreak = User.PuzzleStreak(currentCount = 0, lastPuzzleId = null)
+            )
         )
         fakeUserRepository.update(user)
 
         // When
-        val isNewHighScore = underTest().isNewHighScore
+        val result = underTest(TIME_SPENT)
 
         // Then
-        assertFalse(isNewHighScore)
+        assertFalse(result.isNewHighScore)
         fakeUserRepository.get().apply {
             assertEquals(currentHighScore, highScores.puzzleStreak)
         }
+    }
+
+    @Test
+    fun `GIVEN active streak WHEN invoke THEN logs PuzzleStreakData history`() = runTest {
+        // Given
+        val streakCount = 7
+        val user = UserDefaults.signedInUser().copy(
+            ratings = UserDefaults.signedInUser().ratings.copy(
+                puzzleStreak = User.PuzzleStreak(currentCount = streakCount, lastPuzzleId = 42)
+            )
+        )
+        fakeUserRepository.update(user)
+
+        // When
+        underTest(TIME_SPENT)
+
+        // Then
+        val updatedUser = fakeUserRepository.get()
+        assertEquals(1, updatedUser.history.size)
+        val historyData = updatedUser.history.first().data
+        assertTrue(historyData is User.HistoryItem.HistoryItemData.PuzzleStreakData)
+        val streakData = historyData as User.HistoryItem.HistoryItemData.PuzzleStreakData
+        assertEquals(streakCount, streakData.finalStreakCount)
+        assertEquals(TIME_SPENT, streakData.timeSpent)
+    }
+
+    companion object {
+        private const val TIME_SPENT = 5_000L
     }
 }

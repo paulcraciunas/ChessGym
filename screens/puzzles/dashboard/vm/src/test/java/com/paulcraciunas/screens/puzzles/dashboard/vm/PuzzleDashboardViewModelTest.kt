@@ -93,8 +93,10 @@ internal class PuzzleDashboardViewModelTest {
     fun `GIVEN user with active streak WHEN viewModel initialized THEN currentStreakCount is updated`() = runTest {
         // Given
         val user = User(
-            ratings = User.Ratings(current = 1400),
-            puzzleStreak = User.PuzzleStreak(currentCount = 15, lastPuzzleId = 42)
+            ratings = User.Ratings(
+                current = 1400,
+                puzzleStreak = User.PuzzleStreak(currentCount = 15, lastPuzzleId = 42)
+            )
         )
         userRepository.local.saveUser(user)
 
@@ -111,8 +113,10 @@ internal class PuzzleDashboardViewModelTest {
     fun `GIVEN user with no active streak WHEN viewModel initialized THEN currentStreakCount is zero`() = runTest {
         // Given
         val user = User(
-            ratings = User.Ratings(current = 1200),
-            puzzleStreak = User.PuzzleStreak(currentCount = 0, lastPuzzleId = null)
+            ratings = User.Ratings(
+                current = 1200,
+                puzzleStreak = User.PuzzleStreak(currentCount = 0, lastPuzzleId = null)
+            )
         )
         userRepository.local.saveUser(user)
 

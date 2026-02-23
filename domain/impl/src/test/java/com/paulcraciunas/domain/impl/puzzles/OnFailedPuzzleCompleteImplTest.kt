@@ -1,6 +1,7 @@
 package com.paulcraciunas.domain.impl.puzzles
 
 import com.paulcraciunas.user.api.FakeUserRepository
+import com.paulcraciunas.user.api.User
 import com.paulcraciunas.user.api.UserDefaults
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -20,7 +21,7 @@ internal class OnFailedPuzzleCompleteImplTest {
         userRepository.update(user)
 
         // When
-        underTest(puzzleId)
+        underTest(puzzleId, TIME_SPENT)
 
         // Then
         val updatedUser = userRepository.get()
@@ -37,7 +38,7 @@ internal class OnFailedPuzzleCompleteImplTest {
         val initialSolved = user.statistics.puzzlesSolved
 
         // When
-        underTest(puzzleId)
+        underTest(puzzleId, TIME_SPENT)
 
         // Then
         val updatedUser = userRepository.get()
@@ -53,7 +54,7 @@ internal class OnFailedPuzzleCompleteImplTest {
         val initialSolved = user.statistics.puzzlesSolved
 
         // When
-        puzzleIds.forEach { underTest(it) }
+        puzzleIds.forEach { underTest(it, TIME_SPENT) }
 
         // Then
         val updatedUser = userRepository.get()
@@ -68,8 +69,8 @@ internal class OnFailedPuzzleCompleteImplTest {
         val user = UserDefaults.signedInUser().copy(failedPuzzles = existingIds)
         userRepository.update(user)
 
-        // When - try to remove puzzle that's not in the list
-        underTest(42)
+        // When
+        underTest(42, TIME_SPENT)
 
         // Then
         val updatedUser = userRepository.get()
@@ -85,7 +86,7 @@ internal class OnFailedPuzzleCompleteImplTest {
         val initialSolved = user.statistics.puzzlesSolved
 
         // When
-        underTest(42)
+        underTest(42, TIME_SPENT)
 
         // Then
         val updatedUser = userRepository.get()
@@ -100,7 +101,7 @@ internal class OnFailedPuzzleCompleteImplTest {
         userRepository.update(user)
 
         // When
-        underTest(puzzleId)
+        underTest(puzzleId, TIME_SPENT)
 
         // Then
         val updatedUser = userRepository.get()
@@ -113,18 +114,60 @@ internal class OnFailedPuzzleCompleteImplTest {
     }
 
     @Test
-    fun `GIVEN duplicate puzzle IDs WHEN invoke once THEN removes only one occurrence`() = runTest {
-        // Given - list with duplicate (shouldn't happen normally but test edge case)
+    fun `GIVEN duplicate puzzle IDs WHEN invoke once THEN removes all occurrences`() = runTest {
+        // Given
         val puzzleId = 42
         val user = UserDefaults.signedInUser().copy(failedPuzzles = listOf(puzzleId, 99, puzzleId))
         userRepository.update(user)
 
         // When
-        underTest(puzzleId)
+        underTest(puzzleId, TIME_SPENT)
 
-        // Then - filter removes all occurrences
+        // Then
         val updatedUser = userRepository.get()
         assertFalse(updatedUser.failedPuzzles.contains(puzzleId))
         assertEquals(1, updatedUser.failedPuzzles.size)
+    }
+
+    @Test
+    fun `GIVEN puzzle completed WHEN invoke THEN logs FailedPuzzleData history`() = runTest {
+        // Given
+        val puzzleId = 42
+        val user = UserDefaults.signedInUser().copy(failedPuzzles = listOf(puzzleId))
+        userRepository.update(user)
+
+        // When
+        underTest(puzzleId, TIME_SPENT)
+
+        // Then
+        val updatedUser = userRepository.get()
+        assertEquals(1, updatedUser.history.size)
+        val historyData = updatedUser.history.first().data
+        assertTrue(historyData is User.HistoryItem.HistoryItemData.FailedPuzzleData)
+        val failedData = historyData as User.HistoryItem.HistoryItemData.FailedPuzzleData
+        assertEquals(1, failedData.puzzlesSolved)
+        assertEquals(TIME_SPENT, failedData.timeSpent)
+    }
+
+    @Test
+    fun `GIVEN multiple completions WHEN invoke multiple times THEN history items merge`() = runTest {
+        // Given
+        val puzzleIds = listOf(42, 99)
+        val user = UserDefaults.signedInUser().copy(failedPuzzles = puzzleIds)
+        userRepository.update(user)
+
+        // When
+        puzzleIds.forEach { underTest(it, TIME_SPENT) }
+
+        // Then
+        val updatedUser = userRepository.get()
+        assertEquals(1, updatedUser.history.size)
+        val failedData = updatedUser.history.first().data as User.HistoryItem.HistoryItemData.FailedPuzzleData
+        assertEquals(2, failedData.puzzlesSolved)
+        assertEquals(TIME_SPENT * 2, failedData.timeSpent)
+    }
+
+    companion object {
+        private const val TIME_SPENT = 5_000L
     }
 }

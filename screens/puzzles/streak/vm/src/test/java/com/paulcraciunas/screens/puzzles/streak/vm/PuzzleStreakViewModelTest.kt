@@ -341,7 +341,7 @@ private class FakeOnStreakComplete : OnStreakComplete {
     var returnNewHighScore: Boolean = false
     var streakCount = 10
 
-    override suspend fun invoke(): OnStreakComplete.StreakCompleteResult {
+    override suspend fun invoke(timeSpentMillis: Long): OnStreakComplete.StreakCompleteResult {
         wasCalled = true
         return OnStreakComplete.StreakCompleteResult(returnNewHighScore, streakCount)
     }

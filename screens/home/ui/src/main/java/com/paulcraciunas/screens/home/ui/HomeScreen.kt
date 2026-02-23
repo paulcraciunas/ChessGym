@@ -58,11 +58,8 @@ private fun HomeContent(
             .background(MaterialTheme.colorScheme.background)
     ) {
         LazyColumn(
-            contentPadding = PaddingValues(
-                horizontal = 20.dp,
-                vertical = 24.dp
-            ),
-            verticalArrangement = Arrangement.spacedBy(20.dp)
+            contentPadding = PaddingValues(horizontal = 10.dp),
+            verticalArrangement = Arrangement.SpaceEvenly
         ) {
             item { UserProfileCard(userProfile = uiState.userProfile) }
             item { StatsSection(stats = uiState.userStats) }
@@ -78,7 +75,7 @@ private fun StatsSection(
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.SpaceEvenly
     ) {
         UserStatsCard(
             title = stringResource(R.string.user_stats_title),
@@ -111,19 +108,21 @@ private fun HomeScreenPreview() {
                     currentRating = 1547,
                     bestRating = 1623,
                     bestPuzzleRushScore = 23,
+                    bestPuzzleStreakScore = 15,
+                    bestFindTheSquareScore = 42,
+                    bestMoveThePieceScore = 18,
                     bestBlindModeScore = 8,
-                    bestVisualizationScore = 12
                 ),
                 history = listOf(
                     HomeUiState.HistoryGroup(
-                        date = LocalDate.now(),
+                        label = "Today",
                         events = listOf(
                             HomeUiState.HistoryEvent.PuzzleRushEvent(highScore = 18, runs = 5),
                             HomeUiState.HistoryEvent.BoardVizEvent(runs = 2)
                         )
                     ),
                     HomeUiState.HistoryGroup(
-                        date = LocalDate.now().minusDays(1),
+                        label = "Yesterday",
                         events = listOf(
                             HomeUiState.HistoryEvent.RatedPuzzleEvent(ratingChange = 42, count = 12),
                             HomeUiState.HistoryEvent.BlindModeEvent(ratingChange = -15, gamesPlayed = 3)

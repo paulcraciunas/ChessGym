@@ -23,7 +23,9 @@ internal class GetStreakPuzzleImplTest {
     fun `GIVEN no active streak WHEN invoke THEN returns puzzle at base rating`() = runTest {
         // Given
         val user = UserDefaults.signedInUser().copy(
-            puzzleStreak = User.PuzzleStreak(currentCount = 0, lastPuzzleId = null)
+            ratings = UserDefaults.signedInUser().ratings.copy(
+                puzzleStreak = User.PuzzleStreak(currentCount = 0, lastPuzzleId = null)
+            )
         )
         fakeUserRepository.update(user)
         fakePuzzleRepository.withPuzzle(
@@ -44,7 +46,9 @@ internal class GetStreakPuzzleImplTest {
     fun `GIVEN no active streak WHEN invoke THEN saves lastPuzzleId`() = runTest {
         // Given
         val user = UserDefaults.signedInUser().copy(
-            puzzleStreak = User.PuzzleStreak(currentCount = 0, lastPuzzleId = null)
+            ratings = UserDefaults.signedInUser().ratings.copy(
+                puzzleStreak = User.PuzzleStreak(currentCount = 0, lastPuzzleId = null)
+            )
         )
         fakeUserRepository.update(user)
         fakePuzzleRepository.withPuzzle(
@@ -58,7 +62,7 @@ internal class GetStreakPuzzleImplTest {
 
         // Then
         val updatedUser = fakeUserRepository.get()
-        assertEquals(result.puzzle.id, updatedUser.puzzleStreak.lastPuzzleId)
+        assertEquals(result.puzzle.id, updatedUser.ratings.puzzleStreak.lastPuzzleId)
     }
 
     @Test
@@ -71,7 +75,9 @@ internal class GetStreakPuzzleImplTest {
             rating = 500
         )
         val user = UserDefaults.signedInUser().copy(
-            puzzleStreak = User.PuzzleStreak(currentCount = 5, lastPuzzleId = savedPuzzleId)
+            ratings = UserDefaults.signedInUser().ratings.copy(
+                puzzleStreak = User.PuzzleStreak(currentCount = 5, lastPuzzleId = savedPuzzleId)
+            )
         )
         fakeUserRepository.update(user)
 
@@ -85,11 +91,13 @@ internal class GetStreakPuzzleImplTest {
 
     @Test
     fun `GIVEN lastPuzzleId exists but puzzle not found WHEN invoke THEN fetches new puzzle`() = runTest {
-        // Given - lastPuzzleId = 999 which doesn't exist
+        // Given
         val streakCount = 5
         val expectedRating = GetStreakPuzzle.BASE_RATING + (streakCount * GetStreakPuzzle.RATING_INCREMENT)
         val user = UserDefaults.signedInUser().copy(
-            puzzleStreak = User.PuzzleStreak(currentCount = streakCount, lastPuzzleId = 999)
+            ratings = UserDefaults.signedInUser().ratings.copy(
+                puzzleStreak = User.PuzzleStreak(currentCount = streakCount, lastPuzzleId = 999)
+            )
         )
         fakeUserRepository.update(user)
         fakePuzzleRepository.withPuzzle(
@@ -101,7 +109,7 @@ internal class GetStreakPuzzleImplTest {
         // When
         val result = underTest()
 
-        // Then - should fetch new puzzle at calculated rating
+        // Then
         assertEquals(streakCount, result.currentStreakCount)
         assertEquals(expectedRating, result.puzzle.rating)
     }
@@ -112,7 +120,9 @@ internal class GetStreakPuzzleImplTest {
         val streakCount = 5
         val expectedRating = GetStreakPuzzle.BASE_RATING + (streakCount * GetStreakPuzzle.RATING_INCREMENT)
         val user = UserDefaults.signedInUser().copy(
-            puzzleStreak = User.PuzzleStreak(currentCount = streakCount, lastPuzzleId = null)
+            ratings = UserDefaults.signedInUser().ratings.copy(
+                puzzleStreak = User.PuzzleStreak(currentCount = streakCount, lastPuzzleId = null)
+            )
         )
         fakeUserRepository.update(user)
         fakePuzzleRepository.withPuzzle(
@@ -133,10 +143,11 @@ internal class GetStreakPuzzleImplTest {
     fun `GIVEN no puzzle available WHEN invoke THEN throws exception`() = runTest {
         // Given
         val user = UserDefaults.signedInUser().copy(
-            puzzleStreak = User.PuzzleStreak(currentCount = 0, lastPuzzleId = null)
+            ratings = UserDefaults.signedInUser().ratings.copy(
+                puzzleStreak = User.PuzzleStreak(currentCount = 0, lastPuzzleId = null)
+            )
         )
         fakeUserRepository.update(user)
-        // No puzzle added to repository
 
         try {
             underTest()
@@ -151,7 +162,9 @@ internal class GetStreakPuzzleImplTest {
         val streakCount = 10
         val expectedRating = GetStreakPuzzle.BASE_RATING + (streakCount * GetStreakPuzzle.RATING_INCREMENT)
         val user = UserDefaults.signedInUser().copy(
-            puzzleStreak = User.PuzzleStreak(currentCount = streakCount, lastPuzzleId = null)
+            ratings = UserDefaults.signedInUser().ratings.copy(
+                puzzleStreak = User.PuzzleStreak(currentCount = streakCount, lastPuzzleId = null)
+            )
         )
         fakeUserRepository.update(user)
         fakePuzzleRepository.withPuzzle(

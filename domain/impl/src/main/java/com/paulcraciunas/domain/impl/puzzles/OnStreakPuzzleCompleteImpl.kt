@@ -22,17 +22,18 @@ class OnStreakPuzzleCompleteImpl @Inject constructor(
     override suspend operator fun invoke(timeSpentMillis: Long) {
         val currentUser = userRepository.get()
 
-        val newStreakCount = currentUser.puzzleStreak.currentCount + 1
-        // Update total time spent
+        val newStreakCount = currentUser.ratings.puzzleStreak.currentCount + 1
         val newTotalTimeSpent = currentUser.statistics.totalTimeSpent + timeSpentMillis
 
         val updatedUser = currentUser.copy(
             statistics = currentUser.statistics.copy(
                 totalTimeSpent = newTotalTimeSpent
             ),
-            puzzleStreak = currentUser.puzzleStreak.copy(
-                currentCount = newStreakCount,
-                lastPuzzleId = null, // Clear so next fetch gets a new puzzle
+            ratings = currentUser.ratings.copy(
+                puzzleStreak = currentUser.ratings.puzzleStreak.copy(
+                    currentCount = newStreakCount,
+                    lastPuzzleId = null, // Clear so next fetch gets a new puzzle
+                )
             )
         )
 
