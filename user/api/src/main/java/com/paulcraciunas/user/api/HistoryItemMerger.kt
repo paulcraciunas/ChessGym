@@ -24,6 +24,8 @@ private fun HistoryItemData.mergeWith(other: HistoryItemData): HistoryItemData =
     is HistoryItemData.BoardVisualizationData -> mergeWith(other as HistoryItemData.BoardVisualizationData)
     is HistoryItemData.BlindModeTrainingData -> mergeWith(other as HistoryItemData.BlindModeTrainingData)
     is HistoryItemData.BlindModeData -> mergeWith(other as HistoryItemData.BlindModeData)
+    is HistoryItemData.PuzzleStreakData -> mergeWith(other as HistoryItemData.PuzzleStreakData)
+    is HistoryItemData.FailedPuzzleData -> mergeWith(other as HistoryItemData.FailedPuzzleData)
 }
 
 private fun HistoryItemData.RatedPuzzleData.mergeWith(
@@ -63,5 +65,19 @@ private fun HistoryItemData.BlindModeData.mergeWith(
 ): HistoryItemData.BlindModeData = copy(
     played = played + other.played,
     ratingChange = ratingChange + other.ratingChange,
+    timeSpent = timeSpent + other.timeSpent
+)
+
+private fun HistoryItemData.PuzzleStreakData.mergeWith(
+    other: HistoryItemData.PuzzleStreakData
+): HistoryItemData.PuzzleStreakData = copy(
+    finalStreakCount = maxOf(finalStreakCount, other.finalStreakCount),
+    timeSpent = timeSpent + other.timeSpent
+)
+
+private fun HistoryItemData.FailedPuzzleData.mergeWith(
+    other: HistoryItemData.FailedPuzzleData
+): HistoryItemData.FailedPuzzleData = copy(
+    puzzlesSolved = puzzlesSolved + other.puzzlesSolved,
     timeSpent = timeSpent + other.timeSpent
 )

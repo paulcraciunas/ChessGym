@@ -27,7 +27,6 @@ internal class UserLocalDataSourceImplTest {
 
     @After
     fun tearDown() = runBlocking {
-        // Clean up after each test
         underTest.clearUserData()
     }
 
@@ -85,7 +84,6 @@ internal class UserLocalDataSourceImplTest {
         // Then
         assertEquals(complexUser, result)
 
-        // Verify specific nested data
         assertEquals("Alice", result.profile.firstName)
         assertEquals("Smith", result.profile.lastName)
         assertEquals(LocalDate.of(2022, 3, 10), result.profile.joinDate)
@@ -96,15 +94,11 @@ internal class UserLocalDataSourceImplTest {
 
         assertEquals(1650, result.highScores.ratedPuzzle)
         assertEquals(120, result.highScores.puzzleRush)
-        assertEquals(85, result.highScores.boardVisualization)
         assertEquals(800, result.highScores.blindMode)
 
         assertEquals(250, result.statistics.puzzlesPlayed)
         assertEquals(200, result.statistics.puzzlesSolved)
         assertEquals(7200000L, result.statistics.totalTimeSpent)
-        assertEquals(8, result.statistics.streaks.current)
-        assertEquals(15, result.statistics.streaks.longest)
-        assertEquals(LocalDate.now().minusDays(1), result.statistics.streaks.lastActivityDate)
 
         assertEquals(4, result.history.size)
         assertEquals(listOf(42, 137, 289), result.failedPuzzles)
@@ -156,6 +150,20 @@ internal class UserLocalDataSourceImplTest {
                     ratingChange = 25,
                     timeSpent = 2100000L
                 )
+            ),
+            User.HistoryItem(
+                timestamp = LocalDate.of(2024, 1, 10),
+                data = User.HistoryItem.HistoryItemData.PuzzleStreakData(
+                    finalStreakCount = 12,
+                    timeSpent = 3600000L
+                )
+            ),
+            User.HistoryItem(
+                timestamp = LocalDate.of(2024, 1, 9),
+                data = User.HistoryItem.HistoryItemData.FailedPuzzleData(
+                    puzzlesSolved = 4,
+                    timeSpent = 1000000L
+                )
             )
         )
 
@@ -167,9 +175,8 @@ internal class UserLocalDataSourceImplTest {
 
         // Then
         assertEquals(user, result)
-        assertEquals(5, result.history.size)
+        assertEquals(7, result.history.size)
 
-        // Verify each history item type
         val puzzleRushItem = result.history[0].data as User.HistoryItem.HistoryItemData.PuzzleRushData
         assertEquals(5, puzzleRushItem.tries)
         assertEquals(95, puzzleRushItem.bestScore)
@@ -194,6 +201,14 @@ internal class UserLocalDataSourceImplTest {
         assertEquals(12, ratedPuzzleItem.puzzlesSolved)
         assertEquals(25, ratedPuzzleItem.ratingChange)
         assertEquals(2100000L, ratedPuzzleItem.timeSpent)
+
+        val streakItem = result.history[5].data as User.HistoryItem.HistoryItemData.PuzzleStreakData
+        assertEquals(12, streakItem.finalStreakCount)
+        assertEquals(3600000L, streakItem.timeSpent)
+
+        val failedItem = result.history[6].data as User.HistoryItem.HistoryItemData.FailedPuzzleData
+        assertEquals(4, failedItem.puzzlesSolved)
+        assertEquals(1000000L, failedItem.timeSpent)
     }
 
     @Test
@@ -255,7 +270,7 @@ internal class UserLocalDataSourceImplTest {
         // Then
         val result = underTest.getUser()
         assertEquals("Updated", result.profile.firstName)
-        assertEquals("User", result.profile.lastName) // Unchanged
+        assertEquals("User", result.profile.lastName)
         assertEquals(1500, result.ratings.current)
         assertEquals(listOf(1, 2, 3), result.failedPuzzles)
     }
@@ -265,7 +280,7 @@ internal class UserLocalDataSourceImplTest {
         // Given
         underTest.saveUser(User())
 
-        // When - Multiple updates
+        // When
         underTest.updateUser { user ->
             user.copy(profile = user.profile.copy(firstName = "Step1"))
         }
@@ -303,7 +318,7 @@ internal class UserLocalDataSourceImplTest {
         // Given
         val user = createComplexUser()
         underTest.saveUser(user)
-        assertEquals(user, underTest.getUser()) // Verify it's saved
+        assertEquals(user, underTest.getUser())
 
         // When
         underTest.clearUserData()
@@ -315,11 +330,11 @@ internal class UserLocalDataSourceImplTest {
 
     @Test
     fun given_extremelyLargeData_WHEN_saveAndGet_THEN_handlesLargeDataCorrectly() = runBlocking {
-        // Given - Create user with lots of history and failed puzzles
+        // Given
         val largeHistoryList = (1..100).map { index ->
             User.HistoryItem(
                 timestamp = LocalDate.of(2024, 1, 1).plusDays(index.toLong()),
-                data = when (index % 5) {
+                data = when (index % 7) {
                     0 -> User.HistoryItem.HistoryItemData.PuzzleRushData(
                         tries = index,
                         bestScore = index * 10,
@@ -343,11 +358,21 @@ internal class UserLocalDataSourceImplTest {
                         timeSpent = index * 40000L
                     )
 
-                    else -> User.HistoryItem.HistoryItemData.RatedPuzzleData(
+                    4 -> User.HistoryItem.HistoryItemData.RatedPuzzleData(
                         puzzlesPlayed = index,
                         puzzlesSolved = index - 2,
                         ratingChange = index * 2,
                         timeSpent = index * 50000L
+                    )
+
+                    5 -> User.HistoryItem.HistoryItemData.PuzzleStreakData(
+                        finalStreakCount = index,
+                        timeSpent = index * 55000L
+                    )
+
+                    else -> User.HistoryItem.HistoryItemData.FailedPuzzleData(
+                        puzzlesSolved = index,
+                        timeSpent = index * 35000L
                     )
                 }
             )
@@ -374,7 +399,6 @@ internal class UserLocalDataSourceImplTest {
         assertEquals(100, result.history.size)
         assertEquals(500, result.failedPuzzles.size)
 
-        // Verify first and last items are correct
         assertEquals(LocalDate.of(2024, 1, 2), result.history.first().timestamp)
         assertEquals(LocalDate.of(2024, 4, 10), result.history.last().timestamp)
         assertEquals(1, result.failedPuzzles.first())
@@ -383,23 +407,19 @@ internal class UserLocalDataSourceImplTest {
 
     @Test
     fun given_userWithEdgeCaseDates_WHEN_saveAndGet_THEN_datesSerializedCorrectly() = runBlocking {
-        // Given
         val edgeCaseDates = listOf(
-            LocalDate.of(1970, 1, 1), // Unix epoch
-            LocalDate.of(2000, 2, 29), // Leap year
-            LocalDate.of(2024, 12, 31), // End of year
-            LocalDate.now(), // Current date
-            LocalDate.now().minusYears(50), // Far past
-            LocalDate.now().plusYears(50) // Far future
+            LocalDate.of(1970, 1, 1),
+            LocalDate.of(2000, 2, 29),
+            LocalDate.of(2024, 12, 31),
+            LocalDate.now(),
+            LocalDate.now().minusYears(50),
+            LocalDate.now().plusYears(50)
         )
 
         for (date in edgeCaseDates) {
             // Given
             val user = User(
                 profile = User.Profile(joinDate = date),
-                statistics = User.Statistics(
-                    streaks = User.Streaks(lastActivityDate = date)
-                ),
                 history = listOf(
                     User.HistoryItem(
                         timestamp = date,
@@ -419,7 +439,6 @@ internal class UserLocalDataSourceImplTest {
             // Then
             assertEquals(user, result)
             assertEquals(date, result.profile.joinDate)
-            assertEquals(date, result.statistics.streaks.lastActivityDate)
             assertEquals(date, result.history.first().timestamp)
         }
     }
@@ -438,18 +457,12 @@ internal class UserLocalDataSourceImplTest {
         highScores = User.HighScores(
             ratedPuzzle = 1650,
             puzzleRush = 120,
-            boardVisualization = 85,
             blindMode = 800
         ),
         statistics = User.Statistics(
             puzzlesPlayed = 250,
             puzzlesSolved = 200,
-            totalTimeSpent = 7200000L, // 2 hours
-            streaks = User.Streaks(
-                current = 8,
-                longest = 15,
-                lastActivityDate = LocalDate.now().minusDays(1)
-            )
+            totalTimeSpent = 7200000L,
         ),
         history = listOf(
             User.HistoryItem(

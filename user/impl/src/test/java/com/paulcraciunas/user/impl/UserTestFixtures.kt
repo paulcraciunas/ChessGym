@@ -19,18 +19,12 @@ internal object UserTestFixtures {
         highScores = User.HighScores(
             ratedPuzzle = 1350,
             puzzleRush = 85,
-            boardVisualization = 92,
             blindMode = 400
         ),
         statistics = User.Statistics(
             puzzlesPlayed = 150,
             puzzlesSolved = 120,
             totalTimeSpent = 3600000, // 1 hour in milliseconds
-            streaks = User.Streaks(
-                current = 5,
-                longest = 15,
-                lastActivityDate = LocalDate.now().minusDays(1)
-            )
         ),
         history = listOf(
             createSamplePuzzleRushHistoryItem(),
