@@ -6,7 +6,7 @@ package com.paulcraciunas.domain.api.puzzles
  * This use case is responsible for:
  * - Removing the puzzle from the user's failed puzzles list
  * - Updating puzzles solved statistics
- * - Logging a [com.paulcraciunas.user.api.User.HistoryItem.HistoryItemData.FailedPuzzleData] history item
+ * - Logging a user history item
  */
 interface OnFailedPuzzleComplete {
 
