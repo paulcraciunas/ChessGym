@@ -1,5 +1,6 @@
 package com.paulcraciunas.screens.puzzles.failed.vm
 
+import com.paulcraciunas.domain.api.general.FakeTimer
 import com.paulcraciunas.domain.api.puzzles.GetFailedPuzzles
 import com.paulcraciunas.domain.api.puzzles.OnFailedPuzzleComplete
 import com.paulcraciunas.game.logic.api.Puzzle
@@ -26,6 +27,7 @@ internal class FailedPuzzlesViewModelTest {
 
     private val getFailedPuzzles = FakeGetFailedPuzzles()
     private val onFailedPuzzleComplete = FakeOnFailedPuzzleComplete()
+    private val timer = FakeTimer()
 
     @BeforeEach
     fun setUp() {
@@ -288,6 +290,7 @@ internal class FailedPuzzlesViewModelTest {
         val underTest = FailedPuzzlesViewModel(
             getFailedPuzzles = getFailedPuzzles,
             onFailedPuzzleComplete = onFailedPuzzleComplete,
+            timer = timer,
             puzzleInteractor = RealGameFactory().puzzleInteractor(),
         )
         // Don't advance dispatcher - state is still loading
@@ -328,6 +331,7 @@ internal class FailedPuzzlesViewModelTest {
         val underTest = FailedPuzzlesViewModel(
             getFailedPuzzles = getFailedPuzzles,
             onFailedPuzzleComplete = onFailedPuzzleComplete,
+            timer = timer,
             puzzleInteractor = RealGameFactory().puzzleInteractor(),
         )
         testDispatcher.scheduler.advanceUntilIdle()
@@ -383,7 +387,7 @@ private class FakeOnFailedPuzzleComplete : OnFailedPuzzleComplete {
     var lastCompletedId: Int? = null
         private set
 
-    override suspend fun invoke(puzzleId: Int) {
+    override suspend fun invoke(puzzleId: Int, timeSpentMillis: Long) {
         lastCompletedId = puzzleId
     }
 }

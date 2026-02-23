@@ -1,7 +1,9 @@
 package com.paulcraciunas.domain.impl.puzzles
 
 import com.paulcraciunas.domain.api.puzzles.OnFailedPuzzleComplete
+import com.paulcraciunas.user.api.User
 import com.paulcraciunas.user.api.UserRepository
+import java.time.LocalDate
 import javax.inject.Inject
 
 /**
@@ -10,21 +12,18 @@ import javax.inject.Inject
  * Updates:
  * - Removes the puzzle ID from the failed puzzles list
  * - Increments the puzzles solved count
+ * - Logs a [User.HistoryItem.HistoryItemData.FailedPuzzleData] history item
  */
 class OnFailedPuzzleCompleteImpl @Inject constructor(
     private val userRepository: UserRepository,
 ) : OnFailedPuzzleComplete {
 
-    override suspend operator fun invoke(puzzleId: Int) {
+    override suspend operator fun invoke(puzzleId: Int, timeSpentMillis: Long) {
         val currentUser = userRepository.get()
 
-        // Remove the puzzle ID from failed list
         val updatedFailedPuzzles = currentUser.failedPuzzles.filter { it != puzzleId }
-
-        // Increment puzzles solved count
         val newPuzzlesSolved = currentUser.statistics.puzzlesSolved + 1
 
-        // Create updated user
         val updatedUser = currentUser.copy(
             failedPuzzles = updatedFailedPuzzles,
             statistics = currentUser.statistics.copy(
@@ -32,6 +31,15 @@ class OnFailedPuzzleCompleteImpl @Inject constructor(
             )
         )
 
+        val historyItem = User.HistoryItem(
+            timestamp = LocalDate.now(),
+            data = User.HistoryItem.HistoryItemData.FailedPuzzleData(
+                puzzlesSolved = 1,
+                timeSpent = timeSpentMillis,
+            )
+        )
+
         userRepository.update(updatedUser)
+        userRepository.logHistory(listOf(historyItem))
     }
 }
