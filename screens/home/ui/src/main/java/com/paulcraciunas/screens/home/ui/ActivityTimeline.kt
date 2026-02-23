@@ -27,7 +27,7 @@ internal fun ActivityTimeline(
     history: List<HomeUiState.HistoryGroup>,
     modifier: Modifier = Modifier
 ) {
-    val innerPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp)
+    val innerPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 16.dp)
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -36,11 +36,11 @@ internal fun ActivityTimeline(
             .padding(innerPadding)
     ) {
         Column(
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
                 text = stringResource(R.string.home_timeline_title),
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Bold
             )

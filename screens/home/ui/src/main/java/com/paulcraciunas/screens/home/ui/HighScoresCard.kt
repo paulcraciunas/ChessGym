@@ -70,13 +70,13 @@ internal fun HighScoresCard(
                         role = Role.Button,
                         onClick = { isExpanded = !isExpanded }
                     )
-                    .padding(16.dp),
+                    .padding(horizontal = 16.dp, vertical = 10.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
@@ -89,7 +89,7 @@ internal fun HighScoresCard(
                         stringResource(R.string.expand_high_scores)
                     },
                     modifier = Modifier
-                        .size(24.dp)
+                        .size(20.dp)
                         .rotate(chevronRotation),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )

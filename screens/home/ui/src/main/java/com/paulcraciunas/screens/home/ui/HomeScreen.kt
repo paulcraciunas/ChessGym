@@ -58,11 +58,8 @@ private fun HomeContent(
             .background(MaterialTheme.colorScheme.background)
     ) {
         LazyColumn(
-            contentPadding = PaddingValues(
-                horizontal = 20.dp,
-                vertical = 24.dp
-            ),
-            verticalArrangement = Arrangement.spacedBy(20.dp)
+            contentPadding = PaddingValues(horizontal = 10.dp),
+            verticalArrangement = Arrangement.SpaceEvenly
         ) {
             item { UserProfileCard(userProfile = uiState.userProfile) }
             item { StatsSection(stats = uiState.userStats) }
@@ -78,7 +75,7 @@ private fun StatsSection(
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.SpaceEvenly
     ) {
         UserStatsCard(
             title = stringResource(R.string.user_stats_title),
