@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.paulcraciunas.chessgym.MainScreen
 import com.paulcraciunas.chessgym.UnderConstruction
+import com.paulcraciunas.chessgym.screens.Settings
 import com.paulcraciunas.screens.loading.ui.LoadingScreen
 import com.paulcraciunas.screens.loading.vm.LoadingViewModel
 
@@ -56,7 +57,7 @@ fun NavGraph(
             )
         }
         composable<Screen.Settings> {
-            UnderConstruction(navController)
+            Settings(onNavigateBack = navController::popBackStack)
         }
         composable<Screen.SignUp> {
             UnderConstruction(navController)

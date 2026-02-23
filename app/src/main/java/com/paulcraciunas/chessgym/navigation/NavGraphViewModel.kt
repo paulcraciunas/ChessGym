@@ -2,6 +2,7 @@ package com.paulcraciunas.chessgym.navigation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.paulcraciunas.settings.application.api.AppSettings
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,7 +13,8 @@ import javax.inject.Inject
 
 data class NavGraphUiState(
     val puzzlesDownloaded: Boolean = false,
-    val isLoading: Boolean = true
+    val isLoading: Boolean = true,
+    val lightMode: AppSettings.LightMode = AppSettings.LightMode.System,
 )
 
 @HiltViewModel
@@ -28,7 +30,8 @@ class NavGraphViewModel @Inject constructor(
             appSettingsRepository.appSettings.collect { appSettings ->
                 _uiState.value = NavGraphUiState(
                     puzzlesDownloaded = appSettings.puzzlesDownloaded,
-                    isLoading = false
+                    isLoading = false,
+                    lightMode = appSettings.lightMode,
                 )
             }
         }
