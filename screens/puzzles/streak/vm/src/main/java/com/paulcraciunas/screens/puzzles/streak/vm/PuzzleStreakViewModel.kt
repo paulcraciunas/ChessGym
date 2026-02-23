@@ -149,7 +149,8 @@ class PuzzleStreakViewModel @Inject constructor(
     }
 
     private suspend fun endStreak() {
-        val result = onStreakComplete()
+        val timeSpent = timer.elapsed()
+        val result = onStreakComplete(timeSpent)
         whilePlaying { state ->
             _uiState.value = PuzzleStreakUiState.StreakEnded(
                 data = helper.buildPuzzleData(),

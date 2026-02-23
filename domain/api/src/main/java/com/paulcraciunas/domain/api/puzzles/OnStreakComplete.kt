@@ -7,16 +7,16 @@ package com.paulcraciunas.domain.api.puzzles
  * - Updating high score if the current streak is a new personal best
  * - Resetting the current streak count to 0
  * - Clearing the last puzzle ID
- *
- * @return true if the streak was a new high score, false otherwise
+ * - Logging a User.HistoryItem
  */
 interface OnStreakComplete {
     /**
      * Processes the end of a puzzle streak.
      *
-     * @return true if this was a new high score
+     * @param timeSpentMillis total time spent in the streak session
+     * @return the result of the streak completion
      */
-    suspend operator fun invoke(): StreakCompleteResult
+    suspend operator fun invoke(timeSpentMillis: Long): StreakCompleteResult
 
     data class StreakCompleteResult(
         val isNewHighScore: Boolean,
