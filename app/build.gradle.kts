@@ -50,6 +50,7 @@ dependencies {
     implementation(project(":screens:boardvis:squares:ui"))
     implementation(project(":screens:boardvis:pieces:ui"))
     implementation(project(":screens:settings:ui"))
+    implementation(project(":screens:about:ui"))
     implementation(project(":user:di"))
 
     implementation(libs.androidx.lifecycle.runtime.compose)

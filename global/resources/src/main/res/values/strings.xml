@@ -282,6 +282,27 @@
     <string name="settings_build_version">Version %1$s-%2$s</string>
     <!-- endregion -->
 
+    <!-- region About -->
+    <string name="about_title">About</string>
+    <string name="about_creator_title">The Creator</string>
+    <string name="about_creator_description">ChessGym was created by Paul Mihai Craciunas, an Android engineer from London, passionate about Chess, hoping to help people on their journey of improvement.</string>
+    <string name="about_contact_title">Contact</string>
+    <string name="about_contact_description">For legal concerns, commercial opportunities, or any other inquiries, please reach out via email.</string>
+    <string name="about_contact_email">contact@chessgym.app</string>
+    <string name="about_feedback_title">Feedback</string>
+    <string name="about_feedback_description">Found a bug? Have an idea for a new feature or improvement? We\'d love to hear from you.</string>
+    <string name="about_feedback_email">feedback@chessgym.app</string>
+    <string name="about_support_title">Support</string>
+    <string name="about_donate_title">Donate</string>
+    <string name="about_donate_description">Support the development of ChessGym</string>
+    <string name="about_rate_title">Rate the App</string>
+    <string name="about_rate_description">Enjoying ChessGym? Leave a rating on the Play Store</string>
+    <string name="about_libraries_title">Open Source Libraries</string>
+    <string name="about_libraries_description">ChessGym is built with the following open source libraries:</string>
+    <string name="about_terms_title">Terms of Use</string>
+    <string name="about_terms_content">ChessGym is provided free of charge, \"as is\" and without warranty of any kind, express or implied. The developer makes no representations or warranties regarding the accuracy, completeness, or reliability of the app or its content.\n\nIn no event shall the developer be liable for any direct, indirect, incidental, special, consequential, or punitive damages arising out of or in connection with your use of ChessGym.\n\nBy using this application, you acknowledge and agree that you do so at your own risk. The developer reserves the right to modify, suspend, or discontinue the app at any time without notice.\n\nAll chess puzzle data is sourced from publicly available databases. ChessGym and its logo are the intellectual property of Paul Mihai Craciunas.\n\n© 2025–2026 Paul Mihai Craciunas. All rights reserved.</string>
+    <!-- endregion -->
+
     <!-- temporary values; these will be deleted as we build features -->
     <string name="under_construction">Under Construction</string>
 
