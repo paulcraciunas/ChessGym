@@ -9,6 +9,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.paulcraciunas.screens.about.ui.AboutScreen
 import com.paulcraciunas.screens.about.vm.AboutViewModel
+import androidx.core.net.toUri
 
 @Composable
 internal fun About(
@@ -23,13 +24,13 @@ internal fun About(
         onNavigateBack = onNavigateBack,
         onContactEmail = {
             val intent = Intent(Intent.ACTION_SENDTO).apply {
-                data = Uri.parse("mailto:contact@chessgym.app")
+                data = "mailto:contact@chessgym.app".toUri()
             }
             context.startActivity(intent)
         },
         onFeedbackEmail = {
             val intent = Intent(Intent.ACTION_SENDTO).apply {
-                data = Uri.parse("mailto:feedback@chessgym.app")
+                data = "mailto:feedback@chessgym.app".toUri()
             }
             context.startActivity(intent)
         },

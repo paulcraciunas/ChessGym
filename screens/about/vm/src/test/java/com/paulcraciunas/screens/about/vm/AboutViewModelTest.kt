@@ -1,6 +1,5 @@
 package com.paulcraciunas.screens.about.vm
 
-import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
@@ -80,14 +79,6 @@ internal class AboutViewModelTest {
 
             val stateAfter = underTest.uiState.value
             assertTrue(stateBefore == stateAfter)
-        }
-    }
-
-    @Nested
-    inner class ImplementsInteractor {
-        @Test
-        fun `GIVEN view model WHEN cast to interactor THEN succeeds`() {
-            assertFalse(underTest !is AboutScreenInteractor)
         }
     }
 }
