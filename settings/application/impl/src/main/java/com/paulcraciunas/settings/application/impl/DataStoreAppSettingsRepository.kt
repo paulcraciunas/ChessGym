@@ -35,7 +35,9 @@ internal class DataStoreAppSettingsRepository @Inject constructor(
                 ?: AppSettings.LightMode.System,
             autoPromote = preferences[AUTO_PROMOTE] ?: true,
             showBorders = preferences[SHOW_BORDERS] ?: true,
-            enableVibrations = preferences[ENABLE_VIBRATIONS] ?: true
+            enableVibrations = preferences[ENABLE_VIBRATIONS] ?: true,
+            highlightLegalMoves = preferences[HIGHLIGHT_LEGAL_MOVES] ?: true,
+            enableAnimations = preferences[ENABLE_ANIMATIONS] ?: true
         )
     }
 
@@ -49,6 +51,8 @@ internal class DataStoreAppSettingsRepository @Inject constructor(
     override suspend fun updateAutoPromote(enabled: Boolean) = dataStore.update(AUTO_PROMOTE, enabled)
     override suspend fun updateShowBorders(enabled: Boolean) = dataStore.update(SHOW_BORDERS, enabled)
     override suspend fun updateEnableVibrations(enabled: Boolean) = dataStore.update(ENABLE_VIBRATIONS, enabled)
+    override suspend fun updateHighlightLegalMoves(enabled: Boolean) = dataStore.update(HIGHLIGHT_LEGAL_MOVES, enabled)
+    override suspend fun updateEnableAnimations(enabled: Boolean) = dataStore.update(ENABLE_ANIMATIONS, enabled)
 
     private suspend fun <T> DataStore<Preferences>.update(key: Preferences.Key<T>, with: T) {
         edit { preferences ->
@@ -67,5 +71,7 @@ internal class DataStoreAppSettingsRepository @Inject constructor(
         private val AUTO_PROMOTE = booleanPreferencesKey("auto_promote")
         private val SHOW_BORDERS = booleanPreferencesKey("show_borders")
         private val ENABLE_VIBRATIONS = booleanPreferencesKey("enable_vibrations")
+        private val HIGHLIGHT_LEGAL_MOVES = booleanPreferencesKey("highlight_legal_moves")
+        private val ENABLE_ANIMATIONS = booleanPreferencesKey("enable_animations")
     }
 }

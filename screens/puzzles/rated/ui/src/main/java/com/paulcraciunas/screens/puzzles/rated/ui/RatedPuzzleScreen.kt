@@ -41,6 +41,8 @@ import com.paulcraciunas.screens.puzzles.rated.vm.StubRatedPuzzleScreenInteracto
 fun RatedPuzzleScreen(
     uiState: RatedPuzzleUiState,
     showBorders: Boolean,
+    highlightLegalMoves: Boolean,
+    enableAnimations: Boolean,
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit = {},
     interactions: RatedPuzzleScreenInteractor = StubRatedPuzzleScreenInteractor(),
@@ -69,6 +71,8 @@ fun RatedPuzzleScreen(
                 RatedPuzzleContent(
                     uiState = uiState,
                     showBorders = showBorders,
+                    highlightLegalMoves = highlightLegalMoves,
+                    enableAnimations = enableAnimations,
                     interactions = interactions,
                     modifier = Modifier.padding(innerPadding)
                 )
@@ -81,6 +85,8 @@ fun RatedPuzzleScreen(
 private fun RatedPuzzleContent(
     uiState: RatedPuzzleUiState.BoardState,
     showBorders: Boolean,
+    highlightLegalMoves: Boolean,
+    enableAnimations: Boolean,
     interactions: RatedPuzzleScreenInteractor,
     modifier: Modifier = Modifier,
 ) {
@@ -99,6 +105,8 @@ private fun RatedPuzzleContent(
             orientation = BoardOrientation.fromSide(data.player),
             onClick = if (isShowingSolution) { _ -> } else interactions::onSquareClicked,
             showBorders = showBorders,
+            highlightLegalMoves = highlightLegalMoves,
+            enableAnimations = enableAnimations,
             modifier = Modifier.fillMaxWidth()
         )
         CapturedPieces(
@@ -172,7 +180,9 @@ private fun WhitePlayingPreview() {
                 showAbandonDialog = false,
                 promotion = null,
             ),
-            showBorders = true
+            showBorders = true,
+            highlightLegalMoves = true,
+            enableAnimations = true
         )
     }
 }
@@ -197,7 +207,9 @@ private fun BlackPlayingPreview() {
                 showAbandonDialog = false,
                 promotion = null,
             ),
-            showBorders = true
+            showBorders = true,
+            highlightLegalMoves = true,
+            enableAnimations = true
         )
     }
 }

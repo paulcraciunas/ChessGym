@@ -11,6 +11,8 @@ data class AppSettings(
     val autoPromote: Boolean,
     val showBorders: Boolean,
     val enableVibrations: Boolean,
+    val highlightLegalMoves: Boolean,
+    val enableAnimations: Boolean,
 ) {
     enum class Theme {
         Wood,

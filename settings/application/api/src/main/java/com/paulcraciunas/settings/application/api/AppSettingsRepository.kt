@@ -15,4 +15,6 @@ interface AppSettingsRepository {
     suspend fun updateAutoPromote(enabled: Boolean)
     suspend fun updateShowBorders(enabled: Boolean)
     suspend fun updateEnableVibrations(enabled: Boolean)
+    suspend fun updateHighlightLegalMoves(enabled: Boolean)
+    suspend fun updateEnableAnimations(enabled: Boolean)
 }

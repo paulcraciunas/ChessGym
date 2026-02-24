@@ -27,6 +27,7 @@ import com.paulcraciunas.screens.common.board.ChessBoard
 internal fun FindTheSquareScreenContents(
     state: FindTheSquareUiState,
     showBorders: Boolean,
+    enableAnimations: Boolean,
     interactions: FindTheSquareScreenInteractor,
     modifier: Modifier = Modifier,
 ) {
@@ -44,6 +45,7 @@ internal fun FindTheSquareScreenContents(
                 orientation = orientation,
                 onClick = interactions::onSquareClicked,
                 showBorders = showBorders,
+                enableAnimations = enableAnimations,
                 modifier = Modifier.fillMaxWidth()
             )
 

@@ -68,7 +68,9 @@ private fun EmptyPreview() {
     ChessGymTheme {
         FailedPuzzlesScreen(
             uiState = FailedPuzzlesUiState.Empty,
-            showBorders = true
+            showBorders = true,
+            highlightLegalMoves = false,
+            enableAnimations = false
         )
     }
 }

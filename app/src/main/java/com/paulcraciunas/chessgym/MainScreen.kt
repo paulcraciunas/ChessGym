@@ -126,24 +126,32 @@ fun MainScreen(
                     RatedPuzzle(
                         tabNavController = tabNavController,
                         showBorders = mainScreenState.appSettings?.showBorders ?: true,
+                        highlightLegalMoves = mainScreenState.appSettings?.highlightLegalMoves ?: true,
+                        enableAnimations = mainScreenState.appSettings?.enableAnimations ?: true,
                     )
                 }
                 animatedComposable<Screen.PuzzleRush> {
                     PuzzleRush(
                         tabNavController = tabNavController,
                         showBorders = mainScreenState.appSettings?.showBorders ?: true,
+                        highlightLegalMoves = mainScreenState.appSettings?.highlightLegalMoves ?: true,
+                        enableAnimations = mainScreenState.appSettings?.enableAnimations ?: true,
                     )
                 }
                 animatedComposable<Screen.FailedPuzzles> {
                     FailedPuzzles(
                         tabNavController = tabNavController,
                         showBorders = mainScreenState.appSettings?.showBorders ?: true,
+                        highlightLegalMoves = mainScreenState.appSettings?.highlightLegalMoves ?: true,
+                        enableAnimations = mainScreenState.appSettings?.enableAnimations ?: true,
                     )
                 }
                 animatedComposable<Screen.PuzzleStreak> {
                     PuzzleStreak(
                         tabNavController = tabNavController,
                         showBorders = mainScreenState.appSettings?.showBorders ?: true,
+                        highlightLegalMoves = mainScreenState.appSettings?.highlightLegalMoves ?: true,
+                        enableAnimations = mainScreenState.appSettings?.enableAnimations ?: true,
                     )
                 }
                 animatedComposable<Screen.BoardVisualization> {
@@ -154,12 +162,15 @@ fun MainScreen(
                         tabNavController = tabNavController,
                         showBorders = mainScreenState.appSettings?.showBorders ?: true,
                         enableVibrations = mainScreenState.appSettings?.enableVibrations ?: true,
+                        enableAnimations = mainScreenState.appSettings?.enableAnimations ?: true,
                     )
                 }
                 animatedComposable<Screen.MoveThePiece> {
                     MoveThePiece(
                         tabNavController = tabNavController,
                         showBorders = mainScreenState.appSettings?.showBorders ?: true,
+                        highlightLegalMoves = mainScreenState.appSettings?.highlightLegalMoves ?: true,
+                        enableAnimations = mainScreenState.appSettings?.enableAnimations ?: true,
                     )
                 }
                 animatedComposable<Screen.BlindMode> {

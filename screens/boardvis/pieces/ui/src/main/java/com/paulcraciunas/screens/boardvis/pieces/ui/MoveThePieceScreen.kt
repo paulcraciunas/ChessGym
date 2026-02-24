@@ -26,6 +26,8 @@ import com.paulcraciunas.screens.common.theme.ChessGymTheme
 fun MoveThePieceScreen(
     uiState: MoveThePieceUiState,
     showBorders: Boolean,
+    highlightLegalMoves: Boolean,
+    enableAnimations: Boolean,
     onNavigateBack: () -> Unit,
     interactions: MoveThePieceScreenInteractor,
     modifier: Modifier = Modifier,
@@ -55,6 +57,8 @@ fun MoveThePieceScreen(
             MoveThePieceScreenContents(
                 state = uiState,
                 showBorders = showBorders,
+                highlightLegalMoves = highlightLegalMoves,
+                enableAnimations = enableAnimations,
                 interactions = interactions,
                 modifier = Modifier.fillMaxSize()
             )
@@ -74,6 +78,8 @@ private fun MoveThePieceScreenSetupPreview() {
                 timeRemainingSeconds = 60
             ),
             showBorders = true,
+            highlightLegalMoves = true,
+            enableAnimations = true,
             onNavigateBack = {},
             interactions = PreviewInteractions
         )
@@ -92,6 +98,8 @@ private fun MoveThePieceScreenSetupNoTrainingPreview() {
                 timeRemainingSeconds = 60
             ),
             showBorders = true,
+            highlightLegalMoves = true,
+            enableAnimations = true,
             onNavigateBack = {},
             interactions = PreviewInteractions
         )
@@ -114,6 +122,8 @@ private fun MoveThePieceScreenPlayingPreview() {
                 isTrainingMode = true
             ),
             showBorders = true,
+            highlightLegalMoves = true,
+            enableAnimations = true,
             onNavigateBack = {},
             interactions = PreviewInteractions
         )
@@ -132,6 +142,8 @@ private fun MoveThePieceScreenGameOverPreview() {
                 wasCaptured = false
             ),
             showBorders = true,
+            highlightLegalMoves = true,
+            enableAnimations = true,
             onNavigateBack = {},
             interactions = PreviewInteractions
         )

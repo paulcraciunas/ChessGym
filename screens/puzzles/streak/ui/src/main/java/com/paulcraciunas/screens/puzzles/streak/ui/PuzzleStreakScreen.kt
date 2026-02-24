@@ -51,6 +51,8 @@ import com.paulcraciunas.screens.puzzles.streak.vm.StubPuzzleStreakScreenInterac
 fun PuzzleStreakScreen(
     uiState: PuzzleStreakUiState,
     showBorders: Boolean,
+    highlightLegalMoves: Boolean,
+    enableAnimations: Boolean,
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit = {},
     interactions: PuzzleStreakScreenInteractor = StubPuzzleStreakScreenInteractor(),
@@ -81,6 +83,8 @@ fun PuzzleStreakScreen(
                 PuzzleStreakContent(
                     uiState = uiState,
                     showBorders = showBorders,
+                    highlightLegalMoves = highlightLegalMoves,
+                    enableAnimations = enableAnimations,
                     interactions = interactions,
                     modifier = Modifier.padding(innerPadding)
                 )
@@ -93,6 +97,8 @@ fun PuzzleStreakScreen(
 private fun PuzzleStreakContent(
     uiState: PuzzleStreakUiState.BoardState,
     showBorders: Boolean,
+    highlightLegalMoves: Boolean,
+    enableAnimations: Boolean,
     interactions: PuzzleStreakScreenInteractor,
     modifier: Modifier = Modifier,
 ) {
@@ -111,6 +117,8 @@ private fun PuzzleStreakContent(
             orientation = BoardOrientation.fromSide(data.player),
             onClick = if (isShowingSolution) { _ -> } else interactions::onSquareClicked,
             showBorders = showBorders,
+            highlightLegalMoves = highlightLegalMoves,
+            enableAnimations = enableAnimations,
             modifier = Modifier.fillMaxWidth()
         )
         CapturedPieces(
@@ -218,7 +226,9 @@ private fun PlayingPreview() {
                 showAbandonDialog = false,
                 promotion = null,
             ),
-            showBorders = true
+            showBorders = true,
+            highlightLegalMoves = true,
+            enableAnimations = true
         )
     }
 }
@@ -243,7 +253,9 @@ private fun StreakEndedPreview() {
                 isNewHighScore = false,
                 showSummary = false,
             ),
-            showBorders = true
+            showBorders = true,
+            highlightLegalMoves = true,
+            enableAnimations = true
         )
     }
 }
