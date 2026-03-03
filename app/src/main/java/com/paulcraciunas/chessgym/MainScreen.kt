@@ -1,25 +1,16 @@
 package com.paulcraciunas.chessgym
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
@@ -30,6 +21,7 @@ import com.paulcraciunas.chessgym.animations.enter
 import com.paulcraciunas.chessgym.animations.exit
 import com.paulcraciunas.chessgym.navigation.BottomNavigationBar
 import com.paulcraciunas.chessgym.navigation.Screen
+import com.paulcraciunas.chessgym.screens.BlindMode
 import com.paulcraciunas.chessgym.screens.BoardVisDashboard
 import com.paulcraciunas.chessgym.screens.FailedPuzzles
 import com.paulcraciunas.chessgym.screens.FindTheSquare
@@ -38,8 +30,6 @@ import com.paulcraciunas.chessgym.screens.PuzzleDashboard
 import com.paulcraciunas.chessgym.screens.PuzzleRush
 import com.paulcraciunas.chessgym.screens.PuzzleStreak
 import com.paulcraciunas.chessgym.screens.RatedPuzzle
-import com.paulcraciunas.screens.common.AppBar
-import com.paulcraciunas.screens.common.AppBarAlignment
 import com.paulcraciunas.screens.common.AppDrawer
 import com.paulcraciunas.screens.home.ui.HomeScreen
 import com.paulcraciunas.screens.home.vm.HomeViewModel
@@ -174,7 +164,11 @@ fun MainScreen(
                     )
                 }
                 animatedComposable<Screen.BlindMode> {
-                    UnderConstruction(title = "Blind Mode", onDrawerToggle = onDrawerToggle)
+                    BlindMode(
+                        showBorders = mainScreenState.appSettings?.showBorders ?: true,
+                        highlightLegalMoves = mainScreenState.appSettings?.highlightLegalMoves ?: true,
+                        onDrawerToggle = onDrawerToggle,
+                    )
                 }
             }
         }
@@ -189,40 +183,6 @@ private inline fun <reified T : Any> NavGraphBuilder.animatedComposable(
         exitTransition = { exit() }
     ) {
         content()
-    }
-}
-
-@Composable
-private fun UnderConstruction(
-    title: String,
-    onDrawerToggle: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Scaffold(
-        topBar = {
-            AppBar(
-                titleAlign = AppBarAlignment.Center,
-                navButton = { Home(onClick = onDrawerToggle) }
-            )
-        },
-        modifier = modifier
-    ) { innerPadding ->
-        Column(modifier = Modifier.padding(innerPadding)) {
-            Text(
-                text = title,
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.titleLarge,
-            )
-            Spacer(modifier = Modifier.height(24.dp))
-            Text(
-                text = "Under Construction",
-                color = Color.Yellow,
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.bodyMedium,
-            )
-        }
     }
 }
 
