@@ -85,7 +85,7 @@ class BoardViewDataBuilder {
         animatingPiece = animatingPiece,
     )
 
-    private fun loadBoard(board: IBoard) {
+    private fun loadBoard(board: IBoard) = apply {
         // Clear the squares first
         Locus.all { loc ->
             squares[loc.rank.dec()][loc.file.dec()] = SquareViewData(piece = null)
@@ -104,6 +104,10 @@ class BoardViewDataBuilder {
     private fun withLastMove(from: Locus, to: Locus): BoardViewDataBuilder = apply {
         squares.update(from) { it.copy(lastMove = true) }
         squares.update(to) { it.copy(lastMove = true) }
+    }
+
+    companion object {
+        fun fromBoard(board: IBoard): BoardViewData = BoardViewDataBuilder().loadBoard(board).build()
     }
 }
 
