@@ -13,6 +13,7 @@ import com.paulcraciunas.domain.api.puzzles.GetRatedPuzzle
 import com.paulcraciunas.domain.api.puzzles.GetStreakPuzzle
 import com.paulcraciunas.domain.api.puzzles.OnFailedPuzzleComplete
 import com.paulcraciunas.domain.api.boardvis.OnFindSquareComplete
+import com.paulcraciunas.domain.api.blindmode.OnBlindModeGameComplete
 import com.paulcraciunas.domain.api.boardvis.OnMoveThePieceComplete
 import com.paulcraciunas.domain.api.puzzles.OnPuzzleComplete
 import com.paulcraciunas.domain.api.puzzles.OnPuzzleRushComplete
@@ -32,6 +33,7 @@ import com.paulcraciunas.domain.impl.puzzles.GetRatedPuzzleImpl
 import com.paulcraciunas.domain.impl.puzzles.GetStreakPuzzleImpl
 import com.paulcraciunas.domain.impl.puzzles.OnFailedPuzzleCompleteImpl
 import com.paulcraciunas.domain.impl.boardvis.OnFindSquareCompleteImpl
+import com.paulcraciunas.domain.impl.blindmode.OnBlindModeGameCompleteImpl
 import com.paulcraciunas.domain.impl.boardvis.OnMoveThePieceCompleteImpl
 import com.paulcraciunas.domain.impl.puzzles.OnPuzzleCompleteImpl
 import com.paulcraciunas.domain.impl.puzzles.OnPuzzleRushCompleteImpl
@@ -125,4 +127,8 @@ internal abstract class DomainModule {
 
     @Binds
     abstract fun bindMoveThePieceGameEngine(impl: MoveThePieceGameEngineImpl): MoveThePieceGameEngine
+
+    @Binds
+    @Singleton
+    abstract fun bindOnBlindModeGameComplete(impl: OnBlindModeGameCompleteImpl): OnBlindModeGameComplete
 }
