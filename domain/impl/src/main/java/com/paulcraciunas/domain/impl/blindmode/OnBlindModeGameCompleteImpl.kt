@@ -3,12 +3,12 @@ package com.paulcraciunas.domain.impl.blindmode
 import com.paulcraciunas.domain.api.blindmode.BlindModeGameResult
 import com.paulcraciunas.domain.api.blindmode.OnBlindModeGameComplete
 import com.paulcraciunas.domain.api.general.CalculateElo
+import com.paulcraciunas.domain.api.general.EloResult
 import com.paulcraciunas.user.api.User
 import com.paulcraciunas.user.api.UserRepository
 import java.time.LocalDate
 import javax.inject.Inject
 
-// TODO Paul: this needs to be thoroughly unit tested
 class OnBlindModeGameCompleteImpl @Inject constructor(
     private val userRepository: UserRepository,
     private val calculateElo: CalculateElo,
@@ -18,14 +18,19 @@ class OnBlindModeGameCompleteImpl @Inject constructor(
         val currentUser = userRepository.get()
         val newTimeSpent = currentUser.statistics.totalTimeSpent + result.timeSpentMillis
 
+        val eloResult = calculateElo(
+            userRating = currentUser.ratings.blindMode,
+            puzzleRating = result.opponentElo,
+        )
+
         val updatedUser = if (result.isTrainingMode) {
             buildTrainingUpdate(currentUser, newTimeSpent)
         } else {
-            buildRatedUpdate(currentUser, result, newTimeSpent)
+            buildRatedUpdate(currentUser, result, newTimeSpent, eloResult)
         }
 
         userRepository.update(updatedUser)
-        userRepository.logHistory(listOf(buildHistoryItem(result, currentUser)))
+        userRepository.logHistory(listOf(buildHistoryItem(result, eloResult)))
     }
 
     private fun buildTrainingUpdate(
@@ -39,12 +44,9 @@ class OnBlindModeGameCompleteImpl @Inject constructor(
         currentUser: User,
         result: BlindModeGameResult,
         newTimeSpent: Long,
+        eloResult: EloResult,
     ): User {
-        val eloResult = calculateElo(
-            userRating = currentUser.ratings.blindMode,
-            puzzleRating = result.opponentElo,
-        )
-        val ratingChange = eloResult.get(result.isPlayerWin)
+        val ratingChange = eloResult.getNormalized(result.isPlayerWin)
         return currentUser.copy(
             ratings = currentUser.ratings.copy(
                 blindMode = currentUser.ratings.blindMode + ratingChange
@@ -55,7 +57,7 @@ class OnBlindModeGameCompleteImpl @Inject constructor(
 
     private fun buildHistoryItem(
         result: BlindModeGameResult,
-        currentUser: User,
+        eloResult: EloResult,
     ): User.HistoryItem {
         val today = LocalDate.now()
         val data = if (result.isTrainingMode) {
@@ -65,13 +67,9 @@ class OnBlindModeGameCompleteImpl @Inject constructor(
                 timeSpent = result.timeSpentMillis,
             )
         } else {
-            val eloResult = calculateElo(
-                userRating = currentUser.ratings.blindMode,
-                puzzleRating = result.opponentElo,
-            )
             User.HistoryItem.HistoryItemData.BlindModeData(
                 played = 1,
-                ratingChange = eloResult.get(result.isPlayerWin),
+                ratingChange = eloResult.getNormalized(result.isPlayerWin),
                 timeSpent = result.timeSpentMillis,
             )
         }
