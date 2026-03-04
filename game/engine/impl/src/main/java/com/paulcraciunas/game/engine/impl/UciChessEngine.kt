@@ -13,27 +13,22 @@ import javax.inject.Inject
  * [ChessEngine] implementation backed by Stockfish 11 via JNI.
  * Communicates with the native engine using the UCI protocol over stdin/stdout pipes.
  */
-// TODO Paul: This class needs to be thoroughly tested!!
 internal class UciChessEngine @Inject constructor(
-    @DefaultDispatcher val dispatcher: CoroutineDispatcher,
-    val uci: UciFacade,
+    @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
+    private val uci: UciFacade,
 ) : ChessEngine {
 
-    override suspend fun initialize() {
+    override suspend fun initialize(): Unit = withContext(dispatcher) {
         uci.startEngine()
-        withContext(dispatcher) {
-            uci.execute<UciResponse.Done>(UciCommand.Init)
-            uci.execute<UciResponse.Ready>(UciCommand.IsReady)
-        }
+        uci.execute<UciResponse.Initialized>(UciCommand.Init)
+        uci.execute<UciResponse.Ready>(UciCommand.IsReady)
     }
 
-    override suspend fun startNewGame(elo: Int) {
-        withContext(dispatcher) {
-            uci.execute<UciResponse.Done>(UciCommand.NewGame)
-            uci.execute<UciResponse.Done>(UciCommand.LimitElo)
-            uci.execute<UciResponse.Done>(UciCommand.SetElo(elo))
-            uci.execute<UciResponse.Ready>(UciCommand.IsReady)
-        }
+    override suspend fun startNewGame(elo: Int): Unit = withContext(dispatcher) {
+        uci.execute<UciResponse.Done>(UciCommand.NewGame)
+        uci.execute<UciResponse.Done>(UciCommand.LimitElo)
+        uci.execute<UciResponse.Done>(UciCommand.SetElo(elo))
+        uci.execute<UciResponse.Ready>(UciCommand.IsReady)
     }
 
     override suspend fun calculateBestMove(fen: String): EngineMove =
@@ -43,15 +38,11 @@ internal class UciChessEngine @Inject constructor(
             bestMove.engineMove
         }
 
-    override suspend fun stop() {
-        withContext(dispatcher) {
-            uci.execute<UciResponse.Done>(UciCommand.Stop)
-        }
+    override suspend fun stop(): Unit = withContext(dispatcher) {
+        uci.execute<UciResponse.Done>(UciCommand.Stop)
     }
 
-    override suspend fun shutdown() {
-        withContext(dispatcher) {
-            uci.execute<UciResponse.Done>(UciCommand.Quit)
-        }
+    override suspend fun shutdown(): Unit = withContext(dispatcher) {
+        uci.execute<UciResponse.Done>(UciCommand.Quit)
     }
 }
