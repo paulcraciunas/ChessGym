@@ -2,6 +2,7 @@ package com.paulcraciunas.game.engine.impl
 
 import com.paulcraciunas.game.engine.impl.uci.UciCommand
 import com.paulcraciunas.game.engine.impl.uci.UciResponse
+import kotlinx.coroutines.withTimeout
 import javax.inject.Inject
 
 internal class StockfishUciFacade @Inject constructor(
@@ -15,7 +16,9 @@ internal class StockfishUciFacade @Inject constructor(
     @Suppress("UNCHECKED_CAST")
     override suspend fun <T : UciResponse> execute(uciCommand: UciCommand): T {
         bridge.nativeSendCommand(cmd = uciCommand.protocol())
-        return buildResponse(uciCommand) as T
+        return withTimeout(RESPONSE_TIMEOUT_MS) {
+            buildResponse(uciCommand) as T
+        }
     }
 
     private fun buildResponse(uciCommand: UciCommand): UciResponse {
@@ -26,5 +29,9 @@ internal class StockfishUciFacade @Inject constructor(
             response = factory.construct(line)
         }
         return response
+    }
+
+    companion object {
+        internal const val RESPONSE_TIMEOUT_MS = 30_000L
     }
 }
