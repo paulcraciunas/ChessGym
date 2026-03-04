@@ -41,7 +41,6 @@ internal sealed class UciCommand {
 
     class SetMoveTime(val moveTimeMillis: Int = DEFAULT_MOVE_TIME_MS) : UciCommand() {
         override fun protocol(): String = "go movetime $moveTimeMillis"
-        // TODO Paul: does this belong here, or in setPosition above?!
         override fun responseFactory(): ResponseFactory = ResponseFactory.BestMoveFactory
     }
 
