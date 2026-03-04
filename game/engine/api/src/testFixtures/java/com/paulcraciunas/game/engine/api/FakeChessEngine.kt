@@ -1,14 +1,20 @@
 package com.paulcraciunas.game.engine.api
 
+import com.paulcraciunas.game.logic.api.board.loc
 import java.util.LinkedList
 
 /**
- * A test double for [ChessEngine] that returns pre-programmed moves from a queue.
+ * A fake [ChessEngine] that returns pre-programmed moves.
+ * By default, pre-loaded with the Italian Game opening for Black:
+ *   1. ... e5  2. ... Nc6  3. ... Bc5
+ *
+ * Additional moves can be enqueued via [enqueueMoves].
  */
-// TODO Paul: this should be a proper fake. Perhaps load it by default with some moves (e.g. Spanish game)
 class FakeChessEngine : ChessEngine {
     private val moveQueue: LinkedList<EngineMove> = LinkedList()
     var isInitialized: Boolean = false
+        private set
+    var isStopped: Boolean = false
         private set
     var isShutdown: Boolean = false
         private set
@@ -16,6 +22,10 @@ class FakeChessEngine : ChessEngine {
         private set
     var lastReceivedFen: String? = null
         private set
+
+    init {
+        loadItalianGameDefense()
+    }
 
     fun enqueueMoves(vararg moves: EngineMove) {
         moveQueue.addAll(moves)
@@ -36,10 +46,18 @@ class FakeChessEngine : ChessEngine {
     }
 
     override suspend fun stop() {
-        // No-op in fake
+        isStopped = true
     }
 
     override suspend fun shutdown() {
         isShutdown = true
+    }
+
+    private fun loadItalianGameDefense() {
+        enqueueMoves(
+            EngineMove(from = "e7".loc(), to = "e5".loc()),
+            EngineMove(from = "b8".loc(), to = "c6".loc()),
+            EngineMove(from = "f8".loc(), to = "c5".loc()),
+        )
     }
 }
