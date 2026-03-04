@@ -16,4 +16,6 @@ dependencies {
     implementation(project(":settings:application:api"))
 
     testFixturesImplementation(project(":game:logic:api"))
+    testFixturesImplementation(project(":game:logic:impl"))
+    testFixturesImplementation(project(":game:engine:api"))
 }
