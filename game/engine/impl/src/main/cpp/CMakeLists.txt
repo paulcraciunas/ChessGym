@@ -45,3 +45,8 @@ target_compile_options(stockfishjni PRIVATE
     -O3
     -Wall
 )
+
+# 16 KB page-size compatibility required by Android 15+
+target_link_options(stockfishjni PRIVATE
+    -Wl,-z,max-page-size=16384
+)
