@@ -18,13 +18,19 @@ internal class UciChessEngine @Inject constructor(
     private val uci: UciFacade,
 ) : ChessEngine {
 
+    @Volatile
+    private var isEngineRunning: Boolean = false
+
     override suspend fun initialize(): Unit = withContext(dispatcher) {
+        if (isEngineRunning) return@withContext
         uci.startEngine()
         uci.execute<UciResponse.Initialized>(UciCommand.Init)
         uci.execute<UciResponse.Ready>(UciCommand.IsReady)
+        isEngineRunning = true
     }
 
     override suspend fun startNewGame(elo: Int): Unit = withContext(dispatcher) {
+        initialize()
         uci.execute<UciResponse.Done>(UciCommand.NewGame)
         uci.execute<UciResponse.Done>(UciCommand.LimitElo)
         uci.execute<UciResponse.Done>(UciCommand.SetElo(elo))

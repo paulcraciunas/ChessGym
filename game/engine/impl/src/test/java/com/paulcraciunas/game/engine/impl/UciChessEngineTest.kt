@@ -32,7 +32,27 @@ internal class UciChessEngineTest {
     }
 
     @Test
-    fun `GIVEN initialized engine WHEN startNewGame THEN sends newgame limitelo setelo and ready`() = runTest(testDispatcher) {
+    fun `GIVEN engine WHEN startNewGame THEN initializes first then sends game commands`() = runTest(testDispatcher) {
+        underTest.startNewGame(elo = 1400)
+
+        assertTrue(fakeFacade.isStarted)
+        val commandTypes = fakeFacade.executedCommands.map { it::class }
+        assertEquals(UciCommand.Init::class, commandTypes[0])
+        assertEquals(UciCommand.IsReady::class, commandTypes[1])
+        assertEquals(UciCommand.NewGame::class, commandTypes[2])
+        assertEquals(UciCommand.LimitElo::class, commandTypes[3])
+        assertEquals(UciCommand.SetElo::class, commandTypes[4])
+        assertEquals(UciCommand.IsReady::class, commandTypes[5])
+
+        val setElo = fakeFacade.executedCommands[4] as UciCommand.SetElo
+        assertEquals(1400, setElo.elo)
+    }
+
+    @Test
+    fun `GIVEN already initialized WHEN startNewGame THEN skips re-initialization`() = runTest(testDispatcher) {
+        underTest.initialize()
+        fakeFacade.executedCommands.clear()
+
         underTest.startNewGame(elo = 1400)
 
         val commandTypes = fakeFacade.executedCommands.map { it::class }
@@ -40,9 +60,18 @@ internal class UciChessEngineTest {
         assertEquals(UciCommand.LimitElo::class, commandTypes[1])
         assertEquals(UciCommand.SetElo::class, commandTypes[2])
         assertEquals(UciCommand.IsReady::class, commandTypes[3])
+    }
 
-        val setElo = fakeFacade.executedCommands[2] as UciCommand.SetElo
-        assertEquals(1400, setElo.elo)
+    @Test
+    fun `GIVEN engine WHEN initialize called twice THEN only initializes once`() = runTest(testDispatcher) {
+        underTest.initialize()
+        underTest.initialize()
+
+        assertEquals(2, fakeFacade.executedCommands.size)
+        assertEquals(
+            listOf(UciCommand.Init::class, UciCommand.IsReady::class),
+            fakeFacade.executedCommands.map { it::class },
+        )
     }
 
     @Test

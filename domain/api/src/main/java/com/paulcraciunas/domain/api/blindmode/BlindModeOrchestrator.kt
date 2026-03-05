@@ -6,15 +6,18 @@ import com.paulcraciunas.game.logic.api.Result
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
+import com.paulcraciunas.game.logic.api.board.Piece
 
 /**
  * Orchestrates a blind mode game, coordinating between the player's [Game] and
  * the chess engine for the opponent's moves.
  */
 interface BlindModeOrchestrator {
+    suspend fun initialize()
     suspend fun startGame(elo: Int, side: Side = Side.WHITE)
     fun selectSquare(locus: Locus): SelectionResult
     fun playMove(from: Locus, to: Locus): PlayResult
+    fun playMove(from: Locus, to: Locus, promotion: Piece): PlayResult
     suspend fun requestEngineMove(): EnginePlayResult
     fun resign()
     fun board(): IBoard
@@ -34,6 +37,7 @@ sealed class SelectionResult {
 sealed class PlayResult {
     data class Success(val ply: Ply) : PlayResult()
     data class GameOver(val ply: Ply, val result: Result) : PlayResult()
+    data object PromotionRequired : PlayResult()
     data object Invalid : PlayResult()
 }
 

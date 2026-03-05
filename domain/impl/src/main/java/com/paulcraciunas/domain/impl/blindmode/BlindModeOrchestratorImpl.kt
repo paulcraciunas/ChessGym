@@ -12,6 +12,7 @@ import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
+import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.serializer.api.Serializer
 
 class BlindModeOrchestratorImpl(
@@ -23,10 +24,13 @@ class BlindModeOrchestratorImpl(
     private lateinit var game: Game
     private var playerSide: Side = Side.WHITE
 
+    override suspend fun initialize() {
+        chessEngine.initialize()
+    }
+
     override suspend fun startGame(elo: Int, side: Side) {
         game = gameFactory.builder().withDefaultBoard().buildGame()
         game.start()
-        // TODO Paul: integrate setting the side in the game engine
         playerSide = side
         chessEngine.startNewGame(elo)
     }
@@ -43,6 +47,17 @@ class BlindModeOrchestratorImpl(
         val validPlies = game.plies(from)
         val ply = validPlies.find { it.to == to } ?: return PlayResult.Invalid
 
+        if (ply.isPromotion()) return PlayResult.PromotionRequired
+
+        game.play(ply)
+        return ply.toPlayResult(with = game.state)
+    }
+
+    override fun playMove(from: Locus, to: Locus, promotion: Piece): PlayResult {
+        val validPlies = game.plies(from)
+        val ply = validPlies.find { it.to == to } ?: return PlayResult.Invalid
+
+        ply.promote(promotion)
         game.play(ply)
         return ply.toPlayResult(with = game.state)
     }
@@ -54,9 +69,7 @@ class BlindModeOrchestratorImpl(
         val ply = game.plies(engineMove.from)
             .first { it.to == engineMove.to }
 
-        engineMove.promotion?.let {
-            ply.promote(it)
-        }
+        engineMove.promotion?.let { ply.promote(it) }
 
         game.play(ply)
         return ply.toEngineResult(with = game.state)
