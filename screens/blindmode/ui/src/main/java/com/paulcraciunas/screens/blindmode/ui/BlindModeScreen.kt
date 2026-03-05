@@ -46,6 +46,7 @@ fun BlindModeScreen(
     uiState: BlindModeUiState,
     showBorders: Boolean,
     highlightLegalMoves: Boolean,
+    enableAnimations: Boolean,
     onDrawerToggle: () -> Unit,
     interactions: BlindModeScreenInteractor,
     modifier: Modifier = Modifier,
@@ -81,11 +82,13 @@ fun BlindModeScreen(
                     state = uiState,
                     showBorders = showBorders,
                     highlightLegalMoves = highlightLegalMoves,
+                    enableAnimations = enableAnimations,
                     interactions = interactions,
                 )
                 is BlindModeUiState.Revealing -> RevealingContent(
                     state = uiState,
                     showBorders = showBorders,
+                    enableAnimations = enableAnimations,
                 )
                 is BlindModeUiState.GameOver -> GameOverContent(
                     state = uiState,
@@ -102,6 +105,7 @@ private fun PlayingContent(
     state: BlindModeUiState.Playing,
     showBorders: Boolean,
     highlightLegalMoves: Boolean,
+    enableAnimations: Boolean,
     interactions: BlindModeScreenInteractor,
 ) {
     ChessBoard(
@@ -109,12 +113,11 @@ private fun PlayingContent(
             selectedSquare = state.selectedSquare,
             legalMoves = state.legalMoves
         ),
-        orientation = if (state.playerSide == Side.BLACK) BoardOrientation.Black
-        else BoardOrientation.White,
+        orientation = BoardOrientation.fromSide(state.playerSide),
         onClick = interactions::onSquareClicked,
         showBorders = showBorders,
         highlightLegalMoves = highlightLegalMoves,
-        enableAnimations = false,
+        enableAnimations = enableAnimations,
         modifier = Modifier.fillMaxWidth()
     )
 
@@ -159,15 +162,27 @@ private fun PlayingContent(
 private fun RevealingContent(
     state: BlindModeUiState.Revealing,
     showBorders: Boolean,
+    enableAnimations: Boolean,
 ) {
-    AnimatedVisibility(
-        visible = true,
-        enter = fadeIn(animationSpec = tween(durationMillis = 300)),
-        exit = fadeOut(animationSpec = tween(durationMillis = 500)),
-    ) {
+    if (enableAnimations) {
+        AnimatedVisibility(
+            visible = true,
+            enter = fadeIn(animationSpec = tween(durationMillis = 300)),
+            exit = fadeOut(animationSpec = tween(durationMillis = 500)),
+        ) {
+            ChessBoard(
+                board = state.boardData,
+                orientation = BoardOrientation.fromSide(state.playerSide),
+                onClick = {},
+                showBorders = showBorders,
+                enableAnimations = false,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+    } else {
         ChessBoard(
             board = state.boardData,
-            orientation = BoardOrientation.White,
+            orientation = BoardOrientation.fromSide(state.playerSide),
             onClick = {},
             showBorders = showBorders,
             enableAnimations = false,
@@ -208,6 +223,7 @@ private fun BlindModeSetupPreview() {
             uiState = BlindModeUiState.Setup(),
             showBorders = true,
             highlightLegalMoves = true,
+            enableAnimations = false,
             onDrawerToggle = {},
             interactions = StubBlindModeScreenInteractor(),
         )
@@ -227,6 +243,7 @@ private fun BlindModePlayingPreview() {
             ),
             showBorders = true,
             highlightLegalMoves = true,
+            enableAnimations = false,
             onDrawerToggle = {},
             interactions = StubBlindModeScreenInteractor(),
         )
@@ -246,6 +263,7 @@ private fun BlindModeThinkingPreview() {
             ),
             showBorders = true,
             highlightLegalMoves = true,
+            enableAnimations = false,
             onDrawerToggle = {},
             interactions = StubBlindModeScreenInteractor(),
         )
@@ -264,6 +282,7 @@ private fun BlindModeGameOverPreview() {
             ),
             showBorders = true,
             highlightLegalMoves = true,
+            enableAnimations = false,
             onDrawerToggle = {},
             interactions = StubBlindModeScreenInteractor(),
         )

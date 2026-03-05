@@ -13,6 +13,7 @@ import com.paulcraciunas.screens.blindmode.vm.BlindModeViewModel
 internal fun BlindMode(
     showBorders: Boolean,
     highlightLegalMoves: Boolean,
+    enableAnimations: Boolean,
     onDrawerToggle: () -> Unit,
 ) {
     val vm: BlindModeViewModel = hiltViewModel()
@@ -25,6 +26,7 @@ internal fun BlindMode(
         uiState = blindModeState,
         showBorders = showBorders,
         highlightLegalMoves = highlightLegalMoves,
+        enableAnimations = enableAnimations,
         onDrawerToggle = onDrawerToggle,
         interactions = vm,
     )

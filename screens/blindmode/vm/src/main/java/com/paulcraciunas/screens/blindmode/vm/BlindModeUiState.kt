@@ -32,6 +32,7 @@ sealed class BlindModeUiState {
     data class Revealing(
         override val isTrainingMode: Boolean = true,
         override val selectedSide: SideSelection = SideSelection.WHITE,
+        val playerSide: Side = Side.WHITE,
         val boardData: BoardViewData,
         val moveHistory: String = "",
     ) : BlindModeUiState()

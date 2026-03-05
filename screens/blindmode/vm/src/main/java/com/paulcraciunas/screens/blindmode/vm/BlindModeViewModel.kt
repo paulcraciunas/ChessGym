@@ -142,6 +142,7 @@ class BlindModeViewModel @Inject constructor(
             _uiState.value = BlindModeUiState.Revealing(
                 isTrainingMode = currentState.isTrainingMode,
                 selectedSide = currentState.selectedSide,
+                playerSide = orchestrator.playerSide(),
                 boardData = BoardViewDataBuilder.fromBoard(orchestrator.board()),
                 moveHistory = moveHistory,
             )

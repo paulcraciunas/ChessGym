@@ -167,6 +167,7 @@ fun MainScreen(
                     BlindMode(
                         showBorders = mainScreenState.appSettings?.showBorders ?: true,
                         highlightLegalMoves = mainScreenState.appSettings?.highlightLegalMoves ?: true,
+                        enableAnimations = mainScreenState.appSettings?.enableAnimations ?: true,
                         onDrawerToggle = onDrawerToggle,
                     )
                 }
