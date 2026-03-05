@@ -64,7 +64,7 @@ internal fun SetupContent(
         )
     }
 
-    if (!state.isTrainingMode) {
+    if (state.isTrainingMode) {
         Text(
             text = stringResource(R.string.blind_mode_training_description),
             style = MaterialTheme.typography.bodySmall,

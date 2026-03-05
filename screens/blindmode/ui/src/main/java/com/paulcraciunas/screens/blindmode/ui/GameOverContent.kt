@@ -26,7 +26,7 @@ internal fun GameOverContent(
 ) {
     ChessBoard(
         board = state.boardData,
-        orientation = BoardOrientation.White,
+        orientation = BoardOrientation.fromSide(state.playerSide),
         onClick = {},
         showBorders = showBorders,
         enableAnimations = false,
