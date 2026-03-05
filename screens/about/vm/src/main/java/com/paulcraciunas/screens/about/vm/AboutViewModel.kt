@@ -25,6 +25,11 @@ class AboutViewModel @Inject constructor() : ViewModel(), AboutScreenInteractor 
 
     private fun provideLibraries(): List<LibraryInfo> = listOf(
         LibraryInfo(
+            name = "Stockfish",
+            url = "https://github.com/official-stockfish/Stockfish",
+            license = "GNU GPL 3.0",
+        ),
+        LibraryInfo(
             name = "Kotlin",
             url = "https://kotlinlang.org",
             license = "Apache License 2.0",

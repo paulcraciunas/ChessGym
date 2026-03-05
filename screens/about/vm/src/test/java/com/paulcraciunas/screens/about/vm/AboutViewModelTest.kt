@@ -1,5 +1,6 @@
 package com.paulcraciunas.screens.about.vm
 
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
@@ -56,6 +57,16 @@ internal class AboutViewModelTest {
 
             val uniqueNames = state.libraries.map { it.name }.toSet()
             assertTrue(uniqueNames.size == state.libraries.size)
+        }
+
+        @Test
+        fun `GIVEN default state WHEN initialized THEN Stockfish is listed with GPL 3`() {
+            val state = underTest.uiState.value
+            val stockfish = state.libraries.find { it.name == "Stockfish" }
+
+            assertTrue(stockfish != null)
+            assertEquals("GNU GPL 3.0", stockfish!!.license)
+            assertTrue(stockfish.url.contains("github.com"))
         }
     }
 
