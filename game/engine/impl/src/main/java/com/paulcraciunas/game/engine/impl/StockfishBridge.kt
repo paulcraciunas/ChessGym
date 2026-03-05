@@ -6,6 +6,7 @@ package com.paulcraciunas.game.engine.impl
  */
 internal class StockfishBridge {
     external fun nativeStartEngine()
+    external fun nativeShutdownEngine()
     external fun nativeSendCommand(cmd: String)
     external fun nativeReadOutput(): String
 

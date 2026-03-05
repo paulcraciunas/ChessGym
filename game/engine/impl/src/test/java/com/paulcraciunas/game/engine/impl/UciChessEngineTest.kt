@@ -103,22 +103,44 @@ internal class UciChessEngineTest {
     }
 
     @Test
-    fun `GIVEN engine WHEN shutdown THEN sends quit command`() = runTest(testDispatcher) {
+    fun `GIVEN engine WHEN shutdown THEN sends quit and cleans up native resources`() = runTest(testDispatcher) {
+        underTest.initialize()
+
         underTest.shutdown()
 
-        assertEquals(1, fakeFacade.executedCommands.size)
-        assertEquals(UciCommand.Quit::class, fakeFacade.executedCommands[0]::class)
+        assertEquals(UciCommand.Quit::class, fakeFacade.executedCommands.last()::class)
+        assertTrue(fakeFacade.isShutdown)
+    }
+
+    @Test
+    fun `GIVEN shutdown engine WHEN initialize again THEN re-initializes successfully`() = runTest(testDispatcher) {
+        underTest.initialize()
+        underTest.shutdown()
+        fakeFacade.executedCommands.clear()
+        fakeFacade.isStarted = false
+
+        underTest.initialize()
+
+        assertTrue(fakeFacade.isStarted)
+        assertEquals(
+            listOf(UciCommand.Init::class, UciCommand.IsReady::class),
+            fakeFacade.executedCommands.map { it::class },
+        )
     }
 }
 
 private class FakeUciFacade : UciFacade {
     val executedCommands: MutableList<UciCommand> = mutableListOf()
     var isStarted: Boolean = false
-        private set
+    var isShutdown: Boolean = false
     var bestMoveResponse: com.paulcraciunas.game.engine.api.EngineMove? = null
 
     override fun startEngine() {
         isStarted = true
+    }
+
+    override fun shutdownEngine() {
+        isShutdown = true
     }
 
     @Suppress("UNCHECKED_CAST")

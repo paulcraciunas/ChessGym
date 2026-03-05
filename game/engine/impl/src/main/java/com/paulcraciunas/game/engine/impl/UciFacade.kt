@@ -5,5 +5,6 @@ import com.paulcraciunas.game.engine.impl.uci.UciResponse
 
 internal interface UciFacade {
     fun startEngine()
+    fun shutdownEngine()
     suspend fun <T: UciResponse> execute(uciCommand: UciCommand): T
 }

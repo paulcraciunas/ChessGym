@@ -50,5 +50,7 @@ internal class UciChessEngine @Inject constructor(
 
     override suspend fun shutdown(): Unit = withContext(dispatcher) {
         uci.execute<UciResponse.Done>(UciCommand.Quit)
+        uci.shutdownEngine()
+        isEngineRunning = false
     }
 }

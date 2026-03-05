@@ -13,6 +13,10 @@ internal class StockfishUciFacade @Inject constructor(
         bridge.nativeStartEngine()
     }
 
+    override fun shutdownEngine() {
+        bridge.nativeShutdownEngine()
+    }
+
     @Suppress("UNCHECKED_CAST")
     override suspend fun <T : UciResponse> execute(uciCommand: UciCommand): T {
         bridge.nativeSendCommand(cmd = uciCommand.protocol())
