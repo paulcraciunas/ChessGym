@@ -62,32 +62,25 @@ fun ChessBoard(
     highlightLegalMoves: Boolean = true,
     enableAnimations: Boolean = true,
 ) {
-    if (!showBorders) {
+    Box(
+        modifier = modifier
+            .aspectRatio(1f)
+            .background(color = BoardColors.boardEdge),
+        contentAlignment = Alignment.Center
+    ) {
+        if (showBorders) {
+            BorderRanks(orientation = orientation, modifier = Modifier.align(Alignment.TopStart), width = borderSize)
+            BorderFiles(orientation = orientation, modifier = Modifier.align(Alignment.TopCenter), height = borderSize)
+        }
         ChessBoardWithAnimation(
             board = board,
             orientation = orientation,
             onClick = onClick,
             highlightLegalMoves = highlightLegalMoves,
             enableAnimations = enableAnimations,
-            modifier = modifier
+            modifier = modifier.padding(if (showBorders) borderSize else 0.dp)
         )
-    } else {
-        Box(
-            modifier = modifier
-                .aspectRatio(1f)
-                .background(color = BoardColors.boardEdge),
-            contentAlignment = Alignment.Center
-        ) {
-            BorderRanks(orientation = orientation, modifier = Modifier.align(Alignment.TopStart), width = borderSize)
-            BorderFiles(orientation = orientation, modifier = Modifier.align(Alignment.TopCenter), height = borderSize)
-            ChessBoardWithAnimation(
-                board = board,
-                orientation = orientation,
-                onClick = onClick,
-                highlightLegalMoves = highlightLegalMoves,
-                enableAnimations = enableAnimations,
-                modifier = modifier.padding(borderSize)
-            )
+        if (showBorders) {
             BorderFiles(orientation = orientation, modifier = Modifier.align(Alignment.BottomCenter), height = borderSize)
             BorderRanks(orientation = orientation, modifier = Modifier.align(Alignment.TopEnd), width = borderSize)
         }
