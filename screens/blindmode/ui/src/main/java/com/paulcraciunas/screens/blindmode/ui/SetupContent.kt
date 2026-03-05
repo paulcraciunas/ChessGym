@@ -20,6 +20,7 @@ import com.paulcraciunas.screens.blindmode.vm.BlindModeUiState
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
 import com.paulcraciunas.screens.common.controls.PlayButton
+import com.paulcraciunas.screens.common.controls.SideSelectionControls
 import com.paulcraciunas.screens.common.previews.SampleBoardViewData
 
 @Composable
@@ -35,6 +36,13 @@ internal fun SetupContent(
         showBorders = showBorders,
         enableAnimations = false,
         modifier = Modifier.fillMaxWidth()
+    )
+
+    Spacer(modifier = Modifier.height(16.dp))
+
+    SideSelectionControls(
+        selectedSide = state.selectedSide,
+        onSideSelected = interactions::onSideSelected,
     )
 
     Spacer(modifier = Modifier.height(16.dp))
