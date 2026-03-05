@@ -2,24 +2,16 @@ package com.paulcraciunas.screens.boardvis.squares.vm
 
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
-import com.paulcraciunas.screens.boardvis.squares.vm.SideSelection.BLACK
-import com.paulcraciunas.screens.boardvis.squares.vm.SideSelection.RANDOM
-import com.paulcraciunas.screens.boardvis.squares.vm.SideSelection.WHITE
+import com.paulcraciunas.screens.common.controls.SideSelection
 import com.paulcraciunas.screens.common.model.BoardViewData
 import com.paulcraciunas.screens.common.previews.SampleBoardViewData
-
-enum class SideSelection {
-    WHITE,
-    BLACK,
-    RANDOM;
-}
 
 sealed class FindTheSquareUiState {
     val boardData: BoardViewData = SampleBoardViewData.startingBoard()
     abstract val orientation: Side
 
     data class Setup(
-        val selectedSide: SideSelection = WHITE,
+        val selectedSide: SideSelection = SideSelection.WHITE,
         val timeRemainingSeconds: Int = DEFAULT_DURATION_SECONDS,
         override val orientation: Side = selectedSide.toSetupSide(),
     ) : FindTheSquareUiState()
@@ -53,7 +45,7 @@ interface FindTheSquareScreenInteractor {
 }
 
 private fun SideSelection.toSetupSide(): Side = when (this) {
-    WHITE -> Side.WHITE
-    BLACK -> Side.BLACK
-    RANDOM -> Side.WHITE // during setup, we don't care about generating random sides
+    SideSelection.WHITE -> Side.WHITE
+    SideSelection.BLACK -> Side.BLACK
+    SideSelection.RANDOM -> Side.WHITE // during setup, we don't care about generating random sides
 }

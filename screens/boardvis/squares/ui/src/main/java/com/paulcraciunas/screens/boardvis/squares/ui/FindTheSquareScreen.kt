@@ -21,8 +21,8 @@ import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.boardvis.squares.vm.FindTheSquareScreenInteractor
 import com.paulcraciunas.screens.boardvis.squares.vm.FindTheSquareUiState
-import com.paulcraciunas.screens.boardvis.squares.vm.SideSelection
 import com.paulcraciunas.screens.common.AppBar
+import com.paulcraciunas.screens.common.controls.SideSelection
 import com.paulcraciunas.screens.common.controls.TimerDisplay
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
