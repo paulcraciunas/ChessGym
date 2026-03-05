@@ -8,12 +8,15 @@ import com.paulcraciunas.domain.api.blindmode.EnginePlayResult
 import com.paulcraciunas.domain.api.blindmode.OnBlindModeGameComplete
 import com.paulcraciunas.domain.api.blindmode.PlayResult
 import com.paulcraciunas.domain.api.blindmode.SelectionResult
+import com.paulcraciunas.domain.api.general.RandomFactory
 import com.paulcraciunas.domain.api.general.Timer
 import com.paulcraciunas.game.engine.api.ChessEngine
 import com.paulcraciunas.game.logic.api.Result
+import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.algebraic
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
+import com.paulcraciunas.screens.common.controls.SideSelection
 import com.paulcraciunas.screens.common.model.BoardViewDataBuilder
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -26,15 +29,13 @@ import javax.inject.Inject
 @HiltViewModel
 class BlindModeViewModel @Inject constructor(
     private val orchestrator: BlindModeOrchestrator,
-    private val timer: Timer,
     private val onComplete: OnBlindModeGameComplete,
+    private val timer: Timer,
+    private val randomFactory: RandomFactory,
 ) : ViewModel(), BlindModeScreenInteractor {
 
     private val _uiState = MutableStateFlow<BlindModeUiState>(BlindModeUiState.Setup())
     val uiState: StateFlow<BlindModeUiState> = _uiState.asStateFlow()
-
-    private var isTrainingMode: Boolean = true
-    private var selectedFrom: Locus? = null
 
     fun onStop() {
         timer.pause()
@@ -47,22 +48,39 @@ class BlindModeViewModel @Inject constructor(
     override fun onTrainingModeToggled(enabled: Boolean) {
         val currentState = _uiState.value
         if (currentState is BlindModeUiState.Setup) {
-            isTrainingMode = enabled
             _uiState.value = currentState.copy(isTrainingMode = enabled)
         }
     }
 
-    override fun onPlayClicked() {
-        if (_uiState.value !is BlindModeUiState.Setup) return
+    override fun onSideSelected(side: SideSelection) {
+        val currentState = _uiState.value
+        if (currentState is BlindModeUiState.Setup) {
+            _uiState.value = currentState.copy(selectedSide = side)
+        }
+    }
 
+    override fun onPlayClicked() {
+        val currentState = _uiState.value
+        if (currentState !is BlindModeUiState.Setup) return
+
+        val side = when (currentState.selectedSide) {
+            SideSelection.WHITE -> Side.WHITE
+            SideSelection.BLACK -> Side.BLACK
+            SideSelection.RANDOM -> Side.fromCode(randomFactory.nextInt(0, 2))
+        }
         timer.start()
         viewModelScope.launch {
-            orchestrator.startGame(elo = ChessEngine.DEFAULT_ELO)
+            orchestrator.startGame(elo = ChessEngine.DEFAULT_ELO, side = side)
 
             _uiState.value = BlindModeUiState.Playing(
-                moveHistory = "",
-                isRevealAvailable = true,
+                isTrainingMode = currentState.isTrainingMode,
+                selectedSide = currentState.selectedSide,
+                playerSide = side,
             )
+
+            if (side == Side.BLACK) {
+                requestEngineMove()
+            }
         }
     }
 
@@ -70,7 +88,7 @@ class BlindModeViewModel @Inject constructor(
         val currentState = _uiState.value
         if (currentState !is BlindModeUiState.Playing || currentState.isThinking) return
 
-        val currentlySelected = selectedFrom
+        val currentlySelected = currentState.selectedSquare
         if (currentlySelected != null) {
             handleMoveAttempt(currentlySelected, locus, currentState)
         } else {
@@ -79,7 +97,32 @@ class BlindModeViewModel @Inject constructor(
     }
 
     override fun onPromote(to: Piece) {
-        // TODO Paul: handle Promotion
+        val currentState = _uiState.value
+        if (currentState !is BlindModeUiState.Playing) return
+
+        val pending = currentState.pendingPromotion ?: return
+
+        when (val result = orchestrator.playMove(pending.from, pending.to, to)) {
+            is PlayResult.Success -> {
+                _uiState.value = currentState.copy(
+                    moveHistory = orchestrator.moveHistory().algebraic(),
+                    selectedSquare = null,
+                    legalMoves = emptyList(),
+                    isThinking = true,
+                    pendingPromotion = null,
+                )
+                requestEngineMove()
+            }
+            is PlayResult.GameOver -> finishGame(result = result.result)
+            is PlayResult.PromotionRequired,
+            is PlayResult.Invalid -> {
+                _uiState.value = currentState.copy(
+                    selectedSquare = null,
+                    legalMoves = emptyList(),
+                    pendingPromotion = null,
+                )
+            }
+        }
     }
 
     override fun onResign() {
@@ -97,6 +140,8 @@ class BlindModeViewModel @Inject constructor(
         viewModelScope.launch {
             val moveHistory = orchestrator.moveHistory().algebraic()
             _uiState.value = BlindModeUiState.Revealing(
+                isTrainingMode = currentState.isTrainingMode,
+                selectedSide = currentState.selectedSide,
                 boardData = BoardViewDataBuilder.fromBoard(orchestrator.board()),
                 moveHistory = moveHistory,
             )
@@ -104,10 +149,11 @@ class BlindModeViewModel @Inject constructor(
             delay(REVEAL_DURATION_MS)
 
             _uiState.value = BlindModeUiState.Playing(
+                isTrainingMode = currentState.isTrainingMode,
+                selectedSide = currentState.selectedSide,
                 moveHistory = moveHistory,
-                isRevealAvailable = false,
-                selectedSquare = null,
-                legalMoves = emptyList(),
+                playerSide = orchestrator.playerSide(),
+                isRevealAvailable = currentState.isTrainingMode,
             )
         }
     }
@@ -118,15 +164,35 @@ class BlindModeViewModel @Inject constructor(
 
         viewModelScope.launch {
             orchestrator.reset()
-            selectedFrom = null
-            _uiState.value = BlindModeUiState.Setup(isTrainingMode = isTrainingMode)
+            _uiState.value = BlindModeUiState.Setup(
+                isTrainingMode = currentState.isTrainingMode,
+                selectedSide = currentState.selectedSide,
+            )
+        }
+    }
+
+    override fun onBackPressed(): Boolean {
+        val currentState = _uiState.value
+        if (currentState !is BlindModeUiState.Playing) return false
+
+        _uiState.value = currentState.copy(isAbandonDialogShown = true)
+        return true
+    }
+
+    override fun onAbandonConfirmed() {
+        onResign()
+    }
+
+    override fun onAbandonDismissed() {
+        val currentState = _uiState.value
+        if (currentState is BlindModeUiState.Playing) {
+            _uiState.value = currentState.copy(isAbandonDialogShown = false)
         }
     }
 
     private fun handleSelection(locus: Locus, currentState: BlindModeUiState.Playing) {
         when (val result = orchestrator.selectSquare(locus)) {
             is SelectionResult.PieceSelected -> {
-                selectedFrom = result.locus
                 _uiState.value = currentState.copy(
                     selectedSquare = result.locus,
                     legalMoves = result.legalMoves,
@@ -134,7 +200,6 @@ class BlindModeViewModel @Inject constructor(
             }
             is SelectionResult.NoPiece,
             is SelectionResult.WrongSide -> {
-                selectedFrom = null
                 _uiState.value = currentState.copy(
                     selectedSquare = null,
                     legalMoves = emptyList(),
@@ -148,7 +213,6 @@ class BlindModeViewModel @Inject constructor(
         to: Locus,
         currentState: BlindModeUiState.Playing,
     ) {
-        selectedFrom = null
         when (val result = orchestrator.playMove(from, to)) {
             is PlayResult.Success -> {
                 _uiState.value = currentState.copy(
@@ -159,6 +223,16 @@ class BlindModeViewModel @Inject constructor(
                 )
                 requestEngineMove()
             }
+            is PlayResult.PromotionRequired -> {
+                _uiState.value = currentState.copy(
+                    pendingPromotion = BlindModeUiState.PendingPromotion(
+                        from = from,
+                        to = to,
+                    ),
+                    selectedSquare = null,
+                    legalMoves = emptyList(),
+                )
+            }
             is PlayResult.GameOver -> finishGame(result = result.result)
             is PlayResult.Invalid -> handleSelection(to, currentState)
         }
@@ -166,14 +240,16 @@ class BlindModeViewModel @Inject constructor(
 
     private fun requestEngineMove() {
         viewModelScope.launch {
+            val currentState = _uiState.value
             when (val result = orchestrator.requestEngineMove()) {
                 is EnginePlayResult.Success -> {
                     _uiState.value = BlindModeUiState.Playing(
+                        isTrainingMode = currentState.isTrainingMode,
+                        selectedSide = currentState.selectedSide,
                         moveHistory = orchestrator.moveHistory().algebraic(),
-                        selectedSquare = null,
-                        legalMoves = emptyList(),
-                        isRevealAvailable = (_uiState.value as? BlindModeUiState.Playing)?.isRevealAvailable ?: false,
-                        isThinking = false,
+                        playerSide = orchestrator.playerSide(),
+                        isRevealAvailable = (currentState as? BlindModeUiState.Playing)
+                            ?.isRevealAvailable ?: currentState.isTrainingMode,
                     )
                 }
                 is EnginePlayResult.GameOver -> finishGame(result = result.result)
@@ -182,6 +258,7 @@ class BlindModeViewModel @Inject constructor(
     }
 
     private fun finishGame(result: Result) {
+        val currentState = _uiState.value
         val movesPlayed = orchestrator.moveHistory().size
         val uiResult = result.toUiResult()
 
@@ -192,16 +269,18 @@ class BlindModeViewModel @Inject constructor(
                     isPlayerWin = uiResult == BlindModeUiState.GameResult.Win,
                     movesPlayed = movesPlayed,
                     timeSpentMillis = timer.elapsed(),
-                    isTrainingMode = isTrainingMode,
+                    isTrainingMode = currentState.isTrainingMode,
                     opponentElo = ChessEngine.DEFAULT_ELO,
                 )
             )
         }
 
         _uiState.value = BlindModeUiState.GameOver(
+            isTrainingMode = currentState.isTrainingMode,
+            selectedSide = currentState.selectedSide,
             boardData = BoardViewDataBuilder.fromBoard(orchestrator.board()),
             moveHistory = orchestrator.moveHistory().algebraic(),
-            result = uiResult
+            result = uiResult,
         )
     }
 

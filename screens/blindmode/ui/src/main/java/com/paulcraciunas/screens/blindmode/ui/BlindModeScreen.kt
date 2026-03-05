@@ -139,7 +139,7 @@ private fun PlayingContent(
         ThinkingIndicator()
     }
 
-    if (state.promotionPending) {
+    if (state.pendingPromotion != null) {
         PromotionDialog(
             side = state.playerSide,
             onPieceChosen = interactions::onPromote,
