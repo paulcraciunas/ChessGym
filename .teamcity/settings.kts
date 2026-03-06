@@ -1,5 +1,6 @@
 import jetbrains.buildServer.configs.kotlin.AbsoluteId
 import jetbrains.buildServer.configs.kotlin.buildFeatures.commitStatusPublisher
+import jetbrains.buildServer.configs.kotlin.buildFeatures.PullRequests
 import jetbrains.buildServer.configs.kotlin.buildFeatures.pullRequests
 import jetbrains.buildServer.configs.kotlin.buildSteps.gradle
 import jetbrains.buildServer.configs.kotlin.project
