@@ -1,5 +1,6 @@
 import jetbrains.buildServer.configs.kotlin.AbsoluteId
 import jetbrains.buildServer.configs.kotlin.buildFeatures.commitStatusPublisher
+import jetbrains.buildServer.configs.kotlin.buildFeatures.pullRequests
 import jetbrains.buildServer.configs.kotlin.buildSteps.gradle
 import jetbrains.buildServer.configs.kotlin.project
 import jetbrains.buildServer.configs.kotlin.triggers.vcs
@@ -40,6 +41,14 @@ project {
         }
 
         features {
+            pullRequests {
+                provider = github {
+                    authType = token {
+                        token = "%github.token%"
+                    }
+                    filterAuthorRole = PullRequests.GitHubRoleFilter.MEMBER_OR_COLLABORATOR
+                }
+            }
             commitStatusPublisher {
                 publisher = github {
                     githubUrl = "https://api.github.com"
