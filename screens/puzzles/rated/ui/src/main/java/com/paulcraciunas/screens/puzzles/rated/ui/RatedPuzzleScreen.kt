@@ -29,6 +29,7 @@ import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
 import com.paulcraciunas.screens.common.controls.CapturedPieces
 import com.paulcraciunas.screens.common.controls.DefaultPuzzleControls
+import com.paulcraciunas.screens.common.dialogs.AbandonConfirmationDialog
 import com.paulcraciunas.screens.common.dialogs.PromotionDialog
 import com.paulcraciunas.screens.common.model.PuzzleData
 import com.paulcraciunas.screens.common.previews.SampleBoardViewData

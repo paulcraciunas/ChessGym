@@ -9,6 +9,10 @@ import com.paulcraciunas.screens.common.model.BoardViewData
 import com.paulcraciunas.screens.common.model.SquareViewData
 
 object SampleBoardViewData {
+    fun emptyBoard(): BoardViewData = BoardViewData(
+        Array(Rank.entries.size) { Array(File.entries.size) { SquareViewData(piece = null) } }
+    )
+
     fun startingBoard(): BoardViewData {
         val squares: Array<Array<SquareViewData>> = Array(Rank.entries.size) {
             Array(File.entries.size) { SquareViewData(piece = null) }
@@ -20,6 +24,9 @@ object SampleBoardViewData {
 
     @Composable
     fun startingBoardComposable(): BoardViewData = startingBoard()
+
+    @Composable
+    fun emptyBoardComposable(): BoardViewData = emptyBoard()
 
     private fun Array<Array<SquareViewData>>.addWhitePieces() = apply {
         File.entries.forEach { file ->

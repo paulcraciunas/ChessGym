@@ -5,4 +5,5 @@ data class EloResult(
     val potentialLoss: Int
 ) {
     fun get(success: Boolean) = if (success) potentialGain else potentialLoss
+    fun getNormalized(success: Boolean) = if (success) potentialGain else potentialLoss * -1
 }

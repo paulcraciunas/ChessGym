@@ -1,0 +1,1 @@
+-keep class com.paulcraciunas.game.engine.impl.StockfishBridge { *; }

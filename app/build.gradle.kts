@@ -32,11 +32,13 @@ android {
 dependencies {
     implementation(project(":game:puzzles:di"))
     implementation(project(":game:logic:di"))
+    implementation(project(":game:engine:impl"))
     implementation(project(":game:serializer:di"))
     implementation(project(":domain:di"))
     implementation(project(":global:device:di"))
     implementation(project(":global:notifications"))
     implementation(project(":global:resources"))
+    implementation(project(":global:utils"))
     implementation(project(":settings:application:impl"))
     implementation(project(":screens:common"))
     implementation(project(":screens:loading:ui"))
@@ -51,6 +53,7 @@ dependencies {
     implementation(project(":screens:boardvis:pieces:ui"))
     implementation(project(":screens:settings:ui"))
     implementation(project(":screens:about:ui"))
+    implementation(project(":screens:blindmode:ui"))
     implementation(project(":user:di"))
 
     implementation(libs.androidx.lifecycle.runtime.compose)

@@ -33,3 +33,15 @@ interface Ply {
         None
     }
 }
+
+fun List<Ply>.algebraic(): String {
+    val result = StringBuilder()
+    forEachIndexed { index, ply ->
+        if (index % 2 == 0) {
+            if (index > 0) result.append(" ")
+            result.append("${index / 2 + 1}.")
+        }
+        result.append(" ${ply.algebraic()}")
+    }
+    return result.toString()
+}

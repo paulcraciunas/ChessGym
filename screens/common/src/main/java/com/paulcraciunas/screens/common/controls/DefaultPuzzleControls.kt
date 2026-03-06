@@ -1,6 +1,7 @@
 package com.paulcraciunas.screens.common.controls
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,6 +28,7 @@ fun DefaultPuzzleControls(
     onAbandonRequested: () -> Unit,
     modifier: Modifier = Modifier,
     abandonEnabled: Boolean = true,
+    @StringRes moveIndicatorTextRes: Int = 0,
 ) {
     Row(
         modifier = modifier
@@ -59,7 +61,7 @@ fun DefaultPuzzleControls(
                 modifier = Modifier.size(24.dp)
             )
         }
-        YourMoveIndicator(toMove = toMove)
+        YourMoveIndicator(toMove = toMove, textRes = moveIndicatorTextRes)
     }
 }
 
@@ -87,6 +89,20 @@ private fun PuzzleControlsHintUsedPreview() {
             toMove = Side.BLACK,
             onHintRequested = {},
             onAbandonRequested = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun PuzzleControlsCustomTextPreview() {
+    ChessGymTheme {
+        DefaultPuzzleControls(
+            hintEnabled = true,
+            toMove = Side.WHITE,
+            onHintRequested = {},
+            onAbandonRequested = {},
+            moveIndicatorTextRes = R.string.blind_mode_your_turn,
         )
     }
 }

@@ -1,5 +1,6 @@
 package com.paulcraciunas.screens.common.controls
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,7 +25,17 @@ import com.paulcraciunas.screens.common.theme.ChessGymTheme
 fun YourMoveIndicator(
     toMove: Side,
     modifier: Modifier = Modifier,
+    @StringRes textRes: Int = 0,
 ) {
+    val displayText = if (textRes != 0) {
+        stringResource(textRes)
+    } else {
+        stringResource(
+            if (toMove == Side.WHITE) R.string.rated_puzzle_find_best_move_white
+            else R.string.rated_puzzle_find_best_move_black
+        )
+    }
+
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center,
@@ -37,10 +48,7 @@ fun YourMoveIndicator(
         )
 
         Text(
-            text = stringResource(
-                if (toMove == Side.WHITE) R.string.rated_puzzle_find_best_move_white
-                else R.string.rated_puzzle_find_best_move_black
-            ),
+            text = displayText,
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Medium,
             color = MaterialTheme.colorScheme.onSurface,
@@ -62,5 +70,16 @@ private fun YourMoveIndicatorWhitePreview() {
 private fun YourMoveIndicatorBlackPreview() {
     ChessGymTheme {
         YourMoveIndicator(toMove = Side.BLACK)
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun YourMoveIndicatorCustomTextPreview() {
+    ChessGymTheme {
+        YourMoveIndicator(
+            toMove = Side.WHITE,
+            textRes = R.string.blind_mode_your_turn,
+        )
     }
 }

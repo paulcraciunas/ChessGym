@@ -9,6 +9,7 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Rank
+import com.paulcraciunas.screens.common.controls.SideSelection
 import com.paulcraciunas.user.api.FakeUserRepository
 import com.paulcraciunas.user.api.User
 import kotlinx.coroutines.Dispatchers

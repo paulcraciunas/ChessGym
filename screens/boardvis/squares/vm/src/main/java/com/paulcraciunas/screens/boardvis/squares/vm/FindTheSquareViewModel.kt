@@ -9,6 +9,7 @@ import com.paulcraciunas.domain.api.boardvis.OnFindSquareComplete
 import com.paulcraciunas.domain.api.general.RandomFactory
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
+import com.paulcraciunas.screens.common.controls.SideSelection
 import com.paulcraciunas.user.api.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,7 +27,7 @@ class FindTheSquareViewModel @Inject constructor(
     private val onFindSquareComplete: OnFindSquareComplete,
     private val countdownTimer: CountdownTimer,
     private val userRepository: UserRepository,
-    private val randomFactory: RandomFactory
+    private val randomFactory: RandomFactory,
 ) : ViewModel(), FindTheSquareScreenInteractor {
 
     private val _gameState = MutableStateFlow<GameState>(GameState.Setup())

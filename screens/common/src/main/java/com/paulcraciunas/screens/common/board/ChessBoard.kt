@@ -61,33 +61,28 @@ fun ChessBoard(
     modifier: Modifier = Modifier,
     highlightLegalMoves: Boolean = true,
     enableAnimations: Boolean = true,
+    piecesAlpha: Float = 1f,
 ) {
-    if (!showBorders) {
+    Box(
+        modifier = modifier
+            .aspectRatio(1f)
+            .background(color = BoardColors.boardEdge),
+        contentAlignment = Alignment.Center
+    ) {
+        if (showBorders) {
+            BorderRanks(orientation = orientation, modifier = Modifier.align(Alignment.TopStart), width = borderSize)
+            BorderFiles(orientation = orientation, modifier = Modifier.align(Alignment.TopCenter), height = borderSize)
+        }
         ChessBoardWithAnimation(
             board = board,
             orientation = orientation,
             onClick = onClick,
             highlightLegalMoves = highlightLegalMoves,
             enableAnimations = enableAnimations,
-            modifier = modifier
+            piecesAlpha = piecesAlpha,
+            modifier = modifier.padding(if (showBorders) borderSize else 0.dp)
         )
-    } else {
-        Box(
-            modifier = modifier
-                .aspectRatio(1f)
-                .background(color = BoardColors.boardEdge),
-            contentAlignment = Alignment.Center
-        ) {
-            BorderRanks(orientation = orientation, modifier = Modifier.align(Alignment.TopStart), width = borderSize)
-            BorderFiles(orientation = orientation, modifier = Modifier.align(Alignment.TopCenter), height = borderSize)
-            ChessBoardWithAnimation(
-                board = board,
-                orientation = orientation,
-                onClick = onClick,
-                highlightLegalMoves = highlightLegalMoves,
-                enableAnimations = enableAnimations,
-                modifier = modifier.padding(borderSize)
-            )
+        if (showBorders) {
             BorderFiles(orientation = orientation, modifier = Modifier.align(Alignment.BottomCenter), height = borderSize)
             BorderRanks(orientation = orientation, modifier = Modifier.align(Alignment.TopEnd), width = borderSize)
         }
@@ -101,6 +96,7 @@ private fun ChessBoardWithAnimation(
     onClick: (Locus) -> Unit,
     highlightLegalMoves: Boolean,
     enableAnimations: Boolean,
+    piecesAlpha: Float,
     modifier: Modifier = Modifier,
 ) {
     BoxWithConstraints(modifier = modifier) {
@@ -115,6 +111,7 @@ private fun ChessBoardWithAnimation(
             onClick = onClick,
             highlightLegalMoves = highlightLegalMoves,
             animatingPiece = activeAnimatingPiece,
+            piecesAlpha = piecesAlpha,
             modifier = Modifier
         )
 
@@ -202,6 +199,7 @@ private fun ChessBoardContents(
     onClick: (Locus) -> Unit,
     highlightLegalMoves: Boolean,
     animatingPiece: AnimatingPiece?,
+    piecesAlpha: Float,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
@@ -220,7 +218,7 @@ private fun ChessBoardContents(
                             if (isAnimatingTo) {
                                 Plain()
                             } else {
-                                SquareContent(square, highlightLegalMoves)
+                                SquareContent(square, highlightLegalMoves, piecesAlpha)
                             }
                         },
                         modifier = Modifier
@@ -238,15 +236,23 @@ private fun ChessBoardContents(
 private fun SquareScope.SquareContent(
     square: SquareViewData,
     highlightLegalMoves: Boolean,
-) = when {
-    square.piece != null -> Piece(
-        piece = square.piece.piece,
-        side = square.piece.side,
-        selected = square.piece.isSelected
-    )
-
-    square.canMoveTo && highlightLegalMoves -> MoveAvailable()
-    else -> Plain()
+    piecesAlpha: Float,
+) {
+    if (square.piece != null) {
+        Piece(
+            piece = square.piece.piece,
+            side = square.piece.side,
+            selected = square.piece.isSelected,
+            alpha = piecesAlpha,
+        )
+    } else if (square.canMoveTo && highlightLegalMoves) {
+        MoveAvailable()
+    } else {
+        Plain()
+    }
+    if (square.piece != null && square.canMoveTo && highlightLegalMoves && piecesAlpha < 1f) {
+        MoveIndicatorOverlay()
+    }
 }
 
 private fun squareSide(file: File, rank: Rank): Side =

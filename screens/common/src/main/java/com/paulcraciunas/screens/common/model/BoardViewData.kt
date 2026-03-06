@@ -15,6 +15,24 @@ data class BoardViewData(
     fun at(rank: Rank, file: File): SquareViewData = squares[rank.dec()][file.dec()]
     fun at(loc: Locus): SquareViewData = at(loc.rank, loc.file)
 
+    fun withMoveIndicators(
+        selectedSquare: Locus?,
+        legalMoves: List<Locus>,
+    ): BoardViewData {
+        if (selectedSquare == null && legalMoves.isEmpty()) return this
+
+        val newSquares = squares.map { row -> row.copyOf() }.toTypedArray()
+        selectedSquare?.let { loc ->
+            newSquares[loc.rank.dec()][loc.file.dec()] =
+                newSquares[loc.rank.dec()][loc.file.dec()].copy(lastMove = true)
+        }
+        legalMoves.forEach { loc ->
+            newSquares[loc.rank.dec()][loc.file.dec()] =
+                newSquares[loc.rank.dec()][loc.file.dec()].copy(canMoveTo = true)
+        }
+        return BoardViewData(newSquares)
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

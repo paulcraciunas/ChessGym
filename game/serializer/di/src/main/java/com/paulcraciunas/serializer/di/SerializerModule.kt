@@ -12,10 +12,10 @@ import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @Qualifier
-internal annotation class SerializerFen
+annotation class SerializerFen
 
 @Qualifier
-internal annotation class SerializerPgn
+annotation class SerializerPgn
 
 @Module
 @InstallIn(SingletonComponent::class)
