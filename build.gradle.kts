@@ -10,3 +10,40 @@ plugins {
     alias(libs.plugins.google.hilt) apply false
     alias(libs.plugins.google.ksp) apply false
 }
+
+tasks.register("unitTestAllDebug") {
+    group = "verification"
+    description = "Runs debug unit tests for Android modules and all tests for JVM modules"
+}
+
+tasks.register("unitTestAllRelease") {
+    group = "verification"
+    description = "Runs release unit tests for Android modules and all tests for JVM modules"
+}
+
+subprojects {
+    plugins.withId("com.android.library") {
+        rootProject.tasks.named("unitTestAllDebug") {
+            dependsOn(tasks.named("testDebugUnitTest"))
+        }
+        rootProject.tasks.named("unitTestAllRelease") {
+            dependsOn(tasks.named("testReleaseUnitTest"))
+        }
+    }
+    plugins.withId("com.android.application") {
+        rootProject.tasks.named("unitTestAllDebug") {
+            dependsOn(tasks.named("testDebugUnitTest"))
+        }
+        rootProject.tasks.named("unitTestAllRelease") {
+            dependsOn(tasks.named("testReleaseUnitTest"))
+        }
+    }
+    plugins.withId("org.jetbrains.kotlin.jvm") {
+        rootProject.tasks.named("unitTestAllDebug") {
+            dependsOn(tasks.named("test"))
+        }
+        rootProject.tasks.named("unitTestAllRelease") {
+            dependsOn(tasks.named("test"))
+        }
+    }
+}
