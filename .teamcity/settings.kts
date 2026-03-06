@@ -5,7 +5,7 @@ import jetbrains.buildServer.configs.kotlin.project
 import jetbrains.buildServer.configs.kotlin.triggers.vcs
 import jetbrains.buildServer.configs.kotlin.version
 
-version = "2024.12"
+version = "2025.11"
 
 project {
     description = "ChessGym Android Application CI"
