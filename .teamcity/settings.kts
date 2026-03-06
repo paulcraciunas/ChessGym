@@ -1,4 +1,5 @@
 import jetbrains.buildServer.configs.kotlin.AbsoluteId
+import jetbrains.buildServer.configs.kotlin.ParameterDisplay
 import jetbrains.buildServer.configs.kotlin.buildFeatures.commitStatusPublisher
 import jetbrains.buildServer.configs.kotlin.buildFeatures.PullRequests
 import jetbrains.buildServer.configs.kotlin.buildFeatures.pullRequests
@@ -12,6 +13,10 @@ version = "2025.11"
 project {
     description = "ChessGym Android Application CI"
 
+    params {
+        password("github.token", "", label = "GitHub Personal Access Token", display = ParameterDisplay.HIDDEN)
+    }
+
     buildType {
         id("BuildDebug")
         name = "Build Debug"
@@ -20,7 +25,7 @@ project {
         artifactRules = "app/build/outputs/apk/debug/*.apk => apk"
 
         vcs {
-            root(AbsoluteId("ChessGymGitHub"))
+            root(AbsoluteId("ChessGym_GitHub"))
         }
 
         steps {
