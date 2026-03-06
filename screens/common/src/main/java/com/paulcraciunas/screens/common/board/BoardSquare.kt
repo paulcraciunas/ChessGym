@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -60,6 +61,7 @@ class SquareScope internal constructor(
         side: Side,
         selected: Boolean,
         modifier: Modifier = Modifier,
+        alpha: Float = 1f,
     ) {
         val background = background()
         val selectedBackground = BoardColors.boardSquareSelected
@@ -78,7 +80,7 @@ class SquareScope internal constructor(
         ChessPiece(
             piece = piece,
             side = side,
-            modifier = modifier
+            modifier = modifier.graphicsLayer(alpha = alpha)
         )
     }
 
@@ -88,6 +90,11 @@ class SquareScope internal constructor(
         Canvas(modifier = modifier.fillMaxSize(1f)) {
             drawRect(color = background)
         }
+        MoveIndicatorOverlay()
+    }
+
+    @Composable
+    fun MoveIndicatorOverlay() {
         Image(
             painter = painterResource(id = R.drawable.move_available),
             colorFilter = ColorFilter.tint(BoardColors.boardMoveAvailable),

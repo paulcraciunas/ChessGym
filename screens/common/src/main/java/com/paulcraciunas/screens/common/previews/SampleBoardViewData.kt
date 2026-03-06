@@ -3,40 +3,15 @@ package com.paulcraciunas.screens.common.previews
 import androidx.compose.runtime.Composable
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File
-import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.screens.common.model.BoardViewData
 import com.paulcraciunas.screens.common.model.SquareViewData
 
 object SampleBoardViewData {
-    fun emptyBoard(): BoardViewData {
-        val squares: Array<Array<SquareViewData>> = Array(Rank.entries.size) {
-            Array(File.entries.size) { SquareViewData(piece = null) }
-        }
-        return BoardViewData(squares)
-    }
-
-    fun emptyBoardWithMoves(selectedSquare: Locus?,
-                            legalMoves: List<Locus>
-    ): BoardViewData {
-        val squares: Array<Array<SquareViewData>> = Array(Rank.entries.size) {
-            Array(File.entries.size) { SquareViewData(piece = null) }
-        }
-        selectedSquare?.let {
-            squares[it.rank.dec()][it.file.dec()] = SquareViewData(
-                piece = null,
-                lastMove = true,
-            )
-        }
-        legalMoves.forEach { locus ->
-            squares[locus.rank.dec()][locus.file.dec()] = SquareViewData(
-                piece = null,
-                canMoveTo = true,
-            )
-        }
-        return BoardViewData(squares)
-    }
+    fun emptyBoard(): BoardViewData = BoardViewData(
+        Array(Rank.entries.size) { Array(File.entries.size) { SquareViewData(piece = null) } }
+    )
 
     fun startingBoard(): BoardViewData {
         val squares: Array<Array<SquareViewData>> = Array(Rank.entries.size) {

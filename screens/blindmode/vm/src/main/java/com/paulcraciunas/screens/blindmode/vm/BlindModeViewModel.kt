@@ -75,6 +75,7 @@ class BlindModeViewModel @Inject constructor(
             _uiState.value = BlindModeUiState.Playing(
                 isTrainingMode = currentState.isTrainingMode,
                 selectedSide = currentState.selectedSide,
+                boardData = buildBoardData(),
                 playerSide = side,
             )
 
@@ -86,7 +87,10 @@ class BlindModeViewModel @Inject constructor(
 
     override fun onSquareClicked(locus: Locus) {
         val currentState = _uiState.value
-        if (currentState !is BlindModeUiState.Playing || currentState.isThinking) return
+        if (currentState !is BlindModeUiState.Playing ||
+            currentState.isThinking ||
+            currentState.isRevealing
+        ) return
 
         val currentlySelected = currentState.selectedSquare
         if (currentlySelected != null) {
@@ -105,6 +109,7 @@ class BlindModeViewModel @Inject constructor(
         when (val result = orchestrator.playMove(pending.from, pending.to, to)) {
             is PlayResult.Success -> {
                 _uiState.value = currentState.copy(
+                    boardData = buildBoardData(),
                     moveHistory = orchestrator.moveHistory().algebraic(),
                     selectedSquare = null,
                     legalMoves = emptyList(),
@@ -138,24 +143,19 @@ class BlindModeViewModel @Inject constructor(
         if (currentState !is BlindModeUiState.Playing || !currentState.isRevealAvailable) return
 
         viewModelScope.launch {
-            val moveHistory = orchestrator.moveHistory().algebraic()
-            _uiState.value = BlindModeUiState.Revealing(
-                isTrainingMode = currentState.isTrainingMode,
-                selectedSide = currentState.selectedSide,
-                playerSide = orchestrator.playerSide(),
-                boardData = BoardViewDataBuilder.fromBoard(orchestrator.board()),
-                moveHistory = moveHistory,
+            _uiState.value = currentState.copy(
+                isRevealing = true,
+                selectedSquare = null,
+                legalMoves = emptyList(),
+                isRevealAvailable = currentState.isTrainingMode,
             )
 
             delay(REVEAL_DURATION_MS)
 
-            _uiState.value = BlindModeUiState.Playing(
-                isTrainingMode = currentState.isTrainingMode,
-                selectedSide = currentState.selectedSide,
-                moveHistory = moveHistory,
-                playerSide = orchestrator.playerSide(),
-                isRevealAvailable = currentState.isTrainingMode,
-            )
+            val afterDelay = _uiState.value
+            if (afterDelay is BlindModeUiState.Playing && afterDelay.isRevealing) {
+                _uiState.value = afterDelay.copy(isRevealing = false)
+            }
         }
     }
 
@@ -217,6 +217,7 @@ class BlindModeViewModel @Inject constructor(
         when (val result = orchestrator.playMove(from, to)) {
             is PlayResult.Success -> {
                 _uiState.value = currentState.copy(
+                    boardData = buildBoardData(),
                     moveHistory = orchestrator.moveHistory().algebraic(),
                     selectedSquare = null,
                     legalMoves = emptyList(),
@@ -247,6 +248,7 @@ class BlindModeViewModel @Inject constructor(
                     _uiState.value = BlindModeUiState.Playing(
                         isTrainingMode = currentState.isTrainingMode,
                         selectedSide = currentState.selectedSide,
+                        boardData = buildBoardData(),
                         moveHistory = orchestrator.moveHistory().algebraic(),
                         playerSide = orchestrator.playerSide(),
                         isRevealAvailable = (currentState as? BlindModeUiState.Playing)
@@ -279,6 +281,7 @@ class BlindModeViewModel @Inject constructor(
         _uiState.value = BlindModeUiState.GameOver(
             isTrainingMode = currentState.isTrainingMode,
             selectedSide = currentState.selectedSide,
+            playerSide = orchestrator.playerSide(),
             boardData = BoardViewDataBuilder.fromBoard(orchestrator.board()),
             moveHistory = orchestrator.moveHistory().algebraic(),
             result = uiResult,
@@ -296,6 +299,8 @@ class BlindModeViewModel @Inject constructor(
             }
         } else BlindModeUiState.GameResult.Draw
     }
+
+    private fun buildBoardData() = BoardViewDataBuilder.fromBoard(orchestrator.board())
 
     companion object {
         internal const val REVEAL_DURATION_MS = 3000L

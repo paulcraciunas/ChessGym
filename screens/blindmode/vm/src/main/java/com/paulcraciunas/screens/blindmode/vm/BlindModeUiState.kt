@@ -4,6 +4,7 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.screens.common.controls.SideSelection
 import com.paulcraciunas.screens.common.model.BoardViewData
+import com.paulcraciunas.screens.common.previews.SampleBoardViewData
 
 sealed class BlindModeUiState {
     abstract val isTrainingMode: Boolean
@@ -19,6 +20,7 @@ sealed class BlindModeUiState {
     data class Playing(
         override val isTrainingMode: Boolean = true,
         override val selectedSide: SideSelection = SideSelection.WHITE,
+        val boardData: BoardViewData = SampleBoardViewData.emptyBoard(),
         val moveHistory: String = "",
         val playerSide: Side = Side.WHITE,
         val selectedSquare: Locus? = null,
@@ -27,19 +29,13 @@ sealed class BlindModeUiState {
         val isThinking: Boolean = false,
         val pendingPromotion: PendingPromotion? = null,
         val isAbandonDialogShown: Boolean = false,
-    ) : BlindModeUiState()
-
-    data class Revealing(
-        override val isTrainingMode: Boolean = true,
-        override val selectedSide: SideSelection = SideSelection.WHITE,
-        val playerSide: Side = Side.WHITE,
-        val boardData: BoardViewData,
-        val moveHistory: String = "",
+        val isRevealing: Boolean = false,
     ) : BlindModeUiState()
 
     data class GameOver(
         override val isTrainingMode: Boolean = true,
         override val selectedSide: SideSelection = SideSelection.WHITE,
+        val playerSide: Side = Side.WHITE,
         val boardData: BoardViewData,
         val moveHistory: String = "",
         val result: GameResult = GameResult.Win,

@@ -271,14 +271,18 @@ internal class BlindModeViewModelTest {
     @Nested
     inner class RevealBehavior {
         @Test
-        fun `GIVEN playing WHEN onReveal THEN state transitions to Revealing`() = runTest {
-            startGame()
+        fun `GIVEN playing WHEN onReveal THEN state is Playing with isRevealing true`() =
+            runTest {
+                startGame()
 
-            underTest.onReveal()
-            runCurrent()
+                underTest.onReveal()
+                runCurrent()
 
-            assertTrue(underTest.uiState.value is BlindModeUiState.Revealing)
-        }
+                val state = underTest.uiState.value as BlindModeUiState.Playing
+                assertTrue(state.isRevealing)
+                assertNull(state.selectedSquare)
+                assertTrue(state.legalMoves.isEmpty())
+            }
 
         @Test
         fun `GIVEN setup WHEN onReveal THEN ignored`() {
@@ -286,6 +290,18 @@ internal class BlindModeViewModelTest {
 
             assertTrue(underTest.uiState.value is BlindModeUiState.Setup)
         }
+
+        @Test
+        fun `GIVEN playing WHEN reveal completes THEN isRevealing false`() =
+            runTest {
+                startGame()
+
+                underTest.onReveal()
+                advanceUntilIdle()
+
+                val state = underTest.uiState.value as BlindModeUiState.Playing
+                assertFalse(state.isRevealing)
+            }
 
         @Test
         fun `GIVEN training mode WHEN reveal completes THEN reveal still available`() =
@@ -332,7 +348,7 @@ internal class BlindModeViewModelTest {
             }
 
         @Test
-        fun `GIVEN rated mode WHEN reveal THEN Revealing state carries settings`() =
+        fun `GIVEN rated mode WHEN reveal THEN Playing state carries settings`() =
             runTest {
                 underTest.onTrainingModeToggled(false)
                 underTest.onSideSelected(SideSelection.BLACK)
@@ -344,7 +360,8 @@ internal class BlindModeViewModelTest {
                 underTest.onReveal()
                 runCurrent()
 
-                val state = underTest.uiState.value as BlindModeUiState.Revealing
+                val state = underTest.uiState.value as BlindModeUiState.Playing
+                assertTrue(state.isRevealing)
                 assertFalse(state.isTrainingMode)
                 assertEquals(SideSelection.BLACK, state.selectedSide)
             }

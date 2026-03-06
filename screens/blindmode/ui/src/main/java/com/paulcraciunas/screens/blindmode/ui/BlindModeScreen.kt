@@ -2,10 +2,8 @@ package com.paulcraciunas.screens.blindmode.ui
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -16,11 +14,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -35,6 +34,7 @@ import com.paulcraciunas.screens.common.AppBar
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
 import com.paulcraciunas.screens.common.controls.DefaultPuzzleControls
+import com.paulcraciunas.screens.common.controls.InfiniteProgressIndicator
 import com.paulcraciunas.screens.common.dialogs.AbandonConfirmationDialog
 import com.paulcraciunas.screens.common.dialogs.AbandonConfirmationType
 import com.paulcraciunas.screens.common.dialogs.PromotionDialog
@@ -85,11 +85,6 @@ fun BlindModeScreen(
                     enableAnimations = enableAnimations,
                     interactions = interactions,
                 )
-                is BlindModeUiState.Revealing -> RevealingContent(
-                    state = uiState,
-                    showBorders = showBorders,
-                    enableAnimations = enableAnimations,
-                )
                 is BlindModeUiState.GameOver -> GameOverContent(
                     state = uiState,
                     showBorders = showBorders,
@@ -108,31 +103,41 @@ private fun PlayingContent(
     enableAnimations: Boolean,
     interactions: BlindModeScreenInteractor,
 ) {
+    val displayBoard = remember(state.boardData, state.selectedSquare, state.legalMoves) {
+        state.boardData.withMoveIndicators(state.selectedSquare, state.legalMoves)
+    }
+
+    val piecesAlpha by animateFloatAsState(
+        targetValue = if (state.isRevealing) 1f else 0f,
+        animationSpec = if (enableAnimations) {
+            tween(durationMillis = if (state.isRevealing) 300 else 500)
+        } else {
+            tween(durationMillis = 0)
+        },
+        label = "revealAlpha",
+    )
+
     ChessBoard(
-        board = SampleBoardViewData.emptyBoardWithMoves(
-            selectedSquare = state.selectedSquare,
-            legalMoves = state.legalMoves
-        ),
+        board = displayBoard,
         orientation = BoardOrientation.fromSide(state.playerSide),
         onClick = interactions::onSquareClicked,
         showBorders = showBorders,
         highlightLegalMoves = highlightLegalMoves,
         enableAnimations = enableAnimations,
-        modifier = Modifier.fillMaxWidth()
+        piecesAlpha = piecesAlpha,
+        modifier = Modifier.fillMaxWidth(),
     )
 
     Spacer(modifier = Modifier.height(8.dp))
 
-    if (!state.isThinking) {
-        DefaultPuzzleControls(
-            hintEnabled = state.isRevealAvailable,
-            toMove = state.playerSide,
-            onHintRequested = interactions::onReveal,
-            onAbandonRequested = interactions::onResign,
-            abandonEnabled = true,
-            moveIndicatorTextRes = R.string.blind_mode_your_turn,
-        )
-    }
+    DefaultPuzzleControls(
+        hintEnabled = !state.isThinking && !state.isRevealing && state.isRevealAvailable,
+        toMove = state.playerSide,
+        onHintRequested = interactions::onReveal,
+        onAbandonRequested = interactions::onResign,
+        abandonEnabled = !state.isThinking && !state.isRevealing,
+        moveIndicatorTextRes = R.string.blind_mode_your_turn,
+    )
 
     if (state.moveHistory.isNotEmpty()) {
         MoveHistoryDisplay(moveHistory = state.moveHistory)
@@ -159,51 +164,13 @@ private fun PlayingContent(
 }
 
 @Composable
-private fun RevealingContent(
-    state: BlindModeUiState.Revealing,
-    showBorders: Boolean,
-    enableAnimations: Boolean,
-) {
-    if (enableAnimations) {
-        AnimatedVisibility(
-            visible = true,
-            enter = fadeIn(animationSpec = tween(durationMillis = 300)),
-            exit = fadeOut(animationSpec = tween(durationMillis = 500)),
-        ) {
-            ChessBoard(
-                board = state.boardData,
-                orientation = BoardOrientation.fromSide(state.playerSide),
-                onClick = {},
-                showBorders = showBorders,
-                enableAnimations = false,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-    } else {
-        ChessBoard(
-            board = state.boardData,
-            orientation = BoardOrientation.fromSide(state.playerSide),
-            onClick = {},
-            showBorders = showBorders,
-            enableAnimations = false,
-            modifier = Modifier.fillMaxWidth()
-        )
-    }
-
-    if (state.moveHistory.isNotEmpty()) {
-        MoveHistoryDisplay(moveHistory = state.moveHistory)
-    }
-}
-
-@Composable
 private fun ThinkingIndicator() {
     Column(
         modifier = Modifier.padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        CircularProgressIndicator(
+        InfiniteProgressIndicator(
             modifier = Modifier.size(32.dp),
-            strokeWidth = 3.dp,
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
@@ -260,6 +227,28 @@ private fun BlindModeThinkingPreview() {
                 playerSide = Side.WHITE,
                 isRevealAvailable = true,
                 isThinking = true,
+            ),
+            showBorders = true,
+            highlightLegalMoves = true,
+            enableAnimations = false,
+            onDrawerToggle = {},
+            interactions = StubBlindModeScreenInteractor(),
+        )
+    }
+}
+
+@Preview("BlindMode - Revealing")
+@Composable
+private fun BlindModeRevealingPreview() {
+    ChessGymTheme {
+        BlindModeScreen(
+            uiState = BlindModeUiState.Playing(
+                boardData = SampleBoardViewData.startingBoard(),
+                moveHistory = "1. e4 e5 2. Nf3 Nc6",
+                playerSide = Side.WHITE,
+                isRevealAvailable = true,
+                isThinking = false,
+                isRevealing = true,
             ),
             showBorders = true,
             highlightLegalMoves = true,
