@@ -65,3 +65,10 @@ val flowStub: TestFile = kotlin(
     interface Flow<out T>
     """
 ).indented()
+
+val daggerModuleStub: TestFile = kotlin(
+    """
+    package dagger
+    annotation class Module
+    """
+).indented()
