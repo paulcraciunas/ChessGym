@@ -21,6 +21,11 @@ tasks.register("unitTestAllRelease") {
     description = "Runs release unit tests for Android modules and all tests for JVM modules"
 }
 
+tasks.register("lintAllDebug") {
+    group = "verification"
+    description = "Runs lint checks on all modules"
+}
+
 subprojects {
     plugins.withId("com.android.library") {
         rootProject.tasks.named("unitTestAllDebug") {
@@ -28,6 +33,9 @@ subprojects {
         }
         rootProject.tasks.named("unitTestAllRelease") {
             dependsOn(tasks.named("testReleaseUnitTest"))
+        }
+        rootProject.tasks.named("lintAllDebug") {
+            dependsOn(tasks.named("lintDebug"))
         }
     }
     plugins.withId("com.android.application") {
@@ -37,6 +45,9 @@ subprojects {
         rootProject.tasks.named("unitTestAllRelease") {
             dependsOn(tasks.named("testReleaseUnitTest"))
         }
+        rootProject.tasks.named("lintAllDebug") {
+            dependsOn(tasks.named("lintDebug"))
+        }
     }
     plugins.withId("org.jetbrains.kotlin.jvm") {
         rootProject.tasks.named("unitTestAllDebug") {
@@ -44,6 +55,11 @@ subprojects {
         }
         rootProject.tasks.named("unitTestAllRelease") {
             dependsOn(tasks.named("test"))
+        }
+    }
+    plugins.withId("com.android.lint") {
+        rootProject.tasks.named("lintAllDebug") {
+            dependsOn(tasks.named("lint"))
         }
     }
 }
