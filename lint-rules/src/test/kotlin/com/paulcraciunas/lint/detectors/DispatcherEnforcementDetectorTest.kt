@@ -25,6 +25,27 @@ internal class DispatcherEnforcementDetectorTest : LintDetectorTest() {
         ).allowMissingSdk().run().expectClean()
     }
 
+    fun testNonInjectedDispatcher_error() {
+        lint().files(
+            coroutineDispatcherStub,
+            coroutineWithContextStub,
+            kotlin(
+                """
+                package com.paulcraciunas.data
+                import kotlinx.coroutines.Dispatchers
+
+                class MyRepository {
+                    suspend fun execute() { 
+                        withContext(Dispatchers.IO) {
+                            delay(42L)
+                        }
+                    }
+                }
+                """
+            ).indented()
+        ).allowMissingSdk().run().expectErrorCount(1)
+    }
+
     fun testHardcodedDispatcherIO_error() {
         lint().files(
             coroutineDispatcherStub,
