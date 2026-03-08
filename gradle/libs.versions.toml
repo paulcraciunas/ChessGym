@@ -26,6 +26,7 @@ material = "1.12.0"
 zstd = "1.5.7-3"
 hiltCommon = "1.2.0"
 datastore = "1.1.7"
+lint = "31.10.1"
 
 [libraries]
 ## Unit testing
@@ -74,6 +75,11 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+
+## Lint
+lint-api = { module = "com.android.tools.lint:lint-api", version.ref = "lint" }
+lint-checks = { module = "com.android.tools.lint:lint-checks", version.ref = "lint" }
+lint-tests = { module = "com.android.tools.lint:lint-tests", version.ref = "lint" }
 
 ## Other
 public-zstd = { group = "com.github.luben", name = "zstd-jni", version.ref = "zstd" }
