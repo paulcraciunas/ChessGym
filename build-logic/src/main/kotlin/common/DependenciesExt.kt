@@ -40,3 +40,7 @@ internal fun DependencyHandlerDelegate.androidTestImplementation(dependency: Pro
 internal fun DependencyHandlerDelegate.api(dependency: Provider<MinimalExternalModuleDependency>) {
     add("api", dependency)
 }
+
+internal fun org.gradle.api.Project.addLintChecks(projectPath: String) {
+    dependencies.add("lintChecks", dependencies.project(mapOf("path" to projectPath)))
+}

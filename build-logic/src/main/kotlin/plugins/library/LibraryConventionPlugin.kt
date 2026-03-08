@@ -1,5 +1,6 @@
 package plugins.library
 
+import common.addLintChecks
 import common.bundle
 import common.configureJava
 import common.configureKotlin
@@ -37,10 +38,12 @@ class LibraryConventionPlugin : ConventionPlugin() {
         with(pluginManager) {
             apply("java-library")
             apply(libs.plugin("jetbrains-kotlin-jvm"))
+            apply("com.android.lint")
         }
     }
 
     private fun Project.configureDependencies() {
+        addLintChecks(":lint-rules")
         dependencies {
             implementation(libs.library("kotlinx-coroutines-core"))
         }

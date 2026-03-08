@@ -7,6 +7,7 @@ import common.configureJava
 import common.configureKotlin
 import common.extension
 import common.implementation
+import common.addLintChecks
 import common.library
 import common.libs
 import common.plugin
@@ -85,10 +86,18 @@ class AndroidApplicationPlugin : ConventionPlugin() {
                     excludes += "/META-INF/{AL2.0,LGPL2.1}"
                 }
             }
+
+            lint {
+                warningsAsErrors = true
+                abortOnError = true
+                checkTestSources = true
+                baseline = project.file("lint-baseline.xml")
+            }
         }
     }
 
     private fun Project.configureDependencies() {
+        addLintChecks(":lint-rules")
         dependencies {
             includeCoreAndroid(libs)
             implementation(libs.library("kotlinx-serialization-json"))
