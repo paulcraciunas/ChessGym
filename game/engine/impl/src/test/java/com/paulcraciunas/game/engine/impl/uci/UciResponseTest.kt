@@ -14,7 +14,7 @@ import org.junit.jupiter.api.assertThrows
 
 internal class UciResponseTest {
     @Nested
-    inner class DoneFactoryTest {
+    internal inner class DoneFactoryTest {
         private val factory = ResponseFactory.DoneFactory
 
         @Test
@@ -35,7 +35,7 @@ internal class UciResponseTest {
     }
 
     @Nested
-    inner class InitializedFactoryTest {
+    internal inner class InitializedFactoryTest {
         private val factory = ResponseFactory.InitializedFactory
 
         @Test
@@ -65,7 +65,7 @@ internal class UciResponseTest {
     }
 
     @Nested
-    inner class ReadyFactoryTest {
+    internal inner class ReadyFactoryTest {
         private val factory = ResponseFactory.ReadyFactory
 
         @Test
@@ -88,7 +88,7 @@ internal class UciResponseTest {
     }
 
     @Nested
-    inner class BestMoveFactoryTest {
+    internal inner class BestMoveFactoryTest {
         private val factory = ResponseFactory.BestMoveFactory
 
         @Test
