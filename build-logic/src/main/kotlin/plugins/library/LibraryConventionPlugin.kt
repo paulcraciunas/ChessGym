@@ -4,6 +4,7 @@ import common.addLintChecks
 import common.bundle
 import common.configureJava
 import common.configureKotlin
+import common.configureLint
 import common.extension
 import common.implementation
 import common.library
@@ -40,6 +41,7 @@ class LibraryConventionPlugin : ConventionPlugin() {
             apply(libs.plugin("jetbrains-kotlin-jvm"))
             apply("com.android.lint")
         }
+        configureLint()
     }
 
     private fun Project.configureDependencies() {

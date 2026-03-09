@@ -8,6 +8,7 @@ import common.configureKotlin
 import common.extension
 import common.implementation
 import common.addLintChecks
+import common.configureAndroidLint
 import common.library
 import common.libs
 import common.plugin
@@ -87,12 +88,7 @@ class AndroidApplicationPlugin : ConventionPlugin() {
                 }
             }
 
-            lint {
-                warningsAsErrors = true
-                abortOnError = true
-                checkTestSources = true
-                baseline = project.file("lint-baseline.xml")
-            }
+            configureAndroidLint(this@configureAndroid)
         }
     }
 

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <!-- Disable the check for newer library versions available -->
+    <issue id="GradleDependency" severity="ignore" />
+    <issue id="PluralsCandidate" severity="ignore" />
+</lint>
