@@ -21,7 +21,7 @@ internal class PuzzleViewModelHelperTest {
     private val underTest = PuzzleViewModelHelper(gameFactory.puzzleInteractor())
 
     @Nested
-    inner class Load {
+    internal inner class Load {
         @Test
         fun `GIVEN puzzle WHEN load THEN returns PuzzleData with correct rating`() {
             // Given
@@ -87,7 +87,7 @@ internal class PuzzleViewModelHelperTest {
     }
 
     @Nested
-    inner class HandleSquareClick {
+    internal inner class HandleSquareClick {
         @Test
         fun `GIVEN no selection WHEN clicking piece THEN piece is selected with moves`() {
             // Given
@@ -208,7 +208,7 @@ internal class PuzzleViewModelHelperTest {
     }
 
     @Nested
-    inner class Promote {
+    internal inner class Promote {
         @Test
         fun `GIVEN promotion position WHEN promoting to queen THEN move is played`() {
             // Given
@@ -259,7 +259,7 @@ internal class PuzzleViewModelHelperTest {
     }
 
     @Nested
-    inner class Hint {
+    internal inner class Hint {
         @Test
         fun `GIVEN puzzle WHEN hint requested THEN returns hint square`() {
             // Given
@@ -290,7 +290,7 @@ internal class PuzzleViewModelHelperTest {
     }
 
     @Nested
-    inner class Resign {
+    internal inner class Resign {
         @Test
         fun `GIVEN puzzle in progress WHEN resign THEN puzzle is over and failed`() {
             // Given
@@ -309,7 +309,7 @@ internal class PuzzleViewModelHelperTest {
     }
 
     @Nested
-    inner class BuildPuzzleData {
+    internal inner class BuildPuzzleData {
         @Test
         fun `GIVEN puzzle loaded WHEN buildPuzzleData THEN returns current state`() {
             // Given
@@ -342,7 +342,7 @@ internal class PuzzleViewModelHelperTest {
     }
 
     @Nested
-    inner class PlayNextSolutionMove {
+    internal inner class PlayNextSolutionMove {
         @Test
         fun `GIVEN puzzle in progress WHEN playNextSolutionMove THEN plays expected move`() {
             // Given - Standard puzzle: e2e4, e7e5, g1f3, b8c6
@@ -391,7 +391,7 @@ internal class PuzzleViewModelHelperTest {
     }
 
     @Nested
-    inner class HasSolutionMoves {
+    internal inner class HasSolutionMoves {
         @Test
         fun `GIVEN puzzle in progress WHEN hasSolutionMoves THEN returns true`() {
             // Given

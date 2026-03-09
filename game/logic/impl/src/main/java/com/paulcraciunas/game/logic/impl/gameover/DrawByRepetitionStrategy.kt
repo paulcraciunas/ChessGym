@@ -14,7 +14,7 @@ internal class DrawByRepetitionStrategy : GameOverStrategy {
         var count = 1
         tempBoard.from(of.board)
         for (i in of.history.size - 1 downTo 0) {
-            (of.history[i] as Playable).undo(tempBoard) // TODO Paul: fix down-casting
+            (of.history[i] as Playable).undo(tempBoard) // TODO Paul: fix down-casting (this should be picked up by lint!!!)
             if (of.history[i].turn == of.info.turn) { // only check every other ply
                 if (tempBoard == of.board) { // is it the same position?
                     if (++count == DRAW_BY_REPETITION_COUNT) {
