@@ -7,13 +7,14 @@ import androidx.datastore.dataStore
 import com.paulcraciunas.user.api.User
 import com.paulcraciunas.user.api.UserLocalDataSource
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.withContext
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromStream
+import kotlinx.serialization.json.encodeToStream
 import java.io.InputStream
 import java.io.OutputStream
 import javax.inject.Inject
@@ -53,17 +54,18 @@ class UserLocalDataSourceImpl @Inject constructor(
     }
 }
 
+@OptIn(ExperimentalSerializationApi::class)
 private object UserSerializer : Serializer<User> {
     override val defaultValue: User = User()
 
     override suspend fun readFrom(input: InputStream): User = try {
-        Json.decodeFromString(User.serializer(), input.readBytes().decodeToString())
+        Json.decodeFromStream(User.serializer(), input)
     } catch (_: SerializationException) {
         defaultValue
     }
 
-    override suspend fun writeTo(t: User, output: OutputStream) = withContext(Dispatchers.IO) {
-        output.write(Json.encodeToString(User.serializer(), t).encodeToByteArray())
+    override suspend fun writeTo(t: User, output: OutputStream) {
+        Json.encodeToStream( t, output)
     }
 }
 
