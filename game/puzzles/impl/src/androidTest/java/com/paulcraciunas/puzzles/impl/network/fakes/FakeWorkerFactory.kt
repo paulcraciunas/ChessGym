@@ -64,7 +64,7 @@ internal class FakeWorkerFactory(
             notificationFactory = FakeNotificationFactory(),
             progressReporter = reporter,
             databaseSource = databaseSource,
-            fileWriter = FileProgressWriter(reporter),
+            fileWriter = FileProgressWriter(dispatcher, reporter),
             decompressor = decompressor,
             puzzleDatabaseWriter = databaseWriter,
         )

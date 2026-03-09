@@ -1,10 +1,17 @@
 package com.paulcraciunas.puzzles.impl.usecases
 
+// TODO(https://github.com/paulcraciunas/ChessGym/issues/65) Paul: Extract this implementation to a separate module
+//noinspection PureDomain
 import android.content.Context
+//noinspection PureDomain
 import androidx.work.BackoffPolicy
+//noinspection PureDomain
 import androidx.work.ExistingWorkPolicy
+//noinspection PureDomain
 import androidx.work.OneTimeWorkRequestBuilder
+//noinspection PureDomain
 import androidx.work.OutOfQuotaPolicy
+//noinspection PureDomain
 import androidx.work.WorkManager
 import com.paulcraciunas.notifications.api.NotificationFactory
 import com.paulcraciunas.puzzles.api.usecases.FetchPuzzleDatabase
