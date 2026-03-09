@@ -166,7 +166,7 @@ internal class BlindModeOrchestratorImplTest {
 
         // Then
         val fen = underTest.currentFen()
-        assertNotNull(fen) // TODO Paul: we should assert something more meaningful here
+        assertNotNull(fen)
     }
 
     @Test

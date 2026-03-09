@@ -35,8 +35,7 @@ class PgnSerializer(
     private val endingRegex = Regex("(1-0|0-1|1/2-1/2)\$")
 
     override fun from(gameString: String): Game {
-        // TODO Paul: this is horrendously slow
-        // TODO Paul: rewrite this without regex
+        // TODO Paul(https://github.com/paulcraciunas/ChessGym/issues/64): this is horrendously slow; rewrite this without regex
         val lines = gameString.replace(endingRegex, "")
             .lines().filter { it.isNotBlank() }
 
