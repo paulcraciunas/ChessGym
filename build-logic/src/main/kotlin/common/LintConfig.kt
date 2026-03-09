@@ -24,7 +24,7 @@ internal fun Project.configureLint() {
 }
 
 private fun Lint.configureLint(project: Project) {
-    lintConfig = project.rootProject.file("lint-rules/xml")
+    lintConfig = project.rootProject.file("lint-rules/lint.xml")
     warningsAsErrors = true
     abortOnError = true
     checkTestSources = true
