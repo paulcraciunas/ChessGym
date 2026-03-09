@@ -2,5 +2,7 @@
 <lint>
     <!-- Disable the check for newer library versions available -->
     <issue id="GradleDependency" severity="ignore" />
+    <issue id="AndroidGradlePluginVersion" severity="ignore" />
     <issue id="PluralsCandidate" severity="ignore" />
+    <issue id="VectorPath" severity="ignore" />
 </lint>
