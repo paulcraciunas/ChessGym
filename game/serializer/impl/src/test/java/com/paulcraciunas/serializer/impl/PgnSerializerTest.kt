@@ -21,6 +21,7 @@ class PgnSerializerTest {
     fun `WHEN serializing a loaded game THEN contents are identical`() {
         val gameString = ClassLoader.getSystemResource("Kasparov_Karpov_WC_1986_round_1.pgn")
             .readText()
+            .replace("\r\n", "\n") // To make it platform independent
 
         assertEquals(gameString, underTest.of(underTest.from(gameString)))
     }
