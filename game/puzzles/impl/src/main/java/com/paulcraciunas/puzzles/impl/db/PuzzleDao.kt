@@ -1,8 +1,13 @@
 package com.paulcraciunas.puzzles.impl.db
 
+// TODO(https://github.com/paulcraciunas/ChessGym/issues/65) Paul: Extract this implementation to a separate module
+//noinspection PureDomain
 import androidx.room.Dao
+//noinspection PureDomain
 import androidx.room.Insert
+//noinspection PureDomain
 import androidx.room.OnConflictStrategy
+//noinspection PureDomain
 import androidx.room.Query
 
 @Dao

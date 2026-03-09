@@ -14,6 +14,7 @@ dependencies {
     implementation(project(":game:puzzles:api"))
     implementation(project(":game:logic:di"))
     implementation(project(":game:serializer:api"))
+    implementation(project(":global:utils"))
     implementation(project(":global:notifications"))
     implementation(project(":settings:application:api"))
 
@@ -22,6 +23,7 @@ dependencies {
 
     // Unpacking library
     implementation(libs.public.zstd) { artifact { type = "aar" } }
+    implementation(libs.public.timber)
 
     testImplementation(testFixtures(project(":settings:application:api")))
 

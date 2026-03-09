@@ -1,13 +1,21 @@
 package com.paulcraciunas.puzzles.impl.network
 
+// TODO(https://github.com/paulcraciunas/ChessGym/issues/65) Paul: Extract this implementation to a separate module
+//noinspection PureDomain
 import android.content.Context
+//noinspection PureDomain
 import android.content.pm.ServiceInfo
+//noinspection PureDomain
 import android.os.Build
-import android.util.Log
+//noinspection PureDomain
 import androidx.hilt.work.HiltWorker
+//noinspection PureDomain
 import androidx.work.CoroutineWorker
+//noinspection PureDomain
 import androidx.work.ForegroundInfo
+//noinspection PureDomain
 import androidx.work.WorkerParameters
+//noinspection PureDomain
 import androidx.work.workDataOf
 import com.paulcraciunas.notifications.api.NotificationFactory
 import com.paulcraciunas.puzzles.impl.network.progress.ProgressReporter
@@ -15,16 +23,19 @@ import com.paulcraciunas.puzzles.impl.network.save.PuzzleDatabaseWriter
 import com.paulcraciunas.puzzles.impl.network.source.PuzzleDatabaseSource
 import com.paulcraciunas.puzzles.impl.network.unpack.FileDecompressor
 import com.paulcraciunas.puzzles.impl.network.writer.FileWriter
+import com.paulcraciunas.utils.IoDispatcher
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.io.File
 
 @HiltWorker
 class PuzzleSyncWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParams: WorkerParameters,
+    @IoDispatcher dispatcher: CoroutineDispatcher,
     private val notificationFactory: NotificationFactory,
     private val progressReporter: ProgressReporter,
     private val databaseSource: PuzzleDatabaseSource,
@@ -32,10 +43,10 @@ class PuzzleSyncWorker @AssistedInject constructor(
     private val decompressor: FileDecompressor,
     private val puzzleDatabaseWriter: PuzzleDatabaseWriter,
 ) : CoroutineWorker(context, workerParams) {
-
+    private val ioDispatcher = dispatcher
     private var step: Step = Step.Download
 
-    override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
+    override suspend fun doWork(): Result = withContext(ioDispatcher) {
         setForegroundAsync(createForegroundInfo())
         progressReporter.init { progress ->
             setProgress(workDataOf(STEP to step.toString(), PROGRESS_NAME to progress))
@@ -49,7 +60,7 @@ class PuzzleSyncWorker @AssistedInject constructor(
             decompressPuzzleDatabase(zstFile, csvFile)?.let { return@withContext it }
             return@withContext writePuzzlesToDatabase(csvFile)
         } catch (e: Exception) {
-            Log.e(TAG, "Unexpected error during puzzle database sync", e)
+            Timber.e(e, "Unexpected error during puzzle database sync")
             // Clean up any partial files on unexpected errors
             zstFile.delete()
             csvFile.delete()
@@ -66,14 +77,14 @@ class PuzzleSyncWorker @AssistedInject constructor(
                 fileWriter.onBegin(databaseSource.open())
                 fileWriter.write(databaseSource.read(), destination)
             } catch (e: Exception) {
-                Log.e(TAG, "Download failed", e)
+                Timber.e(e, "Download failed")
                 destination.delete() // Clean up partial downloads
                 return Result.failure(
                     workDataOf(ERROR_TYPE to ERROR_DOWNLOAD_FAILED, FAILED_STEP to Step.Download.toString())
                 )
             }
         } else {
-            Log.i(TAG, "Download file already exists, skipping download step")
+            Timber.i("Download file already exists, skipping download step")
             setProgress(workDataOf(STEP to step.toString(), PROGRESS_NAME to 100))
         }
         return null
@@ -86,16 +97,16 @@ class PuzzleSyncWorker @AssistedInject constructor(
                 fileWriter.onBegin((source.length() * COMPRESS_FACTOR).toLong())
                 fileWriter.write(decompressor.decompress(source.inputStream()), destination)
                 source.delete() // Only delete download file after successful decompression
-                Log.i(TAG, "Download file deleted after successful decompression")
+                Timber.i("Download file deleted after successful decompression")
             } catch (e: Exception) {
-                Log.e(TAG, "Decompression failed", e)
+                Timber.e(e,"Decompression failed")
                 destination.delete() // Keep download file for retry, but clean up any partial decompression
                 return Result.failure(
                     workDataOf(ERROR_TYPE to ERROR_DECOMPRESSION_FAILED, FAILED_STEP to Step.Unpack.toString())
                 )
             }
         } else {
-            Log.i(TAG, "CSV file already exists, skipping decompression step")
+            Timber.i("CSV file already exists, skipping decompression step")
             source.delete() // Make sure the downloaded file is cleared
             setProgress(workDataOf(STEP to step.toString(), PROGRESS_NAME to 100))
         }
@@ -108,15 +119,15 @@ class PuzzleSyncWorker @AssistedInject constructor(
             progressReporter.onBegin(DB_SIZE)
             puzzleDatabaseWriter.writePuzzlesToDatabase(source)
             source.delete() // Only delete CSV file after successful database write
-            Log.i(TAG, "CSV file deleted after successful database write")
+            Timber.i("CSV file deleted after successful database write")
         } catch (e: Exception) {
-            Log.e(TAG, "Database write failed", e)
+            Timber.e(e,"Database write failed")
             return Result.failure(
                 workDataOf(ERROR_TYPE to ERROR_DATABASE_WRITE_FAILED, FAILED_STEP to Step.BuildDb.toString())
             )
         }
 
-        Log.i(TAG, "Puzzle database sync completed successfully")
+        Timber.i("Puzzle database sync completed successfully")
         return Result.success()
     }
 
@@ -124,9 +135,9 @@ class PuzzleSyncWorker @AssistedInject constructor(
         notificationFactory.createChannel(applicationContext)
         val notification = notificationFactory.createForegroundNotification(applicationContext)
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            ForegroundInfo(NotificationFactory.Ids.DOWNLOAD_NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+            ForegroundInfo(NotificationFactory.DOWNLOAD_NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
         } else {
-            ForegroundInfo(NotificationFactory.Ids.DOWNLOAD_NOTIFICATION_ID, notification)
+            ForegroundInfo(NotificationFactory.DOWNLOAD_NOTIFICATION_ID, notification)
         }
     }
 

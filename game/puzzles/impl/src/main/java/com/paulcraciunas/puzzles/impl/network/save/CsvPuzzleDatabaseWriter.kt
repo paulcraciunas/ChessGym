@@ -1,6 +1,6 @@
 package com.paulcraciunas.puzzles.impl.network.save
 
-import android.util.Log
+import timber.log.Timber
 import com.paulcraciunas.puzzles.impl.db.Puzzle
 import com.paulcraciunas.puzzles.impl.impl.PuzzleDatabase
 import com.paulcraciunas.puzzles.impl.network.progress.ProgressReporter
@@ -78,7 +78,7 @@ class CsvPuzzleDatabaseWriter @Inject constructor(
             puzzles.clear()
             return count
         } catch (e: Exception) {
-            Log.e(CsvPuzzleDatabaseWriter::class.java.simpleName, "Bulk insert failed!", e)
+            Timber.e(e, "Bulk insert failed!")
             return 0
         }
     }
