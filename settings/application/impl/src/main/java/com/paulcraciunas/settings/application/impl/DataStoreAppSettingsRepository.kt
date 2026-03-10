@@ -5,6 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -12,7 +13,10 @@ import com.paulcraciunas.settings.application.api.AppSettings
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import timber.log.Timber
+import java.io.IOException
 import javax.inject.Inject
 
 private val Context.appSettings: DataStore<Preferences> by preferencesDataStore(name = "app_settings")
@@ -22,24 +26,16 @@ internal class DataStoreAppSettingsRepository @Inject constructor(
 ) : AppSettingsRepository {
     private val dataStore = context.appSettings
 
-    override val appSettings: Flow<AppSettings> = dataStore.data.map { preferences ->
-        AppSettings(
-            puzzlesDownloaded = preferences[PUZZLES_DOWNLOADED] ?: false,
-            totalPuzzleCount = preferences[TOTAL_PUZZLE_COUNT] ?: 0,
-            maxPuzzleRating = preferences[PUZZLES_MAX_RATING] ?: 0,
-            minPuzzleRating = preferences[PUZZLES_MIN_RATING] ?: 0,
-            playSoundOnMove = preferences[PLAY_SOUND_ON_MOVE] ?: true,
-            preferredTheme = preferences[PREFERRED_THEME]?.let { AppSettings.Theme.valueOf(it) }
-                ?: AppSettings.Theme.Wood,
-            lightMode = preferences[LIGHT_MODE]?.let { AppSettings.LightMode.valueOf(it) }
-                ?: AppSettings.LightMode.System,
-            autoPromote = preferences[AUTO_PROMOTE] ?: true,
-            showBorders = preferences[SHOW_BORDERS] ?: true,
-            enableVibrations = preferences[ENABLE_VIBRATIONS] ?: true,
-            highlightLegalMoves = preferences[HIGHLIGHT_LEGAL_MOVES] ?: true,
-            enableAnimations = preferences[ENABLE_ANIMATIONS] ?: true
-        )
-    }
+    override val appSettings: Flow<AppSettings> = dataStore.data
+        .catch { exception ->
+            if (exception is IOException) {
+                Timber.w(exception, "Error reading app settings from DataStore")
+                emit(emptyPreferences())
+            } else {
+                throw exception
+            }
+        }
+        .map { preferences -> preferences.toAppSettings() }
 
     override suspend fun updatePuzzlesDownloaded(downloaded: Boolean) = dataStore.update(PUZZLES_DOWNLOADED, downloaded)
     override suspend fun updateTotalPuzzleCount(count: Int) = dataStore.update(TOTAL_PUZZLE_COUNT, count)
@@ -55,8 +51,41 @@ internal class DataStoreAppSettingsRepository @Inject constructor(
     override suspend fun updateEnableAnimations(enabled: Boolean) = dataStore.update(ENABLE_ANIMATIONS, enabled)
 
     private suspend fun <T> DataStore<Preferences>.update(key: Preferences.Key<T>, with: T) {
-        edit { preferences ->
-            preferences[key] = with
+        try {
+            edit { preferences ->
+                preferences[key] = with
+            }
+        } catch (e: IOException) {
+            Timber.w(e, "Failed to update setting: %s", key.name)
+            throw e
+        }
+    }
+
+    private fun Preferences.toAppSettings(): AppSettings {
+        return AppSettings(
+            puzzlesDownloaded = this[PUZZLES_DOWNLOADED] ?: false,
+            totalPuzzleCount = this[TOTAL_PUZZLE_COUNT] ?: 0,
+            maxPuzzleRating = this[PUZZLES_MAX_RATING] ?: 0,
+            minPuzzleRating = this[PUZZLES_MIN_RATING] ?: 0,
+            playSoundOnMove = this[PLAY_SOUND_ON_MOVE] ?: true,
+            preferredTheme = this[PREFERRED_THEME].toEnumOrDefault(AppSettings.Theme.Wood),
+            lightMode = this[LIGHT_MODE].toEnumOrDefault(AppSettings.LightMode.System),
+            autoPromote = this[AUTO_PROMOTE] ?: true,
+            showBorders = this[SHOW_BORDERS] ?: true,
+            enableVibrations = this[ENABLE_VIBRATIONS] ?: true,
+            highlightLegalMoves = this[HIGHLIGHT_LEGAL_MOVES] ?: true,
+            enableAnimations = this[ENABLE_ANIMATIONS] ?: true
+        )
+    }
+
+    // Helper for safe enum parsing
+    private inline fun <reified T : Enum<T>> String?.toEnumOrDefault(defaultValue: T): T {
+        if (this == null) return defaultValue
+        return try {
+            enumValueOf<T>(this)
+        } catch (e: IllegalArgumentException) {
+            Timber.w(e, "Failed to parse enum value: %s", this)
+            defaultValue
         }
     }
 
