@@ -21,7 +21,7 @@ object LintDebug : BuildType({
             useGradleWrapper = true
             // --no-build-cache: Forces a full re-scan of the codebase
             // --continue: Find all lint errors across all modules, don't stop at the first one
-            gradleParams = "--continue --no-daemon --no-build-cache"
+            gradleParams = "--continue --no-build-cache"
         }
     }
 

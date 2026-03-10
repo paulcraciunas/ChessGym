@@ -15,6 +15,8 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import kotlinx.serialization.json.encodeToStream
+import timber.log.Timber
+import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 import javax.inject.Inject
@@ -28,11 +30,12 @@ class UserLocalDataSourceImpl @Inject constructor(
 
     override fun userUpdates(): Flow<User> = dataStore.data
         .catch { exception ->
-            // Handle any exceptions and emit default user
             if (exception is SerializationException) {
+                Timber.w(exception, "Failed to deserialize user data, resetting to default")
                 clearUserData()
                 emit(User())
             } else {
+                Timber.w(exception, "Error reading user data from DataStore")
                 throw exception
             }
         }
@@ -40,17 +43,32 @@ class UserLocalDataSourceImpl @Inject constructor(
     override suspend fun getUser(): User = userUpdates().first()
 
     override suspend fun saveUser(user: User) {
-        dataStore.updateData { user }
+        try {
+            dataStore.updateData { user }
+        } catch (e: IOException) {
+            Timber.w(e, "Failed to save user data")
+            throw e
+        }
     }
 
     override suspend fun updateUser(updater: (User) -> User) {
-        dataStore.updateData { currentUser ->
-            updater(currentUser)
+        try {
+            dataStore.updateData { currentUser ->
+                updater(currentUser)
+            }
+        } catch (e: IOException) {
+            Timber.w(e, "Failed to update user data")
+            throw e
         }
     }
 
     override suspend fun clearUserData() {
-        dataStore.updateData { User() }
+        try {
+            dataStore.updateData { User() }
+        } catch (e: IOException) {
+            Timber.w(e, "Failed to clear user data")
+            throw e
+        }
     }
 }
 

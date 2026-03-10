@@ -4,7 +4,6 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
-import android.util.Log
 import androidx.core.content.getSystemService
 import com.paulcraciunas.global.device.api.usecases.GetNetworkState
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -12,6 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -36,7 +36,7 @@ class GetNetworkStateImpl @Inject constructor(
             _networkState.tryEmit(GetNetworkState.NetworkState.Unknown)
         }
         if (!::connectivityManager.isInitialized) {
-            Log.e(GetNetworkStateImpl::class.java.canonicalName, "Failed to initialize ConnectivityManager")
+            Timber.e("Failed to initialize ConnectivityManager")
             return
         }
 

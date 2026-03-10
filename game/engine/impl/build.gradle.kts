@@ -25,4 +25,5 @@ android {
 dependencies {
     api(project(":game:engine:api"))
     implementation(project(":global:utils"))
+    implementation(libs.public.timber)
 }

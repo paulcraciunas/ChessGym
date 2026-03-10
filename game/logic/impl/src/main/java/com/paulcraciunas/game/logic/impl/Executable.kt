@@ -2,6 +2,7 @@ package com.paulcraciunas.game.logic.impl
 
 import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Side
+import com.paulcraciunas.game.logic.api.diagnostics.PlayedMovesLog
 import com.paulcraciunas.game.logic.api.state.CheckCount
 import com.paulcraciunas.game.logic.impl.board.Board
 import com.paulcraciunas.game.logic.impl.plies.Playable
@@ -26,6 +27,7 @@ internal abstract class Executable {
             .disambiguate())
         playable.exec(board)
         savePly(playable)
+        PlayedMovesLog.record(playable.algebraic())
 
         // Update state
         info.update(playable, checkCount = checkCount(info.turn.other()))

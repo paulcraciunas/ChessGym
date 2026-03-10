@@ -20,9 +20,8 @@ object UnitTests : BuildType({
             tasks = "clean unitTestAllDebug"
             useGradleWrapper = true
             // --no-build-cache: Forces tests to run even if they were successful in a previous build
-            // --no-daemon: Best practice for CI to avoid leaking memory/processes
             // --continue: Runs all tests even if one module fails
-            gradleParams = "--continue --no-daemon --no-build-cache"
+            gradleParams = "--continue --no-build-cache"
         }
     }
 

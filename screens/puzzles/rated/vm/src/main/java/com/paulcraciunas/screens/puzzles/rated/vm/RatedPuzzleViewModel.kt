@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -48,7 +49,8 @@ class RatedPuzzleViewModel @Inject constructor(
                     showAbandonDialog = false,
                     promotion = null
                 )
-            } catch (_: Exception) {
+            } catch (e: Exception) {
+                Timber.w(e, "Failed to load rated puzzle")
                 _uiState.value = RatedPuzzleUiState.Failed
             }
         }

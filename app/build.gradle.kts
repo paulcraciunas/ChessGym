@@ -73,4 +73,7 @@ dependencies {
     // Work Manager Integration
     implementation(libs.androidx.work.ktx)
     implementation(libs.androidx.hilt.work)
+
+    // Logging
+    implementation(libs.public.timber)
 }

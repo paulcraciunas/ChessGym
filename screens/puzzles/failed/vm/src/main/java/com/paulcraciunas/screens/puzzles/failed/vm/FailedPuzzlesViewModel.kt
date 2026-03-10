@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -66,13 +67,14 @@ class FailedPuzzlesViewModel @Inject constructor(
                         promotion = null,
                     )
                 }
-            } catch (_: Exception) {
+            } catch (e: Exception) {
+                Timber.w(e, "Failed to load failed puzzles")
                 _uiState.value = FailedPuzzlesUiState.Failed
             }
         }
     }
 
-    override fun onSquareClicked(selection: Locus) = whilePlaying { state ->
+    override fun onSquareClicked(selection: Locus) = whilePlaying { _ ->
         handleMoveResult(helper.handleSquareClick(selection))
     }
 

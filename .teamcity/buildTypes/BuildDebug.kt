@@ -17,7 +17,7 @@ object BuildDebug : BuildType({
             name = "Assemble Debug APK"
             tasks = "clean assembleDebug"
             useGradleWrapper = true
-            gradleParams = "--no-daemon --no-build-cache"
+            gradleParams = "--no-build-cache"
         }
     }
 

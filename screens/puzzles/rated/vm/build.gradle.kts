@@ -17,6 +17,7 @@ dependencies {
     implementation(project(":settings:application:api"))
 
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.public.timber)
 
     testImplementation(testFixtures(project(":settings:application:api")))
     testImplementation(testFixtures(project(":domain:api")))

@@ -3,6 +3,7 @@ package com.paulcraciunas.game.engine.impl
 import com.paulcraciunas.game.engine.impl.uci.UciCommand
 import com.paulcraciunas.game.engine.impl.uci.UciResponse
 import kotlinx.coroutines.withTimeout
+import timber.log.Timber
 import javax.inject.Inject
 
 internal class StockfishUciFacade @Inject constructor(
@@ -10,18 +11,33 @@ internal class StockfishUciFacade @Inject constructor(
 ) : UciFacade {
 
     override fun startEngine() {
-        bridge.nativeStartEngine()
+        try {
+            bridge.nativeStartEngine()
+        } catch (e: Exception) {
+            Timber.w(e, "Failed to start Stockfish engine")
+            throw e
+        }
     }
 
     override fun shutdownEngine() {
-        bridge.nativeShutdownEngine()
+        try {
+            bridge.nativeShutdownEngine()
+        } catch (e: Exception) {
+            Timber.w(e, "Failed to shutdown Stockfish engine")
+            throw e
+        }
     }
 
     @Suppress("UNCHECKED_CAST")
     override suspend fun <T : UciResponse> execute(uciCommand: UciCommand): T {
-        bridge.nativeSendCommand(cmd = uciCommand.protocol())
-        return withTimeout(RESPONSE_TIMEOUT_MS) {
-            buildResponse(uciCommand) as T
+        try {
+            bridge.nativeSendCommand(cmd = uciCommand.protocol())
+            return withTimeout(RESPONSE_TIMEOUT_MS) {
+                buildResponse(uciCommand) as T
+            }
+        } catch (e: Exception) {
+            Timber.w(e, "UCI command failed: %s", uciCommand.protocol())
+            throw e
         }
     }
 

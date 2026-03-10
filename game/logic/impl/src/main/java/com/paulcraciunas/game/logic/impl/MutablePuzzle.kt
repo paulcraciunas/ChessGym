@@ -4,6 +4,7 @@ import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
+import com.paulcraciunas.game.logic.api.diagnostics.PlayedMovesLog
 import com.paulcraciunas.game.logic.api.state.CheckCount
 import com.paulcraciunas.game.logic.impl.board.Board
 import com.paulcraciunas.game.logic.impl.plies.Playable
@@ -26,6 +27,7 @@ internal class MutablePuzzle(
     private val remainingMoves: Queue<String> = ArrayDeque(expectedMoves)
 
     override fun start() {
+        PlayedMovesLog.reset()
         state = Puzzle.State.InProgress
         info.inCheckCount = checkCount(info.turn)
         updateState()

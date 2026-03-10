@@ -13,4 +13,5 @@ dependencies {
     api(project(":settings:application:api"))
 
     implementation(libs.androidx.datastore.preferences)
+    implementation(libs.public.timber)
 }
