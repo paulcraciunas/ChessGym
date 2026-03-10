@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -47,7 +48,8 @@ class PuzzleStreakViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 loadNextPuzzle()
-            } catch (_: Exception) {
+            } catch (e: Exception) {
+                Timber.w(e, "Failed to load streak puzzle")
                 _uiState.value = PuzzleStreakUiState.Failed
             }
         }
@@ -127,7 +129,8 @@ class PuzzleStreakViewModel @Inject constructor(
                 onStreakPuzzleComplete(timeSpent)
                 try {
                     loadNextPuzzle()
-                } catch (_: Exception) { // If we can't load next puzzle, end the streak
+                } catch (e: Exception) {
+                    Timber.w(e, "Failed to load next streak puzzle, ending streak")
                     endStreak()
                 }
             } else { // streak ends
@@ -151,7 +154,7 @@ class PuzzleStreakViewModel @Inject constructor(
     private suspend fun endStreak() {
         val timeSpent = timer.elapsed()
         val result = onStreakComplete(timeSpent)
-        whilePlaying { state ->
+        whilePlaying { _ ->
             _uiState.value = PuzzleStreakUiState.StreakEnded(
                 data = helper.buildPuzzleData(),
                 finalStreakCount = result.finalStreakCount,

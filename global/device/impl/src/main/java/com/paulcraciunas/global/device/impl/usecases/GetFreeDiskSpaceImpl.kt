@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.StatFs
 import com.paulcraciunas.global.device.api.usecases.GetFreeDiskSpace
 import dagger.hilt.android.qualifiers.ApplicationContext
+import timber.log.Timber
 import javax.inject.Inject
 
 class GetFreeDiskSpaceImpl @Inject constructor(
@@ -27,7 +28,7 @@ class GetFreeDiskSpaceImpl @Inject constructor(
                 totalBytes = totalBytes
             )
         } catch (e: Exception) {
-            // Return a safe fallback if we can't get disk space info
+            Timber.w(e, "Failed to read disk space info")
             GetFreeDiskSpace.DiskSpace(
                 freeBytes = 0L,
                 totalBytes = 0L

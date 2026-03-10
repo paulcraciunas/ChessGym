@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -69,7 +70,8 @@ class PuzzleRushViewModel @Inject constructor(
                     helper.load(puzzle)
                     GameState.Ready(puzzleData = helper.buildPuzzleData())
                 }
-            } catch (_: Exception) {
+            } catch (e: Exception) {
+                Timber.w(e, "Failed to load puzzle rush series")
                 _gameState.value = GameState.Failed
             }
         }

@@ -12,4 +12,5 @@ dependencies {
     implementation(project(":global:device:api"))
     
     implementation(libs.hilt.android)
+    implementation(libs.public.timber)
 }
