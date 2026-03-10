@@ -5,6 +5,7 @@ import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Result
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
+import com.paulcraciunas.game.logic.api.diagnostics.PlayedMovesLog
 import com.paulcraciunas.game.logic.api.state.MetaData
 import com.paulcraciunas.game.logic.impl.board.Board
 import com.paulcraciunas.game.logic.impl.board.BoardFactory
@@ -32,6 +33,7 @@ internal class MutableGame(
     override fun start() {
         assert(state == Game.GameState.Ready)
 
+        PlayedMovesLog.reset()
         state = Game.GameState.InProgress
         info.inCheckCount = checkCount(info.turn)
         updateState()

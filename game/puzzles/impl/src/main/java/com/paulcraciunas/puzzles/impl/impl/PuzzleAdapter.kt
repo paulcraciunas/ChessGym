@@ -1,5 +1,6 @@
 package com.paulcraciunas.puzzles.impl.impl
 
+import com.paulcraciunas.game.logic.api.diagnostics.LastLoadedPuzzleLog
 import com.paulcraciunas.serializer.api.PuzzleReader
 import javax.inject.Inject
 
@@ -10,6 +11,8 @@ class PuzzleAdapter @Inject constructor(
     private val puzzleReader: PuzzleReader
 ) {
     fun adapt(puzzle: DbPuzzle): DomainPuzzle {
-        return puzzleReader.readPuzzle(puzzle.rating, puzzle.fenBinary, puzzle.id)
+        val domainPuzzle = puzzleReader.readPuzzle(puzzle.rating, puzzle.fenBinary, puzzle.id)
+        LastLoadedPuzzleLog.recordFen(puzzle.fenBinary.toString())
+        return domainPuzzle
     }
 }
