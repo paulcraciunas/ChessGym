@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 internal class AboutViewModelTest {
-
     private lateinit var underTest: AboutViewModel
 
     @BeforeEach
@@ -16,7 +15,7 @@ internal class AboutViewModelTest {
     }
 
     @Nested
-    inner class Initialization {
+    internal inner class Initialization {
         @Test
         fun `GIVEN default state WHEN initialized THEN libraries list is not empty`() {
             val state = underTest.uiState.value
@@ -71,7 +70,7 @@ internal class AboutViewModelTest {
     }
 
     @Nested
-    inner class Interactions {
+    internal inner class Interactions {
         @Test
         fun `GIVEN initialized WHEN donate clicked THEN state remains unchanged`() {
             val stateBefore = underTest.uiState.value

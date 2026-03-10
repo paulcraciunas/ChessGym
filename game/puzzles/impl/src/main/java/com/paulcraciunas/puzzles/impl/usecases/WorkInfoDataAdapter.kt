@@ -1,9 +1,10 @@
 package com.paulcraciunas.puzzles.impl.usecases
 
-import android.util.Log
+//noinspection PureDomain
 import androidx.work.WorkInfo
 import com.paulcraciunas.puzzles.api.usecases.FetchPuzzleDatabase
 import com.paulcraciunas.puzzles.impl.network.PuzzleSyncWorker
+import timber.log.Timber
 import javax.inject.Inject
 
 class WorkInfoDataAdapter @Inject constructor() {
@@ -16,7 +17,7 @@ class WorkInfoDataAdapter @Inject constructor() {
                 WorkInfo.State.FAILED -> {
                     val errorType = workInfo.outputData.getString(PuzzleSyncWorker.ERROR_TYPE)
                     val failedStep = workInfo.outputData.getString(PuzzleSyncWorker.FAILED_STEP)
-                    Log.w(TAG, "Work failed at step: $failedStep, error: $errorType")
+                    Timber.w("Work failed at step: $failedStep, error: $errorType")
                     
                     val error = mapErrorType(errorType)
                     val (download, unpack, buildDb) = calculateProgressFromFailedStep(failedStep)
@@ -29,7 +30,7 @@ class WorkInfoDataAdapter @Inject constructor() {
                     )
                 }
                 WorkInfo.State.CANCELLED -> {
-                    Log.w(TAG, "Work was cancelled")
+                    Timber.w("Work was cancelled")
                     FetchPuzzleDatabase.Progress(
                         download = NONE, 
                         unpack = NONE, 
@@ -38,7 +39,7 @@ class WorkInfoDataAdapter @Inject constructor() {
                     )
                 }
                 else -> {
-                    Log.w(TAG, "Work finished with unexpected state: ${workInfo.state}")
+                    Timber.w("Work finished with unexpected state: ${workInfo.state}")
                     FetchPuzzleDatabase.Progress(
                         download = NONE, 
                         unpack = NONE, 
@@ -83,6 +84,5 @@ class WorkInfoDataAdapter @Inject constructor() {
     companion object {
         private const val NONE = 0
         private const val DONE = 100
-        private const val TAG = "WorkInfoDataAdapter"
     }
 }

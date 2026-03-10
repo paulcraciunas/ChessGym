@@ -5,6 +5,7 @@ import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank
+import com.paulcraciunas.game.logic.api.board.loc
 import com.paulcraciunas.game.logic.assertDefaultBoard
 import com.paulcraciunas.game.logic.impl.board.BoardFactory
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -23,7 +24,7 @@ internal class BoardFactoryTest {
     fun `WHEN creating multiple default boards THEN they have their own sets of pieces`() {
         val other = BoardFactory.defaultBoard()
 
-        other.remove(Locus(File.a, Rank.`2`))
+        other.remove("a2".loc())
 
         assertTrue(underTest.has(Piece.Pawn, Side.WHITE, Locus(File.a, Rank.`2`)))
     }

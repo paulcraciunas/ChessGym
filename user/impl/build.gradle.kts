@@ -17,4 +17,5 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
 
     testImplementation(testFixtures(project(":user:api")))
+    androidTestImplementation(libs.kotlinx.coroutines.test)
 }

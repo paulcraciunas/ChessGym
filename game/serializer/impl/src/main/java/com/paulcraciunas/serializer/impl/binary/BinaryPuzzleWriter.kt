@@ -16,14 +16,14 @@ import java.util.ArrayDeque
 /**
  * Write a puzzle written in FEN format, in binary.
  *
- * The Writing and corresponding Reading are done according the the following rules:
+ * The Writing and corresponding Reading are done according the following rules:
  *
- * 1. First, we write a bitboard; a Long holding an 8x8 bits representing piece presence
+ * 1. First, we write a bitboard; a Long holding a 8x8 bits representing piece presence
  *
- * 2. The we write the individual pieces. Each piece is represented by 4 bits. There should be
+ * 2. Then we write the individual pieces. Each piece is represented by 4 bits. There should be
  * as many pieces as bits in the bit-board loaded at step 1.
  *
- * 3. Write the plie clock - number of plies played, stored as 1 byte - max value is 127
+ * 3. Write the ply clock - number of plies played, stored as 1 byte - max value is 127
  *
  * 4. Write the move index - number of moves played, stored as 1 byte - max value is 127
  *

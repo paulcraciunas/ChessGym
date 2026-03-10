@@ -1,6 +1,8 @@
 package com.paulcraciunas.puzzles.di
 
+//noinspection PureDomain
 import android.content.Context
+//noinspection PureDomain
 import androidx.room.Room
 import com.paulcraciunas.puzzles.impl.impl.AbstractPuzzleDatabase
 import com.paulcraciunas.puzzles.impl.impl.PuzzleDatabase

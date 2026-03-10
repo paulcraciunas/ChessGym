@@ -5,8 +5,7 @@ import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
-class GetFreeDiskSpaceTest {
-
+internal class GetFreeDiskSpaceTest {
     @Test
     fun given_diskSpaceData_WHEN_computingUsedBytes_THEN_returnsCorrectValue() {
         // Given

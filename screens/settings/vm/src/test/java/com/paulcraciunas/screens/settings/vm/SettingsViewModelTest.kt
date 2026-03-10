@@ -35,7 +35,7 @@ internal class SettingsViewModelTest {
     }
 
     @Nested
-    inner class Initialization {
+    internal inner class Initialization {
         @Test
         fun `GIVEN default settings WHEN initialized THEN uiState reflects defaults`() = runTest {
             createViewModel()
@@ -83,7 +83,7 @@ internal class SettingsViewModelTest {
     }
 
     @Nested
-    inner class HapticFeedbackToggle {
+    internal inner class HapticFeedbackToggle {
         @Test
         fun `GIVEN haptic enabled WHEN toggled off THEN setting is updated`() = runTest {
             createViewModel()
@@ -109,7 +109,7 @@ internal class SettingsViewModelTest {
     }
 
     @Nested
-    inner class AutoPromoteToggle {
+    internal inner class AutoPromoteToggle {
         @Test
         fun `GIVEN auto-promote enabled WHEN toggled off THEN setting is updated`() = runTest {
             createViewModel()
@@ -135,7 +135,7 @@ internal class SettingsViewModelTest {
     }
 
     @Nested
-    inner class ShowBordersToggle {
+    internal inner class ShowBordersToggle {
         @Test
         fun `GIVEN borders shown WHEN toggled off THEN setting is updated`() = runTest {
             createViewModel()
@@ -161,7 +161,7 @@ internal class SettingsViewModelTest {
     }
 
     @Nested
-    inner class HighlightLegalMovesToggle {
+    internal inner class HighlightLegalMovesToggle {
         @Test
         fun `GIVEN highlights enabled WHEN toggled off THEN setting is updated`() = runTest {
             createViewModel()
@@ -187,7 +187,7 @@ internal class SettingsViewModelTest {
     }
 
     @Nested
-    inner class LightModeSelection {
+    internal inner class LightModeSelection {
         @Test
         fun `GIVEN system mode WHEN light selected THEN setting is updated`() = runTest {
             createViewModel()
@@ -224,7 +224,7 @@ internal class SettingsViewModelTest {
     }
 
     @Nested
-    inner class AnimationsToggle {
+    internal inner class AnimationsToggle {
         @Test
         fun `GIVEN animations enabled WHEN toggled off THEN setting is updated`() = runTest {
             createViewModel()

@@ -171,7 +171,7 @@ internal class MoveAdapterTest {
     }
 
     @Test
-    fun `GIVEN move too long WHEN throws assertion error`() {
+    fun `GIVEN move too long WHEN adapting THEN throws assertion error`() {
         // Given
         val moveString = "e2e4xx" // 6 characters
 

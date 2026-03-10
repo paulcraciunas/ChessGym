@@ -8,6 +8,7 @@ import common.configureKotlin
 import common.extension
 import common.library
 import common.addLintChecks
+import common.configureAndroidLint
 import common.libs
 import common.plugin
 import common.testImplementation
@@ -63,13 +64,7 @@ class AndroidConventionPlugin : ConventionPlugin() {
                     proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"))
                 }
             }
-
-            lint {
-                warningsAsErrors = true
-                abortOnError = true
-                checkTestSources = true
-                baseline = project.file("lint-baseline.xml")
-            }
+            configureAndroidLint(this@configureAndroid)
         }
     }
 

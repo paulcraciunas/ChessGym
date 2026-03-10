@@ -16,11 +16,11 @@ class AboutViewModel @Inject constructor() : ViewModel(), AboutScreenInteractor 
     val uiState: StateFlow<AboutUiState> = _uiState.asStateFlow()
 
     override fun onDonateClicked() {
-        // TODO: Will be implemented with payment provider integration
+        // TODO(https://github.com/paulcraciunas/ChessGym/issues/59): Will be implemented with payment provider integration
     }
 
     override fun onRateAppClicked() {
-        // TODO: Will be implemented with Play Store integration
+        // TODO(https://github.com/paulcraciunas/ChessGym/issues/58): Will be implemented with Play Store integration
     }
 
     private fun provideLibraries(): List<LibraryInfo> = listOf(

@@ -21,6 +21,7 @@ import com.paulcraciunas.game.logic.api.board.Rank.`5`
 import com.paulcraciunas.game.logic.api.board.Rank.`6`
 import com.paulcraciunas.game.logic.api.board.Rank.`7`
 import com.paulcraciunas.game.logic.api.board.Rank.`8`
+import com.paulcraciunas.game.logic.api.board.loc
 import com.paulcraciunas.game.logic.impl.board.Board
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -157,7 +158,7 @@ internal class BoardTest {
 
         addSomePieces(other)
         addSomePieces(underTest)
-        underTest.remove(Locus(a, `2`))
+        underTest.remove("a2".loc())
 
         assertNotEquals(other, underTest)
         assertFalse(other == underTest)
@@ -178,18 +179,18 @@ internal class BoardTest {
 
     @Test
     fun `WHEN removing a non-existing piece THEN return null`() {
-        assertNull(underTest.remove(Locus(a, `2`)))
+        assertNull(underTest.remove("a2".loc()))
     }
 
     @Test
     fun `WHEN removing a piece from a copied board THEN the original board is unaffected`() {
         val other = Board()
-        other.add(Piece.Pawn, WHITE, Locus(a, `2`))
+        other.add(Piece.Pawn, WHITE, "a2".loc())
 
         underTest.from(other)
-        other.remove(Locus(a, `2`))
+        other.remove("a2".loc())
 
-        assertTrue(underTest.has(Piece.Pawn, WHITE, Locus(a, `2`)))
+        assertTrue(underTest.has(Piece.Pawn, WHITE, "a2".loc()))
     }
 
     @Test

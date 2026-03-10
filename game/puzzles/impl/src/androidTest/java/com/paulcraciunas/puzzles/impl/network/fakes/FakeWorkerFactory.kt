@@ -12,6 +12,7 @@ import com.paulcraciunas.puzzles.impl.network.save.CsvPuzzleDatabaseWriter
 import com.paulcraciunas.puzzles.impl.network.writer.FileProgressWriter
 import com.paulcraciunas.serializer.api.PuzzleWriter
 import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
+import kotlinx.coroutines.test.TestDispatcher
 
 // Test implementation of PuzzleWriter
 internal class FakePuzzleWriter : Failable(), PuzzleWriter {
@@ -41,7 +42,8 @@ private class FakeNotificationFactory : NotificationFactory {
 }
 
 internal class FakeWorkerFactory(
-    database: AbstractPuzzleDatabase
+    database: AbstractPuzzleDatabase,
+    val dispatcher: TestDispatcher,
 ) : WorkerFactory() {
     val writer = FakePuzzleWriter()
     val decompressor = FakeDecompressor()
@@ -58,10 +60,11 @@ internal class FakeWorkerFactory(
         return PuzzleSyncWorker(
             appContext,
             workerParameters,
+            dispatcher,
             notificationFactory = FakeNotificationFactory(),
             progressReporter = reporter,
             databaseSource = databaseSource,
-            fileWriter = FileProgressWriter(reporter),
+            fileWriter = FileProgressWriter(dispatcher, reporter),
             decompressor = decompressor,
             puzzleDatabaseWriter = databaseWriter,
         )

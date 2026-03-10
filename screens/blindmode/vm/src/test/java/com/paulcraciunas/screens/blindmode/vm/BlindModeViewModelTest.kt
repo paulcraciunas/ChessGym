@@ -61,7 +61,7 @@ internal class BlindModeViewModelTest {
     }
 
     @Nested
-    inner class SetupInteractions {
+    internal inner class SetupInteractions {
         @Test
         fun `GIVEN setup WHEN onTrainingModeToggled false THEN isTrainingMode is false`() {
             underTest.onTrainingModeToggled(false)
@@ -128,7 +128,7 @@ internal class BlindModeViewModelTest {
     }
 
     @Nested
-    inner class PlayingInteractions {
+    internal inner class PlayingInteractions {
         @Test
         fun `GIVEN playing WHEN onSquareClicked on own piece THEN updates selection`() =
             runTest {
@@ -215,7 +215,7 @@ internal class BlindModeViewModelTest {
     }
 
     @Nested
-    inner class ResignAndGameOver {
+    internal inner class ResignAndGameOver {
         @Test
         fun `GIVEN playing WHEN onResign THEN state becomes GameOver with Loss`() = runTest {
             startGame()
@@ -269,7 +269,7 @@ internal class BlindModeViewModelTest {
     }
 
     @Nested
-    inner class RevealBehavior {
+    internal inner class RevealBehavior {
         @Test
         fun `GIVEN playing WHEN onReveal THEN state is Playing with isRevealing true`() =
             runTest {
@@ -330,7 +330,7 @@ internal class BlindModeViewModelTest {
     }
 
     @Nested
-    inner class StatePropagation {
+    internal inner class StatePropagation {
         @Test
         fun `GIVEN rated mode with Black WHEN playing THEN state carries settings`() =
             runTest {
@@ -402,7 +402,7 @@ internal class BlindModeViewModelTest {
     }
 
     @Nested
-    inner class AbandonDialog {
+    internal inner class AbandonDialog {
         @Test
         fun `GIVEN playing WHEN onBackPressed THEN dialog shown and returns true`() = runTest {
             startGame()

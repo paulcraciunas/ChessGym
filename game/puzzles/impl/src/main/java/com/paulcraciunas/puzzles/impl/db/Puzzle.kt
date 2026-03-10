@@ -1,7 +1,10 @@
 package com.paulcraciunas.puzzles.impl.db
 
+//noinspection PureDomain
 import androidx.room.Entity
+//noinspection PureDomain
 import androidx.room.Index
+//noinspection PureDomain
 import androidx.room.PrimaryKey
 
 @Entity(indices = [Index(value = ["rating"])])
