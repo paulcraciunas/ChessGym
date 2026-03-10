@@ -21,7 +21,8 @@ object LintDebug : BuildType({
             useGradleWrapper = true
             // --no-build-cache: Forces a full re-scan of the codebase
             // --continue: Find all lint errors across all modules, don't stop at the first one
-            gradleParams = "--continue --no-daemon --no-build-cache"
+            // !--no-daemon: Can't add it as TeamCity will complain about using it while configuration cache enabled
+            gradleParams = "--continue --no-build-cache"
         }
     }
 
