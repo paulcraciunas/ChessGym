@@ -1,56 +1,32 @@
 package buildTypes
 
-import jetbrains.buildServer.configs.kotlin.AbsoluteId
 import jetbrains.buildServer.configs.kotlin.BuildType
-import jetbrains.buildServer.configs.kotlin.buildFeatures.PullRequests
-import jetbrains.buildServer.configs.kotlin.buildFeatures.commitStatusPublisher
-import jetbrains.buildServer.configs.kotlin.buildFeatures.pullRequests
 import jetbrains.buildServer.configs.kotlin.buildSteps.gradle
-import jetbrains.buildServer.configs.kotlin.triggers.vcs
 
 object LintDebug : BuildType({
     id("LintDebug")
     name = "Lint Debug"
     description = "Runs all custom lint checks across all modules (debug variant)"
 
-    vcs {
-        root(AbsoluteId("ChessGym_GitHub"))
-    }
+    // Capture HTML and XML reports for all modules
+    artifactRules = "**/build/reports/lint-results*.html => lint-reports"
+
+    applyCommonConfiguration()
 
     steps {
         gradle {
             name = "Run Lint Checks"
-            tasks = "lintAllDebug"
+            // 'clean' ensures we don't have stale generated code or old lint results
+            tasks = "clean lintAllDebug"
             useGradleWrapper = true
-            gradleWrapperPath = ""
+            // --no-build-cache: Forces a full re-scan of the codebase
+            // --continue: Find all lint errors across all modules, don't stop at the first one
+            gradleParams = "--continue --no-daemon --no-build-cache"
         }
     }
 
-    triggers {
-        vcs {
-            branchFilter = """
-                +:*
-                -:refs/heads/master
-            """.trimIndent()
-        }
-    }
-
-    features {
-        pullRequests {
-            provider = github {
-                authType = token {
-                    token = "%github.token%"
-                }
-                filterAuthorRole = PullRequests.GitHubRoleFilter.MEMBER_OR_COLLABORATOR
-            }
-        }
-        commitStatusPublisher {
-            publisher = github {
-                githubUrl = "https://api.github.com"
-                authType = personalToken {
-                    token = "%github.token%"
-                }
-            }
-        }
+    failureConditions {
+        errorMessage = true
+        nonZeroExitCode = true
     }
 })
