@@ -1,6 +1,5 @@
 package com.paulcraciunas.screens.loading.vm
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.paulcraciunas.global.device.api.usecases.GetFreeDiskSpace
@@ -14,6 +13,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -98,7 +98,7 @@ class LoadingViewModel @Inject constructor(
             fetchPuzzleDatabase()
                 .onCompletion {
                     if (it != null && it !is CancellationException) {
-                        Log.e(TAG, "Unexpected error during puzzle database provisioning", it)
+                        Timber.e(it, "Unexpected error during puzzle database provisioning")
                         _uiState.value = LoadingState.runtimeError(LoadingState.Error.GenericRuntime)
                     }
                 }
@@ -110,7 +110,7 @@ class LoadingViewModel @Inject constructor(
                             else -> LoadingState.Error.DatabaseWriteFailed
                         }
                         _uiState.value = LoadingState.runtimeError(error)
-                        Log.w(TAG, "Download failed with error: $error")
+                        Timber.w("Download failed with error: $error")
                     } else if (progress.isComplete()) {
                         _uiState.value = LoadingState.Complete
                     } else {
@@ -129,12 +129,11 @@ class LoadingViewModel @Inject constructor(
     companion object {
         // Required space for puzzle database: ~1.8GB for download, unpack, and final database
         private const val REQUIRED_DISK_SPACE_BYTES = 1_800_000_000L
-        private const val TAG = "LoadingViewModel"
     }
 }
 
 private inline fun <reified T : LoadingState> MutableStateFlow<LoadingState>.asState(block: (T) -> Unit) {
     (value as? T)?.let { state ->
         block(state)
-    } ?: Log.w(LoadingViewModel::class.java.canonicalName, "Wrong state found. Expected: ${T::class} found ${value::class}")
+    } ?: Timber.w("Wrong state found. Expected: ${T::class} found ${value::class}")
 }
