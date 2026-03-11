@@ -27,6 +27,7 @@ import com.paulcraciunas.screens.common.controls.FailedPuzzlesCard
 import com.paulcraciunas.screens.common.controls.PuzzleRushCard
 import com.paulcraciunas.screens.common.controls.PuzzleStreakCard
 import com.paulcraciunas.screens.common.controls.RatedPuzzleCard
+import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.puzzles.dashboard.vm.PuzzleDashboardUiState
 import com.paulcraciunas.screens.puzzles.dashboard.vm.PuzzleMode
@@ -45,7 +46,7 @@ fun PuzzleDashboardScreen(
                 navButton = { Home(onClick = onDrawerToggle) }
             )
         },
-        modifier = modifier
+        modifier = modifier.testTag { PuzzleDashboardTags.SCREEN }
     ) { innerPadding ->
         when {
             state.isLoading -> LoadingContent(Modifier.padding(innerPadding))
