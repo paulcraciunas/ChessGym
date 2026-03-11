@@ -21,6 +21,7 @@ import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.AppBar
 import com.paulcraciunas.screens.common.AppBarAlignment
 import com.paulcraciunas.screens.common.LoadingContent
+import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.home.vm.HomeUiState
 import java.time.LocalDate
@@ -41,8 +42,17 @@ fun HomeScreen(
         modifier = modifier
     ) { innerPadding ->
         when {
-            state.isLoading -> LoadingContent(Modifier.padding(innerPadding))
-            else -> HomeContent(uiState = state, modifier = Modifier.padding(innerPadding))
+            state.isLoading -> LoadingContent(
+                Modifier
+                    .padding(innerPadding)
+                    .testTag { HomeScreenTags.LOADING }
+            )
+            else -> HomeContent(
+                uiState = state,
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .testTag { HomeScreenTags.SCREEN }
+            )
         }
     }
 }
