@@ -16,6 +16,7 @@ android {
         val majorVersion = "1"
         val minorVersion = "0"
         buildConfigField("String", "APP_VERSION", "\"$majorVersion.$minorVersion\"")
+        testInstrumentationRunner = "com.paulcraciunas.chessgym.runner.HiltTestRunner"
     }
     buildTypes {
         debug {
@@ -76,4 +77,10 @@ dependencies {
 
     // Logging
     implementation(libs.public.timber)
+
+    // UI Testing
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    androidTestImplementation(libs.hilt.android.testing)
+    androidTestImplementation(testFixtures(project(":user:api")))
+    androidTestImplementation(testFixtures(project(":settings:application:api")))
 }
