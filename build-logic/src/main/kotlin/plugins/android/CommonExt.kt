@@ -1,5 +1,6 @@
 package plugins.android
 
+import common.androidTestImplementation
 import common.debugImplementation
 import common.implementation
 import common.ksp
@@ -13,7 +14,8 @@ internal fun DependencyHandlerDelegate.includeCoreAndroid(libs: VersionCatalog) 
 }
 
 internal fun DependencyHandlerDelegate.includeCompose(libs: VersionCatalog) {
-    implementation(platform(libs.library("androidx-compose-bom")))
+    val bom = platform(libs.library("androidx-compose-bom"))
+    implementation(bom)
     implementation(libs.library("androidx-activity-compose"))
     implementation(libs.library("material"))
     implementation(libs.library("androidx-material3"))
@@ -22,6 +24,8 @@ internal fun DependencyHandlerDelegate.includeCompose(libs: VersionCatalog) {
     debugImplementation(libs.library("androidx-ui-tooling-preview"))
     debugImplementation(libs.library("androidx-ui-tooling"))
     debugImplementation(libs.library("androidx-ui-test-manifest"))
+
+    androidTestImplementation(bom)
 }
 
 internal fun DependencyHandlerDelegate.includeDi(libs: VersionCatalog) {
