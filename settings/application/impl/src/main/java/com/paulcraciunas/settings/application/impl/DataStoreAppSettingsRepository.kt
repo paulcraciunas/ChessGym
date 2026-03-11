@@ -21,7 +21,7 @@ import javax.inject.Inject
 
 private val Context.appSettings: DataStore<Preferences> by preferencesDataStore(name = "app_settings")
 
-internal class DataStoreAppSettingsRepository @Inject constructor(
+class DataStoreAppSettingsRepository @Inject constructor(
     @ApplicationContext private val context: Context
 ) : AppSettingsRepository {
     private val dataStore = context.appSettings
