@@ -1,22 +1,24 @@
 package com.paulcraciunas.user.api
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 class FakeUserLocalDataSource : UserLocalDataSource {
-    private var user = User()
+    private val _user = MutableStateFlow(User())
 
-    override fun userUpdates(): Flow<User> = flowOf(user)
-    override suspend fun getUser(): User = user
+    override fun userUpdates(): Flow<User> = _user.asStateFlow()
+    override suspend fun getUser(): User = _user.value
     override suspend fun saveUser(user: User) {
-        this.user = user
+        _user.value = user
     }
 
     override suspend fun updateUser(updater: (User) -> User) {
-        this.user = updater(this.user)
+        _user.update(updater)
     }
 
     override suspend fun clearUserData() {
-        this.user = User()
+        _user.value = User()
     }
 }
