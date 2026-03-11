@@ -1,14 +1,25 @@
 package com.paulcraciunas.chessgym.dsl.assertions
 
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onNodeWithTag
+import com.paulcraciunas.screens.common.SemanticsKeys
 import com.paulcraciunas.screens.home.ui.HomeScreenTags
 
 class HomeScreenAssertions(private val rule: ComposeTestRule) {
     fun isDisplayed(): HomeScreenAssertions = apply {
         rule.onNodeWithTag(HomeScreenTags.SCREEN).assertIsDisplayed()
+    }
+
+    fun hasBackgroundColor(color: Color): HomeScreenAssertions = apply {
+        rule.onNodeWithTag(HomeScreenTags.SCREEN).assert(
+            SemanticsMatcher.expectValue(SemanticsKeys.BackgroundColor, color)
+        )
     }
 
     fun hasProfileName(name: String): HomeScreenAssertions = apply {
@@ -37,8 +48,24 @@ class HomeScreenAssertions(private val rule: ComposeTestRule) {
         rule.onNodeWithTag(HomeScreenTags.STATS_CARD).assertIsDisplayed()
     }
 
+    fun hasStatsExpanded(): HomeScreenAssertions = apply {
+        rule.onNodeWithTag(HomeScreenTags.STATS_EXPANDED_CONTENT).assertIsDisplayed()
+    }
+
+    fun hasStatsCollapsed(): HomeScreenAssertions = apply {
+        rule.onNodeWithTag(HomeScreenTags.STATS_EXPANDED_CONTENT).assertIsNotDisplayed()
+    }
+
     fun hasHighScoresCard(): HomeScreenAssertions = apply {
         rule.onNodeWithTag(HomeScreenTags.HIGH_SCORES_CARD).assertIsDisplayed()
+    }
+
+    fun hasHighScoresExpanded(): HomeScreenAssertions = apply {
+        rule.onNodeWithTag(HomeScreenTags.HIGH_SCORES_EXPANDED_CONTENT).assertIsDisplayed()
+    }
+
+    fun hasHighScoresCollapsed(): HomeScreenAssertions = apply {
+        rule.onNodeWithTag(HomeScreenTags.HIGH_SCORES_EXPANDED_CONTENT).assertIsNotDisplayed()
     }
 
     fun hasTimeline(): HomeScreenAssertions = apply {

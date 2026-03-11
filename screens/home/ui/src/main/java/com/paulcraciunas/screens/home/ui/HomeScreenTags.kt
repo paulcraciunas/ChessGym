@@ -8,7 +8,9 @@ object HomeScreenTags {
     const val SCREEN = "${HOME}screen"
     const val LOADING = "${HOME}loading"
     const val STATS_CARD = "${HOME}stats_card"
+    const val STATS_EXPANDED_CONTENT = "${HOME}stats_expanded_content"
     const val HIGH_SCORES_CARD = "${HOME}high_scores_card"
+    const val HIGH_SCORES_EXPANDED_CONTENT = "${HOME}high_scores_expanded_content"
 
     object Profile {
         private const val PROFILE = "${HOME}profile_"

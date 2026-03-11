@@ -62,12 +62,12 @@ internal fun UserStatsCard(
             .clip(RoundedCornerShape(16.dp))
             .background(MaterialTheme.colorScheme.surface)
             .animateContentSize()
-            .testTag { HomeScreenTags.STATS_CARD }
     ) {
         Column {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .testTag { HomeScreenTags.STATS_CARD }
                     .clickable(
                         role = Role.Button,
                         onClick = { isExpanded = !isExpanded }
@@ -104,11 +104,13 @@ internal fun UserStatsCard(
                 exit = shrinkVertically(animationSpec = tween(300)) + fadeOut(animationSpec = tween(300))
             ) {
                 Column(
-                    modifier = Modifier.padding(
-                        start = 16.dp,
-                        end = 16.dp,
-                        bottom = 16.dp
-                    ),
+                    modifier = Modifier
+                        .padding(
+                            start = 16.dp,
+                            end = 16.dp,
+                            bottom = 16.dp
+                        )
+                        .testTag { HomeScreenTags.STATS_EXPANDED_CONTENT },
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     StatRow(
