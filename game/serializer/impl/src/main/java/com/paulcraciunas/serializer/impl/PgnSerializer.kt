@@ -22,52 +22,35 @@ import com.paulcraciunas.serializer.api.Serializer
  * (both the moves and related data), which can be read by humans and is also supported by most
  * chess software.
  *
- * Implementation note: it is currently implemented with RegEx, which is why it's so slow
- *
  * @see <a href="https://en.wikipedia.org/wiki/Portable_Game_Notation">PGN Wiki</a>
  **/
 class PgnSerializer(
     private val gameFactory: GameFactory,
 ) : Serializer {
-    // I hate regEx
-    private val headerRegex = Regex("\\[([A-Za-z]+)\\s+\"(.+)\"]")
-    private val moveSplitRegex = Regex("([0-9]+)\\.\\s?(\\S+)(?:\\s+(\\S+))?")
-    private val endingRegex = Regex("(1-0|0-1|1/2-1/2)\$")
-
     override fun from(gameString: String): Game {
-        // TODO(https://github.com/paulcraciunas/ChessGym/issues/64) Paul: this is horrendously slow; rewrite this without regex
-        val lines = gameString.replace(endingRegex, "")
-            .lines().filter { it.isNotBlank() }
+        val ending = gameString.findEnding()
+        val stripped = if (ending != null) gameString.stripEnding(ending) else gameString
+        val lines = stripped.lines().filter { it.isNotBlank() }
 
         var idx = 0
         val headers = mutableMapOf<MetaData.Header, String>()
         for (i in lines.indices) {
-            headerRegex.matchEntire(lines[i])?.let { bits ->
-                MetaData.Header.of(bits.groupValues[1])
-                    ?.let { header -> headers[header] = bits.groupValues[2] }
+            val parsed = lines[i].parseHeader()
+            if (parsed != null) {
+                MetaData.Header.of(parsed.first)
+                    ?.let { header -> headers[header] = parsed.second }
                 idx = i + 1
-            } ?: break
+            } else break
         }
         val remaining = lines.drop(idx).joinToString(separator = " ")
-        return gameFactory.builder().withMetadata(MetaData(headers)).withDefaultBoard().buildGame().apply {
-            start()
-            // Match moves
-            moveSplitRegex.findAll(remaining).forEach { moves ->
-                // ignore part 0 - the move count
-                moves.groupValues[2].takeIf { it.isNotBlank() }?.let { loadPly(it) }
-                moves.groupValues[3].takeIf { it.isNotBlank() }?.let { loadPly(it) }
-            }
-            // Match ending if we didn't already compute it
-            if (plies().isNotEmpty()) {
-                endingRegex.find(gameString)?.let {
-                    if (it.groupValues[1].replace(" ", "") == "1/2-1/2") {
-                        draw()
-                    } else {
-                        resign()
-                    }
+        return gameFactory.builder().withMetadata(MetaData(headers)).withDefaultBoard().buildGame()
+            .apply {
+                start()
+                tokenizeMoves(remaining) { token -> loadPly(token) }
+                if (plies().isNotEmpty() && ending != null) {
+                    if (ending == DRAW_RESULT) draw() else resign()
                 }
             }
-        }
     }
 
     override fun of(game: Game): String = StringBuilder().apply {
@@ -92,11 +75,95 @@ class PgnSerializer(
     }.toString()
 }
 
-private fun Game.loadPly(plyString: String) = when {
-    kingSideRegex.matches(plyString) -> play(findCastlePly(info.turn, CastleType.KingSide))
-    queenSideRegex.matches(plyString) -> play(findCastlePly(info.turn, CastleType.QueenSide))
-    else -> play(findPly(plyString))
+private const val DRAW_RESULT = "1/2-1/2"
+private const val WHITE_WINS = "1-0"
+private const val BLACK_WINS = "0-1"
+
+private fun String.findEnding(): String? {
+    var i = length - 1
+    // Skip trailing line terminator (matching $ anchor semantics)
+    if (i >= 0 && this[i] == '\n') i--
+    if (i >= 0 && this[i] == '\r') i--
+    if (i < 2) return null
+    if (this[i] == '0' && this[i - 1] == '-' && this[i - 2] == '1') return WHITE_WINS
+    if (this[i] == '1' && this[i - 1] == '-' && this[i - 2] == '0') return BLACK_WINS
+    if (i >= 6 &&
+        this[i] == '2' && this[i - 1] == '/' && this[i - 2] == '1' &&
+        this[i - 3] == '-' &&
+        this[i - 4] == '2' && this[i - 5] == '/' && this[i - 6] == '1'
+    ) return DRAW_RESULT
+    return null
 }
+
+private fun String.stripEnding(ending: String): String {
+    var i = length - 1
+    if (i >= 0 && this[i] == '\n') i--
+    if (i >= 0 && this[i] == '\r') i--
+    return substring(0, i + 1 - ending.length)
+}
+
+// --- Header parsing (replaces headerRegex) ---
+
+private fun String.parseHeader(): Pair<String, String>? {
+    if (isEmpty() || this[0] != '[') return null
+    if (length < 5 || this[length - 1] != ']' || this[length - 2] != '"') return null
+
+    var i = 1
+    while (i < length && this[i].isAsciiLetter()) i++
+    if (i == 1) return null
+    val tag = substring(1, i)
+
+    val wsStart = i
+    while (i < length && this[i].isWhitespace()) i++
+    if (i == wsStart) return null
+
+    if (i >= length || this[i] != '"') return null
+    val valueStart = i + 1
+    val valueEnd = length - 2
+    if (valueStart >= valueEnd) return null
+
+    return Pair(tag, substring(valueStart, valueEnd))
+}
+
+private fun Char.isAsciiLetter(): Boolean = this in 'A'..'Z' || this in 'a'..'z'
+
+private inline fun tokenizeMoves(movetext: String, onToken: (String) -> Unit) {
+    var i = 0
+    val len = movetext.length
+    while (i < len) {
+        while (i < len && movetext[i].isWhitespace()) i++
+        if (i >= len) break
+
+        val start = i
+        while (i < len && !movetext[i].isWhitespace()) i++
+
+        var j = start
+        while (j < i && movetext[j].isDigit()) j++
+        if (j in (start + 1)..<i && movetext[j] == '.') {
+            val moveStart = j + 1
+            if (moveStart < i) onToken(movetext.substring(moveStart, i))
+        } else {
+            onToken(movetext.substring(start, i))
+        }
+    }
+}
+
+private fun Game.loadPly(token: String) = when {
+    isKingSideCastle(token) -> play(findCastlePly(info.turn, CastleType.KingSide))
+    isQueenSideCastle(token) -> play(findCastlePly(info.turn, CastleType.QueenSide))
+    else -> play(findPly(token))
+}
+
+private fun isKingSideCastle(token: String): Boolean =
+    (token.length == 3 || (token.length == 4 && token[3].isCheckMarker())) &&
+        token[0] == 'O' && token[1] == '-' && token[2] == 'O'
+
+private fun isQueenSideCastle(token: String): Boolean =
+    (token.length == 5 || (token.length == 6 && token[5].isCheckMarker())) &&
+        token[0] == 'O' && token[1] == '-' && token[2] == 'O' &&
+        token[3] == '-' && token[4] == 'O'
+
+private fun Char.isCheckMarker(): Boolean = this == '+' || this == '#'
 
 private fun Game.findCastlePly(side: Side, castle: CastleType): Ply {
     val kingLoc = this.board.king(side)
@@ -106,37 +173,65 @@ private fun Game.findCastlePly(side: Side, castle: CastleType): Ply {
     return ply
 }
 
-private fun Game.findPly(plyString: String): Ply {
-    // Nice thing about find is we can skip game annotations
-    val bits = moveRegex.find(plyString) ?: throw SerializeException("Invalid move: $plyString")
-    val to = Locus.from(bits.groupValues[4] + bits.groupValues[5])
-        ?: throw SerializeException("Invalid destination at $plyString")
+/**
+ * Backward SAN parser: strips annotations from the tail inward, then reads
+ * promotion, destination, capture marker, piece letter, and disambiguation.
+ */
+private fun Game.findPly(token: String): Ply {
+    var end = token.length
+    while (end > 0 && token[end - 1].isCheckMarker()) end--
+
+    var promotion: Piece? = null
+    if (end >= 2 && token[end - 2] == '=') {
+        promotion = charToPiece(token[end - 1])
+            ?: throw SerializeException("Invalid promotion in: $token")
+        end -= 2
+    }
+
+    if (end < 2) throw SerializeException("Invalid move: $token")
+    val destFile = token[end - 2].toFile()
+        ?: throw SerializeException("Invalid destination in: $token")
+    val destRank = token[end - 1].toRank()
+        ?: throw SerializeException("Invalid destination in: $token")
+    val to = Locus(destFile, destRank)
+    end -= 2
+
+    if (end > 0 && token[end - 1] == 'x') end--
+
+    val piece: Piece
+    var disambigFile: File? = null
+    var disambigRank: Rank? = null
+
+    if (end > 0 && token[0] in PIECE_CHARS) {
+        piece = charToPiece(token[0])!!
+        var d = 1
+        if (d < end) { token[d].toFile()?.let { disambigFile = it; d++ } }
+        if (d < end) { token[d].toRank()?.let { disambigRank = it } }
+    } else {
+        piece = Piece.Pawn
+        var d = 0
+        if (d < end) { token[d].toFile()?.let { disambigFile = it; d++ } }
+        if (d < end) { token[d].toRank()?.let { disambigRank = it } }
+    }
 
     return plies()
+        .filter { it.to == to && it.piece == piece }
         .filter {
-            it.to == to &&
-                    it.piece == pieceMap[bits.groupValues[1]]!!
+            disambigFile?.let { file -> it.from.file == file } ?: true &&
+                disambigRank?.let { rank -> it.from.rank == rank } ?: true
         }
-        .filter { // Disambiguate if needed
-            bits.groupValues[2].file()?.let { file -> it.from.file == file } ?: true &&
-                    bits.groupValues[3].rank()?.let { rank -> it.from.rank == rank } ?: true
-        }
-        .apply { if (size != 1) throw SerializeException("Can't find single ply in: $plyString") }
+        .apply { if (size != 1) throw SerializeException("Can't find single ply in: $token") }
         .first()
-        .apply { bits.groupValues[6].promotion()?.let { promote(it) } }
+        .apply { promotion?.let { promote(it) } }
 }
 
-private fun String.file(): File? = if (isNotEmpty()) get(0).toFile() else null
-private fun String.rank(): Rank? = if (isNotEmpty()) get(0).toRank() else null
-private fun String.promotion(): Piece? = if (isNotEmpty()) pieceMap[substring(1)] else null
-private val kingSideRegex = Regex("O-O[+#]?")
-private val queenSideRegex = Regex("O-O-O[+#]?")
-private val moveRegex = Regex("([NBRQK])?([abcdefgh])?([1-8])?x?([abcdefgh])([1-8])(=[KBRQ])?[+#]?")
-private val pieceMap = mapOf(
-    "" to Piece.Pawn,
-    "N" to Piece.Knight,
-    "B" to Piece.Bishop,
-    "R" to Piece.Rook,
-    "Q" to Piece.Queen,
-    "K" to Piece.King
-)
+private const val PIECE_CHARS = "NBRQK"
+
+private fun charToPiece(c: Char): Piece? = when (c) {
+    'N' -> Piece.Knight
+    'B' -> Piece.Bishop
+    'R' -> Piece.Rook
+    'Q' -> Piece.Queen
+    'K' -> Piece.King
+    else -> null
+}
