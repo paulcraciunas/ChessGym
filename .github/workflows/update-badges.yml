@@ -1,0 +1,145 @@
+name: Update CI Badges
+
+# Triggered whenever an external service (TeamCity) publishes a commit status.
+# See: https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#status
+on:
+  status: {}
+  workflow_dispatch: {}
+
+jobs:
+  update-badges:
+    runs-on: ubuntu-latest
+    # Only react to terminal states on the master branch.
+    # The status event fires for every branch; we filter to master via the
+    # branches array that GitHub attaches to the event payload.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (
+        github.event.state != 'pending' &&
+        contains(toJSON(github.event.branches.*.name), 'master')
+      )
+
+    steps:
+      - name: Determine badge parameters
+        id: badge
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          STATUS_CONTEXT: ${{ github.event.context }}
+          STATUS_STATE: ${{ github.event.state }}
+        run: |
+          # ------------------------------------------------------------------
+          # Map the TeamCity commit-status context to a Gist filename.
+          #
+          # To discover the exact context strings TeamCity uses, run:
+          #   gh api repos/paulcraciunas/ChessGym/commits/master/statuses \
+          #     --jq '.[].context' | sort -u
+          #
+          # Then update the patterns below if they differ.
+          # ------------------------------------------------------------------
+
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            echo "manual=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          CTX_LOWER=$(echo "$STATUS_CONTEXT" | tr '[:upper:]' '[:lower:]')
+
+          if [[ "$CTX_LOWER" == *"build debug"* || "$CTX_LOWER" == *"builddebug"* ]]; then
+            FILENAME="build-debug.json"
+            LABEL="Build Debug"
+          elif [[ "$CTX_LOWER" == *"unit test"* || "$CTX_LOWER" == *"unittest"* ]]; then
+            FILENAME="unit-tests.json"
+            LABEL="Unit Tests"
+          elif [[ "$CTX_LOWER" == *"lint"* ]]; then
+            FILENAME="lint-debug.json"
+            LABEL="Lint"
+          else
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "Unknown context: $STATUS_CONTEXT — skipping."
+            exit 0
+          fi
+
+          case "$STATUS_STATE" in
+            success) MESSAGE="passing"; COLOR="brightgreen" ;;
+            failure) MESSAGE="failing"; COLOR="red" ;;
+            error)   MESSAGE="error";   COLOR="orange" ;;
+            *)       MESSAGE="unknown"; COLOR="lightgrey" ;;
+          esac
+
+          echo "filename=$FILENAME" >> "$GITHUB_OUTPUT"
+          echo "label=$LABEL"       >> "$GITHUB_OUTPUT"
+          echo "message=$MESSAGE"   >> "$GITHUB_OUTPUT"
+          echo "color=$COLOR"       >> "$GITHUB_OUTPUT"
+
+      # --- Event-driven update (single badge) ---
+      - name: Update badge in Gist
+        if: steps.badge.outputs.skip != 'true' && steps.badge.outputs.manual != 'true'
+        uses: schneegans/dynamic-badges-action@v1.8.0
+        with:
+          auth: ${{ secrets.GIST_SECRET }}
+          gistID: ${{ vars.BADGE_GIST_ID }}
+          filename: ${{ steps.badge.outputs.filename }}
+          label: ${{ steps.badge.outputs.label }}
+          message: ${{ steps.badge.outputs.message }}
+          color: ${{ steps.badge.outputs.color }}
+          namedLogo: teamcity
+          logoColor: white
+
+      # --- Manual refresh: query GitHub API for latest statuses on master ---
+      - name: Refresh all badges (manual dispatch)
+        if: steps.badge.outputs.manual == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GIST_SECRET }}
+          GIST_ID: ${{ vars.BADGE_GIST_ID }}
+        run: |
+          STATUSES=$(gh api repos/${{ github.repository }}/commits/master/statuses --jq '[
+            group_by(.context)
+            | .[]
+            | sort_by(.updated_at)
+            | last
+          ]')
+
+          map_status () {
+            local ctx_lower=$(echo "$1" | tr '[:upper:]' '[:lower:]')
+            local state="$2"
+            local filename="" label=""
+
+            if [[ "$ctx_lower" == *"build debug"* || "$ctx_lower" == *"builddebug"* ]]; then
+              filename="build-debug.json"; label="Build Debug"
+            elif [[ "$ctx_lower" == *"unit test"* || "$ctx_lower" == *"unittest"* ]]; then
+              filename="unit-tests.json"; label="Unit Tests"
+            elif [[ "$ctx_lower" == *"lint"* ]]; then
+              filename="lint-debug.json"; label="Lint"
+            else
+              return
+            fi
+
+            case "$state" in
+              success) message="passing"; color="brightgreen" ;;
+              failure) message="failing"; color="red" ;;
+              error)   message="error";   color="orange" ;;
+              *)       message="unknown"; color="lightgrey" ;;
+            esac
+
+            echo "{\"schemaVersion\":1,\"label\":\"$label\",\"message\":\"$message\",\"color\":\"$color\",\"namedLogo\":\"teamcity\",\"logoColor\":\"white\"}" > "/tmp/$filename"
+            echo "  $label -> $message ($color)"
+          }
+
+          echo "Latest statuses on master:"
+          echo "$STATUSES" | jq -r '.[] | "\(.context)\t\(.state)"' | while IFS=$'\t' read -r ctx state; do
+            map_status "$ctx" "$state"
+          done
+
+          FILES_ARG=""
+          for f in /tmp/build-debug.json /tmp/unit-tests.json /tmp/lint-debug.json; do
+            if [[ -f "$f" ]]; then
+              FILES_ARG="$FILES_ARG -f $(basename "$f")=@$f"
+            fi
+          done
+
+          if [[ -n "$FILES_ARG" ]]; then
+            eval gh api --method PATCH "gists/$GIST_ID" $FILES_ARG --silent
+            echo "Gist updated."
+          else
+            echo "No matching statuses found. Run 'gh api repos/${{ github.repository }}/commits/master/statuses --jq \".[].context\"' to check context names."
+          fi
