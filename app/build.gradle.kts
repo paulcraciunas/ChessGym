@@ -16,15 +16,35 @@ android {
         val majorVersion = "1"
         val minorVersion = "0"
         buildConfigField("String", "APP_VERSION", "\"$majorVersion.$minorVersion\"")
+        testInstrumentationRunner = "com.paulcraciunas.chessgym.runner.HiltTestRunner"
     }
+
+    testBuildType = "uitest"
     buildTypes {
         debug {
+            applicationIdSuffix = ".debug" // This makes it "com.paulcraciunas.chessgym.debug"
+            versionNameSuffix = "-debug"
+
             val debugBuildNumber = "100"
             buildConfigField("String", "BUILD_NUMBER", "\"$debugBuildNumber\"")
+        }
+        create("uitest") {
+            initWith(getByName("debug"))
+            applicationIdSuffix = ".uitest"
+            versionNameSuffix = "-uitest"
+            matchingFallbacks += listOf("debug")
         }
         release {
             val releaseBuildNumber: String = project.findProperty("buildNumber") as? String ?: "0"
             buildConfigField("String", "BUILD_NUMBER", "\"$releaseBuildNumber\"")
+        }
+    }
+
+    sourceSets {
+        getByName("androidTest") {
+            // This ensures both debug and uitest use the same test folder
+            java.srcDirs("src/androidTest/java")
+            kotlin.srcDirs("src/androidTest/java")
         }
     }
 }
@@ -76,4 +96,10 @@ dependencies {
 
     // Logging
     implementation(libs.public.timber)
+
+    // UI Testing
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    androidTestImplementation(libs.hilt.android.testing)
+    androidTestImplementation(testFixtures(project(":user:api")))
+    androidTestImplementation(testFixtures(project(":settings:application:api")))
 }

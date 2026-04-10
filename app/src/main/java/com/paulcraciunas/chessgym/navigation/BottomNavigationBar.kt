@@ -16,6 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import com.paulcraciunas.global.resources.R
+import com.paulcraciunas.screens.common.testTag
 
 @Composable
 internal fun BottomNavigationBar(
@@ -25,7 +26,7 @@ internal fun BottomNavigationBar(
 ) {
     NavigationBar(
         windowInsets = NavigationBarDefaults.windowInsets,
-        modifier = modifier
+        modifier = modifier.testTag { BottomNavigationTags.BOTTOM_NAV_BAR }
     ) {
         BottomNavItem.entries.forEach { item ->
             NavigationBarItem(
@@ -43,6 +44,7 @@ internal fun BottomNavigationBar(
                 onClick = {
                     onItemSelected(item)
                 },
+                modifier = Modifier.testTag { BottomNavigationTags.tagFor(item) }
             )
         }
     }

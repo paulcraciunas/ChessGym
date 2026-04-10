@@ -39,6 +39,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
+import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.home.vm.HomeUiState
 
@@ -63,10 +64,10 @@ internal fun UserStatsCard(
             .animateContentSize()
     ) {
         Column {
-            // Header with title and chevron
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .testTag { HomeScreenTags.STATS_CARD }
                     .clickable(
                         role = Role.Button,
                         onClick = { isExpanded = !isExpanded }
@@ -103,11 +104,13 @@ internal fun UserStatsCard(
                 exit = shrinkVertically(animationSpec = tween(300)) + fadeOut(animationSpec = tween(300))
             ) {
                 Column(
-                    modifier = Modifier.padding(
-                        start = 16.dp,
-                        end = 16.dp,
-                        bottom = 16.dp
-                    ),
+                    modifier = Modifier
+                        .padding(
+                            start = 16.dp,
+                            end = 16.dp,
+                            bottom = 16.dp
+                        )
+                        .testTag { HomeScreenTags.STATS_EXPANDED_CONTENT },
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     StatRow(

@@ -15,12 +15,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.AppBar
 import com.paulcraciunas.screens.common.AppBarAlignment
 import com.paulcraciunas.screens.common.LoadingContent
+import com.paulcraciunas.screens.common.backgroundColor
+import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.home.vm.HomeUiState
 import java.time.LocalDate
@@ -41,8 +44,17 @@ fun HomeScreen(
         modifier = modifier
     ) { innerPadding ->
         when {
-            state.isLoading -> LoadingContent(Modifier.padding(innerPadding))
-            else -> HomeContent(uiState = state, modifier = Modifier.padding(innerPadding))
+            state.isLoading -> LoadingContent(
+                Modifier
+                    .padding(innerPadding)
+                    .testTag { HomeScreenTags.LOADING }
+            )
+            else -> HomeContent(
+                uiState = state,
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .testTag { HomeScreenTags.SCREEN }
+            )
         }
     }
 }
@@ -52,10 +64,12 @@ private fun HomeContent(
     uiState: HomeUiState,
     modifier: Modifier = Modifier
 ) {
+    val backgroundColor = MaterialTheme.colorScheme.background
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(backgroundColor)
+            .semantics { this.backgroundColor = backgroundColor }
     ) {
         LazyColumn(
             contentPadding = PaddingValues(horizontal = 10.dp),

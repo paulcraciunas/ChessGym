@@ -9,7 +9,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-internal abstract class ApplicationSettingsModule {
+abstract class ApplicationSettingsModule {
     @Binds
     @Singleton
     abstract fun appSettingsRepository(repository: DataStoreAppSettingsRepository): AppSettingsRepository

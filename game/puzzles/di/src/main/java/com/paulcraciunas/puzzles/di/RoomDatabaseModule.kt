@@ -19,15 +19,21 @@ import javax.inject.Singleton
 internal object RoomDatabaseModule {
     @Provides
     @Singleton
-    fun provideDatabase(@ApplicationContext context: Context): AbstractPuzzleDatabase =
-        Room.databaseBuilder(
+    fun provideDatabase(
+        @ApplicationContext context: Context,
+        @DbName dbName: String,
+        variant: DbVariant,
+    ): AbstractPuzzleDatabase {
+        val builder = Room.databaseBuilder(
             context.applicationContext,
             AbstractPuzzleDatabase::class.java,
-            DB_NAME
-        ).fallbackToDestructiveMigration(true)
-            .build()
+            dbName
+        )
+        if (variant == DbVariant.Asset) builder.createFromAsset(dbName)
 
-    private const val DB_NAME = "puzzle_database"
+        return builder.fallbackToDestructiveMigration(true)
+            .build()
+    }
 }
 
 @Module

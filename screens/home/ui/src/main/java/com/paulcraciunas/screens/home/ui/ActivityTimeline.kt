@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
+import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.home.vm.HomeUiState
 
@@ -34,6 +35,7 @@ internal fun ActivityTimeline(
             .clip(RoundedCornerShape(16.dp))
             .background(MaterialTheme.colorScheme.surface)
             .padding(innerPadding)
+            .testTag { HomeScreenTags.Timeline.ROOT }
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -95,7 +97,9 @@ private fun EmptyTimelineContent(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier.padding(vertical = 32.dp),
+        modifier = modifier
+            .padding(vertical = 32.dp)
+            .testTag { HomeScreenTags.Timeline.EMPTY },
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(

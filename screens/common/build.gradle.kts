@@ -9,6 +9,12 @@ androidLibrary {
     compose = true
 }
 
+android {
+    buildFeatures {
+        buildConfig = true
+    }
+}
+
 dependencies {
     implementation(project(":global:resources"))
     implementation(project(":game:logic:api"))

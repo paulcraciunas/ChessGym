@@ -41,6 +41,7 @@ junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher
 ## UI testing
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "hilt" }
 
 ## Gradle plugins
 android-tools-build-gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
