@@ -1,7 +1,6 @@
 package com.paulcraciunas.screens.about.ui
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,7 +16,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Email
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -25,8 +23,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -36,6 +32,7 @@ import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.about.vm.AboutSection
 import com.paulcraciunas.screens.about.vm.LibraryInfo
 import com.paulcraciunas.screens.common.AppBar
+import com.paulcraciunas.screens.common.Footer
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
@@ -88,7 +85,7 @@ private fun DetailContent(
             AboutSection.TERMS_AND_CONDITIONS -> TermsAndConditionsContent()
         }
         Spacer(modifier = Modifier.height(48.dp))
-        BrandingFooter()
+        Footer()
         Spacer(modifier = Modifier.height(24.dp))
     }
 }
@@ -234,32 +231,6 @@ private fun LibraryRow(
             text = library.license,
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-    }
-}
-
-@Composable
-private fun BrandingFooter(modifier: Modifier = Modifier) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.fillMaxWidth(),
-    ) {
-        HorizontalDivider(
-            modifier = Modifier.padding(horizontal = 48.dp, vertical = 16.dp),
-            color = MaterialTheme.colorScheme.outlineVariant,
-        )
-        Image(
-            painter = painterResource(R.drawable.knight_white),
-            contentDescription = null,
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
-            modifier = Modifier.size(48.dp),
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = stringResource(R.string.app_name),
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.primary,
         )
     }
 }
