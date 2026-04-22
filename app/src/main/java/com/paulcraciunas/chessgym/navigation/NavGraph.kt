@@ -11,8 +11,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.paulcraciunas.chessgym.MainScreen
 import com.paulcraciunas.chessgym.UnderConstruction
+import androidx.navigation.toRoute
 import com.paulcraciunas.chessgym.screens.About
+import com.paulcraciunas.chessgym.screens.AboutDetail
 import com.paulcraciunas.chessgym.screens.Settings
+import com.paulcraciunas.screens.about.vm.AboutSection
 import com.paulcraciunas.screens.loading.ui.LoadingScreen
 import com.paulcraciunas.screens.loading.vm.LoadingViewModel
 
@@ -64,7 +67,20 @@ fun NavGraph(
             UnderConstruction(navController)
         }
         composable<Screen.About> {
-            About(onNavigateBack = navController::popBackStack)
+            About(
+                onNavigateBack = navController::popBackStack,
+                onSectionClicked = { section ->
+                    navController.navigate(Screen.AboutDetail(section = section.name))
+                },
+            )
+        }
+        composable<Screen.AboutDetail> { backStackEntry ->
+            val route = backStackEntry.toRoute<Screen.AboutDetail>()
+            val section = AboutSection.valueOf(route.section)
+            AboutDetail(
+                section = section,
+                onNavigateBack = navController::popBackStack,
+            )
         }
     }
 }

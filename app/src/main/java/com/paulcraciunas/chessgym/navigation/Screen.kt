@@ -48,4 +48,7 @@ sealed class Screen {
 
     @Serializable
     data object About : Screen()
+
+    @Serializable
+    data class AboutDetail(val section: String) : Screen()
 }
