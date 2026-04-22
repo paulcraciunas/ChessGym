@@ -3,49 +3,51 @@ package com.paulcraciunas.screens.about.ui
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.about.vm.AboutScreenInteractor
-import com.paulcraciunas.screens.about.vm.AboutUiState
-import com.paulcraciunas.screens.about.vm.LibraryInfo
+import com.paulcraciunas.screens.about.vm.AboutSection
 import com.paulcraciunas.screens.common.AppBar
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
 fun AboutScreen(
-    uiState: AboutUiState,
     onNavigateBack: () -> Unit,
-    onContactEmail: () -> Unit,
-    onFeedbackEmail: () -> Unit,
+    onSectionClicked: (AboutSection) -> Unit,
     interactions: AboutScreenInteractor,
     modifier: Modifier = Modifier,
 ) {
@@ -59,9 +61,7 @@ fun AboutScreen(
         modifier = modifier,
     ) { innerPadding ->
         AboutContent(
-            uiState = uiState,
-            onContactEmail = onContactEmail,
-            onFeedbackEmail = onFeedbackEmail,
+            onSectionClicked = onSectionClicked,
             interactions = interactions,
             modifier = Modifier
                 .fillMaxSize()
@@ -73,254 +73,176 @@ fun AboutScreen(
 
 @Composable
 private fun AboutContent(
-    uiState: AboutUiState,
-    onContactEmail: () -> Unit,
-    onFeedbackEmail: () -> Unit,
+    onSectionClicked: (AboutSection) -> Unit,
     interactions: AboutScreenInteractor,
     modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp),
+            .padding(16.dp),
     ) {
-        CreatorSection()
-        SectionDivider()
-        ContactSection(onContactEmail = onContactEmail)
-        SectionDivider()
-        FeedbackSection(onFeedbackEmail = onFeedbackEmail)
-        SectionDivider()
-        SupportSection(interactions = interactions)
-        SectionDivider()
-        LibrariesSection(libraries = uiState.libraries)
-        SectionDivider()
-        TermsSection()
+        SectionGroup(title = stringResource(R.string.about_general_title)) {
+            NavigationItem(
+                icon = Icons.Outlined.Person,
+                title = stringResource(R.string.about_creator_title),
+                onClick = { onSectionClicked(AboutSection.CREATOR) },
+            )
+            GroupDivider()
+            NavigationItem(
+                icon = Icons.Outlined.Email,
+                title = stringResource(R.string.about_contact_title),
+                onClick = { onSectionClicked(AboutSection.CONTACT) },
+            )
+            GroupDivider()
+            NavigationItem(
+                icon = Icons.Outlined.Edit,
+                title = stringResource(R.string.about_feedback_title),
+                onClick = { onSectionClicked(AboutSection.FEEDBACK) },
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        SectionGroup(title = stringResource(R.string.about_support_title)) {
+            ActionItem(
+                icon = Icons.Outlined.Favorite,
+                title = stringResource(R.string.about_donate_title),
+                description = stringResource(R.string.about_donate_description),
+                onClick = interactions::onDonateClicked,
+            )
+            GroupDivider()
+            ActionItem(
+                icon = Icons.Outlined.Star,
+                title = stringResource(R.string.about_rate_title),
+                description = stringResource(R.string.about_rate_description),
+                onClick = interactions::onRateAppClicked,
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        SectionGroup(title = stringResource(R.string.about_legal_title)) {
+            NavigationItem(
+                icon = Icons.Outlined.CheckCircle,
+                title = stringResource(R.string.about_terms_and_conditions_title),
+                onClick = { onSectionClicked(AboutSection.TERMS_AND_CONDITIONS) },
+            )
+            GroupDivider()
+            NavigationItem(
+                icon = Icons.Outlined.Lock,
+                title = stringResource(R.string.about_terms_title),
+                onClick = { onSectionClicked(AboutSection.TERMS_OF_USE) },
+            )
+            GroupDivider()
+            NavigationItem(
+                icon = Icons.Outlined.Info,
+                title = stringResource(R.string.about_libraries_title),
+                onClick = { onSectionClicked(AboutSection.LIBRARIES) },
+            )
+        }
         Spacer(modifier = Modifier.height(16.dp))
     }
 }
 
 @Composable
-private fun CreatorSection(modifier: Modifier = Modifier) {
-    Column(modifier = modifier.padding(vertical = 12.dp)) {
-        SectionHeader(title = stringResource(R.string.about_creator_title))
-        Text(
-            text = stringResource(R.string.about_creator_description),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface,
-        )
-    }
-}
-
-@Composable
-private fun ContactSection(
-    onContactEmail: () -> Unit,
+private fun SectionGroup(
+    title: String,
     modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
 ) {
-    Column(modifier = modifier.padding(vertical = 12.dp)) {
-        SectionHeader(title = stringResource(R.string.about_contact_title))
+    Column(modifier = modifier.fillMaxWidth()) {
         Text(
-            text = stringResource(R.string.about_contact_description),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface,
+            text = title,
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(start = 16.dp, bottom = 8.dp),
         )
-        Spacer(modifier = Modifier.height(8.dp))
-        EmailRow(
-            email = stringResource(R.string.about_contact_email),
-            onClick = onContactEmail,
-        )
+        Card(
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            ),
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            content()
+        }
     }
 }
 
 @Composable
-private fun FeedbackSection(
-    onFeedbackEmail: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Column(modifier = modifier.padding(vertical = 12.dp)) {
-        SectionHeader(title = stringResource(R.string.about_feedback_title))
-        Text(
-            text = stringResource(R.string.about_feedback_description),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface,
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        EmailRow(
-            email = stringResource(R.string.about_feedback_email),
-            onClick = onFeedbackEmail,
-        )
-    }
-}
-
-@Composable
-private fun EmailRow(
-    email: String,
+private fun NavigationItem(
+    icon: ImageVector,
+    title: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
+    ListItem(
+        headlineContent = {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyLarge,
+            )
+        },
+        leadingContent = {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        },
+        trailingContent = {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        },
+        colors = ListItemDefaults.colors(containerColor = Color.Transparent),
         modifier = modifier
-            .clickable { onClick() }
-            .padding(vertical = 4.dp),
-    ) {
-        Icon(
-            imageVector = Icons.Outlined.Email,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(20.dp),
-        )
-        Text(
-            text = email,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.primary,
-            textDecoration = TextDecoration.Underline,
-            modifier = Modifier.padding(start = 8.dp),
-        )
-    }
+            .fillMaxWidth()
+            .clickable { onClick() },
+    )
 }
 
 @Composable
-private fun SupportSection(
-    interactions: AboutScreenInteractor,
-    modifier: Modifier = Modifier,
-) {
-    Column(modifier = modifier.padding(vertical = 12.dp)) {
-        SectionHeader(title = stringResource(R.string.about_support_title))
-        ActionRow(
-            icon = { Icon(Icons.Outlined.Favorite, contentDescription = null) },
-            title = stringResource(R.string.about_donate_title),
-            description = stringResource(R.string.about_donate_description),
-            onClick = interactions::onDonateClicked,
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        ActionRow(
-            icon = { Icon(Icons.Outlined.Star, contentDescription = null) },
-            title = stringResource(R.string.about_rate_title),
-            description = stringResource(R.string.about_rate_description),
-            onClick = interactions::onRateAppClicked,
-        )
-    }
-}
-
-@Composable
-private fun ActionRow(
-    icon: @Composable () -> Unit,
+private fun ActionItem(
+    icon: ImageVector,
     title: String,
     description: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Card(
-        onClick = onClick,
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant,
-        ),
-        modifier = modifier.fillMaxWidth(),
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(16.dp),
-        ) {
-            icon()
-            Column(modifier = Modifier.padding(start = 16.dp)) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Medium,
-                )
-                Text(
-                    text = description,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun LibrariesSection(
-    libraries: List<LibraryInfo>,
-    modifier: Modifier = Modifier,
-) {
-    Column(modifier = modifier.padding(vertical = 12.dp)) {
-        SectionHeader(title = stringResource(R.string.about_libraries_title))
-        Text(
-            text = stringResource(R.string.about_libraries_description),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface,
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        libraries.forEach { library ->
-            LibraryRow(library = library)
-        }
-    }
-}
-
-@Composable
-private fun LibraryRow(
-    library: LibraryInfo,
-    modifier: Modifier = Modifier,
-) {
-    Row(
+    ListItem(
+        headlineContent = {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyLarge,
+            )
+        },
+        supportingContent = {
+            Text(
+                text = description,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        },
+        leadingContent = {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        },
+        colors = ListItemDefaults.colors(containerColor = Color.Transparent),
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = library.name,
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Medium,
-            )
-            if (library.url.isNotBlank()) {
-                Text(
-                    text = library.url,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.primary,
-                    textDecoration = TextDecoration.Underline,
-                )
-            }
-        }
-        Text(
-            text = library.license,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-    }
-}
-
-@Composable
-private fun TermsSection(modifier: Modifier = Modifier) {
-    Column(modifier = modifier.padding(vertical = 12.dp)) {
-        SectionHeader(title = stringResource(R.string.about_terms_title))
-        Text(
-            text = stringResource(R.string.about_terms_content),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-    }
-}
-
-@Composable
-private fun SectionHeader(
-    title: String,
-    modifier: Modifier = Modifier,
-) {
-    Text(
-        text = title,
-        fontWeight = FontWeight.Bold,
-        style = MaterialTheme.typography.titleLarge,
-        color = MaterialTheme.colorScheme.primary,
-        modifier = modifier.padding(bottom = 8.dp),
+            .clickable { onClick() },
     )
 }
 
 @Composable
-private fun SectionDivider(modifier: Modifier = Modifier) {
-    HorizontalDivider(modifier = modifier.padding(vertical = 4.dp))
+private fun GroupDivider(modifier: Modifier = Modifier) {
+    HorizontalDivider(
+        modifier = modifier.padding(horizontal = 16.dp),
+        color = MaterialTheme.colorScheme.outlineVariant,
+    )
 }
 
 @Preview("About Screen")
@@ -329,16 +251,8 @@ private fun SectionDivider(modifier: Modifier = Modifier) {
 private fun AboutScreenPreview() {
     ChessGymTheme {
         AboutScreen(
-            uiState = AboutUiState(
-                libraries = listOf(
-                    LibraryInfo("Kotlin", "https://kotlinlang.org", "Apache License 2.0"),
-                    LibraryInfo("Jetpack Compose", "https://developer.android.com", "Apache License 2.0"),
-                    LibraryInfo("Hilt", "https://dagger.dev/hilt", "Apache License 2.0"),
-                ),
-            ),
             onNavigateBack = {},
-            onContactEmail = {},
-            onFeedbackEmail = {},
+            onSectionClicked = {},
             interactions = PreviewInteractions,
         )
     }

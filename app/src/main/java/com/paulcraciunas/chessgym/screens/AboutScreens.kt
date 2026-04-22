@@ -1,39 +1,57 @@
 package com.paulcraciunas.chessgym.screens
 
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.paulcraciunas.screens.about.ui.AboutDetailScreen
 import com.paulcraciunas.screens.about.ui.AboutScreen
+import com.paulcraciunas.screens.about.vm.AboutSection
 import com.paulcraciunas.screens.about.vm.AboutViewModel
-import androidx.core.net.toUri
 
 @Composable
 internal fun About(
+    onNavigateBack: () -> Unit,
+    onSectionClicked: (AboutSection) -> Unit,
+) {
+    val vm: AboutViewModel = hiltViewModel()
+
+    AboutScreen(
+        onNavigateBack = onNavigateBack,
+        onSectionClicked = onSectionClicked,
+        interactions = vm,
+    )
+}
+
+@Composable
+internal fun AboutDetail(
+    section: AboutSection,
     onNavigateBack: () -> Unit,
 ) {
     val vm: AboutViewModel = hiltViewModel()
     val aboutState by vm.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
-    AboutScreen(
-        uiState = aboutState,
+    AboutDetailScreen(
+        section = section,
         onNavigateBack = onNavigateBack,
-        onContactEmail = {
-            val intent = Intent(Intent.ACTION_SENDTO).apply {
-                data = "mailto:contact@chessgym.app".toUri()
+        libraries = aboutState.libraries,
+        onEmailClicked = resolveEmailUri(section)?.let { emailUri ->
+            {
+                val intent = Intent(Intent.ACTION_SENDTO).apply {
+                    data = emailUri.toUri()
+                }
+                context.startActivity(intent)
             }
-            context.startActivity(intent)
         },
-        onFeedbackEmail = {
-            val intent = Intent(Intent.ACTION_SENDTO).apply {
-                data = "mailto:feedback@chessgym.app".toUri()
-            }
-            context.startActivity(intent)
-        },
-        interactions = vm,
     )
+}
+
+private fun resolveEmailUri(section: AboutSection): String? = when (section) {
+    AboutSection.CONTACT -> "mailto:contact@chessgym.app"
+    AboutSection.FEEDBACK -> "mailto:feedback@chessgym.app"
+    else -> null
 }
