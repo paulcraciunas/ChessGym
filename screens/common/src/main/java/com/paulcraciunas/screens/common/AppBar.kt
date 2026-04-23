@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.global.resources.R
@@ -24,6 +25,11 @@ import com.paulcraciunas.screens.common.theme.ChessGymTheme
 enum class AppBarAlignment {
     Beginning,
     Center
+}
+
+object AppBarTags {
+    const val BACK_BUTTON = "app_bar_back_button"
+    const val HOME_BUTTON = "app_bar_home_button"
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -71,7 +77,10 @@ class AppBarScope internal constructor() {
         onClick: () -> Unit,
         modifier: Modifier = Modifier
     ) {
-        IconButton(onClick = { onClick() }) {
+        IconButton(
+            onClick = { onClick() },
+            modifier = modifier.testTag(AppBarTags.HOME_BUTTON)
+        ) {
             Icon(
                 modifier = modifier,
                 imageVector = Icons.Default.Menu,
@@ -85,7 +94,10 @@ class AppBarScope internal constructor() {
         onClick: () -> Unit,
         modifier: Modifier = Modifier
     ) {
-        IconButton(onClick = { onClick() }) {
+        IconButton(
+            onClick = { onClick() },
+            modifier = modifier.testTag(AppBarTags.BACK_BUTTON)
+        ) {
             Icon(
                 modifier = modifier,
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
