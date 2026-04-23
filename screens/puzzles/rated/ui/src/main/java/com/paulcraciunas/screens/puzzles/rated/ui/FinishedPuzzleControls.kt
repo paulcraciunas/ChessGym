@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.controls.PlayButton
 import com.paulcraciunas.screens.common.controls.RatingChangeChip
+import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.common.theme.LoadingTheme
 
@@ -44,7 +45,8 @@ internal fun FinishedPuzzleControls(
                 ratingChange = if (success) ratingChange else -ratingChange,
                 iconSize = 24.dp,
                 contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
-                textStyle = MaterialTheme.typography.titleMedium
+                textStyle = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.testTag { RatedPuzzleScreenTags.Finished.RATING_CHANGE }
             )
             Text(
                 text = stringResource(if (success) R.string.generic_success else R.string.generic_failed),
@@ -55,11 +57,17 @@ internal fun FinishedPuzzleControls(
                 } else {
                     MaterialTheme.colorScheme.error
                 },
-                modifier = Modifier.padding(horizontal = 10.dp)
+                modifier = Modifier
+                    .padding(horizontal = 10.dp)
+                    .testTag { RatedPuzzleScreenTags.Finished.RESULT_TEXT }
             )
         }
 
-        PlayButton(onClick = onPlayNext, text = R.string.rated_puzzle_next_description)
+        PlayButton(
+            onClick = onPlayNext,
+            text = R.string.rated_puzzle_next_description,
+            modifier = Modifier.testTag { RatedPuzzleScreenTags.Finished.PLAY_NEXT }
+        )
     }
 }
 

@@ -33,6 +33,7 @@ import com.paulcraciunas.screens.common.model.AnimatingPiece
 import com.paulcraciunas.screens.common.model.BoardViewData
 import com.paulcraciunas.screens.common.model.BoardViewDataBuilder
 import com.paulcraciunas.screens.common.model.SquareViewData
+import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.BoardColors
 import com.paulcraciunas.screens.common.theme.BoardTheme
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
@@ -224,6 +225,7 @@ private fun ChessBoardContents(
                         modifier = Modifier
                             .weight(1f)
                             .aspectRatio(1f)
+                            .testTag { ChessBoardTags.square(file, rank) }
                             .clickable { onClick(Locus(file, rank)) },
                     )
                 }

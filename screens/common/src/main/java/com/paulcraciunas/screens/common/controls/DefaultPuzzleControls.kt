@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.global.resources.R
+import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
@@ -37,7 +38,11 @@ fun DefaultPuzzleControls(
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Playing state: hint and abandon buttons + your move indicator
-        OutlinedIconButton(onClick = onHintRequested, enabled = hintEnabled) {
+        OutlinedIconButton(
+            onClick = onHintRequested,
+            enabled = hintEnabled,
+            modifier = Modifier.testTag { DefaultPuzzleControlsTags.HINT }
+        ) {
             Icon(
                 painter = painterResource(R.drawable.lightbulb_icon),
                 contentDescription = stringResource(R.string.puzzle_hint),
@@ -49,7 +54,11 @@ fun DefaultPuzzleControls(
                 modifier = Modifier.size(24.dp)
             )
         }
-        OutlinedIconButton(onClick = onAbandonRequested, enabled = abandonEnabled) {
+        OutlinedIconButton(
+            onClick = onAbandonRequested,
+            enabled = abandonEnabled,
+            modifier = Modifier.testTag { DefaultPuzzleControlsTags.ABANDON }
+        ) {
             Icon(
                 painter = painterResource(R.drawable.flag_icon),
                 contentDescription = stringResource(R.string.puzzle_abandon),

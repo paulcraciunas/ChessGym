@@ -29,6 +29,7 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.board.ChessPiece
+import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
@@ -45,7 +46,8 @@ fun PromotionDialog(
     ) {
         Surface(
             shape = MaterialTheme.shapes.large,
-            tonalElevation = 6.dp
+            tonalElevation = 6.dp,
+            modifier = Modifier.testTag { PromotionDialogTags.DIALOG }
         ) {
             Column(
                 modifier = Modifier.padding(20.dp),
@@ -67,6 +69,7 @@ fun PromotionDialog(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(16.dp))
                                 .background(if (side == Side.BLACK) Color.White else Color.Black)
+                                .testTag { PromotionDialogTags.choice(piece) }
                         ) {
                             ChessPiece(
                                 piece = piece,

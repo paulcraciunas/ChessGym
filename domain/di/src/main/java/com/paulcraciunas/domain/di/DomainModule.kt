@@ -19,7 +19,6 @@ import com.paulcraciunas.domain.api.puzzles.OnPuzzleComplete
 import com.paulcraciunas.domain.api.puzzles.OnPuzzleRushComplete
 import com.paulcraciunas.domain.api.puzzles.OnStreakComplete
 import com.paulcraciunas.domain.api.puzzles.OnStreakPuzzleComplete
-import com.paulcraciunas.domain.api.general.RandomFactory
 import com.paulcraciunas.domain.api.general.Timer
 import com.paulcraciunas.domain.impl.general.CalculateEloImpl
 import com.paulcraciunas.domain.impl.boardvis.GenerateMoveThePieceBoardImpl
@@ -41,7 +40,6 @@ import com.paulcraciunas.domain.impl.puzzles.OnStreakCompleteImpl
 import com.paulcraciunas.domain.impl.puzzles.OnStreakPuzzleCompleteImpl
 import com.paulcraciunas.domain.impl.general.RealCountdownTimer
 import com.paulcraciunas.domain.impl.general.SimpleTimer
-import com.paulcraciunas.domain.impl.general.TLRandomFactory
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -56,10 +54,6 @@ internal abstract class DomainModule {
     @Binds
     @Singleton
     abstract fun bindCalculateEloUseCase(impl: CalculateEloImpl): CalculateElo
-
-    @Binds
-    @Singleton
-    abstract fun bindRandomFactory(impl: TLRandomFactory): RandomFactory
 
     @Binds
     @Singleton
