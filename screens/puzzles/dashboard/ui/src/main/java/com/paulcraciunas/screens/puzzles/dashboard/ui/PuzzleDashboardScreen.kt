@@ -83,26 +83,30 @@ private fun DashboardContent(
             RatedPuzzleCard(
                 userRating = state.userRating,
                 onClick = { onPuzzleModeSelected(PuzzleMode.RatedPuzzle) },
+                modifier = Modifier.testTag { PuzzleDashboardTags.Cards.RATED_PUZZLE },
             )
         }
 
         item {
             PuzzleRushCard(
-                onClick = { onPuzzleModeSelected(PuzzleMode.PuzzleRush) }
+                onClick = { onPuzzleModeSelected(PuzzleMode.PuzzleRush) },
+                modifier = Modifier.testTag { PuzzleDashboardTags.Cards.PUZZLE_RUSH },
             )
         }
 
         item {
             PuzzleStreakCard(
                 currentStreak = state.currentStreakCount,
-                onClick = { onPuzzleModeSelected(PuzzleMode.PuzzleStreak) }
+                onClick = { onPuzzleModeSelected(PuzzleMode.PuzzleStreak) },
+                modifier = Modifier.testTag { PuzzleDashboardTags.Cards.PUZZLE_STREAK },
             )
         }
 
         item {
             FailedPuzzlesCard(
                 failedCount = state.failedPuzzlesCount,
-                onClick = { onPuzzleModeSelected(PuzzleMode.FailedPuzzles) }
+                onClick = { onPuzzleModeSelected(PuzzleMode.FailedPuzzles) },
+                modifier = Modifier.testTag { PuzzleDashboardTags.Cards.FAILED_PUZZLES },
             )
         }
     }
