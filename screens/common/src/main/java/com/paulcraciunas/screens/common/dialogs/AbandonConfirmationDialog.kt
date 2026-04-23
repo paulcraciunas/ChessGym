@@ -7,10 +7,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.global.resources.R
+import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 sealed class AbandonConfirmationType {
@@ -51,7 +53,10 @@ fun AbandonConfirmationDialog(
             )
         },
         confirmButton = {
-            TextButton(onClick = onConfirm) {
+            TextButton(
+                onClick = onConfirm,
+                modifier = Modifier.testTag { AbandonConfirmationDialogTags.CONFIRM }
+            ) {
                 Text(
                     text = stringResource(R.string.abandon_puzzle_confirm),
                     color = MaterialTheme.colorScheme.error,
@@ -59,13 +64,17 @@ fun AbandonConfirmationDialog(
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) {
+            TextButton(
+                onClick = onDismiss,
+                modifier = Modifier.testTag { AbandonConfirmationDialogTags.DISMISS }
+            ) {
                 Text(
                     text = stringResource(R.string.abandon_puzzle_cancel),
                     color = MaterialTheme.colorScheme.primary,
                 )
             }
-        }
+        },
+        modifier = Modifier.testTag { AbandonConfirmationDialogTags.DIALOG }
     )
 }
 
