@@ -3,6 +3,7 @@ package com.paulcraciunas.chessgym.base
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.test.core.app.ActivityScenario
 import com.paulcraciunas.chessgym.MainActivity
+import com.paulcraciunas.chessgym.dsl.Given
 import com.paulcraciunas.chessgym.dsl.Then
 import com.paulcraciunas.chessgym.dsl.When
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -24,6 +25,7 @@ abstract class BaseUiTest {
     @Before
     open fun setUp() {
         hiltRule.inject()
+        Given.puzzle.reset()
         When.init(composeRule, ::launchApp)
         Then.init(composeRule)
     }
