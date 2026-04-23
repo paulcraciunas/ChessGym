@@ -97,7 +97,7 @@ internal class RatedPuzzleScreenTest : BaseUiTest() {
         Then.ratedPuzzle.isPlaying()
 
         // User can still complete the puzzle after asking for a hint.
-        When.ratedPuzzle.playToEnd()
+        When.ratedPuzzle.playToEndWithSelection()
         Then.ratedPuzzle.isFinishedWithSuccess()
     }
 

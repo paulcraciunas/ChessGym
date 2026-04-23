@@ -43,6 +43,23 @@ class RatedPuzzleScreenActions(private val rule: ComposeTestRule) {
         }
     }
 
+    fun playToEndWithSelection(
+        promoteTo: Piece = Piece.Queen,
+    ): RatedPuzzleScreenActions = apply {
+        // Given a square is already selected, play the first move
+        val puzzle = requirePuzzle()
+        val (from, to) = requireNotNull(puzzle.nextExpectedMove()) {
+            "Puzzle has no more expected moves"
+        }
+        val isPromotion = puzzle.ply(from, to)?.isPromotion() == true
+        clickSquare(to)
+        if (isPromotion) {
+            choosePromotion(promoteTo)
+        }
+        // Then, play till the end
+        playToEnd()
+    }
+
     /**
      * Plays the next expected move, driving the puzzle towards a successful completion.
      * Automatically selects a queen if the move is a promotion.
