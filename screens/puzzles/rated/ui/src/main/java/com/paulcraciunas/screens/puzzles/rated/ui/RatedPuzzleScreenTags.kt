@@ -8,7 +8,6 @@ object RatedPuzzleScreenTags {
     const val SCREEN = "${PREFIX}screen"
     const val LOADING = "${PREFIX}loading"
     const val FAILED = "${PREFIX}failed"
-    const val TITLE = "${PREFIX}title"
 
     object Finished {
         private const val FINISHED = "${PREFIX}finished_"
