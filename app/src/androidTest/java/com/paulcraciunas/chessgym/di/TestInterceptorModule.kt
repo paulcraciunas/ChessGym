@@ -2,7 +2,6 @@ package com.paulcraciunas.chessgym.di
 
 import com.paulcraciunas.puzzles.api.PuzzleInterceptor
 import com.paulcraciunas.puzzles.di.PuzzleInterceptorModule
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.components.SingletonComponent
