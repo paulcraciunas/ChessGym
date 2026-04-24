@@ -39,6 +39,7 @@ import com.paulcraciunas.screens.common.dialogs.AbandonConfirmationDialog
 import com.paulcraciunas.screens.common.dialogs.AbandonConfirmationType
 import com.paulcraciunas.screens.common.dialogs.PromotionDialog
 import com.paulcraciunas.screens.common.previews.SampleBoardViewData
+import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
@@ -62,7 +63,7 @@ fun BlindModeScreen(
                 navButton = { Home(onClick = onDrawerToggle) },
             )
         },
-        modifier = modifier,
+        modifier = modifier.testTag { BlindModeScreenTags.SCREEN },
     ) { innerPadding ->
         Column(
             modifier = Modifier

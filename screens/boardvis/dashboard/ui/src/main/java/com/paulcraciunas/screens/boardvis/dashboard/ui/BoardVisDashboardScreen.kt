@@ -28,6 +28,7 @@ import com.paulcraciunas.screens.common.AppBarAlignment
 import com.paulcraciunas.screens.common.LoadingContent
 import com.paulcraciunas.screens.common.controls.FindTheSquareCard
 import com.paulcraciunas.screens.common.controls.MoveThePieceCard
+import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
@@ -44,7 +45,7 @@ fun BoardVisDashboardScreen(
                 navButton = { Home(onClick = onDrawerToggle) }
             )
         },
-        modifier = modifier
+        modifier = modifier.testTag { BoardVisDashboardTags.SCREEN }
     ) { innerPadding ->
         when {
             state.isLoading -> LoadingContent(Modifier.padding(innerPadding))
