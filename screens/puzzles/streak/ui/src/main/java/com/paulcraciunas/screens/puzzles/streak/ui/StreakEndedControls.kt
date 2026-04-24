@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.controls.RefreshButton
+import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
@@ -33,7 +34,8 @@ internal fun StreakEndedControls(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .testTag { PuzzleStreakScreenTags.Ended.CONTROLS },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Row(
@@ -67,7 +69,11 @@ internal fun StreakEndedControls(
                 )
             }
 
-            RefreshButton(onClick = onNewStreak, text = R.string.puzzle_streak_new)
+            RefreshButton(
+                onClick = onNewStreak,
+                text = R.string.puzzle_streak_new,
+                modifier = Modifier.testTag { PuzzleStreakScreenTags.Ended.NEW_STREAK }
+            )
         }
     }
 }
