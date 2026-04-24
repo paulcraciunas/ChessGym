@@ -5,6 +5,7 @@ import com.paulcraciunas.chessgym.dsl.actions.FailedPuzzlesScreenActions
 import com.paulcraciunas.chessgym.dsl.actions.HomeScreenActions
 import com.paulcraciunas.chessgym.dsl.actions.NavigationActions
 import com.paulcraciunas.chessgym.dsl.actions.PuzzleDashboardActions
+import com.paulcraciunas.chessgym.dsl.actions.PuzzleStreakScreenActions
 import com.paulcraciunas.chessgym.dsl.actions.RatedPuzzleScreenActions
 
 object When {
@@ -15,6 +16,7 @@ object When {
     lateinit var puzzleDashboard: PuzzleDashboardActions
     lateinit var ratedPuzzle: RatedPuzzleScreenActions
     lateinit var failedPuzzles: FailedPuzzlesScreenActions
+    lateinit var puzzleStreak: PuzzleStreakScreenActions
 
     fun init(rule: ComposeTestRule, launcher: () -> Unit) {
         compose = rule
@@ -24,6 +26,7 @@ object When {
         puzzleDashboard = PuzzleDashboardActions(rule)
         ratedPuzzle = RatedPuzzleScreenActions(rule)
         failedPuzzles = FailedPuzzlesScreenActions(rule)
+        puzzleStreak = PuzzleStreakScreenActions(rule)
     }
 
     fun appIsLaunched(): When = apply {
