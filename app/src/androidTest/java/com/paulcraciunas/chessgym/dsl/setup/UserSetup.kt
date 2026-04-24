@@ -85,6 +85,13 @@ class UserSetup(private val repository: FakeUserRepository) {
         }
     }
 
+    fun withFailedPuzzles(vararg puzzleIds: Int): UserSetup = apply {
+        runBlocking {
+            val current = repository.get()
+            repository.update(current.copy(failedPuzzles = puzzleIds.toList()))
+        }
+    }
+
     fun withHistory(vararg items: User.HistoryItem): UserSetup = apply {
         runBlocking {
             val current = repository.get()
