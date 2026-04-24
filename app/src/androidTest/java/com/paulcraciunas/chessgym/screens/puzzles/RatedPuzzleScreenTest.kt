@@ -30,7 +30,7 @@ internal class RatedPuzzleScreenTest : BaseUiTest() {
     @Test
     fun GIVEN_puzzle_loaded_WHEN_opened_THEN_shows_rated_puzzle_screen() {
         When.appIsLaunched()
-        When.homeScreen.navigateToPuzzles()
+        When.navigation.navigateToPuzzles()
         When.ratedPuzzle.open()
 
         Then.ratedPuzzle
@@ -44,7 +44,7 @@ internal class RatedPuzzleScreenTest : BaseUiTest() {
         Given.settings.lightMode()
 
         When.appIsLaunched()
-        When.homeScreen.navigateToPuzzles()
+        When.navigation.navigateToPuzzles()
         When.ratedPuzzle.open()
 
         Then.ratedPuzzle
@@ -57,7 +57,7 @@ internal class RatedPuzzleScreenTest : BaseUiTest() {
         Given.settings.darkMode()
 
         When.appIsLaunched()
-        When.homeScreen.navigateToPuzzles()
+        When.navigation.navigateToPuzzles()
         When.ratedPuzzle.open()
 
         Then.ratedPuzzle
@@ -68,7 +68,7 @@ internal class RatedPuzzleScreenTest : BaseUiTest() {
     @Test
     fun WHEN_playing_all_expected_moves_THEN_puzzle_is_solved() {
         When.appIsLaunched()
-        When.homeScreen.navigateToPuzzles()
+        When.navigation.navigateToPuzzles()
 
         When.ratedPuzzle.open()
         Then.ratedPuzzle.isPlaying()
@@ -80,7 +80,7 @@ internal class RatedPuzzleScreenTest : BaseUiTest() {
     @Test
     fun WHEN_playing_a_wrong_first_move_THEN_puzzle_fails() {
         When.appIsLaunched()
-        When.homeScreen.navigateToPuzzles()
+        When.navigation.navigateToPuzzles()
         When.ratedPuzzle
             .open()
             .playWrongMove()
@@ -91,7 +91,7 @@ internal class RatedPuzzleScreenTest : BaseUiTest() {
     @Test
     fun WHEN_requesting_hint_THEN_puzzle_stays_in_play_until_moves_exhausted() {
         When.appIsLaunched()
-        When.homeScreen.navigateToPuzzles()
+        When.navigation.navigateToPuzzles()
         When.ratedPuzzle.open()
             .requestHint()
         Then.ratedPuzzle.isPlaying()
@@ -104,7 +104,7 @@ internal class RatedPuzzleScreenTest : BaseUiTest() {
     @Test
     fun WHEN_abandoning_and_confirming_THEN_puzzle_fails() {
         When.appIsLaunched()
-        When.homeScreen.navigateToPuzzles()
+        When.navigation.navigateToPuzzles()
 
         When.ratedPuzzle
             .open()
@@ -120,7 +120,7 @@ internal class RatedPuzzleScreenTest : BaseUiTest() {
     @Test
     fun WHEN_abandoning_and_dismissing_THEN_puzzle_continues() {
         When.appIsLaunched()
-        When.homeScreen.navigateToPuzzles()
+        When.navigation.navigateToPuzzles()
 
         When.ratedPuzzle.open()
             .requestAbandon()
@@ -135,7 +135,7 @@ internal class RatedPuzzleScreenTest : BaseUiTest() {
     @Test
     fun GIVEN_playing_WHEN_pressing_back_THEN_shows_abandon_dialog() {
         When.appIsLaunched()
-        When.homeScreen.navigateToPuzzles()
+        When.navigation.navigateToPuzzles()
 
         When.ratedPuzzle.open()
         When.navigation.goBack()
@@ -148,7 +148,7 @@ internal class RatedPuzzleScreenTest : BaseUiTest() {
     @Test
     fun GIVEN_finished_puzzle_WHEN_pressing_back_THEN_navigates_to_dashboard() {
         When.appIsLaunched()
-        When.homeScreen.navigateToPuzzles()
+        When.navigation.navigateToPuzzles()
 
         When.ratedPuzzle.open()
             .playToEnd()
@@ -161,7 +161,7 @@ internal class RatedPuzzleScreenTest : BaseUiTest() {
     @Test
     fun GIVEN_finished_puzzle_WHEN_play_next_THEN_loads_a_new_puzzle() {
         When.appIsLaunched()
-        When.homeScreen.navigateToPuzzles()
+        When.navigation.navigateToPuzzles()
 
         When.ratedPuzzle.open()
             .playToEnd()
