@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.AppBar
+import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.puzzles.failed.vm.FailedPuzzlesUiState
 
@@ -34,7 +35,7 @@ internal fun EmptyFailedPuzzlesContent(
                 navButton = { Back(onClick = onNavigateBack) },
             )
         },
-        modifier = modifier
+        modifier = modifier.testTag { FailedPuzzlesScreenTags.EMPTY }
     ) { innerPadding ->
         Column(
             modifier = Modifier

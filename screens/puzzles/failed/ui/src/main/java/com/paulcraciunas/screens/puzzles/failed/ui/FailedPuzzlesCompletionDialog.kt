@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
+import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
@@ -69,11 +70,14 @@ internal fun FailedPuzzlesCompletionDialog(
             }
         },
         confirmButton = {
-            TextButton(onClick = onDismiss) {
+            TextButton(
+                onClick = onDismiss,
+                modifier = Modifier.testTag { FailedPuzzlesScreenTags.Completion.DISMISS }
+            ) {
                 Text(stringResource(R.string.generic_continue))
             }
         },
-        modifier = modifier
+        modifier = modifier.testTag { FailedPuzzlesScreenTags.Completion.DIALOG }
     )
 }
 
