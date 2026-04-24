@@ -47,10 +47,6 @@ class FailedPuzzlesScreenAssertions(private val rule: ComposeTestRule) {
             .assertCountEquals(0)
     }
 
-    fun isEmpty(): FailedPuzzlesScreenAssertions = apply {
-        rule.onNodeWithTag(FailedPuzzlesScreenTags.EMPTY).assertIsDisplayed()
-    }
-
     /**
      * Waits for the completion dialog to appear. This is necessary because the VM processes
      * move results asynchronously and may animate board transitions before showing the dialog.
