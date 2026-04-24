@@ -33,6 +33,7 @@ import com.paulcraciunas.screens.common.dialogs.PromotionDialog
 import com.paulcraciunas.screens.common.model.PuzzleData
 import com.paulcraciunas.screens.common.model.PuzzleResult
 import com.paulcraciunas.screens.common.previews.SampleBoardViewData
+import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.puzzles.rush.vm.PuzzleRushScreenInteractor
 import com.paulcraciunas.screens.puzzles.rush.vm.PuzzleRushUiState
@@ -65,7 +66,7 @@ fun PuzzleRushScreen(
                 }
             )
         },
-        modifier = modifier
+        modifier = modifier.testTag { PuzzleRushScreenTags.SCREEN }
     ) { innerPadding ->
         when (uiState) {
             is PuzzleRushUiState.Loading -> {

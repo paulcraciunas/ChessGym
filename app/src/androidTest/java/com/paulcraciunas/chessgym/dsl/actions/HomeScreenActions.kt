@@ -4,8 +4,6 @@ import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
-import com.paulcraciunas.chessgym.navigation.BottomNavItem
-import com.paulcraciunas.chessgym.navigation.BottomNavigationTags
 import com.paulcraciunas.screens.home.ui.HomeScreenTags
 
 class HomeScreenActions(private val rule: ComposeTestRule) {
@@ -23,9 +21,4 @@ class HomeScreenActions(private val rule: ComposeTestRule) {
     }
 
     fun collapseHighScores(): HomeScreenActions = expandHighScores()
-
-    fun navigateToPuzzles() {
-        rule.onNodeWithTag(BottomNavigationTags.tagFor(BottomNavItem.PuzzleDashboard)).performClick()
-        rule.waitForIdle()
-    }
 }

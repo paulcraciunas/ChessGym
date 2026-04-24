@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -23,6 +24,7 @@ import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.AppBar
 import com.paulcraciunas.screens.common.AppBarAlignment
 import com.paulcraciunas.screens.common.LoadingContent
+import com.paulcraciunas.screens.common.backgroundColor
 import com.paulcraciunas.screens.common.controls.FailedPuzzlesCard
 import com.paulcraciunas.screens.common.controls.PuzzleRushCard
 import com.paulcraciunas.screens.common.controls.PuzzleStreakCard
@@ -39,6 +41,7 @@ fun PuzzleDashboardScreen(
     modifier: Modifier = Modifier,
     onDrawerToggle: () -> Unit = {},
 ) {
+    val bgColor = MaterialTheme.colorScheme.background
     Scaffold(
         topBar = {
             AppBar(
@@ -46,7 +49,9 @@ fun PuzzleDashboardScreen(
                 navButton = { Home(onClick = onDrawerToggle) }
             )
         },
-        modifier = modifier.testTag { PuzzleDashboardTags.SCREEN }
+        modifier = modifier
+            .testTag { PuzzleDashboardTags.SCREEN }
+            .semantics { this.backgroundColor = bgColor }
     ) { innerPadding ->
         when {
             state.isLoading -> LoadingContent(Modifier.padding(innerPadding))

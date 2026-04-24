@@ -173,7 +173,7 @@ internal class HomeScreenTest : BaseUiTest() {
     fun WHEN_navigating_to_puzzles_THEN_shows_puzzle_dashboard() {
         When.appIsLaunched()
 
-        When.homeScreen.navigateToPuzzles()
+        When.navigation.navigateToPuzzles()
 
         Then.puzzleDashboard.isDisplayed()
     }

@@ -34,6 +34,7 @@ import com.paulcraciunas.screens.common.dialogs.PromotionDialog
 import com.paulcraciunas.screens.common.model.PuzzleData
 import com.paulcraciunas.screens.common.model.PuzzleResult
 import com.paulcraciunas.screens.common.previews.SampleBoardViewData
+import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.puzzles.failed.vm.FailedPuzzlesScreenInteractor
 import com.paulcraciunas.screens.puzzles.failed.vm.FailedPuzzlesUiState
@@ -78,7 +79,7 @@ fun FailedPuzzlesScreen(
                 }
             )
         },
-        modifier = modifier
+        modifier = modifier.testTag { FailedPuzzlesScreenTags.SCREEN }
     ) { innerPadding ->
         when (uiState) {
             is FailedPuzzlesUiState.Loading -> {
