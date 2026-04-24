@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -35,6 +36,7 @@ import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.AppBar
 import com.paulcraciunas.screens.common.FailedContent
 import com.paulcraciunas.screens.common.LoadingContent
+import com.paulcraciunas.screens.common.backgroundColor
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
 import com.paulcraciunas.screens.common.controls.CapturedPieces
@@ -64,6 +66,7 @@ fun PuzzleStreakScreen(
         is PuzzleStreakUiState.StreakEnded -> 0
         else -> 0
     }
+    val bgColor = MaterialTheme.colorScheme.background
     Scaffold(
         topBar = {
             AppBar(
@@ -72,7 +75,9 @@ fun PuzzleStreakScreen(
                 actions = { if (streakCount > 0) StreakCounter(count = streakCount) }
             )
         },
-        modifier = modifier.testTag { PuzzleStreakScreenTags.SCREEN }
+        modifier = modifier
+            .testTag { PuzzleStreakScreenTags.SCREEN }
+            .semantics { this.backgroundColor = bgColor }
     ) { innerPadding ->
         when (uiState) {
             is PuzzleStreakUiState.Loading -> {
@@ -203,6 +208,7 @@ private fun StreakCounter(
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.testTag { PuzzleStreakScreenTags.STREAK_COUNTER }
         )
     }
 }
