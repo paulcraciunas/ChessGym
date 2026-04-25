@@ -12,5 +12,6 @@ androidLibrary {
 dependencies {
     implementation(project(":global:resources"))
     implementation(project(":screens:common"))
+    implementation(project(":game:logic:api"))
     api(project(":screens:tools:clock:vm"))
 }
