@@ -4,7 +4,9 @@ import androidx.compose.ui.test.junit4.ComposeTestRule
 import com.paulcraciunas.chessgym.dsl.assertions.BlindModeScreenAssertions
 import com.paulcraciunas.chessgym.dsl.assertions.BoardVisDashboardAssertions
 import com.paulcraciunas.chessgym.dsl.assertions.FailedPuzzlesScreenAssertions
+import com.paulcraciunas.chessgym.dsl.assertions.FindTheSquareScreenAssertions
 import com.paulcraciunas.chessgym.dsl.assertions.HomeScreenAssertions
+import com.paulcraciunas.chessgym.dsl.assertions.MoveThePieceScreenAssertions
 import com.paulcraciunas.chessgym.dsl.assertions.NavigationAssertions
 import com.paulcraciunas.chessgym.dsl.assertions.PuzzleDashboardAssertions
 import com.paulcraciunas.chessgym.dsl.assertions.PuzzleRushScreenAssertions
@@ -22,6 +24,8 @@ object Then {
     lateinit var failedPuzzles: FailedPuzzlesScreenAssertions
     lateinit var boardVisDashboard: BoardVisDashboardAssertions
     lateinit var blindMode: BlindModeScreenAssertions
+    lateinit var findTheSquare: FindTheSquareScreenAssertions
+    lateinit var moveThePiece: MoveThePieceScreenAssertions
 
     fun init(rule: ComposeTestRule) {
         compose = rule
@@ -34,5 +38,7 @@ object Then {
         failedPuzzles = FailedPuzzlesScreenAssertions(rule)
         boardVisDashboard = BoardVisDashboardAssertions(rule)
         blindMode = BlindModeScreenAssertions(rule)
+        findTheSquare = FindTheSquareScreenAssertions(rule)
+        moveThePiece = MoveThePieceScreenAssertions(rule)
     }
 }
