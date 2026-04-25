@@ -100,6 +100,51 @@ fun FindTheSquareCard(
 )
 
 @Composable
+fun ClockCard(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) = DashboardCard(
+    isEnabled = true,
+    icon = { ResIcon(icon = R.drawable.clock_icon) },
+    title = R.string.tools_clock_title,
+    description = R.string.tools_clock_description,
+    startContentDescription = R.string.tools_mode_start,
+    highlight = null,
+    onClick = onClick,
+    modifier = modifier
+)
+
+@Composable
+fun AnalysisCard(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) = DashboardCard(
+    isEnabled = false,
+    icon = { ResIcon(icon = R.drawable.icon_analysis) },
+    title = R.string.tools_analysis_title,
+    description = R.string.tools_analysis_description,
+    startContentDescription = R.string.tools_mode_start,
+    highlight = null,
+    onClick = onClick,
+    modifier = modifier
+)
+
+@Composable
+fun ImportGameCard(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) = DashboardCard(
+    isEnabled = true,
+    icon = { ResIcon(icon = R.drawable.puzzle_icon) },
+    title = R.string.tools_import_title,
+    description = R.string.tools_import_description,
+    startContentDescription = R.string.tools_mode_start,
+    highlight = null,
+    onClick = onClick,
+    modifier = modifier
+)
+
+@Composable
 fun MoveThePieceCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -222,6 +267,42 @@ private fun FailedPuzzlesCardEmptyPreview() {
     ChessGymTheme {
         FailedPuzzlesCard(
             failedCount = 0,
+            onClick = {},
+            modifier = Modifier.padding(16.dp)
+        )
+    }
+}
+
+@Preview("ClockCard")
+@Preview("ClockCard (dark)", uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun ClockCardPreview() {
+    ChessGymTheme {
+        ClockCard(
+            onClick = {},
+            modifier = Modifier.padding(16.dp)
+        )
+    }
+}
+
+@Preview("AnalysisCard")
+@Preview("AnalysisCard (dark)", uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun AnalysisCardPreview() {
+    ChessGymTheme {
+        AnalysisCard(
+            onClick = {},
+            modifier = Modifier.padding(16.dp)
+        )
+    }
+}
+
+@Preview("ImportGameCard")
+@Preview("ImportGameCard (dark)", uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun ImportGameCardPreview() {
+    ChessGymTheme {
+        ImportGameCard(
             onClick = {},
             modifier = Modifier.padding(16.dp)
         )
