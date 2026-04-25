@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -26,6 +27,7 @@ import com.paulcraciunas.screens.boardvis.dashboard.vm.BoardVisMode
 import com.paulcraciunas.screens.common.AppBar
 import com.paulcraciunas.screens.common.AppBarAlignment
 import com.paulcraciunas.screens.common.LoadingContent
+import com.paulcraciunas.screens.common.backgroundColor
 import com.paulcraciunas.screens.common.controls.FindTheSquareCard
 import com.paulcraciunas.screens.common.controls.MoveThePieceCard
 import com.paulcraciunas.screens.common.testTag
@@ -38,6 +40,7 @@ fun BoardVisDashboardScreen(
     modifier: Modifier = Modifier,
     onDrawerToggle: () -> Unit = {},
 ) {
+    val bgColor = MaterialTheme.colorScheme.background
     Scaffold(
         topBar = {
             AppBar(
@@ -46,6 +49,7 @@ fun BoardVisDashboardScreen(
             )
         },
         modifier = modifier.testTag { BoardVisDashboardTags.SCREEN }
+            .semantics { this.backgroundColor = bgColor }
     ) { innerPadding ->
         when {
             state.isLoading -> LoadingContent(Modifier.padding(innerPadding))
@@ -83,13 +87,15 @@ private fun DashboardContent(
             item {
                 FindTheSquareCard(
                     highScore = state.findSquareHighScore,
-                    onClick = { onModeSelected(BoardVisMode.FindTheSquare) }
+                    onClick = { onModeSelected(BoardVisMode.FindTheSquare) },
+                    modifier = Modifier.testTag { BoardVisDashboardTags.Cards.FIND_THE_SQUARE },
                 )
             }
 
             item {
                 MoveThePieceCard(
-                    onClick = { onModeSelected(BoardVisMode.MoveThePiece) }
+                    onClick = { onModeSelected(BoardVisMode.MoveThePiece) },
+                    modifier = Modifier.testTag { BoardVisDashboardTags.Cards.MOVE_THE_PIECE },
                 )
             }
         }

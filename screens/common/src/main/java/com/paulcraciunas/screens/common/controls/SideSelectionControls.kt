@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.global.resources.R
+import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 enum class SideSelection {
@@ -42,21 +43,24 @@ fun SideSelectionControls(
                 side = Side.WHITE,
                 contentDescription = stringResource(R.string.boardvis_play_as_white),
                 isSelected = selectedSide == SideSelection.WHITE,
-                onClick = { onSideSelected(SideSelection.WHITE) }
+                onClick = { onSideSelected(SideSelection.WHITE) },
+                modifier = Modifier.testTag { SideSelectionTags.WHITE },
             )
             SideSelectionButton(
                 iconRes = R.drawable.king_black,
                 side = Side.BLACK,
                 contentDescription = stringResource(R.string.boardvis_play_as_black),
                 isSelected = selectedSide == SideSelection.BLACK,
-                onClick = { onSideSelected(SideSelection.BLACK) }
+                onClick = { onSideSelected(SideSelection.BLACK) },
+                modifier = Modifier.testTag { SideSelectionTags.BLACK },
             )
             SideSelectionButton(
                 iconRes = R.drawable.side_select,
                 side = Side.WHITE,
                 contentDescription = stringResource(R.string.boardvis_play_random),
                 isSelected = selectedSide == SideSelection.RANDOM,
-                onClick = { onSideSelected(SideSelection.RANDOM) }
+                onClick = { onSideSelected(SideSelection.RANDOM) },
+                modifier = Modifier.testTag { SideSelectionTags.RANDOM },
             )
         }
     }

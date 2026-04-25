@@ -20,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.controls.RefreshButton
+import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
@@ -40,7 +41,8 @@ internal fun GameSummary(
                 shape = RoundedCornerShape(16.dp)
             )
             .background(MaterialTheme.colorScheme.surface)
-            .padding(24.dp),
+            .padding(24.dp)
+            .testTag { FindTheSquareTags.GAME_SUMMARY },
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
@@ -72,7 +74,10 @@ internal fun GameSummary(
             )
         }
 
-        RefreshButton(onClick = onPlayAgain)
+        RefreshButton(
+            onClick = onPlayAgain,
+            modifier = Modifier.testTag { FindTheSquareTags.PLAY_AGAIN_BUTTON },
+        )
     }
 }
 
