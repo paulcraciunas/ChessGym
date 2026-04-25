@@ -3,9 +3,7 @@ package com.paulcraciunas.chessgym.dsl.actions
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
-import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
-import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.screens.boardvis.squares.ui.FindTheSquareTags
 import com.paulcraciunas.screens.common.board.ChessBoardTags
 import com.paulcraciunas.screens.common.controls.SideSelectionTags
