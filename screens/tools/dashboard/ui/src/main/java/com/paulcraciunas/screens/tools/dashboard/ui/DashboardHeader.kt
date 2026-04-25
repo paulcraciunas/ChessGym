@@ -23,7 +23,7 @@ internal fun DashboardHeader(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = stringResource(com.paulcraciunas.global.resources.R.string.tools_dashboard_title),
+            text = stringResource(R.string.tools_dashboard_title),
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onBackground
