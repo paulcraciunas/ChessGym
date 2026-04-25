@@ -28,8 +28,10 @@ class FindTheSquareViewModel @Inject constructor(
     private val countdownTimer: CountdownTimer,
     private val userRepository: UserRepository,
     private val randomFactory: RandomFactory,
+    gameDuration: GameDuration,
 ) : ViewModel(), FindTheSquareScreenInteractor {
 
+    private val durationSeconds: Int = gameDuration.seconds
     private val _gameState = MutableStateFlow<GameState>(GameState.Setup())
     val uiState: StateFlow<FindTheSquareUiState> = combine(
         _gameState,
@@ -53,7 +55,7 @@ class FindTheSquareViewModel @Inject constructor(
         viewModelScope.launch {
             userRepository.userUpdates().map { it.highScores.findTheSquare }.collect { currentHighScore = it }
         }
-        countdownTimer.set(FindTheSquareUiState.DEFAULT_DURATION_SECONDS)
+        countdownTimer.set(durationSeconds)
     }
 
     override fun onSideSelected(side: SideSelection) {
@@ -100,7 +102,7 @@ class FindTheSquareViewModel @Inject constructor(
     }
 
     override fun onPlayAgain() {
-        countdownTimer.set(FindTheSquareUiState.DEFAULT_DURATION_SECONDS)
+        countdownTimer.set(durationSeconds)
         _gameState.value = GameState.Setup()
     }
 
@@ -144,7 +146,7 @@ class FindTheSquareViewModel @Inject constructor(
         ) : GameState() {
             override fun toUiState(remainingSeconds: Int) = FindTheSquareUiState.Setup(
                 selectedSide = selectedSide,
-                timeRemainingSeconds = FindTheSquareUiState.DEFAULT_DURATION_SECONDS
+                timeRemainingSeconds = remainingSeconds
             )
         }
 

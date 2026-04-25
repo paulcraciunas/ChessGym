@@ -317,7 +317,8 @@ internal class FindTheSquareViewModelTest {
             onFindSquareComplete = fakeOnFindSquareComplete,
             countdownTimer = fakeCountdownTimer,
             userRepository = userRepository,
-            randomFactory = fakeRandomFactory
+            randomFactory = fakeRandomFactory,
+            gameDuration = DefaultGameDuration(),
         )
         testDispatcher.scheduler.advanceUntilIdle()
     }
