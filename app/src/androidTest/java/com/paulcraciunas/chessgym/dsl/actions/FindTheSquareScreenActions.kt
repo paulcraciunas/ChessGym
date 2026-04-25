@@ -37,11 +37,6 @@ class FindTheSquareScreenActions(private val rule: ComposeTestRule) {
         rule.waitForIdle()
     }
 
-    fun clickSquare(file: File, rank: Rank): FindTheSquareScreenActions = apply {
-        rule.onNodeWithTag(ChessBoardTags.square(file, rank)).performClick()
-        rule.waitForIdle()
-    }
-
     fun clickSquare(locus: Locus): FindTheSquareScreenActions = apply {
         rule.onNodeWithTag(ChessBoardTags.square(locus)).performClick()
         rule.waitForIdle()

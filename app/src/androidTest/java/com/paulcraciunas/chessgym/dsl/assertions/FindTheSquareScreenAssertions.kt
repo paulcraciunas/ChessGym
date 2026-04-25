@@ -63,8 +63,4 @@ class FindTheSquareScreenAssertions(private val rule: ComposeTestRule) {
     fun showsSquareName(squareName: String): FindTheSquareScreenAssertions = apply {
         rule.onNodeWithText(squareName.uppercase()).assertIsDisplayed()
     }
-
-    fun playButtonIsNotDisplayed(): FindTheSquareScreenAssertions = apply {
-        rule.onNodeWithTag(FindTheSquareTags.PLAY_BUTTON).assertDoesNotExist()
-    }
 }

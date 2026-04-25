@@ -30,8 +30,6 @@ internal class FindTheSquareScreenTest : BaseUiTest() {
         Given.user.isDefault()
     }
 
-    // ── Setup phase ─────────────────────────────────────────────
-
     @Test
     fun WHEN_navigated_to_find_the_square_THEN_shows_setup_phase() {
         navigateToFindTheSquare()
@@ -74,8 +72,6 @@ internal class FindTheSquareScreenTest : BaseUiTest() {
             .isDisplayed()
             .isInSetupPhase()
     }
-
-    // ── Playing phase ───────────────────────────────────────────
 
     @Test
     fun GIVEN_setup_phase_WHEN_clicking_play_THEN_game_starts() {
@@ -141,8 +137,6 @@ internal class FindTheSquareScreenTest : BaseUiTest() {
             .hasScore(1)
     }
 
-    // ── Game over phase ─────────────────────────────────────────
-
     @Test
     fun GIVEN_playing_phase_WHEN_timer_expires_THEN_shows_game_over() {
         navigateToFindTheSquare()
@@ -198,8 +192,6 @@ internal class FindTheSquareScreenTest : BaseUiTest() {
             .showsHighScore(100)
     }
 
-    // ── Play again ──────────────────────────────────────────────
-
     @Test
     fun GIVEN_game_over_WHEN_clicking_play_again_THEN_returns_to_setup() {
         navigateToFindTheSquare()
@@ -227,8 +219,6 @@ internal class FindTheSquareScreenTest : BaseUiTest() {
             .isInPlayingPhase()
             .hasScore(0)
     }
-
-    // ── Navigation / abandoning ─────────────────────────────────
 
     @Test
     fun GIVEN_setup_phase_WHEN_going_back_THEN_returns_to_dashboard() {
@@ -263,8 +253,6 @@ internal class FindTheSquareScreenTest : BaseUiTest() {
         Then.boardVisDashboard.isDisplayed()
     }
 
-    // ── Light / dark mode ───────────────────────────────────────
-
     @Test
     fun GIVEN_light_mode_WHEN_navigated_to_find_the_square_THEN_shows_light_background() {
         Given.settings.lightMode()
@@ -286,8 +274,6 @@ internal class FindTheSquareScreenTest : BaseUiTest() {
             .isDisplayed()
             .hasBackgroundColor(DarkBackground)
     }
-
-    // ── Side selection affects game ─────────────────────────────
 
     @Test
     fun GIVEN_black_side_selected_WHEN_playing_THEN_game_runs_with_black_orientation() {
@@ -312,8 +298,6 @@ internal class FindTheSquareScreenTest : BaseUiTest() {
             .isInPlayingPhase()
             .hasScore(0)
     }
-
-    // ── Helpers ─────────────────────────────────────────────────
 
     private fun navigateToFindTheSquare() {
         When.appIsLaunched()
