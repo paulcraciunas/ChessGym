@@ -83,13 +83,15 @@ private fun DashboardContent(
             item {
                 FindTheSquareCard(
                     highScore = state.findSquareHighScore,
-                    onClick = { onModeSelected(BoardVisMode.FindTheSquare) }
+                    onClick = { onModeSelected(BoardVisMode.FindTheSquare) },
+                    modifier = Modifier.testTag { BoardVisDashboardTags.Cards.FIND_THE_SQUARE },
                 )
             }
 
             item {
                 MoveThePieceCard(
-                    onClick = { onModeSelected(BoardVisMode.MoveThePiece) }
+                    onClick = { onModeSelected(BoardVisMode.MoveThePiece) },
+                    modifier = Modifier.testTag { BoardVisDashboardTags.Cards.MOVE_THE_PIECE },
                 )
             }
         }

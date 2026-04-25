@@ -24,6 +24,7 @@ import com.paulcraciunas.screens.boardvis.squares.vm.FindTheSquareUiState
 import com.paulcraciunas.screens.common.AppBar
 import com.paulcraciunas.screens.common.controls.SideSelection
 import com.paulcraciunas.screens.common.controls.TimerDisplay
+import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
@@ -62,7 +63,7 @@ fun FindTheSquareScreen(
                 }
             }
         },
-        modifier = modifier
+        modifier = modifier.testTag { FindTheSquareTags.SCREEN }
     ) { innerPadding ->
         FindTheSquareScreenContents(
             state = uiState,

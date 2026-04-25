@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import com.paulcraciunas.screens.common.controls.PlayButton
 import com.paulcraciunas.screens.common.controls.SideSelection
 import com.paulcraciunas.screens.common.controls.SideSelectionControls
+import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
@@ -34,7 +35,10 @@ internal fun FindTheSquareControls(
                 onSideSelected = onSideSelected,
             )
 
-            PlayButton(onClick = onPlayClicked)
+            PlayButton(
+                onClick = onPlayClicked,
+                modifier = Modifier.testTag { FindTheSquareTags.PLAY_BUTTON },
+            )
         }
     }
 }

@@ -20,6 +20,7 @@ import com.paulcraciunas.screens.boardvis.pieces.vm.MoveThePieceScreenInteractor
 import com.paulcraciunas.screens.boardvis.pieces.vm.MoveThePieceUiState
 import com.paulcraciunas.screens.common.AppBar
 import com.paulcraciunas.screens.common.controls.TimerDisplay
+import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
@@ -46,7 +47,7 @@ fun MoveThePieceScreen(
                 }
             }
         },
-        modifier = modifier
+        modifier = modifier.testTag { MoveThePieceTags.SCREEN }
     ) { innerPadding ->
         Column(
             modifier = Modifier
