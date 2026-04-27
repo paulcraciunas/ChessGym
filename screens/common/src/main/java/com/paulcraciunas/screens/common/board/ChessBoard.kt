@@ -6,6 +6,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -63,6 +64,7 @@ fun ChessBoard(
     highlightLegalMoves: Boolean = true,
     enableAnimations: Boolean = true,
     piecesAlpha: Float = 1f,
+    overlay: @Composable BoxScope.() -> Unit = {}
 ) {
     Box(
         modifier = modifier
@@ -87,6 +89,7 @@ fun ChessBoard(
             BorderFiles(orientation = orientation, modifier = Modifier.align(Alignment.BottomCenter), height = borderSize)
             BorderRanks(orientation = orientation, modifier = Modifier.align(Alignment.TopEnd), width = borderSize)
         }
+        overlay()
     }
 }
 
