@@ -23,13 +23,16 @@ import com.paulcraciunas.chessgym.navigation.BottomNavigationBar
 import com.paulcraciunas.chessgym.navigation.Screen
 import com.paulcraciunas.chessgym.screens.BlindMode
 import com.paulcraciunas.chessgym.screens.BoardVisDashboard
+import com.paulcraciunas.chessgym.screens.ChessClock
 import com.paulcraciunas.chessgym.screens.FailedPuzzles
 import com.paulcraciunas.chessgym.screens.FindTheSquare
+import com.paulcraciunas.chessgym.screens.ImportGame
 import com.paulcraciunas.chessgym.screens.MoveThePiece
 import com.paulcraciunas.chessgym.screens.PuzzleDashboard
 import com.paulcraciunas.chessgym.screens.PuzzleRush
 import com.paulcraciunas.chessgym.screens.PuzzleStreak
 import com.paulcraciunas.chessgym.screens.RatedPuzzle
+import com.paulcraciunas.chessgym.screens.ToolsDashboard
 import com.paulcraciunas.screens.common.AppDrawer
 import com.paulcraciunas.screens.home.ui.HomeScreen
 import com.paulcraciunas.screens.home.vm.HomeViewModel
@@ -171,6 +174,20 @@ fun MainScreen(
                         onDrawerToggle = onDrawerToggle,
                     )
                 }
+                animatedComposable<Screen.ToolsDashboard> {
+                    ToolsDashboard(tabNavController, onDrawerToggle = onDrawerToggle)
+                }
+                animatedComposable<Screen.Clock> {
+                    ChessClock(tabNavController = tabNavController)
+                }
+                animatedComposable<Screen.ImportGame> {
+                    ImportGame(
+                        tabNavController = tabNavController,
+                        showBorders = mainScreenState.appSettings?.showBorders ?: true,
+                        highlightLegalMoves = mainScreenState.appSettings?.highlightLegalMoves ?: true,
+                        enableAnimations = mainScreenState.appSettings?.enableAnimations ?: true,
+                    )
+                }
             }
         }
     }
@@ -191,7 +208,8 @@ private val topLevelRoutes = setOf(
     Screen.Home::class.qualifiedName,
     Screen.PuzzleDashboard::class.qualifiedName,
     Screen.BoardVisualization::class.qualifiedName,
-    Screen.BlindMode::class.qualifiedName
+    Screen.BlindMode::class.qualifiedName,
+    Screen.ToolsDashboard::class.qualifiedName
 )
 
 private fun String.isTopLevelRoute(): Boolean = topLevelRoutes.contains(this)

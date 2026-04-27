@@ -1,26 +1,36 @@
 package com.paulcraciunas.domain.api.general
 
+import com.paulcraciunas.domain.api.general.CountdownTimer.Remainder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class FakeCountdownTimer : CountdownTimer {
-    private val _remainingSeconds = MutableStateFlow(0)
-    override val remainingSeconds: StateFlow<Int> = _remainingSeconds.asStateFlow()
+    private val _remainingSeconds = MutableStateFlow(Remainder(seconds = 0, millis = 0))
+    override val remaining: StateFlow<Remainder> = _remainingSeconds.asStateFlow()
 
     override val isExpired: Boolean
-        get() = _remainingSeconds.value <= 0
+        get() = !_remainingSeconds.value.isPositive()
     var isRunning = false
         private set
 
-    private var durationSeconds: Int = 0
+    private var interval: Long = 1000L
     private var elapsedSeconds: Int = 0
+
+    override fun setInterval(intervalMillis: Int) {
+        interval = intervalMillis.toLong().coerceIn(1, 10_000) // As specified in the interface
+    }
 
     override fun set(durationSeconds: Int) {
         if (!isRunning) {
-            this.durationSeconds = durationSeconds
-            _remainingSeconds.value = durationSeconds
+            _remainingSeconds.value = Remainder(seconds = durationSeconds, millis = 0)
+        }
+    }
+
+    override fun set(remainder: Remainder) {
+        if (!isRunning) {
+            _remainingSeconds.value = remainder
         }
     }
 
@@ -36,17 +46,17 @@ class FakeCountdownTimer : CountdownTimer {
 
     override fun elapsedMillis(): Long = elapsedSeconds * 1000L
 
-    fun advanceTimeBy(seconds: Int) {
+    fun advanceTimeBy(seconds: Int, millis: Int = 0) {
         if (isRunning) {
             elapsedSeconds += seconds
-            _remainingSeconds.value = maxOf(0, durationSeconds - elapsedSeconds)
+            _remainingSeconds.value -= Remainder(seconds = seconds, millis = millis)
         }
-        if (_remainingSeconds.value == 0) {
+        if (!_remainingSeconds.value.isPositive()) {
             stop()
         }
     }
 
     fun advanceUntilIdle() {
-        advanceTimeBy(durationSeconds)
+        advanceTimeBy(_remainingSeconds.value.seconds, _remainingSeconds.value.millis)
     }
 }

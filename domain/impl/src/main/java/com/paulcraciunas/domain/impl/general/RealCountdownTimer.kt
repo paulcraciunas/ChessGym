@@ -9,43 +9,62 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import java.time.Clock
 import java.time.Duration
 import java.time.Instant
 import javax.inject.Inject
 
 /**
- * Implementation of [CountdownTimer] that emits remaining seconds via a [StateFlow].
+ * Implementation of [CountdownTimer] that emits remaining time via a [StateFlow].
  *
- * Uses [Instant] for wall-clock time tracking to ensure accurate timing
+ * Uses [Clock] for time tracking to ensure accurate timing
  * even when the device sleeps or the app is backgrounded.
  */
-class RealCountdownTimer @Inject constructor() : CountdownTimer {
-    private val _remainingSeconds = MutableStateFlow(0)
-    override val remainingSeconds: StateFlow<Int> = _remainingSeconds.asStateFlow()
+class RealCountdownTimer @Inject constructor(
+    private val clock: Clock = Clock.systemUTC(),
+) : CountdownTimer {
+    private val _remaining = MutableStateFlow(CountdownTimer.Remainder(seconds = 0, millis = 0))
+    override val remaining: StateFlow<CountdownTimer.Remainder> = _remaining.asStateFlow()
 
     override val isExpired: Boolean
-        get() = _remainingSeconds.value <= 0
+        get() = !_remaining.value.isPositive()
 
-    private var startInstant: Instant = Instant.now()
-    private var durationSeconds: Int = 0
+    private var interval: Long = DEFAULT_INTERVAL
+    private var lastTickInstant: Instant = clock.instant()
+    private var startInstant: Instant = clock.instant()
     private var countdownJob: Job? = null
+
+    override fun setInterval(intervalMillis: Int) {
+        interval = intervalMillis.toLong().coerceIn(MIN_INTERVAL, MAX_INTERVAL)
+    }
 
     override fun set(durationSeconds: Int) {
         if (countdownJob == null) {
-            this.durationSeconds = durationSeconds
-            _remainingSeconds.value = durationSeconds
+            _remaining.value = CountdownTimer.Remainder(seconds = durationSeconds, millis = 0)
+        }
+    }
+
+    override fun set(remainder: CountdownTimer.Remainder) {
+        if (countdownJob == null) {
+            _remaining.value = remainder
         }
     }
 
     override fun start(scope: CoroutineScope) {
         stop()
-        this.startInstant = Instant.now()
+        val now = clock.instant()
+        this.startInstant = now
+        this.lastTickInstant = now
 
         countdownJob = scope.launch {
-            while (isActive && _remainingSeconds.value > 0) {
-                delay(1000)
-                val elapsed = elapsed().seconds.toInt()
-                _remainingSeconds.value = maxOf(0, durationSeconds - elapsed)
+            while (isActive && _remaining.value.isPositive()) {
+                delay(interval)
+                val now = clock.instant()
+                val delta = Duration.between(lastTickInstant, now)
+                lastTickInstant = now
+                val deltaSeconds = delta.seconds.toInt()
+                val deltaMillis = (delta.toMillis() % 1000).toInt()
+                _remaining.value -= CountdownTimer.Remainder(seconds = deltaSeconds, millis = deltaMillis)
             }
         }
     }
@@ -55,7 +74,11 @@ class RealCountdownTimer @Inject constructor() : CountdownTimer {
         countdownJob = null
     }
 
-    override fun elapsedMillis(): Long = elapsed().toMillis()
+    override fun elapsedMillis(): Long = Duration.between(startInstant, clock.instant()).toMillis()
 
-    private fun elapsed(): Duration = Duration.between(startInstant, Instant.now())
+    companion object {
+        private const val DEFAULT_INTERVAL = 1000L
+        private const val MIN_INTERVAL = 1L
+        private const val MAX_INTERVAL = 10_000L
+    }
 }

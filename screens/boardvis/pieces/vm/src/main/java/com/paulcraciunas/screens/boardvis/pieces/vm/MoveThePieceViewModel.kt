@@ -8,6 +8,7 @@ import com.paulcraciunas.domain.api.boardvis.MoveResult
 import com.paulcraciunas.domain.api.boardvis.MoveThePieceGameEngine
 import com.paulcraciunas.domain.api.boardvis.MoveThePieceResult
 import com.paulcraciunas.domain.api.boardvis.OnMoveThePieceComplete
+import com.paulcraciunas.domain.api.general.DefaultTimer
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.user.api.UserRepository
@@ -25,7 +26,7 @@ import javax.inject.Inject
 class MoveThePieceViewModel @Inject constructor(
     private val gameEngine: MoveThePieceGameEngine,
     private val onComplete: OnMoveThePieceComplete,
-    private val countdownTimer: CountdownTimer,
+    @param:DefaultTimer private val countdownTimer: CountdownTimer,
     private val userRepository: UserRepository,
 ) : ViewModel(), MoveThePieceScreenInteractor {
 
@@ -34,7 +35,7 @@ class MoveThePieceViewModel @Inject constructor(
 
     val uiState: StateFlow<MoveThePieceUiState> = combine(
         _viewState,
-        countdownTimer.remainingSeconds
+        countdownTimer.remaining.map { it.seconds }
     ) { viewState, remainingSeconds ->
         if (viewState is ViewState.Playing && remainingSeconds <= 0) {
             finishGame(wasCaptured = false)

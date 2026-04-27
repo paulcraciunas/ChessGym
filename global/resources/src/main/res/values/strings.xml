@@ -315,6 +315,52 @@
     <string name="about_terms_and_conditions_content">By downloading, installing, or using ChessGym ("the App"), you agree to the following terms and conditions. If you do not agree, please discontinue use of the App immediately.\n\nThe App is provided "as is" and "as available" without warranties of any kind, whether express or implied, including but not limited to implied warranties of merchantability, fitness for a particular purpose, and non-infringement.\n\nIn no event shall the developer be liable for any direct, indirect, incidental, special, consequential, or punitive damages arising from or related to your use of or inability to use the App, even if the developer has been advised of the possibility of such damages.\n\nThe App may contain links to third-party websites or services that are not owned or controlled by the developer. The developer has no control over and assumes no responsibility for the content, privacy policies, or practices of any third-party websites or services.\n\nThe developer reserves the right to modify, suspend, or discontinue the App at any time without notice. The developer shall not be liable to you or to any third party for any modification, suspension, or discontinuation of the App.\n\nYour use of the App is also governed by the GNU General Public License v3.0, the full text of which is available under the Terms of Use section.\n\nThese terms and conditions are effective as of the date of your first use of the App. The developer reserves the right to update these terms at any time. Continued use of the App constitutes acceptance of any changes.\n\nFor questions or concerns about these terms, please contact us at contact@chessgym.app.</string>
     <!-- endregion -->
 
+    <!-- region Tools -->
+    <string name="navigation_tools_label">Tools</string>
+    <string name="navigation_tools_content_description">Chess tools</string>
+    <string name="tools_dashboard_title">Chess Tools</string>
+    <string name="tools_dashboard_subtitle">Useful utilities for your chess games</string>
+    <string name="tools_mode_start">Start tool</string>
+    <string name="tools_clock_title">Chess Clock</string>
+    <string name="tools_clock_description">Time your games with configurable controls</string>
+    <string name="tools_analysis_title">Analysis</string>
+    <string name="tools_analysis_description">Analyze positions with the engine</string>
+    <string name="tools_import_title">Import Game</string>
+    <string name="tools_import_description">Import a game from FEN or PGN notation</string>
+    <!-- endregion -->
+
+    <!-- region Clock Screen -->
+    <string name="clock_title">Chess Clock</string>
+    <string name="clock_white">White</string>
+    <string name="clock_black">Black</string>
+    <string name="clock_stop">Stop</string>
+    <string name="clock_new_game">New Game</string>
+    <string name="clock_time_up">Time\'s Up!</string>
+    <string name="clock_time_control">Time</string>
+    <string name="clock_increment">Increment</string>
+    <string name="clock_minutes_format">%1$d min</string>
+    <string name="clock_seconds_format">%1$d sec</string>
+    <string name="clock_tap_to_start">Tap to start</string>
+    <!-- endregion -->
+
+    <!-- region Import Game Screen -->
+    <string name="import_game_title">Import Game</string>
+    <string name="import_fen">FEN</string>
+    <string name="import_pgn">PGN</string>
+    <string name="import_dialog_title_fen">Import FEN</string>
+    <string name="import_dialog_title_pgn">Import PGN</string>
+    <string name="import_dialog_hint_fen">Paste FEN string here…</string>
+    <string name="import_dialog_hint_pgn">Paste PGN text here…</string>
+    <string name="import_dialog_confirm">Import</string>
+    <string name="import_dialog_cancel">Cancel</string>
+    <string name="import_error_invalid_fen">Invalid FEN notation. Please check and try again.</string>
+    <string name="import_error_invalid_pgn">Invalid PGN notation. Please check and try again.</string>
+    <string name="import_game_jump_to_start">Jump to start</string>
+    <string name="import_game_previous_move">Previous move</string>
+    <string name="import_game_next_move">Next move</string>
+    <string name="import_game_jump_to_end">Jump to end</string>
+    <!-- endregion -->
+
     <!-- region Blind Mode -->
     <string name="blind_mode_title">Blind Mode</string>
     <string name="blind_mode_training_mode">Training Mode</string>

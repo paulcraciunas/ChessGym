@@ -3,6 +3,7 @@ package com.paulcraciunas.screens.puzzles.rush.vm
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.paulcraciunas.domain.api.general.CountdownTimer
+import com.paulcraciunas.domain.api.general.DefaultTimer
 import com.paulcraciunas.domain.api.puzzles.GetBufferedPuzzleSeries
 import com.paulcraciunas.domain.api.puzzles.OnPuzzleRushComplete
 import com.paulcraciunas.domain.api.puzzles.PuzzleRushResult
@@ -19,6 +20,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -28,7 +30,7 @@ import javax.inject.Inject
 class PuzzleRushViewModel @Inject constructor(
     private val puzzleSeries: GetBufferedPuzzleSeries,
     private val onPuzzleRushComplete: OnPuzzleRushComplete,
-    private val countdownTimer: CountdownTimer,
+    @param:DefaultTimer private val countdownTimer: CountdownTimer,
     private val userRepository: UserRepository,
     puzzleInteractor: PuzzleInteractor,
 ) : ViewModel(), PuzzleRushScreenInteractor {
@@ -37,7 +39,7 @@ class PuzzleRushViewModel @Inject constructor(
     private val _gameState = MutableStateFlow<GameState>(GameState.Loading)
     val uiState: StateFlow<PuzzleRushUiState> = combine(
         _gameState,
-        countdownTimer.remainingSeconds
+        countdownTimer.remaining.map { it.seconds }
     ) { gameState, remainingSeconds ->
         // Handle time expiry during playing
         val state = if (gameState is GameState.Playing && remainingSeconds <= 0) {

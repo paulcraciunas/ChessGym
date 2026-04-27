@@ -27,5 +27,6 @@ private fun getTabIndexFromRoute(route: String?): Int = when {
     route?.contains("PuzzleDashboard") == true -> 1
     route?.contains("BoardVisualization") == true -> 2
     route?.contains("BlindMode") == true -> 3
+    route?.contains("ToolsDashboard") == true -> 4
     else -> -1
 }

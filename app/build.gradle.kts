@@ -74,6 +74,9 @@ dependencies {
     implementation(project(":screens:settings:ui"))
     implementation(project(":screens:about:ui"))
     implementation(project(":screens:blindmode:ui"))
+    implementation(project(":screens:tools:dashboard:ui"))
+    implementation(project(":screens:tools:clock:ui"))
+    implementation(project(":screens:tools:importgame:ui"))
     implementation(project(":user:di"))
 
     implementation(libs.androidx.lifecycle.runtime.compose)

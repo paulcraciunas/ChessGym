@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.AppBar
 import com.paulcraciunas.screens.common.AppBarAlignment
+import com.paulcraciunas.screens.common.Footer
 import com.paulcraciunas.screens.common.LoadingContent
 import com.paulcraciunas.screens.common.backgroundColor
 import com.paulcraciunas.screens.common.controls.FailedPuzzlesCard
@@ -113,6 +114,10 @@ private fun DashboardContent(
                 onClick = { onPuzzleModeSelected(PuzzleMode.FailedPuzzles) },
                 modifier = Modifier.testTag { PuzzleDashboardTags.Cards.FAILED_PUZZLES },
             )
+        }
+
+        item {
+            Footer()
         }
     }
 }

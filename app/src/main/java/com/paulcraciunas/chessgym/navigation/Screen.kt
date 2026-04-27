@@ -41,6 +41,18 @@ sealed class Screen {
     data object BlindMode : Screen()
 
     @Serializable
+    data object ToolsDashboard : Screen()
+
+    @Serializable
+    data object Clock : Screen()
+
+    @Serializable
+    data object Analysis : Screen()
+
+    @Serializable
+    data object ImportGame : Screen()
+
+    @Serializable
     data object Settings : Screen()
 
     @Serializable
