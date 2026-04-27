@@ -4,5 +4,6 @@ enum class BottomNavItem(val screen: Screen) {
     Home(Screen.Home),
     PuzzleDashboard(Screen.PuzzleDashboard),
     BoardVisualization(Screen.BoardVisualization),
-    BlindMode(Screen.BlindMode)
+    BlindMode(Screen.BlindMode),
+    ToolsDashboard(Screen.ToolsDashboard)
 }
