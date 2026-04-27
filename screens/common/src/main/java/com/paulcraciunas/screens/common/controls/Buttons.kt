@@ -15,6 +15,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -22,21 +23,24 @@ import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
-fun PlayButton(
+fun DefaultButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     @StringRes text: Int = R.string.boardvis_play,
+    icon: ImageVector? = null,
 ) {
     FilledTonalButton(
         onClick = onClick,
         modifier = modifier
     ) {
-        Icon(
-            imageVector = Icons.Filled.PlayArrow,
-            contentDescription = null,
-            modifier = Modifier.size(18.dp)
-        )
-        Spacer(modifier = Modifier.width(8.dp))
+        icon?.let {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                modifier = Modifier.size(18.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+        }
         Text(
             text = stringResource(text),
             style = MaterialTheme.typography.titleMedium,
@@ -46,27 +50,31 @@ fun PlayButton(
 }
 
 @Composable
+fun PlayButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    @StringRes text: Int = R.string.boardvis_play,
+) {
+    DefaultButton(
+        onClick = onClick,
+        modifier = modifier,
+        text = text,
+        icon = Icons.Filled.PlayArrow
+    )
+}
+
+@Composable
 fun RefreshButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     @StringRes text: Int = R.string.boardvis_play_again,
 ) {
-    FilledTonalButton(
+    DefaultButton(
         onClick = onClick,
-        modifier = modifier
-    ) {
-        Icon(
-            imageVector = Icons.Filled.Refresh,
-            contentDescription = null,
-            modifier = Modifier.size(18.dp)
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(
-            text = stringResource(text),
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(vertical = 4.dp)
-        )
-    }
+        modifier = modifier,
+        text = text,
+        icon = Icons.Filled.Refresh
+    )
 }
 
 @Preview(showBackground = true)
