@@ -18,6 +18,7 @@ dependencies {
     implementation(project(":screens:common"))
     implementation(project(":settings:application:api"))
 
+    implementation(libs.public.timber)
     implementation(libs.androidx.lifecycle.runtime.ktx)
 
     testImplementation(project(":game:logic:impl"))
