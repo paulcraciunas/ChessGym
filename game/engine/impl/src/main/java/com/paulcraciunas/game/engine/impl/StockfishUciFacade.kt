@@ -51,6 +51,19 @@ internal class StockfishUciFacade @Inject constructor(
         return response
     }
 
+    override fun sendCommand(command: UciCommand) {
+        try {
+            bridge.nativeSendCommand(cmd = command.protocol())
+        } catch (e: Exception) {
+            Timber.w(e, "Failed to send command: %s", command)
+            throw e
+        }
+    }
+
+    override fun readLine(): String {
+        return bridge.nativeReadOutput()
+    }
+
     companion object {
         internal const val RESPONSE_TIMEOUT_MS = 30_000L
     }

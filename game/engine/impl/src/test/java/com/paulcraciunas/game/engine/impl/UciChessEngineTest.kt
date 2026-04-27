@@ -5,10 +5,12 @@ import com.paulcraciunas.game.engine.impl.uci.UciResponse
 import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Rank
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 internal class UciChessEngineTest {
@@ -127,10 +129,70 @@ internal class UciChessEngineTest {
             fakeFacade.executedCommands.map { it::class },
         )
     }
+
+    @Nested
+    internal inner class AnalysisTests {
+        @Test
+        fun `GIVEN engine WHEN prepareForAnalysis THEN sends newgame and disables elo limit`() = runTest(testDispatcher) {
+            underTest.prepareForAnalysis()
+
+            assertTrue(fakeFacade.isStarted)
+            val commandTypes = fakeFacade.executedCommands.map { it::class }
+            assertEquals(UciCommand.Init::class, commandTypes[0])
+            assertEquals(UciCommand.IsReady::class, commandTypes[1])
+            assertEquals(UciCommand.NewGame::class, commandTypes[2])
+            assertEquals(UciCommand.DisableLimitStrength::class, commandTypes[3])
+            assertEquals(UciCommand.IsReady::class, commandTypes[4])
+        }
+
+        @Test
+        fun `GIVEN engine WHEN analyzePosition THEN sends multiPV, position, and go infinite`() = runTest(testDispatcher) {
+            fakeFacade.analysisLines = listOf(
+                "info depth 1 seldepth 1 multipv 1 score cp 30 nodes 20 nps 10000 time 2 pv e2e4",
+                "bestmove e2e4",
+            )
+
+            val results = underTest.analyzePosition("startpos", 3).toList()
+
+            assertEquals(1, results.size)
+            assertEquals(30, (results[0].evaluation as com.paulcraciunas.game.engine.api.Evaluation.Centipawns).value)
+
+            val commandTypes = fakeFacade.executedCommands.map { it::class }
+            assertEquals(UciCommand.SetMultiPV::class, commandTypes[0])
+            assertEquals(UciCommand.SetPosition::class, commandTypes[1])
+
+            assertEquals("go infinite", fakeFacade.sentCommands[0].protocol())
+        }
+
+        @Test
+        fun `GIVEN engine WHEN analyzePosition with multiple depths THEN emits progressive results`() = runTest(testDispatcher) {
+            fakeFacade.analysisLines = listOf(
+                "info depth 1 seldepth 1 multipv 1 score cp 18 nodes 20 nps 10000 time 2 pv e2e4",
+                "info depth 2 seldepth 2 multipv 1 score cp 30 nodes 100 nps 50000 time 2 pv e2e4 e7e5",
+                "bestmove e2e4",
+            )
+
+            val results = underTest.analyzePosition("startpos", 3).toList()
+
+            assertEquals(2, results.size)
+            assertEquals(1, results[0].depth)
+            assertEquals(2, results[1].depth)
+        }
+
+        @Test
+        fun `GIVEN engine WHEN stopAnalysis THEN sends stop command`() = runTest(testDispatcher) {
+            underTest.stopAnalysis()
+
+            assertEquals("stop", fakeFacade.sentCommands[0].protocol())
+        }
+    }
 }
 
 private class FakeUciFacade : UciFacade {
     val executedCommands: MutableList<UciCommand> = mutableListOf()
+    val sentCommands: MutableList<UciCommand> = mutableListOf()
+    var analysisLines: List<String> = emptyList()
+    private var analysisLineIndex: Int = 0
     var isStarted: Boolean = false
     var isShutdown: Boolean = false
     var bestMoveResponse: com.paulcraciunas.game.engine.api.EngineMove? = null
@@ -156,5 +218,15 @@ private class FakeUciFacade : UciFacade {
             else -> UciResponse.Done
         }
         return response as T
+    }
+
+    override fun sendCommand(command: UciCommand) {
+        sentCommands.add(command)
+        analysisLineIndex = 0
+    }
+
+    override fun readLine(): String {
+        if (analysisLineIndex >= analysisLines.size) return "bestmove e2e4"
+        return analysisLines[analysisLineIndex++]
     }
 }
