@@ -10,7 +10,19 @@ class AnalyzePositionImpl @Inject constructor(
     private val engine: ChessEngine,
 ) : AnalyzePosition {
 
+    override suspend fun prepare() {
+        engine.prepareForAnalysis()
+    }
+
     override fun invoke(fen: String): Flow<AnalysisResult> {
         return engine.analyzePosition(fen)
+    }
+
+    override suspend fun stopAnalysis() {
+        engine.stopAnalysis()
+    }
+
+    override suspend fun shutdown() {
+        engine.shutdown()
     }
 }
