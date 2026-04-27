@@ -1,0 +1,186 @@
+package com.paulcraciunas.screens.tools.analysis.ui
+
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.rotate
+import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.paulcraciunas.game.logic.api.board.File
+import com.paulcraciunas.game.logic.api.board.Locus
+import com.paulcraciunas.game.logic.api.board.Rank
+import com.paulcraciunas.global.resources.R
+import com.paulcraciunas.screens.common.board.BoardOrientation
+import com.paulcraciunas.screens.common.theme.ChessGymTheme
+import com.paulcraciunas.screens.tools.analysis.vm.MoveArrow
+import kotlin.math.atan2
+import kotlin.math.hypot
+
+@Composable
+internal fun MoveArrowOverlay(
+    arrow: MoveArrow?,
+    orientation: BoardOrientation,
+    modifier: Modifier = Modifier,
+    color: Color = MaterialTheme.colorScheme.onSurface,
+) {
+    if (arrow == null) return
+
+    val tipVector = ImageVector.vectorResource(id = R.drawable.line_end_tip)
+    val bodyVector = ImageVector.vectorResource(id = R.drawable.line_body)
+    val tipPainter = rememberVectorPainter(image = tipVector)
+    val bodyPainter = rememberVectorPainter(image = bodyVector)
+
+    val indices = remember(arrow, orientation) {
+        object {
+            val fromFile = fileIndex(arrow.from.file.ordinal, orientation)
+            val fromRank = rankIndex(arrow.from.rank.ordinal, orientation)
+            val toFile = fileIndex(arrow.to.file.ordinal, orientation)
+            val toRank = rankIndex(arrow.to.rank.ordinal, orientation)
+        }
+    }
+
+    Canvas(modifier = modifier.fillMaxSize()) {
+        val boardSize = minOf(size.width, size.height)
+        val squareSize = boardSize / 8f
+
+        val fromCenter = Offset(
+            x = (indices.fromFile + 0.5f) * squareSize,
+            y = (indices.fromRank + 0.5f) * squareSize,
+        )
+        val toCenter = Offset(
+            x = (indices.toFile + 0.5f) * squareSize,
+            y = (indices.toRank + 0.5f) * squareSize,
+        )
+
+        drawMoveArrow(
+            from = fromCenter,
+            to = toCenter,
+            squareSize = squareSize,
+            color = color.copy(alpha = ARROW_ALPHA),
+            tipPainter = tipPainter,
+            bodyPainter = bodyPainter,
+        )
+    }
+}
+
+private fun fileIndex(fileOrdinal: Int, orientation: BoardOrientation): Int =
+    when (orientation) {
+        BoardOrientation.White -> fileOrdinal
+        BoardOrientation.Black -> 7 - fileOrdinal
+    }
+
+private fun rankIndex(rankOrdinal: Int, orientation: BoardOrientation): Int =
+    when (orientation) {
+        BoardOrientation.White -> 7 - rankOrdinal
+        BoardOrientation.Black -> rankOrdinal
+    }
+
+private fun DrawScope.drawMoveArrow(
+    from: Offset,
+    to: Offset,
+    squareSize: Float,
+    color: Color,
+    tipPainter: Painter,
+    bodyPainter: Painter,
+) {
+    val arrowheadSize = squareSize * ARROWHEAD_SCALE_FACTOR
+    val tipScale = arrowheadSize / 960f
+
+    // Coordinates from the Material vector viewport (960x960)
+    val viewportTipX = 783f
+    val viewportNotchX = 480f
+    val viewportCenterX = 480f
+
+    val dx = to.x - from.x
+    val dy = to.y - from.y
+    val distance = hypot(dx.toDouble(), dy.toDouble()).toFloat()
+    val angleRad = atan2(dy.toDouble(), dx.toDouble()).toFloat()
+    val angleDeg = Math.toDegrees(angleRad.toDouble()).toFloat()
+
+    // 1. Calculate tail length to meet the arrowhead notch exactly
+    // Distance from the tip of the arrow to where the notch is
+    val tipToNotchDist = (viewportTipX - viewportNotchX) * tipScale
+    val tailLength = distance - tipToNotchDist
+
+    // 2. Draw the body (tail)
+    rotate(degrees = angleDeg, pivot = from) {
+        translate(left = from.x, top = from.y - arrowheadSize / 2) {
+            with(bodyPainter) {
+                draw(
+                    size = Size(tailLength, arrowheadSize),
+                    colorFilter = ColorFilter.tint(color)
+                )
+            }
+        }
+    }
+
+    // 3. Draw the tip (head)
+    // We must shift the drawing so the vector's tip (at 783) lands exactly on 'to'
+    val tipToCenterDist = (viewportTipX - viewportCenterX) * tipScale
+    val shiftedTo = Offset(
+        x = to.x - tipToCenterDist * kotlin.math.cos(angleRad),
+        y = to.y - tipToCenterDist * kotlin.math.sin(angleRad)
+    )
+
+    translate(left = shiftedTo.x - arrowheadSize / 2, top = shiftedTo.y - arrowheadSize / 2) {
+        rotate(degrees = angleDeg, pivot = Offset(arrowheadSize / 2, arrowheadSize / 2)) {
+            with(tipPainter) {
+                draw(
+                    size = Size(arrowheadSize, arrowheadSize),
+                    colorFilter = ColorFilter.tint(color)
+                )
+            }
+        }
+    }
+}
+
+private const val ARROW_ALPHA = 0.55f
+private const val ARROWHEAD_SCALE_FACTOR = 0.9f
+
+@Preview(showBackground = true)
+@Composable
+private fun MoveArrowWhitePreview() {
+    ChessGymTheme {
+        Box(modifier = Modifier.size(300.dp)) {
+            MoveArrowOverlay(
+                arrow = MoveArrow(
+                    from = Locus(File.e, Rank.`2`),
+                    to = Locus(File.e, Rank.`4`)
+                ),
+                orientation = BoardOrientation.White
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun MoveArrowKnightPreview() {
+    ChessGymTheme {
+        Box(modifier = Modifier.size(300.dp)) {
+            MoveArrowOverlay(
+                arrow = MoveArrow(
+                    from = Locus(File.g, Rank.`1`),
+                    to = Locus(File.f, Rank.`3`)
+                ),
+                orientation = BoardOrientation.White,
+                color = Color.Green
+            )
+        }
+    }
+}
