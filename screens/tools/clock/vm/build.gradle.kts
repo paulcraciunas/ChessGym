@@ -11,6 +11,9 @@ androidLibrary {
 
 dependencies {
     implementation(project(":game:logic:api"))
+    implementation(project(":domain:api"))
 
     implementation(libs.androidx.lifecycle.runtime.ktx)
+
+    testImplementation(testFixtures(project(":domain:api")))
 }
