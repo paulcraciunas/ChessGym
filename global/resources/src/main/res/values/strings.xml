@@ -355,6 +355,10 @@
     <string name="import_dialog_cancel">Cancel</string>
     <string name="import_error_invalid_fen">Invalid FEN notation. Please check and try again.</string>
     <string name="import_error_invalid_pgn">Invalid PGN notation. Please check and try again.</string>
+    <string name="import_game_jump_to_start">Jump to start</string>
+    <string name="import_game_previous_move">Previous move</string>
+    <string name="import_game_next_move">Next move</string>
+    <string name="import_game_jump_to_end">Jump to end</string>
     <!-- endregion -->
 
     <!-- region Blind Mode -->
