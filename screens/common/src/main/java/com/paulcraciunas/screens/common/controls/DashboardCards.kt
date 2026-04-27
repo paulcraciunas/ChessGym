@@ -119,7 +119,7 @@ fun AnalysisCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) = DashboardCard(
-    isEnabled = false,
+    isEnabled = true,
     icon = { ResIcon(icon = R.drawable.icon_analysis) },
     title = R.string.tools_analysis_title,
     description = R.string.tools_analysis_description,

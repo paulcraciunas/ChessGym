@@ -1,11 +1,14 @@
 package com.paulcraciunas.chessgym.screens
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.paulcraciunas.chessgym.navigation.Screen
+import com.paulcraciunas.screens.tools.analysis.ui.AnalysisScreen
+import com.paulcraciunas.screens.tools.analysis.vm.AnalysisViewModel
 import com.paulcraciunas.screens.tools.clock.ui.ClockScreen
 import com.paulcraciunas.screens.tools.clock.vm.ClockViewModel
 import com.paulcraciunas.screens.tools.dashboard.ui.ToolsDashboardScreen
@@ -30,7 +33,9 @@ internal fun ToolsDashboard(
                     ToolsMode.Clock -> {
                         tabNavController.navigate(Screen.Clock)
                     }
-                    ToolsMode.Analysis -> Unit
+                    ToolsMode.Analysis -> {
+                        tabNavController.navigate(Screen.Analysis())
+                    }
                     ToolsMode.ImportGame -> {
                         tabNavController.navigate(Screen.ImportGame)
                     }
@@ -53,6 +58,33 @@ internal fun ChessClock(
         onNavigateBack = {
             tabNavController.popBackStack(Screen.ToolsDashboard, inclusive = false)
         },
+    )
+}
+
+@Composable
+internal fun AnalysisBoard(
+    tabNavController: NavHostController,
+    showBorders: Boolean,
+    highlightLegalMoves: Boolean,
+    enableAnimations: Boolean,
+    fen: String?,
+) {
+    val vm: AnalysisViewModel = hiltViewModel()
+    val analysisState by vm.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        vm.loadPosition(fen)
+    }
+
+    AnalysisScreen(
+        uiState = analysisState,
+        showBorders = showBorders,
+        highlightLegalMoves = highlightLegalMoves,
+        enableAnimations = enableAnimations,
+        onNavigateBack = {
+            tabNavController.popBackStack(Screen.ToolsDashboard, inclusive = false)
+        },
+        interactions = vm,
     )
 }
 
