@@ -91,7 +91,14 @@ class FakeChessEngine : ChessEngine {
         depth = 15,
         evaluation = Evaluation.Centipawns(30),
         lines = listOf(
-            EngineLine(rank = 1, evaluation = Evaluation.Centipawns(30), moves = listOf("e2e4", "e7e5")),
+            EngineLine(
+                rank = 1,
+                evaluation = Evaluation.Centipawns(30),
+                moves = listOf(
+                    EngineMove(from = "e2".loc(), to = "e4".loc()),
+                    EngineMove(from = "e7".loc(), to = "e5".loc()),
+                ),
+            ),
         ),
     )
 }

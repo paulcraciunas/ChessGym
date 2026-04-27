@@ -2,6 +2,7 @@ package com.paulcraciunas.game.engine.impl.uci
 
 import com.paulcraciunas.game.engine.api.AnalysisResult
 import com.paulcraciunas.game.engine.api.EngineLine
+import com.paulcraciunas.game.engine.api.UciMoveParser
 
 internal class AnalysisAccumulator(private val multiPvCount: Int) {
     private val latestByPv = mutableMapOf<Int, ParsedInfoLine>()
@@ -38,7 +39,7 @@ internal class AnalysisAccumulator(private val multiPvCount: Int) {
                 EngineLine(
                     rank = pvIndex,
                     evaluation = info.evaluation,
-                    moves = info.principalVariation,
+                    moves = info.principalVariation.mapNotNull { UciMoveParser.parse(it) },
                 )
             }
 
