@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.paulcraciunas.domain.api.general.Timer
 import com.paulcraciunas.domain.api.puzzles.GetFailedPuzzles
+import com.paulcraciunas.domain.api.puzzles.GetPuzzleFen
 import com.paulcraciunas.domain.api.puzzles.OnFailedPuzzleComplete
 import com.paulcraciunas.game.logic.api.PuzzleInteractor
 import com.paulcraciunas.game.logic.api.board.Locus
@@ -12,9 +13,12 @@ import com.paulcraciunas.screens.common.model.PuzzleResult
 import com.paulcraciunas.screens.common.model.PuzzleViewModelHelper
 import com.paulcraciunas.screens.common.model.PuzzleViewModelHelper.OnSquareClick
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -23,10 +27,14 @@ import javax.inject.Inject
 class FailedPuzzlesViewModel @Inject constructor(
     private val getFailedPuzzles: GetFailedPuzzles,
     private val onFailedPuzzleComplete: OnFailedPuzzleComplete,
+    private val getPuzzleFen: GetPuzzleFen,
     private val timer: Timer,
     puzzleInteractor: PuzzleInteractor,
 ) : ViewModel(), FailedPuzzlesScreenInteractor {
     private val helper = PuzzleViewModelHelper(puzzleInteractor = puzzleInteractor)
+
+    private val _navigateToAnalysis = Channel<String>(Channel.BUFFERED)
+    val navigateToAnalysis: Flow<String> = _navigateToAnalysis.receiveAsFlow()
 
     private val _uiState = MutableStateFlow<FailedPuzzlesUiState>(FailedPuzzlesUiState.Loading)
     val uiState: StateFlow<FailedPuzzlesUiState> = _uiState.asStateFlow()
@@ -88,6 +96,12 @@ class FailedPuzzlesViewModel @Inject constructor(
         val currentState = _uiState.value
         if (currentState is FailedPuzzlesUiState.Finished) {
             _uiState.value = currentState.copy(showCompletionDialog = false)
+        }
+    }
+
+    override fun onAnalyzeFailedPuzzle(puzzleId: Int) {
+        viewModelScope.launch {
+            getPuzzleFen(puzzleId)?.let { fen -> _navigateToAnalysis.send(fen) } ?: Timber.w("Failed to get puzzle fen")
         }
     }
 

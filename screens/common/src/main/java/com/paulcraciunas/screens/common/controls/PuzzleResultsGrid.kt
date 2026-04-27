@@ -2,6 +2,7 @@ package com.paulcraciunas.screens.common.controls
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,6 +32,7 @@ import com.paulcraciunas.screens.common.theme.LoadingTheme
 fun PuzzleResultsGrid(
     results: List<PuzzleResult>,
     modifier: Modifier = Modifier,
+    onFailedPuzzleClicked: ((Int) -> Unit) = {},
 ) {
     FlowRow(
         modifier = modifier,
@@ -38,7 +40,12 @@ fun PuzzleResultsGrid(
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         results.forEach { result ->
-            PuzzleResultItem(result = result)
+            PuzzleResultItem(
+                result = result,
+                onClick = if (!result.success && result.id != null) {
+                    { onFailedPuzzleClicked(result.id) }
+                } else null,
+            )
         }
     }
 }
@@ -46,6 +53,7 @@ fun PuzzleResultsGrid(
 @Composable
 private fun PuzzleResultItem(
     result: PuzzleResult,
+    onClick: (() -> Unit)?,
     modifier: Modifier = Modifier,
 ) {
     val backgroundColor = if (result.success) {
@@ -63,6 +71,7 @@ private fun PuzzleResultItem(
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(8.dp))
+            .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
             .background(backgroundColor)
             .padding(8.dp),
         contentAlignment = Alignment.Center
@@ -123,7 +132,8 @@ private fun PuzzleResultsGridManyPreview() {
 private fun PuzzleResultItemSuccessPreview() {
     ChessGymTheme {
         PuzzleResultItem(
-            result = PuzzleResult(id = 1, rating = 1350, success = true)
+            result = PuzzleResult(id = 1, rating = 1350, success = true),
+            onClick = null,
         )
     }
 }
@@ -133,7 +143,8 @@ private fun PuzzleResultItemSuccessPreview() {
 private fun PuzzleResultItemFailedPreview() {
     ChessGymTheme {
         PuzzleResultItem(
-            result = PuzzleResult(id = 2, rating = 1400, success = false)
+            result = PuzzleResult(id = 2, rating = 1400, success = false),
+            onClick = {},
         )
     }
 }

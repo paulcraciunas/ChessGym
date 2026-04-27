@@ -1,6 +1,7 @@
 package com.paulcraciunas.chessgym.screens
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -89,6 +90,12 @@ internal fun PuzzleRush(
     val vm: PuzzleRushViewModel = hiltViewModel()
     val puzzleRushState by vm.uiState.collectAsStateWithLifecycle()
 
+    LaunchedEffect(Unit) {
+        vm.navigateToAnalysis.collect { fen ->
+            tabNavController.navigate(Screen.Analysis(fen = fen))
+        }
+    }
+
     PuzzleRushScreen(
         uiState = puzzleRushState,
         showBorders = showBorders,
@@ -113,6 +120,12 @@ internal fun FailedPuzzles(
 
     LifecycleEventEffect(Lifecycle.Event.ON_STOP) { vm.onStop() }
     LifecycleEventEffect(Lifecycle.Event.ON_START) { vm.onStart() }
+
+    LaunchedEffect(Unit) {
+        vm.navigateToAnalysis.collect { fen ->
+            tabNavController.navigate(Screen.Analysis(fen = fen))
+        }
+    }
 
     FailedPuzzlesScreen(
         uiState = failedPuzzlesState,

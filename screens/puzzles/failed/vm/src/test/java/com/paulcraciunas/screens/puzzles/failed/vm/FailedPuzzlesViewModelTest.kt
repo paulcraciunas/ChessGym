@@ -1,6 +1,7 @@
 package com.paulcraciunas.screens.puzzles.failed.vm
 
 import com.paulcraciunas.domain.api.general.FakeTimer
+import com.paulcraciunas.domain.api.puzzles.FakeGetPuzzleFen
 import com.paulcraciunas.domain.api.puzzles.GetFailedPuzzles
 import com.paulcraciunas.domain.api.puzzles.OnFailedPuzzleComplete
 import com.paulcraciunas.game.logic.api.Puzzle
@@ -27,6 +28,7 @@ internal class FailedPuzzlesViewModelTest {
 
     private val getFailedPuzzles = FakeGetFailedPuzzles()
     private val onFailedPuzzleComplete = FakeOnFailedPuzzleComplete()
+    private val getPuzzleFen = FakeGetPuzzleFen()
     private val timer = FakeTimer()
 
     @BeforeEach
@@ -290,6 +292,7 @@ internal class FailedPuzzlesViewModelTest {
         val underTest = FailedPuzzlesViewModel(
             getFailedPuzzles = getFailedPuzzles,
             onFailedPuzzleComplete = onFailedPuzzleComplete,
+            getPuzzleFen = getPuzzleFen,
             timer = timer,
             puzzleInteractor = RealGameFactory().puzzleInteractor(),
         )
@@ -331,6 +334,7 @@ internal class FailedPuzzlesViewModelTest {
         val underTest = FailedPuzzlesViewModel(
             getFailedPuzzles = getFailedPuzzles,
             onFailedPuzzleComplete = onFailedPuzzleComplete,
+            getPuzzleFen = getPuzzleFen,
             timer = timer,
             puzzleInteractor = RealGameFactory().puzzleInteractor(),
         )

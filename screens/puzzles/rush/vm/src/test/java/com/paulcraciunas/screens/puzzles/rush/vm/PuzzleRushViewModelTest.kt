@@ -1,6 +1,7 @@
 package com.paulcraciunas.screens.puzzles.rush.vm
 
 import com.paulcraciunas.domain.api.general.FakeCountdownTimer
+import com.paulcraciunas.domain.api.puzzles.FakeGetPuzzleFen
 import com.paulcraciunas.domain.api.puzzles.GetBufferedPuzzleSeries
 import com.paulcraciunas.domain.api.puzzles.OnPuzzleRushComplete
 import com.paulcraciunas.domain.api.puzzles.PuzzleRushResult
@@ -32,6 +33,7 @@ internal class PuzzleRushViewModelTest {
     private val onPuzzleRushComplete = FakeOnPuzzleRushComplete()
     private val countdownTimer = FakeCountdownTimer()
     private val userRepository = FakeUserRepository()
+    private val getPuzzleFen = FakeGetPuzzleFen()
 
     @BeforeEach
     fun setUp() {
@@ -251,6 +253,7 @@ internal class PuzzleRushViewModelTest {
             onPuzzleRushComplete = onPuzzleRushComplete,
             countdownTimer = countdownTimer,
             userRepository = userRepository,
+            getPuzzleFen = getPuzzleFen,
             puzzleInteractor = RealGameFactory().puzzleInteractor(),
         )
         testDispatcher.scheduler.advanceUntilIdle()
