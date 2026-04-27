@@ -6,6 +6,7 @@ import com.paulcraciunas.domain.api.general.CountdownTimer
 import com.paulcraciunas.domain.api.boardvis.FindSquareResult
 import com.paulcraciunas.domain.api.GenerateRandomLoci
 import com.paulcraciunas.domain.api.boardvis.OnFindSquareComplete
+import com.paulcraciunas.domain.api.general.DefaultTimer
 import com.paulcraciunas.domain.api.general.RandomFactory
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
@@ -25,7 +26,7 @@ import javax.inject.Inject
 class FindTheSquareViewModel @Inject constructor(
     private val generateRandomLoci: GenerateRandomLoci,
     private val onFindSquareComplete: OnFindSquareComplete,
-    private val countdownTimer: CountdownTimer,
+    @param:DefaultTimer private val countdownTimer: CountdownTimer,
     private val userRepository: UserRepository,
     private val randomFactory: RandomFactory,
     gameDuration: GameDuration,
@@ -35,7 +36,7 @@ class FindTheSquareViewModel @Inject constructor(
     private val _gameState = MutableStateFlow<GameState>(GameState.Setup())
     val uiState: StateFlow<FindTheSquareUiState> = combine(
         _gameState,
-        countdownTimer.remainingSeconds
+        countdownTimer.remaining.map { it.seconds }
     ) { gameState, remainingSeconds ->
         // Handle time expiry during playing
         val state = if (gameState is GameState.Playing && remainingSeconds <= 0) {

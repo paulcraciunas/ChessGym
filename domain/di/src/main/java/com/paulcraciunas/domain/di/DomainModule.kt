@@ -1,7 +1,6 @@
 package com.paulcraciunas.domain.di
 
 import com.paulcraciunas.domain.api.general.CalculateElo
-import com.paulcraciunas.domain.api.general.CountdownTimer
 import com.paulcraciunas.domain.api.boardvis.GenerateMoveThePieceBoard
 import com.paulcraciunas.domain.api.GenerateRandomLoci
 import com.paulcraciunas.domain.api.boardvis.MoveThePieceGameEngine
@@ -38,7 +37,6 @@ import com.paulcraciunas.domain.impl.puzzles.OnPuzzleCompleteImpl
 import com.paulcraciunas.domain.impl.puzzles.OnPuzzleRushCompleteImpl
 import com.paulcraciunas.domain.impl.puzzles.OnStreakCompleteImpl
 import com.paulcraciunas.domain.impl.puzzles.OnStreakPuzzleCompleteImpl
-import com.paulcraciunas.domain.impl.general.RealCountdownTimer
 import com.paulcraciunas.domain.impl.general.SimpleTimer
 import dagger.Binds
 import dagger.Module
@@ -87,9 +85,6 @@ internal abstract class DomainModule {
 
     @Binds
     abstract fun bindTimer(impl: SimpleTimer): Timer
-
-    @Binds
-    abstract fun bindCountdownTimer(impl: RealCountdownTimer): CountdownTimer
 
     @Binds
     @Singleton
