@@ -1,17 +1,21 @@
 package com.paulcraciunas.chessgym.dsl
 
 import androidx.compose.ui.test.junit4.ComposeTestRule
+import com.paulcraciunas.chessgym.dsl.assertions.AnalysisScreenAssertions
 import com.paulcraciunas.chessgym.dsl.assertions.BlindModeScreenAssertions
 import com.paulcraciunas.chessgym.dsl.assertions.BoardVisDashboardAssertions
+import com.paulcraciunas.chessgym.dsl.assertions.ClockScreenAssertions
 import com.paulcraciunas.chessgym.dsl.assertions.FailedPuzzlesScreenAssertions
 import com.paulcraciunas.chessgym.dsl.assertions.FindTheSquareScreenAssertions
 import com.paulcraciunas.chessgym.dsl.assertions.HomeScreenAssertions
+import com.paulcraciunas.chessgym.dsl.assertions.ImportGameScreenAssertions
 import com.paulcraciunas.chessgym.dsl.assertions.MoveThePieceScreenAssertions
 import com.paulcraciunas.chessgym.dsl.assertions.NavigationAssertions
 import com.paulcraciunas.chessgym.dsl.assertions.PuzzleDashboardAssertions
 import com.paulcraciunas.chessgym.dsl.assertions.PuzzleRushScreenAssertions
 import com.paulcraciunas.chessgym.dsl.assertions.PuzzleStreakScreenAssertions
 import com.paulcraciunas.chessgym.dsl.assertions.RatedPuzzleScreenAssertions
+import com.paulcraciunas.chessgym.dsl.assertions.ToolsDashboardAssertions
 
 object Then {
     lateinit var compose: ComposeTestRule
@@ -26,6 +30,10 @@ object Then {
     lateinit var blindMode: BlindModeScreenAssertions
     lateinit var findTheSquare: FindTheSquareScreenAssertions
     lateinit var moveThePiece: MoveThePieceScreenAssertions
+    lateinit var toolsDashboard: ToolsDashboardAssertions
+    lateinit var clockScreen: ClockScreenAssertions
+    lateinit var importGame: ImportGameScreenAssertions
+    lateinit var analysisScreen: AnalysisScreenAssertions
 
     fun init(rule: ComposeTestRule) {
         compose = rule
@@ -40,5 +48,9 @@ object Then {
         blindMode = BlindModeScreenAssertions(rule)
         findTheSquare = FindTheSquareScreenAssertions(rule)
         moveThePiece = MoveThePieceScreenAssertions(rule)
+        toolsDashboard = ToolsDashboardAssertions(rule)
+        clockScreen = ClockScreenAssertions(rule)
+        importGame = ImportGameScreenAssertions(rule)
+        analysisScreen = AnalysisScreenAssertions(rule)
     }
 }

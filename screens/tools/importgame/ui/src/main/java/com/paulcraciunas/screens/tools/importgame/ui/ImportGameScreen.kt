@@ -32,7 +32,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
+import androidx.compose.ui.semantics.semantics
 import com.paulcraciunas.screens.common.AppBar
+import com.paulcraciunas.screens.common.backgroundColor
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
 import com.paulcraciunas.screens.common.controls.DefaultButton
@@ -55,6 +57,7 @@ fun ImportGameScreen(
     interactions: ImportGameScreenInteractor,
     modifier: Modifier = Modifier,
 ) {
+    val bgColor = MaterialTheme.colorScheme.background
     Scaffold(
         topBar = {
             AppBar(
@@ -62,7 +65,9 @@ fun ImportGameScreen(
                 navButton = { Back(onClick = onNavigateBack) },
             )
         },
-        modifier = modifier.testTag { ImportGameScreenTags.SCREEN },
+        modifier = modifier
+            .testTag { ImportGameScreenTags.SCREEN }
+            .semantics { this.backgroundColor = bgColor },
     ) { innerPadding ->
         Column(
             modifier = Modifier
