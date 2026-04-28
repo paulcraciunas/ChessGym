@@ -11,12 +11,6 @@ class SettingsSetup(private val repository: FakeAppSettingsRepository) {
         )
     }
 
-    fun puzzlesNotDownloaded(): SettingsSetup = apply {
-        repository.setAppSettings(
-            repository.getCurrentSettings().copy(puzzlesDownloaded = false)
-        )
-    }
-
     fun noAnimations(): SettingsSetup = apply {
         repository.setAppSettings(
             repository.getCurrentSettings().copy(enableAnimations = false)
