@@ -29,6 +29,9 @@ class NavigationActions(private val rule: ComposeTestRule) {
     fun navigateToBlindMode(): NavigationActions =
         performAction(BottomNavigationTags.tagFor(BottomNavItem.BlindMode))
 
+    fun navigateToTools(): NavigationActions =
+        performAction(BottomNavigationTags.tagFor(BottomNavItem.ToolsDashboard))
+
     private fun performAction(tag: String): NavigationActions = apply {
         rule.onNodeWithTag(tag).performClick()
         rule.waitForIdle()

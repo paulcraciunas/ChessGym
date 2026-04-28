@@ -31,9 +31,4 @@ internal object TestClockTimersModule {
     @Provides
     @DefaultTimer
     fun provideDefaultTimer(): CountdownTimer = FakeCountdownTimer()
-
-    fun reset() {
-        whiteTimer.stop()
-        blackTimer.stop()
-    }
 }
