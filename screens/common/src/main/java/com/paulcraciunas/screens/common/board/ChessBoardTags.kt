@@ -12,6 +12,7 @@ import com.paulcraciunas.game.logic.api.board.Rank
  */
 object ChessBoardTags {
     private const val SQUARE_PREFIX = "square_"
+    const val BORDER = "board_border"
 
     fun square(file: File, rank: Rank): String = "$SQUARE_PREFIX${file.name}${rank.name}"
 

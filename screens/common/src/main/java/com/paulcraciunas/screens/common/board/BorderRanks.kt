@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.BoardColors
 
 @Composable
@@ -23,6 +24,7 @@ internal fun BorderRanks(
     Column(
         modifier = modifier
             .requiredWidth(width)
+            .testTag { ChessBoardTags.BORDER }
     ) {
         Box(modifier = Modifier.requiredHeight(width)) // Empty corner
         for (rank in orientation.ranks) {
