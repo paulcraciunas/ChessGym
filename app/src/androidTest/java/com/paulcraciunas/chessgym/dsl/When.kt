@@ -1,14 +1,18 @@
 package com.paulcraciunas.chessgym.dsl
 
 import androidx.compose.ui.test.junit4.ComposeTestRule
+import com.paulcraciunas.chessgym.dsl.actions.AnalysisScreenActions
 import com.paulcraciunas.chessgym.dsl.actions.BoardVisDashboardActions
+import com.paulcraciunas.chessgym.dsl.actions.ClockScreenActions
 import com.paulcraciunas.chessgym.dsl.actions.FailedPuzzlesScreenActions
 import com.paulcraciunas.chessgym.dsl.actions.FindTheSquareScreenActions
 import com.paulcraciunas.chessgym.dsl.actions.HomeScreenActions
+import com.paulcraciunas.chessgym.dsl.actions.ImportGameScreenActions
 import com.paulcraciunas.chessgym.dsl.actions.NavigationActions
 import com.paulcraciunas.chessgym.dsl.actions.PuzzleDashboardActions
 import com.paulcraciunas.chessgym.dsl.actions.PuzzleStreakScreenActions
 import com.paulcraciunas.chessgym.dsl.actions.RatedPuzzleScreenActions
+import com.paulcraciunas.chessgym.dsl.actions.ToolsDashboardActions
 
 object When {
     lateinit var compose: ComposeTestRule
@@ -21,6 +25,10 @@ object When {
     lateinit var puzzleStreak: PuzzleStreakScreenActions
     lateinit var boardVisDashboard: BoardVisDashboardActions
     lateinit var findTheSquare: FindTheSquareScreenActions
+    lateinit var toolsDashboard: ToolsDashboardActions
+    lateinit var clockScreen: ClockScreenActions
+    lateinit var importGame: ImportGameScreenActions
+    lateinit var analysisScreen: AnalysisScreenActions
 
     fun init(rule: ComposeTestRule, launcher: () -> Unit) {
         compose = rule
@@ -33,6 +41,10 @@ object When {
         puzzleStreak = PuzzleStreakScreenActions(rule)
         boardVisDashboard = BoardVisDashboardActions(rule)
         findTheSquare = FindTheSquareScreenActions(rule)
+        toolsDashboard = ToolsDashboardActions(rule)
+        clockScreen = ClockScreenActions(rule)
+        importGame = ImportGameScreenActions(rule)
+        analysisScreen = AnalysisScreenActions(rule)
     }
 
     fun appIsLaunched(): When = apply {

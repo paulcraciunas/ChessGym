@@ -29,6 +29,12 @@ class SettingsSetup(private val repository: FakeAppSettingsRepository) {
         )
     }
 
+    fun hasBorders(): SettingsSetup = apply {
+        repository.setAppSettings(
+            repository.getCurrentSettings().copy(showBorders = true)
+        )
+    }
+
     fun darkMode(): SettingsSetup = apply {
         repository.setAppSettings(
             repository.getCurrentSettings().copy(lightMode = AppSettings.LightMode.Dark)
