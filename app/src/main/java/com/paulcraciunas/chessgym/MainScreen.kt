@@ -15,6 +15,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.paulcraciunas.chessgym.animations.enter
@@ -23,6 +24,7 @@ import com.paulcraciunas.chessgym.navigation.BottomNavigationBar
 import com.paulcraciunas.chessgym.navigation.Screen
 import com.paulcraciunas.chessgym.screens.BlindMode
 import com.paulcraciunas.chessgym.screens.BoardVisDashboard
+import com.paulcraciunas.chessgym.screens.AnalysisBoard
 import com.paulcraciunas.chessgym.screens.ChessClock
 import com.paulcraciunas.chessgym.screens.FailedPuzzles
 import com.paulcraciunas.chessgym.screens.FindTheSquare
@@ -179,6 +181,19 @@ fun MainScreen(
                 }
                 animatedComposable<Screen.Clock> {
                     ChessClock(tabNavController = tabNavController)
+                }
+                composable<Screen.Analysis>(
+                    enterTransition = { enter() },
+                    exitTransition = { exit() },
+                ) { backStackEntry ->
+                    val route = backStackEntry.toRoute<Screen.Analysis>()
+                    AnalysisBoard(
+                        tabNavController = tabNavController,
+                        showBorders = mainScreenState.appSettings?.showBorders ?: true,
+                        highlightLegalMoves = mainScreenState.appSettings?.highlightLegalMoves ?: true,
+                        enableAnimations = mainScreenState.appSettings?.enableAnimations ?: true,
+                        fen = route.fen,
+                    )
                 }
                 animatedComposable<Screen.ImportGame> {
                     ImportGame(

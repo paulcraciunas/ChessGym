@@ -13,6 +13,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -81,8 +82,10 @@ class ImportGameViewModel @Inject constructor(
             )
         } catch (e: SerializeException) {
             _uiState.value = currentState.copy(importError = e.message)
+            Timber.w(e, "Failed to import game from: $text")
         } catch (e: IllegalArgumentException) {
             _uiState.value = currentState.copy(importError = e.message)
+            Timber.w(e, "Failed to import game from: $text")
         }
     }
 

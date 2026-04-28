@@ -1,10 +1,7 @@
 package com.paulcraciunas.game.engine.impl.uci
 
 import com.paulcraciunas.game.engine.api.EngineMove
-import com.paulcraciunas.game.logic.api.board.File
-import com.paulcraciunas.game.logic.api.board.Locus
-import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.api.board.Rank
+import com.paulcraciunas.game.engine.api.UciMoveParser
 
 private const val BEST_MOVE_TOKEN = "bestmove"
 private const val UCI_OK_TOKEN = "uciok"
@@ -62,33 +59,8 @@ internal sealed class ResponseFactory(val validator: ResponseValidator) {
             require(parts.size >= 2 && parts[0] == BEST_MOVE_TOKEN) {
                 "Invalid bestmove line: $from"
             }
-            return parseUciMove(parts[1])
-        }
-
-        private fun parseUciMove(moveString: String): EngineMove {
-            require(moveString.length in 4..5) {
-                "Invalid UCI move format: $moveString"
-            }
-            val from = parseLocus(moveString[0], moveString[1])
-            val to = parseLocus(moveString[2], moveString[3])
-            val promotion = if (moveString.length == 5) {
-                parsePromotionPiece(moveString[4])
-            } else null
-            return EngineMove(from = from, to = to, promotion = promotion)
-        }
-
-        private fun parseLocus(fileChar: Char, rankChar: Char): Locus {
-            val file = File.entries.getOrNull(fileChar - 'a') ?: throw IllegalArgumentException("Invalid file: $fileChar")
-            val rank = Rank.entries.getOrNull(rankChar - '1') ?: throw IllegalArgumentException("Invalid rank: $rankChar")
-            return Locus(file, rank)
-        }
-
-        private fun parsePromotionPiece(char: Char): Piece = when (char) {
-            'q' -> Piece.Queen
-            'r' -> Piece.Rook
-            'b' -> Piece.Bishop
-            'n' -> Piece.Knight
-            else -> throw IllegalArgumentException("Invalid promotion piece: $char")
+            return UciMoveParser.parse(parts[1])
+                ?: throw IllegalArgumentException("Invalid UCI move: ${parts[1]}")
         }
     }
 }

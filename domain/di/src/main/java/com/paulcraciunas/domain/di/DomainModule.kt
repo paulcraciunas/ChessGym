@@ -1,5 +1,6 @@
 package com.paulcraciunas.domain.di
 
+import com.paulcraciunas.domain.api.analysis.AnalyzePosition
 import com.paulcraciunas.domain.api.general.CalculateElo
 import com.paulcraciunas.domain.api.boardvis.GenerateMoveThePieceBoard
 import com.paulcraciunas.domain.api.GenerateRandomLoci
@@ -19,6 +20,7 @@ import com.paulcraciunas.domain.api.puzzles.OnPuzzleRushComplete
 import com.paulcraciunas.domain.api.puzzles.OnStreakComplete
 import com.paulcraciunas.domain.api.puzzles.OnStreakPuzzleComplete
 import com.paulcraciunas.domain.api.general.Timer
+import com.paulcraciunas.domain.impl.analysis.AnalyzePositionImpl
 import com.paulcraciunas.domain.impl.general.CalculateEloImpl
 import com.paulcraciunas.domain.impl.boardvis.GenerateMoveThePieceBoardImpl
 import com.paulcraciunas.domain.impl.GenerateRandomLociImpl
@@ -48,6 +50,9 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 internal abstract class DomainModule {
+
+    @Binds
+    abstract fun bindAnalyzePosition(impl: AnalyzePositionImpl): AnalyzePosition
 
     @Binds
     @Singleton

@@ -4,6 +4,7 @@ import com.paulcraciunas.game.logic.api.CastleType
 import com.paulcraciunas.game.logic.api.Game
 import com.paulcraciunas.game.logic.api.GameFactory
 import com.paulcraciunas.game.logic.api.Ply
+import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
@@ -52,6 +53,9 @@ class PgnSerializer(
                 }
             }
     }
+
+    override fun of(puzzle: Puzzle): String =
+        throw UnsupportedOperationException("PGN format does not support puzzle serialization")
 
     override fun of(game: Game): String = StringBuilder().apply {
         MetaData.Header.entries.forEach { header ->

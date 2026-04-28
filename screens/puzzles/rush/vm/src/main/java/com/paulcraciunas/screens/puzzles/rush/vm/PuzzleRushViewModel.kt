@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.paulcraciunas.domain.api.general.CountdownTimer
 import com.paulcraciunas.domain.api.general.DefaultTimer
 import com.paulcraciunas.domain.api.puzzles.GetBufferedPuzzleSeries
+import com.paulcraciunas.domain.api.puzzles.GetPuzzleFen
 import com.paulcraciunas.domain.api.puzzles.OnPuzzleRushComplete
 import com.paulcraciunas.domain.api.puzzles.PuzzleRushResult
 import com.paulcraciunas.game.logic.api.PuzzleInteractor
@@ -16,11 +17,14 @@ import com.paulcraciunas.screens.common.model.PuzzleViewModelHelper
 import com.paulcraciunas.screens.common.model.PuzzleViewModelHelper.OnSquareClick
 import com.paulcraciunas.user.api.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -32,9 +36,13 @@ class PuzzleRushViewModel @Inject constructor(
     private val onPuzzleRushComplete: OnPuzzleRushComplete,
     @param:DefaultTimer private val countdownTimer: CountdownTimer,
     private val userRepository: UserRepository,
+    private val getPuzzleFen: GetPuzzleFen,
     puzzleInteractor: PuzzleInteractor,
 ) : ViewModel(), PuzzleRushScreenInteractor {
     private val helper = PuzzleViewModelHelper(puzzleInteractor = puzzleInteractor)
+
+    private val _navigateToAnalysis = Channel<String>(Channel.BUFFERED)
+    val navigateToAnalysis: Flow<String> = _navigateToAnalysis.receiveAsFlow()
 
     private val _gameState = MutableStateFlow<GameState>(GameState.Loading)
     val uiState: StateFlow<PuzzleRushUiState> = combine(
@@ -103,6 +111,12 @@ class PuzzleRushViewModel @Inject constructor(
         val currentState = _gameState.value
         if (currentState is GameState.Finished) {
             _gameState.value = currentState.copy(showSummaryDialog = false)
+        }
+    }
+
+    override fun onAnalyzeFailedPuzzle(puzzleId: Int) {
+        viewModelScope.launch {
+            getPuzzleFen(puzzleId)?.let { fen -> _navigateToAnalysis.send(fen) } ?: Timber.w("Failed to get puzzle fen")
         }
     }
 

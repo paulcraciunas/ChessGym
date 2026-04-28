@@ -8,6 +8,7 @@ interface PuzzleRushScreenInteractor {
     fun onPromote(to: Piece)
     fun onPlayAgain()
     fun onDismissSummary()
+    fun onAnalyzeFailedPuzzle(puzzleId: Int)
 }
 
 class StubPuzzleRushScreenInteractor : PuzzleRushScreenInteractor {
@@ -15,4 +16,5 @@ class StubPuzzleRushScreenInteractor : PuzzleRushScreenInteractor {
     override fun onPromote(to: Piece) {}
     override fun onPlayAgain() {}
     override fun onDismissSummary() {}
+    override fun onAnalyzeFailedPuzzle(puzzleId: Int) {}
 }

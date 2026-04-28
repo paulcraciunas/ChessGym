@@ -31,8 +31,16 @@ internal sealed class UciCommand {
         override fun protocol(): String = "setoption name UCI_LimitStrength value true"
     }
 
+    object DisableLimitStrength : UciCommand() {
+        override fun protocol(): String = "setoption name UCI_LimitStrength value false"
+    }
+
     class SetElo(val elo: Int) : UciCommand() {
         override fun protocol(): String = "setoption name UCI_Elo value $elo"
+    }
+
+    class SetMultiPV(val count: Int) : UciCommand() {
+        override fun protocol(): String = "setoption name MultiPV value $count"
     }
 
     class SetPosition(val fen: String) : UciCommand() {
@@ -42,6 +50,10 @@ internal sealed class UciCommand {
     class SetMoveTime(val moveTimeMillis: Int = DEFAULT_MOVE_TIME_MS) : UciCommand() {
         override fun protocol(): String = "go movetime $moveTimeMillis"
         override fun responseFactory(): ResponseFactory = ResponseFactory.BestMoveFactory
+    }
+
+    object GoInfinite : UciCommand() {
+        override fun protocol(): String = "go infinite"
     }
 
     companion object {

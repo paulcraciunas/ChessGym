@@ -61,13 +61,17 @@ class FenSerializer(
             .buildGame()
     }
 
-    override fun of(game: Game): String = StringBuilder().apply {
-        append(game.board.toFen()).append(" ")
-        append(if (game.info.turn == Side.WHITE) 'w' else 'b').append(" ")
-        append(game.info.castlingFen()).append(" ")
-        append(game.info.lastPly?.toEnPassentFen() ?: MISSING).append(" ")
-        append(game.info.plieClock).append(" ")
-        append(game.info.moveIndex)
+    override fun of(game: Game): String = serializePosition(game.board, game.info)
+
+    override fun of(puzzle: Puzzle): String = serializePosition(puzzle.board, puzzle.info)
+
+    private fun serializePosition(board: IBoard, info: GameInfo): String = StringBuilder().apply {
+        append(board.toFen()).append(" ")
+        append(if (info.turn == Side.WHITE) 'w' else 'b').append(" ")
+        append(info.castlingFen()).append(" ")
+        append(info.lastPly?.toEnPassentFen() ?: MISSING).append(" ")
+        append(info.plieClock).append(" ")
+        append(info.moveIndex)
     }.toString()
 }
 

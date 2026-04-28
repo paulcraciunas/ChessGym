@@ -151,6 +151,7 @@ private fun FailedPuzzlesContent(
         if (uiState.results.isNotEmpty()) {
             PuzzleResultsGrid(
                 results = uiState.results,
+                onFailedPuzzleClicked = interactions::onAnalyzeFailedPuzzle,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)

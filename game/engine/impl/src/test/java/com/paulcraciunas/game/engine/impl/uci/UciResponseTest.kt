@@ -235,4 +235,40 @@ internal class UciCommandTest {
     fun `GIVEN NewGame WHEN responseFactory THEN returns DoneFactory`() {
         assertTrue(UciCommand.NewGame.responseFactory() is ResponseFactory.DoneFactory)
     }
+
+    @Test
+    fun `GIVEN DisableLimitStrength WHEN protocol THEN returns setoption command`() {
+        assertEquals(
+            "setoption name UCI_LimitStrength value false",
+            UciCommand.DisableLimitStrength.protocol(),
+        )
+    }
+
+    @Test
+    fun `GIVEN SetMultiPV 3 WHEN protocol THEN returns correct setoption`() {
+        assertEquals(
+            "setoption name MultiPV value 3",
+            UciCommand.SetMultiPV(3).protocol(),
+        )
+    }
+
+    @Test
+    fun `GIVEN GoInfinite WHEN protocol THEN returns go infinite`() {
+        assertEquals("go infinite", UciCommand.GoInfinite.protocol())
+    }
+
+    @Test
+    fun `GIVEN GoInfinite WHEN responseFactory THEN returns DoneFactory`() {
+        assertTrue(UciCommand.GoInfinite.responseFactory() is ResponseFactory.DoneFactory)
+    }
+
+    @Test
+    fun `GIVEN DisableLimitStrength WHEN responseFactory THEN returns DoneFactory`() {
+        assertTrue(UciCommand.DisableLimitStrength.responseFactory() is ResponseFactory.DoneFactory)
+    }
+
+    @Test
+    fun `GIVEN SetMultiPV WHEN responseFactory THEN returns DoneFactory`() {
+        assertTrue(UciCommand.SetMultiPV(3).responseFactory() is ResponseFactory.DoneFactory)
+    }
 }

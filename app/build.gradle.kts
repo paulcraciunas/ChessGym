@@ -76,6 +76,7 @@ dependencies {
     implementation(project(":screens:blindmode:ui"))
     implementation(project(":screens:tools:dashboard:ui"))
     implementation(project(":screens:tools:clock:ui"))
+    implementation(project(":screens:tools:analysis:ui"))
     implementation(project(":screens:tools:importgame:ui"))
     implementation(project(":user:di"))
 
