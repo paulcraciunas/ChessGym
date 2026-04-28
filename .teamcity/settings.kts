@@ -4,6 +4,7 @@ import jetbrains.buildServer.configs.kotlin.version
 
 import buildTypes.BuildDebug
 import buildTypes.LintDebug
+import buildTypes.PuzzleVerification
 import buildTypes.UnitTests
 
 version = "2025.11"
@@ -18,4 +19,5 @@ project {
     buildType(BuildDebug)
     buildType(LintDebug)
     buildType(UnitTests)
+    buildType(PuzzleVerification)
 }
