@@ -33,6 +33,7 @@ import com.paulcraciunas.screens.common.board.ChessBoard
 import com.paulcraciunas.screens.common.controls.CapturedPieces
 import com.paulcraciunas.screens.common.dialogs.PromotionDialog
 import com.paulcraciunas.screens.common.previews.SampleBoardViewData
+import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.tools.analysis.vm.AnalysisScreenInteractor
 import com.paulcraciunas.screens.tools.analysis.vm.AnalysisUiState
@@ -56,7 +57,7 @@ fun AnalysisScreen(
                 navButton = { Back(onClick = onNavigateBack) },
             )
         },
-        modifier = modifier,
+        modifier = modifier.testTag { AnalysisScreenTags.SCREEN },
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -111,12 +112,15 @@ fun AnalysisScreen(
                 depth = uiState.analysisDepth,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                    .padding(horizontal = 16.dp)
+                    .testTag { AnalysisScreenTags.EVALUATION_BAR },
             )
             Spacer(modifier = Modifier.height(8.dp))
             EngineLines(
                 lines = uiState.engineLines,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag { AnalysisScreenTags.ENGINE_LINES },
             )
             Spacer(modifier = Modifier.height(16.dp))
         }
