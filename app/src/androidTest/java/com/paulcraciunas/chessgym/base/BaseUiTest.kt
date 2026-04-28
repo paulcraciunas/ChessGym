@@ -26,6 +26,7 @@ abstract class BaseUiTest {
     open fun setUp() {
         hiltRule.inject()
         Given.puzzle.reset()
+        Given.clock.reset()
         When.init(composeRule, ::launchApp)
         Then.init(composeRule)
     }
