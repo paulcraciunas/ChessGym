@@ -24,7 +24,9 @@ import androidx.compose.ui.unit.dp
 import com.paulcraciunas.domain.api.general.CountdownTimer
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.global.resources.R
+import androidx.compose.ui.semantics.semantics
 import com.paulcraciunas.screens.common.AppBar
+import com.paulcraciunas.screens.common.backgroundColor
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.tools.clock.vm.ClockScreenInteractor
@@ -48,6 +50,7 @@ fun ClockScreen(
         TonePlayer.PlayFinishedSound(triggerFeedback)
     }
 
+    val bgColor = MaterialTheme.colorScheme.background
     Scaffold(
         topBar = {
             AppBar(
@@ -55,7 +58,9 @@ fun ClockScreen(
                 navButton = { Back(onClick = onNavigateBack) },
             )
         },
-        modifier = modifier.testTag { ClockScreenTags.SCREEN },
+        modifier = modifier
+            .testTag { ClockScreenTags.SCREEN }
+            .semantics { this.backgroundColor = bgColor },
     ) { innerPadding ->
         Column(
             modifier = Modifier
