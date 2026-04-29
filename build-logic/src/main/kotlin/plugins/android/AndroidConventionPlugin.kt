@@ -64,6 +64,7 @@ class AndroidConventionPlugin : ConventionPlugin() {
                     proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"))
                 }
             }
+            configureManagedDevices()
             configureAndroidLint(this@configureAndroid)
         }
     }

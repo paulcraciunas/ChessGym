@@ -88,6 +88,7 @@ class AndroidApplicationPlugin : ConventionPlugin() {
                 }
             }
 
+            configureManagedDevices()
             configureAndroidLint(this@configureAndroid)
         }
     }
