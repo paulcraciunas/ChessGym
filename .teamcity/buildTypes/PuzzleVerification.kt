@@ -10,8 +10,8 @@ object PuzzleVerification : BuildType({
 
     applyCommonConfiguration()
 
-    // Override triggers from common configuration to make this manual-only
-    triggers {}
+    // Clear triggers from common configuration to make this manual-only
+    triggers.items.clear()
 
     steps {
         gradle {
