@@ -14,9 +14,11 @@ fun BuildType.applyCommonConfiguration() {
 
     triggers {
         vcs {
+            // +:* matches all branches (including master) to ensure the integrated code is always verified
+            // -:pull/* prevents duplicate builds when a PR is opened (the feature branch build is sufficient)
             branchFilter = """
                 +:*
-                -:refs/heads/master
+                -:pull/*
             """.trimIndent()
         }
     }
