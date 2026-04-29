@@ -1,6 +1,7 @@
 package buildTypes
 
 import jetbrains.buildServer.configs.kotlin.BuildType
+import jetbrains.buildServer.configs.kotlin.FailureAction
 import jetbrains.buildServer.configs.kotlin.buildSteps.gradle
 
 object LintDebug : BuildType({
@@ -13,11 +14,19 @@ object LintDebug : BuildType({
 
     applyCommonConfiguration()
 
+    // Don't run lint if the basic build fails
+    dependencies {
+        snapshot(BuildDebug) {
+            onDependencyFailure = FailureAction.CANCEL
+            onDependencyCancel = FailureAction.CANCEL
+        }
+    }
+
     steps {
         gradle {
             name = "Run Lint Checks"
-            // 'clean' ensures we don't have stale generated code or old lint results
-            tasks = "clean lintAllDebug"
+            // Removed 'clean' to save time; --no-build-cache handles fresh execution
+            tasks = "lintAllDebug"
             useGradleWrapper = true
             // --no-build-cache: Forces a full re-scan of the codebase
             // --continue: Find all lint errors across all modules, don't stop at the first one

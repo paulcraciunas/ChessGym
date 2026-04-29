@@ -26,6 +26,11 @@ tasks.register("lintAllDebug") {
     description = "Runs lint checks on all modules"
 }
 
+tasks.register("instrumentedTestAllCi") {
+    group = "verification"
+    description = "Runs all instrumented tests on the CI managed device"
+}
+
 subprojects {
     plugins.withId("com.android.library") {
         rootProject.tasks.named("unitTestAllDebug") {
@@ -37,6 +42,9 @@ subprojects {
         rootProject.tasks.named("lintAllDebug") {
             dependsOn(tasks.named("lintDebug"))
         }
+        rootProject.tasks.named("instrumentedTestAllCi") {
+            dependsOn(tasks.named("ciDeviceDebugAndroidTest"))
+        }
     }
     plugins.withId("com.android.application") {
         rootProject.tasks.named("unitTestAllDebug") {
@@ -47,6 +55,9 @@ subprojects {
         }
         rootProject.tasks.named("lintAllDebug") {
             dependsOn(tasks.named("lintDebug"))
+        }
+        rootProject.tasks.named("instrumentedTestAllCi") {
+            dependsOn(tasks.named("ciDeviceUitestAndroidTest"))
         }
     }
     plugins.withId("org.jetbrains.kotlin.jvm") {

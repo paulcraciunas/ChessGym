@@ -1,6 +1,7 @@
 package buildTypes
 
 import jetbrains.buildServer.configs.kotlin.BuildType
+import jetbrains.buildServer.configs.kotlin.FailureAction
 import jetbrains.buildServer.configs.kotlin.buildSteps.gradle
 
 object UnitTests : BuildType({
@@ -13,11 +14,19 @@ object UnitTests : BuildType({
 
     applyCommonConfiguration()
 
+    // Don't run tests if the basic build fails
+    dependencies {
+        snapshot(BuildDebug) {
+            onDependencyFailure = FailureAction.CANCEL
+            onDependencyCancel = FailureAction.CANCEL
+        }
+    }
+
     steps {
         gradle {
             name = "Run Unit Tests"
-            // 'clean' ensures we start from a fresh state
-            tasks = "clean unitTestAllDebug"
+            // Removed 'clean' to save time; --no-build-cache handles fresh execution
+            tasks = "unitTestAllDebug"
             useGradleWrapper = true
             // --no-build-cache: Forces tests to run even if they were successful in a previous build
             // --continue: Runs all tests even if one module fails
