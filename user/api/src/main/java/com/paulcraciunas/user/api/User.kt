@@ -9,6 +9,7 @@ data class User(
     val ratings: Ratings = Ratings(),
     val highScores: HighScores = HighScores(),
     val statistics: Statistics = Statistics(),
+    val achievements: Achievements = Achievements(),
     val history: List<HistoryItem> = emptyList(),
     val failedPuzzles: List<Int> = emptyList(), // Puzzle IDs for retry; This is not persistable across Network, as DB IDs might differ
     val authentication: AuthenticationState? = null,
@@ -124,5 +125,17 @@ data class User(
     data class PuzzleStreak(
         val currentCount: Int = 0,
         val lastPuzzleId: Int? = null,
+    )
+
+    @Serializable
+    data class Achievements(
+        val progress: Map<String, Long> = emptyMap(),
+        val unseenAchievements: Set<String> = emptySet(),
+        @Serializable(with = LocalDateSerializer::class)
+        val lastActiveDate: LocalDate? = null,
+        val consecutiveDaysStreak: Int = 0,
+        val bestConsecutiveDaysStreak: Int = 0,
+        val currentRatedWinStreak: Int = 0,
+        val bestRatedWinStreak: Int = 0,
     )
 }
