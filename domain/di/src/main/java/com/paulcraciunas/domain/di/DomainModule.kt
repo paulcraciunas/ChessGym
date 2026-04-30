@@ -20,6 +20,10 @@ import com.paulcraciunas.domain.api.puzzles.OnPuzzleRushComplete
 import com.paulcraciunas.domain.api.puzzles.OnStreakComplete
 import com.paulcraciunas.domain.api.puzzles.OnStreakPuzzleComplete
 import com.paulcraciunas.domain.api.general.Timer
+import com.paulcraciunas.domain.api.achievements.AchievementNotificationManager
+import com.paulcraciunas.domain.api.achievements.GetAchievementState
+import com.paulcraciunas.domain.api.achievements.MarkAchievementsSeen
+import com.paulcraciunas.domain.api.achievements.UpdateAchievementProgress
 import com.paulcraciunas.domain.impl.analysis.AnalyzePositionImpl
 import com.paulcraciunas.domain.impl.general.CalculateEloImpl
 import com.paulcraciunas.domain.impl.boardvis.GenerateMoveThePieceBoardImpl
@@ -40,6 +44,10 @@ import com.paulcraciunas.domain.impl.puzzles.OnPuzzleRushCompleteImpl
 import com.paulcraciunas.domain.impl.puzzles.OnStreakCompleteImpl
 import com.paulcraciunas.domain.impl.puzzles.OnStreakPuzzleCompleteImpl
 import com.paulcraciunas.domain.impl.general.SimpleTimer
+import com.paulcraciunas.domain.impl.achievements.AchievementNotificationManagerImpl
+import com.paulcraciunas.domain.impl.achievements.GetAchievementStateImpl
+import com.paulcraciunas.domain.impl.achievements.MarkAchievementsSeenImpl
+import com.paulcraciunas.domain.impl.achievements.UpdateAchievementProgressImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -125,4 +133,20 @@ internal abstract class DomainModule {
     @Binds
     @Singleton
     abstract fun bindOnBlindModeGameComplete(impl: OnBlindModeGameCompleteImpl): OnBlindModeGameComplete
+
+    @Binds
+    @Singleton
+    abstract fun bindUpdateAchievementProgress(impl: UpdateAchievementProgressImpl): UpdateAchievementProgress
+
+    @Binds
+    @Singleton
+    abstract fun bindGetAchievementState(impl: GetAchievementStateImpl): GetAchievementState
+
+    @Binds
+    @Singleton
+    abstract fun bindMarkAchievementsSeen(impl: MarkAchievementsSeenImpl): MarkAchievementsSeen
+
+    @Binds
+    @Singleton
+    abstract fun bindAchievementNotificationManager(impl: AchievementNotificationManagerImpl): AchievementNotificationManager
 }
