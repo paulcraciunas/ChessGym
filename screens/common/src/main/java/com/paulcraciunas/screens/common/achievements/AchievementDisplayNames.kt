@@ -7,22 +7,11 @@ import com.paulcraciunas.domain.api.achievements.Achievement
 import com.paulcraciunas.global.resources.R
 
 @Composable
-fun Achievement.Group.label(): String = stringResource(labelRes)
-
-@Composable
 fun Achievement.displayName(): String = stringResource(displayNameRes)
 
 @Composable
 fun Achievement.tierName(tier: Achievement.Tier): String =
     stringResource(tierNameRes(this, tier))
-
-@get:StringRes
-private val Achievement.Group.labelRes: Int
-    get() = when (this) {
-        Achievement.Group.ACTIVITY -> R.string.achievement_group_activity
-        Achievement.Group.HIGH_SCORES -> R.string.achievement_group_high_scores
-        Achievement.Group.DEDICATION -> R.string.achievement_group_dedication
-    }
 
 @get:StringRes
 private val Achievement.displayNameRes: Int

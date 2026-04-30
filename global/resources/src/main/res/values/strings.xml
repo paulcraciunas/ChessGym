@@ -377,11 +377,6 @@
     <!-- endregion -->
 
     <!-- region Achievements -->
-    <!-- Group labels -->
-    <string name="achievement_group_activity">Activity</string>
-    <string name="achievement_group_high_scores">High Scores &amp; Ratings</string>
-    <string name="achievement_group_dedication">Dedication</string>
-
     <!-- Category display names -->
     <string name="achievement_category_rated_puzzles_solved">Rated Puzzles Solved</string>
     <string name="achievement_category_puzzle_rush_sessions">Puzzle Rush Sessions</string>
@@ -546,9 +541,6 @@
 
     <!-- Achievement UI -->
     <string name="achievement_screen_title">Achievements</string>
-    <string name="achievement_completed">Completed!</string>
-    <string name="achievement_remaining">%1$d more to next level</string>
-    <string name="achievement_tier_progress">%1$d of %2$d</string>
     <string name="achievement_banner_unlocked">%1$s — Tier %2$d unlocked!</string>
     <!-- endregion -->
 
