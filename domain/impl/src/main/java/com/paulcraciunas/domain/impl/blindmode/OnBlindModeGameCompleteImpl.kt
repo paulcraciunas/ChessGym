@@ -1,5 +1,6 @@
 package com.paulcraciunas.domain.impl.blindmode
 
+import com.paulcraciunas.domain.api.achievements.UpdateAchievementProgress
 import com.paulcraciunas.domain.api.blindmode.BlindModeGameResult
 import com.paulcraciunas.domain.api.blindmode.OnBlindModeGameComplete
 import com.paulcraciunas.domain.api.general.CalculateElo
@@ -12,6 +13,7 @@ import javax.inject.Inject
 class OnBlindModeGameCompleteImpl @Inject constructor(
     private val userRepository: UserRepository,
     private val calculateElo: CalculateElo,
+    private val updateAchievementProgress: UpdateAchievementProgress,
 ) : OnBlindModeGameComplete {
 
     override suspend fun invoke(result: BlindModeGameResult) {
@@ -29,7 +31,9 @@ class OnBlindModeGameCompleteImpl @Inject constructor(
             buildRatedUpdate(currentUser, result, newTimeSpent, eloResult)
         }
 
-        userRepository.update(updatedUser)
+        val withAchievements = updateAchievementProgress(updatedUser)
+
+        userRepository.update(withAchievements)
         userRepository.logHistory(listOf(buildHistoryItem(result, eloResult)))
     }
 
@@ -37,7 +41,7 @@ class OnBlindModeGameCompleteImpl @Inject constructor(
         currentUser: User,
         newTimeSpent: Long,
     ): User = currentUser.copy(
-        statistics = currentUser.statistics.copy(totalTimeSpent = newTimeSpent)
+        statistics = currentUser.statistics.copy(totalTimeSpent = newTimeSpent),
     )
 
     private fun buildRatedUpdate(
@@ -47,11 +51,15 @@ class OnBlindModeGameCompleteImpl @Inject constructor(
         eloResult: EloResult,
     ): User {
         val ratingChange = eloResult.getNormalized(result.isPlayerWin)
+
         return currentUser.copy(
             ratings = currentUser.ratings.copy(
                 blindMode = currentUser.ratings.blindMode + ratingChange
             ),
-            statistics = currentUser.statistics.copy(totalTimeSpent = newTimeSpent),
+            statistics = currentUser.statistics.copy(
+                totalTimeSpent = newTimeSpent,
+                blindModeWins = currentUser.statistics.blindModeWins + if (result.isPlayerWin) 1 else 0,
+            ),
         )
     }
 

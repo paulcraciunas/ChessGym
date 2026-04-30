@@ -1,6 +1,9 @@
 package com.paulcraciunas.domain.impl.boardvis
 
+import com.paulcraciunas.domain.api.achievements.Achievement
+import com.paulcraciunas.domain.api.achievements.FakeAchievementNotificationManager
 import com.paulcraciunas.domain.api.boardvis.FindSquareResult
+import com.paulcraciunas.domain.impl.achievements.UpdateAchievementProgressImpl
 import com.paulcraciunas.user.api.FakeUserRepository
 import com.paulcraciunas.user.api.User
 import com.paulcraciunas.user.api.UserDefaults
@@ -12,7 +15,13 @@ import java.time.LocalDate
 
 internal class OnFindSquareCompleteImplTest {
     private val fakeUserRepository = FakeUserRepository()
-    private val underTest = OnFindSquareCompleteImpl(fakeUserRepository)
+    private val updateAchievementProgress = UpdateAchievementProgressImpl(
+        FakeAchievementNotificationManager(),
+    )
+    private val underTest = OnFindSquareCompleteImpl(
+        fakeUserRepository,
+        updateAchievementProgress,
+    )
 
     @Test
     fun `GIVEN score above high score WHEN invoke THEN updates high score`() = runTest {
@@ -186,6 +195,24 @@ internal class OnFindSquareCompleteImplTest {
         // Then
         fakeUserRepository.get().apply {
             assertEquals(5, highScores.findTheSquare)
+        }
+    }
+
+    @Test
+    fun `GIVEN result WHEN invoke THEN updates achievement-related statistics and progress`() = runTest {
+        // Given
+        val currentUser = UserDefaults.signedInUser()
+        fakeUserRepository.update(currentUser)
+        val result = FindSquareResult(score = 15, timeSpentMillis = 30_000L)
+
+        // When
+        underTest(result)
+
+        // Then
+        fakeUserRepository.get().apply {
+            assertEquals(1, statistics.findSquareSessions)
+            assertEquals(1L, achievements.progress[Achievement.FIND_SQUARE_SESSIONS.name])
+            assertEquals(1L, achievements.progress[Achievement.BOARD_VISION.name])
         }
     }
 

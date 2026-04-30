@@ -1,5 +1,6 @@
 package com.paulcraciunas.domain.impl.boardvis
 
+import com.paulcraciunas.domain.api.achievements.UpdateAchievementProgress
 import com.paulcraciunas.domain.api.boardvis.FindSquareResult
 import com.paulcraciunas.domain.api.boardvis.OnFindSquareComplete
 import com.paulcraciunas.user.api.User
@@ -7,42 +8,36 @@ import com.paulcraciunas.user.api.UserRepository
 import java.time.LocalDate
 import javax.inject.Inject
 
-/**
- * Implementation of [OnFindSquareComplete] that updates user data after a game session.
- *
- * Updates the user's high score if the current score is higher, and logs
- * the game session to the user's history.
- */
 class OnFindSquareCompleteImpl @Inject constructor(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val updateAchievementProgress: UpdateAchievementProgress,
 ) : OnFindSquareComplete {
 
     override suspend fun invoke(result: FindSquareResult) {
         val currentUser = userRepository.get()
 
-        // Update high score if this is a new personal best
         val newHighScore = maxOf(currentUser.highScores.findTheSquare, result.score)
         val newTimeSpent = currentUser.statistics.totalTimeSpent + result.timeSpentMillis
 
-        // Create updated user with potentially new high score
         val updatedUser = currentUser.copy(
-            statistics = currentUser.statistics.copy(totalTimeSpent = newTimeSpent),
-            highScores = currentUser.highScores.copy(findTheSquare = newHighScore)
+            statistics = currentUser.statistics.copy(
+                totalTimeSpent = newTimeSpent,
+                findSquareSessions = currentUser.statistics.findSquareSessions + 1,
+            ),
+            highScores = currentUser.highScores.copy(findTheSquare = newHighScore),
         )
 
-        // Create history entry for today
-        val today = LocalDate.now()
-        val historyData = User.HistoryItem.HistoryItemData.BoardVisualizationData(
-            sessionsCompleted = 1,
-            timeSpent = result.timeSpentMillis
-        )
+        val withAchievements = updateAchievementProgress(updatedUser)
+
         val historyItem = User.HistoryItem(
-            timestamp = today,
-            data = historyData
+            timestamp = LocalDate.now(),
+            data = User.HistoryItem.HistoryItemData.BoardVisualizationData(
+                sessionsCompleted = 1,
+                timeSpent = result.timeSpentMillis
+            )
         )
 
-        // Update user and log history
-        userRepository.update(updatedUser)
+        userRepository.update(withAchievements)
         userRepository.logHistory(listOf(historyItem))
     }
 }

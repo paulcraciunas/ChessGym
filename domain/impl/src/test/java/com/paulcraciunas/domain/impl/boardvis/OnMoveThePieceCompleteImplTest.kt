@@ -1,6 +1,9 @@
 package com.paulcraciunas.domain.impl.boardvis
 
+import com.paulcraciunas.domain.api.achievements.Achievement
+import com.paulcraciunas.domain.api.achievements.FakeAchievementNotificationManager
 import com.paulcraciunas.domain.api.boardvis.MoveThePieceResult
+import com.paulcraciunas.domain.impl.achievements.UpdateAchievementProgressImpl
 import com.paulcraciunas.user.api.FakeUserRepository
 import com.paulcraciunas.user.api.User
 import com.paulcraciunas.user.api.UserDefaults
@@ -12,7 +15,13 @@ import java.time.LocalDate
 
 internal class OnMoveThePieceCompleteImplTest {
     private val fakeUserRepository = FakeUserRepository()
-    private val underTest = OnMoveThePieceCompleteImpl(fakeUserRepository)
+    private val updateAchievementProgress = UpdateAchievementProgressImpl(
+        FakeAchievementNotificationManager(),
+    )
+    private val underTest = OnMoveThePieceCompleteImpl(
+        fakeUserRepository,
+        updateAchievementProgress,
+    )
 
     @Test
     fun `GIVEN non-training mode with score above high score WHEN invoke THEN updates high score`() = runTest {
@@ -245,6 +254,28 @@ internal class OnMoveThePieceCompleteImplTest {
                 UserDefaults.STATISTICS_TIME_PLAYED + 20_000L + 30_000L,
                 statistics.totalTimeSpent
             )
+        }
+    }
+
+    @Test
+    fun `GIVEN result WHEN invoke THEN updates achievement-related statistics and progress`() = runTest {
+        // Given
+        val currentUser = UserDefaults.signedInUser()
+        fakeUserRepository.update(currentUser)
+        val result = MoveThePieceResult(
+            score = 15,
+            timeSpentMillis = 60_000L,
+            isTrainingMode = false
+        )
+
+        // When
+        underTest(result)
+
+        // Then
+        fakeUserRepository.get().apply {
+            assertEquals(1, statistics.moveThePieceSessions)
+            assertEquals(1L, achievements.progress[Achievement.MOVE_PIECE_SESSIONS.name])
+            assertEquals(1L, achievements.progress[Achievement.BOARD_VISION.name])
         }
     }
 

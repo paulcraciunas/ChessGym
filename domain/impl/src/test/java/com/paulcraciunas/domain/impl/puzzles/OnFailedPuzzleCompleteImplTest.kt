@@ -1,5 +1,8 @@
 package com.paulcraciunas.domain.impl.puzzles
 
+import com.paulcraciunas.domain.api.achievements.Achievement
+import com.paulcraciunas.domain.api.achievements.FakeAchievementNotificationManager
+import com.paulcraciunas.domain.impl.achievements.UpdateAchievementProgressImpl
 import com.paulcraciunas.user.api.FakeUserRepository
 import com.paulcraciunas.user.api.User
 import com.paulcraciunas.user.api.UserDefaults
@@ -11,7 +14,13 @@ import org.junit.jupiter.api.Test
 
 internal class OnFailedPuzzleCompleteImplTest {
     private val userRepository = FakeUserRepository()
-    private val underTest = OnFailedPuzzleCompleteImpl(userRepository)
+    private val updateAchievementProgress = UpdateAchievementProgressImpl(
+        FakeAchievementNotificationManager(),
+    )
+    private val underTest = OnFailedPuzzleCompleteImpl(
+        userRepository,
+        updateAchievementProgress,
+    )
 
     @Test
     fun `GIVEN puzzle in failed list WHEN invoke THEN removes puzzle from list`() = runTest {
@@ -165,6 +174,23 @@ internal class OnFailedPuzzleCompleteImplTest {
         val failedData = updatedUser.history.first().data as User.HistoryItem.HistoryItemData.FailedPuzzleData
         assertEquals(2, failedData.puzzlesSolved)
         assertEquals(TIME_SPENT * 2, failedData.timeSpent)
+    }
+
+    @Test
+    fun `GIVEN puzzle completed WHEN invoke THEN updates achievement-related statistics and progress`() = runTest {
+        // Given
+        val puzzleId = 42
+        val user = UserDefaults.signedInUser().copy(failedPuzzles = listOf(puzzleId))
+        userRepository.update(user)
+
+        // When
+        underTest(puzzleId, TIME_SPENT)
+
+        // Then
+        userRepository.get().apply {
+            assertEquals(1, statistics.failedPuzzlesRedeemed)
+            assertEquals(1L, achievements.progress[Achievement.FAILED_PUZZLES_REDEEMED.name])
+        }
     }
 
     companion object {
