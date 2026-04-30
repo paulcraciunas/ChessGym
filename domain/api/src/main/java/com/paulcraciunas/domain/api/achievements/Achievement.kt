@@ -47,6 +47,13 @@ enum class Achievement(
         return Tier.entries.getOrNull(index)
     }
 
+    /** Returns the highest newly unlocked [Tier] when progress changes, or null if unchanged. */
+    fun highestNewTier(oldProgress: Long, newProgress: Long): Tier? {
+        val oldTier = tierFrom(oldProgress)
+        val newTier = tierFrom(newProgress)
+        return if (newTier != null && (oldTier == null || newTier > oldTier)) newTier else null
+    }
+
     /** Returns the threshold for the tier following [currentTier]. */
     fun nextTierProgress(currentTier: Tier?): Long? {
         val nextOrdinal = (currentTier?.ordinal ?: -1) + 1

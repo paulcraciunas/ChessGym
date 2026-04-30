@@ -47,6 +47,14 @@ data class User(
         val puzzlesPlayed: Int = 0,
         val puzzlesSolved: Int = 0,
         val totalTimeSpent: Long = 0, // in milliseconds
+        val ratedPuzzlesSolved: Int = 0,
+        val puzzleRushSessions: Int = 0,
+        val streakSessions: Int = 0,
+        val failedPuzzlesRedeemed: Int = 0,
+        val findSquareSessions: Int = 0,
+        val moveThePieceSessions: Int = 0,
+        val blindModeWins: Int = 0,
+        val rushPuzzlesSolved: Int = 0,
     )
 
     @Serializable
