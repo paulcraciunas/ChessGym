@@ -10,7 +10,7 @@ androidLibrary {
 }
 
 dependencies {
-    implementation(project(":domain:api"))
+    api(project(":domain:api"))
     implementation(project(":user:api"))
 
     implementation(libs.androidx.lifecycle.runtime.ktx)
