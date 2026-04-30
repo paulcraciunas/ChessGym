@@ -376,6 +376,182 @@
     <string name="abandon_game_message">Are you sure you want to abandon the current game? Your progress will be lost.</string>
     <!-- endregion -->
 
+    <!-- region Achievements -->
+    <!-- Group labels -->
+    <string name="achievement_group_activity">Activity</string>
+    <string name="achievement_group_high_scores">High Scores &amp; Ratings</string>
+    <string name="achievement_group_dedication">Dedication</string>
+
+    <!-- Category display names -->
+    <string name="achievement_category_rated_puzzles_solved">Rated Puzzles Solved</string>
+    <string name="achievement_category_puzzle_rush_sessions">Puzzle Rush Sessions</string>
+    <string name="achievement_category_streak_sessions">Streak Sessions</string>
+    <string name="achievement_category_failed_puzzles_redeemed">Failed Puzzles Redeemed</string>
+    <string name="achievement_category_find_square_sessions">Find Square Sessions</string>
+    <string name="achievement_category_move_piece_sessions">Move Piece Sessions</string>
+    <string name="achievement_category_blind_mode_wins">Homer\'s Legacy</string>
+    <string name="achievement_category_rated_win_streak">Rated Win Streak</string>
+    <string name="achievement_category_rating_climber">Rating Climber</string>
+    <string name="achievement_category_blind_strategist">Blind Strategist</string>
+    <string name="achievement_category_rush_champion">Rush Champion</string>
+    <string name="achievement_category_streak_legend">Streak Legend</string>
+    <string name="achievement_category_eagle_eye">Eagle Eye</string>
+    <string name="achievement_category_knights_path">Knight\'s Path</string>
+    <string name="achievement_category_puzzle_addict">Puzzle Addict</string>
+    <string name="achievement_category_time_invested">Time Invested</string>
+    <string name="achievement_category_daily_grinder">Daily Grinder</string>
+    <string name="achievement_category_consistency_king">Consistency King</string>
+    <string name="achievement_category_board_vision">Board Vision</string>
+    <string name="achievement_category_rush_solver">Rush Solver</string>
+
+    <!-- Tier names: RATED_PUZZLES_SOLVED -->
+    <string name="achievement_rated_puzzles_solved_one">Puzzle Enthusiast</string>
+    <string name="achievement_rated_puzzles_solved_two">Puzzle Amateur</string>
+    <string name="achievement_rated_puzzles_solved_three">Puzzle Expert</string>
+    <string name="achievement_rated_puzzles_solved_four">Puzzle Master</string>
+    <string name="achievement_rated_puzzles_solved_five">Puzzle Grandmaster</string>
+
+    <!-- Tier names: PUZZLE_RUSH_SESSIONS -->
+    <string name="achievement_puzzle_rush_sessions_one">Rush Rookie</string>
+    <string name="achievement_puzzle_rush_sessions_two">Rush Regular</string>
+    <string name="achievement_puzzle_rush_sessions_three">Rush Veteran</string>
+    <string name="achievement_puzzle_rush_sessions_four">Rush Captain</string>
+    <string name="achievement_puzzle_rush_sessions_five">Rush Legend</string>
+
+    <!-- Tier names: STREAK_SESSIONS -->
+    <string name="achievement_streak_sessions_one">Streak Starter</string>
+    <string name="achievement_streak_sessions_two">Streak Seeker</string>
+    <string name="achievement_streak_sessions_three">Streak Hunter</string>
+    <string name="achievement_streak_sessions_four">Streak Crusher</string>
+    <string name="achievement_streak_sessions_five">Streak Fanatic</string>
+
+    <!-- Tier names: FAILED_PUZZLES_REDEEMED -->
+    <string name="achievement_failed_puzzles_redeemed_one">Second Chance</string>
+    <string name="achievement_failed_puzzles_redeemed_two">Comeback Kid</string>
+    <string name="achievement_failed_puzzles_redeemed_three">Redemption Seeker</string>
+    <string name="achievement_failed_puzzles_redeemed_four">Redemption Master</string>
+    <string name="achievement_failed_puzzles_redeemed_five">Never Give Up</string>
+
+    <!-- Tier names: FIND_SQUARE_SESSIONS -->
+    <string name="achievement_find_square_sessions_one">Square Novice</string>
+    <string name="achievement_find_square_sessions_two">Square Spotter</string>
+    <string name="achievement_find_square_sessions_three">Square Expert</string>
+    <string name="achievement_find_square_sessions_four">Square Master</string>
+    <string name="achievement_find_square_sessions_five">Square Grandmaster</string>
+
+    <!-- Tier names: MOVE_PIECE_SESSIONS -->
+    <string name="achievement_move_piece_sessions_one">Piece Beginner</string>
+    <string name="achievement_move_piece_sessions_two">Piece Mover</string>
+    <string name="achievement_move_piece_sessions_three">Piece Navigator</string>
+    <string name="achievement_move_piece_sessions_four">Piece Master</string>
+    <string name="achievement_move_piece_sessions_five">Piece Grandmaster</string>
+
+    <!-- Tier names: BLIND_MODE_WINS -->
+    <string name="achievement_blind_mode_wins_one">Odin\'s Apprentice</string>
+    <string name="achievement_blind_mode_wins_two">Tiresias\' Student</string>
+    <string name="achievement_blind_mode_wins_three">Homer\'s Heir</string>
+    <string name="achievement_blind_mode_wins_four">The Blind Prophet</string>
+    <string name="achievement_blind_mode_wins_five">The All-Seer</string>
+
+    <!-- Tier names: RATED_WIN_STREAK -->
+    <string name="achievement_rated_win_streak_one">Lucky Streak</string>
+    <string name="achievement_rated_win_streak_two">Sharp Mind</string>
+    <string name="achievement_rated_win_streak_three">Flawless Tactician</string>
+    <string name="achievement_rated_win_streak_four">Winning Machine</string>
+    <string name="achievement_rated_win_streak_five">The Invincible</string>
+
+    <!-- Tier names: RATING_CLIMBER -->
+    <string name="achievement_rating_climber_one">Rising Pawn</string>
+    <string name="achievement_rating_climber_two">Climbing Knight</string>
+    <string name="achievement_rating_climber_three">Soaring Bishop</string>
+    <string name="achievement_rating_climber_four">Towering Rook</string>
+    <string name="achievement_rating_climber_five">Reigning Queen</string>
+
+    <!-- Tier names: BLIND_STRATEGIST -->
+    <string name="achievement_blind_strategist_one">Blind Scout</string>
+    <string name="achievement_blind_strategist_two">Blind Tactician</string>
+    <string name="achievement_blind_strategist_three">Blind Strategist</string>
+    <string name="achievement_blind_strategist_four">Blind Commander</string>
+    <string name="achievement_blind_strategist_five">Blind Mastermind</string>
+
+    <!-- Tier names: RUSH_CHAMPION -->
+    <string name="achievement_rush_champion_one">Rush Beginner</string>
+    <string name="achievement_rush_champion_two">Rush Contender</string>
+    <string name="achievement_rush_champion_three">Rush Champion</string>
+    <string name="achievement_rush_champion_four">Rush Hero</string>
+    <string name="achievement_rush_champion_five">Rush Phenomenon</string>
+
+    <!-- Tier names: STREAK_LEGEND -->
+    <string name="achievement_streak_legend_one">Hot Start</string>
+    <string name="achievement_streak_legend_two">On Fire</string>
+    <string name="achievement_streak_legend_three">Unstoppable</string>
+    <string name="achievement_streak_legend_four">Legendary Streak</string>
+    <string name="achievement_streak_legend_five">Streak Immortal</string>
+
+    <!-- Tier names: EAGLE_EYE -->
+    <string name="achievement_eagle_eye_one">Keen Eye</string>
+    <string name="achievement_eagle_eye_two">Sharp Eye</string>
+    <string name="achievement_eagle_eye_three">Eagle Eye</string>
+    <string name="achievement_eagle_eye_four">Hawk Vision</string>
+    <string name="achievement_eagle_eye_five">Eye of Sauron</string>
+
+    <!-- Tier names: KNIGHTS_PATH -->
+    <string name="achievement_knights_path_one">First Steps</string>
+    <string name="achievement_knights_path_two">Pathfinder</string>
+    <string name="achievement_knights_path_three">Knight\'s Journey</string>
+    <string name="achievement_knights_path_four">Knight\'s Odyssey</string>
+    <string name="achievement_knights_path_five">Knight\'s Conquest</string>
+
+    <!-- Tier names: PUZZLE_ADDICT -->
+    <string name="achievement_puzzle_addict_one">Getting Started</string>
+    <string name="achievement_puzzle_addict_two">Building Habits</string>
+    <string name="achievement_puzzle_addict_three">Dedicated Solver</string>
+    <string name="achievement_puzzle_addict_four">Puzzle Addict</string>
+    <string name="achievement_puzzle_addict_five">Puzzle Machine</string>
+
+    <!-- Tier names: TIME_INVESTED -->
+    <string name="achievement_time_invested_one">First Hour</string>
+    <string name="achievement_time_invested_two">Getting Serious</string>
+    <string name="achievement_time_invested_three">Dedicated</string>
+    <string name="achievement_time_invested_four">Committed</string>
+    <string name="achievement_time_invested_five">Lifetime Learner</string>
+
+    <!-- Tier names: DAILY_GRINDER -->
+    <string name="achievement_daily_grinder_one">First Steps</string>
+    <string name="achievement_daily_grinder_two">Weekly Habit</string>
+    <string name="achievement_daily_grinder_three">Three-Week Streak</string>
+    <string name="achievement_daily_grinder_four">Dedicated Regular</string>
+    <string name="achievement_daily_grinder_five">Eternal Player</string>
+
+    <!-- Tier names: CONSISTENCY_KING -->
+    <string name="achievement_consistency_king_one">Three-Day Streak</string>
+    <string name="achievement_consistency_king_two">Weekly Warrior</string>
+    <string name="achievement_consistency_king_three">Fortnight Force</string>
+    <string name="achievement_consistency_king_four">Monthly Marvel</string>
+    <string name="achievement_consistency_king_five">Hundred-Day Hero</string>
+
+    <!-- Tier names: BOARD_VISION -->
+    <string name="achievement_board_vision_one">Vision Trainee</string>
+    <string name="achievement_board_vision_two">Vision Apprentice</string>
+    <string name="achievement_board_vision_three">Vision Expert</string>
+    <string name="achievement_board_vision_four">Vision Master</string>
+    <string name="achievement_board_vision_five">Board Sage</string>
+
+    <!-- Tier names: RUSH_SOLVER -->
+    <string name="achievement_rush_solver_one">Rush Solver</string>
+    <string name="achievement_rush_solver_two">Rush Grinder</string>
+    <string name="achievement_rush_solver_three">Speed Demon</string>
+    <string name="achievement_rush_solver_four">Rush Machine</string>
+    <string name="achievement_rush_solver_five">Rush Terminator</string>
+
+    <!-- Achievement UI -->
+    <string name="achievement_screen_title">Achievements</string>
+    <string name="achievement_completed">Completed!</string>
+    <string name="achievement_remaining">%1$d more to next level</string>
+    <string name="achievement_tier_progress">%1$d of %2$d</string>
+    <string name="achievement_banner_unlocked">%1$s — Tier %2$d unlocked!</string>
+    <!-- endregion -->
+
     <!-- temporary values; these will be deleted as we build features -->
     <string name="under_construction">Under Construction</string>
 
