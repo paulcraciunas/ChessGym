@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -27,6 +28,7 @@ import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.tools.dashboard.vm.ToolsDashboardUiState
 import com.paulcraciunas.screens.tools.dashboard.vm.ToolsMode
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ToolsDashboardScreen(
     state: ToolsDashboardUiState,

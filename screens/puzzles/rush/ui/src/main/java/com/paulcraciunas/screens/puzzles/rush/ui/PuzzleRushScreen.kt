@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -39,6 +40,7 @@ import com.paulcraciunas.screens.puzzles.rush.vm.PuzzleRushScreenInteractor
 import com.paulcraciunas.screens.puzzles.rush.vm.PuzzleRushUiState
 import com.paulcraciunas.screens.puzzles.rush.vm.StubPuzzleRushScreenInteractor
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PuzzleRushScreen(
     uiState: PuzzleRushUiState,

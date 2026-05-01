@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -42,6 +43,7 @@ import com.paulcraciunas.screens.tools.analysis.vm.AnalysisUiState
 import com.paulcraciunas.screens.tools.analysis.vm.MoveArrow
 import com.paulcraciunas.screens.tools.analysis.vm.StubAnalysisScreenInteractor
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AnalysisScreen(
     uiState: AnalysisUiState,

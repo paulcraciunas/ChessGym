@@ -23,6 +23,7 @@ import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
@@ -44,6 +45,7 @@ import com.paulcraciunas.screens.about.vm.AboutSection
 import com.paulcraciunas.screens.common.AppBar
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AboutScreen(
     onNavigateBack: () -> Unit,
