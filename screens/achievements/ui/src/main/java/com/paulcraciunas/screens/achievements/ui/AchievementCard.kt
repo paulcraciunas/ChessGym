@@ -1,7 +1,6 @@
 package com.paulcraciunas.screens.achievements.ui
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -95,7 +94,6 @@ internal fun AchievementCard(
     ) {
         Column(
             modifier = Modifier
-                .animateContentSize(animationSpec = tween(300, easing = FastOutSlowInEasing))
                 .then(
                     if (!item.isCompleted()) {
                         Modifier.clickable { isExpanded = !isExpanded }
@@ -151,7 +149,7 @@ internal fun AchievementCard(
 
             AnimatedVisibility(
                 visible = isExpanded && !item.isCompleted(),
-                enter = expandVertically(tween(300)) + fadeIn(tween(300)),
+                enter = expandVertically(tween(300)) + fadeIn(tween(150, delayMillis = 150)),
                 exit = shrinkVertically(tween(200)) + fadeOut(tween(150)),
             ) {
                 Text(
