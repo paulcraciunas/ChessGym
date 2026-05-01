@@ -58,6 +58,7 @@ fun NavGraph(
         composable<Screen.Main> {
             MainScreen(
                 onDrawerScreen = { screen -> navController.navigate(screen) },
+                notificationManager = viewModel.achievementNotificationManager,
             )
         }
         composable<Screen.Settings> {

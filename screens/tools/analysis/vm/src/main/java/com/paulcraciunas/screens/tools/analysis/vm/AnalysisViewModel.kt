@@ -69,7 +69,7 @@ class AnalysisViewModel @Inject constructor(
                     },
                 )
             }
-            startAnalysis(targetFen)
+            analyze(fen = targetFen, start = true)
         } catch (e: Exception) {
             Timber.w(e, "Failed to load FEN position: $fen")
         }
@@ -185,15 +185,20 @@ class AnalysisViewModel @Inject constructor(
             captured = capturedPieces,
         )
 
-        val currentFen = fenSerializer.of(currentGame)
-        startAnalysis(currentFen)
+        analyze(fen = fenSerializer.of(currentGame))
     }
 
-    @OptIn(FlowPreview::class)
-    private fun startAnalysis(fen: String) {
-        analysisJob?.cancel()
+    private fun analyze(fen: String, start: Boolean = false) {
+        val previousJob = analysisJob
         analysisJob = viewModelScope.launch {
-            analyzePosition.prepare()
+            if (previousJob != null) {
+                previousJob.cancel()
+                analyzePosition.stopAnalysis()
+                previousJob.join()
+            }
+            if (start) {
+                analyzePosition.prepare()
+            }
             analyzePosition(fen)
                 .onStart {
                     _uiState.update {

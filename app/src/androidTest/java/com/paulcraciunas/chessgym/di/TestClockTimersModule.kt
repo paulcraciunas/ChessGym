@@ -10,6 +10,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
+import java.time.Clock
+import javax.inject.Singleton
 
 @Module
 @TestInstallIn(
@@ -19,6 +21,11 @@ import dagger.hilt.testing.TestInstallIn
 internal object TestClockTimersModule {
     val whiteTimer = FakeCountdownTimer()
     val blackTimer = FakeCountdownTimer()
+    val defaultTimer = FakeCountdownTimer()
+
+    @Provides
+    @Singleton
+    fun provideClock(): Clock = Clock.systemUTC()
 
     @Provides
     @WhiteTimer
@@ -30,5 +37,5 @@ internal object TestClockTimersModule {
 
     @Provides
     @DefaultTimer
-    fun provideDefaultTimer(): CountdownTimer = FakeCountdownTimer()
+    fun provideDefaultTimer(): CountdownTimer = defaultTimer
 }

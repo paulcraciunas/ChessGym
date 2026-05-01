@@ -26,5 +26,5 @@ object LastLoadedPuzzleLog {
         this.rating = rating
     }
 
-    fun summary(): String = "Puzzle(id=$id, rating=$rating, fen=$fen)"
+    fun summary(): String = "Puzzle(id=$id, rating=$rating, fen=${fen.toString()})"
 }

@@ -19,6 +19,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -47,6 +48,7 @@ import com.paulcraciunas.screens.tools.importgame.vm.ImportGameUiState
 import com.paulcraciunas.screens.tools.importgame.vm.ImportType
 import com.paulcraciunas.screens.tools.importgame.vm.StubImportGameScreenInteractor
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ImportGameScreen(
     uiState: ImportGameUiState,

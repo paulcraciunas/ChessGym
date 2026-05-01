@@ -1,5 +1,8 @@
 package com.paulcraciunas.domain.impl.puzzles
 
+import com.paulcraciunas.domain.api.achievements.Achievement
+import com.paulcraciunas.domain.api.achievements.FakeAchievementNotificationManager
+import com.paulcraciunas.domain.impl.achievements.UpdateAchievementProgressImpl
 import com.paulcraciunas.user.api.FakeUserRepository
 import com.paulcraciunas.user.api.User
 import com.paulcraciunas.user.api.UserDefaults
@@ -12,7 +15,13 @@ import org.junit.jupiter.api.Test
 
 internal class OnStreakCompleteImplTest {
     private val fakeUserRepository = FakeUserRepository()
-    private val underTest = OnStreakCompleteImpl(fakeUserRepository)
+    private val updateAchievementProgress = UpdateAchievementProgressImpl(
+        FakeAchievementNotificationManager(),
+    )
+    private val underTest = OnStreakCompleteImpl(
+        fakeUserRepository,
+        updateAchievementProgress,
+    )
 
     @Test
     fun `GIVEN streak higher than high score WHEN invoke THEN updates high score and returns true`() = runTest {
@@ -181,6 +190,26 @@ internal class OnStreakCompleteImplTest {
         val streakData = historyData as User.HistoryItem.HistoryItemData.PuzzleStreakData
         assertEquals(streakCount, streakData.finalStreakCount)
         assertEquals(TIME_SPENT, streakData.timeSpent)
+    }
+
+    @Test
+    fun `GIVEN active streak WHEN invoke THEN updates achievement-related statistics and progress`() = runTest {
+        // Given
+        val user = UserDefaults.signedInUser().copy(
+            ratings = UserDefaults.signedInUser().ratings.copy(
+                puzzleStreak = User.PuzzleStreak(currentCount = 15, lastPuzzleId = 42)
+            )
+        )
+        fakeUserRepository.update(user)
+
+        // When
+        underTest(TIME_SPENT)
+
+        // Then
+        fakeUserRepository.get().apply {
+            assertEquals(1, statistics.streakSessions)
+            assertEquals(1L, achievements.progress[Achievement.STREAK_SESSIONS.name])
+        }
     }
 
     companion object {

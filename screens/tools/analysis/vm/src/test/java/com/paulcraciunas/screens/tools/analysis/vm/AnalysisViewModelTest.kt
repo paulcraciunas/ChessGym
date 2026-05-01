@@ -172,6 +172,48 @@ internal class AnalysisViewModelTest {
         }
 
         @Test
+        fun `GIVEN position loaded WHEN move made THEN analysis restarts with new position`() = runTest {
+            fakeEngine.enqueueAnalysisResults(listOf(
+                AnalysisResult(
+                    depth = 10,
+                    evaluation = Evaluation.Centipawns(30),
+                    lines = listOf(
+                        EngineLine(
+                            1,
+                            Evaluation.Centipawns(30),
+                            listOf(EngineMove(from = "e2".loc(), to = "e4".loc())),
+                        ),
+                    ),
+                )
+            ))
+            fakeEngine.enqueueAnalysisResults(listOf(
+                AnalysisResult(
+                    depth = 12,
+                    evaluation = Evaluation.Centipawns(-15),
+                    lines = listOf(
+                        EngineLine(
+                            1,
+                            Evaluation.Centipawns(-15),
+                            listOf(EngineMove(from = "e7".loc(), to = "e5".loc())),
+                        ),
+                    ),
+                )
+            ))
+
+            underTest.loadPosition()
+            advanceUntilIdle()
+            assertEquals(Evaluation.Centipawns(30), underTest.uiState.value.evaluation)
+
+            underTest.onSquareClicked(Locus(File.e, Rank.`2`))
+            underTest.onSquareClicked(Locus(File.e, Rank.`4`))
+            advanceUntilIdle()
+
+            val state = underTest.uiState.value
+            assertEquals(Evaluation.Centipawns(-15), state.evaluation)
+            assertEquals(12, state.analysisDepth)
+        }
+
+        @Test
         fun `GIVEN empty square clicked WHEN no selection THEN nothing happens`() = runTest {
             underTest.loadPosition()
             advanceUntilIdle()

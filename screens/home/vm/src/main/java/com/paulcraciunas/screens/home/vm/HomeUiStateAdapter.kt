@@ -1,5 +1,6 @@
 package com.paulcraciunas.screens.home.vm
 
+import com.paulcraciunas.domain.api.achievements.Achievement
 import com.paulcraciunas.user.api.User
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -14,6 +15,8 @@ class HomeUiStateAdapter @Inject constructor() {
         userProfile = adaptUserProfile(user),
         userStats = adaptUserStats(user),
         history = adaptHistory(user.history, today),
+        unseenAchievementCount = user.achievements.unseenAchievements.size,
+        ribbons = adaptRibbons(user),
         isLoading = false
     )
 
@@ -99,6 +102,19 @@ class HomeUiStateAdapter @Inject constructor() {
                 )
             }
         }
+
+    private fun adaptRibbons(user: User): List<HomeUiState.Ribbon> {
+        val progress = user.achievements.progress
+        return Achievement.entries.mapNotNull { achievement ->
+            val progressValue = progress[achievement.name] ?: 0L
+            val tier = achievement.tierFrom(progressValue)
+            if (tier != null) {
+                HomeUiState.Ribbon(achievement = achievement, tier = tier)
+            } else {
+                null
+            }
+        }
+    }
 
     companion object {
         internal const val LABEL_TODAY = "Today"

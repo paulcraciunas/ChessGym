@@ -1,6 +1,9 @@
 package com.paulcraciunas.domain.impl.puzzles
 
+import com.paulcraciunas.domain.api.achievements.Achievement
+import com.paulcraciunas.domain.api.achievements.FakeAchievementNotificationManager
 import com.paulcraciunas.domain.api.puzzles.PuzzleCompletionResult
+import com.paulcraciunas.domain.impl.achievements.UpdateAchievementProgressImpl
 import com.paulcraciunas.user.api.FakeUserRepository
 import com.paulcraciunas.user.api.User
 import com.paulcraciunas.user.api.UserDefaults
@@ -12,7 +15,13 @@ import java.time.LocalDate
 
 internal class OnPuzzleCompleteImplTest {
     private val fakeUserRepository = FakeUserRepository()
-    private val underTest: OnPuzzleCompleteImpl = OnPuzzleCompleteImpl(fakeUserRepository)
+    private val updateAchievementProgress = UpdateAchievementProgressImpl(
+        FakeAchievementNotificationManager(),
+    )
+    private val underTest: OnPuzzleCompleteImpl = OnPuzzleCompleteImpl(
+        fakeUserRepository,
+        updateAchievementProgress,
+    )
 
     @Test
     fun `GIVEN successful completion WHEN invoke THEN updates rating stats and history`() = runTest {
@@ -85,6 +94,63 @@ internal class OnPuzzleCompleteImplTest {
 
             // Failed puzzle with ID should be added to failedPuzzles
             assertTrue(failedPuzzles.contains(123))
+        }
+    }
+
+    @Test
+    fun `GIVEN successful completion WHEN invoke THEN increments ratedPuzzlesSolved and win streak`() = runTest {
+        // Given
+        val currentUser = UserDefaults.signedInUser()
+        fakeUserRepository.update(currentUser)
+        val completionResult = PuzzleCompletionResult(
+            puzzleId = 42,
+            puzzleRating = 1400,
+            wasSuccessful = true,
+            ratingChange = 200,
+            timeSpentMillis = 300L
+        )
+
+        // When
+        underTest(completionResult)
+
+        // Then
+        fakeUserRepository.get().apply {
+            assertEquals(1, statistics.ratedPuzzlesSolved)
+            assertEquals(1L, achievements.progress[Achievement.RATED_PUZZLES_SOLVED.name])
+            assertEquals(1, achievements.currentRatedWinStreak)
+            assertEquals(1, achievements.bestRatedWinStreak)
+            assertEquals(1L, achievements.progress[Achievement.RATED_WIN_STREAK.name])
+        }
+    }
+
+    @Test
+    fun `GIVEN failed completion WHEN invoke THEN does not increment ratedPuzzlesSolved and resets win streak`() = runTest {
+        // Given
+        val currentUser = UserDefaults.signedInUser().copy(
+            achievements = UserDefaults.signedInUser().achievements.copy(
+                currentRatedWinStreak = 3,
+                bestRatedWinStreak = 5,
+            )
+        )
+        fakeUserRepository.update(currentUser)
+        val completionResult = PuzzleCompletionResult(
+            puzzleId = 123,
+            puzzleRating = 1450,
+            wasSuccessful = false,
+            ratingChange = 15,
+            timeSpentMillis = 800L
+        )
+
+        // When
+        underTest(completionResult)
+
+        // Then
+        fakeUserRepository.get().apply {
+            assertEquals(0, statistics.ratedPuzzlesSolved)
+            assertEquals(0L, achievements.progress[Achievement.RATED_PUZZLES_SOLVED.name])
+            assertEquals(0, achievements.currentRatedWinStreak)
+            assertEquals(5, achievements.bestRatedWinStreak)
+            assertEquals(5L, achievements.progress[Achievement.RATED_WIN_STREAK.name])
         }
     }
 

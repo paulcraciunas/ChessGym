@@ -1,6 +1,9 @@
 package com.paulcraciunas.domain.impl.puzzles
 
+import com.paulcraciunas.domain.api.achievements.Achievement
+import com.paulcraciunas.domain.api.achievements.FakeAchievementNotificationManager
 import com.paulcraciunas.domain.api.puzzles.PuzzleRushResult
+import com.paulcraciunas.domain.impl.achievements.UpdateAchievementProgressImpl
 import com.paulcraciunas.user.api.FakeUserRepository
 import com.paulcraciunas.user.api.User
 import com.paulcraciunas.user.api.UserDefaults
@@ -12,7 +15,13 @@ import java.time.LocalDate
 
 internal class OnPuzzleRushCompleteImplTest {
     private val fakeUserRepository = FakeUserRepository()
-    private val underTest = OnPuzzleRushCompleteImpl(fakeUserRepository)
+    private val updateAchievementProgress = UpdateAchievementProgressImpl(
+        FakeAchievementNotificationManager(),
+    )
+    private val underTest = OnPuzzleRushCompleteImpl(
+        fakeUserRepository,
+        updateAchievementProgress,
+    )
 
     @Test
     fun `GIVEN rush result WHEN invoke THEN updates puzzles played and solved`() = runTest {
@@ -39,6 +48,30 @@ internal class OnPuzzleRushCompleteImplTest {
                 UserDefaults.STATISTICS_SOLVED + result.puzzlesSolved,
                 statistics.puzzlesSolved
             )
+        }
+    }
+
+    @Test
+    fun `GIVEN rush result WHEN invoke THEN updates achievement-related statistics and progress`() = runTest {
+        // Given
+        val currentUser = UserDefaults.signedInUser()
+        fakeUserRepository.update(currentUser)
+        val result = PuzzleRushResult(
+            puzzlesSolved = 10,
+            puzzlesFailed = 1,
+            failedPuzzleIds = emptyList(),
+            timeSpentMillis = 180_000L
+        )
+
+        // When
+        underTest(result)
+
+        // Then
+        fakeUserRepository.get().apply {
+            assertEquals(1, statistics.puzzleRushSessions)
+            assertEquals(10, statistics.rushPuzzlesSolved)
+            assertEquals(1L, achievements.progress[Achievement.PUZZLE_RUSH_SESSIONS.name])
+            assertEquals(10L, achievements.progress[Achievement.RUSH_SOLVER.name])
         }
     }
 

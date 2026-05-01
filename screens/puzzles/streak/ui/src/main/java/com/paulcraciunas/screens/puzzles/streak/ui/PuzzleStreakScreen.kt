@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -51,6 +52,7 @@ import com.paulcraciunas.screens.puzzles.streak.vm.PuzzleStreakScreenInteractor
 import com.paulcraciunas.screens.puzzles.streak.vm.PuzzleStreakUiState
 import com.paulcraciunas.screens.puzzles.streak.vm.StubPuzzleStreakScreenInteractor
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PuzzleStreakScreen(
     uiState: PuzzleStreakUiState,

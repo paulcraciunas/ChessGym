@@ -9,6 +9,7 @@ data class User(
     val ratings: Ratings = Ratings(),
     val highScores: HighScores = HighScores(),
     val statistics: Statistics = Statistics(),
+    val achievements: Achievements = Achievements(),
     val history: List<HistoryItem> = emptyList(),
     val failedPuzzles: List<Int> = emptyList(), // Puzzle IDs for retry; This is not persistable across Network, as DB IDs might differ
     val authentication: AuthenticationState? = null,
@@ -26,19 +27,19 @@ data class User(
 
     @Serializable
     data class Ratings(
-        val current: Int = 1200,
-        val blindMode: Int = 400,
+        val current: Int = DEFAULT_RATED_PUZZLE_RATING,
+        val blindMode: Int = DEFAULT_BLIND_MODE_RATING,
         val puzzleStreak: PuzzleStreak = PuzzleStreak(),
     )
 
     @Serializable
     data class HighScores(
-        val ratedPuzzle: Int = 1200,
+        val ratedPuzzle: Int = DEFAULT_RATED_PUZZLE_RATING,
         val puzzleRush: Int = 0,
         val puzzleStreak: Int = 0,
         val findTheSquare: Int = 0,
         val moveThePiece: Int = 0,
-        val blindMode: Int = 400
+        val blindMode: Int = DEFAULT_BLIND_MODE_RATING
     )
 
     @Serializable
@@ -46,6 +47,14 @@ data class User(
         val puzzlesPlayed: Int = 0,
         val puzzlesSolved: Int = 0,
         val totalTimeSpent: Long = 0, // in milliseconds
+        val ratedPuzzlesSolved: Int = 0,
+        val puzzleRushSessions: Int = 0,
+        val streakSessions: Int = 0,
+        val failedPuzzlesRedeemed: Int = 0,
+        val findSquareSessions: Int = 0,
+        val moveThePieceSessions: Int = 0,
+        val blindModeWins: Int = 0,
+        val rushPuzzlesSolved: Int = 0,
     )
 
     @Serializable
@@ -125,4 +134,27 @@ data class User(
         val currentCount: Int = 0,
         val lastPuzzleId: Int? = null,
     )
+
+    @Serializable
+    data class Achievements(
+        val progress: Map<String, Long> = mapOf(
+            ACHIEVEMENT_RATING_CLIMBER to DEFAULT_RATED_PUZZLE_RATING.toLong(),
+            ACHIEVEMENT_BLIND_STRATEGIST to DEFAULT_BLIND_MODE_RATING.toLong(),
+        ),
+        val unseenAchievements: Set<String> = emptySet(),
+        @Serializable(with = LocalDateSerializer::class)
+        val lastActiveDate: LocalDate? = null,
+        val consecutiveDaysStreak: Int = 0,
+        val bestConsecutiveDaysStreak: Int = 0,
+        val currentRatedWinStreak: Int = 0,
+        val bestRatedWinStreak: Int = 0,
+    )
+
+    companion object {
+        const val DEFAULT_RATED_PUZZLE_RATING: Int = 1000
+        const val DEFAULT_BLIND_MODE_RATING: Int = 400
+
+        internal const val ACHIEVEMENT_RATING_CLIMBER: String = "RATING_CLIMBER"
+        internal const val ACHIEVEMENT_BLIND_STRATEGIST: String = "BLIND_STRATEGIST"
+    }
 }

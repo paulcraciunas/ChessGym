@@ -12,13 +12,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
@@ -38,6 +42,8 @@ fun AppBar(
     modifier: Modifier = Modifier,
     title: String = stringResource(R.string.app_name),
     titleAlign: AppBarAlignment = AppBarAlignment.Beginning,
+    elevation: Dp = 3.dp,
+    scrollBehavior: TopAppBarScrollBehavior? = null,
     navButton: (@Composable AppBarScope.() -> Unit) = {},
     actions: (@Composable () -> Unit) = {},
 ) {
@@ -47,6 +53,7 @@ fun AppBar(
         containerColor = MaterialTheme.colorScheme.primaryContainer,
         titleContentColor = MaterialTheme.colorScheme.primary,
     )
+    val appBarModifier = modifier.shadow(elevation = elevation)
     when (titleAlign) {
         AppBarAlignment.Beginning -> {
             TopAppBar(
@@ -54,7 +61,8 @@ fun AppBar(
                 title = { Text(text = title) },
                 navigationIcon = { navButton(appBarScope) },
                 actions = { actions() },
-                modifier = modifier
+                modifier = appBarModifier,
+                scrollBehavior = scrollBehavior,
             )
         }
 
@@ -64,7 +72,8 @@ fun AppBar(
                 title = { Text(text = title) },
                 navigationIcon = { navButton(appBarScope) },
                 actions = { actions() },
-                modifier = modifier
+                modifier = appBarModifier,
+                scrollBehavior = scrollBehavior,
             )
         }
     }
@@ -109,6 +118,7 @@ class AppBarScope internal constructor() {
 
 @Preview("Home AppBar")
 @Preview("Home AppBar (dark)", uiMode = UI_MODE_NIGHT_YES)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun Preview_Home() {
     ChessGymTheme {
@@ -120,6 +130,7 @@ internal fun Preview_Home() {
 
 @Preview("Home Centered AppBar")
 @Preview("Home Centered (dark)", uiMode = UI_MODE_NIGHT_YES)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun Preview_Home_Centered() {
     ChessGymTheme {
@@ -133,6 +144,7 @@ internal fun Preview_Home_Centered() {
 
 @Preview("Back AppBar")
 @Preview("Back AppBar (dark)", uiMode = UI_MODE_NIGHT_YES)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun Preview_Back() {
     ChessGymTheme {
@@ -145,6 +157,7 @@ internal fun Preview_Back() {
 
 @Preview("Center AppBar")
 @Preview("Center AppBar (dark)", uiMode = UI_MODE_NIGHT_YES)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun Preview_Center() {
     ChessGymTheme {
@@ -157,6 +170,7 @@ internal fun Preview_Center() {
 
 @Preview("Simple AppBar")
 @Preview("Simple AppBar (dark)", uiMode = UI_MODE_NIGHT_YES)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun Preview_Simple() {
     ChessGymTheme {

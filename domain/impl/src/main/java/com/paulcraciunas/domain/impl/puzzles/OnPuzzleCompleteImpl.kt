@@ -1,5 +1,6 @@
 package com.paulcraciunas.domain.impl.puzzles
 
+import com.paulcraciunas.domain.api.achievements.UpdateAchievementProgress
 import com.paulcraciunas.domain.api.puzzles.OnPuzzleComplete
 import com.paulcraciunas.domain.api.puzzles.PuzzleCompletionResult
 import com.paulcraciunas.user.api.User
@@ -7,13 +8,9 @@ import com.paulcraciunas.user.api.UserRepository
 import java.time.LocalDate
 import javax.inject.Inject
 
-/**
- * Implementation of OnPuzzleComplete that updates user data.
- *
- * Integrates with UserRepository to update ratings, statistics, and history.
- */
 class OnPuzzleCompleteImpl @Inject constructor(
     private val userRepository: UserRepository,
+    private val updateAchievementProgress: UpdateAchievementProgress,
 ) : OnPuzzleComplete {
 
     override suspend operator fun invoke(completionResult: PuzzleCompletionResult) {
@@ -21,53 +18,52 @@ class OnPuzzleCompleteImpl @Inject constructor(
         val won = completionResult.wasSuccessful
         val ratingChange = completionResult.ratingChange * if (won) 1 else -1
 
-        // Update puzzles played and solved count
         val newPuzzlesPlayed = currentUser.statistics.puzzlesPlayed + 1
         val newPuzzlesSolved = currentUser.statistics.puzzlesSolved + if (won) 1 else 0
-
-        // Update current rating
         val newCurrentRating = currentUser.ratings.current + ratingChange
-
-        // Update best rating if this is a new personal best
         val newBestRating = maxOf(currentUser.highScores.ratedPuzzle, newCurrentRating)
-
-        // Update total time spent
         val newTotalTimeSpent = currentUser.statistics.totalTimeSpent + completionResult.timeSpentMillis
 
-        // Update failed puzzles list if the puzzle was failed and has an ID
         val newFailedPuzzles = if (!won && completionResult.puzzleId != null) {
             currentUser.failedPuzzles + completionResult.puzzleId!!
         } else {
             currentUser.failedPuzzles
         }
 
-        // Create updated user
+        val achievements = currentUser.achievements
+        val winStreak = if (won) achievements.currentRatedWinStreak + 1 else 0
+        val bestWinStreak = maxOf(achievements.bestRatedWinStreak, winStreak)
+
         val updatedUser = currentUser.copy(
             ratings = currentUser.ratings.copy(current = newCurrentRating),
             highScores = currentUser.highScores.copy(ratedPuzzle = newBestRating),
             statistics = currentUser.statistics.copy(
                 puzzlesPlayed = newPuzzlesPlayed,
                 puzzlesSolved = newPuzzlesSolved,
-                totalTimeSpent = newTotalTimeSpent
+                totalTimeSpent = newTotalTimeSpent,
+                ratedPuzzlesSolved = currentUser.statistics.ratedPuzzlesSolved + if (won) 1 else 0,
             ),
-            failedPuzzles = newFailedPuzzles
+            failedPuzzles = newFailedPuzzles,
+            achievements = achievements.copy(
+                currentRatedWinStreak = winStreak,
+                bestRatedWinStreak = bestWinStreak,
+            ),
         )
 
-        // Create history entry for today
+        val withAchievements = updateAchievementProgress(updatedUser)
+
         val today = LocalDate.now()
-        val historyData = User.HistoryItem.HistoryItemData.RatedPuzzleData(
-            puzzlesPlayed = 1,
-            puzzlesSolved = if (won) 1 else 0,
-            ratingChange = ratingChange,
-            timeSpent = completionResult.timeSpentMillis
-        )
         val historyItem = User.HistoryItem(
             timestamp = today,
-            data = historyData
+            data = User.HistoryItem.HistoryItemData.RatedPuzzleData(
+                puzzlesPlayed = 1,
+                puzzlesSolved = if (won) 1 else 0,
+                ratingChange = ratingChange,
+                timeSpent = completionResult.timeSpentMillis
+            )
         )
 
-        // Update user and log history
-        userRepository.update(updatedUser)
+        userRepository.update(withAchievements)
         userRepository.logHistory(listOf(historyItem))
     }
 }
