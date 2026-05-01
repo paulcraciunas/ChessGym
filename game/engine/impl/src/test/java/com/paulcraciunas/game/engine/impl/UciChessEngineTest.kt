@@ -146,7 +146,7 @@ internal class UciChessEngineTest {
         }
 
         @Test
-        fun `GIVEN engine WHEN analyzePosition THEN sends multiPV, position, and go infinite`() = runTest(testDispatcher) {
+        fun `GIVEN engine WHEN analyzePosition THEN stops previous, syncs, and starts new analysis`() = runTest(testDispatcher) {
             fakeFacade.analysisLines = listOf(
                 "info depth 1 seldepth 1 multipv 1 score cp 30 nodes 20 nps 10000 time 2 pv e2e4",
                 "bestmove e2e4",
@@ -158,10 +158,12 @@ internal class UciChessEngineTest {
             assertEquals(30, (results[0].evaluation as com.paulcraciunas.game.engine.api.Evaluation.Centipawns).value)
 
             val commandTypes = fakeFacade.executedCommands.map { it::class }
-            assertEquals(UciCommand.SetMultiPV::class, commandTypes[0])
-            assertEquals(UciCommand.SetPosition::class, commandTypes[1])
+            assertEquals(UciCommand.IsReady::class, commandTypes[0])
+            assertEquals(UciCommand.SetMultiPV::class, commandTypes[1])
+            assertEquals(UciCommand.SetPosition::class, commandTypes[2])
 
-            assertEquals("go infinite", fakeFacade.sentCommands[0].protocol())
+            assertEquals("stop", fakeFacade.sentCommands[0].protocol())
+            assertEquals("go infinite", fakeFacade.sentCommands[1].protocol())
         }
 
         @Test
@@ -177,6 +179,8 @@ internal class UciChessEngineTest {
             assertEquals(2, results.size)
             assertEquals(1, results[0].depth)
             assertEquals(2, results[1].depth)
+
+            assertEquals("stop", fakeFacade.sentCommands[0].protocol())
         }
 
         @Test

@@ -66,6 +66,9 @@ internal class UciChessEngine @Inject constructor(
         fen: String,
         multiPvCount: Int,
     ): Flow<AnalysisResult> = flow {
+        uci.sendCommand(UciCommand.Stop)
+        uci.execute<UciResponse.Ready>(UciCommand.IsReady)
+
         uci.execute<UciResponse.Done>(UciCommand.SetMultiPV(multiPvCount))
         uci.execute<UciResponse.Done>(UciCommand.SetPosition(fen))
         uci.sendCommand(UciCommand.GoInfinite)
