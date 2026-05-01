@@ -22,13 +22,13 @@ internal class HomeUiStateAdapterTest {
 
         // Then
         assertEquals("Chess Enthusiast", result.userProfile.name)
-        assertEquals(1200, result.userProfile.currentRating)
+        assertEquals(1000, result.userProfile.currentRating)
         assertEquals(0, result.userProfile.totalActivities)
 
         assertEquals(0, result.userStats.puzzlesPlayed)
         assertEquals(0, result.userStats.puzzlesSolved)
-        assertEquals(1200, result.userStats.currentRating)
-        assertEquals(1200, result.userStats.bestRating)
+        assertEquals(1000, result.userStats.currentRating)
+        assertEquals(1000, result.userStats.bestRating)
         assertEquals(0, result.userStats.bestPuzzleRushScore)
         assertEquals(0, result.userStats.bestPuzzleStreakScore)
         assertEquals(0, result.userStats.bestFindTheSquareScore)

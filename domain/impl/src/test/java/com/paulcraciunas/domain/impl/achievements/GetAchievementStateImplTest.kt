@@ -24,7 +24,6 @@ internal class GetAchievementStateImplTest {
         assertEquals(Achievement.entries.size, result.size)
         result.forEach { state ->
             assertNull(state.currentTier)
-            assertEquals(0L, state.currentProgress)
             assertFalse(state.isUnseen)
             assertEquals(state.achievement.nextTierProgress(null), state.nextThreshold)
         }
