@@ -35,7 +35,7 @@ object UserDefaults {
 
     const val FIRST_NAME = "Darth"
     const val LAST_NAME = "Vader"
-    const val RATING = User.DEFAULT_RATED_PUZZLE_RATING
+    const val RATING = 1200
     const val RATING_BLIND_MODE = User.DEFAULT_BLIND_MODE_RATING
     const val HIGH_SCORE_RATED = 1350
     const val HIGH_SCORE_RUSH = 85

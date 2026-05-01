@@ -151,7 +151,7 @@ data class User(
     )
 
     companion object {
-        const val DEFAULT_RATED_PUZZLE_RATING: Int = 1200
+        const val DEFAULT_RATED_PUZZLE_RATING: Int = 1000
         const val DEFAULT_BLIND_MODE_RATING: Int = 400
 
         internal const val ACHIEVEMENT_RATING_CLIMBER: String = "RATING_CLIMBER"
