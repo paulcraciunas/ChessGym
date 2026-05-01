@@ -8,7 +8,14 @@ import java.time.LocalDate
 class UserSetup(private val repository: FakeUserRepository) {
 
     fun isDefault(): UserSetup = apply {
-        runBlocking { repository.update(User()) }
+        runBlocking { repository.update(User(
+            ratings = User.Ratings(
+                current = 1200,
+            ),
+            highScores = User.HighScores(
+                ratedPuzzle = 1200,
+            ),
+        )) }
     }
 
     fun isEmpty(): UserSetup = apply {

@@ -42,7 +42,7 @@ internal class HomeScreenTest : BaseUiTest() {
         Then.homeScreen
             .isDisplayed()
             .hasProfileCard()
-            .hasProfileInfo(name = "Chess Enthusiast", initials = "CE", rating = 1200)
+            .hasProfileInfo(name = "Chess Enthusiast", initials = "CE", rating = 1000)
     }
 
     @Test
