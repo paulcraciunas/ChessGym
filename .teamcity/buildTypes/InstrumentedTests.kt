@@ -15,6 +15,13 @@ object InstrumentedTests : BuildType({
         **/build/outputs/androidTest-results/** => instrumented-test-results
     """.trimIndent()
 
+    params {
+        param(
+            "env.ANDROID_USER_HOME",
+            """C:\android-user-home""",
+        )
+    }
+
     applyCommonConfiguration()
 
     // Don't run tests if the basic build fails
