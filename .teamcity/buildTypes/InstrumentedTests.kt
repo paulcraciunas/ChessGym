@@ -11,8 +11,8 @@ object InstrumentedTests : BuildType({
 
     // Capture both HTML reports and raw XML results
     artifactRules = """
-        **/build/reports/androidTests/** => instrumented-test-reports
-        **/build/outputs/androidTest-results/** => instrumented-test-results
+        **/build/reports/androidTests/** => instrumented-test-reports.zip
+        **/build/outputs/androidTest-results/** => instrumented-test-results.zip
     """.trimIndent()
 
     params {
