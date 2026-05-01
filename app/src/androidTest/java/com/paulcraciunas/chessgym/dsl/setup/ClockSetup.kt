@@ -5,6 +5,7 @@ import com.paulcraciunas.domain.api.general.FakeCountdownTimer
 class ClockSetup(
     private val whiteTimer: FakeCountdownTimer,
     private val blackTimer: FakeCountdownTimer,
+    private val defaultTimer: FakeCountdownTimer,
 ) {
     fun expireWhiteTimer(): ClockSetup = apply {
         whiteTimer.advanceUntilIdle()
@@ -14,8 +15,13 @@ class ClockSetup(
         blackTimer.advanceUntilIdle()
     }
 
+    fun expireDefaultTimer(): ClockSetup = apply {
+        defaultTimer.advanceUntilIdle()
+    }
+
     fun reset() {
         whiteTimer.stop()
         blackTimer.stop()
+        defaultTimer.stop()
     }
 }

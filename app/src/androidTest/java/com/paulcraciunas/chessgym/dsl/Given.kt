@@ -13,5 +13,9 @@ object Given {
     val user = UserSetup(TestUserModule.userRepository)
     val settings = SettingsSetup(TestApplicationSettingsModule.appSettingsRepository)
     val puzzle = PuzzleSetup(TestRandomFactoryModule.randomFactory)
-    val clock = ClockSetup(TestClockTimersModule.whiteTimer, TestClockTimersModule.blackTimer)
+    val clock = ClockSetup(
+        TestClockTimersModule.whiteTimer,
+        TestClockTimersModule.blackTimer,
+        TestClockTimersModule.defaultTimer,
+    )
 }
