@@ -1,13 +1,21 @@
 package com.paulcraciunas.screens.home.vm
 
+import com.paulcraciunas.domain.api.achievements.Achievement
 import java.time.LocalDate
 
 data class HomeUiState(
     val userProfile: UserProfile = UserProfile(),
     val userStats: Stats = Stats(),
     val history: List<HistoryGroup> = emptyList(),
+    val unseenAchievementCount: Int = 0,
+    val ribbons: List<Ribbon> = emptyList(),
     val isLoading: Boolean = true,
 ) {
+    data class Ribbon(
+        val achievement: Achievement,
+        val tier: Achievement.Tier,
+    )
+
     data class UserProfile(
         val name: String = "Chess Player",
         val currentRating: Int = 1200,
