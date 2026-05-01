@@ -10,6 +10,9 @@ import com.paulcraciunas.global.resources.R
 fun Achievement.displayName(): String = stringResource(displayNameRes)
 
 @Composable
+fun Achievement.description(): String = stringResource(descriptionRes)
+
+@Composable
 fun Achievement.tierName(tier: Achievement.Tier): String =
     stringResource(tierNameRes(this, tier))
 
@@ -36,6 +39,31 @@ private val Achievement.displayNameRes: Int
         Achievement.CONSISTENCY_KING -> R.string.achievement_category_consistency_king
         Achievement.BOARD_VISION -> R.string.achievement_category_board_vision
         Achievement.RUSH_SOLVER -> R.string.achievement_category_rush_solver
+    }
+
+@get:StringRes
+private val Achievement.descriptionRes: Int
+    get() = when (this) {
+        Achievement.RATED_PUZZLES_SOLVED -> R.string.achievement_desc_rated_puzzles_solved
+        Achievement.PUZZLE_RUSH_SESSIONS -> R.string.achievement_desc_puzzle_rush_sessions
+        Achievement.STREAK_SESSIONS -> R.string.achievement_desc_streak_sessions
+        Achievement.FAILED_PUZZLES_REDEEMED -> R.string.achievement_desc_failed_puzzles_redeemed
+        Achievement.FIND_SQUARE_SESSIONS -> R.string.achievement_desc_find_square_sessions
+        Achievement.MOVE_PIECE_SESSIONS -> R.string.achievement_desc_move_piece_sessions
+        Achievement.BLIND_MODE_WINS -> R.string.achievement_desc_blind_mode_wins
+        Achievement.RATED_WIN_STREAK -> R.string.achievement_desc_rated_win_streak
+        Achievement.RATING_CLIMBER -> R.string.achievement_desc_rating_climber
+        Achievement.BLIND_STRATEGIST -> R.string.achievement_desc_blind_strategist
+        Achievement.RUSH_CHAMPION -> R.string.achievement_desc_rush_champion
+        Achievement.STREAK_LEGEND -> R.string.achievement_desc_streak_legend
+        Achievement.EAGLE_EYE -> R.string.achievement_desc_eagle_eye
+        Achievement.KNIGHTS_PATH -> R.string.achievement_desc_knights_path
+        Achievement.PUZZLE_ADDICT -> R.string.achievement_desc_puzzle_addict
+        Achievement.TIME_INVESTED -> R.string.achievement_desc_time_invested
+        Achievement.DAILY_GRINDER -> R.string.achievement_desc_daily_grinder
+        Achievement.CONSISTENCY_KING -> R.string.achievement_desc_consistency_king
+        Achievement.BOARD_VISION -> R.string.achievement_desc_board_vision
+        Achievement.RUSH_SOLVER -> R.string.achievement_desc_rush_solver
     }
 
 @StringRes

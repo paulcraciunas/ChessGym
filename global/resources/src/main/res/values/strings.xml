@@ -539,6 +539,28 @@
     <string name="achievement_rush_solver_four">Rush Machine</string>
     <string name="achievement_rush_solver_five">Rush Terminator</string>
 
+    <!-- Achievement descriptions -->
+    <string name="achievement_desc_rated_puzzles_solved">Solve rated puzzles to earn this achievement</string>
+    <string name="achievement_desc_puzzle_rush_sessions">Complete Puzzle Rush sessions to earn this achievement</string>
+    <string name="achievement_desc_streak_sessions">Complete Puzzle Streak sessions to earn this achievement</string>
+    <string name="achievement_desc_failed_puzzles_redeemed">Retry and solve previously failed puzzles</string>
+    <string name="achievement_desc_find_square_sessions">Play Find the Square sessions to earn this achievement</string>
+    <string name="achievement_desc_move_piece_sessions">Play Move the Piece sessions to earn this achievement</string>
+    <string name="achievement_desc_blind_mode_wins">Win rated Blind Mode games to earn this achievement</string>
+    <string name="achievement_desc_rated_win_streak">Win consecutive rated puzzles without failing</string>
+    <string name="achievement_desc_rating_climber">Increase your puzzle rating to reach new heights</string>
+    <string name="achievement_desc_blind_strategist">Increase your Blind Mode rating to earn this achievement</string>
+    <string name="achievement_desc_rush_champion">Set a high score in Puzzle Rush</string>
+    <string name="achievement_desc_streak_legend">Set a high score in Puzzle Streak</string>
+    <string name="achievement_desc_eagle_eye">Set a high score in Find the Square</string>
+    <string name="achievement_desc_knights_path">Set a high score in Move the Piece</string>
+    <string name="achievement_desc_puzzle_addict">Solve puzzles across all game modes</string>
+    <string name="achievement_desc_time_invested">Spend time practising across all game modes</string>
+    <string name="achievement_desc_daily_grinder">Play on consecutive days to build your streak</string>
+    <string name="achievement_desc_consistency_king">Achieve your best ever consecutive daily streak</string>
+    <string name="achievement_desc_board_vision">Complete Find the Square and Move the Piece sessions</string>
+    <string name="achievement_desc_rush_solver">Solve puzzles during Puzzle Rush sessions</string>
+
     <!-- Achievement UI -->
     <string name="achievement_screen_title">Achievements</string>
     <string name="achievement_banner_unlocked">%1$s — Tier %2$d unlocked!</string>
