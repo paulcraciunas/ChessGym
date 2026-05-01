@@ -2,6 +2,7 @@ package com.paulcraciunas.chessgym
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalNavigationDrawer
@@ -233,7 +234,9 @@ fun MainScreen(
         notificationManager?.let { manager ->
             AchievementBannerHost(
                 notificationManager = manager,
-                modifier = Modifier.align(Alignment.TopCenter),
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .statusBarsPadding(),
             )
         }
     }

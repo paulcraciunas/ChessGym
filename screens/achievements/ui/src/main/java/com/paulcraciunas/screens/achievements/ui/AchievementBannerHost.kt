@@ -1,6 +1,7 @@
 package com.paulcraciunas.screens.achievements.ui
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
@@ -8,6 +9,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -60,12 +62,15 @@ fun AchievementBannerHost(
         AnimatedContent(
             targetState = activeNotification,
             transitionSpec = {
-                slideInVertically { -it } togetherWith slideOutVertically { -it }
+                (slideInVertically { -it } togetherWith slideOutVertically { -it })
+                    .using(SizeTransform(clip = false))
             },
             label = "AchievementBannerTransition"
         ) { notification ->
             if (notification != null) {
                 AchievementBanner(notification = notification)
+            } else {
+                Spacer(modifier = Modifier)
             }
         }
     }
