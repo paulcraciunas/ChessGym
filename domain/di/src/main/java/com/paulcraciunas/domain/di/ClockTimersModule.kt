@@ -9,19 +9,25 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import java.time.Clock
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object ClockTimersModule {
     @Provides
+    @Singleton
+    fun provideClock(): Clock = Clock.systemUTC()
+
+    @Provides
     @WhiteTimer
-    fun whiteCountdownTimer(): CountdownTimer = RealCountdownTimer()
+    fun whiteCountdownTimer(clock: Clock): CountdownTimer = RealCountdownTimer(clock)
 
     @Provides
     @BlackTimer
-    fun blackCountdownTimer(): CountdownTimer = RealCountdownTimer()
+    fun blackCountdownTimer(clock: Clock): CountdownTimer = RealCountdownTimer(clock)
 
     @Provides
     @DefaultTimer
-    fun defaultCountdownTimer(): CountdownTimer = RealCountdownTimer()
+    fun defaultCountdownTimer(clock: Clock): CountdownTimer = RealCountdownTimer(clock)
 }
