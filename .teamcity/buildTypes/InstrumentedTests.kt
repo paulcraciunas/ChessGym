@@ -1,18 +1,19 @@
 package buildTypes
 
+import jetbrains.buildServer.configs.kotlin.BuildStep
 import jetbrains.buildServer.configs.kotlin.BuildType
 import jetbrains.buildServer.configs.kotlin.FailureAction
 import jetbrains.buildServer.configs.kotlin.buildSteps.gradle
+import jetbrains.buildServer.configs.kotlin.buildSteps.script
 
 object InstrumentedTests : BuildType({
     id("InstrumentedTests")
     name = "Instrumented Tests"
     description = "Runs all Android instrumented/UI tests on a Gradle Managed Device"
 
-    // Capture both HTML reports and raw XML results
     artifactRules = """
-        **/build/reports/androidTests/** => instrumented-test-reports.zip
-        **/build/outputs/androidTest-results/** => instrumented-test-results.zip
+        instrumented-test-reports.zip
+        instrumented-test-results.zip
     """.trimIndent()
 
     params {
@@ -35,7 +36,6 @@ object InstrumentedTests : BuildType({
     steps {
         gradle {
             name = "Run Instrumented Tests"
-            // Removed 'clean' to save time; --no-build-cache handles fresh execution
             tasks = "instrumentedTestAllCi"
             useGradleWrapper = true
             gradleParams = """
@@ -44,6 +44,11 @@ object InstrumentedTests : BuildType({
                 -Pandroid.testoptions.manageddevices.emulator.gpu=swiftshader_indirect
                 -Dorg.gradle.workers.max=2
             """.trimIndent()
+        }
+        script {
+            name = "Archive Test Reports"
+            executionMode = BuildStep.ExecutionMode.RUN_ON_FAILURE
+            scriptContent = "powershell -NoProfile -ExecutionPolicy Bypass -File ci/archive-instrumented-reports.ps1"
         }
     }
 
