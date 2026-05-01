@@ -63,4 +63,7 @@ sealed class Screen {
 
     @Serializable
     data class AboutDetail(val section: String) : Screen()
+
+    @Serializable
+    data object Achievements : Screen()
 }

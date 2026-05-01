@@ -2,6 +2,7 @@ package com.paulcraciunas.chessgym.navigation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.paulcraciunas.domain.api.achievements.AchievementNotificationManager
 import com.paulcraciunas.settings.application.api.AppSettings
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,7 +20,8 @@ data class NavGraphUiState(
 
 @HiltViewModel
 class NavGraphViewModel @Inject constructor(
-    private val appSettingsRepository: AppSettingsRepository
+    private val appSettingsRepository: AppSettingsRepository,
+    val achievementNotificationManager: AchievementNotificationManager,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(NavGraphUiState())

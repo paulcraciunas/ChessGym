@@ -1,5 +1,6 @@
 package com.paulcraciunas.chessgym
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
@@ -10,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
@@ -25,6 +27,10 @@ import com.paulcraciunas.chessgym.navigation.Screen
 import com.paulcraciunas.chessgym.screens.BlindMode
 import com.paulcraciunas.chessgym.screens.BoardVisDashboard
 import com.paulcraciunas.chessgym.screens.AnalysisBoard
+import com.paulcraciunas.domain.api.achievements.AchievementNotificationManager
+import com.paulcraciunas.screens.achievements.ui.AchievementBannerHost
+import com.paulcraciunas.screens.achievements.ui.AchievementsScreen
+import com.paulcraciunas.screens.achievements.vm.AchievementsViewModel
 import com.paulcraciunas.chessgym.screens.ChessClock
 import com.paulcraciunas.chessgym.screens.FailedPuzzles
 import com.paulcraciunas.chessgym.screens.FindTheSquare
@@ -44,6 +50,7 @@ import kotlinx.coroutines.launch
 fun MainScreen(
     onDrawerScreen: (Screen) -> Unit,
     modifier: Modifier = Modifier,
+    notificationManager: AchievementNotificationManager? = null,
 ) {
     val mainScreenViewModel: MainScreenViewModel = hiltViewModel()
     val mainScreenState by mainScreenViewModel.uiState.collectAsStateWithLifecycle()
@@ -57,7 +64,8 @@ fun MainScreen(
     val scope = rememberCoroutineScope()
     val onDrawerToggle: () -> Unit = { scope.launch { drawerState.toggle() } }
 
-    ModalNavigationDrawer(
+    Box {
+        ModalNavigationDrawer(
         drawerContent = {
             AppDrawer(
                 drawerState = drawerState,
@@ -112,7 +120,22 @@ fun MainScreen(
                 animatedComposable<Screen.Home> {
                     val vm: HomeViewModel = hiltViewModel()
                     val homeState by vm.uiState.collectAsStateWithLifecycle()
-                    HomeScreen(state = homeState, onDrawerToggle = onDrawerToggle)
+                    HomeScreen(
+                        state = homeState,
+                        onDrawerToggle = onDrawerToggle,
+                        onAchievements = {
+                            tabNavController.navigate(Screen.Achievements)
+                        },
+                    )
+                }
+                animatedComposable<Screen.Achievements> {
+                    val vm: AchievementsViewModel = hiltViewModel()
+                    val achievementsState by vm.uiState.collectAsStateWithLifecycle()
+                    AchievementsScreen(
+                        state = achievementsState,
+                        interactions = vm,
+                        onBack = { tabNavController.popBackStack() },
+                    )
                 }
                 animatedComposable<Screen.PuzzleDashboard> {
                     PuzzleDashboard(tabNavController, onDrawerToggle = onDrawerToggle)
@@ -204,6 +227,14 @@ fun MainScreen(
                     )
                 }
             }
+        }
+    }
+
+        notificationManager?.let { manager ->
+            AchievementBannerHost(
+                notificationManager = manager,
+                modifier = Modifier.align(Alignment.TopCenter),
+            )
         }
     }
 }
