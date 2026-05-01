@@ -34,6 +34,10 @@ enum class Achievement(
         ONE, TWO, THREE, FOUR, FIVE;
 
         val number: Int get() = ordinal + 1
+
+        companion object {
+            fun maxTier(): Tier = FIVE
+        }
     }
 
     /** Returns the highest tier reached for the given [progress]. */
@@ -54,4 +58,6 @@ enum class Achievement(
         val nextOrdinal = (currentTier?.ordinal ?: -1) + 1
         return thresholds.getOrNull(nextOrdinal)
     }
+
+    fun completeProgress(): Long = thresholds.last()
 }

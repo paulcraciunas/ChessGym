@@ -13,5 +13,6 @@ dependencies {
     api(project(":domain:api"))
     implementation(project(":user:api"))
 
+    implementation(libs.public.timber)
     implementation(libs.androidx.lifecycle.runtime.ktx)
 }
