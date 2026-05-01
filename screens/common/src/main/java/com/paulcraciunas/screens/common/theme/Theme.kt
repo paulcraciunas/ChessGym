@@ -10,6 +10,8 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalContext
+import com.paulcraciunas.screens.common.extensions.DefaultAlpha
+import com.paulcraciunas.screens.common.extensions.LocalAlpha
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -56,12 +58,14 @@ fun ChessGymTheme(
     }
     val pieces = DefaultPieceSet // We don't currently have multiple piece sets
     val tokens = DefaultTokens // We don't currently have multiple sets of tokens
+    val alpha = DefaultAlpha
     val loadingTypography = createLoadingTypography()
 
     CompositionLocalProvider(
         LocalBoardPalette provides boardPalette,
         LocalPieceSet provides pieces,
         LocalTokens provides tokens,
+        LocalAlpha provides alpha,
         LocalLoadingColors provides LoadingColors(),
         LocalLoadingTypography provides loadingTypography,
         LocalLoadingDimensions provides LoadingDimensions(),
