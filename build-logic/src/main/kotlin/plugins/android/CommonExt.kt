@@ -27,7 +27,8 @@ internal fun DependencyHandlerDelegate.includeCompose(libs: VersionCatalog) {
     implementation(libs.library("androidx-material3"))
     implementation(libs.library("androidx-ui"))
 
-    debugImplementation(libs.library("androidx-ui-tooling-preview"))
+    implementation(libs.library("androidx-ui-tooling-preview"))
+
     debugImplementation(libs.library("androidx-ui-tooling"))
     debugImplementation(libs.library("androidx-ui-test-manifest"))
 
