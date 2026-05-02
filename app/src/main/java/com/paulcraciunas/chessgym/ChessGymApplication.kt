@@ -10,12 +10,16 @@ import com.paulcraciunas.chessgym.error_reporting.GlobalExceptionHandler
 import com.paulcraciunas.global.device.api.usecases.GetNetworkState
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import com.paulcraciunas.user.api.UserRepository
+import com.paulcraciunas.utils.DefaultDispatcher
+import com.paulcraciunas.utils.MainDispatcher
 import dagger.hilt.android.HiltAndroidApp
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -25,9 +29,11 @@ class ChessGymApplication : Application(), Configuration.Provider {
     @Inject lateinit var getNetworkState: GetNetworkState
     @Inject lateinit var appSettingsRepository: AppSettingsRepository
     @Inject lateinit var userRepository: UserRepository
+    @Inject @DefaultDispatcher lateinit var defaultDispatcher: CoroutineDispatcher
+    @Inject @MainDispatcher lateinit var mainDispatcher: CoroutineDispatcher
 
     // Use a dedicated scope for application-level background tasks
-    private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+    private val applicationScope by lazy { CoroutineScope(SupervisorJob() + defaultDispatcher) }
 
     override fun onCreate() {
         super.onCreate()
@@ -57,11 +63,12 @@ class ChessGymApplication : Application(), Configuration.Provider {
                 userRepository.userUpdates()
             ) { settings, user ->
                 settings to user
-            }.collect { (settings, user) ->
-                val enabled = settings.crashReportingConsent && !BuildConfig.DEBUG
-                Firebase.crashlytics.isCrashlyticsCollectionEnabled = enabled
-                if (enabled) {
-                    Firebase.crashlytics.setUserId(user.deviceId)
+            }.catch { e -> Timber.e(e, "Crash reporting setup failed") }
+            .collect { (settings, user) ->
+                withContext(mainDispatcher) {
+                    val enabled = settings.crashReportingConsent && !BuildConfig.DEBUG
+                    Firebase.crashlytics.isCrashlyticsCollectionEnabled = enabled
+                    Firebase.crashlytics.setUserId(if (enabled) user.deviceId else "")
                 }
             }
         }
@@ -69,6 +76,6 @@ class ChessGymApplication : Application(), Configuration.Provider {
 
     override val workManagerConfiguration: Configuration
         get() = Configuration.Builder()
-            .setWorkerFactory(workerFactory)
-            .build()
+        .setWorkerFactory(workerFactory)
+        .build()
 }
