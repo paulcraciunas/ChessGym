@@ -9,4 +9,5 @@ interface SettingsScreenInteractor {
     fun onHighlightLegalMovesToggled(isEnabled: Boolean)
     fun onLightModeSelected(mode: AppSettings.LightMode)
     fun onAnimationsToggled(isEnabled: Boolean)
+    fun onCrashReportingToggled(isEnabled: Boolean)
 }

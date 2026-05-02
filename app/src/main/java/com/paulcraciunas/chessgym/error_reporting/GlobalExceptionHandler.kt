@@ -1,5 +1,7 @@
 package com.paulcraciunas.chessgym.error_reporting
 
+import com.google.firebase.crashlytics.ktx.crashlytics
+import com.google.firebase.ktx.Firebase
 import com.paulcraciunas.game.logic.api.diagnostics.LastLoadedPuzzleLog
 import com.paulcraciunas.game.logic.api.diagnostics.PlayedMovesLog
 import timber.log.Timber
@@ -7,7 +9,6 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 internal class GlobalExceptionHandler : Thread.UncaughtExceptionHandler {
     private val defaultHandler = Thread.getDefaultUncaughtExceptionHandler()
-
     // Atomic to handle simultaneous crashes from different threads safely
     private val isCrashing = AtomicBoolean(false)
 
@@ -27,11 +28,13 @@ internal class GlobalExceptionHandler : Thread.UncaughtExceptionHandler {
     }
 
     private fun logDetailedCrash(thread: Thread, throwable: Throwable) {
-        // Safely extract summaries
-        val puzzleSummary = runCatching { LastLoadedPuzzleLog.summary() }
-            .getOrDefault("Unavailable")
-        val movesSummary = runCatching { PlayedMovesLog.summary() }
-            .getOrDefault("Unavailable")
+        val crashlytics = Firebase.crashlytics
+        val puzzleSummary = runCatching { LastLoadedPuzzleLog.summary() }.getOrDefault("Unavailable")
+        val movesSummary = runCatching { PlayedMovesLog.summary() }.getOrDefault("Unavailable")
+
+        crashlytics.setCustomKey("crash_thread", thread.name)
+        crashlytics.setCustomKey("last_puzzle", puzzleSummary.take(1024))
+        crashlytics.setCustomKey("played_moves", movesSummary.take(1024))
 
         Timber.e(
             throwable,

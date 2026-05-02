@@ -1,5 +1,9 @@
+import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
+
 plugins {
     id("conventions.android.app")
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.crashlytics)
 }
 
 chessGymApp {
@@ -27,12 +31,18 @@ android {
 
             val debugBuildNumber = "100"
             buildConfigField("String", "BUILD_NUMBER", "\"$debugBuildNumber\"")
+            configure<CrashlyticsExtension> {
+                mappingFileUploadEnabled = false
+            }
         }
         create("uitest") {
             initWith(getByName("debug"))
             applicationIdSuffix = ".uitest"
             versionNameSuffix = "-uitest"
             matchingFallbacks += listOf("debug")
+            configure<CrashlyticsExtension> {
+                mappingFileUploadEnabled = false
+            }
         }
         release {
             val releaseBuildNumber: String = project.findProperty("buildNumber") as? String ?: "0"
@@ -105,6 +115,10 @@ dependencies {
 
     // Logging
     implementation(libs.public.timber)
+
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.crashlytics)
 
     // UI Testing
     androidTestImplementation(libs.androidx.ui.test.junit4)

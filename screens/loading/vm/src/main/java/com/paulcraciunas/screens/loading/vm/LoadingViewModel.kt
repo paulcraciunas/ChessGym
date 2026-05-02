@@ -5,13 +5,22 @@ import androidx.lifecycle.viewModelScope
 import com.paulcraciunas.global.device.api.usecases.GetFreeDiskSpace
 import com.paulcraciunas.global.device.api.usecases.GetNetworkState
 import com.paulcraciunas.puzzles.api.usecases.FetchPuzzleDatabase
+import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -21,108 +30,127 @@ class LoadingViewModel @Inject constructor(
     private val getNetworkState: GetNetworkState,
     private val getFreeDiskSpace: GetFreeDiskSpace,
     private val fetchPuzzleDatabase: FetchPuzzleDatabase,
+    private val appSettingsRepository: AppSettingsRepository,
 ) : ViewModel() {
+
+    private val crashReportingConsent = appSettingsRepository.appSettings
+        .map { it.crashReportingConsent }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     private val _uiState = MutableStateFlow<LoadingState>(LoadingState.ready())
     val uiState: StateFlow<LoadingState> = _uiState.asStateFlow()
 
-    init {
-        viewModelScope.launch {
-            // Monitor network state for reactive error handling
-            getNetworkState().collect { networkState ->
-                val currentState = _uiState.value
+    // track the provisioning process (checks + download) to avoid overlaps
+    private var provisioningJob: Job? = null
 
-                // Only handle network changes when in Ready state with network error
-                if (currentState is LoadingState.Ready && currentState.error == LoadingState.Error.NoInternet) {
-                    if (networkState == GetNetworkState.NetworkState.Connected) {
-                        // Network recovered - clear the error and re-check conditions
-                        _uiState.value = currentState.copy(error = LoadingState.Error.None)
-                        checkDeviceConditions()
-                    }
+    init {
+        observeNetworkRecovery()
+    }
+
+    private fun observeNetworkRecovery() {
+        getNetworkState()
+            .onEach { networkState ->
+                val state = _uiState.value
+                if (state is LoadingState.Ready &&
+                    state.error == LoadingState.Error.NoInternet &&
+                    networkState == GetNetworkState.NetworkState.Connected
+                ) {
+                    _uiState.update { (it as LoadingState.Ready).copy(error = LoadingState.Error.None) }
+                    checkDeviceConditions()
                 }
             }
-        }
+            .launchIn(viewModelScope)
     }
 
     fun onDownload() {
-        _uiState.asState<LoadingState.Ready> { ready ->
-            if (ready.requiresConfirmation) {
-                _uiState.value = ready.copy(dialog = LoadingState.Dialog.Download)
-            } else if (ready.requiresPermission) {
-                _uiState.value = ready.copy(dialog = LoadingState.Dialog.Permission)
+        // Use updateAndGet to atomically update and get the RESULTING state
+        val newState = _uiState.updateAndGet { state ->
+            val ready = state as? LoadingState.Ready ?: return@updateAndGet state
+            when {
+                !crashReportingConsent.value -> ready.copy(dialog = LoadingState.Dialog.CrashConsent)
+                ready.requiresConfirmation -> ready.copy(dialog = LoadingState.Dialog.Download)
+                ready.requiresPermission -> ready.copy(dialog = LoadingState.Dialog.Permission)
+                else -> ready.copy(error = LoadingState.Error.None)
+            }
+        }
+
+        // Trigger side effects only if the NEW state is "Ready" with no dialogs
+        if (newState is LoadingState.Ready && newState.dialog == LoadingState.Dialog.None) {
+            checkDeviceConditions()
+        }
+    }
+
+    fun onCrashConsentResponse(accepted: Boolean) {
+        viewModelScope.launch {
+            if (accepted) {
+                appSettingsRepository.updateCrashReportingConsent(true)
+                _uiState.update { LoadingState.consentAccepted() }
             } else {
-                // Check device conditions before starting download
-                checkDeviceConditions()
+                _uiState.update { LoadingState.consentDeclined() }
             }
         }
     }
 
     fun onDownloadConfirmation(accepted: Boolean) {
-        if (accepted) {
-            _uiState.value = LoadingState.downloadAccepted()
-        } else {
-            _uiState.value = LoadingState.ready()
-        }
+        _uiState.update { if (accepted) LoadingState.downloadAccepted() else LoadingState.ready() }
     }
 
     fun onPermissionReceived(isGranted: Boolean) {
         if (isGranted) {
-            // Check device conditions before starting download
             checkDeviceConditions()
         } else {
-            _uiState.value = LoadingState.permissionDenied()
+            _uiState.update { LoadingState.permissionDenied() }
         }
     }
 
     private fun checkDeviceConditions() {
-        viewModelScope.launch {
+        if (provisioningJob?.isActive == true
+            || _uiState.value is LoadingState.Complete) return
+
+        provisioningJob = viewModelScope.launch {
             val currentNetworkState = getNetworkState().first()
             if (currentNetworkState == GetNetworkState.NetworkState.Disconnected) {
-                _uiState.value = LoadingState.error(error = LoadingState.Error.NoInternet)
+                _uiState.update { LoadingState.error(error = LoadingState.Error.NoInternet) }
                 return@launch
             }
-
             if (!getFreeDiskSpace().hasEnoughSpace(REQUIRED_DISK_SPACE_BYTES)) {
-                _uiState.value = LoadingState.error(error = LoadingState.Error.NotEnoughDiskSpace)
+                _uiState.update { LoadingState.error(error = LoadingState.Error.NotEnoughDiskSpace) }
                 return@launch
             }
-
             // All checks passed, start download
-            _uiState.value = LoadingState.Downloading()
             downloadPuzzles()
         }
     }
 
-    private fun downloadPuzzles() {
-        viewModelScope.launch {
-            fetchPuzzleDatabase()
-                .onCompletion {
-                    if (it != null && it !is CancellationException) {
-                        Timber.e(it, "Unexpected error during puzzle database provisioning")
-                        _uiState.value = LoadingState.runtimeError(LoadingState.Error.GenericRuntime)
-                    }
+    private suspend fun downloadPuzzles() {
+        _uiState.update { LoadingState.Downloading() }
+
+        fetchPuzzleDatabase()
+            .onCompletion {
+                if (it != null && it !is CancellationException) {
+                    Timber.e(it, "Unexpected error during puzzle database provisioning")
+                    _uiState.update { LoadingState.runtimeError(LoadingState.Error.GenericRuntime) }
                 }
-                .collect { progress ->
-                    if (progress.hasError()) {
-                        val error = when (progress.error) {
-                            FetchPuzzleDatabase.Error.DownloadFailed -> LoadingState.Error.DownloadFailed
-                            FetchPuzzleDatabase.Error.DecompressionFailed -> LoadingState.Error.DecompressionFailed
-                            else -> LoadingState.Error.DatabaseWriteFailed
-                        }
-                        _uiState.value = LoadingState.runtimeError(error)
-                        Timber.w("Download failed with error: $error")
-                    } else if (progress.isComplete()) {
-                        _uiState.value = LoadingState.Complete
-                    } else {
-                        _uiState.value = LoadingState.Downloading(
-                            LoadingState.Downloading.Progress(
-                                download = progress.download,
-                                unpack = progress.unpack,
-                                buildDb = progress.buildDb
-                            )
-                        )
-                    }
+            }
+            .collect(::updateDownloadProgress)
+    }
+
+    private fun updateDownloadProgress(progress: FetchPuzzleDatabase.Progress) {
+        _uiState.update {
+            when {
+                progress.hasError() -> {
+                    Timber.w("Download failed with error: ${progress.error}")
+                    LoadingState.runtimeError(progress.error.toLoadingState())
                 }
+                progress.isComplete() -> LoadingState.Complete
+                else -> LoadingState.Downloading(
+                    LoadingState.Downloading.Progress(
+                        download = progress.download,
+                        unpack = progress.unpack,
+                        buildDb = progress.buildDb
+                    )
+                )
+            }
         }
     }
 
@@ -132,8 +160,8 @@ class LoadingViewModel @Inject constructor(
     }
 }
 
-private inline fun <reified T : LoadingState> MutableStateFlow<LoadingState>.asState(block: (T) -> Unit) {
-    (value as? T)?.let { state ->
-        block(state)
-    } ?: Timber.w("Wrong state found. Expected: ${T::class} found ${value::class}")
+private fun FetchPuzzleDatabase.Error.toLoadingState(): LoadingState.Error = when (this) {
+    FetchPuzzleDatabase.Error.DownloadFailed -> LoadingState.Error.DownloadFailed
+    FetchPuzzleDatabase.Error.DecompressionFailed -> LoadingState.Error.DecompressionFailed
+    else -> LoadingState.Error.DatabaseWriteFailed
 }

@@ -12,9 +12,11 @@ androidLibrary {
 dependencies {
     implementation(project(":game:puzzles:api"))
     implementation(project(":global:device:api"))
+    implementation(project(":settings:application:api"))
 
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.public.timber)
 
     testImplementation(testFixtures(project(":global:device:api")))
+    testImplementation(testFixtures(project(":settings:application:api")))
 }

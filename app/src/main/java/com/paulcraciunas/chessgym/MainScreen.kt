@@ -9,6 +9,7 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.rememberCoroutineScope
@@ -24,6 +25,7 @@ import androidx.navigation.compose.rememberNavController
 import com.paulcraciunas.chessgym.animations.enter
 import com.paulcraciunas.chessgym.animations.exit
 import com.paulcraciunas.chessgym.debug.DebugMenuProvider
+import com.paulcraciunas.chessgym.error_reporting.NavigationLogger
 import com.paulcraciunas.chessgym.navigation.BottomNavigationBar
 import com.paulcraciunas.chessgym.navigation.Screen
 import com.paulcraciunas.chessgym.screens.BlindMode
@@ -62,6 +64,11 @@ fun MainScreen(
     val navBackStackEntry by tabNavController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
     val isTopLevelScreen = currentDestination?.route?.isTopLevelRoute() ?: true
+
+    DisposableEffect(tabNavController) {
+        tabNavController.addOnDestinationChangedListener(NavigationLogger)
+        onDispose { tabNavController.removeOnDestinationChangedListener(NavigationLogger) }
+    }
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()

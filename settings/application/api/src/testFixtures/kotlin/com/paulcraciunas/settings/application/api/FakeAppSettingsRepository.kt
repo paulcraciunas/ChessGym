@@ -22,7 +22,8 @@ class FakeAppSettingsRepository : AppSettingsRepository {
             showBorders = true,
             enableVibrations = true,
             highlightLegalMoves = true,
-            enableAnimations = true
+            enableAnimations = true,
+            crashReportingConsent = false
         )
     )
 
@@ -76,6 +77,10 @@ class FakeAppSettingsRepository : AppSettingsRepository {
         _appSettings.value = _appSettings.value.copy(enableAnimations = enabled)
     }
 
+    override suspend fun updateCrashReportingConsent(enabled: Boolean) {
+        _appSettings.value = _appSettings.value.copy(crashReportingConsent = enabled)
+    }
+
     /**
      * Sets all settings at once.
      * Useful for setting up specific test scenarios.
@@ -105,7 +110,8 @@ class FakeAppSettingsRepository : AppSettingsRepository {
                     showBorders = true,
                     enableVibrations = true,
                     highlightLegalMoves = true,
-                    enableAnimations = true
+                    enableAnimations = true,
+                    crashReportingConsent = false
                 )
             )
         }

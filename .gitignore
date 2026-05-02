@@ -28,6 +28,7 @@ render.experimental.xml
 
 # Google Services (e.g. APIs or Firebase)
 google-services.json
+!app/src/uitest/google-services.json
 
 # Android Profiling
 *.hprof

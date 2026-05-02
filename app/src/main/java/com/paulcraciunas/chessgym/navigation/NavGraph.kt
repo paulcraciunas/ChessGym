@@ -1,6 +1,7 @@
 package com.paulcraciunas.chessgym.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Modifier
@@ -12,6 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import com.paulcraciunas.chessgym.MainScreen
 import com.paulcraciunas.chessgym.UnderConstruction
 import androidx.navigation.toRoute
+import com.paulcraciunas.chessgym.error_reporting.NavigationLogger
 import com.paulcraciunas.chessgym.screens.About
 import com.paulcraciunas.chessgym.screens.AboutDetail
 import com.paulcraciunas.chessgym.screens.Settings
@@ -26,6 +28,11 @@ fun NavGraph(
 ) {
     val navController = rememberNavController()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    DisposableEffect(navController) {
+        navController.addOnDestinationChangedListener(NavigationLogger)
+        onDispose { navController.removeOnDestinationChangedListener(NavigationLogger) }
+    }
 
     // Splash screen handles the loading state, so we wait until it's ready
     if (uiState.isLoading) {
@@ -52,6 +59,7 @@ fun NavGraph(
                 onDownload = vm::onDownload,
                 onDownloadConfirmation = vm::onDownloadConfirmation,
                 onPermissionReceived = vm::onPermissionReceived,
+                onCrashConsentResponse = vm::onCrashConsentResponse,
                 uiState = loadingState
             )
         }

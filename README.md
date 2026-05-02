@@ -20,14 +20,14 @@ A fully offline Android application for chess improvement through puzzles, board
 
 ChessGym provides access to approximately **4 million chess puzzles** that are provisioned locally on first launch, enabling a fully offline experience with no internet required during gameplay.
 
-| Mode | Description |
-|------|-------------|
-| **Rated Puzzles** | Solve puzzles matched to the player's current Elo rating. Rating adjusts dynamically based on performance. |
-| **Puzzle Streak** | Solve as many consecutive puzzles as possible without making a single mistake. |
-| **Puzzle Rush** | Solve as many puzzles as possible under time pressure. |
-| **Replay Failed** | Revisit and retry previously failed puzzles to reinforce learning. |
-| **Board Visualization** | Training exercises for square recognition and piece placement to build board awareness. |
-| **Blind Mode** | Play a full game against the Stockfish engine without seeing the board — the ultimate visualization challenge. |
+| Mode                    | Description                                                                                                    |
+|-------------------------|----------------------------------------------------------------------------------------------------------------|
+| **Rated Puzzles**       | Solve puzzles matched to the player's current Elo rating. Rating adjusts dynamically based on performance.     |
+| **Puzzle Streak**       | Solve as many consecutive puzzles as possible without making a single mistake.                                 |
+| **Puzzle Rush**         | Solve as many puzzles as possible under time pressure.                                                         |
+| **Replay Failed**       | Revisit and retry previously failed puzzles to reinforce learning.                                             |
+| **Board Visualization** | Training exercises for square recognition and piece placement to build board awareness.                        |
+| **Blind Mode**          | Play a full game against the Stockfish engine without seeing the board — the ultimate visualization challenge. |
 
 ## Screenshots
 
@@ -67,25 +67,26 @@ graph TD
 
 ## Tech Stack
 
-| Category | Library | Version |
-|----------|---------|---------|
-| Language | [Kotlin](https://kotlinlang.org) | 2.1 |
-| UI | [Jetpack Compose](https://developer.android.com/jetpack/compose) (BOM) | 2025.05.01 |
-| Design | [Material 3](https://m3.material.io) | — |
-| Navigation | [Compose Navigation](https://developer.android.com/jetpack/compose/navigation) | 2.9 |
-| Async | [Kotlin Coroutines & Flows](https://kotlinlang.org/docs/coroutines-overview.html) | 1.10 |
-| DI | [Hilt](https://dagger.dev/hilt/) | 2.56 |
-| Database | [Room](https://developer.android.com/training/data-storage/room) | 2.7 |
-| Preferences | [DataStore](https://developer.android.com/topic/libraries/architecture/datastore) | 1.1 |
-| Background Work | [WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager) | 2.10 |
-| Serialization | [Kotlinx Serialization](https://github.com/Kotlin/kotlinx.serialization) | 1.8 |
-| Compression | [zstd-jni](https://github.com/luben/zstd-jni) | 1.5 |
-| Logging | [Timber](https://github.com/JakeWharton/timber) | 5.0 |
-| Chess Engine | [Stockfish](https://stockfishchess.org) (native C++ via JNI) | 11 |
-| Testing | [JUnit 5](https://junit.org/junit5/), [Espresso](https://developer.android.com/training/testing/espresso), Compose UI Testing | — |
-| Build | Gradle (Kotlin DSL), Version Catalog, Convention Plugins | — |
-| CI | [TeamCity](https://www.jetbrains.com/teamcity/) (Kotlin DSL) | — |
-| Lint | Custom lint rules module | — |
+| Category        | Library                                                                                                                       | Version    |
+|-----------------|-------------------------------------------------------------------------------------------------------------------------------|------------|
+| Language        | [Kotlin](https://kotlinlang.org)                                                                                              | 2.1        |
+| UI              | [Jetpack Compose](https://developer.android.com/jetpack/compose) (BOM)                                                        | 2025.05.01 |
+| Design          | [Material 3](https://m3.material.io)                                                                                          | —          |
+| Navigation      | [Compose Navigation](https://developer.android.com/jetpack/compose/navigation)                                                | 2.9        |
+| Async           | [Kotlin Coroutines & Flows](https://kotlinlang.org/docs/coroutines-overview.html)                                             | 1.10       |
+| DI              | [Hilt](https://dagger.dev/hilt/)                                                                                              | 2.56       |
+| Database        | [Room](https://developer.android.com/training/data-storage/room)                                                              | 2.7        |
+| Preferences     | [DataStore](https://developer.android.com/topic/libraries/architecture/datastore)                                             | 1.1        |
+| Background Work | [WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager)                                         | 2.10       |
+| Serialization   | [Kotlinx Serialization](https://github.com/Kotlin/kotlinx.serialization)                                                      | 1.8        |
+| Compression     | [zstd-jni](https://github.com/luben/zstd-jni)                                                                                 | 1.5        |
+| Logging         | [Timber](https://github.com/JakeWharton/timber)                                                                               | 5.0        |
+| Crash Reporting | [Firebase Crashlytics](https://firebase.google.com/docs/crashlytics)                                                          | —          |
+| Chess Engine    | [Stockfish](https://stockfishchess.org) (native C++ via JNI)                                                                  | 11         |
+| Testing         | [JUnit 5](https://junit.org/junit5/), [Espresso](https://developer.android.com/training/testing/espresso), Compose UI Testing | —          |
+| Build           | Gradle (Kotlin DSL), Version Catalog, Convention Plugins                                                                      | —          |
+| CI              | [TeamCity](https://www.jetbrains.com/teamcity/) (Kotlin DSL)                                                                  | —          |
+| Lint            | Custom lint rules module                                                                                                      | —          |
 
 ## Integrations
 
@@ -112,6 +113,9 @@ The puzzle library (~4 million puzzles) originates from the [Lichess open puzzle
 git clone https://github.com/paulcraciunas/ChessGym.git
 cd ChessGym
 
+# Set up Firebase configuration (see below)
+cp app/google-services.json.template app/google-services.json
+
 # Build the debug APK
 ./gradlew assembleDebug
 
@@ -124,23 +128,35 @@ cd ChessGym
 
 Alternatively, open the project in Android Studio, let Gradle sync, and run the `app` configuration on an emulator or device.
 
+### Firebase Configuration
+
+ChessGym uses Firebase Crashlytics for crash reporting. The real `google-services.json` is not committed to the repository for security reasons.
+
+**For contributors / building from source:** Copy the provided template to get a buildable project:
+
+```bash
+cp app/google-services.json.template app/google-services.json
+```
+
+The app will build and run normally with this placeholder. Firebase features (crash reporting) will simply be non-functional. If you want working Firebase integration, create your own [Firebase project](https://console.firebase.google.com/) and download the `google-services.json` for your registered Android app.
+
 ### Requirements
 
-| | Version |
-|---|---------|
-| **Min SDK** | 27 (Android 8.1 Oreo) |
-| **Target SDK** | 35 (Android 15) |
-| **Compile SDK** | 35 |
+|                 | Version               |
+|-----------------|-----------------------|
+| **Min SDK**     | 27 (Android 8.1 Oreo) |
+| **Target SDK**  | 35 (Android 15)       |
+| **Compile SDK** | 35                    |
 
 ## Continuous Integration
 
 CI is managed through [TeamCity](https://www.jetbrains.com/teamcity/) using Kotlin DSL (configuration lives in `.teamcity/`). The following build configurations are registered:
 
-| Build | Gradle Task | Description |
-|-------|-------------|-------------|
-| **Build Debug** | `clean assembleDebug` | Assembles the debug APK and publishes it as an artifact |
-| **Unit Tests** | `clean unitTestAllDebug` | Runs all unit tests across every module |
-| **Lint Debug** | `clean lintAllDebug` | Runs all custom lint checks across every module |
+| Build           | Gradle Task              | Description                                             |
+|-----------------|--------------------------|---------------------------------------------------------|
+| **Build Debug** | `clean assembleDebug`    | Assembles the debug APK and publishes it as an artifact |
+| **Unit Tests**  | `clean unitTestAllDebug` | Runs all unit tests across every module                 |
+| **Lint Debug**  | `clean lintAllDebug`     | Runs all custom lint checks across every module         |
 
 All builds are triggered automatically on every branch, with full GitHub Pull Request integration and commit status publishing.
 

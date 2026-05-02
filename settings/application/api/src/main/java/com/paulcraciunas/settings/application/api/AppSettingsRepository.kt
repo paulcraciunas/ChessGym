@@ -17,4 +17,5 @@ interface AppSettingsRepository {
     suspend fun updateEnableVibrations(enabled: Boolean)
     suspend fun updateHighlightLegalMoves(enabled: Boolean)
     suspend fun updateEnableAnimations(enabled: Boolean)
+    suspend fun updateCrashReportingConsent(enabled: Boolean)
 }

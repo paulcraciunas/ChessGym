@@ -5,6 +5,7 @@ import com.paulcraciunas.global.device.api.fakes.FakeGetNetworkState
 import com.paulcraciunas.global.device.api.usecases.GetFreeDiskSpace
 import com.paulcraciunas.global.device.api.usecases.GetNetworkState
 import com.paulcraciunas.puzzles.api.usecases.FetchPuzzleDatabase
+import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
@@ -26,6 +27,7 @@ internal class LoadingViewModelTest {
     private val fakeGetNetworkState = FakeGetNetworkState()
     private val fakeGetFreeDiskSpace = FakeGetFreeDiskSpace()
     private val fakeFetchPuzzleDatabase = FakeFetchPuzzleDatabase()
+    private val fakeAppSettingsRepository = FakeAppSettingsRepository()
 
     private lateinit var underTest: LoadingViewModel
 
@@ -124,7 +126,8 @@ internal class LoadingViewModelTest {
 
     @Test
     fun given_errorState_WHEN_onRetry_THEN_retriesDeviceConditionsCheck() = runTest {
-        // Given
+        // Given - consent already granted
+        fakeAppSettingsRepository.updateCrashReportingConsent(true)
         fakeGetNetworkState.setState(GetNetworkState.NetworkState.Disconnected)
         underTest = createViewModel()
         advanceUntilIdle()
@@ -180,6 +183,7 @@ internal class LoadingViewModelTest {
         getNetworkState = fakeGetNetworkState,
         getFreeDiskSpace = fakeGetFreeDiskSpace,
         fetchPuzzleDatabase = fakeFetchPuzzleDatabase,
+        appSettingsRepository = fakeAppSettingsRepository,
     )
 }
 

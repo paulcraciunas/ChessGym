@@ -33,6 +33,7 @@ import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.tools.clock.vm.ClockScreenInteractor
 import com.paulcraciunas.screens.tools.clock.vm.ClockUiState
 import com.paulcraciunas.screens.tools.clock.vm.StubClockScreenInteractor
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -113,8 +114,8 @@ private object TonePlayer {
         val toneGenerator = remember {
             try {
                 android.media.ToneGenerator(AudioManager.STREAM_NOTIFICATION, 100)
-            } catch (_: Throwable) {
-                // Catching Throwable to handle NoClassDefFoundError or other linkage errors gracefully
+            } catch (t: Throwable) {
+                Timber.w(t, "ToneGenerator unavailable")
                 null
             }
         }

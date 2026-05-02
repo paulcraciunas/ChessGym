@@ -26,6 +26,7 @@ sealed class LoadingState {
         NoInternet,
         NotEnoughDiskSpace,
         NoPermission,
+        ConsentRequired,
         DownloadFailed,
         DecompressionFailed,
         DatabaseWriteFailed,
@@ -34,8 +35,9 @@ sealed class LoadingState {
     }
 
     enum class Dialog {
-        Download, // First, we ask for Download confirmation
-        Permission, // Next, we ask for notification permission
+        CrashConsent,
+        Download,
+        Permission,
         None
     }
 
@@ -64,6 +66,18 @@ sealed class LoadingState {
         fun permissionDenied() = Ready(
             requiresConfirmation = false,
             error = Error.NoPermission
+        )
+
+        fun consentDeclined() = Ready(
+            requiresConfirmation = false,
+            requiresPermission = false,
+            dialog = Dialog.None,
+            error = Error.ConsentRequired
+        )
+
+        fun consentAccepted() = Ready(
+            requiresConfirmation = true,
+            dialog = Dialog.Download,
         )
     }
 }

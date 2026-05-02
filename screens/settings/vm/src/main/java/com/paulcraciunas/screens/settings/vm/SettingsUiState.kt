@@ -9,5 +9,6 @@ data class SettingsUiState(
     val isHighlightLegalMovesEnabled: Boolean = true,
     val lightMode: AppSettings.LightMode = AppSettings.LightMode.System,
     val isAnimationsEnabled: Boolean = true,
+    val isCrashReportingEnabled: Boolean = false,
     val isLoading: Boolean = true,
 )

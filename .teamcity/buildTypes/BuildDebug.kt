@@ -11,6 +11,7 @@ object BuildDebug : BuildType({
     artifactRules = "app/build/outputs/apk/debug/*.apk => apk"
 
     applyCommonConfiguration()
+    decodeGoogleServicesJson()
 
     steps {
         gradle {

@@ -86,6 +86,8 @@ private fun SettingsContent(
         HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
         AppearanceSection(uiState = uiState, interactions = interactions)
         HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+        PrivacySection(uiState = uiState, interactions = interactions)
+        HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
         Spacer(modifier = Modifier.weight(1f))
         BuildVersionFooter(buildVersion = buildVersion)
     }
@@ -143,6 +145,23 @@ private fun AppearanceSection(
             description = stringResource(R.string.settings_enable_animations_description),
             isChecked = uiState.isAnimationsEnabled,
             onCheckedChange = interactions::onAnimationsToggled,
+        )
+    }
+}
+
+@Composable
+private fun PrivacySection(
+    uiState: SettingsUiState,
+    interactions: SettingsScreenInteractor,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier) {
+        SectionHeader(title = stringResource(R.string.settings_section_privacy))
+        SettingsSwitch(
+            title = stringResource(R.string.settings_crash_reporting),
+            description = stringResource(R.string.settings_crash_reporting_description),
+            isChecked = uiState.isCrashReportingEnabled,
+            onCheckedChange = interactions::onCrashReportingToggled,
         )
     }
 }
@@ -294,4 +313,5 @@ private object PreviewInteractions : SettingsScreenInteractor {
     override fun onHighlightLegalMovesToggled(isEnabled: Boolean) {}
     override fun onLightModeSelected(mode: AppSettings.LightMode) {}
     override fun onAnimationsToggled(isEnabled: Boolean) {}
+    override fun onCrashReportingToggled(isEnabled: Boolean) {}
 }

@@ -5,6 +5,7 @@ import java.time.LocalDate
 
 @Serializable
 data class User(
+    val deviceId: String = "",
     val profile: Profile = Profile(),
     val ratings: Ratings = Ratings(),
     val highScores: HighScores = HighScores(),

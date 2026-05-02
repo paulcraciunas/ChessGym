@@ -74,6 +74,7 @@ class PuzzleRushViewModel @Inject constructor(
                 puzzleSeries()
                 val puzzle = puzzleSeries.next()
                 _gameState.value = if (puzzle == null) {
+                    Timber.w("No puzzles available for puzzle rush")
                     GameState.Failed
                 } else {
                     countdownTimer.set(durationSeconds = DURATION_SECONDS)
@@ -169,6 +170,9 @@ class PuzzleRushViewModel @Inject constructor(
                         promotion = null,
                     )
                 } else {
+                    if (nextPuzzle == null) {
+                        Timber.w("Puzzle buffer exhausted after %d puzzles", updatedResults.size)
+                    }
                     _gameState.value = finishRush(currentState.copy(results = updatedResults))
                 }
             }

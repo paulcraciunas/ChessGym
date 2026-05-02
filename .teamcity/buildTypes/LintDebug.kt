@@ -13,6 +13,7 @@ object LintDebug : BuildType({
     artifactRules = "**/build/reports/lint-results*.html => lint-reports"
 
     applyCommonConfiguration()
+    decodeGoogleServicesJson()
 
     // Don't run lint if the basic build fails
     dependencies {

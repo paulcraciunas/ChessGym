@@ -33,6 +33,7 @@ class SettingsViewModel @Inject constructor(
     override fun onHighlightLegalMovesToggled(isEnabled: Boolean) = update { updateHighlightLegalMoves(isEnabled) }
     override fun onLightModeSelected(mode: AppSettings.LightMode) = update { updateLightMode(mode) }
     override fun onAnimationsToggled(isEnabled: Boolean) = update { updateEnableAnimations(isEnabled) }
+    override fun onCrashReportingToggled(isEnabled: Boolean) = update { updateCrashReportingConsent(isEnabled) }
 
     private fun update(block: suspend AppSettingsRepository.() -> Unit) {
         viewModelScope.launch {
@@ -47,6 +48,7 @@ class SettingsViewModel @Inject constructor(
         isHighlightLegalMovesEnabled = settings.highlightLegalMoves,
         lightMode = settings.lightMode,
         isAnimationsEnabled = settings.enableAnimations,
+        isCrashReportingEnabled = settings.crashReportingConsent,
         isLoading = false,
     )
 }
