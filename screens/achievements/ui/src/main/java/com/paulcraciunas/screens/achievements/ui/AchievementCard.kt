@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
@@ -33,6 +34,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,6 +46,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.compositeOver
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -143,6 +146,7 @@ internal fun AchievementCard(
                     AchievementProgressBar(
                         progress = item.progress(),
                         mainColor = tierColor,
+                        isCompleted = item.isCompleted(),
                     )
                 }
             }
@@ -197,8 +201,24 @@ private fun AchievementHeader(
 private fun AchievementProgressBar(
     progress: Float,
     mainColor: Color,
+    isCompleted: Boolean,
 ) {
     val trackColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+    var shown by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        shown = true
+    }
+    val targetProgress = when {
+        !shown -> 0f
+        isCompleted -> 1f
+        else -> progress.coerceIn(0f, 1f)
+    }
+
+    val animatedProgress by animateFloatAsState(
+        targetValue = targetProgress,
+        animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing),
+        label = "AchievementProgress"
+    )
 
     Box(
         modifier = Modifier
@@ -207,18 +227,17 @@ private fun AchievementProgressBar(
             .clip(CircleShape)
             .background(trackColor)
     ) {
-        val brush = Brush.horizontalGradient(
-            colors = listOf(
-                mainColor.copy(alpha = 0.7f),
-                mainColor
-            )
-        )
-
+        val progressBrush = if (isCompleted) {
+            Brush.linearGradient(listOf(mainColor, mainColor))
+        } else {
+            val gradientStart = lerp(trackColor, mainColor, 0.3f)
+            Brush.horizontalGradient(listOf(mainColor, gradientStart))
+        }
         Box(
             modifier = Modifier
-                .fillMaxWidth(progress.coerceAtLeast(0.02f))
+                .fillMaxWidth(if (isCompleted) 1f else animatedProgress.coerceAtLeast(0.02f))
                 .fillMaxHeight()
-                .background(brush)
+                .background(progressBrush)
         )
     }
 }

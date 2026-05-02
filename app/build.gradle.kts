@@ -41,8 +41,11 @@ android {
     }
 
     sourceSets {
+        getByName("uitest") {
+            java.srcDirs("src/debug/java")
+            kotlin.srcDirs("src/debug/java")
+        }
         getByName("androidTest") {
-            // This ensures both debug and uitest use the same test folder
             java.srcDirs("src/androidTest/java")
             kotlin.srcDirs("src/androidTest/java")
         }

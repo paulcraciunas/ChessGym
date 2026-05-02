@@ -193,6 +193,35 @@ internal class PuzzleViewModelHelperTest {
         }
 
         @Test
+        fun `GIVEN no selection WHEN clicking empty square THEN nothing is selected`() {
+            // Given
+            underTest.load(buildStandardPuzzle())
+
+            // When - d4 is empty on the board
+            val result = underTest.handleSquareClick("d4".loc())
+
+            // Then
+            val clickedSquare = result.data.boardData.at(Rank.`4`, File.d)
+            assertNull(clickedSquare.piece)
+            assertFalse(result.isOver)
+        }
+
+        @Test
+        fun `GIVEN no selection WHEN clicking empty square THEN board state is unchanged`() {
+            // Given
+            underTest.load(buildStandardPuzzle())
+            val dataBefore = underTest.buildPuzzleData()
+
+            // When - d4 is empty on the board
+            val result = underTest.handleSquareClick("d4".loc())
+
+            // Then
+            assertEquals(dataBefore.rating, result.data.rating)
+            assertEquals(dataBefore.player, result.data.player)
+            assertNull(result.promotion)
+        }
+
+        @Test
         fun `GIVEN last move WHEN puzzle completed THEN isOver is true and isSuccess is true`() {
             // Given - One-move puzzle where we deliver checkmate
             underTest.load(buildOneMoveWinPuzzle())

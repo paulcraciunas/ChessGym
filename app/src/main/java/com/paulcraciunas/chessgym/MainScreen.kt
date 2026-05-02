@@ -23,6 +23,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.paulcraciunas.chessgym.animations.enter
 import com.paulcraciunas.chessgym.animations.exit
+import com.paulcraciunas.chessgym.debug.DebugMenuProvider
 import com.paulcraciunas.chessgym.navigation.BottomNavigationBar
 import com.paulcraciunas.chessgym.navigation.Screen
 import com.paulcraciunas.chessgym.screens.BlindMode
@@ -55,6 +56,7 @@ fun MainScreen(
 ) {
     val mainScreenViewModel: MainScreenViewModel = hiltViewModel()
     val mainScreenState by mainScreenViewModel.uiState.collectAsStateWithLifecycle()
+    val debugMenuProvider: DebugMenuProvider = mainScreenViewModel.debugMenuProvider
 
     val tabNavController = rememberNavController()
     val navBackStackEntry by tabNavController.currentBackStackEntryAsState()
@@ -73,14 +75,22 @@ fun MainScreen(
                     onSignIn = { onDrawerScreen(Screen.SignUp) },
                     onHome = {
                         scope.launch {
-                            tabNavController.navigate(Screen.Home) { // Navigate to Home tab in bottom navigation
+                            tabNavController.navigate(Screen.Home) {
                                 popUpTo(Screen.Home) { inclusive = true }
                             }
                         }
                     },
                     onSettings = { onDrawerScreen(Screen.Settings) },
                     onAbout = { onDrawerScreen(Screen.About) },
-                    closeDrawer = { scope.launch { drawerState.close() } }
+                    closeDrawer = { scope.launch { drawerState.close() } },
+                    trailingContent = {
+                        with(debugMenuProvider) {
+                            DrawerContent(
+                                closeDrawer = { scope.launch { drawerState.close() } },
+                                onNavigate = { screen -> tabNavController.navigate(screen) },
+                            )
+                        }
+                    },
                 )
             },
             drawerState = drawerState,
@@ -222,6 +232,14 @@ fun MainScreen(
                     animatedComposable<Screen.ImportGame> {
                         ImportGame(
                             tabNavController = tabNavController,
+                            showBorders = mainScreenState.appSettings?.showBorders ?: true,
+                            highlightLegalMoves = mainScreenState.appSettings?.highlightLegalMoves ?: true,
+                            enableAnimations = mainScreenState.appSettings?.enableAnimations ?: true,
+                        )
+                    }
+                    with(debugMenuProvider) {
+                        registerDebugScreens(
+                            navController = tabNavController,
                             showBorders = mainScreenState.appSettings?.showBorders ?: true,
                             highlightLegalMoves = mainScreenState.appSettings?.highlightLegalMoves ?: true,
                             enableAnimations = mainScreenState.appSettings?.enableAnimations ?: true,
