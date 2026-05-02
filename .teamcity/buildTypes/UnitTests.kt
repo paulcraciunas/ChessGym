@@ -13,6 +13,7 @@ object UnitTests : BuildType({
     artifactRules = "**/build/reports/tests/** => test-reports"
 
     applyCommonConfiguration()
+    decodeGoogleServicesJson()
 
     // Don't run tests if the basic build fails
     dependencies {

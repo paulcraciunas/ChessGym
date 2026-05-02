@@ -15,6 +15,7 @@ project {
 
     params {
         password("github.token", "", label = "GitHub Personal Access Token", display = ParameterDisplay.HIDDEN)
+        password("env.GOOGLE_SERVICES_JSON", "", label = "google-services.json (base64)", display = ParameterDisplay.HIDDEN)
     }
 
     buildType(BuildDebug)
