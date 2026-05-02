@@ -15,4 +15,5 @@ dependencies {
     implementation(project(":game:logic:api"))
     implementation(project(":domain:api"))
     api(project(":screens:tools:clock:vm"))
+    implementation(libs.public.timber)
 }

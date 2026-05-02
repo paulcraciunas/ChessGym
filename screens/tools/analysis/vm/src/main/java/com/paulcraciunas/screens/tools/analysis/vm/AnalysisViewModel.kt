@@ -122,7 +122,9 @@ class AnalysisViewModel @Inject constructor(
         GlobalScope.launch {
             withContext(NonCancellable) {
                 runCatching { analyzePosition.stopAnalysis() }
+                    .onFailure { Timber.w(it, "Failed to stop analysis on cleanup") }
                 runCatching { analyzePosition.shutdown() }
+                    .onFailure { Timber.w(it, "Failed to shutdown engine on cleanup") }
             }
         }
     }

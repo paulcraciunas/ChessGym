@@ -7,6 +7,7 @@ import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.screens.common.model.BoardViewData
 import com.paulcraciunas.screens.common.model.BoardViewDataBuilder
 import com.paulcraciunas.serializer.api.Serializer
+import timber.log.Timber
 
 /**
  * Manages move history, board snapshots, and navigation state for imported games.
@@ -119,7 +120,8 @@ internal class MoveHistory(
                 replayMove(game, move)
             }
             game
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            Timber.w(e, "Failed to reconstruct game from import")
             null
         }
     }

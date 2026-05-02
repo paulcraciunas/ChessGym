@@ -87,7 +87,8 @@ private object UserSerializer : Serializer<User> {
 
     override suspend fun readFrom(input: InputStream): User = try {
         Json.decodeFromStream(User.serializer(), input)
-    } catch (_: SerializationException) {
+    } catch (e: SerializationException) {
+        Timber.w(e, "User data corrupted, falling back to defaults")
         defaultValue
     }
 
