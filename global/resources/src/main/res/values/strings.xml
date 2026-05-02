@@ -130,6 +130,11 @@
     <string name="loading_error_no_internet">No internet connection. Please check your connection and try again.</string>
     <string name="loading_error_not_enough_disk_space">Not enough disk space. Please free up some space and try again.</string>
     <string name="loading_error_generic">An error occurred. Please try again.</string>
+    <string name="loading_error_consent_required">Crash reporting consent is required to proceed with the download. We only collect technical crash data to improve app stability.</string>
+    <string name="crash_consent_dialog_title">Help Us Improve</string>
+    <string name="crash_consent_dialog_body">ChessGym uses crash reporting to detect and fix application errors. This data is used solely to identify crashes and improve app stability for all users.\n\nNo personal information, game data, or usage patterns are collected — only technical crash details (such as stack traces and device model) when something goes wrong.\n\nYou can change this setting later in the app.</string>
+    <string name="crash_consent_dialog_accept">I Agree</string>
+    <string name="crash_consent_dialog_refuse">Not Now</string>
     <string name="loading_fact_1">Chess has been around for over 1,500 years and originated in India.</string>
     <string name="loading_fact_2">The number of possible chess games is greater than the number of atoms in the observable universe.</string>
     <string name="loading_fact_3">The longest recorded chess game lasted 269 moves and ended in a draw.</string>
@@ -287,6 +292,9 @@
     <string name="settings_light_mode_system">System</string>
     <string name="settings_enable_animations">Animations</string>
     <string name="settings_enable_animations_description">Enable UI animations</string>
+    <string name="settings_section_privacy">Privacy</string>
+    <string name="settings_crash_reporting">Crash Reporting</string>
+    <string name="settings_crash_reporting_description">Help improve app stability by sharing crash data</string>
     <string name="settings_build_version">Version %1$s-%2$s</string>
     <!-- endregion -->
 
