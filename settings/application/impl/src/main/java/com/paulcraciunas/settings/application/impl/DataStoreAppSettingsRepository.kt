@@ -49,6 +49,7 @@ class DataStoreAppSettingsRepository @Inject constructor(
     override suspend fun updateEnableVibrations(enabled: Boolean) = dataStore.update(ENABLE_VIBRATIONS, enabled)
     override suspend fun updateHighlightLegalMoves(enabled: Boolean) = dataStore.update(HIGHLIGHT_LEGAL_MOVES, enabled)
     override suspend fun updateEnableAnimations(enabled: Boolean) = dataStore.update(ENABLE_ANIMATIONS, enabled)
+    override suspend fun updateCrashReportingConsent(enabled: Boolean) = dataStore.update(CRASH_REPORTING_CONSENT, enabled)
 
     private suspend fun <T> DataStore<Preferences>.update(key: Preferences.Key<T>, with: T) {
         try {
@@ -74,7 +75,8 @@ class DataStoreAppSettingsRepository @Inject constructor(
             showBorders = this[SHOW_BORDERS] ?: true,
             enableVibrations = this[ENABLE_VIBRATIONS] ?: true,
             highlightLegalMoves = this[HIGHLIGHT_LEGAL_MOVES] ?: true,
-            enableAnimations = this[ENABLE_ANIMATIONS] ?: true
+            enableAnimations = this[ENABLE_ANIMATIONS] ?: true,
+            crashReportingConsent = this[CRASH_REPORTING_CONSENT] ?: false
         )
     }
 
@@ -102,5 +104,6 @@ class DataStoreAppSettingsRepository @Inject constructor(
         private val ENABLE_VIBRATIONS = booleanPreferencesKey("enable_vibrations")
         private val HIGHLIGHT_LEGAL_MOVES = booleanPreferencesKey("highlight_legal_moves")
         private val ENABLE_ANIMATIONS = booleanPreferencesKey("enable_animations")
+        private val CRASH_REPORTING_CONSENT = booleanPreferencesKey("crash_reporting_consent")
     }
 }
