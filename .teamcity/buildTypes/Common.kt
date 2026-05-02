@@ -67,6 +67,7 @@ fun BuildType.decodeGoogleServicesJson() {
                     exit 1
                 fi
             """.trimIndent()
+            param("script.content.interpreterMode", "bash")
         }
     }
 }
