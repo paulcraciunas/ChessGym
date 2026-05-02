@@ -14,7 +14,7 @@ project {
     description = "ChessGym Android Application CI"
 
     params {
-        password("github.token", "", label = "GitHub Personal Access Token", display = ParameterDisplay.HIDDEN)
+        password("github.token", "credentialsJSON:543085ac-69ea-4b55-a5b8-31a17c288563", label = "GitHub Personal Access Token", display = ParameterDisplay.HIDDEN)
         password("env.GOOGLE_SERVICES_JSON", "", label = "google-services.json (base64)", display = ParameterDisplay.HIDDEN)
     }
 
