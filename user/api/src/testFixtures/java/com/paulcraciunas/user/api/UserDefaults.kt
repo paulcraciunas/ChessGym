@@ -4,6 +4,7 @@ import java.time.LocalDate
 
 object UserDefaults {
     fun signedInUser(): User = User(
+        deviceId = DEVICE_ID,
         profile = User.Profile(
             firstName = FIRST_NAME,
             lastName = LAST_NAME,
@@ -46,4 +47,5 @@ object UserDefaults {
     const val STATISTICS_SOLVED = 2
     const val STATISTICS_TIME_PLAYED = 1_000L
     const val USER_ID = "anakin.skywalker"
+    const val DEVICE_ID = "test-device-id"
 }

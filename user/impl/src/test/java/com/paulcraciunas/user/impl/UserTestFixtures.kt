@@ -6,6 +6,7 @@ import java.time.LocalDate
 internal object UserTestFixtures {
 
     fun createDefaultUser(): User = User(
+        deviceId = "test-device-id",
         profile = User.Profile(
             firstName = "Test",
             lastName = "Player",

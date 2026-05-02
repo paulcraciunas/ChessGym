@@ -19,6 +19,7 @@ import timber.log.Timber
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
+import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -40,7 +41,15 @@ class UserLocalDataSourceImpl @Inject constructor(
             }
         }
 
-    override suspend fun getUser(): User = userUpdates().first()
+    override suspend fun getUser(): User {
+        val user = userUpdates().first()
+        if (user.deviceId.isEmpty()) {
+            val initialized = user.copy(deviceId = UUID.randomUUID().toString())
+            saveUser(initialized)
+            return initialized
+        }
+        return user
+    }
 
     override suspend fun saveUser(user: User) {
         try {
