@@ -52,6 +52,7 @@ fun NavGraph(
                 onDownload = vm::onDownload,
                 onDownloadConfirmation = vm::onDownloadConfirmation,
                 onPermissionReceived = vm::onPermissionReceived,
+                onCrashConsentResponse = vm::onCrashConsentResponse,
                 uiState = loadingState
             )
         }
