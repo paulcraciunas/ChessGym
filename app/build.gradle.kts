@@ -1,5 +1,7 @@
 plugins {
     id("conventions.android.app")
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.crashlytics)
 }
 
 chessGymApp {
@@ -49,6 +51,15 @@ android {
             java.srcDirs("src/androidTest/java")
             kotlin.srcDirs("src/androidTest/java")
         }
+    }
+}
+
+afterEvaluate {
+    tasks.matching {
+        it.name.contains("uploadCrashlyticsMappingFile") &&
+            (it.name.contains("Debug") || it.name.contains("Uitest"))
+    }.configureEach {
+        enabled = false
     }
 }
 
@@ -105,6 +116,10 @@ dependencies {
 
     // Logging
     implementation(libs.public.timber)
+
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.crashlytics)
 
     // UI Testing
     androidTestImplementation(libs.androidx.ui.test.junit4)
