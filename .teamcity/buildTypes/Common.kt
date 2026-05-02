@@ -5,7 +5,7 @@ import jetbrains.buildServer.configs.kotlin.BuildType
 import jetbrains.buildServer.configs.kotlin.buildFeatures.PullRequests
 import jetbrains.buildServer.configs.kotlin.buildFeatures.commitStatusPublisher
 import jetbrains.buildServer.configs.kotlin.buildFeatures.pullRequests
-import jetbrains.buildServer.configs.kotlin.buildSteps.script
+import jetbrains.buildServer.configs.kotlin.buildSteps.powerShell
 import jetbrains.buildServer.configs.kotlin.triggers.vcs
 
 fun BuildType.applyCommonConfiguration() {
@@ -47,27 +47,27 @@ fun BuildType.applyCommonConfiguration() {
 /**
  * Decodes google-services.json from the GOOGLE_SERVICES_JSON env variable (base64-encoded).
  * Must be called before any Gradle step that compiles the :app module.
- * Only works on agents with bash (Linux/macOS). Not needed for the uitest variant which
- * has a committed google-services.json.
+ * Not needed for the uitest variant which has a committed google-services.json.
  */
 fun BuildType.decodeGoogleServicesJson() {
     steps {
-        script {
+        powerShell {
             name = "Decode google-services.json"
-            scriptContent = """
-                #!/usr/bin/env bash
-                set -euo pipefail
-                if [ -n "${'$'}{GOOGLE_SERVICES_JSON:-}" ]; then
-                    echo "${'$'}GOOGLE_SERVICES_JSON" | base64 --decode > app/google-services.json
-                    echo "google-services.json written from CI secret"
-                elif [ -f app/google-services.json ]; then
-                    echo "google-services.json already present"
-                else
-                    echo "ERROR: google-services.json not found and GOOGLE_SERVICES_JSON not set"
-                    exit 1
-                fi
-            """.trimIndent()
-            param("script.content.interpreterMode", "bash")
+            scriptMode = script {
+                content = """
+                    ${'$'}ErrorActionPreference = "Stop"
+                    if (${'$'}env:GOOGLE_SERVICES_JSON) {
+                        ${'$'}bytes = [System.Convert]::FromBase64String(${'$'}env:GOOGLE_SERVICES_JSON)
+                        [System.IO.File]::WriteAllBytes("app/google-services.json", ${'$'}bytes)
+                        Write-Host "google-services.json written from CI secret"
+                    } elseif (Test-Path "app/google-services.json") {
+                        Write-Host "google-services.json already present"
+                    } else {
+                        Write-Error "google-services.json not found and GOOGLE_SERVICES_JSON not set"
+                        exit 1
+                    }
+                """.trimIndent()
+            }
         }
     }
 }
