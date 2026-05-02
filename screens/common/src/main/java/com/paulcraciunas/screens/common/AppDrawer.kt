@@ -2,6 +2,7 @@ package com.paulcraciunas.screens.common
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -36,7 +37,8 @@ fun AppDrawer(
     onSettings: () -> Unit,
     onAbout: () -> Unit,
     closeDrawer: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    trailingContent: @Composable ColumnScope.() -> Unit = {},
 ) {
     ModalDrawerSheet(
         drawerState = drawerState,
@@ -97,6 +99,7 @@ fun AppDrawer(
                 icon = { Icon(imageVector = Icons.Outlined.Info, contentDescription = null) },
                 onClick = { onAbout(); closeDrawer() },
             )
+            trailingContent()
             Spacer(Modifier.height(12.dp))
         }
     }

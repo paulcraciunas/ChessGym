@@ -2,6 +2,7 @@ package com.paulcraciunas.chessgym
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.paulcraciunas.chessgym.debug.DebugMenuProvider
 import com.paulcraciunas.settings.application.api.AppSettings
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +19,8 @@ data class MainScreenUiState(
 
 @HiltViewModel
 class MainScreenViewModel @Inject constructor(
-    private val appSettingsRepository: AppSettingsRepository
+    private val appSettingsRepository: AppSettingsRepository,
+    val debugMenuProvider: DebugMenuProvider,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MainScreenUiState())
