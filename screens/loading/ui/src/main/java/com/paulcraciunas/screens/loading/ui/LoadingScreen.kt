@@ -13,6 +13,7 @@ fun LoadingScreen(
     onDownload: () -> Unit,
     onDownloadConfirmation: (Boolean) -> Unit,
     onPermissionReceived: (Boolean) -> Unit,
+    onCrashConsentResponse: (Boolean) -> Unit,
     uiState: LoadingState,
     modifier: Modifier = Modifier,
 ) {
@@ -25,6 +26,7 @@ fun LoadingScreen(
                 onDownload = onDownload,
                 onDownloadConfirmation = onDownloadConfirmation,
                 onPermissionResponse = onPermissionReceived,
+                onCrashConsentResponse = onCrashConsentResponse,
                 state = uiState
             )
 

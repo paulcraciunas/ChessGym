@@ -39,6 +39,7 @@ internal fun LandingCard(
     onDownload: () -> Unit,
     onDownloadConfirmation: (Boolean) -> Unit,
     onPermissionResponse: (Boolean) -> Unit,
+    onCrashConsentResponse: (Boolean) -> Unit,
     state: LoadingState.Ready,
     modifier: Modifier = Modifier
 ) {
@@ -122,8 +123,11 @@ internal fun LandingCard(
         }
     }
 
-    // Dialogs
     when (state.dialog) {
+        LoadingState.Dialog.CrashConsent -> CrashReportingConsentDialog(
+            onAccepted = { onCrashConsentResponse(true) },
+            onDeclined = { onCrashConsentResponse(false) }
+        )
         LoadingState.Dialog.Download -> DownloadConfirmationDialog(
             onCancelled = { onDownloadConfirmation(false) },
             onConfirmed = { onDownloadConfirmation(true) }
@@ -179,6 +183,7 @@ private fun LoadingState.Error.res(): Int = when (this) {
     LoadingState.Error.DecompressionFailed -> R.string.loading_error_decompression_failed
     LoadingState.Error.DatabaseWriteFailed -> R.string.loading_error_database_write_failed
     LoadingState.Error.NoPermission -> R.string.loading_error_permission
+    LoadingState.Error.ConsentRequired -> R.string.loading_error_consent_required
     LoadingState.Error.NoInternet -> R.string.loading_error_no_internet
     LoadingState.Error.NotEnoughDiskSpace -> R.string.loading_error_not_enough_disk_space
     else -> R.string.loading_error_generic
@@ -193,6 +198,7 @@ private fun LoadingState.Error.iconRes(): Int? = when (this) {
 
 @StringRes
 private fun LoadingState.Error.asDownloadRes(): Int = when (this) {
+    LoadingState.Error.ConsentRequired,
     LoadingState.Error.DownloadFailed,
     LoadingState.Error.DecompressionFailed,
     LoadingState.Error.DatabaseWriteFailed,
@@ -209,6 +215,7 @@ private fun LandingCardPreview() {
             onDownload = {},
             onDownloadConfirmation = {},
             onPermissionResponse = {},
+            onCrashConsentResponse = {},
             state = LoadingState.Ready(error = LoadingState.Error.None)
         )
     }
@@ -223,6 +230,7 @@ private fun LandingCardWithErrorPreview() {
             onDownload = {},
             onDownloadConfirmation = {},
             onPermissionResponse = {},
+            onCrashConsentResponse = {},
             state = LoadingState.Ready(error = LoadingState.Error.NoInternet)
         )
     }
