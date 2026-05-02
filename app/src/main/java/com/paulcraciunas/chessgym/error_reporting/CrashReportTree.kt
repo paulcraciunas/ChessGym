@@ -7,11 +7,11 @@ import com.paulcraciunas.chessgym.BuildConfig
 import timber.log.Timber
 
 /**
- * Timber tree for release builds that forwards warnings and errors to Firebase Crashlytics.
- * Debug and info logs are stripped in release.
+ * Timber tree for release builds that forwards info, warnings and errors to Firebase Crashlytics.
+ * Debug and verbose logs are stripped in release.
  */
 internal class CrashReportTree(
-    private val minPriority: Int = Log.WARN,
+    private val minPriority: Int = Log.INFO,
 ) : Timber.Tree() {
 
     override fun isLoggable(tag: String?, priority: Int): Boolean = priority >= minPriority
