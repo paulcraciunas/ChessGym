@@ -62,12 +62,14 @@ class BoardViewDataBuilder {
     }
 
     fun withSelection(from: Locus, moves: List<Locus>): BoardViewDataBuilder = apply {
+        val squareData = squares[from.rank.dec()][from.file.dec()]
+        if (squareData.piece == null) return@apply
+
         selected?.let {
             clearSelection()
         }
         selected = from
         availableMoves.addAll(moves)
-        // Mark the selected square piece as selected
         squares.update(from) { it.copy(piece = it.piece!!.copy(isSelected = true)) }
         availableMoves.forEach { to ->
             squares.update(to) { square ->

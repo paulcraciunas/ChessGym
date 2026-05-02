@@ -181,6 +181,52 @@ internal class BoardViewDataBuilderTest {
         assertTrue(builtWithSelection.at(lastMoveTo).canMoveTo)
     }
 
+    @Test
+    fun `GIVEN loaded board WHEN selecting empty square THEN nothing is selected`() {
+        // Given
+        underTest.load(buildPuzzle())
+        val emptySquare = "e5".loc()
+
+        // When
+        underTest.withSelection(emptySquare, emptyList())
+
+        // Then
+        assertNull(underTest.selected)
+    }
+
+    @Test
+    fun `GIVEN loaded board WHEN selecting empty square THEN board state is unchanged`() {
+        // Given
+        underTest.load(buildPuzzle())
+        val dataBefore = underTest.build()
+        val emptySquare = "e5".loc()
+
+        // When
+        underTest.withSelection(emptySquare, emptyList())
+        val dataAfter = underTest.build()
+
+        // Then
+        assertNull(dataAfter.at(emptySquare).piece)
+        assertFalse(dataAfter.at(emptySquare).canMoveTo)
+        assertNull(dataBefore.at(emptySquare).piece)
+    }
+
+    @Test
+    fun `GIVEN existing selection WHEN selecting empty square THEN previous selection is preserved`() {
+        // Given
+        underTest.load(buildPuzzle())
+        underTest.withSelection(lastMoveFrom, listOf(lastMoveTo))
+        val emptySquare = "e5".loc()
+
+        // When
+        underTest.withSelection(emptySquare, emptyList())
+
+        // Then -- previous selection is still active
+        assertEquals(lastMoveFrom, underTest.selected)
+        val data = underTest.build()
+        assertEquals(true, data.at(lastMoveFrom).piece?.isSelected)
+    }
+
     private fun buildPuzzle(): Puzzle = gameFactory.builder()
         .withDefaultBoard()
         .withRating(1200)

@@ -68,7 +68,10 @@ class PuzzleViewModelHelper(
                 }
             }
         } else {
-            boardViewBuilder.withSelection(selection, puzzleInteractor.moves(selection))
+            val moves = puzzleInteractor.moves(selection)
+            if (moves.isNotEmpty()) {
+                boardViewBuilder.withSelection(selection, moves)
+            }
         }
         return OnSquareClick(
             data = buildPuzzleData(),
