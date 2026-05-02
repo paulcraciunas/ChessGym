@@ -1,3 +1,5 @@
+import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
+
 plugins {
     id("conventions.android.app")
     alias(libs.plugins.google.services)
@@ -29,12 +31,18 @@ android {
 
             val debugBuildNumber = "100"
             buildConfigField("String", "BUILD_NUMBER", "\"$debugBuildNumber\"")
+            configure<CrashlyticsExtension> {
+                mappingFileUploadEnabled = false
+            }
         }
         create("uitest") {
             initWith(getByName("debug"))
             applicationIdSuffix = ".uitest"
             versionNameSuffix = "-uitest"
             matchingFallbacks += listOf("debug")
+            configure<CrashlyticsExtension> {
+                mappingFileUploadEnabled = false
+            }
         }
         release {
             val releaseBuildNumber: String = project.findProperty("buildNumber") as? String ?: "0"
@@ -51,15 +59,6 @@ android {
             java.srcDirs("src/androidTest/java")
             kotlin.srcDirs("src/androidTest/java")
         }
-    }
-}
-
-afterEvaluate {
-    tasks.matching {
-        it.name.contains("uploadCrashlyticsMappingFile") &&
-            (it.name.contains("Debug") || it.name.contains("Uitest"))
-    }.configureEach {
-        enabled = false
     }
 }
 
