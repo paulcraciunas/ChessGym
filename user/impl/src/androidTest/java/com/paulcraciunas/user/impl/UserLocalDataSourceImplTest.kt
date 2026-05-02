@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -15,6 +16,10 @@ import java.time.LocalDate
 
 @RunWith(AndroidJUnit4::class)
 internal class UserLocalDataSourceImplTest {
+
+    private companion object {
+        const val TEST_DEVICE_ID = "test-device-id"
+    }
 
     private lateinit var context: Context
     private lateinit var underTest: UserLocalDataSourceImpl
@@ -36,7 +41,8 @@ internal class UserLocalDataSourceImplTest {
         val result = underTest.getUser()
 
         // Then
-        assertEquals(User(), result)
+        assertTrue(result.deviceId.isNotEmpty())
+        assertEquals(User(deviceId = result.deviceId), result)
     }
 
     @Test
@@ -52,6 +58,7 @@ internal class UserLocalDataSourceImplTest {
     fun given_simpleUser_WHEN_saveAndGet_THEN_returnsCorrectUser() = runBlocking {
         // Given
         val user = User(
+            deviceId = TEST_DEVICE_ID,
             profile = User.Profile(
                 firstName = "John",
                 lastName = "Doe",
@@ -167,7 +174,7 @@ internal class UserLocalDataSourceImplTest {
             )
         )
 
-        val user = User(history = historyItems)
+        val user = User(deviceId = TEST_DEVICE_ID, history = historyItems)
 
         // When
         underTest.saveUser(user)
@@ -224,6 +231,7 @@ internal class UserLocalDataSourceImplTest {
         for (provider in authProviders) {
             // Given
             val user = User(
+                deviceId = TEST_DEVICE_ID,
                 authentication = if (provider == User.AuthenticationState.AuthProvider.NONE) {
                     null
                 } else {
@@ -253,6 +261,7 @@ internal class UserLocalDataSourceImplTest {
     fun given_savedUser_WHEN_updateUser_THEN_updatesCorrectly() = runBlocking {
         // Given
         val originalUser = User(
+            deviceId = TEST_DEVICE_ID,
             profile = User.Profile(firstName = "Original", lastName = "User"),
             ratings = User.Ratings(current = 1200)
         )
@@ -278,7 +287,7 @@ internal class UserLocalDataSourceImplTest {
     @Test
     fun given_savedUser_WHEN_updateUserMultipleTimes_THEN_allUpdatesApplied() = runBlocking {
         // Given
-        underTest.saveUser(User())
+        underTest.saveUser(User(deviceId = TEST_DEVICE_ID))
 
         // When
         underTest.updateUser { user ->
@@ -325,7 +334,8 @@ internal class UserLocalDataSourceImplTest {
 
         // Then
         val result = underTest.getUser()
-        assertEquals(User(), result)
+        assertTrue(result.deviceId.isNotEmpty())
+        assertEquals(User(deviceId = result.deviceId), result)
     }
 
     @Test
@@ -381,6 +391,7 @@ internal class UserLocalDataSourceImplTest {
         val largeFailedPuzzlesList = (1..500).toList()
 
         val userWithLargeData = User(
+            deviceId = TEST_DEVICE_ID,
             profile = User.Profile(
                 firstName = "Large",
                 lastName = "Data",
@@ -419,6 +430,7 @@ internal class UserLocalDataSourceImplTest {
         for (date in edgeCaseDates) {
             // Given
             val user = User(
+                deviceId = TEST_DEVICE_ID,
                 profile = User.Profile(joinDate = date),
                 history = listOf(
                     User.HistoryItem(
@@ -444,6 +456,7 @@ internal class UserLocalDataSourceImplTest {
     }
 
     private fun createComplexUser(): User = User(
+        deviceId = TEST_DEVICE_ID,
         profile = User.Profile(
             firstName = "Alice",
             lastName = "Smith",
