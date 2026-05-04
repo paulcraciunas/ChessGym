@@ -19,7 +19,9 @@ object FirebaseConfig {
             val optionsBuilder = FirebaseOptions.builder()
                 .setProjectId(projectId)
 
-            if (!isEmulator) {
+            if (isEmulator) {
+                optionsBuilder.setCredentials(GoogleCredentials.create(null))
+            } else {
                 optionsBuilder.setCredentials(GoogleCredentials.getApplicationDefault())
             }
 
