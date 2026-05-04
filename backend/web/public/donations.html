@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support ChessGym</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        chess: {
+                            dark: '#1a1a2e',
+                            medium: '#16213e',
+                            accent: '#e94560',
+                            light: '#eee2dc',
+                            gold: '#f5a623',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-chess-dark text-white min-h-screen">
+    <header class="max-w-3xl mx-auto px-6 py-16 text-center">
+        <a href="/" class="text-2xl font-bold">
+            Chess<span class="text-chess-accent">Gym</span>
+        </a>
+    </header>
+
+    <main class="max-w-3xl mx-auto px-6 pb-20">
+        <h1 class="text-4xl font-bold text-center mb-4">Support the Project</h1>
+        <p class="text-gray-300 text-center text-lg mb-12">
+            ChessGym is free and open source. If you enjoy the app and want to help keep it running, consider making a donation.
+        </p>
+
+        <!-- Donation options placeholder -->
+        <div class="bg-chess-medium rounded-xl p-8 border border-gray-700/30 text-center mb-12">
+            <p class="text-gray-400 mb-4">Donation options coming soon.</p>
+            <p class="text-sm text-gray-500">
+                In the meantime, starring the
+                <a href="https://github.com/paulcraciunas/ChessGym" class="text-chess-accent hover:underline">GitHub repository</a>
+                helps a lot!
+            </p>
+        </div>
+
+        <!-- Supporters list placeholder -->
+        <h2 class="text-2xl font-bold mb-6">Supporters</h2>
+        <div class="bg-chess-medium rounded-xl p-8 border border-gray-700/30 text-center">
+            <p class="text-gray-500">Be the first to support ChessGym!</p>
+        </div>
+    </main>
+
+    <footer class="bg-chess-medium border-t border-gray-700/30 py-8">
+        <div class="max-w-3xl mx-auto px-6 text-center text-sm text-gray-400">
+            <a href="/" class="hover:text-white transition-colors">&larr; Back to home</a>
+        </div>
+    </footer>
+</body>
+</html>
