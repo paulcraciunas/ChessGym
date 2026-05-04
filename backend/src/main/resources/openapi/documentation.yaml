@@ -1,0 +1,333 @@
+openapi: 3.1.0
+info:
+  title: ChessGym API
+  description: Backend API for the ChessGym Android application. Manages user profiles, ratings, highscores, statistics, and achievements.
+  version: 1.0.0
+  contact:
+    name: Paul Mihai Craciunas
+    url: https://github.com/paulcraciunas
+
+servers:
+  - url: http://localhost:8080
+    description: Local development
+  - url: https://chessgym-backend-XXXXX.run.app
+    description: Production (Cloud Run)
+
+paths:
+  /health:
+    get:
+      summary: Health check
+      description: Readiness probe for Cloud Run. Returns 200 when the service is ready.
+      operationId: healthCheck
+      tags: [Health]
+      responses:
+        "200":
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+
+  /api/v1/auth/signin:
+    post:
+      summary: Sign in
+      description: Validates a Firebase ID token and creates or retrieves the user. Returns the full user object.
+      operationId: signIn
+      tags: [Authentication]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignInRequest"
+      responses:
+        "200":
+          description: Existing user retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SignInResponse"
+        "201":
+          description: New user created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SignInResponse"
+        "401":
+          description: Invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/users/{userId}:
+    get:
+      summary: Get user
+      description: Retrieves the full user object including profile, ratings, highscores, statistics, and achievements.
+      operationId: getUser
+      tags: [Users]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserDto"
+        "403":
+          description: Cannot access another user's data
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    put:
+      summary: Update user
+      description: |
+        Updates the user with a merge strategy:
+        - Numeric fields (ratings, highscores, statistics, achievement progress): the higher value wins
+        - Profile fields: last-write-wins based on profileLastModified timestamp
+      operationId: updateUser
+      tags: [Users]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserDto"
+      responses:
+        "200":
+          description: User updated (merged result)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserDto"
+        "403":
+          description: Cannot modify another user's data
+
+    delete:
+      summary: Delete user
+      description: Permanently deletes the user and all associated data (GDPR).
+      operationId: deleteUser
+      tags: [Users]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: User deleted
+        "403":
+          description: Cannot delete another user's data
+
+  /api/v1/statistics/achievements:
+    get:
+      summary: Achievement statistics
+      description: Returns aggregated achievement completion percentages across all users. Useful for displaying "only X% of users reached this level".
+      operationId: getAchievementStatistics
+      tags: [Statistics]
+      responses:
+        "200":
+          description: Achievement statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AchievementStatisticsResponse"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Firebase ID Token
+      description: Firebase Authentication ID token obtained from client-side sign-in
+
+  schemas:
+    SignInRequest:
+      type: object
+      required: [deviceId]
+      properties:
+        deviceId:
+          type: string
+          description: Android device identifier
+
+    SignInResponse:
+      type: object
+      properties:
+        userId:
+          type: string
+        user:
+          $ref: "#/components/schemas/UserDto"
+        isNewUser:
+          type: boolean
+
+    UserDto:
+      type: object
+      properties:
+        profile:
+          $ref: "#/components/schemas/ProfileDto"
+        ratings:
+          $ref: "#/components/schemas/RatingsDto"
+        highScores:
+          $ref: "#/components/schemas/HighScoresDto"
+        statistics:
+          $ref: "#/components/schemas/StatisticsDto"
+        achievements:
+          $ref: "#/components/schemas/AchievementsDto"
+
+    ProfileDto:
+      type: object
+      properties:
+        firstName:
+          type: string
+          example: Chess
+        lastName:
+          type: string
+          example: Enthusiast
+        joinDate:
+          type: string
+          nullable: true
+          example: "2026-01-15"
+        avatarUrl:
+          type: string
+          nullable: true
+        lastModified:
+          type: integer
+          format: int64
+          description: Epoch milliseconds. Used for last-write-wins conflict resolution on profile fields.
+
+    RatingsDto:
+      type: object
+      properties:
+        current:
+          type: integer
+          example: 1200
+        blindMode:
+          type: integer
+          example: 500
+
+    HighScoresDto:
+      type: object
+      properties:
+        ratedPuzzle:
+          type: integer
+        puzzleRush:
+          type: integer
+        puzzleStreak:
+          type: integer
+        findTheSquare:
+          type: integer
+        moveThePiece:
+          type: integer
+        blindMode:
+          type: integer
+
+    StatisticsDto:
+      type: object
+      properties:
+        puzzlesPlayed:
+          type: integer
+        puzzlesSolved:
+          type: integer
+        totalTimeSpent:
+          type: integer
+          format: int64
+          description: Total time spent in milliseconds
+        ratedPuzzlesSolved:
+          type: integer
+        puzzleRushSessions:
+          type: integer
+        streakSessions:
+          type: integer
+        failedPuzzlesRedeemed:
+          type: integer
+        findSquareSessions:
+          type: integer
+        moveThePieceSessions:
+          type: integer
+        blindModeWins:
+          type: integer
+        rushPuzzlesSolved:
+          type: integer
+
+    AchievementsDto:
+      type: object
+      properties:
+        progress:
+          type: object
+          additionalProperties:
+            type: integer
+            format: int64
+        lastActiveDate:
+          type: string
+          nullable: true
+        consecutiveDaysStreak:
+          type: integer
+        bestConsecutiveDaysStreak:
+          type: integer
+        currentRatedWinStreak:
+          type: integer
+        bestRatedWinStreak:
+          type: integer
+
+    AchievementStatisticsResponse:
+      type: object
+      properties:
+        totalUsers:
+          type: integer
+          format: int64
+        achievements:
+          type: array
+          items:
+            $ref: "#/components/schemas/AchievementStatistic"
+
+    AchievementStatistic:
+      type: object
+      properties:
+        achievementId:
+          type: string
+          example: RATING_CLIMBER
+        tier:
+          type: integer
+          minimum: 1
+          maximum: 5
+        percentageOfUsers:
+          type: number
+          format: double
+          example: 23.5
+
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+          enum: [BAD_REQUEST, UNAUTHORIZED, FORBIDDEN, NOT_FOUND, INTERNAL_ERROR]

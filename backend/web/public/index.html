@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChessGym — Chess Improvement Through Practice</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        chess: {
+                            dark: '#1a1a2e',
+                            medium: '#16213e',
+                            accent: '#e94560',
+                            light: '#eee2dc',
+                            gold: '#f5a623',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-chess-dark text-white min-h-screen">
+    <!-- Hero -->
+    <header class="relative overflow-hidden">
+        <div class="max-w-5xl mx-auto px-6 py-20 text-center">
+            <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-chess-accent/20 mb-6">
+                <span class="text-4xl">♞</span>
+            </div>
+            <h1 class="text-5xl font-bold tracking-tight mb-4">
+                Chess<span class="text-chess-accent">Gym</span>
+            </h1>
+            <p class="text-xl text-gray-300 max-w-2xl mx-auto mb-8">
+                Improve your chess with 4 million puzzles, board visualization training, and blind mode challenges. Fully offline.
+            </p>
+            <a href="#"
+               class="inline-flex items-center gap-3 bg-chess-accent hover:bg-chess-accent/90 text-white font-semibold px-8 py-4 rounded-xl transition-colors text-lg">
+                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M3,20.5V3.5C3,2.91 3.34,2.39 3.84,2.15L13.69,12L3.84,21.85C3.34,21.61 3,21.09 3,20.5M16.81,15.12L6.05,21.34L14.54,12.85L16.81,15.12M20.16,10.81C20.5,11.08 20.75,11.5 20.75,12C20.75,12.5 20.53,12.9 20.18,13.18L17.89,14.5L15.39,12L17.89,9.5L20.16,10.81M6.05,2.66L16.81,8.88L14.54,11.15L6.05,2.66Z"/>
+                </svg>
+                Get it on Google Play
+            </a>
+            <p class="text-sm text-gray-500 mt-3">Coming soon to the Play Store</p>
+        </div>
+    </header>
+
+    <!-- Features -->
+    <section class="bg-chess-medium py-20">
+        <div class="max-w-5xl mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-12">Train Like a Grandmaster</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-chess-dark/50 rounded-xl p-6 border border-gray-700/50">
+                    <div class="text-chess-gold text-3xl mb-3">♟</div>
+                    <h3 class="text-lg font-semibold mb-2">Rated Puzzles</h3>
+                    <p class="text-gray-400 text-sm">Solve puzzles matched to your Elo. Your rating adjusts dynamically based on performance.</p>
+                </div>
+                <div class="bg-chess-dark/50 rounded-xl p-6 border border-gray-700/50">
+                    <div class="text-chess-gold text-3xl mb-3">⚡</div>
+                    <h3 class="text-lg font-semibold mb-2">Puzzle Rush & Streak</h3>
+                    <p class="text-gray-400 text-sm">Race against the clock or build the longest streak without a mistake.</p>
+                </div>
+                <div class="bg-chess-dark/50 rounded-xl p-6 border border-gray-700/50">
+                    <div class="text-chess-gold text-3xl mb-3">👁</div>
+                    <h3 class="text-lg font-semibold mb-2">Board Visualization</h3>
+                    <p class="text-gray-400 text-sm">Train square recognition and piece placement to sharpen your board awareness.</p>
+                </div>
+                <div class="bg-chess-dark/50 rounded-xl p-6 border border-gray-700/50">
+                    <div class="text-chess-gold text-3xl mb-3">🧠</div>
+                    <h3 class="text-lg font-semibold mb-2">Blind Mode</h3>
+                    <p class="text-gray-400 text-sm">Play a full game against Stockfish without seeing the board. The ultimate challenge.</p>
+                </div>
+                <div class="bg-chess-dark/50 rounded-xl p-6 border border-gray-700/50">
+                    <div class="text-chess-gold text-3xl mb-3">🏆</div>
+                    <h3 class="text-lg font-semibold mb-2">Achievements</h3>
+                    <p class="text-gray-400 text-sm">Unlock 20 achievements across 5 tiers. Track your progress and compare with others.</p>
+                </div>
+                <div class="bg-chess-dark/50 rounded-xl p-6 border border-gray-700/50">
+                    <div class="text-chess-gold text-3xl mb-3">📴</div>
+                    <h3 class="text-lg font-semibold mb-2">Fully Offline</h3>
+                    <p class="text-gray-400 text-sm">4 million puzzles provisioned locally. No internet needed during gameplay.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screenshots placeholder -->
+    <section class="py-20">
+        <div class="max-w-5xl mx-auto px-6 text-center">
+            <h2 class="text-3xl font-bold mb-8">Screenshots</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-chess-medium rounded-xl aspect-[9/16] flex items-center justify-center border border-gray-700/30">
+                    <span class="text-gray-500 text-sm">Coming soon</span>
+                </div>
+                <div class="bg-chess-medium rounded-xl aspect-[9/16] flex items-center justify-center border border-gray-700/30">
+                    <span class="text-gray-500 text-sm">Coming soon</span>
+                </div>
+                <div class="bg-chess-medium rounded-xl aspect-[9/16] flex items-center justify-center border border-gray-700/30">
+                    <span class="text-gray-500 text-sm">Coming soon</span>
+                </div>
+                <div class="bg-chess-medium rounded-xl aspect-[9/16] flex items-center justify-center border border-gray-700/30">
+                    <span class="text-gray-500 text-sm">Coming soon</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-chess-medium border-t border-gray-700/30 py-10">
+        <div class="max-w-5xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="text-sm text-gray-400">
+                &copy; 2026 ChessGym &mdash; Built by
+                <a href="https://github.com/paulcraciunas" class="text-chess-accent hover:underline">Paul Mihai Craciunas</a>
+            </div>
+            <div class="flex gap-6 text-sm text-gray-400">
+                <a href="https://github.com/paulcraciunas/ChessGym" class="hover:text-white transition-colors">GitHub</a>
+                <a href="/donations.html" class="hover:text-white transition-colors">Support the Project</a>
+                <a href="mailto:contact@chessgym.app" class="hover:text-white transition-colors">Contact</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
