@@ -32,3 +32,14 @@ google-services.json
 
 # Android Profiling
 *.hprof
+
+# macOS
+.DS_Store
+
+# Firebase
+.agents/
+firestore-debug.log
+ui-debug.log
+
+# Cursor
+skills-lock.json
