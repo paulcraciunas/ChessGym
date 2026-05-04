@@ -53,7 +53,7 @@ npm install -g firebase-tools
 # From the project root (not /backend)
 firebase init emulators
 # Select: Authentication Emulator and Firestore Emulator
-# Accept default ports (Auth: 9099, Firestore: 8080)
+# Accept default ports (Auth: 9099, Firestore: 8081)
 
 # Start emulators
 firebase emulators:start --only auth,firestore
@@ -65,7 +65,7 @@ You should see:
 ✔  All emulators ready! It is now safe to connect your app.
 │ Emulator  │ Host:Port      │
 │ Auth      │ localhost:9099  │
-│ Firestore │ localhost:8080  │
+│ Firestore │ localhost:8081  │
 │ UI        │ localhost:4000  │
 ```
 
@@ -80,7 +80,7 @@ cd backend
 
 # Set environment variables for local development
 export FIREBASE_PROJECT_ID=chessgym-local
-export FIRESTORE_EMULATOR_HOST=localhost:8080
+export FIRESTORE_EMULATOR_HOST=localhost:8081
 export FIREBASE_AUTH_EMULATOR_HOST=localhost:9099
 
 # Build and run
@@ -263,7 +263,7 @@ To reply from `contact@chessgym.app` via Gmail:
 The workflow at `.github/workflows/backend-ci.yml` runs on every push/PR that touches `backend/`:
 
 - **build-and-test** — builds the project and runs all tests
-- **deploy** — deploys to Cloud Run (only on push to `main`)
+- **deploy** — deploys to Cloud Run (only on push to `master`)
 
 ### Required Secrets for Deployment
 
