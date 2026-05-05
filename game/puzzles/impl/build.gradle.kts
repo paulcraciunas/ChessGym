@@ -14,6 +14,7 @@ dependencies {
     implementation(project(":game:puzzles:api"))
     implementation(project(":game:logic:di"))
     implementation(project(":game:serializer:api"))
+    implementation(project(":global:qualifiers"))
     implementation(project(":global:utils"))
     implementation(project(":global:notifications"))
     implementation(project(":settings:application:api"))

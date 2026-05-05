@@ -1,16 +1,7 @@
+@file:Suppress("unused")
+
 package com.paulcraciunas.utils
 
-import javax.inject.Qualifier
-
-// Define custom qualifiers for IO, Default, and Main dispatchers
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class IoDispatcher
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class MainDispatcher
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class DefaultDispatcher
+typealias IoDispatcher = com.paulcraciunas.global.qualifiers.IoDispatcher
+typealias MainDispatcher = com.paulcraciunas.global.qualifiers.MainDispatcher
+typealias DefaultDispatcher = com.paulcraciunas.global.qualifiers.DefaultDispatcher
