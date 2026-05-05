@@ -31,6 +31,9 @@ timber = "5.0.1"
 firebaseBom = "33.15.0"
 firebaseCrashlytics = "3.0.3"
 googleServices = "4.4.2"
+ktorClient = "3.1.3"
+credentials = "1.5.0-beta01"
+googleid = "1.1.1"
 
 [libraries]
 ## Unit testing
@@ -93,6 +96,20 @@ public-timber = { module = "com.jakewharton.timber:timber", version.ref = "timbe
 ## Firebase
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics-ktx" }
+firebase-auth = { module = "com.google.firebase:firebase-auth-ktx" }
+
+## Networking (Ktor Client)
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktorClient" }
+ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktorClient" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktorClient" }
+ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktorClient" }
+ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktorClient" }
+ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktorClient" }
+
+## Credential Manager (Google Sign-In)
+credentials = { module = "androidx.credentials:credentials", version.ref = "credentials" }
+credentials-play-services = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentials" }
+googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
 
 ## Database
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
@@ -127,4 +144,11 @@ unit-tests = [
     "junit-jupiter-api",
     "junit-jupiter-engine",
     "junit-jupiter-params",
+]
+ktor-client = [
+    "ktor-client-core",
+    "ktor-client-okhttp",
+    "ktor-client-content-negotiation",
+    "ktor-client-auth",
+    "ktor-serialization-kotlinx-json",
 ]
