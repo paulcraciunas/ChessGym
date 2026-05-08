@@ -4,37 +4,28 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.paulcraciunas.global.extensions.catchIO
+import com.paulcraciunas.global.extensions.safeUpdate
+import com.paulcraciunas.global.extensions.toEnumOrDefault
 import com.paulcraciunas.settings.application.api.AppSettings
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
-import timber.log.Timber
-import java.io.IOException
 import javax.inject.Inject
 
 private val Context.appSettings: DataStore<Preferences> by preferencesDataStore(name = "app_settings")
 
 class DataStoreAppSettingsRepository @Inject constructor(
-    @ApplicationContext private val context: Context
+    @param:ApplicationContext private val context: Context,
 ) : AppSettingsRepository {
     private val dataStore = context.appSettings
 
     override val appSettings: Flow<AppSettings> = dataStore.data
-        .catch { exception ->
-            if (exception is IOException) {
-                Timber.w(exception, "Error reading app settings from DataStore")
-                emit(emptyPreferences())
-            } else {
-                throw exception
-            }
-        }
+        .catchIO(TAG)
         .map { preferences -> preferences.toAppSettings() }
 
     override suspend fun updatePuzzlesDownloaded(downloaded: Boolean) = dataStore.update(PUZZLES_DOWNLOADED, downloaded)
@@ -50,17 +41,7 @@ class DataStoreAppSettingsRepository @Inject constructor(
     override suspend fun updateHighlightLegalMoves(enabled: Boolean) = dataStore.update(HIGHLIGHT_LEGAL_MOVES, enabled)
     override suspend fun updateEnableAnimations(enabled: Boolean) = dataStore.update(ENABLE_ANIMATIONS, enabled)
     override suspend fun updateCrashReportingConsent(enabled: Boolean) = dataStore.update(CRASH_REPORTING_CONSENT, enabled)
-
-    private suspend fun <T> DataStore<Preferences>.update(key: Preferences.Key<T>, with: T) {
-        try {
-            edit { preferences ->
-                preferences[key] = with
-            }
-        } catch (e: IOException) {
-            Timber.w(e, "Failed to update setting: %s", key.name)
-            throw e
-        }
-    }
+    private suspend fun <T> DataStore<Preferences>.update(key: Preferences.Key<T>, with: T) = safeUpdate(TAG) { it[key] = with }
 
     private fun Preferences.toAppSettings(): AppSettings {
         return AppSettings(
@@ -80,18 +61,8 @@ class DataStoreAppSettingsRepository @Inject constructor(
         )
     }
 
-    // Helper for safe enum parsing
-    private inline fun <reified T : Enum<T>> String?.toEnumOrDefault(defaultValue: T): T {
-        if (this == null) return defaultValue
-        return try {
-            enumValueOf<T>(this)
-        } catch (e: IllegalArgumentException) {
-            Timber.w(e, "Failed to parse enum value: %s", this)
-            defaultValue
-        }
-    }
-
     companion object {
+        private const val TAG = "AppSettingsPreferences"
         private val PUZZLES_DOWNLOADED = booleanPreferencesKey("puzzles_downloaded")
         private val TOTAL_PUZZLE_COUNT = intPreferencesKey("total_puzzle_count")
         private val PUZZLES_MAX_RATING = intPreferencesKey("max_puzzle_rating")

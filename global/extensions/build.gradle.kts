@@ -3,16 +3,14 @@ plugins {
 }
 
 androidLibrary {
-    namespace = "com.paulcraciunas.settings.application.impl"
+    namespace = "com.paulcraciunas.global.extensions"
     consumerProguardFile("consumer-rules.pro")
     proguardFile("proguard-rules.pro")
-    di = true
 }
 
 dependencies {
-    api(project(":settings:application:api"))
-    implementation(project(":global:extensions"))
-
-    implementation(libs.androidx.datastore.preferences)
     implementation(libs.public.timber)
+
+    implementation(libs.androidx.datastore)
+    implementation(libs.androidx.datastore.preferences)
 }
