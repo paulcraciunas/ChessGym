@@ -103,6 +103,7 @@ ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktorCli
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktorClient" }
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktorClient" }
 ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktorClient" }
+ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktorClient" }
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktorClient" }
 ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktorClient" }
 
@@ -150,5 +151,6 @@ ktor-client = [
     "ktor-client-okhttp",
     "ktor-client-content-negotiation",
     "ktor-client-auth",
+    "ktor-client-logging",
     "ktor-serialization-kotlinx-json",
 ]
