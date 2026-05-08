@@ -1,22 +1,68 @@
 package com.paulcraciunas.user.remote
 
+import com.paulcraciunas.global.qualifiers.IoDispatcher
 import com.paulcraciunas.user.api.User
+import com.paulcraciunas.user.api.UserApiException
 import com.paulcraciunas.user.api.UserRemoteDataSource
+import com.paulcraciunas.user.remote.mapper.UserDtoMapper
+import com.paulcraciunas.user.remote.model.UserDto
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.request.delete
+import io.ktor.client.request.get
+import io.ktor.client.request.post
+import io.ktor.client.request.put
+import io.ktor.client.request.setBody
+import io.ktor.client.statement.HttpResponse
+import io.ktor.http.isSuccess
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
-// No-op implementation
 @Singleton
-class UserRemoteDataSourceImpl @Inject constructor() : UserRemoteDataSource {
-    override suspend fun getUser(userId: String) = throw up
-    override suspend fun updateUser(user: User) = throw up
-    override suspend fun addToHistory(userId: String, history: List<User.HistoryItem>) = throw up
+class UserRemoteDataSourceImpl @Inject constructor(
+    private val httpClient: HttpClient,
+    private val mapper: UserDtoMapper,
+    private val api: NetworkApi,
+    @param:IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+) : UserRemoteDataSource {
 
-    override suspend fun signIn(auth: User.AuthenticationState, token: String): User = throw up
-    override suspend fun deleteUser(userId: String) = throw up
+    override suspend fun signIn(auth: User.AuthenticationState): User = withContext(ioDispatcher) {
+        val response = httpClient.post(api.v1.signIn)
+        val dto: UserDto = response.safeBody()
+        mapper.fromDto(dto).copy(authentication = auth)
+    }
 
-    companion object {
-        // I'm being funny :D
-        private val up = NotImplementedError("Remote data source not implemented yet")
+    override suspend fun getUser(userId: String): User = withContext(ioDispatcher) {
+        val response = httpClient.get(api.v1.user(userId))
+        val dto: UserDto = response.safeBody()
+        mapper.fromDto(dto)
+    }
+
+    override suspend fun updateUser(user: User): Unit = withContext(ioDispatcher) {
+        val userId = user.authentication?.userId ?: throw IllegalStateException("Missing user authentication")
+        val response = httpClient.put(api.v1.user(userId)) {
+            setBody(mapper.toDto(user))
+        }
+        response.ensureSuccess("update")
+    }
+
+    override suspend fun deleteUser(userId: String): Unit = withContext(ioDispatcher) {
+        val response = httpClient.delete(api.v1.user(userId))
+        response.ensureSuccess("delete")
+    }
+
+    private suspend inline fun <reified T> HttpResponse.safeBody(): T {
+        if (!status.isSuccess()) {
+            throw UserApiException("API request failed with status: $status", status.value)
+        }
+        return body()
+    }
+
+    private fun HttpResponse.ensureSuccess(action: String) {
+        if (!status.isSuccess()) {
+            throw UserApiException("Failed to $action user: $status", status.value)
+        }
     }
 }
