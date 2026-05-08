@@ -117,12 +117,12 @@ data class User(
 
     @Serializable
     data class AuthenticationState(
-        val provider: AuthProvider = AuthProvider.NONE,
+        val provider: AuthProvider = AuthProvider.EMAIL,
         val userId: String,
     ) {
         @Serializable
         enum class AuthProvider {
-            NONE,
+            EMAIL,
             GOOGLE,
             INSTAGRAM,
             APPLE,
