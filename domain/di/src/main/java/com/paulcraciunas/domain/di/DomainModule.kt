@@ -1,6 +1,7 @@
 package com.paulcraciunas.domain.di
 
 import com.paulcraciunas.domain.api.analysis.AnalyzePosition
+import com.paulcraciunas.domain.api.auth.AuthenticateUseCase
 import com.paulcraciunas.domain.api.general.CalculateElo
 import com.paulcraciunas.domain.api.boardvis.GenerateMoveThePieceBoard
 import com.paulcraciunas.domain.api.GenerateRandomLoci
@@ -25,6 +26,7 @@ import com.paulcraciunas.domain.api.achievements.GetAchievementState
 import com.paulcraciunas.domain.api.achievements.MarkAchievementsSeen
 import com.paulcraciunas.domain.api.achievements.UpdateAchievementProgress
 import com.paulcraciunas.domain.impl.analysis.AnalyzePositionImpl
+import com.paulcraciunas.domain.impl.auth.AuthenticateUseCaseImpl
 import com.paulcraciunas.domain.impl.general.CalculateEloImpl
 import com.paulcraciunas.domain.impl.boardvis.GenerateMoveThePieceBoardImpl
 import com.paulcraciunas.domain.impl.GenerateRandomLociImpl
@@ -149,4 +151,8 @@ internal abstract class DomainModule {
     @Binds
     @Singleton
     abstract fun bindAchievementNotificationManager(impl: AchievementNotificationManagerImpl): AchievementNotificationManager
+
+    @Binds
+    @Singleton
+    abstract fun bindAuthenticateUseCase(impl: AuthenticateUseCaseImpl): AuthenticateUseCase
 }
