@@ -12,10 +12,8 @@ class FakeUserRepository(
     override suspend fun get(): User = local.getUser()
 
     override suspend fun update(updated: User) {
-        // Save to local storage first
         local.saveUser(updated)
 
-        // Sync to remote if user is signed in
         if (updated.isSignedIn()) {
             remote.updateUser(updated)
         }
@@ -25,14 +23,7 @@ class FakeUserRepository(
         val currentUser = get()
         val mergedHistory = mergeHistory(currentUser.history, history)
         val updatedUser = currentUser.copy(history = mergedHistory)
-
-        // Save locally
         local.saveUser(updatedUser)
-
-        // Sync to remote if signed in
-        if (updatedUser.isSignedIn()) {
-            remote.addToHistory(updatedUser.authentication!!.userId, history)
-        }
     }
 
     private fun mergeHistory(
@@ -51,32 +42,25 @@ class FakeUserRepository(
         return result
     }
 
-    override suspend fun signIn(auth: User.AuthenticationState, token: String): User {
-        // Sign in with remote first
-        val signedInUser = remote.signIn(auth, token)
-
-        // Save the signed-in user locally
+    override suspend fun signIn(auth: User.AuthenticationState): User {
+        val signedInUser = remote.signIn(auth)
         local.saveUser(signedInUser)
-
         return signedInUser
     }
 
     override suspend fun signOut() {
-        // Only clear local data - don't touch remote
         local.clearUserData()
     }
 
     override suspend fun clear() {
         val currentUser = get()
-
         currentUser.authentication?.userId?.let { remote.deleteUser(it) }
         local.clearUserData()
     }
 
     override suspend fun sync() {
         val currentUser = get()
-
-        currentUser.authentication?.userId?.let { // Only sync if user is signed in
+        currentUser.authentication?.userId?.let {
             local.saveUser(remote.getUser(it))
         }
     }

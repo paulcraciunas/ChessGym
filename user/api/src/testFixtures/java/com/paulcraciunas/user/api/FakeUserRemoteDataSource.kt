@@ -19,18 +19,7 @@ class FakeUserRemoteDataSource : UserRemoteDataSource {
         }
     }
 
-    override suspend fun addToHistory(userId: String, history: List<User.HistoryItem>) {
-        exception?.let { throw it }
-        user?.let { user ->
-            user.authentication?.userId?.let {
-                if (it == userId) {
-                    this.user = user.copy(history = user.history.toMutableList().apply { addAll(history) })
-                }
-            }
-        }
-    }
-
-    override suspend fun signIn(auth: User.AuthenticationState, token: String): User {
+    override suspend fun signIn(auth: User.AuthenticationState): User {
         exception?.let { throw it }
         user = User(authentication = auth)
         return user!!
