@@ -9,7 +9,7 @@ interface UserRepository {
     suspend fun update(updated: User)
     suspend fun logHistory(history: List<User.HistoryItem>)
 
-    suspend fun signIn(auth: User.AuthenticationState, token: String): User
+    suspend fun signIn(auth: User.AuthenticationState): User
     suspend fun signOut()
 
     suspend fun clear()
