@@ -31,6 +31,7 @@ android {
 
             val debugBuildNumber = "100"
             buildConfigField("String", "BUILD_NUMBER", "\"$debugBuildNumber\"")
+            buildConfigField("String", "BACKEND_URL", "\"http://10.0.2.2:8080\"")
             configure<CrashlyticsExtension> {
                 mappingFileUploadEnabled = false
             }
@@ -47,6 +48,7 @@ android {
         release {
             val releaseBuildNumber: String = project.findProperty("buildNumber") as? String ?: "0"
             buildConfigField("String", "BUILD_NUMBER", "\"$releaseBuildNumber\"")
+            buildConfigField("String", "BACKEND_URL", "\"https://chessgym-backend.run.app\"")
         }
     }
 
@@ -73,6 +75,7 @@ dependencies {
     implementation(project(":global:notifications"))
     implementation(project(":global:resources"))
     implementation(project(":global:utils"))
+    implementation(project(":global:qualifiers"))
     implementation(project(":settings:application:impl"))
     implementation(project(":screens:common"))
     implementation(project(":screens:loading:ui"))
@@ -86,6 +89,7 @@ dependencies {
     implementation(project(":screens:boardvis:squares:ui"))
     implementation(project(":screens:boardvis:pieces:ui"))
     implementation(project(":screens:settings:ui"))
+    implementation(project(":screens:signin:ui"))
     implementation(project(":screens:about:ui"))
     implementation(project(":screens:achievements:ui"))
     implementation(project(":screens:blindmode:ui"))
@@ -119,6 +123,17 @@ dependencies {
     // Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.auth)
+
+    // Credential Manager (Google Sign-In)
+    implementation(libs.credentials)
+    implementation(libs.credentials.play.services)
+    implementation(libs.googleid)
+
+    // Unit Testing
+    testImplementation(project(":domain:api"))
+    testImplementation(project(":user:api"))
+    testImplementation(testFixtures(project(":user:api")))
 
     // UI Testing
     androidTestImplementation(libs.androidx.ui.test.junit4)
