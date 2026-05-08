@@ -14,6 +14,7 @@ import common.libs
 import common.plugin
 import common.testImplementation
 import common.testImplementationBundle
+import common.testRuntimeOnly
 import common.version
 import org.gradle.api.Project
 import org.gradle.api.tasks.testing.Test
@@ -107,6 +108,7 @@ class AndroidApplicationPlugin : ConventionPlugin() {
         dependencies {
             testImplementationBundle(libs.bundle("unit-tests"))
             testImplementation(libs.library("kotlinx-coroutines-test"))
+            testRuntimeOnly(libs.library("junit-platform-launcher"))
             androidTestImplementation(libs.library("androidx-junit"))
             androidTestImplementation(libs.library("androidx-espresso-core"))
         }
