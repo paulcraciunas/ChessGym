@@ -6,11 +6,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.paulcraciunas.global.qualifiers.BackendUrl
 import com.paulcraciunas.global.qualifiers.IsDebug
 import com.paulcraciunas.user.api.AuthService
+import com.paulcraciunas.user.api.SyncScheduler
+import com.paulcraciunas.user.api.SyncState
 import com.paulcraciunas.user.api.TokenProvider
 import com.paulcraciunas.user.di.auth.FirebaseAuthService
 import com.paulcraciunas.user.di.auth.FirebaseTokenProvider
-import com.paulcraciunas.user.impl.sync.SyncScheduler
-import com.paulcraciunas.user.impl.sync.SyncState
 import com.paulcraciunas.user.impl.sync.SyncPreferences
 import com.paulcraciunas.user.impl.sync.WorkManagerSyncScheduler
 import com.paulcraciunas.user.remote.client.HttpClientFactory
