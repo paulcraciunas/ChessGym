@@ -2,10 +2,7 @@ package com.paulcraciunas.user.remote.mapper
 
 import com.paulcraciunas.user.api.User
 import com.paulcraciunas.user.remote.model.AchievementsDto
-import com.paulcraciunas.user.remote.model.HighScoresDto
 import com.paulcraciunas.user.remote.model.ProfileDto
-import com.paulcraciunas.user.remote.model.RatingsDto
-import com.paulcraciunas.user.remote.model.StatisticsDto
 import com.paulcraciunas.user.remote.model.UserDto
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
