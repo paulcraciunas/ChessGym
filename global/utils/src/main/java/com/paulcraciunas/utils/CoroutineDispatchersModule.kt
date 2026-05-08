@@ -1,5 +1,8 @@
 package com.paulcraciunas.utils
 
+import com.paulcraciunas.global.qualifiers.DefaultDispatcher
+import com.paulcraciunas.global.qualifiers.IoDispatcher
+import com.paulcraciunas.global.qualifiers.MainDispatcher
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

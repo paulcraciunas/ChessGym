@@ -10,5 +10,5 @@ androidLibrary {
 }
 
 dependencies {
-    implementation(project(":global:qualifiers"))
+    api(project(":global:qualifiers"))
 }
