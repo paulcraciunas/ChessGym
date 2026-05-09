@@ -13,4 +13,6 @@ dependencies {
     implementation(project(":global:resources"))
     implementation(project(":screens:common"))
     api(project(":screens:signin:vm"))
+
+    implementation(libs.androidx.compose.material.icons.extended)
 }
