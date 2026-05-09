@@ -8,7 +8,6 @@ import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.paulcraciunas.domain.api.auth.TokenSource
 import com.paulcraciunas.user.api.AuthException
-import timber.log.Timber
 
 class GoogleTokenSource(
     private val webClientId: String,
