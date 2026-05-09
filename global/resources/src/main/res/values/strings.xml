@@ -577,4 +577,37 @@
     <!-- temporary values; these will be deleted as we build features -->
     <string name="under_construction">Under Construction</string>
 
+    <!-- region auth errors -->
+    <string name="auth_error_google_sign_in_failed">Google sign-in failed. Please try again.</string>
+    <string name="auth_error_sign_in_failed">Sign-in failed. Please try again.</string>
+    <string name="auth_error_sign_up_failed">Sign-up failed. Please try again.</string>
+    <string name="auth_error_invalid_credentials">Incorrect password. Please try again.</string>
+    <string name="auth_error_user_not_found">No account found with this email.</string>
+    <string name="auth_error_account_already_exists">An account with this email already exists.</string>
+    <string name="auth_error_weak_password">Password is too weak. Use at least 6 characters.</string>
+    <string name="auth_error_network">Network error. Check your connection and try again.</string>
+    <string name="auth_error_empty_fields">Email and password cannot be empty.</string>
+    <string name="auth_error_invalid_email">Please enter a valid email address.</string>
+    <string name="auth_error_password_too_short">Password must be at least 6 characters.</string>
+    <string name="auth_error_session_expired">Your session has expired. Please sign in again.</string>
+    <string name="auth_error_account_disabled">This account has been disabled.</string>
+    <string name="auth_error_server">Server error. Please try again later.</string>
+
+    <!-- Sign In Screen -->
+    <string name="sign_in_title">Sign In</string>
+    <string name="sign_up_title">Create Account</string>
+    <string name="sign_in_welcome">Welcome to ChessGym</string>
+    <string name="sign_in_subtitle">Sign in to sync your progress across devices</string>
+    <string name="sign_in_google">Sign in with Google</string>
+    <string name="sign_in_divider">or continue with email</string>
+    <string name="sign_in_email_label">Email</string>
+    <string name="sign_in_password_label">Password</string>
+    <string name="sign_in_password_show">Show</string>
+    <string name="sign_in_password_hide">Hide</string>
+    <string name="sign_in_button">Sign In</string>
+    <string name="sign_up_button">Create Account</string>
+    <string name="sign_in_switch_to_sign_up">Don\'t have an account? Create one</string>
+    <string name="sign_in_switch_to_sign_in">Already have an account? Sign In</string>
+    <!-- endregion -->
+
 </resources>
