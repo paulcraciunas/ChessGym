@@ -15,7 +15,7 @@ changeProject(DslContext.projectId) {
             password("env.GOOGLE_SERVICES_JSON", "", label = "google-services.json (base64)", display = ParameterDisplay.HIDDEN)
         }
         update {
-            password("env.GOOGLE_SERVICES_JSON", "credentialsJSON:f29ebb7b-c488-402a-93fc-8c74af6cb1eb", label = "google-services.json (base64)", display = ParameterDisplay.HIDDEN)
+            password("env.GOOGLE_SERVICES_JSON", "credentialsJSON:0b91870b-dd45-4ddb-a2d0-59a51c3330fc", label = "google-services.json (base64)", display = ParameterDisplay.HIDDEN)
         }
     }
 }
