@@ -3,7 +3,7 @@ package com.paulcraciunas.user.api
 class FakeAuthService : AuthService {
     private val users: MutableMap<String, StoredUser> = mutableMapOf()
     private val userTokens: MutableMap<String, String> = mutableMapOf()
-    private var genericError: AuthException? = null
+    private var genericError: Throwable? = null
 
     var defaultUserId: String = UserDefaults.USER_ID
 
@@ -50,6 +50,10 @@ class FakeAuthService : AuthService {
 
     fun disconnect(): FakeAuthService = apply {
         genericError = AuthException.NetworkError()
+    }
+
+    fun withError(e: Throwable) {
+        genericError = e
     }
 
     private class StoredUser(val id: String, val password: String)
