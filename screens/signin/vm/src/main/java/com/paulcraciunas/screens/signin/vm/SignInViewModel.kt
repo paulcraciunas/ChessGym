@@ -94,6 +94,7 @@ private fun AuthException.toAuthError(): AuthError = when (this) {
     is AuthException.WeakPassword -> AuthError.WEAK_PASSWORD
     is AuthException.NetworkError -> AuthError.NETWORK_ERROR
     is AuthException.Unknown -> AuthError.SIGN_IN_FAILED
+    is AuthException.NoCredentials -> AuthError.SIGN_IN_FAILED
 }
 
 private fun UserApiException.toAuthError(): AuthError = when (this.statusCode) {

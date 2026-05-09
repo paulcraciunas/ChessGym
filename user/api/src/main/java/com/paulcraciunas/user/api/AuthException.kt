@@ -7,4 +7,5 @@ sealed class AuthException(message: String, cause: Throwable? = null) : Exceptio
     class WeakPassword(cause: Throwable? = null) : AuthException("Password too weak", cause)
     class NetworkError(cause: Throwable? = null) : AuthException("Network error", cause)
     class Unknown(cause: Throwable? = null) : AuthException("Unknown auth error", cause)
+    class NoCredentials(cause: Throwable? = null) : AuthException("No credentials", cause)
 }
