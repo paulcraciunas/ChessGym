@@ -23,6 +23,7 @@ internal class DispatcherEnforcementDetector : Detector(), SourceCodeScanner {
         reference: UReferenceExpression,
         referenced: PsiElement,
     ) {
+        if (isTestSource(context)) return
         val containingClass = (referenced as? PsiMember)?.containingClass ?: return
         if (containingClass.qualifiedName != DISPATCHERS_CLASS) return
         if (isInsideDaggerModule(reference)) return
@@ -40,13 +41,21 @@ internal class DispatcherEnforcementDetector : Detector(), SourceCodeScanner {
 
         private val DISPATCHER_PROPERTIES = listOf("IO", "Default", "Main", "Unconfined")
 
+        private val SEP = java.io.File.separatorChar
+        private val TEST_SOURCE_INDICATORS = listOf(
+            "${SEP}src${SEP}test${SEP}",
+            "${SEP}src${SEP}androidTest${SEP}",
+            "${SEP}src${SEP}testFixtures${SEP}",
+        )
+
         val ISSUE: Issue = Issue.create(
             id = "HardcodedDispatcher",
             briefDescription = "Hardcoded coroutine Dispatcher",
             explanation = "Using `Dispatchers.IO`, `Dispatchers.Default`, or `Dispatchers.Main` " +
                 "directly makes code hard to test. Inject dispatchers through constructor " +
                 "parameters or a DispatcherProvider interface instead. " +
-                "Dagger @Module classes are exempt since they provide the bindings.",
+                "Dagger @Module classes are exempt since they provide the bindings. " +
+                "Test sources are also exempt since dispatchers are often hardcoded there.",
             category = Category.CORRECTNESS,
             priority = 7,
             severity = Severity.ERROR,
@@ -63,5 +72,10 @@ internal class DispatcherEnforcementDetector : Detector(), SourceCodeScanner {
 
         private fun isDaggerModule(clazz: UClass): Boolean =
             clazz.uAnnotations.any { it.qualifiedName == DAGGER_MODULE_ANNOTATION }
+
+        private fun isTestSource(context: JavaContext): Boolean {
+            val filePath = context.file.path
+            return TEST_SOURCE_INDICATORS.any { filePath.contains(it) }
+        }
     }
 }
