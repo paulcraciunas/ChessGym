@@ -31,6 +31,15 @@ class FakeAuthService : AuthService {
         return User.AuthenticationState(userId = users[email]!!.id, provider = User.AuthenticationState.AuthProvider.EMAIL)
     }
 
+    override suspend fun deleteAccount() {
+        genericError?.let { throw it }
+
+        users.clear()
+        userTokens.clear()
+    }
+
+    fun isClear() = users.isEmpty() && userTokens.isEmpty()
+
     fun withExistingUser(email: String, password: String, id: String): FakeAuthService = apply {
         users[email] = StoredUser(id, password)
     }

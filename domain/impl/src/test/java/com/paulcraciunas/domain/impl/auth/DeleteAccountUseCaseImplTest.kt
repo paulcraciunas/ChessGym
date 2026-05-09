@@ -44,6 +44,7 @@ internal class DeleteAccountUseCaseImplTest {
 
     @Test
     fun `GIVEN no network WHEN invoke THEN does not clear any data`() = runTest {
+        fakeAuthService.withExistingUser("email", "password", "user_123")
         fakeGetNetworkState.setState(NetworkState.Disconnected)
 
         underTest()
@@ -51,7 +52,7 @@ internal class DeleteAccountUseCaseImplTest {
         assertFalse(fakeTokenProvider.isSignedOut)
         assertFalse(fakeSyncState.isCleared())
         assertEquals(0, fakeSyncScheduler.cancelCount)
-        assertFalse(fakeAuthService.isAccountDeleted)
+        assertFalse(fakeAuthService.isClear())
     }
 
     @Test
@@ -74,11 +75,12 @@ internal class DeleteAccountUseCaseImplTest {
 
     @Test
     fun `GIVEN connected WHEN invoke THEN deletes auth account`() = runTest {
+        fakeAuthService.withExistingUser("email", "password", "user_123")
         fakeGetNetworkState.setState(NetworkState.Connected)
 
         underTest()
 
-        assertTrue(fakeAuthService.isAccountDeleted)
+        assertTrue(fakeAuthService.isClear())
     }
 
     @Test
