@@ -33,6 +33,12 @@
       ],
       "services": {}
     }
+    "oauth_client": [
+      {
+        "client_id": "dummy-web-client-id.apps.googleusercontent.com",
+        "client_type": 3
+      }
+    ]
   ],
   "configuration_version": "1"
 }

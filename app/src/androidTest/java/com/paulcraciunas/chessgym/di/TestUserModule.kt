@@ -1,6 +1,10 @@
 package com.paulcraciunas.chessgym.di
 
+import com.paulcraciunas.user.api.FakeUserLocalDataSource
+import com.paulcraciunas.user.api.FakeUserRemoteDataSource
 import com.paulcraciunas.user.api.FakeUserRepository
+import com.paulcraciunas.user.api.UserLocalDataSource
+import com.paulcraciunas.user.api.UserRemoteDataSource
 import com.paulcraciunas.user.api.UserRepository
 import com.paulcraciunas.user.di.UserModule
 import dagger.Module
@@ -16,6 +20,8 @@ import javax.inject.Singleton
 )
 internal object TestUserModule {
     val userRepository = FakeUserRepository()
+    val userLocalDataSource = FakeUserLocalDataSource()
+    val userRemoteDataSource = FakeUserRemoteDataSource()
 
     @Provides
     @Singleton
@@ -24,4 +30,12 @@ internal object TestUserModule {
     @Provides
     @Singleton
     fun provideUserRepository(): UserRepository = userRepository
+
+    @Provides
+    @Singleton
+    fun providesUserLocalDataSource(): UserLocalDataSource = userLocalDataSource
+
+    @Provides
+    @Singleton
+    fun providesUserRemoteDataSource(): UserRemoteDataSource = userRemoteDataSource
 }
