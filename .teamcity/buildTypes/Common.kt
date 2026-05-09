@@ -21,6 +21,10 @@ fun BuildType.applyCommonConfiguration() {
                 +:*
                 -:pull/*
             """.trimIndent()
+            // We have a separate CI for the backend
+            triggerRules = """
+                -:backend/**
+            """.trimIndent()
         }
     }
 
