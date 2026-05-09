@@ -41,6 +41,7 @@ class ChessGymApplication : Application(), Configuration.Provider {
         setupLogging()
         setupCrashReporting()
         getNetworkState.start()
+        syncUserData()
     }
 
     private fun setupLogging() {
@@ -78,4 +79,14 @@ class ChessGymApplication : Application(), Configuration.Provider {
         get() = Configuration.Builder()
         .setWorkerFactory(workerFactory)
         .build()
+
+    private fun syncUserData() {
+        applicationScope.launch {
+            try {
+                userRepository.sync()
+            } catch (e: Exception) {
+                Timber.w(e, "User data sync on launch failed")
+            }
+        }
+    }
 }
