@@ -10,6 +10,7 @@ dependencies {
     implementation(project(":game:serializer:api"))
     implementation(project(":settings:application:api"))
     implementation(project(":user:api"))
+    implementation(project(":global:device:api"))
     implementation(libs.javax.inject)
 
     testImplementation(project(":game:logic:impl"))
@@ -19,4 +20,5 @@ dependencies {
     testImplementation(testFixtures(project(":game:puzzles:api")))
     testImplementation(testFixtures(project(":domain:api")))
     testImplementation(testFixtures(project(":user:api")))
+    testImplementation(testFixtures(project(":global:device:api")))
 }
