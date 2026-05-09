@@ -40,9 +40,12 @@ object InstrumentedTests : BuildType({
             useGradleWrapper = true
             gradleParams = """
                 --continue 
-                --no-build-cache 
-                -Pandroid.testoptions.manageddevices.emulator.gpu=swiftshader_indirect
-                -Dorg.gradle.workers.max=2
+                --build-cache 
+                --parallel
+                -Pandroid.experimental.androidTest.numManagedDeviceShards=2
+                -Pandroid.testoptions.manageddevices.emulator.gpu=host
+                -Dorg.gradle.workers.max=4
+                -Dkotlin.incremental=true
             """.trimIndent()
         }
         script {

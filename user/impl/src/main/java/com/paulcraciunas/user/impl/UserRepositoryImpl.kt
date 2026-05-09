@@ -1,5 +1,7 @@
 package com.paulcraciunas.user.impl
 
+import com.paulcraciunas.user.api.SyncScheduler
+import com.paulcraciunas.user.api.SyncState
 import com.paulcraciunas.user.api.User
 import com.paulcraciunas.user.api.UserLocalDataSource
 import com.paulcraciunas.user.api.UserRemoteDataSource
@@ -7,13 +9,16 @@ import com.paulcraciunas.user.api.UserRepository
 import com.paulcraciunas.user.api.canMergeWith
 import com.paulcraciunas.user.api.mergeWith
 import kotlinx.coroutines.flow.Flow
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class UserRepositoryImpl @Inject constructor(
     private val localDataSource: UserLocalDataSource,
-    private val remoteDataSource: UserRemoteDataSource
+    private val remoteDataSource: UserRemoteDataSource,
+    private val syncState: SyncState,
+    private val syncScheduler: SyncScheduler,
 ) : UserRepository {
 
     override fun userUpdates(): Flow<User> = localDataSource.userUpdates()
@@ -21,12 +26,11 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun get(): User = localDataSource.getUser()
 
     override suspend fun update(updated: User) {
-        // Save to local storage first
         localDataSource.saveUser(updated)
 
-        // Sync to remote if user is signed in
         if (updated.isSignedIn()) {
-            remoteDataSource.updateUser(updated)
+            syncState.markDirty()
+            syncScheduler.schedule()
         }
     }
 
@@ -34,15 +38,64 @@ class UserRepositoryImpl @Inject constructor(
         val currentUser = get()
         val mergedHistory = mergeHistory(currentUser.history, history)
         val updatedUser = currentUser.copy(history = mergedHistory)
-
-        // Save locally
         localDataSource.saveUser(updatedUser)
+    }
 
-        // Sync to remote if signed in
-        if (updatedUser.isSignedIn()) {
-            remoteDataSource.addToHistory(updatedUser.authentication!!.userId, history)
+    override suspend fun signIn(auth: User.AuthenticationState): User {
+        val remoteUser = remoteDataSource.signIn(auth)
+        val localUser = get()
+        val merged = mergeWithRemote(localUser, remoteUser).copy(authentication = auth)
+        localDataSource.saveUser(merged)
+        syncState.markClean()
+        return merged
+    }
+
+    override suspend fun signOut() {
+        localDataSource.clearUserData()
+    }
+
+    override suspend fun clear() {
+        val currentUser = get()
+        currentUser.authentication?.userId?.let { remoteDataSource.deleteUser(it) }
+        localDataSource.clearUserData()
+    }
+
+    override suspend fun sync() {
+        val currentUser = get()
+        if (!currentUser.isSignedIn()) return
+
+        val userId = currentUser.authentication!!.userId
+        val shouldSync = syncState.isDirty() || syncState.isStale()
+
+        if (!shouldSync) return
+
+        try {
+            val remoteUser = remoteDataSource.getUser(userId)
+            val merged = mergeWithRemote(currentUser, remoteUser)
+            localDataSource.saveUser(merged)
+            syncState.markClean()
+        } catch (e: Exception) {
+            Timber.w(e, "Sync failed, will retry on next opportunity")
         }
     }
+
+    private fun mergeWithRemote(local: User, remote: User): User = local.copy(
+        profile = remote.profile,
+        ratings = local.ratings.copy(
+            current = remote.ratings.current,
+            blindMode = remote.ratings.blindMode,
+        ),
+        highScores = remote.highScores,
+        statistics = remote.statistics,
+        achievements = local.achievements.copy(
+            progress = remote.achievements.progress,
+            lastActiveDate = remote.achievements.lastActiveDate,
+            consecutiveDaysStreak = remote.achievements.consecutiveDaysStreak,
+            bestConsecutiveDaysStreak = remote.achievements.bestConsecutiveDaysStreak,
+            currentRatedWinStreak = remote.achievements.currentRatedWinStreak,
+            bestRatedWinStreak = remote.achievements.bestRatedWinStreak,
+        ),
+    )
 
     private fun mergeHistory(
         existing: List<User.HistoryItem>,
@@ -58,35 +111,5 @@ class UserRepositoryImpl @Inject constructor(
             }
         }
         return result
-    }
-
-    override suspend fun signIn(auth: User.AuthenticationState, token: String): User {
-        // Sign in with remote first
-        val signedInUser = remoteDataSource.signIn(auth, token)
-
-        // Save the signed-in user locally
-        localDataSource.saveUser(signedInUser)
-
-        return signedInUser
-    }
-
-    override suspend fun signOut() {
-        // Only clear local data - don't touch remote
-        localDataSource.clearUserData()
-    }
-
-    override suspend fun clear() {
-        val currentUser = get()
-
-        currentUser.authentication?.userId?.let { remoteDataSource.deleteUser(it) }
-        localDataSource.clearUserData()
-    }
-
-    override suspend fun sync() {
-        val currentUser = get()
-
-        currentUser.authentication?.userId?.let { // Only sync if user is signed in
-            localDataSource.saveUser(remoteDataSource.getUser(it))
-        }
     }
 }

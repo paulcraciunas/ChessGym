@@ -1,5 +1,7 @@
 package com.paulcraciunas.user.impl
 
+import com.paulcraciunas.user.api.FakeSyncScheduler
+import com.paulcraciunas.user.api.FakeSyncState
 import com.paulcraciunas.user.api.FakeUserLocalDataSource
 import com.paulcraciunas.user.api.FakeUserRemoteDataSource
 import com.paulcraciunas.user.api.User
@@ -15,8 +17,15 @@ import java.time.LocalDate
 internal class UserRepositoryImplTest {
     private val fakeLocalDataSource = FakeUserLocalDataSource()
     private val fakeRemoteDataSource = FakeUserRemoteDataSource()
+    private val fakeSyncState = FakeSyncState()
+    private val fakeSyncScheduler = FakeSyncScheduler()
 
-    private val underTest = UserRepositoryImpl(fakeLocalDataSource, fakeRemoteDataSource)
+    private val underTest = UserRepositoryImpl(
+        fakeLocalDataSource,
+        fakeRemoteDataSource,
+        fakeSyncState,
+        fakeSyncScheduler,
+    )
 
     @Test
     fun `GIVEN local data source WHEN userUpdates THEN delegates to local data source`() = runBlocking {
@@ -45,9 +54,9 @@ internal class UserRepositoryImplTest {
     }
 
     @Test
-    fun `GIVEN unsigned user WHEN update THEN saves locally only`() = runBlocking {
+    fun `GIVEN unsigned user WHEN update THEN saves locally only and does not mark dirty`() = runBlocking {
         // Given
-        val user = UserTestFixtures.createDefaultUser() // Not signed in
+        val user = UserTestFixtures.createDefaultUser()
 
         // When
         fakeRemoteDataSource.failAll()
@@ -55,33 +64,23 @@ internal class UserRepositoryImplTest {
 
         // Then
         assertEquals(user, fakeLocalDataSource.getUser())
+        assertFalse(fakeSyncState.isDirty())
+        assertEquals(0, fakeSyncScheduler.scheduleCount)
     }
 
     @Test
-    fun `GIVEN signed in user WHEN update THEN saves locally and syncs remote`() = runBlocking {
+    fun `GIVEN signed in user WHEN update THEN saves locally and marks dirty and enqueues worker`() = runBlocking {
         // Given
-        var user = UserTestFixtures.createSignedUpUser()
+        val user = UserTestFixtures.createSignedUpUser()
         fakeRemoteDataSource.with(user)
 
         // When
-        user = user.copy(failedPuzzles = emptyList())
         underTest.update(user)
 
         // Then
         assertEquals(user, fakeLocalDataSource.getUser())
-        assertEquals(user, fakeRemoteDataSource.getUser(user.authentication!!.userId))
-    }
-
-    @Test
-    fun `GIVEN remote data source throws WHEN update signed in user THEN propagates exception`() {
-        runBlocking {
-            // Given
-            val user = UserTestFixtures.createSignedUpUser()
-            fakeRemoteDataSource.failAll(RuntimeException("Update failed"))
-
-            // When & Then
-            assertThrows<RuntimeException> { underTest.update(user) }
-        }
+        assertTrue(fakeSyncState.isDirty())
+        assertEquals(1, fakeSyncScheduler.scheduleCount)
     }
 
     @Test
@@ -103,44 +102,42 @@ internal class UserRepositoryImplTest {
     }
 
     @Test
-    fun `GIVEN signed in user WHEN logHistory THEN adds to local and syncs remote`() = runBlocking {
+    fun `GIVEN signed in user WHEN logHistory THEN adds to local only`() = runBlocking {
         // Given
         val originalUser = UserTestFixtures.createSignedUpUser()
         val newHistoryItems = listOf(UserTestFixtures.createSampleRatedPuzzleHistoryItem())
         fakeLocalDataSource.saveUser(originalUser)
-        fakeRemoteDataSource.with(originalUser)
 
         // When
+        fakeRemoteDataSource.failAll()
         underTest.logHistory(newHistoryItems)
 
         // Then
         val updatedUser = fakeLocalDataSource.getUser()
-        val updatedRemoteUser = fakeRemoteDataSource.getUser(originalUser.authentication!!.userId)
         assertEquals(originalUser.history.size + 1, updatedUser.history.size)
-        assertEquals(originalUser.history.size + 1, updatedRemoteUser.history.size)
         assertTrue(updatedUser.history.containsAll(originalUser.history))
         assertTrue(updatedUser.history.containsAll(newHistoryItems))
-        assertTrue(updatedRemoteUser.history.containsAll(originalUser.history))
-        assertTrue(updatedRemoteUser.history.containsAll(newHistoryItems))
     }
 
     @Test
-    fun `GIVEN auth state and token WHEN signIn THEN calls remote and saves locally`() = runBlocking {
+    fun `GIVEN auth state WHEN signIn THEN calls remote and merges with local`() = runBlocking {
         // Given
         val authState = User.AuthenticationState(
             provider = User.AuthenticationState.AuthProvider.APPLE,
             userId = "user_123"
         )
-        val token = "auth_token"
-        val signedInUser = User().copy(authentication = authState)
+        val localUser = UserTestFixtures.createDefaultUser()
+        fakeLocalDataSource.saveUser(localUser)
 
         // When
-        val result = underTest.signIn(authState, token)
+        val result = underTest.signIn(authState)
 
         // Then
-        assertEquals(signedInUser, result)
-        assertEquals(signedInUser, fakeLocalDataSource.getUser())
-        assertEquals(signedInUser, fakeRemoteDataSource.getUser("user_123"))
+        assertEquals(authState, result.authentication)
+        assertEquals(localUser.deviceId, result.deviceId)
+        assertEquals(localUser.history, result.history)
+        assertEquals(localUser.failedPuzzles, result.failedPuzzles)
+        assertFalse(fakeSyncState.isDirty())
     }
 
     @Test
@@ -154,18 +151,17 @@ internal class UserRepositoryImplTest {
             fakeRemoteDataSource.failAll(RuntimeException("Sign in failed"))
 
             // When & Then
-            assertThrows<RuntimeException> { underTest.signIn(authState, "auth_token") }
+            assertThrows<RuntimeException> { underTest.signIn(authState) }
         }
     }
 
     @Test
-    fun `GIVEN repository WHEN signOut THEN clears local data only`() = runBlocking {
+    fun `GIVEN repository WHEN signOut THEN clears local data`() = runBlocking {
         // Given
         val signedInUser = UserTestFixtures.createSignedUpUser()
         fakeLocalDataSource.saveUser(signedInUser)
 
         // When
-        fakeRemoteDataSource.failAll()
         underTest.signOut()
 
         // Then
@@ -190,7 +186,7 @@ internal class UserRepositoryImplTest {
     @Test
     fun `GIVEN unsigned user WHEN sync THEN does not sync to remote`() = runBlocking {
         // Given
-        val user = UserTestFixtures.createDefaultUser() // Not signed in
+        val user = UserTestFixtures.createDefaultUser()
         fakeLocalDataSource.saveUser(user)
 
         // When
@@ -202,19 +198,42 @@ internal class UserRepositoryImplTest {
     }
 
     @Test
-    fun `GIVEN signed in user WHEN sync THEN syncs to remote`() = runBlocking {
+    fun `GIVEN signed in user and stale data WHEN sync THEN merges remote with local`() = runBlocking {
         // Given
         val user = UserTestFixtures.createSignedUpUser()
-        val updated = user.copy(failedPuzzles = emptyList())
+        val remoteUser = user.copy(
+            profile = User.Profile(firstName = "Remote", lastName = "User"),
+            failedPuzzles = emptyList(),
+        )
         fakeLocalDataSource.saveUser(user)
-        fakeRemoteDataSource.with(updated)
+        fakeRemoteDataSource.with(remoteUser)
+        fakeSyncState.stale = true
 
         // When
         underTest.sync()
 
         // Then
-        assertEquals(updated, fakeRemoteDataSource.getUser(user.authentication!!.userId))
-        assertEquals(updated, fakeLocalDataSource.getUser())
+        val synced = fakeLocalDataSource.getUser()
+        assertEquals("Remote", synced.profile.firstName)
+        assertEquals(user.deviceId, synced.deviceId)
+        assertEquals(user.history, synced.history)
+        assertEquals(user.failedPuzzles, synced.failedPuzzles)
+        assertEquals(user.authentication, synced.authentication)
+    }
+
+    @Test
+    fun `GIVEN signed in user and fresh data WHEN sync THEN does not fetch remote`() = runBlocking {
+        // Given
+        val user = UserTestFixtures.createSignedUpUser()
+        fakeLocalDataSource.saveUser(user)
+        fakeSyncState.markClean()
+
+        // When
+        fakeRemoteDataSource.failAll()
+        underTest.sync()
+
+        // Then
+        assertEquals(user, fakeLocalDataSource.getUser())
     }
 
     @Test

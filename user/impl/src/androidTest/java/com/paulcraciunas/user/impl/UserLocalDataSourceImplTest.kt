@@ -221,7 +221,7 @@ internal class UserLocalDataSourceImplTest {
     @Test
     fun given_userWithAllAuthProviders_WHEN_saveAndGet_THEN_authenticationSerializedCorrectly() = runBlocking {
         val authProviders = listOf(
-            User.AuthenticationState.AuthProvider.NONE,
+            User.AuthenticationState.AuthProvider.EMAIL,
             User.AuthenticationState.AuthProvider.GOOGLE,
             User.AuthenticationState.AuthProvider.INSTAGRAM,
             User.AuthenticationState.AuthProvider.APPLE,
@@ -232,7 +232,7 @@ internal class UserLocalDataSourceImplTest {
             // Given
             val user = User(
                 deviceId = TEST_DEVICE_ID,
-                authentication = if (provider == User.AuthenticationState.AuthProvider.NONE) {
+                authentication = if (provider == User.AuthenticationState.AuthProvider.EMAIL) {
                     null
                 } else {
                     User.AuthenticationState(
@@ -248,7 +248,7 @@ internal class UserLocalDataSourceImplTest {
 
             // Then
             assertEquals(user, result)
-            if (provider == User.AuthenticationState.AuthProvider.NONE) {
+            if (provider == User.AuthenticationState.AuthProvider.EMAIL) {
                 assertEquals(null, result.authentication)
             } else {
                 assertEquals(provider, result.authentication?.provider)

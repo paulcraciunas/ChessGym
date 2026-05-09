@@ -8,3 +8,7 @@ androidLibrary {
     proguardFile("proguard-rules.pro")
     di = true
 }
+
+dependencies {
+    api(project(":global:qualifiers"))
+}

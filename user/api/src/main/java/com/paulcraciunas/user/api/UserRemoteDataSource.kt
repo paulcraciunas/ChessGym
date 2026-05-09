@@ -4,8 +4,8 @@ interface UserRemoteDataSource {
     suspend fun getUser(userId: String): User
     suspend fun updateUser(user: User)
 
-    suspend fun addToHistory(userId: String, history: List<User.HistoryItem>)
-
-    suspend fun signIn(auth: User.AuthenticationState, token: String): User
+    suspend fun signIn(auth: User.AuthenticationState): User
     suspend fun deleteUser(userId: String)
 }
+
+class UserApiException(message: String, val statusCode: Int) : Exception(message)

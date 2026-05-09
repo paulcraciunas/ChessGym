@@ -12,9 +12,12 @@ androidLibrary {
 
 dependencies {
     api(project(":user:api"))
+    implementation(project(":global:extensions"))
 
     implementation(libs.androidx.datastore)
     implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.work.ktx)
+    implementation(libs.androidx.hilt.work)
     implementation(libs.public.timber)
 
     testImplementation(testFixtures(project(":user:api")))

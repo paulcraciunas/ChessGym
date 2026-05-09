@@ -11,6 +11,7 @@ androidLibrary {
 
 dependencies {
     api(project(":settings:application:api"))
+    implementation(project(":global:extensions"))
 
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.public.timber)
