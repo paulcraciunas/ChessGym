@@ -41,6 +41,18 @@ class FirebaseAuthService @Inject constructor(
             firebaseAuth.createUserWithEmailAndPassword(email, password)
         }
 
+    override suspend fun deleteAccount(): Unit = withContext(ioDispatcher) {
+        val user = firebaseAuth.currentUser
+            ?: throw AuthException.Unknown(IllegalStateException("No signed-in user to delete"))
+        try {
+            user.delete().await()
+        } catch (e: FirebaseNetworkException) {
+            throw AuthException.NetworkError(e)
+        } catch (e: Exception) {
+            throw AuthException.Unknown(e)
+        }
+    }
+
     private suspend fun performAuth(
         provider: User.AuthenticationState.AuthProvider,
         action: () -> Task<AuthResult>,
