@@ -17,5 +17,6 @@ dependencies {
     implementation(libs.public.timber)
 
     testImplementation(testFixtures(project(":user:api")))
+    testImplementation(project(":domain:impl"))
     testImplementation(testFixtures(project(":domain:api")))
 }
