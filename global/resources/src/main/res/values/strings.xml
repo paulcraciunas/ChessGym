@@ -599,6 +599,7 @@
     <string name="sign_in_welcome">Welcome to ChessGym</string>
     <string name="sign_in_subtitle">Sign in to sync your progress across devices</string>
     <string name="sign_in_google">Sign in with Google</string>
+    <string name="sign_up_google">Sign up with Google</string>
     <string name="sign_in_divider">or continue with email</string>
     <string name="sign_in_email_label">Email</string>
     <string name="sign_in_password_label">Password</string>

@@ -32,6 +32,7 @@ import com.paulcraciunas.global.resources.R as GlobalR
 internal fun GoogleSignInSection(
     onGoogleSignIn: () -> Unit,
     isLoading: Boolean,
+    signInMode: Boolean,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -40,7 +41,7 @@ internal fun GoogleSignInSection(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (!isLoading) {
-            GoogleSignInButton(onClick = onGoogleSignIn, modifier = Modifier)
+            GoogleSignInButton(onClick = onGoogleSignIn, signInMode = signInMode)
         } else {
             InfiniteProgressIndicator(modifier = Modifier.size(40.dp))
         }
@@ -52,6 +53,7 @@ internal fun GoogleSignInSection(
 @Composable
 internal fun GoogleSignInButton(
     onClick: () -> Unit,
+    signInMode: Boolean,
     modifier: Modifier = Modifier,
 ) {
     Surface(
@@ -73,7 +75,7 @@ internal fun GoogleSignInButton(
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = stringResource(id = GlobalR.string.sign_in_google),
+                text = stringResource(id = if (signInMode) GlobalR.string.sign_in_google else GlobalR.string.sign_up_google),
                 style = MaterialTheme.typography.labelLarge.copy(
                     color = MaterialTheme.colorScheme.onSurface
                 )
@@ -106,6 +108,7 @@ private fun GoogleSignInSectionPreview() {
     ChessGymTheme {
         GoogleSignInSection(
             onGoogleSignIn = {},
+            signInMode = true,
             isLoading = false,
             modifier = Modifier.padding(16.dp)
         )
@@ -119,6 +122,7 @@ private fun GoogleSignInSectionLoadingPreview() {
         GoogleSignInSection(
             onGoogleSignIn = {},
             isLoading = true,
+            signInMode = true,
             modifier = Modifier.padding(16.dp)
         )
     }
