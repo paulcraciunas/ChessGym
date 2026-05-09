@@ -9,6 +9,8 @@ import com.paulcraciunas.user.api.FakeSyncScheduler
 import com.paulcraciunas.user.api.FakeSyncState
 import com.paulcraciunas.user.api.FakeTokenProvider
 import com.paulcraciunas.user.api.FakeUserRepository
+import com.paulcraciunas.user.api.User
+import com.paulcraciunas.user.api.UserDefaults
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -66,11 +68,12 @@ internal class DeleteAccountUseCaseImplTest {
 
     @Test
     fun `GIVEN connected WHEN invoke THEN clears user repository`() = runTest {
+        fakeUserRepository.update(UserDefaults.signedInUser())
         fakeGetNetworkState.setState(NetworkState.Connected)
 
         underTest()
 
-        assertTrue(fakeUserRepository.local.isCleared)
+        assertEquals(User(), fakeUserRepository.local.getUser())
     }
 
     @Test

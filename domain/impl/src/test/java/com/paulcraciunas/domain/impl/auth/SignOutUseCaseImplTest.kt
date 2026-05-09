@@ -4,6 +4,8 @@ import com.paulcraciunas.user.api.FakeSyncScheduler
 import com.paulcraciunas.user.api.FakeSyncState
 import com.paulcraciunas.user.api.FakeTokenProvider
 import com.paulcraciunas.user.api.FakeUserRepository
+import com.paulcraciunas.user.api.User
+import com.paulcraciunas.user.api.UserDefaults
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -47,13 +49,16 @@ internal class SignOutUseCaseImplTest {
 
     @Test
     fun `GIVEN user signed in WHEN invoke THEN clears user repository`() = runTest {
+        fakeUserRepository.update(UserDefaults.signedInUser())
+
         underTest()
 
-        assertTrue(fakeUserRepository.local.isCleared)
+        assertEquals(User(), fakeUserRepository.local.getUser())
     }
 
     @Test
     fun `GIVEN user signed in WHEN invoke THEN executes in correct order`() = runTest {
+        fakeUserRepository.update(UserDefaults.signedInUser())
         fakeSyncState.markDirty()
 
         underTest()
@@ -61,6 +66,6 @@ internal class SignOutUseCaseImplTest {
         assertEquals(1, fakeSyncScheduler.cancelCount)
         assertTrue(fakeSyncState.isCleared())
         assertTrue(fakeTokenProvider.isSignedOut)
-        assertTrue(fakeUserRepository.local.isCleared)
+        assertEquals(User(), fakeUserRepository.local.getUser())
     }
 }
