@@ -25,4 +25,22 @@ data class AppSettings(
         Dark,
         System
     }
+
+    companion object {
+        fun default() = AppSettings(
+            puzzlesDownloaded = false,
+            totalPuzzleCount = 0,
+            maxPuzzleRating = 0,
+            minPuzzleRating = 0,
+            playSoundOnMove = true,
+            preferredTheme = Theme.Wood,
+            lightMode = LightMode.System,
+            autoPromote = true,
+            showBorders = true,
+            enableVibrations = true,
+            highlightLegalMoves = true,
+            enableAnimations = true,
+            crashReportingConsent = false
+        )
+    }
 }
