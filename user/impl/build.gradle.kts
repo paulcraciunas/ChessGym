@@ -4,8 +4,6 @@ plugins {
 
 androidLibrary {
     namespace = "com.paulcraciunas.user.impl"
-    consumerProguardFile("consumer-rules.pro")
-    proguardFile("proguard-rules.pro")
     serialization = true
     di = true
 }

@@ -4,8 +4,6 @@ plugins {
 
 androidLibrary {
     namespace = "com.paulcraciunas.screens.tools.importgame.vm"
-    consumerProguardFile("consumer-rules.pro")
-    proguardFile("proguard-rules.pro")
     di = true
 }
 

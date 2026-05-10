@@ -4,8 +4,6 @@ plugins {
 
 androidLibrary {
     namespace = "com.paulcraciunas.screens.signin.ui"
-    consumerProguardFile("consumer-rules.pro")
-    proguardFile("proguard-rules.pro")
     compose = true
 }
 

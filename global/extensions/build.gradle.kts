@@ -4,8 +4,6 @@ plugins {
 
 androidLibrary {
     namespace = "com.paulcraciunas.global.extensions"
-    consumerProguardFile("consumer-rules.pro")
-    proguardFile("proguard-rules.pro")
 }
 
 dependencies {
