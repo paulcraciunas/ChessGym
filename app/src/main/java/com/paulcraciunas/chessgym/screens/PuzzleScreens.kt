@@ -8,6 +8,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import com.paulcraciunas.chessgym.LocalAppSettings
 import com.paulcraciunas.chessgym.navigation.Screen
 import com.paulcraciunas.screens.puzzles.dashboard.ui.PuzzleDashboardScreen
 import com.paulcraciunas.screens.puzzles.dashboard.vm.PuzzleDashboardViewModel
@@ -54,12 +55,8 @@ internal fun PuzzleDashboard(
 }
 
 @Composable
-internal fun RatedPuzzle(
-    tabNavController: NavHostController,
-    showBorders: Boolean,
-    highlightLegalMoves: Boolean,
-    enableAnimations: Boolean,
-) {
+internal fun RatedPuzzle(tabNavController: NavHostController) {
+    val settings = LocalAppSettings.current
     val vm: RatedPuzzleViewModel = hiltViewModel()
     val ratedPuzzleState by vm.uiState.collectAsStateWithLifecycle()
 
@@ -68,9 +65,9 @@ internal fun RatedPuzzle(
 
     RatedPuzzleScreen(
         uiState = ratedPuzzleState,
-        showBorders = showBorders,
-        highlightLegalMoves = highlightLegalMoves,
-        enableAnimations = enableAnimations,
+        showBorders = settings.showBorders,
+        highlightLegalMoves = settings.highlightLegalMoves,
+        enableAnimations = settings.enableAnimations,
         onNavigateBack = {
             if (!vm.onNavigateBackPressed()) {
                 tabNavController.popBackStack(Screen.PuzzleDashboard, inclusive = false)
@@ -81,12 +78,8 @@ internal fun RatedPuzzle(
 }
 
 @Composable
-internal fun PuzzleRush(
-    tabNavController: NavHostController,
-    showBorders: Boolean,
-    highlightLegalMoves: Boolean,
-    enableAnimations: Boolean,
-) {
+internal fun PuzzleRush(tabNavController: NavHostController) {
+    val settings = LocalAppSettings.current
     val vm: PuzzleRushViewModel = hiltViewModel()
     val puzzleRushState by vm.uiState.collectAsStateWithLifecycle()
 
@@ -98,9 +91,9 @@ internal fun PuzzleRush(
 
     PuzzleRushScreen(
         uiState = puzzleRushState,
-        showBorders = showBorders,
-        highlightLegalMoves = highlightLegalMoves,
-        enableAnimations = enableAnimations,
+        showBorders = settings.showBorders,
+        highlightLegalMoves = settings.highlightLegalMoves,
+        enableAnimations = settings.enableAnimations,
         onNavigateBack = {
             tabNavController.popBackStack(Screen.PuzzleDashboard, inclusive = false)
         },
@@ -109,12 +102,8 @@ internal fun PuzzleRush(
 }
 
 @Composable
-internal fun FailedPuzzles(
-    tabNavController: NavHostController,
-    showBorders: Boolean,
-    highlightLegalMoves: Boolean,
-    enableAnimations: Boolean,
-) {
+internal fun FailedPuzzles(tabNavController: NavHostController) {
+    val settings = LocalAppSettings.current
     val vm: FailedPuzzlesViewModel = hiltViewModel()
     val failedPuzzlesState by vm.uiState.collectAsStateWithLifecycle()
 
@@ -129,9 +118,9 @@ internal fun FailedPuzzles(
 
     FailedPuzzlesScreen(
         uiState = failedPuzzlesState,
-        showBorders = showBorders,
-        highlightLegalMoves = highlightLegalMoves,
-        enableAnimations = enableAnimations,
+        showBorders = settings.showBorders,
+        highlightLegalMoves = settings.highlightLegalMoves,
+        enableAnimations = settings.enableAnimations,
         onNavigateBack = {
             tabNavController.popBackStack(Screen.PuzzleDashboard, inclusive = false)
         },
@@ -140,12 +129,8 @@ internal fun FailedPuzzles(
 }
 
 @Composable
-internal fun PuzzleStreak(
-    tabNavController: NavHostController,
-    showBorders: Boolean,
-    highlightLegalMoves: Boolean,
-    enableAnimations: Boolean,
-) {
+internal fun PuzzleStreak(tabNavController: NavHostController) {
+    val settings = LocalAppSettings.current
     val vm: PuzzleStreakViewModel = hiltViewModel()
     val puzzleStreakState by vm.uiState.collectAsStateWithLifecycle()
 
@@ -154,9 +139,9 @@ internal fun PuzzleStreak(
 
     PuzzleStreakScreen(
         uiState = puzzleStreakState,
-        showBorders = showBorders,
-        highlightLegalMoves = highlightLegalMoves,
-        enableAnimations = enableAnimations,
+        showBorders = settings.showBorders,
+        highlightLegalMoves = settings.highlightLegalMoves,
+        enableAnimations = settings.enableAnimations,
         onNavigateBack = {
             tabNavController.popBackStack(Screen.PuzzleDashboard, inclusive = false)
         },

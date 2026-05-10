@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import com.paulcraciunas.chessgym.LocalAppSettings
 import com.paulcraciunas.chessgym.navigation.Screen
 import com.paulcraciunas.screens.tools.analysis.ui.AnalysisScreen
 import com.paulcraciunas.screens.tools.analysis.vm.AnalysisViewModel
@@ -64,11 +65,9 @@ internal fun ChessClock(
 @Composable
 internal fun AnalysisBoard(
     tabNavController: NavHostController,
-    showBorders: Boolean,
-    highlightLegalMoves: Boolean,
-    enableAnimations: Boolean,
     fen: String?,
 ) {
+    val settings = LocalAppSettings.current
     val vm: AnalysisViewModel = hiltViewModel()
     val analysisState by vm.uiState.collectAsStateWithLifecycle()
 
@@ -78,9 +77,9 @@ internal fun AnalysisBoard(
 
     AnalysisScreen(
         uiState = analysisState,
-        showBorders = showBorders,
-        highlightLegalMoves = highlightLegalMoves,
-        enableAnimations = enableAnimations,
+        showBorders = settings.showBorders,
+        highlightLegalMoves = settings.highlightLegalMoves,
+        enableAnimations = settings.enableAnimations,
         onNavigateBack = {
             tabNavController.popBackStack(Screen.ToolsDashboard, inclusive = false)
         },
@@ -89,20 +88,16 @@ internal fun AnalysisBoard(
 }
 
 @Composable
-internal fun ImportGame(
-    tabNavController: NavHostController,
-    showBorders: Boolean,
-    highlightLegalMoves: Boolean,
-    enableAnimations: Boolean,
-) {
+internal fun ImportGame(tabNavController: NavHostController) {
+    val settings = LocalAppSettings.current
     val vm: ImportGameViewModel = hiltViewModel()
     val importState by vm.uiState.collectAsStateWithLifecycle()
 
     ImportGameScreen(
         uiState = importState,
-        showBorders = showBorders,
-        highlightLegalMoves = highlightLegalMoves,
-        enableAnimations = enableAnimations,
+        showBorders = settings.showBorders,
+        highlightLegalMoves = settings.highlightLegalMoves,
+        enableAnimations = settings.enableAnimations,
         onNavigateBack = {
             tabNavController.popBackStack(Screen.ToolsDashboard, inclusive = false)
         },
