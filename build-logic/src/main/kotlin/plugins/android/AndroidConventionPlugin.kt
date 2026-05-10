@@ -1,6 +1,7 @@
 package plugins.android
 
 import com.android.build.api.dsl.LibraryExtension
+import com.android.build.api.variant.LibraryAndroidComponentsExtension
 import common.androidTestImplementation
 import common.bundle
 import common.configureJava
@@ -33,6 +34,7 @@ class AndroidConventionPlugin : ConventionPlugin() {
             configureAndroid(extension = extensions.getByType<LibraryExtension>())
             configureDependencies()
             configureTests()
+            disableAndroidTestByDefault()
         }
     }
 
@@ -85,6 +87,14 @@ class AndroidConventionPlugin : ConventionPlugin() {
         }
         tasks.withType<Test> {
             useJUnitPlatform()
+        }
+    }
+
+    private fun Project.disableAndroidTestByDefault() {
+        extensions.getByType<LibraryAndroidComponentsExtension>().beforeVariants { variantBuilder ->
+            if (!configuration.instrumentedTests) {
+                variantBuilder.androidTest.enable = false
+            }
         }
     }
 }

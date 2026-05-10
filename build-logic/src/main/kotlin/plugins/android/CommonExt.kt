@@ -71,4 +71,5 @@ private fun ManagedVirtualDevice.configureCiDevice() {
     device = CI_DEVICE_PROFILE
     apiLevel = CI_DEVICE_API_LEVEL
     systemImageSource = CI_DEVICE_IMAGE_SOURCE
+    require64Bit = true
 }

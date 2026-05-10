@@ -4,6 +4,7 @@ import org.gradle.api.Project
 import plugins.extensions.delegates.AndroidTestFixturesDelegate
 import plugins.extensions.delegates.ComposeDelegate
 import plugins.extensions.delegates.DiDelegate
+import plugins.extensions.delegates.InstrumentedTestDelegate
 import plugins.extensions.delegates.RoomDelegate
 import plugins.extensions.delegates.SerializationDelegate
 
@@ -13,6 +14,7 @@ open class AndroidConventionExtension(project: Project) : BaseAndroidExtension(p
     var room: Boolean by RoomDelegate(project)
     var serialization: Boolean by SerializationDelegate(project)
     var testFixtures: Boolean by AndroidTestFixturesDelegate(project)
+    var instrumentedTests: Boolean by InstrumentedTestDelegate(project)
 
     fun consumerProguardFile(file: String) = project.android {
         defaultConfig {

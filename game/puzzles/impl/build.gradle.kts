@@ -6,6 +6,7 @@ androidLibrary {
     namespace = "com.paulcraciunas.puzzles.impl"
     di = true
     room = true
+    instrumentedTests = true
 }
 
 dependencies {

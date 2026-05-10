@@ -6,6 +6,7 @@ androidLibrary {
     namespace = "com.paulcraciunas.user.impl"
     serialization = true
     di = true
+    instrumentedTests = true
 }
 
 dependencies {

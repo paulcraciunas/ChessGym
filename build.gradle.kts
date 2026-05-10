@@ -34,9 +34,6 @@ subprojects {
         rootProject.tasks.named("lintAllDebug") {
             dependsOn(tasks.named("lintDebug"))
         }
-        rootProject.tasks.named("instrumentedTestAllCi") {
-            dependsOn(tasks.named("ciDeviceDebugAndroidTest"))
-        }
     }
     plugins.withId("com.android.application") {
         rootProject.tasks.named("unitTestAll") {
