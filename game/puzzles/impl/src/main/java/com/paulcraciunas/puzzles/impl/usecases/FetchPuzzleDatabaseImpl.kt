@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class FetchPuzzleDatabaseImpl @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
     private val notificationFactory: NotificationFactory,
     private val dataAdapter: WorkInfoDataAdapter,
 ) : FetchPuzzleDatabase {

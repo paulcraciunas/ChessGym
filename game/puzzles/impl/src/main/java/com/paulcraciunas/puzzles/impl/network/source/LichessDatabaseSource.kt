@@ -9,7 +9,7 @@ import java.net.URLConnection
 import javax.inject.Inject
 
 class LichessDatabaseSource @Inject constructor(
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+    @param:IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : PuzzleDatabaseSource {
     private lateinit var connection: URLConnection
 

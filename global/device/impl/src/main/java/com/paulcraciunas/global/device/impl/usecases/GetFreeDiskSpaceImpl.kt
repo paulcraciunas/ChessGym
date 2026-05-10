@@ -8,7 +8,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class GetFreeDiskSpaceImpl @Inject constructor(
-    @ApplicationContext private val context: Context
+    @param:ApplicationContext private val context: Context
 ) : GetFreeDiskSpace {
 
     override operator fun invoke(): GetFreeDiskSpace.DiskSpace {

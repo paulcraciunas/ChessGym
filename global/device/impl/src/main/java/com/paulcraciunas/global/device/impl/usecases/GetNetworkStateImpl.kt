@@ -17,7 +17,7 @@ import javax.inject.Singleton
 
 @Singleton
 class GetNetworkStateImpl @Inject constructor(
-    @ApplicationContext private val context: Context
+    @param:ApplicationContext private val context: Context
 ) : GetNetworkState {
 
     private val _networkState = MutableSharedFlow<GetNetworkState.NetworkState>(replay = 1)

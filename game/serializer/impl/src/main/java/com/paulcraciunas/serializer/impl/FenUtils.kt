@@ -9,7 +9,7 @@ import com.paulcraciunas.serializer.api.SerializeException
 
 internal const val MISSING = "-"
 
-internal fun Builder.withEnPassent(enPassent: String?) = apply {
+internal fun Builder.withEnPassent(enPassent: String?): Builder = apply {
     if (enPassent == null || enPassent == MISSING) return this
     // This tells us the location a pawn moved OVER (e.g. e6)
     // To load the correct information as the "previous move", we have to add the from - to
