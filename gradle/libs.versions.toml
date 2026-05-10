@@ -124,6 +124,7 @@ androidx-hilt-common = { group = "androidx.hilt", name = "hilt-common", version.
 androidx-hilt-work = { group = "androidx.hilt", name = "hilt-work", version.ref = "hiltCommon" }
 androidx-hilt-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hiltCommon" }
 androidx-hilt-navigation = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltCommon" }
+androidx-hilt-viewmodel = { group = "androidx.hilt", name = "hilt-lifecycle-viewmodel-compose", version.ref = "hiltCommon" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

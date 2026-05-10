@@ -106,6 +106,7 @@ dependencies {
     // Navigation
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.hilt.navigation)
+    implementation(libs.androidx.hilt.viewmodel)
 
     // Splash Screen
     implementation(libs.androidx.core.splashscreen)
