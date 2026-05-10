@@ -1,6 +1,10 @@
 package plugins.extensions.delegates
 
+import common.androidTestImplementation
+import common.library
+import common.libs
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.dependencies
 import kotlin.reflect.KProperty
 
 internal class InstrumentedTestDelegate(private val project: Project) {
@@ -16,9 +20,18 @@ internal class InstrumentedTestDelegate(private val project: Project) {
         set = true
         enabled = value
         if (value) {
-            val subprojectTasks = project.tasks // Don't move this inside the lambda, or it'll break
-            project.rootProject.tasks.named("instrumentedTestAllCi") {
-                dependsOn(subprojectTasks.matching { it.name == "ciDeviceDebugAndroidTest" })
+            with(project) {
+                val subprojectTasks = project.tasks // Don't move this inside the lambda, or it'll break
+                project.rootProject.tasks.named("instrumentedTestAllCi") {
+                    dependsOn(subprojectTasks.matching { it.name == "ciDeviceDebugAndroidTest" })
+                }
+
+                dependencies {
+                    androidTestImplementation(libs.library("androidx-junit"))
+                    androidTestImplementation(libs.library("androidx-espresso-core"))
+                    val bom = platform(libs.library("androidx-compose-bom"))
+                    androidTestImplementation(bom)
+                }
             }
         }
     }

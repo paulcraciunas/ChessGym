@@ -2,7 +2,6 @@ package plugins.android
 
 import com.android.build.api.dsl.LibraryExtension
 import com.android.build.api.variant.LibraryAndroidComponentsExtension
-import common.androidTestImplementation
 import common.bundle
 import common.configureJava
 import common.configureKotlin
@@ -82,14 +81,6 @@ class AndroidConventionPlugin : ConventionPlugin() {
             testImplementationBundle(libs.bundle("unit-tests"))
             testImplementation(libs.library("kotlinx-coroutines-test"))
             testRuntimeOnly(libs.library("junit-platform-launcher"))
-            if (configuration.instrumentedTests) {
-                androidTestImplementation(libs.library("androidx-junit"))
-                androidTestImplementation(libs.library("androidx-espresso-core"))
-                if (configuration.compose) {
-                    val bom = platform(libs.library("androidx-compose-bom"))
-                    androidTestImplementation(bom)
-                }
-            }
         }
         tasks.withType<Test> {
             useJUnitPlatform()
