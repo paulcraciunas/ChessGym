@@ -26,7 +26,6 @@ open class AndroidConventionExtension(project: Project) : BaseAndroidExtension(p
         buildTypes {
             release {
                 proguardFiles(file)
-                Unit
             }
         }
     }

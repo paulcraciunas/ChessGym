@@ -5,7 +5,6 @@ package plugins.android
 import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.LibraryExtension
 import com.android.build.api.dsl.ManagedVirtualDevice
-import common.androidTestImplementation
 import common.debugImplementation
 import common.implementation
 import common.ksp
@@ -32,8 +31,6 @@ internal fun DependencyHandlerDelegate.includeCompose(libs: VersionCatalog) {
 
     debugImplementation(libs.library("androidx-ui-tooling"))
     debugImplementation(libs.library("androidx-ui-test-manifest"))
-
-    androidTestImplementation(bom)
 }
 
 internal fun DependencyHandlerDelegate.includeDi(libs: VersionCatalog) {

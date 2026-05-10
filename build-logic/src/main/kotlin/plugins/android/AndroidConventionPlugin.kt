@@ -82,8 +82,14 @@ class AndroidConventionPlugin : ConventionPlugin() {
             testImplementationBundle(libs.bundle("unit-tests"))
             testImplementation(libs.library("kotlinx-coroutines-test"))
             testRuntimeOnly(libs.library("junit-platform-launcher"))
-            androidTestImplementation(libs.library("androidx-junit"))
-            androidTestImplementation(libs.library("androidx-espresso-core"))
+            if (configuration.instrumentedTests) {
+                androidTestImplementation(libs.library("androidx-junit"))
+                androidTestImplementation(libs.library("androidx-espresso-core"))
+                if (configuration.compose) {
+                    val bom = platform(libs.library("androidx-compose-bom"))
+                    androidTestImplementation(bom)
+                }
+            }
         }
         tasks.withType<Test> {
             useJUnitPlatform()

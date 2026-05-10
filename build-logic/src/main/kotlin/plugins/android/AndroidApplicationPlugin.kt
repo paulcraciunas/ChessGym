@@ -106,6 +106,8 @@ class AndroidApplicationPlugin : ConventionPlugin() {
             testRuntimeOnly(libs.library("junit-platform-launcher"))
             androidTestImplementation(libs.library("androidx-junit"))
             androidTestImplementation(libs.library("androidx-espresso-core"))
+            val bom = platform(libs.library("androidx-compose-bom"))
+            androidTestImplementation(bom)
         }
         tasks.withType<Test> {
             useJUnitPlatform()
