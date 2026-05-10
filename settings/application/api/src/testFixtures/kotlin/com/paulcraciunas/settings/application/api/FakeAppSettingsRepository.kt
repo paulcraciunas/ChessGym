@@ -2,7 +2,6 @@ package com.paulcraciunas.settings.application.api
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 
 /**
  * Fake implementation of AppSettingsRepository for testing purposes.
@@ -27,7 +26,7 @@ class FakeAppSettingsRepository : AppSettingsRepository {
         )
     )
 
-    override val appSettings: Flow<AppSettings> = _appSettings.asStateFlow()
+    override val appSettings: Flow<AppSettings> = _appSettings
 
     override suspend fun updatePuzzlesDownloaded(downloaded: Boolean) {
         _appSettings.value = _appSettings.value.copy(puzzlesDownloaded = downloaded)
@@ -97,23 +96,23 @@ class FakeAppSettingsRepository : AppSettingsRepository {
 
     companion object {
         fun default() = FakeAppSettingsRepository().apply {
-            setAppSettings(
-                AppSettings(
-                    puzzlesDownloaded = true,
-                    totalPuzzleCount = 1000,
-                    maxPuzzleRating = 2500,
-                    minPuzzleRating = 400,
-                    playSoundOnMove = true,
-                    preferredTheme = AppSettings.Theme.Wood,
-                    lightMode = AppSettings.LightMode.System,
-                    autoPromote = true,
-                    showBorders = true,
-                    enableVibrations = true,
-                    highlightLegalMoves = true,
-                    enableAnimations = true,
-                    crashReportingConsent = false
-                )
-            )
+            setAppSettings(defaultSettings())
         }
+
+        fun defaultSettings(): AppSettings = AppSettings(
+            puzzlesDownloaded = true,
+            totalPuzzleCount = 1000,
+            maxPuzzleRating = 2500,
+            minPuzzleRating = 400,
+            playSoundOnMove = true,
+            preferredTheme = AppSettings.Theme.Wood,
+            lightMode = AppSettings.LightMode.System,
+            autoPromote = true,
+            showBorders = true,
+            enableVibrations = true,
+            highlightLegalMoves = true,
+            enableAnimations = true,
+            crashReportingConsent = false
+        )
     }
 }

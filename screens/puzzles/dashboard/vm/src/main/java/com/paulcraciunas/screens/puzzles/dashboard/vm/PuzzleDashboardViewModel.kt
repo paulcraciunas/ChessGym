@@ -4,32 +4,30 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.paulcraciunas.user.api.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
 class PuzzleDashboardViewModel @Inject constructor(
-    private val userRepository: UserRepository
+    userRepository: UserRepository,
 ) : ViewModel() {
-
-    private val _uiState = MutableStateFlow(PuzzleDashboardUiState())
-    val uiState: StateFlow<PuzzleDashboardUiState> = _uiState.asStateFlow()
-
-    init {
-        viewModelScope.launch {
-            userRepository.userUpdates().collect { user ->
-                _uiState.value = _uiState.value.copy(
-                    userRating = user.ratings.current,
-                    failedPuzzlesCount = user.failedPuzzles.size,
-                    currentStreakCount = user.ratings.puzzleStreak.currentCount,
-                    isLoading = false
-                )
-            }
+    val uiState: StateFlow<PuzzleDashboardUiState> = userRepository.userUpdates()
+        .map { user ->
+            PuzzleDashboardUiState(
+                userRating = user.ratings.current,
+                failedPuzzlesCount = user.failedPuzzles.size,
+                currentStreakCount = user.ratings.puzzleStreak.currentCount,
+                isLoading = false
+            )
         }
-    }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = PuzzleDashboardUiState()
+        )
 
     fun onPuzzleModeSelected(mode: PuzzleMode, onNavigate: (PuzzleMode) -> Unit) {
         // For now, just trigger navigation

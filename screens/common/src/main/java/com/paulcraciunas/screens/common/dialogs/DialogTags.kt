@@ -11,6 +11,18 @@ object AbandonConfirmationDialogTags {
     const val DISMISS = "abandon_confirmation_dismiss"
 }
 
+object SignOutDialogTags {
+    const val DIALOG = "sign_out_confirmation_dialog"
+    const val CONFIRM = "sign_out_confirmation_confirm"
+    const val DISMISS = "sign_out_confirmation_dismiss"
+}
+
+object DeleteAccountDialogTags {
+    const val DIALOG = "delete_account_confirmation_dialog"
+    const val CONFIRM = "delete_account_confirmation_confirm"
+    const val DISMISS = "delete_account_confirmation_dismiss"
+}
+
 object PromotionDialogTags {
     const val DIALOG = "promotion_dialog"
     private const val CHOICE_PREFIX = "promotion_choice_"

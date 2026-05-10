@@ -5,7 +5,11 @@ import com.paulcraciunas.user.api.User
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -43,7 +47,8 @@ internal class PuzzleDashboardViewModelTest {
 
         // When
         underTest = PuzzleDashboardViewModel(userRepository)
-        testDispatcher.scheduler.advanceUntilIdle()
+        observeUiState()
+        advanceUntilIdle()
 
         // Then
         val uiState = underTest.uiState.value
@@ -102,7 +107,8 @@ internal class PuzzleDashboardViewModelTest {
 
         // When
         underTest = PuzzleDashboardViewModel(userRepository)
-        testDispatcher.scheduler.advanceUntilIdle()
+        observeUiState()
+        advanceUntilIdle()
 
         // Then
         val uiState = underTest.uiState.value
@@ -122,7 +128,8 @@ internal class PuzzleDashboardViewModelTest {
 
         // When
         underTest = PuzzleDashboardViewModel(userRepository)
-        testDispatcher.scheduler.advanceUntilIdle()
+        observeUiState()
+        advanceUntilIdle()
 
         // Then
         val uiState = underTest.uiState.value
@@ -133,6 +140,13 @@ internal class PuzzleDashboardViewModelTest {
         val user = User()
         userRepository.local.saveUser(user)
         underTest = PuzzleDashboardViewModel(userRepository)
-        testDispatcher.scheduler.advanceUntilIdle()
+        observeUiState()
+        advanceUntilIdle()
+    }
+
+    private fun TestScope.observeUiState() {
+        backgroundScope.launch(UnconfinedTestDispatcher(testDispatcher.scheduler)) {
+            underTest.uiState.collect {}
+        }
     }
 }

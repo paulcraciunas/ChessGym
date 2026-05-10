@@ -5,6 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import com.paulcraciunas.chessgym.LocalAppSettings
 import com.paulcraciunas.chessgym.navigation.Screen
 import com.paulcraciunas.screens.boardvis.dashboard.ui.BoardVisDashboardScreen
 import com.paulcraciunas.screens.boardvis.dashboard.vm.BoardVisDashboardViewModel
@@ -40,20 +41,16 @@ internal fun BoardVisDashboard(
 }
 
 @Composable
-internal fun FindTheSquare(
-    tabNavController: NavHostController,
-    showBorders: Boolean,
-    enableVibrations: Boolean,
-    enableAnimations: Boolean,
-) {
+internal fun FindTheSquare(tabNavController: NavHostController) {
+    val settings = LocalAppSettings.current
     val vm: FindTheSquareViewModel = hiltViewModel()
     val findSquareState by vm.uiState.collectAsStateWithLifecycle()
 
     FindTheSquareScreen(
         uiState = findSquareState,
-        showBorders = showBorders,
-        enableVibrations = enableVibrations,
-        enableAnimations = enableAnimations,
+        showBorders = settings.showBorders,
+        enableVibrations = settings.enableVibrations,
+        enableAnimations = settings.enableAnimations,
         onNavigateBack = {
             tabNavController.popBackStack(Screen.BoardVisualization, inclusive = false)
         },
@@ -62,20 +59,16 @@ internal fun FindTheSquare(
 }
 
 @Composable
-internal fun MoveThePiece(
-    tabNavController: NavHostController,
-    showBorders: Boolean,
-    highlightLegalMoves: Boolean,
-    enableAnimations: Boolean,
-) {
+internal fun MoveThePiece(tabNavController: NavHostController) {
+    val settings = LocalAppSettings.current
     val vm: MoveThePieceViewModel = hiltViewModel()
     val moveThePieceState by vm.uiState.collectAsStateWithLifecycle()
 
     MoveThePieceScreen(
         uiState = moveThePieceState,
-        showBorders = showBorders,
-        highlightLegalMoves = highlightLegalMoves,
-        enableAnimations = enableAnimations,
+        showBorders = settings.showBorders,
+        highlightLegalMoves = settings.highlightLegalMoves,
+        enableAnimations = settings.enableAnimations,
         onNavigateBack = {
             tabNavController.popBackStack(Screen.BoardVisualization, inclusive = false)
         },

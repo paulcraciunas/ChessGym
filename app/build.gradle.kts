@@ -132,8 +132,11 @@ dependencies {
 
     // Unit Testing
     testImplementation(project(":domain:api"))
+    testImplementation(project(":domain:impl"))
     testImplementation(project(":user:api"))
     testImplementation(testFixtures(project(":user:api")))
+    testImplementation(testFixtures(project(":settings:application:api")))
+    testImplementation(testFixtures(project(":global:device:api")))
 
     // UI Testing
     androidTestImplementation(libs.androidx.ui.test.junit4)

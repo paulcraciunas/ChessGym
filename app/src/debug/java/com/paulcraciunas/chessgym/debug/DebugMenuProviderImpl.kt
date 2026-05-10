@@ -22,6 +22,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import com.paulcraciunas.chessgym.LocalAppSettings
 import com.paulcraciunas.chessgym.animations.enter
 import com.paulcraciunas.chessgym.animations.exit
 import com.paulcraciunas.domain.api.achievements.Achievement
@@ -97,23 +98,19 @@ class DebugMenuProviderImpl @Inject constructor(
         )
     }
 
-    override fun NavGraphBuilder.registerDebugScreens(
-        navController: NavHostController,
-        showBorders: Boolean,
-        highlightLegalMoves: Boolean,
-        enableAnimations: Boolean,
-    ) {
+    override fun NavGraphBuilder.registerDebugScreens(navController: NavHostController) {
         composable<DebugScreen.LoadPuzzle>(
             enterTransition = { enter() },
             exitTransition = { exit() },
         ) {
+            val settings = LocalAppSettings.current
             val vm: DebugPuzzleViewModel = hiltViewModel()
             val uiState by vm.uiState.collectAsStateWithLifecycle()
             DebugPuzzleScreen(
                 uiState = uiState,
-                showBorders = showBorders,
-                highlightLegalMoves = highlightLegalMoves,
-                enableAnimations = enableAnimations,
+                showBorders = settings.showBorders,
+                highlightLegalMoves = settings.highlightLegalMoves,
+                enableAnimations = settings.enableAnimations,
                 onNavigateBack = { navController.popBackStack() },
                 onLoadPuzzle = vm::loadPuzzle,
                 onSquareClicked = vm::onSquareClicked,

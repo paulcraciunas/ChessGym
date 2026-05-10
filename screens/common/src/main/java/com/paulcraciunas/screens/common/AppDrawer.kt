@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ExitToApp
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Settings
@@ -32,10 +34,13 @@ import com.paulcraciunas.screens.common.theme.ChessGymTheme
 @Composable
 fun AppDrawer(
     drawerState: DrawerState,
+    isSignedIn: Boolean,
     onSignIn: () -> Unit,
+    onSignOut: () -> Unit,
     onHome: () -> Unit,
     onSettings: () -> Unit,
     onAbout: () -> Unit,
+    onDeleteAccount: () -> Unit,
     closeDrawer: () -> Unit,
     modifier: Modifier = Modifier,
     trailingContent: @Composable ColumnScope.() -> Unit = {},
@@ -50,17 +55,37 @@ fun AppDrawer(
                 .verticalScroll(rememberScrollState())
         ) {
             Spacer(Modifier.height(12.dp))
-            NavigationDrawerItem(
-                label = {
-                    Text(
-                        text = stringResource(R.string.nav_drawer_sign_in),
-                        modifier = Modifier.padding(16.dp),
-                        style = MaterialTheme.typography.titleLarge,
-                    )
-                },
-                selected = false,
-                onClick = { onSignIn(); closeDrawer() },
-            )
+            if (isSignedIn) {
+                NavigationDrawerItem(
+                    label = {
+                        Text(
+                            text = stringResource(R.string.nav_drawer_sign_out),
+                            modifier = Modifier.padding(16.dp),
+                            style = MaterialTheme.typography.titleLarge,
+                        )
+                    },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Outlined.ExitToApp,
+                            contentDescription = null,
+                        )
+                    },
+                    selected = false,
+                    onClick = { onSignOut(); closeDrawer() },
+                )
+            } else {
+                NavigationDrawerItem(
+                    label = {
+                        Text(
+                            text = stringResource(R.string.nav_drawer_sign_in),
+                            modifier = Modifier.padding(16.dp),
+                            style = MaterialTheme.typography.titleLarge,
+                        )
+                    },
+                    selected = false,
+                    onClick = { onSignIn(); closeDrawer() },
+                )
+            }
             HorizontalDivider()
             Text(
                 text = stringResource(R.string.nav_drawer_general),
@@ -99,24 +124,66 @@ fun AppDrawer(
                 icon = { Icon(imageVector = Icons.Outlined.Info, contentDescription = null) },
                 onClick = { onAbout(); closeDrawer() },
             )
+            if (isSignedIn) {
+                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                NavigationDrawerItem(
+                    label = {
+                        Text(
+                            text = stringResource(R.string.nav_drawer_delete_account),
+                            color = MaterialTheme.colorScheme.error,
+                        )
+                    },
+                    selected = false,
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Delete,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.error,
+                        )
+                    },
+                    onClick = { onDeleteAccount(); closeDrawer() },
+                )
+            }
             trailingContent()
             Spacer(Modifier.height(12.dp))
         }
     }
 }
 
-@Preview("Drawer contents")
-@Preview("Drawer contents (dark)", uiMode = UI_MODE_NIGHT_YES)
+@Preview("Drawer - Signed out")
+@Preview("Drawer - Signed out (dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
-fun PreviewAppDrawer() {
+fun PreviewAppDrawerSignedOut() {
     ChessGymTheme {
         AppDrawer(
             drawerState = rememberDrawerState(initialValue = DrawerValue.Open),
+            isSignedIn = false,
             onSignIn = {},
+            onSignOut = {},
             onHome = {},
             onSettings = {},
             onAbout = {},
-            closeDrawer = {}
+            onDeleteAccount = {},
+            closeDrawer = {},
+        )
+    }
+}
+
+@Preview("Drawer - Signed in")
+@Preview("Drawer - Signed in (dark)", uiMode = UI_MODE_NIGHT_YES)
+@Composable
+fun PreviewAppDrawerSignedIn() {
+    ChessGymTheme {
+        AppDrawer(
+            drawerState = rememberDrawerState(initialValue = DrawerValue.Open),
+            isSignedIn = true,
+            onSignIn = {},
+            onSignOut = {},
+            onHome = {},
+            onSettings = {},
+            onAbout = {},
+            onDeleteAccount = {},
+            closeDrawer = {},
         )
     }
 }

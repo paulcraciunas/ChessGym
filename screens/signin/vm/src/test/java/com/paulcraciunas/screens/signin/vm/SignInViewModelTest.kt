@@ -1,6 +1,7 @@
 package com.paulcraciunas.screens.signin.vm
 
 import com.paulcraciunas.domain.impl.auth.AuthenticateUseCaseImpl
+import com.paulcraciunas.user.api.AuthException
 import com.paulcraciunas.user.api.FakeAuthService
 import com.paulcraciunas.user.api.FakeUserRepository
 import com.paulcraciunas.user.api.UserDefaults
@@ -63,6 +64,17 @@ internal class SignInViewModelTest {
 
             assertEquals(
                 SignInUiState.Error(AuthError.GOOGLE_SIGN_IN_FAILED),
+                underTest.uiState.value,
+            )
+        }
+
+        @Test
+        fun `GIVEN no credentials WHEN onGoogleSignIn THEN state shows no google accounts error`() = runTest {
+            underTest.onGoogleSignIn { throw AuthException.NoCredentials() }
+            advanceUntilIdle()
+
+            assertEquals(
+                SignInUiState.Error(AuthError.NO_GOOGLE_ACCOUNTS),
                 underTest.uiState.value,
             )
         }
