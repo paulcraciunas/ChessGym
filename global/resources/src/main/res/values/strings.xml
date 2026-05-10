@@ -35,6 +35,7 @@
     <string name="delete_account_dialog_confirm">Delete</string>
     <string name="delete_account_error_no_network">Cannot delete account without network connection.</string>
     <string name="delete_account_error_failed">Failed to delete account. Please try again.</string>
+    <string name="sign_out_error_failed">Failed to sign out of your account. Please try again.</string>
     <string name="dialog_ok">OK</string>
     <string name="dialog_cancel">Cancel</string>
     <!-- endregion -->
