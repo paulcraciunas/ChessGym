@@ -18,6 +18,7 @@ internal fun AuthError.toMessage(context: Context): String =
             AuthError.EMPTY_FIELDS -> GlobalR.string.auth_error_empty_fields
             AuthError.INVALID_EMAIL -> GlobalR.string.auth_error_invalid_email
             AuthError.PASSWORD_TOO_SHORT -> GlobalR.string.auth_error_password_too_short
+            AuthError.NO_GOOGLE_ACCOUNTS -> GlobalR.string.auth_error_no_google_accounts
             AuthError.SESSION_EXPIRED -> GlobalR.string.auth_error_session_expired
             AuthError.ACCOUNT_DISABLED -> GlobalR.string.auth_error_account_disabled
             AuthError.SERVER_ERROR -> GlobalR.string.auth_error_server

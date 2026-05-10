@@ -39,24 +39,24 @@ class SignInViewModel @Inject constructor(
     }
 
     fun clearError() {
-        _uiState.value = SignInUiState.Idle
+        _uiState.update { SignInUiState.Idle }
     }
 
     private fun authenticate(credentials: Credentials, fallbackError: AuthError) {
         viewModelScope.launch {
-            _uiState.value = SignInUiState.Loading
+            _uiState.update { SignInUiState.Loading }
             try {
                 authenticateUseCase(credentials)
-                _uiState.value = SignInUiState.Success
+                _uiState.update { SignInUiState.Success }
             } catch (e: AuthException) {
                 Timber.w(e, "Authentication failed")
-                _uiState.value = SignInUiState.Error(e.toAuthError())
+                _uiState.update { SignInUiState.Error(e.toAuthError()) }
             } catch (e: UserApiException) {
                 Timber.w(e, "User API failure")
-                _uiState.value = SignInUiState.Error(e.toAuthError())
+                _uiState.update { SignInUiState.Error(e.toAuthError()) }
             } catch (e: Exception) {
                 Timber.w(e, "Unexpected authentication failure")
-                _uiState.value = SignInUiState.Error(fallbackError)
+                _uiState.update { SignInUiState.Error(fallbackError) }
             }
         }
     }
@@ -94,7 +94,7 @@ private fun AuthException.toAuthError(): AuthError = when (this) {
     is AuthException.WeakPassword -> AuthError.WEAK_PASSWORD
     is AuthException.NetworkError -> AuthError.NETWORK_ERROR
     is AuthException.Unknown -> AuthError.SIGN_IN_FAILED
-    is AuthException.NoCredentials -> AuthError.SIGN_IN_FAILED
+    is AuthException.NoCredentials -> AuthError.NO_GOOGLE_ACCOUNTS
 }
 
 private fun UserApiException.toAuthError(): AuthError = when (this.statusCode) {
