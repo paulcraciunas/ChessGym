@@ -5,7 +5,6 @@ package plugins.android
 import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.LibraryExtension
 import com.android.build.api.dsl.ManagedVirtualDevice
-import common.androidTestImplementation
 import common.debugImplementation
 import common.implementation
 import common.ksp
@@ -25,14 +24,13 @@ internal fun DependencyHandlerDelegate.includeCompose(libs: VersionCatalog) {
     implementation(libs.library("androidx-activity-compose"))
     implementation(libs.library("material"))
     implementation(libs.library("androidx-material3"))
+    implementation(libs.library("androidx-compose-material-icons-core"))
     implementation(libs.library("androidx-ui"))
 
     implementation(libs.library("androidx-ui-tooling-preview"))
 
     debugImplementation(libs.library("androidx-ui-tooling"))
     debugImplementation(libs.library("androidx-ui-test-manifest"))
-
-    androidTestImplementation(bom)
 }
 
 internal fun DependencyHandlerDelegate.includeDi(libs: VersionCatalog) {
@@ -70,4 +68,5 @@ private fun ManagedVirtualDevice.configureCiDevice() {
     device = CI_DEVICE_PROFILE
     apiLevel = CI_DEVICE_API_LEVEL
     systemImageSource = CI_DEVICE_IMAGE_SOURCE
+    require64Bit = true
 }

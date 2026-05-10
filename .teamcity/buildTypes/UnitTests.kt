@@ -26,8 +26,7 @@ object UnitTests : BuildType({
     steps {
         gradle {
             name = "Run Unit Tests"
-            // Removed 'clean' to save time; --no-build-cache handles fresh execution
-            tasks = "unitTestAllDebug"
+            tasks = "unitTestAll"
             useGradleWrapper = true
             // --no-build-cache: Forces tests to run even if they were successful in a previous build
             // --continue: Runs all tests even if one module fails

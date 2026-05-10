@@ -4,8 +4,6 @@ plugins {
 
 androidLibrary {
     namespace = "com.paulcraciunas.screens.puzzles.rush.ui"
-    consumerProguardFile("consumer-rules.pro")
-    proguardFile("proguard-rules.pro")
     compose = true
 }
 

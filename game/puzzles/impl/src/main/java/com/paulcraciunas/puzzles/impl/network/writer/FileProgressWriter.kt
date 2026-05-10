@@ -9,7 +9,7 @@ import java.io.InputStream
 import javax.inject.Inject
 
 class FileProgressWriter @Inject constructor(
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+    @param:IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     private val progressReporter: ProgressReporter
 ) : FileWriter {
     private val buffer = ByteArray(DEFAULT_BUFFER_SIZE)

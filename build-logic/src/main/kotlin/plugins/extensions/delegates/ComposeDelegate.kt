@@ -2,7 +2,6 @@ package plugins.extensions.delegates
 
 import common.libs
 import common.plugin
-import common.version
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
 import plugins.android.includeCompose
@@ -28,9 +27,6 @@ internal class ComposeDelegate(private val project: Project) {
                 android {
                     buildFeatures {
                         compose = true
-                    }
-                    composeOptions {
-                        kotlinCompilerExtensionVersion = libs.version("compose-compiler")
                     }
                 }
 

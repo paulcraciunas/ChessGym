@@ -4,8 +4,6 @@ plugins {
 
 androidLibrary {
     namespace = "com.paulcraciunas.notifications"
-    consumerProguardFile("consumer-rules.pro")
-    proguardFile("proguard-rules.pro")
     di = true
 }
 

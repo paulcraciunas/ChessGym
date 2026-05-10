@@ -1,7 +1,7 @@
 package plugins.android
 
 import com.android.build.api.dsl.LibraryExtension
-import common.androidTestImplementation
+import com.android.build.api.variant.LibraryAndroidComponentsExtension
 import common.bundle
 import common.configureJava
 import common.configureKotlin
@@ -33,13 +33,13 @@ class AndroidConventionPlugin : ConventionPlugin() {
             configureAndroid(extension = extensions.getByType<LibraryExtension>())
             configureDependencies()
             configureTests()
+            disableAndroidTestByDefault()
         }
     }
 
     private fun Project.configurePlugins() {
         with(pluginManager) {
             apply(libs.plugin("android-library"))
-            apply(libs.plugin("jetbrains-kotlin-android"))
         }
     }
 
@@ -81,11 +81,17 @@ class AndroidConventionPlugin : ConventionPlugin() {
             testImplementationBundle(libs.bundle("unit-tests"))
             testImplementation(libs.library("kotlinx-coroutines-test"))
             testRuntimeOnly(libs.library("junit-platform-launcher"))
-            androidTestImplementation(libs.library("androidx-junit"))
-            androidTestImplementation(libs.library("androidx-espresso-core"))
         }
         tasks.withType<Test> {
             useJUnitPlatform()
+        }
+    }
+
+    private fun Project.disableAndroidTestByDefault() {
+        extensions.getByType<LibraryAndroidComponentsExtension>().beforeVariants { variantBuilder ->
+            if (!configuration.instrumentedTests) {
+                variantBuilder.androidTest.enable = false
+            }
         }
     }
 }

@@ -4,8 +4,6 @@ plugins {
 
 androidLibrary {
     namespace = "com.paulcraciunas.settings.application.impl"
-    consumerProguardFile("consumer-rules.pro")
-    proguardFile("proguard-rules.pro")
     di = true
 }
 
