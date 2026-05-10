@@ -4,8 +4,12 @@ import com.paulcraciunas.settings.application.api.AppSettings
 import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestDispatcher
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -249,8 +253,15 @@ internal class SettingsViewModelTest {
         }
     }
 
-    private fun createViewModel() {
+    private fun TestScope.createViewModel() {
         underTest = SettingsViewModel(appSettingsRepository)
-        testDispatcher.scheduler.advanceUntilIdle()
+        observeUiState()
+        advanceUntilIdle()
+    }
+
+    private fun TestScope.observeUiState() {
+        backgroundScope.launch(UnconfinedTestDispatcher(testDispatcher.scheduler)) {
+            underTest.uiState.collect {}
+        }
     }
 }

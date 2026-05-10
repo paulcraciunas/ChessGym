@@ -5,9 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.paulcraciunas.settings.application.api.AppSettings
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -15,17 +16,13 @@ import javax.inject.Inject
 class SettingsViewModel @Inject constructor(
     private val appSettingsRepository: AppSettingsRepository,
 ) : ViewModel(), SettingsScreenInteractor {
-
-    private val _uiState = MutableStateFlow(SettingsUiState())
-    val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
-
-    init {
-        viewModelScope.launch {
-            appSettingsRepository.appSettings.collect { settings ->
-                _uiState.value = mapToUiState(settings)
-            }
-        }
-    }
+    val uiState: StateFlow<SettingsUiState> = appSettingsRepository.appSettings
+        .map { mapToUiState(it) }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = SettingsUiState()
+        )
 
     override fun onHapticFeedbackToggled(isEnabled: Boolean) = update { updateEnableVibrations(isEnabled) }
     override fun onAutoPromoteToggled(isEnabled: Boolean) = update { updateAutoPromote(isEnabled) }
