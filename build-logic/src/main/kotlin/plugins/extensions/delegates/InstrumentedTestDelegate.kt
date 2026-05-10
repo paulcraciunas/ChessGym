@@ -16,11 +16,9 @@ internal class InstrumentedTestDelegate(private val project: Project) {
         set = true
         enabled = value
         if (value) {
+            val subprojectTasks = project.tasks // Don't move this inside the lambda, or it'll break
             project.rootProject.tasks.named("instrumentedTestAllCi") {
-                // DO NOT DO this:
-                // dependsOn(project.tasks.named("ciDeviceDebugAndroidTest"))
-                // as project.tasks resolves to Task.project (the root project), not the current subproject
-                dependsOn("${project.path}:ciDeviceDebugAndroidTest")
+                dependsOn(subprojectTasks.matching { it.name == "ciDeviceDebugAndroidTest" })
             }
         }
     }
