@@ -1,8 +1,7 @@
 package com.paulcraciunas.chessgym.error_reporting
 
 import android.util.Log
-import com.google.firebase.crashlytics.ktx.crashlytics
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.paulcraciunas.chessgym.BuildConfig
 import timber.log.Timber
 
@@ -17,7 +16,7 @@ internal class CrashReportTree(
     override fun isLoggable(tag: String?, priority: Int): Boolean = priority >= minPriority
 
     override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
-        val crashlytics = Firebase.crashlytics
+        val crashlytics = FirebaseCrashlytics.getInstance()
         val finalTag = tag ?: DEFAULT_TAG
         val formattedMessage = "[$finalTag] $message"
 

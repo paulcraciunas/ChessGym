@@ -25,6 +25,7 @@ internal fun DependencyHandlerDelegate.includeCompose(libs: VersionCatalog) {
     implementation(libs.library("androidx-activity-compose"))
     implementation(libs.library("material"))
     implementation(libs.library("androidx-material3"))
+    implementation(libs.library("androidx-compose-material-icons-core"))
     implementation(libs.library("androidx-ui"))
 
     implementation(libs.library("androidx-ui-tooling-preview"))

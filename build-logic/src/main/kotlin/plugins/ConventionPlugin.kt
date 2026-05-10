@@ -13,8 +13,8 @@ abstract class ConventionPlugin : Plugin<Project> {
             override val version: Int = 17
         }
         override val android: Android = object : Android {
-            override val compileSdk: Int = 35
-            override val targetSdk: Int = 35
+            override val compileSdk: Int = 36
+            override val targetSdk: Int = 36
             override val minSdk: Int = 27
         }
         override val version: Version = object : Version {

@@ -3,8 +3,7 @@ package com.paulcraciunas.chessgym
 import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
-import com.google.firebase.crashlytics.ktx.crashlytics
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.paulcraciunas.chessgym.error_reporting.CrashReportTree
 import com.paulcraciunas.chessgym.error_reporting.GlobalExceptionHandler
 import com.paulcraciunas.global.device.api.usecases.GetNetworkState
@@ -52,7 +51,7 @@ class ChessGymApplication : Application(), Configuration.Provider {
         // Set handler immediately
         Thread.setDefaultUncaughtExceptionHandler(GlobalExceptionHandler())
         // Set static metadata immediately
-        Firebase.crashlytics.apply {
+        FirebaseCrashlytics.getInstance().apply {
             setCustomKey("app_version", BuildConfig.APP_VERSION)
             setCustomKey("build_number", BuildConfig.BUILD_NUMBER)
         }
@@ -68,8 +67,8 @@ class ChessGymApplication : Application(), Configuration.Provider {
             .collect { (settings, user) ->
                 withContext(mainDispatcher) {
                     val enabled = settings.crashReportingConsent && !BuildConfig.DEBUG
-                    Firebase.crashlytics.isCrashlyticsCollectionEnabled = enabled
-                    Firebase.crashlytics.setUserId(if (enabled) user.deviceId else "")
+                    FirebaseCrashlytics.getInstance().isCrashlyticsCollectionEnabled = enabled
+                    FirebaseCrashlytics.getInstance().setUserId(if (enabled) user.deviceId else "")
                 }
             }
         }
