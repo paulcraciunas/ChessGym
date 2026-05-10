@@ -11,14 +11,9 @@ plugins {
     alias(libs.plugins.firebase.crashlytics) apply false
 }
 
-tasks.register("unitTestAllDebug") {
+tasks.register("unitTestAll") {
     group = "verification"
-    description = "Runs debug unit tests for Android modules and all tests for JVM modules"
-}
-
-tasks.register("unitTestAllRelease") {
-    group = "verification"
-    description = "Runs release unit tests for Android modules and all tests for JVM modules"
+    description = "Runs unit tests for all Android and JVM modules"
 }
 
 tasks.register("lintAllDebug") {
@@ -33,11 +28,8 @@ tasks.register("instrumentedTestAllCi") {
 
 subprojects {
     plugins.withId("com.android.library") {
-        rootProject.tasks.named("unitTestAllDebug") {
+        rootProject.tasks.named("unitTestAll") {
             dependsOn(tasks.named("testDebugUnitTest"))
-        }
-        rootProject.tasks.named("unitTestAllRelease") {
-            dependsOn(tasks.named("testReleaseUnitTest"))
         }
         rootProject.tasks.named("lintAllDebug") {
             dependsOn(tasks.named("lintDebug"))
@@ -47,11 +39,8 @@ subprojects {
         }
     }
     plugins.withId("com.android.application") {
-        rootProject.tasks.named("unitTestAllDebug") {
-            dependsOn(tasks.named("testDebugUnitTest"))
-        }
-        rootProject.tasks.named("unitTestAllRelease") {
-            dependsOn(tasks.named("testReleaseUnitTest"))
+        rootProject.tasks.named("unitTestAll") {
+            dependsOn(tasks.named("testUitestUnitTest"))
         }
         rootProject.tasks.named("lintAllDebug") {
             dependsOn(tasks.named("lintDebug"))
@@ -61,10 +50,7 @@ subprojects {
         }
     }
     plugins.withId("org.jetbrains.kotlin.jvm") {
-        rootProject.tasks.named("unitTestAllDebug") {
-            dependsOn(tasks.named("test"))
-        }
-        rootProject.tasks.named("unitTestAllRelease") {
+        rootProject.tasks.named("unitTestAll") {
             dependsOn(tasks.named("test"))
         }
     }
