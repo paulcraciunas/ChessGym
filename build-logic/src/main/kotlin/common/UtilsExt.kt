@@ -6,7 +6,7 @@ import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.kotlin.dsl.configure
 import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
 
-internal inline fun <reified T> Project.extension(name: String): T =
+internal inline fun <reified T : Any> Project.extension(name: String): T =
     extensions.create(name, T::class.java)
 
 internal fun Project.configureJava(jvm: ProjectConfig.Jvm) {

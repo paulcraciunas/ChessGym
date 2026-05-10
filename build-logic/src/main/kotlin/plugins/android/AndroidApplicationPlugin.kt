@@ -15,7 +15,6 @@ import common.plugin
 import common.testImplementation
 import common.testImplementationBundle
 import common.testRuntimeOnly
-import common.version
 import org.gradle.api.Project
 import org.gradle.api.tasks.testing.Test
 import org.gradle.kotlin.dsl.dependencies
@@ -41,7 +40,6 @@ class AndroidApplicationPlugin : ConventionPlugin() {
     private fun Project.configurePlugins() {
         with(pluginManager) {
             apply(libs.plugin("android-application"))
-            apply(libs.plugin("jetbrains-kotlin-android"))
             apply(libs.plugin("jetbrains-kotlin-serialization"))
             apply(libs.plugin("compose-compiler"))
             apply(libs.plugin("google-hilt"))
@@ -79,9 +77,6 @@ class AndroidApplicationPlugin : ConventionPlugin() {
             }
             buildFeatures {
                 compose = true
-            }
-            composeOptions {
-                kotlinCompilerExtensionVersion = libs.version("compose-compiler")
             }
             packaging {
                 resources {

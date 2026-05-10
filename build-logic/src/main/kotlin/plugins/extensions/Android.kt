@@ -13,7 +13,7 @@ internal fun <T> Project.android(lambda: LibraryExtension.() -> T): T =
 internal fun <T> Project.app(lambda: ApplicationExtension.() -> T): T =
     with(extensions.getByType<ApplicationExtension>()) { return@with lambda() }
 
-internal inline fun <T> Project.commonAndroid(lambda: CommonExtension<*, *, *, *, *, *>.() -> T): T =
+internal inline fun <T> Project.commonAndroid(lambda: CommonExtension.() -> T): T =
     with(extensions.findByType<LibraryExtension>() ?: extensions.findByType<ApplicationExtension>()!!) {
         return@with lambda()
     }

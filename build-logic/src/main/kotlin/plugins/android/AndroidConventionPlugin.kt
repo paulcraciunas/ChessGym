@@ -39,7 +39,6 @@ class AndroidConventionPlugin : ConventionPlugin() {
     private fun Project.configurePlugins() {
         with(pluginManager) {
             apply(libs.plugin("android-library"))
-            apply(libs.plugin("jetbrains-kotlin-android"))
         }
     }
 

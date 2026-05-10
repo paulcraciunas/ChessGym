@@ -1,9 +1,7 @@
 [versions]
-agp = "8.10.1"
-gradle = "8.11.1"
-kotlin = "2.1.21"
-compose-compiler = "1.5.15"
-kotlin-ksp = "2.1.21-2.0.1"
+agp = "9.2.0"
+kotlin = "2.3.21"
+kotlin-ksp = "2.3.7"
 coreKtx = "1.16.0"
 core-splash = "1.0.1"
 androidx-navigation = "2.9.0"
@@ -20,13 +18,13 @@ activityCompose = "1.10.1"
 composeBom = "2025.05.01"
 junitJupiter = "5.12.2"
 room = "2.7.1"
-hilt = "2.56.2"
+hilt = "2.59.2"
 appcompat = "1.7.0"
 material = "1.12.0"
 zstd = "1.5.7-3"
 hiltCommon = "1.2.0"
 datastore = "1.1.7"
-lint = "31.10.1"
+lint = "32.2.0"
 timber = "5.0.1"
 firebaseBom = "33.15.0"
 firebaseCrashlytics = "3.0.3"
@@ -50,7 +48,7 @@ androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-co
 hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "hilt" }
 
 ## Gradle plugins
-android-tools-build-gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
+android-tools-build-gradle = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 google-ksp-gradle-plugin = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "kotlin-ksp" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 
@@ -129,9 +127,7 @@ androidx-hilt-navigation = { group = "androidx.hilt", name = "hilt-navigation-co
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-jetbrains-kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 google-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
