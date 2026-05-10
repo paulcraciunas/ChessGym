@@ -87,7 +87,7 @@ fun SignInScreen(
             GoogleSignInSection(
                 onGoogleSignIn = onGoogleSignIn,
                 isLoading = isLoading,
-                signInMode = !isSignUpMode
+                signInMode = !isSignUpMode,
             )
             EmailSignInForm(
                 email = email,

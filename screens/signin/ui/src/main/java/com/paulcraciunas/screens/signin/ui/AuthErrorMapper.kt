@@ -22,5 +22,5 @@ internal fun AuthError.toMessage(context: Context): String =
             AuthError.SESSION_EXPIRED -> GlobalR.string.auth_error_session_expired
             AuthError.ACCOUNT_DISABLED -> GlobalR.string.auth_error_account_disabled
             AuthError.SERVER_ERROR -> GlobalR.string.auth_error_server
-        }
+        },
     )

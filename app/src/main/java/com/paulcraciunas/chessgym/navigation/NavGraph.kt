@@ -3,10 +3,10 @@ package com.paulcraciunas.chessgym.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -27,7 +27,7 @@ import com.paulcraciunas.screens.loading.vm.LoadingViewModel
 @Composable
 fun NavGraph(
     modifier: Modifier = Modifier,
-    viewModel: NavGraphViewModel = hiltViewModel()
+    viewModel: NavGraphViewModel = hiltViewModel(),
 ) {
     val navController = rememberNavController()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -63,7 +63,7 @@ fun NavGraph(
                 onDownloadConfirmation = vm::onDownloadConfirmation,
                 onPermissionReceived = vm::onPermissionReceived,
                 onCrashConsentResponse = vm::onCrashConsentResponse,
-                uiState = loadingState
+                uiState = loadingState,
             )
         }
         composable<Screen.Main> {
@@ -78,10 +78,8 @@ fun NavGraph(
         composable<Screen.SignUp> {
             val vm: SignInViewModel = hiltViewModel()
             val signInState by vm.uiState.collectAsStateWithLifecycle()
+            val webClientId = stringResource(com.paulcraciunas.chessgym.R.string.default_web_client_id)
             val context = LocalContext.current
-            val webClientId = remember {
-                context.getString(com.paulcraciunas.chessgym.R.string.default_web_client_id)
-            }
             SignInScreen(
                 uiState = signInState,
                 onGoogleSignIn = { vm.onGoogleSignIn(GoogleTokenSource(webClientId, context)) },
