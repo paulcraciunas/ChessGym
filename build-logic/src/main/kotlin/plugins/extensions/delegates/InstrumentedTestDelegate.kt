@@ -17,7 +17,10 @@ internal class InstrumentedTestDelegate(private val project: Project) {
         enabled = value
         if (value) {
             project.rootProject.tasks.named("instrumentedTestAllCi") {
-                dependsOn(project.tasks.named("ciDeviceDebugAndroidTest"))
+                // DO NOT DO this:
+                // dependsOn(project.tasks.named("ciDeviceDebugAndroidTest"))
+                // as project.tasks resolves to Task.project (the root project), not the current subproject
+                dependsOn("${project.path}:ciDeviceDebugAndroidTest")
             }
         }
     }
