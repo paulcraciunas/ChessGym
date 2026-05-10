@@ -53,13 +53,13 @@ android {
     }
 
     sourceSets {
-        getByName("uitest") {
-            java.srcDirs("src/debug/java")
-            kotlin.srcDirs("src/debug/java")
+        named("uitest") {
+            java.directories.add("src/debug/java")
+            kotlin.directories.add("src/debug/java")
         }
-        getByName("androidTest") {
-            java.srcDirs("src/androidTest/java")
-            kotlin.srcDirs("src/androidTest/java")
+        named("androidTest") {
+            java.directories.add("src/androidTest/java")
+            kotlin.directories.add("src/androidTest/java")
         }
     }
 }
