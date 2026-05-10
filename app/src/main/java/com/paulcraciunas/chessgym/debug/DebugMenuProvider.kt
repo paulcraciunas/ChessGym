@@ -9,10 +9,5 @@ interface DebugMenuProvider {
     @Composable
     fun ColumnScope.DrawerContent(closeDrawer: () -> Unit, onNavigate: (Any) -> Unit)
 
-    fun NavGraphBuilder.registerDebugScreens(
-        navController: NavHostController,
-        showBorders: Boolean,
-        highlightLegalMoves: Boolean,
-        enableAnimations: Boolean,
-    )
+    fun NavGraphBuilder.registerDebugScreens(navController: NavHostController)
 }

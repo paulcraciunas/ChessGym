@@ -12,12 +12,7 @@ class NoOpDebugMenuProvider @Inject constructor() : DebugMenuProvider {
         // No debug content in release builds
     }
 
-    override fun NavGraphBuilder.registerDebugScreens(
-        navController: NavHostController,
-        showBorders: Boolean,
-        highlightLegalMoves: Boolean,
-        enableAnimations: Boolean,
-    ) {
+    override fun NavGraphBuilder.registerDebugScreens(navController: NavHostController) {
         // No debug screens in release builds
     }
 }
