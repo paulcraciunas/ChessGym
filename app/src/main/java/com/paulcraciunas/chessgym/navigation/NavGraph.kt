@@ -8,7 +8,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -59,7 +58,7 @@ fun NavGraph(
             val vm: LoadingViewModel = hiltViewModel()
             val loadingState by vm.uiState.collectAsStateWithLifecycle()
             LoadingScreen(
-                onComplete = { navController.navigateTo(Screen.Main) },
+                onComplete = { navController.navigateToTopLevel(Screen.Main) },
                 onDownload = vm::onDownload,
                 onDownloadConfirmation = vm::onDownloadConfirmation,
                 onPermissionReceived = vm::onPermissionReceived,
@@ -108,21 +107,5 @@ fun NavGraph(
                 onNavigateBack = navController::popBackStack,
             )
         }
-    }
-}
-
-fun NavHostController.navigateTo(screen: Screen) {
-    navigate(screen) {
-        // Pop up to the start destination of the graph to
-        // avoid building up a large stack of destinations
-        // on the back stack as users select items
-        popUpTo(graph.startDestinationId) {
-            saveState = true
-        }
-        // Avoid multiple copies of the same destination when
-        // reselecting the same item
-        launchSingleTop = true
-        // Restore state when reselecting a previously selected item
-        restoreState = true
     }
 }
