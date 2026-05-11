@@ -42,6 +42,7 @@ object InstrumentedTests : BuildType({
                 --continue 
                 --build-cache 
                 --parallel
+                -Pandroid.experimental.androidTest.numManagedDeviceShards=2
                 -Pandroid.testoptions.manageddevices.emulator.gpu=swiftshader_indirect
                 -Dorg.gradle.workers.max=4
                 -Dkotlin.incremental=true
