@@ -67,13 +67,10 @@ fun SectionHeader(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(top = Design.dimensions.spacing.xxxl, bottom = Design.dimensions.spacing.sm),
+            .padding(top = Design.dimensions.spacing.xl, bottom = Design.dimensions.spacing.sm),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Eyebrow(
-            text = title,
-            color = Design.colors.primary
-        )
+        SectionHeaderTitle(text = title)
         HairlineDivider(
             modifier = Modifier
                 .padding(horizontal = Design.dimensions.spacing.sm)

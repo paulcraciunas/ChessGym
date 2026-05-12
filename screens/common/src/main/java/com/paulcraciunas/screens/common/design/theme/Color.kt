@@ -60,6 +60,8 @@ data class ChessGymColors(
     val chipAccentInk: Color,
 
     val medallionDepth: Color,
+    val rate: Color,
+    val donate: Color,
 
     val isDark: Boolean,
 )

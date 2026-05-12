@@ -103,7 +103,8 @@ internal val WalnutTypography = Typography(
     bodyMedium = TextStyle(
         fontFamily = InterTight,
         fontWeight = FontWeight.Normal,
-        fontSize = 13.5.sp, lineHeight = 19.sp,
+        fontSize = 13.5.sp,
+        lineHeight = 19.sp,
     ),
     bodySmall = TextStyle(
         fontFamily = InterTight,
@@ -148,6 +149,19 @@ internal val WalnutTextStyles = DefaultTextStyles(
         fontSize = 10.5.sp,
         letterSpacing = 1.4.sp,
     ),
+    title = TextStyle(
+        fontFamily = InterTight,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 15.sp,
+        lineHeight = 22.sp,
+    ),
+    sectionHeader = TextStyle(
+        fontFamily = InterTight,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 13.5.sp,
+        lineHeight = 18.sp,
+        letterSpacing = 1.4.sp,
+    ),
     displayNumeric = TextStyle(
         fontFamily = InstrumentSerif,
         fontWeight = FontWeight.Normal,
@@ -166,5 +180,10 @@ internal val WalnutTextStyles = DefaultTextStyles(
         fontWeight = FontWeight.Bold,
         fontSize = 13.sp,
         letterSpacing = 1.sp,
+    ),
+    footer = TextStyle(
+        fontFamily = JetBrainsMono,
+        fontWeight = FontWeight.Bold,
+        fontSize = 15.sp,
     ),
 )

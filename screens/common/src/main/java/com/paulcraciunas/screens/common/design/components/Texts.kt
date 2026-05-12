@@ -13,7 +13,7 @@ import com.paulcraciunas.screens.common.design.theme.Design
  *   Eyebrow("Up Next", color = cg.accent)
  */
 @Composable
-fun Eyebrow(
+fun Title(
     text: String,
     modifier: Modifier = Modifier,
     color: Color? = null,
@@ -21,7 +21,20 @@ fun Eyebrow(
     Text(
         text = text.uppercase(),
         color = color ?: Design.colors.inkMuted,
-        style = Design.textStyles.eyebrow,
+        style = Design.typography.titleSmall,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun SectionHeaderTitle(
+    text: String,
+    modifier: Modifier = Modifier,
+) {
+    Text(
+        text = text.uppercase(),
+        color = Design.colors.primary,
+        style = Design.textStyles.sectionHeader,
         modifier = modifier,
     )
 }

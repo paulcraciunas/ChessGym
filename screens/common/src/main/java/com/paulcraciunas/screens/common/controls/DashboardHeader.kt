@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.global.resources.R
-import com.paulcraciunas.screens.common.design.components.Eyebrow
+import com.paulcraciunas.screens.common.design.components.Title
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
@@ -26,7 +26,7 @@ fun DashboardHeader(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.sm),
     ) {
-        Eyebrow(
+        Title(
             text = stringResource(eyebrowRes),
             color = Design.colors.primary,
         )

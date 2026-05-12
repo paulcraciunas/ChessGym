@@ -41,6 +41,8 @@ internal val WalnutLightColors = ChessGymColors(
     chipAccentInk = Color(0xFF7A4F1A),
 
     medallionDepth = Color(0xFF2A1A10),
+    rate = Color(0xFFAF8948),
+    donate = Color(0xFF8E3A28),
 
     isDark = false,
 )
@@ -83,6 +85,8 @@ internal val WalnutDarkColors = ChessGymColors(
     chipAccentInk = Color(0xFFE8B95F),
 
     medallionDepth = Color(0xFF0E0904),
+    rate = Color(0xFFE1BB6D),
+    donate = Color(0xFFCC7A65),
 
     isDark = true,
 )

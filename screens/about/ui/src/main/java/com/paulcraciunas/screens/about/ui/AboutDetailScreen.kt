@@ -6,10 +6,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -18,7 +16,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,12 +25,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.about.vm.AboutSection
 import com.paulcraciunas.screens.about.vm.LibraryInfo
 import com.paulcraciunas.screens.common.AppBar
 import com.paulcraciunas.screens.common.Footer
+import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
+import com.paulcraciunas.screens.common.design.components.SpacerSize
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -60,8 +59,8 @@ fun AboutDetailScreen(
             onEmailClicked = onEmailClicked,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
-                .background(MaterialTheme.colorScheme.background),
+                .padding(top = innerPadding.calculateTopPadding())
+                .background(Design.colors.primarySoft),
         )
     }
 }
@@ -76,7 +75,10 @@ private fun DetailContent(
     Column(
         modifier = modifier
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = 24.dp, vertical = 16.dp),
+            .padding(
+                horizontal = Design.dimensions.spacing.xgut,
+                vertical = Design.dimensions.spacing.xxl,
+            ),
     ) {
         when (section) {
             AboutSection.CREATOR -> CreatorContent()
@@ -86,9 +88,9 @@ private fun DetailContent(
             AboutSection.TERMS_OF_USE -> TermsOfUseContent()
             AboutSection.TERMS_AND_CONDITIONS -> TermsAndConditionsContent()
         }
-        Spacer(modifier = Modifier.height(48.dp))
+        ChessGymSpacer(size = SpacerSize.SECTION)
         Footer()
-        Spacer(modifier = Modifier.height(24.dp))
+        ChessGymSpacer(size = SpacerSize.HUGE)
     }
 }
 
@@ -106,7 +108,7 @@ private fun ContactContent(
 ) {
     Column(modifier = modifier) {
         DetailDescription(text = stringResource(R.string.about_contact_description))
-        Spacer(modifier = Modifier.height(16.dp))
+        ChessGymSpacer(size = SpacerSize.XXLARGE)
         onEmailClicked?.let {
             EmailRow(
                 email = stringResource(R.string.about_contact_email),
@@ -123,7 +125,7 @@ private fun FeedbackContent(
 ) {
     Column(modifier = modifier) {
         DetailDescription(text = stringResource(R.string.about_feedback_description))
-        Spacer(modifier = Modifier.height(16.dp))
+        ChessGymSpacer(size = SpacerSize.XXLARGE)
         onEmailClicked?.let {
             EmailRow(
                 email = stringResource(R.string.about_feedback_email),
@@ -140,7 +142,7 @@ private fun LibrariesContent(
 ) {
     Column(modifier = modifier) {
         DetailDescription(text = stringResource(R.string.about_libraries_description))
-        Spacer(modifier = Modifier.height(16.dp))
+        ChessGymSpacer(size = SpacerSize.XXLARGE)
         libraries.forEach { library ->
             LibraryRow(library = library)
         }
@@ -168,8 +170,8 @@ private fun DetailDescription(
 ) {
     Text(
         text = text,
-        style = MaterialTheme.typography.bodyLarge,
-        color = MaterialTheme.colorScheme.onSurface,
+        style = Design.typography.bodyLarge,
+        color = Design.colors.ink,
         modifier = modifier,
     )
 }
@@ -184,20 +186,20 @@ private fun EmailRow(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .clickable { onClick() }
-            .padding(vertical = 8.dp),
+            .padding(vertical = Design.dimensions.spacing.sm),
     ) {
         Icon(
             imageVector = Icons.Outlined.Email,
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(20.dp),
+            tint = Design.colors.primary,
+            modifier = Modifier.size(Design.dimensions.sizes.icon),
         )
         Text(
             text = email,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.primary,
+            style = Design.typography.bodyMedium,
+            color = Design.colors.primary,
             textDecoration = TextDecoration.Underline,
-            modifier = Modifier.padding(start = 8.dp),
+            modifier = Modifier.padding(start = Design.dimensions.spacing.sm),
         )
     }
 }
@@ -210,29 +212,29 @@ private fun LibraryRow(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 6.dp),
+            .padding(vertical = Design.dimensions.spacing.s),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = library.name,
-                style = MaterialTheme.typography.bodyMedium,
+                style = Design.typography.bodyMedium,
                 fontWeight = FontWeight.Medium,
             )
             if (library.url.isNotBlank()) {
                 Text(
                     text = library.url,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.primary,
+                    style = Design.typography.bodySmall,
+                    color = Design.colors.primary,
                     textDecoration = TextDecoration.Underline,
                 )
             }
         }
         Text(
             text = library.license,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            style = Design.typography.bodySmall,
+            color = Design.colors.inkSoft,
         )
     }
 }
