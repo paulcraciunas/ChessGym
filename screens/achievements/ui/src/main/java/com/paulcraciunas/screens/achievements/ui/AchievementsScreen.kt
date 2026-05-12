@@ -4,7 +4,9 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -47,6 +49,7 @@ fun AchievementsScreen(
                 scrollBehavior = scrollBehavior,
             )
         },
+        contentWindowInsets = WindowInsets.navigationBars,
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     ) { innerPadding ->
         when {
@@ -57,7 +60,7 @@ fun AchievementsScreen(
                     achievements = state.achievements,
                     interactions = interactions,
                     modifier = Modifier
-                        .padding(innerPadding)
+                        .padding(top = innerPadding.calculateTopPadding())
                         .fillMaxSize()
                         .background(MaterialTheme.colorScheme.background)
                 )

@@ -31,6 +31,7 @@ import com.paulcraciunas.screens.common.controls.FailedPuzzlesCard
 import com.paulcraciunas.screens.common.controls.PuzzleRushCard
 import com.paulcraciunas.screens.common.controls.PuzzleStreakCard
 import com.paulcraciunas.screens.common.controls.RatedPuzzleCard
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.puzzles.dashboard.vm.PuzzleDashboardUiState
@@ -44,7 +45,7 @@ fun PuzzleDashboardScreen(
     modifier: Modifier = Modifier,
     onDrawerToggle: () -> Unit = {},
 ) {
-    val bgColor = MaterialTheme.colorScheme.background
+    val bgColor = Design.colors.primarySoft
     Scaffold(
         topBar = {
             AppBar(
@@ -81,7 +82,7 @@ private fun DashboardContent(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(Design.colors.primarySoft)
     ) {
         item {
             DashboardHeader()

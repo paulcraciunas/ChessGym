@@ -1,6 +1,9 @@
 package com.paulcraciunas.chessgym
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.DrawerState
@@ -172,6 +175,7 @@ fun MainScreen(
                 ) {
                     Scaffold(
                         modifier = modifier,
+                        contentWindowInsets = WindowInsets(0, 0, 0, 0),
                         snackbarHost = { SnackbarHost(snackbarHostState) },
                         bottomBar = {
                             if (isTopLevelScreen) {
@@ -186,7 +190,9 @@ fun MainScreen(
                             navController = tabNavController,
                             startDestination = Screen.Home,
                             modifier = if (isTopLevelScreen) {
-                                Modifier.padding(bottom = innerPadding.calculateBottomPadding())
+                                Modifier
+                                    .padding(bottom = innerPadding.calculateBottomPadding())
+                                    .consumeWindowInsets(WindowInsets.navigationBars)
                             } else {
                                 Modifier
                             }
