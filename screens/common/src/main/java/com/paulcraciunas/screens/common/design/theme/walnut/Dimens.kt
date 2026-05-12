@@ -19,6 +19,7 @@ internal val WalnutDimensions = ChessGymDimensions(
         gut = 20.dp,
         xgut = 24.dp,
         section = 32.dp,
+        xsection = 48.dp,
     ),
     elevation = ChessGymDimensions.Elevation(
         none = 0.dp,

@@ -8,11 +8,10 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -20,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.AppBar
@@ -30,6 +28,9 @@ import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
 import com.paulcraciunas.screens.common.controls.PuzzleResultsGrid
 import com.paulcraciunas.screens.common.controls.TimerDisplay
+import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
+import com.paulcraciunas.screens.common.design.components.SpacerSize
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.dialogs.PromotionDialog
 import com.paulcraciunas.screens.common.model.PuzzleData
 import com.paulcraciunas.screens.common.model.PuzzleResult
@@ -63,7 +64,7 @@ fun PuzzleRushScreen(
                 actions = {
                     TimerDisplay(
                         seconds = timeRemainingSeconds,
-                        modifier = Modifier.padding(end = 16.dp)
+                        modifier = Modifier.padding(end = Design.dimensions.spacing.xxl)
                     )
                 }
             )
@@ -72,10 +73,14 @@ fun PuzzleRushScreen(
     ) { innerPadding ->
         when (uiState) {
             is PuzzleRushUiState.Loading -> {
-                LoadingContent(modifier = Modifier.fillMaxSize().padding(innerPadding))
+                LoadingContent(modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding))
             }
             is PuzzleRushUiState.Failed -> {
-                FailedContent(modifier = Modifier.fillMaxSize().padding(innerPadding))
+                FailedContent(modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding))
             }
             is PuzzleRushUiState.BoardState -> {
                 PuzzleRushContent(
@@ -84,7 +89,9 @@ fun PuzzleRushScreen(
                     highlightLegalMoves = highlightLegalMoves,
                     enableAnimations = enableAnimations,
                     interactions = interactions,
-                    modifier = Modifier.padding(innerPadding)
+                    modifier = Modifier
+                        .background(Design.colors.primarySoft)
+                        .padding(innerPadding)
                 )
             }
         }
@@ -124,9 +131,7 @@ private fun PuzzleRushContent(
                 modifier = Modifier.fillMaxWidth()
             )
         }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
+        ChessGymSpacer()
         // Controls section with animation
         AnimatedContent(
             targetState = uiState,
@@ -139,7 +144,7 @@ private fun PuzzleRushContent(
                 }
                 is PuzzleRushUiState.Playing -> {
                     // Empty space while playing - no controls needed
-                    Spacer(modifier = Modifier.height(48.dp))
+                    ChessGymSpacer(size = SpacerSize.SECTION)
                 }
                 is PuzzleRushUiState.Finished -> {
                     FinishedRushControls(
@@ -149,9 +154,7 @@ private fun PuzzleRushContent(
                 }
             }
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
+        ChessGymSpacer(size = SpacerSize.XXLARGE)
         // Results grid
         if (uiState.results.isNotEmpty()) {
             PuzzleResultsGrid(
@@ -159,7 +162,7 @@ private fun PuzzleRushContent(
                 onFailedPuzzleClicked = interactions::onAnalyzeFailedPuzzle,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
+                    .padding(horizontal = Design.dimensions.spacing.xxl)
             )
         }
 

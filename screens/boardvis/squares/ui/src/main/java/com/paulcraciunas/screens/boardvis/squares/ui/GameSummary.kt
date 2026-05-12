@@ -7,19 +7,18 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.controls.RefreshButton
+import com.paulcraciunas.screens.common.design.components.borderSoft
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
@@ -34,43 +33,37 @@ internal fun GameSummary(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
-            .border(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
-                shape = RoundedCornerShape(16.dp)
-            )
-            .background(MaterialTheme.colorScheme.surface)
-            .padding(24.dp)
+            .clip(Design.shapes.card)
+            .border(borderSoft(), Design.shapes.card)
+            .background(Design.colors.surface)
+            .padding(Design.dimensions.spacing.xgut)
             .testTag { FindTheSquareTags.GAME_SUMMARY },
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.lg)
     ) {
         Text(
             text = stringResource(R.string.boardvis_game_over),
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurface
+            style = Design.typography.headlineSmall,
+            color = Design.colors.ink
         )
 
         Text(
             text = stringResource(R.string.boardvis_final_score, score),
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onSurface
+            style = Design.typography.titleLarge,
+            color = Design.colors.ink
         )
 
         if (isNewHighScore) {
             Text(
                 text = stringResource(R.string.generic_new_high_score),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
+                style = Design.typography.titleMedium,
+                color = Design.colors.primary
             )
         } else {
             Text(
                 text = stringResource(R.string.boardvis_high_score, previousHighScore),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                style = Design.typography.bodyMedium,
+                color = Design.colors.inkSoft
             )
         }
 

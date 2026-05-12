@@ -6,15 +6,11 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,6 +31,10 @@ import com.paulcraciunas.screens.boardvis.pieces.vm.MoveThePieceUiState
 import com.paulcraciunas.screens.common.board.ChessPiece
 import com.paulcraciunas.screens.common.controls.PlayButton
 import com.paulcraciunas.screens.common.controls.RefreshButton
+import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
+import com.paulcraciunas.screens.common.design.components.SpacerSize
+import com.paulcraciunas.screens.common.design.components.borderSoft
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.extensions.alpha
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
@@ -50,7 +50,7 @@ internal fun MoveThePieceSetupControls(
     Column(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.xxl)
     ) {
         // Training mode toggle
         Row(
@@ -60,10 +60,10 @@ internal fun MoveThePieceSetupControls(
         ) {
             Text(
                 text = stringResource(R.string.boardvis_move_piece_training_mode),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface
+                style = Design.typography.titleMedium,
+                color = Design.colors.ink
             )
-            Spacer(modifier = Modifier.width(12.dp))
+            ChessGymSpacer(size = SpacerSize.LARGE)
             Switch(
                 checked = isTrainingMode,
                 onCheckedChange = onTrainingModeToggled
@@ -81,10 +81,10 @@ internal fun MoveThePieceSetupControls(
         // Rules text
         Text(
             text = stringResource(R.string.boardvis_move_piece_rules),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            style = Design.typography.bodyMedium,
+            color = Design.colors.inkSoft,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(horizontal = Design.dimensions.spacing.xxl)
         )
     }
 }
@@ -98,7 +98,7 @@ private fun PieceSelectionRow(
 ) {
     Row(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        horizontalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.lg),
         verticalAlignment = Alignment.CenterVertically
     ) {
         MoveThePieceUiState.GAME_PIECES.forEach { piece ->
@@ -121,16 +121,16 @@ private fun PieceSelectionButton(
     modifier: Modifier = Modifier,
 ) {
     val borderColor = when {
-        !enabled -> MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
-        isSelected -> MaterialTheme.colorScheme.primary
-        else -> MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+        !enabled -> Design.colors.borderSoft
+        isSelected -> Design.colors.primary
+        else -> Design.colors.borderSoft
     }
 
     IconButton(
         onClick = onClick,
         enabled = enabled,
         modifier = modifier
-            .size(56.dp)
+            .size(Design.dimensions.sizes.avatar)
             .clip(CircleShape)
             .background(Color.Black.copy(alpha = enabled.alpha))
             .border(
@@ -156,25 +156,22 @@ internal fun MoveThePiecePlayingControls(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(24.dp),
+            .padding(Design.dimensions.spacing.xgut),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.lg)
     ) {
-        // Moves remaining
         Text(
             text = stringResource(R.string.boardvis_move_piece_moves_remaining, movesRemaining),
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
+            style = Design.typography.titleLarge,
+            color = Design.colors.primary
         )
 
-        // Current score
         Text(
             text = stringResource(R.string.boardvis_move_piece_current_score, currentScore),
-            style = MaterialTheme.typography.titleMedium,
+            style = Design.typography.titleMedium,
             fontSize = 24.sp,
             fontWeight = FontWeight.Medium,
-            color = MaterialTheme.colorScheme.onSurface
+            color = Design.colors.ink
         )
     }
 }
@@ -190,16 +187,12 @@ internal fun MoveThePieceGameOverControls(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
-            .border(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
-                shape = RoundedCornerShape(16.dp)
-            )
-            .background(MaterialTheme.colorScheme.surface)
-            .padding(24.dp),
+            .clip(Design.shapes.card)
+            .border(borderSoft(), Design.shapes.card)
+            .background(Design.colors.surface)
+            .padding(Design.dimensions.spacing.xgut),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.lg)
     ) {
         Text(
             text = if (wasCaptured) {
@@ -207,23 +200,21 @@ internal fun MoveThePieceGameOverControls(
             } else {
                 stringResource(R.string.boardvis_game_over)
             },
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurface
+            style = Design.typography.headlineSmall,
+            color = Design.colors.ink
         )
 
         Text(
             text = stringResource(R.string.boardvis_final_score, finalScore),
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onSurface
+            style = Design.typography.titleLarge,
+            color = Design.colors.ink
         )
 
         if (isNewHighScore) {
             Text(
                 text = stringResource(R.string.generic_new_high_score),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
+                style = Design.typography.titleMedium,
+                color = Design.colors.primary
             )
         }
 

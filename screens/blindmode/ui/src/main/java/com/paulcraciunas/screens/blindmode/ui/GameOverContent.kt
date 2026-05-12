@@ -1,22 +1,20 @@
 package com.paulcraciunas.screens.blindmode.ui
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.blindmode.vm.BlindModeScreenInteractor
 import com.paulcraciunas.screens.blindmode.vm.BlindModeUiState
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
 import com.paulcraciunas.screens.common.controls.RefreshButton
+import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
+import com.paulcraciunas.screens.common.design.components.SpacerSize
+import com.paulcraciunas.screens.common.design.theme.Design
 
 @Composable
 internal fun GameOverContent(
@@ -33,20 +31,19 @@ internal fun GameOverContent(
         modifier = Modifier.fillMaxWidth()
     )
 
-    Spacer(modifier = Modifier.height(12.dp))
+    ChessGymSpacer(size = SpacerSize.LARGE)
 
     Text(
         text = stringResource(state.result.stringRes()),
-        style = MaterialTheme.typography.headlineSmall,
-        fontWeight = FontWeight.Bold,
+        style = Design.typography.headlineSmall,
         color = if (state.result == BlindModeUiState.GameResult.Win) {
-            MaterialTheme.colorScheme.primary
+            Design.colors.primary
         } else {
-            MaterialTheme.colorScheme.error
+            Design.colors.danger
         },
     )
 
-    Spacer(modifier = Modifier.height(12.dp))
+    ChessGymSpacer(size = SpacerSize.LARGE)
 
     RefreshButton(
         onClick = interactions::onPlayAgain,

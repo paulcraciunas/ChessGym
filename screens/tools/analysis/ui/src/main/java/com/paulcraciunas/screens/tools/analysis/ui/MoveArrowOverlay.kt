@@ -4,7 +4,6 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -26,6 +25,7 @@ import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.board.BoardOrientation
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.tools.analysis.vm.MoveArrow
 import kotlin.math.atan2
@@ -36,7 +36,7 @@ internal fun MoveArrowOverlay(
     arrow: MoveArrow?,
     orientation: BoardOrientation,
     modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colorScheme.onSurface,
+    color: Color = Design.colors.ink,
 ) {
     if (arrow == null) return
 

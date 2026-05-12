@@ -8,14 +8,12 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,9 +21,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.global.resources.R
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.AppBar
 import com.paulcraciunas.screens.common.FailedContent
 import com.paulcraciunas.screens.common.LoadingContent
@@ -33,6 +31,8 @@ import com.paulcraciunas.screens.common.backgroundColor
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
 import com.paulcraciunas.screens.common.controls.PuzzleResultsGrid
+import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
+import com.paulcraciunas.screens.common.design.components.SpacerSize
 import com.paulcraciunas.screens.common.dialogs.PromotionDialog
 import com.paulcraciunas.screens.common.model.PuzzleData
 import com.paulcraciunas.screens.common.model.PuzzleResult
@@ -68,7 +68,7 @@ fun FailedPuzzlesScreen(
         else -> null
     }
 
-    val bgColor = MaterialTheme.colorScheme.background
+    val bgColor = Design.colors.bg
     Scaffold(
         topBar = {
             AppBar(
@@ -78,7 +78,7 @@ fun FailedPuzzlesScreen(
                     progress?.let {
                         ProgressIndicator(
                             progress = it,
-                            modifier = Modifier.padding(end = 16.dp)
+                            modifier = Modifier.padding(end = Design.dimensions.spacing.xxl)
                         )
                     }
                 }
@@ -126,6 +126,7 @@ private fun FailedPuzzlesContent(
     val data = uiState.data
     Column(
         modifier = modifier.fillMaxSize()
+            .background(Design.colors.primarySoft)
     ) {
         // Animate board transition when puzzle count changes
         AnimatedContent(
@@ -147,7 +148,7 @@ private fun FailedPuzzlesContent(
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        ChessGymSpacer(size = SpacerSize.XXLARGE)
 
         // Results grid
         if (uiState.results.isNotEmpty()) {
@@ -156,7 +157,7 @@ private fun FailedPuzzlesContent(
                 onFailedPuzzleClicked = interactions::onAnalyzeFailedPuzzle,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
+                    .padding(horizontal = Design.dimensions.spacing.xxl)
             )
         }
 
@@ -185,8 +186,8 @@ private fun ProgressIndicator(
 ) {
     Text(
         text = stringResource(R.string.failed_puzzles_progress, progress.solved, progress.total),
-        style = MaterialTheme.typography.titleMedium,
-        color = MaterialTheme.colorScheme.primary,
+        style = Design.typography.titleMedium,
+        color = Design.colors.primary,
         modifier = modifier
     )
 }

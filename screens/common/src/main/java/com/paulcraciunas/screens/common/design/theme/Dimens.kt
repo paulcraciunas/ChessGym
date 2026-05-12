@@ -26,6 +26,7 @@ data class ChessGymDimensions(
         val gut: Dp,
         val xgut: Dp,
         val section: Dp,
+        val xsection: Dp,
     )
 
     @Immutable

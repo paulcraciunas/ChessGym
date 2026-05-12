@@ -75,6 +75,7 @@ private fun SideSelectionButtonWhiteSelectedPreview() {
 }
 
 @Preview(showBackground = true)
+@Preview("Dark mode", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 private fun SideSelectionButtonBlackUnselectedPreview() {
     ChessGymTheme {
