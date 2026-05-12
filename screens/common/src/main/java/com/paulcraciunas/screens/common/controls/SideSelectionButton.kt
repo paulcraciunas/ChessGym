@@ -8,9 +8,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.global.resources.R
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.common.theme.GlobalTokens
 
@@ -33,21 +32,21 @@ internal fun SideSelectionButton(
     modifier: Modifier = Modifier,
 ) {
     val borderColor = if (isSelected) {
-        MaterialTheme.colorScheme.primary
+        Design.colors.primary
     } else {
-        MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+        Design.colors.border.copy(alpha = 0.3f)
     }
 
     IconButton(
         onClick = onClick,
         modifier = modifier
-            .size(56.dp)
-            .clip(CircleShape)
+            .size(Design.dimensions.sizes.avatar)
+            .clip(Design.shapes.circle)
             .background(if (side == Side.BLACK) Color.White else Color.Black)
             .border(
                 width = 4.dp,
                 color = borderColor,
-                shape = CircleShape
+                shape = Design.shapes.circle
             )
     ) {
         Image(

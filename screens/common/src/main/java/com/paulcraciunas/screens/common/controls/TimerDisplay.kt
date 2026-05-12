@@ -1,11 +1,10 @@
 package com.paulcraciunas.screens.common.controls
 
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
@@ -14,15 +13,14 @@ fun TimerDisplay(
     modifier: Modifier = Modifier
 ) {
     val color = when {
-        seconds <= 10 -> MaterialTheme.colorScheme.error
-        seconds <= 20 -> MaterialTheme.colorScheme.tertiary
-        else -> MaterialTheme.colorScheme.onSurface
+        seconds <= 10 -> Design.colors.danger
+        seconds <= 20 -> Design.colors.accent
+        else -> Design.colors.ink
     }
 
     Text(
         text = formatTime(seconds),
-        style = MaterialTheme.typography.titleLarge,
-        fontWeight = FontWeight.Bold,
+        style = Design.textStyles.monoTimer,
         color = color,
         modifier = modifier
     )

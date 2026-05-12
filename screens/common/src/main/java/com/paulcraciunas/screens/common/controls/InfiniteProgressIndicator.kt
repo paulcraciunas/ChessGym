@@ -6,13 +6,14 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import com.paulcraciunas.global.resources.R
+import com.paulcraciunas.screens.common.design.theme.Design
 
 const val DEFAULT_PROGRESS_DURATION = 1000
 
@@ -32,8 +33,8 @@ fun InfiniteProgressIndicator(
 
     Icon(
         painter = painterResource(id = R.drawable.board_visualization_icon),
-        tint = MaterialTheme.colorScheme.onPrimaryContainer,
-        contentDescription = "Loading",
-        modifier = modifier.rotate(rotation) // Apply the animated rotation
+        tint = Design.colors.primary,
+        contentDescription = stringResource(R.string.content_description_loading),
+        modifier = modifier.rotate(rotation)
     )
 }

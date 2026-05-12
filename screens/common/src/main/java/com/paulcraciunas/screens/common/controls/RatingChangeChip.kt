@@ -11,63 +11,54 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
-import com.paulcraciunas.screens.common.theme.LoadingTheme
 
 @Composable
 fun RatingChangeChip(
     ratingChange: Int,
     modifier: Modifier = Modifier,
-    iconSize: Dp = 16.dp,
-    contentPadding: PaddingValues = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
-    textStyle: TextStyle = MaterialTheme.typography.labelMedium,
 ) {
     val isPositive = ratingChange > 0
     val backgroundColor = if (isPositive) {
-        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
+        Design.colors.chipSolvedBg
     } else {
-        MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.3f)
+        Design.colors.danger.copy(alpha = 0.15f)
     }
     val contentColor = if (isPositive) {
-        LoadingTheme.colors.success
+        Design.colors.success
     } else {
-        MaterialTheme.colorScheme.error
+        Design.colors.danger
     }
 
     Row(
         modifier = modifier
-            .clip(MaterialTheme.shapes.small)
+            .clip(Design.shapes.cardCompact)
             .background(backgroundColor)
-            .padding(contentPadding),
-        horizontalArrangement = Arrangement.spacedBy(2.dp),
+            .padding(PaddingValues(
+                horizontal = Design.dimensions.spacing.sm,
+                vertical = Design.dimensions.spacing.xs,
+            )),
+        horizontalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.xxs),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             imageVector = if (isPositive) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
             contentDescription = null,
             tint = contentColor,
-            modifier = Modifier.size(iconSize)
+            modifier = Modifier.size(Design.dimensions.sizes.icon)
         )
-        CompositionLocalProvider(LocalTextStyle provides textStyle) {
-            Text(
-                text = if (isPositive) "+$ratingChange" else ratingChange.toString(),
-                color = contentColor,
-                fontWeight = FontWeight.Bold
-            )
-        }
+        Text(
+            text = if (isPositive) "+$ratingChange" else ratingChange.toString(),
+            style = Design.typography.labelLarge,
+            color = contentColor,
+        )
     }
 }
 
@@ -94,11 +85,6 @@ private fun RatingChangeChipNegativePreview() {
 @Composable
 private fun RatingChangeChipLargePreview() {
     ChessGymTheme {
-        RatingChangeChip(
-            ratingChange = 25,
-            iconSize = 24.dp,
-            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
-            textStyle = MaterialTheme.typography.titleMedium
-        )
+        RatingChangeChip(ratingChange = 25)
     }
 }

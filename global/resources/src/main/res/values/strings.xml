@@ -10,6 +10,10 @@
     <string name="king">King</string>
     <!-- endregion -->
 
+    <!-- region Common -->
+    <string name="content_description_loading">Loading</string>
+    <!-- endregion -->
+
     <!-- region results -->
     <string name="result_checkmate">Checkmate! You win</string>
     <string name="result_draw">Draw</string>
@@ -197,8 +201,9 @@
     <!-- endregion -->
 
     <!-- region Puzzle Dashboard -->
-    <string name="puzzle_dashboard_title">Choose Your Challenge</string>
-    <string name="puzzle_dashboard_subtitle">Select a puzzle mode to train your tactical skills</string>
+    <string name="puzzle_dashboard_eyebrow">Puzzles</string>
+    <string name="puzzle_dashboard_title">Choose your challenge</string>
+    <string name="puzzle_dashboard_subtitle">Train tactical vision with four focused modes.</string>
     <!-- endregion -->
 
     <!-- Rated Puzzle Mode -->
@@ -256,8 +261,9 @@
     <!-- endregion -->
 
     <!-- region Board Visualization Dashboard -->
-    <string name="boardvis_dashboard_title">Board Visualization</string>
-    <string name="boardvis_dashboard_subtitle">Train your board awareness and visualization skills</string>
+    <string name="boardvis_dashboard_eyebrow">Visualization</string>
+    <string name="boardvis_dashboard_title">Board awareness</string>
+    <string name="boardvis_dashboard_subtitle">Train your visual recall and spatial intuition.</string>
     <string name="boardvis_mode_start">Start visualization mode</string>
     <!-- endregion -->
 
@@ -339,8 +345,9 @@
     <!-- region Tools -->
     <string name="navigation_tools_label">Tools</string>
     <string name="navigation_tools_content_description">Chess tools</string>
+    <string name="tools_dashboard_eyebrow">Tools</string>
     <string name="tools_dashboard_title">Chess Tools</string>
-    <string name="tools_dashboard_subtitle">Useful utilities for your chess games</string>
+    <string name="tools_dashboard_subtitle">Useful utilities for your chess games.</string>
     <string name="tools_mode_start">Start tool</string>
     <string name="tools_clock_title">Chess Clock</string>
     <string name="tools_clock_description">Time your games with configurable controls</string>
