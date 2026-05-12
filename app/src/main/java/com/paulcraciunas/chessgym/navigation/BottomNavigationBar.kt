@@ -1,87 +1,108 @@
 package com.paulcraciunas.chessgym.navigation
 
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.height
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavDestination
-import com.paulcraciunas.global.resources.R
+import androidx.navigation.NavDestination.Companion.hasRoute
+import com.paulcraciunas.screens.common.design.components.borderSoft
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag
+import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
 internal fun BottomNavigationBar(
     currentDestination: NavDestination?,
     onItemSelected: (BottomNavItem) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     NavigationBar(
-        windowInsets = NavigationBarDefaults.windowInsets,
-        modifier = modifier.testTag { BottomNavigationTags.BOTTOM_NAV_BAR }
+        windowInsets = WindowInsets(0,0,0,0),
+        containerColor = Design.colors.primarySoft,
+        tonalElevation = Design.dimensions.elevation.md,
+        modifier = modifier
+            .testTag { BottomNavigationTags.BOTTOM_NAV_BAR }
+            .shadow(
+                elevation = Design.dimensions.elevation.md,
+                shape = MaterialTheme.shapes.large,
+                clip = true
+            )
+            .border(borderSoft())
     ) {
         BottomNavItem.entries.forEach { item ->
-            NavigationBarItem(
-                icon = {
-                    Icon(
-                        painter = item.iconPainter(),
-                        contentDescription = item.contentDescription(),
-                        modifier = Modifier.height(24.dp)
-                    )
-                },
-                label = {
-                    Text(text = item.label())
-                },
-                selected = item.screen.isCurrent(currentDestination?.route),
-                onClick = {
-                    onItemSelected(item)
-                },
+            ChessGymBottomNavItem(
+                item = item,
+                selected = currentDestination?.hasRoute(item.screen::class) == true,
+                onClick = { onItemSelected(item) },
                 modifier = Modifier.testTag { BottomNavigationTags.tagFor(item) }
             )
         }
     }
 }
 
-private fun Screen.isCurrent(route: String?): Boolean = when (this) {
-    Screen.Home -> route?.contains("Home") == true
-    Screen.PuzzleDashboard -> route?.contains("PuzzleDashboard") == true
-    Screen.BoardVisualization -> route?.contains("BoardVisualization") == true
-    Screen.BlindMode -> route?.contains("BlindMode") == true
-    Screen.ToolsDashboard -> route?.contains("ToolsDashboard") == true
-    else -> false
+@Composable
+private fun RowScope.ChessGymBottomNavItem(
+    item: BottomNavItem,
+    selected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    NavigationBarItem(
+        icon = {
+            Icon(
+                painter = item.iconPainter(),
+                contentDescription = item.contentDescription(),
+                modifier = Modifier.height(Design.dimensions.sizes.navBarIconHeight)
+            )
+        },
+        label = {
+            Text(
+                text = item.label(),
+                style = if (selected) Design.textStyles.eyebrow else Design.textStyles.label,
+            )
+        },
+        selected = selected,
+        onClick = { onClick() },
+        colors = NavigationBarItemDefaults.colors(
+            selectedIconColor = Design.colors.primary,
+            unselectedIconColor = Design.colors.inkMuted,
+            selectedTextColor = Design.colors.primary,
+            unselectedTextColor = Design.colors.inkMuted,
+            indicatorColor = Design.colors.accentSoft
+        ),
+        modifier = modifier
+    )
 }
 
+@Preview(showBackground = true)
 @Composable
-private fun BottomNavItem.iconPainter() = when (this) {
-    BottomNavItem.Home -> rememberVectorPainter(Icons.Default.Home)
-    BottomNavItem.PuzzleDashboard -> painterResource(R.drawable.puzzle_icon)
-    BottomNavItem.BoardVisualization -> painterResource(R.drawable.board_visualization_icon)
-    BottomNavItem.BlindMode -> painterResource(R.drawable.blind_mode_icon)
-    BottomNavItem.ToolsDashboard -> painterResource(R.drawable.tools_icon)
+private fun BottomNavigationBarPreview() {
+    ChessGymTheme {
+        BottomNavigationBar(
+            currentDestination = null,
+            onItemSelected = {}
+        )
+    }
 }
 
+@Preview(showBackground = true)
 @Composable
-private fun BottomNavItem.label() = when (this) {
-    BottomNavItem.Home -> stringResource(R.string.navigation_home_label)
-    BottomNavItem.PuzzleDashboard -> stringResource(R.string.navigation_puzzle_dashboard_label)
-    BottomNavItem.BoardVisualization -> stringResource(R.string.navigation_board_viz_label)
-    BottomNavItem.BlindMode -> stringResource(R.string.navigation_blind_mode_label)
-    BottomNavItem.ToolsDashboard -> stringResource(R.string.navigation_tools_label)
-}
-
-@Composable
-private fun BottomNavItem.contentDescription() = when (this) {
-    BottomNavItem.Home -> stringResource(R.string.navigation_home_screen_description)
-    BottomNavItem.PuzzleDashboard -> stringResource(R.string.navigation_puzzle_dashboard_content_description)
-    BottomNavItem.BoardVisualization -> stringResource(R.string.navigation_board_viz_content_description)
-    BottomNavItem.BlindMode -> stringResource(R.string.navigation_blind_mode_content_description)
-    BottomNavItem.ToolsDashboard -> stringResource(R.string.navigation_tools_content_description)
+private fun BottomNavigationBarHomeSelectedPreview() {
+    ChessGymTheme {
+        BottomNavigationBar(
+            currentDestination = NavDestination("home").apply { route = "com.paulcraciunas.chessgym.navigation.Screen.BoardVisualization" },
+            onItemSelected = {}
+        )
+    }
 }
