@@ -3,25 +3,16 @@ package com.paulcraciunas.screens.boardvis.dashboard.ui
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.boardvis.dashboard.vm.BoardVisDashboardUiState
 import com.paulcraciunas.screens.boardvis.dashboard.vm.BoardVisMode
@@ -29,8 +20,10 @@ import com.paulcraciunas.screens.common.AppBar
 import com.paulcraciunas.screens.common.AppBarAlignment
 import com.paulcraciunas.screens.common.LoadingContent
 import com.paulcraciunas.screens.common.backgroundColor
+import com.paulcraciunas.screens.common.controls.DashboardHeader
 import com.paulcraciunas.screens.common.controls.FindTheSquareCard
 import com.paulcraciunas.screens.common.controls.MoveThePieceCard
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
@@ -42,7 +35,7 @@ fun BoardVisDashboardScreen(
     modifier: Modifier = Modifier,
     onDrawerToggle: () -> Unit = {},
 ) {
-    val bgColor = MaterialTheme.colorScheme.background
+    val bgColor = Design.colors.primarySoft
     Scaffold(
         topBar = {
             AppBar(
@@ -68,62 +61,40 @@ fun BoardVisDashboardScreen(
 private fun DashboardContent(
     state: BoardVisDashboardUiState,
     onModeSelected: (BoardVisMode) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-    Box(
+    LazyColumn(
+        contentPadding = PaddingValues(
+            horizontal = Design.dimensions.spacing.gut,
+            vertical = Design.dimensions.spacing.xgut,
+        ),
+        verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.lg),
         modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(Design.colors.primarySoft),
     ) {
-        LazyColumn(
-            contentPadding = PaddingValues(
-                horizontal = 20.dp,
-                vertical = 24.dp
-            ),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            item {
-                DashboardHeader()
-            }
-
-            item {
-                FindTheSquareCard(
-                    highScore = state.findSquareHighScore,
-                    onClick = { onModeSelected(BoardVisMode.FindTheSquare) },
-                    modifier = Modifier.testTag { BoardVisDashboardTags.Cards.FIND_THE_SQUARE },
-                )
-            }
-
-            item {
-                MoveThePieceCard(
-                    onClick = { onModeSelected(BoardVisMode.MoveThePiece) },
-                    modifier = Modifier.testTag { BoardVisDashboardTags.Cards.MOVE_THE_PIECE },
-                )
-            }
+        item {
+            DashboardHeader(
+                eyebrowRes = R.string.boardvis_dashboard_eyebrow,
+                titleRes = R.string.boardvis_dashboard_title,
+                subtitleRes = R.string.boardvis_dashboard_subtitle,
+            )
         }
-    }
-}
 
-@Composable
-private fun DashboardHeader(
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = stringResource(R.string.boardvis_dashboard_title),
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-        Text(
-            text = stringResource(R.string.boardvis_dashboard_subtitle),
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        item {
+            FindTheSquareCard(
+                highScore = state.findSquareHighScore,
+                onClick = { onModeSelected(BoardVisMode.FindTheSquare) },
+                modifier = Modifier.testTag { BoardVisDashboardTags.Cards.FIND_THE_SQUARE },
+            )
+        }
+
+        item {
+            MoveThePieceCard(
+                onClick = { onModeSelected(BoardVisMode.MoveThePiece) },
+                modifier = Modifier.testTag { BoardVisDashboardTags.Cards.MOVE_THE_PIECE },
+            )
+        }
     }
 }
 

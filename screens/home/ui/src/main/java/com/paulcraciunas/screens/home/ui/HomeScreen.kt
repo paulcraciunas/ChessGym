@@ -81,7 +81,7 @@ private fun HomeContent(
     uiState: HomeUiState,
     modifier: Modifier = Modifier
 ) {
-    val backgroundColor =  Design.colors.bg
+    val backgroundColor =  Design.colors.primarySoft
     Box(
         modifier = modifier
             .fillMaxSize()
