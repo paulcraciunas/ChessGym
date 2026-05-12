@@ -30,13 +30,13 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Rank
+import com.paulcraciunas.screens.common.design.theme.DefinedTheme
 import com.paulcraciunas.screens.common.model.AnimatingPiece
 import com.paulcraciunas.screens.common.model.BoardViewData
 import com.paulcraciunas.screens.common.model.BoardViewDataBuilder
 import com.paulcraciunas.screens.common.model.SquareViewData
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.BoardColors
-import com.paulcraciunas.screens.common.theme.BoardTheme
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import kotlin.math.roundToInt
 
@@ -294,7 +294,7 @@ private fun BlackPerspectivePreview() {
 @Composable
 private fun GreyThemePreview() {
     ChessGymTheme(
-        boardTheme = BoardTheme.Grey
+        definedTheme = DefinedTheme.Grey
     ) {
         ChessBoard(
             board = BoardViewDataBuilder().build(),
