@@ -41,8 +41,6 @@ import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.home.vm.HomeUiState
 
-// TODO Paul: this and the HighScoresCard are identical, except for the values displayed in the StatRows
-// TODO Paul: We should generalise this and reuse it. Just pass in a data class with a list of label to value
 @Composable
 internal fun UserStatsCard(
     title: String,
