@@ -96,14 +96,7 @@ internal fun AchievementCard(
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 2.dp)
     ) {
         Column(
-            modifier = Modifier
-                .then(
-                    if (!item.isCompleted()) {
-                        Modifier.clickable { isExpanded = !isExpanded }
-                    } else {
-                        Modifier
-                    }
-                )
+            modifier = Modifier.clickable(!item.isCompleted()) { isExpanded = !isExpanded }
                 .padding(16.dp),
         ) {
             Row(

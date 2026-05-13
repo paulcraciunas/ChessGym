@@ -46,13 +46,7 @@ internal fun DashboardCard(
     ChessGymCard(
         modifier = modifier
             .fillMaxWidth()
-            .then(
-                if (isEnabled) {
-                    Modifier.clickable { onClick() }
-                } else {
-                    Modifier
-                }
-            )) {
+            .clickable(isEnabled) { onClick() }) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.xxl),
             verticalAlignment = Alignment.CenterVertically
