@@ -19,9 +19,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.design.theme.Design
 
 /**
@@ -96,7 +98,7 @@ fun TrophyShelfTile(
     icon: @Composable (() -> Unit),
 ) {
     Surface(
-        modifier = modifier.width(138.dp),
+        modifier = modifier.width(Design.dimensions.sizes.trophyTile),
         shape = RoundedCornerShape(Design.radii.lg),
         color = Design.colors.surface,
         border = borderSoft(),
@@ -122,6 +124,7 @@ fun TrophyShelfTile(
                 color = Design.colors.ink,
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.titleSmall,
+                minLines = 2,
             )
             ChessGymSpacer(size = SpacerSize.SMALL)
             Text(
@@ -131,15 +134,13 @@ fun TrophyShelfTile(
                 style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier.height(Design.dimensions.sizes.medallionText),
             )
-            ChessGymSpacer(size = SpacerSize.MEDIUM)
             LinearProgress(
                 progress = (valueNow.toFloat() / valueMax.coerceAtLeast(1)),
                 color = if (earned) Design.colors.accent else hue,
-                height = Design.dimensions.sizes.progressBar,
             )
             ChessGymSpacer(size = SpacerSize.SMALL)
             Text(
-                text = if (earned) "EARNED" else "$valueNow / $valueMax",
+                text = if (earned) stringResource(R.string.achievement_earned_label) else "$valueNow / $valueMax",
                 color = if (earned) Design.colors.accent else Design.colors.inkMuted,
                 style = Design.textStyles.monoSmall,
             )
