@@ -29,7 +29,7 @@ internal fun BottomNavigationBar(
 ) {
     NavigationBar(
         windowInsets = WindowInsets(0,0,0,0),
-        containerColor = Design.colors.primarySoft,
+        containerColor = Design.colors.bg,
         tonalElevation = Design.dimensions.elevation.md,
         modifier = modifier
             .testTag { BottomNavigationTags.BOTTOM_NAV_BAR }
