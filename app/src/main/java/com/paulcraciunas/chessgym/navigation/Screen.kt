@@ -5,12 +5,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed class Screen {
     @Serializable
-    data object Loading : Screen()
-
-    @Serializable
-    data object Main : Screen()
-
-    @Serializable
     data object Home : Screen()
 
     @Serializable

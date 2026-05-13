@@ -3,6 +3,7 @@ package com.paulcraciunas.chessgym
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.paulcraciunas.chessgym.debug.DebugMenuProvider
+import com.paulcraciunas.domain.api.achievements.AchievementNotificationManager
 import com.paulcraciunas.domain.api.auth.DeleteAccountResult
 import com.paulcraciunas.domain.api.auth.DeleteAccountUseCase
 import com.paulcraciunas.domain.api.auth.SignOutUseCase
@@ -50,6 +51,7 @@ class MainScreenViewModel @Inject constructor(
     private val signOutUseCase: SignOutUseCase,
     private val deleteAccountUseCase: DeleteAccountUseCase,
     val debugMenuProvider: DebugMenuProvider,
+    val achievementNotificationManager: AchievementNotificationManager,
 ) : ViewModel() {
     private val _dialogState = MutableStateFlow<MainScreenDialog?>(null)
     private val _accountEvent = Channel<AccountEvent>(Channel.BUFFERED)
