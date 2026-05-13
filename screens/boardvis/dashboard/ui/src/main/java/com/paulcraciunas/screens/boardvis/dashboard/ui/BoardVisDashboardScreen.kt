@@ -11,7 +11,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.semantics.semantics
+
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.boardvis.dashboard.vm.BoardVisDashboardUiState
@@ -19,7 +19,7 @@ import com.paulcraciunas.screens.boardvis.dashboard.vm.BoardVisMode
 import com.paulcraciunas.screens.common.AppBar
 import com.paulcraciunas.screens.common.AppBarAlignment
 import com.paulcraciunas.screens.common.LoadingContent
-import com.paulcraciunas.screens.common.backgroundColor
+
 import com.paulcraciunas.screens.common.controls.DashboardHeader
 import com.paulcraciunas.screens.common.controls.FindTheSquareCard
 import com.paulcraciunas.screens.common.controls.MoveThePieceCard
@@ -35,7 +35,6 @@ fun BoardVisDashboardScreen(
     modifier: Modifier = Modifier,
     onDrawerToggle: () -> Unit = {},
 ) {
-    val bgColor = Design.colors.primarySoft
     Scaffold(
         topBar = {
             AppBar(
@@ -43,8 +42,7 @@ fun BoardVisDashboardScreen(
                 navButton = { Home(onClick = onDrawerToggle) }
             )
         },
-        modifier = modifier.testTag { BoardVisDashboardTags.SCREEN }
-            .semantics { this.backgroundColor = bgColor }
+        modifier = modifier.testTag { BoardVisDashboardTags.SCREEN },
     ) { innerPadding ->
         when {
             state.isLoading -> LoadingContent(Modifier.padding(innerPadding))

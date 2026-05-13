@@ -11,14 +11,14 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.semantics.semantics
+
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.AppBar
 import com.paulcraciunas.screens.common.AppBarAlignment
 import com.paulcraciunas.screens.common.Footer
 import com.paulcraciunas.screens.common.LoadingContent
-import com.paulcraciunas.screens.common.backgroundColor
+
 import com.paulcraciunas.screens.common.controls.AnalysisCard
 import com.paulcraciunas.screens.common.controls.ClockCard
 import com.paulcraciunas.screens.common.controls.DashboardHeader
@@ -37,7 +37,6 @@ fun ToolsDashboardScreen(
     modifier: Modifier = Modifier,
     onDrawerToggle: () -> Unit = {},
 ) {
-    val bgColor = Design.colors.bg
     Scaffold(
         topBar = {
             AppBar(
@@ -45,9 +44,7 @@ fun ToolsDashboardScreen(
                 navButton = { Home(onClick = onDrawerToggle) }
             )
         },
-        modifier = modifier
-            .testTag { ToolsDashboardTags.SCREEN }
-            .semantics { this.backgroundColor = bgColor }
+        modifier = modifier.testTag { ToolsDashboardTags.SCREEN },
     ) { innerPadding ->
         when {
             state.isLoading -> LoadingContent(modifier = Modifier.padding(innerPadding))

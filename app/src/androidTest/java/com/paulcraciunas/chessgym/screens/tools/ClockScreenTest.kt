@@ -4,8 +4,6 @@ import com.paulcraciunas.chessgym.base.BaseUiTest
 import com.paulcraciunas.chessgym.dsl.Given
 import com.paulcraciunas.chessgym.dsl.Then
 import com.paulcraciunas.chessgym.dsl.When
-import com.paulcraciunas.screens.common.theme.DarkBackground
-import com.paulcraciunas.screens.common.theme.LightBackground
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
 import org.junit.Test
@@ -148,9 +146,8 @@ internal class ClockScreenTest : BaseUiTest() {
 
         navigateToClock()
 
-        Then.clockScreen
-            .isDisplayed()
-            .hasBackgroundColor(LightBackground)
+        Then.clockScreen.isDisplayed()
+        Then.theme.isLightMode()
     }
 
     @Test
@@ -159,9 +156,8 @@ internal class ClockScreenTest : BaseUiTest() {
 
         navigateToClock()
 
-        Then.clockScreen
-            .isDisplayed()
-            .hasBackgroundColor(DarkBackground)
+        Then.clockScreen.isDisplayed()
+        Then.theme.isDarkMode()
     }
 
     @Test

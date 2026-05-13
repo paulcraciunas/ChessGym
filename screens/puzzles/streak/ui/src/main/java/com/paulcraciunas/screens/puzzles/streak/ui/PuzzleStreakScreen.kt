@@ -18,7 +18,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.ui.semantics.semantics
+
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -33,7 +33,7 @@ import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.AppBar
 import com.paulcraciunas.screens.common.FailedContent
 import com.paulcraciunas.screens.common.LoadingContent
-import com.paulcraciunas.screens.common.backgroundColor
+
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
 import com.paulcraciunas.screens.common.controls.CapturedPieces
@@ -65,7 +65,6 @@ fun PuzzleStreakScreen(
         is PuzzleStreakUiState.StreakEnded -> 0
         else -> 0
     }
-    val bgColor = Design.colors.bg
     Scaffold(
         topBar = {
             AppBar(
@@ -74,9 +73,7 @@ fun PuzzleStreakScreen(
                 actions = { if (streakCount > 0) StreakCounter(count = streakCount) }
             )
         },
-        modifier = modifier
-            .testTag { PuzzleStreakScreenTags.SCREEN }
-            .semantics { this.backgroundColor = bgColor }
+        modifier = modifier.testTag { PuzzleStreakScreenTags.SCREEN },
     ) { innerPadding ->
         when (uiState) {
             is PuzzleStreakUiState.Loading -> {

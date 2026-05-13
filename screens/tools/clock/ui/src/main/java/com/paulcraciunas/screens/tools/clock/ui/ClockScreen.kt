@@ -17,13 +17,13 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.semantics
+
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.domain.api.general.CountdownTimer
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.AppBar
-import com.paulcraciunas.screens.common.backgroundColor
+
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag
@@ -59,9 +59,7 @@ fun ClockScreen(
                 navButton = { Back(onClick = onNavigateBack) },
             )
         },
-        modifier = modifier
-            .testTag { ClockScreenTags.SCREEN }
-            .semantics { this.backgroundColor = bgColor },
+        modifier = modifier.testTag { ClockScreenTags.SCREEN }
     ) { innerPadding ->
         Column(
             modifier = Modifier

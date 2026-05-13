@@ -27,11 +27,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.semantics
+
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.AppBar
-import com.paulcraciunas.screens.common.backgroundColor
+
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
 import com.paulcraciunas.screens.common.controls.DefaultButton
@@ -66,9 +66,7 @@ fun ImportGameScreen(
                 navButton = { Back(onClick = onNavigateBack) },
             )
         },
-        modifier = modifier
-            .testTag { ImportGameScreenTags.SCREEN }
-            .semantics { this.backgroundColor = bgColor },
+        modifier = modifier.testTag { ImportGameScreenTags.SCREEN },
     ) { innerPadding ->
         Column(
             modifier = Modifier

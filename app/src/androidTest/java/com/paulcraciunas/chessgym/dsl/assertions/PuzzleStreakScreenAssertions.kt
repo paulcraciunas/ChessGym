@@ -1,8 +1,5 @@
 package com.paulcraciunas.chessgym.dsl.assertions
 
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.test.SemanticsMatcher
-import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextEquals
@@ -14,7 +11,6 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.paulcraciunas.global.resources.R
-import com.paulcraciunas.screens.common.SemanticsKeys
 import com.paulcraciunas.screens.common.dialogs.AbandonConfirmationDialogTags
 import com.paulcraciunas.screens.puzzles.streak.ui.PuzzleStreakScreenTags
 
@@ -22,12 +18,6 @@ class PuzzleStreakScreenAssertions(private val rule: ComposeTestRule) {
 
     fun isDisplayed(): PuzzleStreakScreenAssertions = apply {
         rule.onNodeWithTag(PuzzleStreakScreenTags.SCREEN).assertIsDisplayed()
-    }
-
-    fun hasBackgroundColor(color: Color): PuzzleStreakScreenAssertions = apply {
-        rule.onNodeWithTag(PuzzleStreakScreenTags.SCREEN).assert(
-            SemanticsMatcher.expectValue(SemanticsKeys.BackgroundColor, color)
-        )
     }
 
     fun isPlaying(): PuzzleStreakScreenAssertions = apply {

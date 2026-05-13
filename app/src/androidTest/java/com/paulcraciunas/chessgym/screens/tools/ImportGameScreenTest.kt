@@ -4,8 +4,6 @@ import com.paulcraciunas.chessgym.base.BaseUiTest
 import com.paulcraciunas.chessgym.dsl.Given
 import com.paulcraciunas.chessgym.dsl.Then
 import com.paulcraciunas.chessgym.dsl.When
-import com.paulcraciunas.screens.common.theme.DarkBackground
-import com.paulcraciunas.screens.common.theme.LightBackground
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
 import org.junit.Test
@@ -141,18 +139,16 @@ internal class ImportGameScreenTest : BaseUiTest() {
     fun GIVEN_light_mode_WHEN_navigated_to_import_game_THEN_shows_light_background() {
         Given.settings.lightMode()
 
-        Then.importGame
-            .isDisplayed()
-            .hasBackgroundColor(LightBackground)
+        Then.importGame.isDisplayed()
+        Then.theme.isLightMode()
     }
 
     @Test
     fun GIVEN_dark_mode_WHEN_navigated_to_import_game_THEN_shows_dark_background() {
         Given.settings.darkMode()
 
-        Then.importGame
-            .isDisplayed()
-            .hasBackgroundColor(DarkBackground)
+        Then.importGame.isDisplayed()
+        Then.theme.isDarkMode()
     }
 
     @Test

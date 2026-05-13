@@ -1,8 +1,5 @@
 package com.paulcraciunas.chessgym.dsl.assertions
 
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.test.SemanticsMatcher
-import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasTestTag
@@ -11,19 +8,12 @@ import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.platform.app.InstrumentationRegistry
 import com.paulcraciunas.global.resources.R
-import com.paulcraciunas.screens.common.SemanticsKeys
 import com.paulcraciunas.screens.puzzles.failed.ui.FailedPuzzlesScreenTags
 
 class FailedPuzzlesScreenAssertions(private val rule: ComposeTestRule) {
 
     fun isDisplayed(): FailedPuzzlesScreenAssertions = apply {
         rule.onNodeWithTag(FailedPuzzlesScreenTags.SCREEN).assertIsDisplayed()
-    }
-
-    fun hasBackgroundColor(color: Color): FailedPuzzlesScreenAssertions = apply {
-        rule.onNodeWithTag(FailedPuzzlesScreenTags.SCREEN).assert(
-            SemanticsMatcher.expectValue(SemanticsKeys.BackgroundColor, color)
-        )
     }
 
     fun isPlaying(): FailedPuzzlesScreenAssertions = apply {

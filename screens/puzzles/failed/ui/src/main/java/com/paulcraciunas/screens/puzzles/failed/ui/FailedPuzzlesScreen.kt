@@ -19,7 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.semantics
+
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.global.resources.R
@@ -27,7 +27,7 @@ import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.AppBar
 import com.paulcraciunas.screens.common.FailedContent
 import com.paulcraciunas.screens.common.LoadingContent
-import com.paulcraciunas.screens.common.backgroundColor
+
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
 import com.paulcraciunas.screens.common.controls.CapturedPieces
@@ -69,7 +69,6 @@ fun FailedPuzzlesScreen(
         else -> null
     }
 
-    val bgColor = Design.colors.bg
     Scaffold(
         topBar = {
             AppBar(
@@ -85,8 +84,7 @@ fun FailedPuzzlesScreen(
                 }
             )
         },
-        modifier = modifier.testTag { FailedPuzzlesScreenTags.SCREEN }
-            .semantics { this.backgroundColor = bgColor }
+        modifier = modifier.testTag { FailedPuzzlesScreenTags.SCREEN },
     ) { innerPadding ->
         when (uiState) {
             is FailedPuzzlesUiState.Loading -> {

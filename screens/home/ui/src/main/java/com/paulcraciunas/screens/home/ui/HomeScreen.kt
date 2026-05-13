@@ -19,13 +19,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.semantics
+
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.AppBar
 import com.paulcraciunas.screens.common.AppBarAlignment
 import com.paulcraciunas.screens.common.LoadingContent
-import com.paulcraciunas.screens.common.backgroundColor
+
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
@@ -83,8 +83,7 @@ private fun HomeContent(
         verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.lg),
         modifier = modifier
             .fillMaxSize()
-            .background(backgroundColor)
-            .semantics { this.backgroundColor = backgroundColor },
+            .background(backgroundColor),
     ) {
         item { UserProfileCard(userProfile = uiState.userProfile, ribbons = uiState.ribbons) }
         item {

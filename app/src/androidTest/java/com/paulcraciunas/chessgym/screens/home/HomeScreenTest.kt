@@ -5,8 +5,6 @@ import com.paulcraciunas.chessgym.dsl.Given
 import com.paulcraciunas.chessgym.dsl.Then
 import com.paulcraciunas.chessgym.dsl.When
 import com.paulcraciunas.chessgym.dsl.setup.Puzzles
-import com.paulcraciunas.screens.common.theme.DarkBackground
-import com.paulcraciunas.screens.common.theme.LightBackground
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
 import org.junit.Test
@@ -158,7 +156,7 @@ internal class HomeScreenTest : BaseUiTest() {
         Given.settings.darkMode()
 
         When.appIsLaunched()
-        Then.homeScreen.hasBackgroundColor(DarkBackground)
+        Then.theme.isDarkMode()
     }
 
     @Test
@@ -166,7 +164,7 @@ internal class HomeScreenTest : BaseUiTest() {
         Given.settings.lightMode()
 
         When.appIsLaunched()
-        Then.homeScreen.hasBackgroundColor(LightBackground)
+        Then.theme.isLightMode()
     }
 
     @Test

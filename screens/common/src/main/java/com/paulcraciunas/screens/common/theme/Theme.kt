@@ -1,9 +1,13 @@
 package com.paulcraciunas.screens.common.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.semantics
 import com.paulcraciunas.screens.common.design.theme.DefinedTheme
 import com.paulcraciunas.screens.common.design.theme.LocalChessGymColors
 import com.paulcraciunas.screens.common.design.theme.LocalChessGymDimensions
@@ -21,6 +25,11 @@ import com.paulcraciunas.screens.common.design.theme.getDefaultTextStyles
 import com.paulcraciunas.screens.common.design.theme.getStandardShapes
 import com.paulcraciunas.screens.common.extensions.DefaultAlpha
 import com.paulcraciunas.screens.common.extensions.LocalAlpha
+import com.paulcraciunas.screens.common.isDarkTheme
+
+object ThemeTags {
+    const val ROOT = "chess_gym_theme_root"
+}
 
 @Composable
 fun ChessGymTheme(
@@ -67,7 +76,14 @@ fun ChessGymTheme(
             colorScheme = chessGymColorScheme,
             typography = chessGymTypography,
             shapes = chessGymStandardShapes,
-            content = content
-        )
+        ) {
+            Box(
+                modifier = Modifier
+                    .testTag(ThemeTags.ROOT)
+                    .semantics { isDarkTheme = chessGymColors.isDark },
+            ) {
+                content()
+            }
+        }
     }
 }
