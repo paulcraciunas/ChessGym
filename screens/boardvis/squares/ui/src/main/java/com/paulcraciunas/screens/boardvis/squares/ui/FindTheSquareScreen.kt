@@ -77,8 +77,8 @@ fun FindTheSquareScreen(
             interactions = interactions,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
-                .background(bgColor),
+                .background(bgColor)
+                .padding(innerPadding),
         )
     }
 }

@@ -30,6 +30,7 @@ import com.paulcraciunas.screens.common.LoadingContent
 import com.paulcraciunas.screens.common.backgroundColor
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
+import com.paulcraciunas.screens.common.controls.CapturedPieces
 import com.paulcraciunas.screens.common.controls.PuzzleResultsGrid
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.design.components.SpacerSize
@@ -105,7 +106,8 @@ fun FailedPuzzlesScreen(
                     highlightLegalMoves = highlightLegalMoves,
                     enableAnimations = enableAnimations,
                     interactions = interactions,
-                    modifier = Modifier.padding(innerPadding)
+                    modifier = Modifier.background(Design.colors.primarySoft)
+                        .padding(innerPadding)
                 )
             }
             else -> {}
@@ -126,7 +128,6 @@ private fun FailedPuzzlesContent(
     val data = uiState.data
     Column(
         modifier = modifier.fillMaxSize()
-            .background(Design.colors.primarySoft)
     ) {
         // Animate board transition when puzzle count changes
         AnimatedContent(
@@ -137,15 +138,27 @@ private fun FailedPuzzlesContent(
             },
             label = "BoardTransition"
         ) { _ ->
-            ChessBoard(
-                board = data.boardData,
-                orientation = BoardOrientation.fromSide(data.player),
-                onClick = interactions::onSquareClicked,
-                showBorders = showBorders,
-                highlightLegalMoves = highlightLegalMoves,
-                enableAnimations = enableAnimations,
-                modifier = Modifier.fillMaxWidth()
-            )
+            Column {
+                CapturedPieces(
+                    capturedPieces = data.captured[data.player.other()] ?: emptyList(),
+                    side = data.player,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                ChessBoard(
+                    board = data.boardData,
+                    orientation = BoardOrientation.fromSide(data.player),
+                    onClick = interactions::onSquareClicked,
+                    showBorders = showBorders,
+                    highlightLegalMoves = highlightLegalMoves,
+                    enableAnimations = enableAnimations,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                CapturedPieces(
+                    capturedPieces = data.captured[data.player] ?: emptyList(),
+                    side = data.player.other(),
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
         }
 
         ChessGymSpacer(size = SpacerSize.XXLARGE)
