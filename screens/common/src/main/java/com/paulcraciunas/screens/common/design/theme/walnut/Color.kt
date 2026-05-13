@@ -43,6 +43,11 @@ internal val WalnutLightColors = ChessGymColors(
     medallionDepth = Color(0xFF2A1A10),
     rate = Color(0xFFAF8948),
     donate = Color(0xFF8E3A28),
+    achievementTierBronze = Color(0xFFCD7F32),
+    achievementTierSilver = Color(0xFFB0C4DE),
+    achievementTierGold = Color(0xFFFFD700),
+    achievementTierEmerald = Color(0xFF2ECC71),
+    achievementTierDiamond = Color(0xFFB9F2FF),
 
     isDark = false,
 )
@@ -87,6 +92,11 @@ internal val WalnutDarkColors = ChessGymColors(
     medallionDepth = Color(0xFF0E0904),
     rate = Color(0xFFE1BB6D),
     donate = Color(0xFFCC7A65),
+    achievementTierBronze = Color(0xFFCD7F32),
+    achievementTierSilver = Color(0xFFB0C4DE),
+    achievementTierGold = Color(0xFFFFD700),
+    achievementTierEmerald = Color(0xFF2ECC71),
+    achievementTierDiamond = Color(0xFFB9F2FF),
 
     isDark = true,
 )

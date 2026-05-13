@@ -596,6 +596,19 @@
     <!-- Achievement UI -->
     <string name="achievement_screen_title">Achievements</string>
     <string name="achievement_banner_unlocked">%1$s — Tier %2$d unlocked!</string>
+    <string name="achievement_trophy_case_title">Your Trophy Case</string>
+    <string name="achievement_trophy_case_keep_going">Keep it up — %1$d to go</string>
+    <string name="achievement_trophy_case_all_earned">All earned — well done!</string>
+    <string name="achievement_trophy_case_summary">%1$d in progress · %2$d locked</string>
+    <string name="achievement_earned_label">EARNED</string>
+    <string name="achievement_earned_count">%1$d / %2$d earned</string>
+    <string name="achievement_earned_total">of %1$d</string>
+    <string name="achievement_see_all">See all</string>
+    <string name="achievement_group_puzzles">Puzzles</string>
+    <string name="achievement_group_rush_and_streak">Rush &amp; Streak</string>
+    <string name="achievement_group_board_vision">Board Vision</string>
+    <string name="achievement_group_skill_and_mastery">Skill &amp; Mastery</string>
+    <string name="achievement_group_dedication">Dedication</string>
     <!-- endregion -->
 
     <!-- temporary values; these will be deleted as we build features -->

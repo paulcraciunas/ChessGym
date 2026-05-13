@@ -49,5 +49,7 @@ internal val WalnutDimensions = ChessGymDimensions(
         toggleContent = 20.dp,
         progressBar = 6.dp,
         timeControl = 80.dp,
+        progressRing = 80.dp,
+        trophyTile = 138.dp,
     ),
 )

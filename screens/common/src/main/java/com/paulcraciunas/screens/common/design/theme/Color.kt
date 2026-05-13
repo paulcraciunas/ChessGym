@@ -62,6 +62,11 @@ data class ChessGymColors(
     val medallionDepth: Color,
     val rate: Color,
     val donate: Color,
+    val achievementTierBronze: Color,
+    val achievementTierSilver: Color,
+    val achievementTierGold: Color,
+    val achievementTierEmerald: Color,
+    val achievementTierDiamond: Color,
 
     val isDark: Boolean,
 )

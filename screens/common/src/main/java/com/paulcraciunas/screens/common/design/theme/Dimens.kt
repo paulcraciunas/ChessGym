@@ -59,6 +59,8 @@ data class ChessGymDimensions(
         val toggleContent: Dp,
         val progressBar: Dp,
         val timeControl: Dp,
+        val progressRing: Dp,
+        val trophyTile: Dp,
     )
 }
 
