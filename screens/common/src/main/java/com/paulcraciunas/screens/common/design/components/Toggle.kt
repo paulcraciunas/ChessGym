@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
@@ -80,14 +81,15 @@ private fun ChessGymToggle(
         label = "toggle-knob",
     )
     Box(
-        modifier
+        modifier = modifier
             .size(width = Design.dimensions.sizes.toggleWidth, height = Design.dimensions.sizes.toggleHeight)
             .background(track, Design.shapes.circle)
-            .clickable(enabled = enabled) { onChange(!on) }
+            .clickable(enabled = enabled) { onChange(!on) },
+        contentAlignment = Alignment.CenterStart,
     ) {
         Box(
             Modifier
-                .offset(x = knobX, y = Design.dimensions.spacing.xxs)
+                .offset { IntOffset(x = knobX.roundToPx(), y = 0) }
                 .size(Design.dimensions.sizes.toggleContent)
                 .background(Color.White, Design.shapes.circle)
         )
