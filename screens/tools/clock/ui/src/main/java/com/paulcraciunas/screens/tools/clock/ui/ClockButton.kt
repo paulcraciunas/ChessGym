@@ -2,19 +2,15 @@ package com.paulcraciunas.screens.tools.clock.ui
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,6 +25,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.paulcraciunas.domain.api.general.CountdownTimer
 import com.paulcraciunas.global.resources.R
+import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
+import com.paulcraciunas.screens.common.design.components.SpacerSize
+import com.paulcraciunas.screens.common.design.components.borderSoft
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
@@ -44,17 +44,17 @@ internal fun ClockButton(
 ) {
     val containerColor by animateColorAsState(
         targetValue = when {
-            isLoser -> MaterialTheme.colorScheme.errorContainer
-            isEnabled -> MaterialTheme.colorScheme.primaryContainer
-            else -> MaterialTheme.colorScheme.surfaceVariant
+            isLoser -> Design.colors.danger
+            isEnabled -> Design.colors.primarySoft
+            else -> Design.colors.surfaceAlt
         },
         label = "containerColor"
     )
     val contentColor by animateColorAsState(
         targetValue = when {
-            isLoser -> MaterialTheme.colorScheme.onErrorContainer
-            isEnabled -> MaterialTheme.colorScheme.onPrimaryContainer
-            else -> MaterialTheme.colorScheme.onSurfaceVariant
+            isLoser -> Design.colors.onPrimary
+            isEnabled -> Design.colors.primary
+            else -> Design.colors.inkSoft
         },
         label = "contentColor"
     )
@@ -62,7 +62,7 @@ internal fun ClockButton(
     Button(
         onClick = onClick,
         enabled = isEnabled,
-        shape = RoundedCornerShape(16.dp),
+        shape = Design.shapes.card,
         colors = ButtonDefaults.buttonColors(
             containerColor = containerColor,
             contentColor = contentColor,
@@ -70,23 +70,16 @@ internal fun ClockButton(
             disabledContentColor = contentColor.copy(alpha = 0.6f),
         ),
         elevation = ButtonDefaults.buttonElevation(
-            defaultElevation = 4.dp,
-            pressedElevation = 0.dp,
-            disabledElevation = 0.dp,
+            defaultElevation = Design.dimensions.elevation.md,
+            pressedElevation = Design.dimensions.elevation.none,
+            disabledElevation = Design.dimensions.elevation.none,
         ),
-        contentPadding = PaddingValues(16.dp),
-        border = BorderStroke(
-            width = 2.dp,
-            color = if (isEnabled) {
-                MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
-            } else {
-                MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.2f)
-            },
-        ),
+        contentPadding = PaddingValues(Design.dimensions.spacing.xxl),
+        border = borderSoft(),
         modifier = modifier
             .fillMaxWidth()
-            .padding(8.dp)
-            .rotate(rotation), // Rotate the whole button so the ripple is correctly oriented
+            .padding(Design.dimensions.spacing.sm)
+            .rotate(rotation),
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -95,28 +88,25 @@ internal fun ClockButton(
         ) {
             Text(
                 text = label.uppercase(),
-                style = MaterialTheme.typography.labelLarge,
+                style = Design.typography.labelLarge,
                 letterSpacing = 1.2.sp,
             )
-            Spacer(modifier = Modifier.height(12.dp))
+            ChessGymSpacer(size = SpacerSize.LARGE)
             Text(
                 text = if (isSetup) {
                     stringResource(R.string.clock_tap_to_start)
                 } else {
                     formatTime(remainder)
                 },
-                style = MaterialTheme.typography.displayLarge.copy(
-                    fontSize = 64.sp,
-                    fontWeight = FontWeight.Bold,
-                ),
+                style = Design.textStyles.displayNumeric,
             )
             if (isLoser) {
-                Spacer(modifier = Modifier.height(8.dp))
+                ChessGymSpacer()
                 Text(
                     text = stringResource(R.string.clock_time_up),
-                    style = MaterialTheme.typography.titleLarge,
+                    style = Design.typography.titleLarge,
                     fontWeight = FontWeight.ExtraBold,
-                    color = MaterialTheme.colorScheme.error,
+                    color = Design.colors.danger,
                 )
             }
         }
