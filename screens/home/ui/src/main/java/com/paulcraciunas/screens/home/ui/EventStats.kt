@@ -1,117 +1,55 @@
 package com.paulcraciunas.screens.home.ui
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
-import com.paulcraciunas.screens.common.controls.RatingChangeChip
+import com.paulcraciunas.screens.common.design.components.ChessGymChip
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.home.vm.HomeUiState
 
 @Composable
 internal fun EventStats(
     event: HomeUiState.HistoryEvent,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
+        horizontalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.sm)
     ) {
         when (event) {
             is HomeUiState.HistoryEvent.PuzzleRushEvent -> {
-                StatChip(
-                    label = pluralStringResource(R.plurals.home_timeline_stat_run, event.runs),
-                    value = event.runs.toString()
-                )
-                StatChip(
-                    label = stringResource(R.string.home_timeline_stat_score),
-                    value = event.highScore.toString()
-                )
+                ChessGymChip(text = pluralStringResource(R.plurals.home_timeline_stat_run, event.runs, event.runs))
+                ChessGymChip(text = stringResource(R.string.home_timeline_stat_score, event.highScore))
             }
             is HomeUiState.HistoryEvent.BoardVizEvent -> {
-                StatChip(
-                    label = pluralStringResource(R.plurals.home_timeline_stat_session, event.runs),
-                    value = event.runs.toString()
-                )
+                ChessGymChip(text = pluralStringResource(R.plurals.home_timeline_stat_session, event.runs, event.runs))
             }
             is HomeUiState.HistoryEvent.RatedPuzzleEvent -> {
-                RatingChangeChip(ratingChange = event.ratingChange)
-                StatChip(
-                    label = pluralStringResource(R.plurals.home_timeline_stat_puzzle, event.count),
-                    value = event.count.toString()
-                )
+                ChessGymChip(ratingChange = event.ratingChange)
+                ChessGymChip(text = pluralStringResource(R.plurals.home_timeline_stat_puzzle, event.count, event.count))
             }
             is HomeUiState.HistoryEvent.BlindModeEvent -> {
-                RatingChangeChip(ratingChange = event.ratingChange)
-                StatChip(
-                    label = pluralStringResource(R.plurals.home_timeline_stat_game, event.gamesPlayed),
-                    value = event.gamesPlayed.toString()
-                )
+                ChessGymChip(ratingChange = event.ratingChange)
+                ChessGymChip(text = pluralStringResource(R.plurals.home_timeline_stat_game, event.gamesPlayed, event.gamesPlayed))
             }
             is HomeUiState.HistoryEvent.BlindModeTrainingEvent -> {
-                StatChip(
-                    label = stringResource(R.string.home_timeline_stat_best_moves),
-                    value = event.mostMovesCompleted.toString()
-                )
-                StatChip(
-                    label = pluralStringResource(R.plurals.home_timeline_stat_session, event.runs),
-                    value = event.runs.toString()
-                )
+                ChessGymChip(text = stringResource(R.string.home_timeline_stat_best_moves, event.mostMovesCompleted))
+                ChessGymChip(text = pluralStringResource(R.plurals.home_timeline_stat_session, event.runs, event.runs))
             }
             is HomeUiState.HistoryEvent.PuzzleStreakEvent -> {
-                StatChip(
-                    label = stringResource(R.string.home_timeline_stat_streak),
-                    value = event.finalStreakCount.toString()
-                )
+                ChessGymChip(text = stringResource(R.string.home_timeline_stat_streak, event.finalStreakCount))
             }
             is HomeUiState.HistoryEvent.FailedPuzzleEvent -> {
-                StatChip(
-                    label = stringResource(R.string.home_timeline_stat_solved),
-                    value = event.puzzlesSolved.toString()
-                )
+                ChessGymChip(text = stringResource(R.string.home_timeline_stat_solved, event.puzzlesSolved))
             }
         }
-    }
-}
-
-@Composable
-private fun StatChip(
-    label: String,
-    value: String,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier
-            .clip(MaterialTheme.shapes.small)
-            .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f))
-            .padding(horizontal = 8.dp, vertical = 4.dp),
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = value,
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.primary,
-            fontWeight = FontWeight.Bold
-        )
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
     }
 }
 

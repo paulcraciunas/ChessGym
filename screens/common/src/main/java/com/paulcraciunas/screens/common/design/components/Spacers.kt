@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import com.paulcraciunas.screens.common.design.theme.Design
 
 enum class SpacerSize {
+    XSMALL,
     SMALL,
     DEFAULT,
     MEDIUM,
@@ -24,6 +25,7 @@ fun ChessGymSpacer(
     Spacer(
         modifier = modifier.size(
             when (size) {
+                SpacerSize.XSMALL -> Design.dimensions.spacing.xxs
                 SpacerSize.SMALL -> Design.dimensions.spacing.xs
                 SpacerSize.DEFAULT -> Design.dimensions.spacing.sm
                 SpacerSize.MEDIUM -> Design.dimensions.spacing.md

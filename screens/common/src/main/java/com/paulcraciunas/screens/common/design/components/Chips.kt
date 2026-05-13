@@ -8,7 +8,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
@@ -23,7 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
-enum class ChipTone { Soft, Accent, Solved, Earned, Locked }
+enum class ChipTone { Soft, Accent, Solved, Failed, Earned, Locked }
 
 /** Small rounded label-chip. Defaults to "Soft" tone (primary tint). */
 @Composable
@@ -58,10 +61,22 @@ fun ChessGymChip(
 }
 
 @Composable
+fun ChessGymChip(
+    ratingChange: Int,
+    modifier: Modifier = Modifier,
+) {
+    val displayText = if (ratingChange > 0) "+$ratingChange" else ratingChange.toString()
+    val icon = if (ratingChange > 0) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown
+    val tone = if (ratingChange > 0) ChipTone.Solved else ChipTone.Failed
+    ChessGymChip(text = displayText, leadingIcon = icon, tone = tone, modifier = modifier)
+}
+
+@Composable
 private fun ChipTone.background(): Color = when (this) {
     ChipTone.Soft -> Design.colors.primarySoft
     ChipTone.Accent -> Design.colors.accentSoft
     ChipTone.Solved -> Design.colors.chipSolvedBg
+    ChipTone.Failed -> Design.colors.danger.copy(alpha = 0.15f)
     ChipTone.Earned -> Design.colors.accent
     ChipTone.Locked -> Design.colors.bgTint
 }
@@ -71,6 +86,7 @@ private fun ChipTone.foreground(): Color = when (this) {
     ChipTone.Soft -> Design.colors.primary
     ChipTone.Accent -> Design.colors.chipAccentInk
     ChipTone.Solved -> Design.colors.chipSolvedInk
+    ChipTone.Failed -> Design.colors.danger
     ChipTone.Earned -> Design.colors.onPrimary
     ChipTone.Locked -> Design.colors.inkMuted
 }
@@ -78,6 +94,7 @@ private fun ChipTone.foreground(): Color = when (this) {
 @Composable
 private fun ChipTone.border(): Color? = when (this) {
     ChipTone.Solved -> Design.colors.chipSolvedBorder
+    ChipTone.Failed -> Design.colors.danger.copy(alpha = 0.35f)
     ChipTone.Locked -> Design.colors.border
     else -> null
 }
@@ -99,10 +116,17 @@ private fun ChipTonesPreview() {
                 leadingIcon = Icons.Default.Check
             )
             ChessGymChip(
+                text = "Failed Chip",
+                tone = ChipTone.Failed,
+                leadingIcon = Icons.Default.ArrowDropDown
+            )
+            ChessGymChip(
                 text = "Earned Chip",
                 tone = ChipTone.Earned,
                 leadingIcon = Icons.Default.Star
             )
+            ChessGymChip(ratingChange = 25)
+            ChessGymChip(ratingChange = -25)
             ChessGymChip(
                 text = "Locked Chip",
                 tone = ChipTone.Locked,

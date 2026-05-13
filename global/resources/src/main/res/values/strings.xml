@@ -68,6 +68,10 @@
 
     <!-- region Home screen -->
     <string name="home_timeline_title">Recent Activity</string>
+    <string name="home_label_profile">Profile</string>
+    <string name="home_label_rating">Rating</string>
+    <string name="home_label_activities">Activities</string>
+    <string name="home_label_member_since">Member Since</string>
     <string name="home_timeline_empty_title">No recent activity</string>
     <string name="home_timeline_empty_description">Start playing to see your activity timeline here</string>
 
@@ -82,26 +86,26 @@
 
     <!-- Timeline stat labels -->
     <plurals name="home_timeline_stat_run">
-        <item quantity="one">Run</item>
-        <item quantity="other">Runs</item>
+        <item quantity="one">%1$d Run</item>
+        <item quantity="other">%1$d Runs</item>
     </plurals>
     <plurals name="home_timeline_stat_game">
-        <item quantity="one">Game</item>
-        <item quantity="other">Games</item>
+        <item quantity="one">%1$d Game</item>
+        <item quantity="other">%1$d Games</item>
     </plurals>
     <plurals name="home_timeline_stat_session">
-        <item quantity="one">Session</item>
-        <item quantity="other">Sessions</item>
+        <item quantity="one">%1$d Session</item>
+        <item quantity="other">%1$d Sessions</item>
     </plurals>
     <plurals name="home_timeline_stat_puzzle">
-        <item quantity="one">Puzzle</item>
-        <item quantity="other">Puzzles</item>
+        <item quantity="one">%1$d Puzzle</item>
+        <item quantity="other">%1$d Puzzles</item>
     </plurals>
-    <string name="home_timeline_stat_score">HighScore</string>
+    <string name="home_timeline_stat_score">%1$d HighScore</string>
     <string name="home_timeline_stat_moves">Moves</string>
-    <string name="home_timeline_stat_best_moves">Best Moves</string>
-    <string name="home_timeline_stat_streak">Streak</string>
-    <string name="home_timeline_stat_solved">Solved</string>
+    <string name="home_timeline_stat_best_moves">%1$d Best Moves</string>
+    <string name="home_timeline_stat_streak">%1$d Streak</string>
+    <string name="home_timeline_stat_solved">%1$d Solved</string>
     <!-- endregion -->
 
     <!-- region User stats -->

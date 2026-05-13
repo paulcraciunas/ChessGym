@@ -14,27 +14,49 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.screens.common.design.theme.Design
 
-/**
- * The standard ChessGym card surface — soft cream/walnut background, hairline
- * border, sm shadow. Shape matches the Walnut design exploration.
- */
+enum class ChessGymCardStyle { HIGHLIGHT, MUTED }
+
 @Composable
 fun ChessGymCard(
     modifier: Modifier = Modifier,
+    style: ChessGymCardStyle = ChessGymCardStyle.HIGHLIGHT,
     contentPadding: PaddingValues = PaddingValues(Design.dimensions.spacing.xxl),
     content: @Composable () -> Unit,
 ) {
     Surface(
         modifier = modifier,
         shape = Design.shapes.card,
-        color = Design.colors.bg,
+        color = if (style == ChessGymCardStyle.HIGHLIGHT) Design.colors.bg else Design.colors.surfaceAlt,
+        contentColor = if (style == ChessGymCardStyle.HIGHLIGHT) Design.colors.bg else Design.colors.surfaceAlt,
         tonalElevation = Design.dimensions.elevation.sm,
-        shadowElevation = Design.dimensions.elevation.sm,
+        shadowElevation = if (style == ChessGymCardStyle.HIGHLIGHT) Design.dimensions.elevation.sm else Design.dimensions.elevation.none,
         border = borderSoft(),
     ) {
         Box(modifier = Modifier.padding(contentPadding)) { content() }
     }
 }
+
+/**
+ * The standard ChessGym card surface — soft cream/walnut background, hairline
+ * border, sm shadow.
+ */
+//@Composable
+//fun ChessGymCard(
+//    modifier: Modifier = Modifier,
+//    contentPadding: PaddingValues = PaddingValues(Design.dimensions.spacing.xxl),
+//    content: @Composable () -> Unit,
+//) {
+//    Surface(
+//        modifier = modifier,
+//        shape = Design.shapes.card,
+//        color = Design.colors.bg,
+//        tonalElevation = Design.dimensions.elevation.sm,
+//        shadowElevation = Design.dimensions.elevation.sm,
+//        border = borderSoft(),
+//    ) {
+//        Box(modifier = Modifier.padding(contentPadding)) { content() }
+//    }
+//}
 
 /**
  * Full-bleed elevated card — for hero rows like the Home profile block.

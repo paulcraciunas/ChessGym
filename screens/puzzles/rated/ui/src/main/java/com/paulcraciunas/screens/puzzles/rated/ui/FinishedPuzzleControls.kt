@@ -13,7 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.controls.PlayButton
-import com.paulcraciunas.screens.common.controls.RatingChangeChip
+import com.paulcraciunas.screens.common.design.components.ChessGymChip
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
@@ -39,10 +39,7 @@ internal fun FinishedPuzzleControls(
             horizontalArrangement = Arrangement.Absolute.Left,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            RatingChangeChip(
-                ratingChange = if (success) ratingChange else -ratingChange,
-                modifier = Modifier.testTag { RatedPuzzleScreenTags.Finished.RATING_CHANGE }
-            )
+            ChessGymChip(ratingChange = if (success) ratingChange else -ratingChange)
             Text(
                 text = stringResource(if (success) R.string.generic_success else R.string.generic_failed),
                 style = Design.typography.titleMedium,

@@ -169,6 +169,13 @@ internal val WalnutTextStyles = DefaultTextStyles(
         lineHeight = 64.sp,
         letterSpacing = (-2).sp,
     ),
+    displayNumericSmall = TextStyle(
+        fontFamily = InstrumentSerif,
+        fontWeight = FontWeight.Normal,
+        fontSize = 17.sp,
+        lineHeight = 22.sp,
+        letterSpacing = (-0.4).sp,
+    ),
     monoSmall = TextStyle(
         fontFamily = JetBrainsMono,
         fontWeight = FontWeight.SemiBold,

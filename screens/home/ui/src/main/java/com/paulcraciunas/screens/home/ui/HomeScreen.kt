@@ -4,10 +4,8 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -24,7 +22,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.AppBar
 import com.paulcraciunas.screens.common.AppBarAlignment
@@ -79,9 +76,9 @@ fun HomeScreen(
 @Composable
 private fun HomeContent(
     uiState: HomeUiState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-    val backgroundColor =  Design.colors.primarySoft
+    val backgroundColor = Design.colors.primarySoft
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -89,11 +86,23 @@ private fun HomeContent(
             .semantics { this.backgroundColor = backgroundColor }
     ) {
         LazyColumn(
-            contentPadding = PaddingValues(horizontal = 10.dp),
-            verticalArrangement = Arrangement.SpaceEvenly
+            contentPadding = PaddingValues(Design.dimensions.spacing.lg),
+            verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.lg),
         ) {
             item { UserProfileCard(userProfile = uiState.userProfile, ribbons = uiState.ribbons) }
-            item { StatsSection(stats = uiState.userStats) }
+            item {
+                UserStatsCard(
+                    title = stringResource(R.string.user_stats_title),
+                    stats = uiState.userStats
+                )
+            }
+            item {
+                HighScoresCard(
+                    title = stringResource(R.string.user_stats_high_score_title),
+                    stats = uiState.userStats
+                )
+            }
+
             item { ActivityTimeline(history = uiState.history) }
         }
     }
@@ -106,6 +115,7 @@ private fun AchievementsBadge(
     modifier: Modifier = Modifier,
 ) {
     IconButton(onClick = onClick, modifier = modifier) {
+        val achievementsDescription = stringResource(R.string.achievement_screen_title)
         if (unseenCount > 0) {
             BadgedBox(
                 badge = {
@@ -114,38 +124,19 @@ private fun AchievementsBadge(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.award_star_icon),
-                    contentDescription = "Achievements",
-                    modifier = Modifier.size(24.dp),
+                    contentDescription = achievementsDescription,
+                    modifier = Modifier.size(Design.dimensions.spacing.xgut),
+                    tint = Design.colors.primary,
                 )
             }
         } else {
             Icon(
                 painter = painterResource(id = R.drawable.award_star_icon),
-                contentDescription = "Achievements",
-                modifier = Modifier.size(24.dp),
+                contentDescription = achievementsDescription,
+                modifier = Modifier.size(Design.dimensions.spacing.xgut),
+                tint = Design.colors.primary,
             )
         }
-    }
-}
-
-@Composable
-private fun StatsSection(
-    stats: HomeUiState.Stats,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.SpaceEvenly
-    ) {
-        UserStatsCard(
-            title = stringResource(R.string.user_stats_title),
-            stats = stats
-        )
-
-        HighScoresCard(
-            title = stringResource(R.string.user_stats_high_score_title),
-            stats = stats
-        )
     }
 }
 
