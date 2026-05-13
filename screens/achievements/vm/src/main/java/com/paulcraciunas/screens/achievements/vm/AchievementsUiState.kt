@@ -3,10 +3,25 @@ package com.paulcraciunas.screens.achievements.vm
 import com.paulcraciunas.domain.api.achievements.Achievement
 
 data class AchievementsUiState(
-    val achievements: List<AchievementState> = emptyList(),
+    val summary: TrophyCaseSummary = TrophyCaseSummary(),
+    val categories: List<CategoryGroup> = emptyList(),
     val isLoading: Boolean = true,
-    val isError: Boolean = false
+    val isError: Boolean = false,
 ) {
+    data class TrophyCaseSummary(
+        val totalEarned: Int = 0,
+        val totalAchievements: Int = 0,
+        val inProgress: Int = 0,
+        val locked: Int = 0,
+    )
+
+    data class CategoryGroup(
+        val category: AchievementCategory,
+        val earnedCount: Int,
+        val totalCount: Int,
+        val achievements: List<AchievementState>,
+    )
+
     sealed class AchievementState {
         abstract val achievement: Achievement
         abstract val unseen: Boolean

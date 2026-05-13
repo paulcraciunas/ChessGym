@@ -8,8 +8,33 @@ class AchievementsUiStateAdapter @Inject constructor() {
 
     fun adapt(states: List<AchievementState>): AchievementsUiState {
         val items = states.map { adaptItem(it) }
+        val sorted = items.sortedWith(achievementComparator)
+
+        val grouped = AchievementCategory.entries.mapNotNull { cat ->
+            val categoryItems = sorted.filter { it.achievement.category == cat }
+            if (categoryItems.isEmpty()) return@mapNotNull null
+
+            val earned = categoryItems.count { it.currentTier != null }
+            AchievementsUiState.CategoryGroup(
+                category = cat,
+                earnedCount = earned,
+                totalCount = categoryItems.size,
+                achievements = categoryItems,
+            )
+        }
+
+        val totalEarned = sorted.count { it.isCompleted() }
+        val inProgress = sorted.count { !it.isCompleted() && it.hasProgress() }
+        val locked = sorted.count { !it.hasProgress() }
+
         return AchievementsUiState(
-            achievements = items.sortedWith(achievementComparator),
+            summary = AchievementsUiState.TrophyCaseSummary(
+                totalEarned = totalEarned,
+                totalAchievements = sorted.size,
+                inProgress = inProgress,
+                locked = locked,
+            ),
+            categories = grouped,
             isLoading = false,
         )
     }
@@ -42,7 +67,7 @@ class AchievementsUiStateAdapter @Inject constructor() {
          * Sorting: earned (highest tier, then progress%) > in-progress (by progress%) > zero.
          * Within equal buckets, falls back to enum declaration order.
          */
-        private val achievementComparator: Comparator<AchievementsUiState.AchievementState> =
+        internal val achievementComparator: Comparator<AchievementsUiState.AchievementState> =
             compareByDescending<AchievementsUiState.AchievementState> { it.sortBucket }
                 .thenByDescending { it.currentTier?.ordinal ?: -1 }
                 .thenByDescending { it.progress() }

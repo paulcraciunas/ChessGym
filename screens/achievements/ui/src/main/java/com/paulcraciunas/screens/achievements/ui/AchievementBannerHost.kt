@@ -11,9 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,14 +25,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.paulcraciunas.domain.api.achievements.Achievement
 import com.paulcraciunas.domain.api.achievements.AchievementNotification
 import com.paulcraciunas.domain.api.achievements.AchievementNotificationManager
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.achievements.tierName
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import kotlinx.coroutines.delay
 
@@ -75,25 +72,29 @@ private fun AchievementBanner(
     notification: AchievementNotification,
     modifier: Modifier = Modifier,
 ) {
+    val shape = Design.shapes.cardCompact
     val name = notification.achievement.tierName(notification.tier)
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-            .shadow(elevation = 8.dp, shape = RoundedCornerShape(12.dp))
-            .clip(RoundedCornerShape(12.dp))
-            .background(MaterialTheme.colorScheme.primaryContainer)
-            .padding(12.dp),
+            .padding(
+                horizontal = Design.dimensions.spacing.xxl,
+                vertical = Design.dimensions.spacing.sm,
+            )
+            .shadow(elevation = Design.dimensions.elevation.nav, shape = shape)
+            .clip(shape)
+            .background(Design.colors.surface)
+            .padding(Design.dimensions.spacing.lg),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.lg),
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.military_medal_icon),
                 contentDescription = null,
-                modifier = Modifier.size(32.dp),
-                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(Design.dimensions.spacing.section),
+                tint = Design.colors.ink,
             )
             Text(
                 text = stringResource(
@@ -101,9 +102,8 @@ private fun AchievementBanner(
                     name,
                     notification.tier.number,
                 ),
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                style = Design.typography.bodyMedium,
+                color = Design.colors.ink,
             )
         }
     }

@@ -1,18 +1,21 @@
 package com.paulcraciunas.screens.achievements.ui
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -20,16 +23,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.paulcraciunas.domain.api.achievements.Achievement
 import com.paulcraciunas.global.resources.R
+import com.paulcraciunas.screens.achievements.vm.AchievementCategory
 import com.paulcraciunas.screens.achievements.vm.AchievementsInteractor
 import com.paulcraciunas.screens.achievements.vm.AchievementsUiState
 import com.paulcraciunas.screens.achievements.vm.AchievementsUiState.AchievementState
+import com.paulcraciunas.screens.achievements.vm.AchievementsUiState.CategoryGroup
+import com.paulcraciunas.screens.achievements.vm.AchievementsUiState.TrophyCaseSummary
 import com.paulcraciunas.screens.achievements.vm.StubAchievementsInteractor
 import com.paulcraciunas.screens.common.AppBar
 import com.paulcraciunas.screens.common.FailedContent
 import com.paulcraciunas.screens.common.LoadingContent
+import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
+import com.paulcraciunas.screens.common.design.components.SectionHeader
+import com.paulcraciunas.screens.common.design.components.SpacerSize
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,17 +61,19 @@ fun AchievementsScreen(
         contentWindowInsets = WindowInsets.navigationBars,
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     ) { innerPadding ->
+        val contentsModifier = Modifier
+            .fillMaxSize()
+            .background(Design.colors.primarySoft)
+            .padding(innerPadding)
         when {
-            state.isLoading -> LoadingContent(modifier = Modifier.fillMaxSize().padding(innerPadding))
-            state.isError -> FailedContent(modifier = Modifier.fillMaxSize().padding(innerPadding))
+            state.isLoading -> LoadingContent(modifier = contentsModifier)
+            state.isError -> FailedContent(modifier = contentsModifier)
             else -> {
                 AchievementsContent(
-                    achievements = state.achievements,
+                    summary = state.summary,
+                    categories = state.categories,
                     interactions = interactions,
-                    modifier = Modifier
-                        .padding(top = innerPadding.calculateTopPadding())
-                        .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.background)
+                    modifier = contentsModifier,
                 )
             }
         }
@@ -71,7 +82,8 @@ fun AchievementsScreen(
 
 @Composable
 private fun AchievementsContent(
-    achievements: List<AchievementState>,
+    summary: TrophyCaseSummary,
+    categories: List<CategoryGroup>,
     interactions: AchievementsInteractor,
     modifier: Modifier = Modifier,
 ) {
@@ -80,13 +92,59 @@ private fun AchievementsContent(
     }
     LazyColumn(
         modifier = modifier,
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        contentPadding = PaddingValues(vertical = Design.dimensions.spacing.lg),
+        verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.sm),
     ) {
-        items(achievements, key = { it.achievement.name }) { achievement ->
-            AchievementCard(item = achievement)
+        item(key = "trophy_case") {
+            TrophyCaseHero(
+                summary = summary,
+                modifier = Modifier.padding(horizontal = Design.dimensions.spacing.xxl),
+            )
+        }
+
+        categories.forEach { group ->
+            item(key = "header_${group.category.name}") {
+                Column(
+                    modifier = Modifier.padding(horizontal = Design.dimensions.spacing.xxl),
+                ) {
+                    SectionHeader(title = stringResource(group.category.labelRes()))
+                    Text(
+                        text = stringResource(
+                            R.string.achievement_earned_count,
+                            group.earnedCount,
+                            group.totalCount,
+                        ),
+                        style = Design.typography.bodySmall,
+                        color = Design.colors.inkSoft,
+                    )
+                    ChessGymSpacer(size = SpacerSize.DEFAULT)
+                }
+            }
+
+            item(key = "row_${group.category.name}") {
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.lg),
+                    contentPadding = PaddingValues(horizontal = Design.dimensions.spacing.xxl),
+                ) {
+                    items(group.achievements, key = { it.achievement.name }) { achievement ->
+                        AchievementTile(item = achievement)
+                    }
+                }
+            }
+        }
+        item(key = "bottom_spacer") {
+            ChessGymSpacer(size = SpacerSize.SECTION)
         }
     }
+}
+
+@StringRes
+private fun AchievementCategory.labelRes(): Int = when (this) {
+    AchievementCategory.PUZZLES -> R.string.achievement_group_puzzles
+    AchievementCategory.RUSH_AND_STREAK -> R.string.achievement_group_rush_and_streak
+    AchievementCategory.BOARD_VISION -> R.string.achievement_group_board_vision
+    AchievementCategory.SKILL_AND_MASTERY -> R.string.achievement_group_skill_and_mastery
+    AchievementCategory.DEDICATION -> R.string.achievement_group_dedication
 }
 
 @Preview("Achievements")
@@ -97,29 +155,56 @@ private fun AchievementsScreenPreview() {
         AchievementsScreen(
             state = AchievementsUiState(
                 isLoading = false,
-                achievements = listOf(
-                    AchievementState.Complete(
-                        achievement = Achievement.RATING_CLIMBER,
-                        unseen = false,
+                summary = TrophyCaseSummary(
+                    totalEarned = 1,
+                    totalAchievements = 20,
+                    inProgress = 5,
+                    locked = 2,
+                ),
+                categories = listOf(
+                    CategoryGroup(
+                        category = AchievementCategory.PUZZLES,
+                        earnedCount = 1,
+                        totalCount = 4,
+                        achievements = listOf(
+                            AchievementState.Complete(
+                                achievement = Achievement.RATED_PUZZLES_SOLVED,
+                                unseen = false,
+                            ),
+                            AchievementState.Earned(
+                                achievement = Achievement.FAILED_PUZZLES_REDEEMED,
+                                unseen = false,
+                                currentTier = Achievement.Tier.TWO,
+                                currentProgress = 250,
+                                nextThreshold = 1000,
+                            ),
+                            AchievementState.Unearned(
+                                achievement = Achievement.RATED_WIN_STREAK,
+                                currentProgress = 2,
+                                nextThreshold = 3,
+                            ),
+                        ),
                     ),
-                    AchievementState.Earned(
-                        achievement = Achievement.RATED_PUZZLES_SOLVED,
-                        unseen = true,
-                        currentTier = Achievement.Tier.THREE,
-                        currentProgress = 147,
-                        nextThreshold = 250,
+                    CategoryGroup(
+                        category = AchievementCategory.RUSH_AND_STREAK,
+                        earnedCount = 0,
+                        totalCount = 4,
+                        achievements = listOf(
+                            AchievementState.Earned(
+                                achievement = Achievement.PUZZLE_RUSH_SESSIONS,
+                                unseen = true,
+                                currentTier = Achievement.Tier.THREE,
+                                currentProgress = 100,
+                                nextThreshold = 250,
+                            ),
+                            AchievementState.Unearned(
+                                achievement = Achievement.STREAK_SESSIONS,
+                                currentProgress = 10,
+                                nextThreshold = 25,
+                            ),
+                        ),
                     ),
-                    AchievementState.Unearned(
-                        achievement = Achievement.PUZZLE_RUSH_SESSIONS,
-                        currentProgress = 2,
-                        nextThreshold = 5,
-                    ),
-                    AchievementState.Unearned(
-                        achievement = Achievement.BLIND_MODE_WINS,
-                        currentProgress = 0,
-                        nextThreshold = 1,
-                    ),
-                )
+                ),
             ),
             interactions = StubAchievementsInteractor(),
         )
