@@ -3,7 +3,6 @@ package com.paulcraciunas.screens.home.ui
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -79,32 +78,29 @@ private fun HomeContent(
     modifier: Modifier = Modifier,
 ) {
     val backgroundColor = Design.colors.primarySoft
-    Box(
+    LazyColumn(
+        contentPadding = PaddingValues(Design.dimensions.spacing.lg),
+        verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.lg),
         modifier = modifier
             .fillMaxSize()
             .background(backgroundColor)
-            .semantics { this.backgroundColor = backgroundColor }
+            .semantics { this.backgroundColor = backgroundColor },
     ) {
-        LazyColumn(
-            contentPadding = PaddingValues(Design.dimensions.spacing.lg),
-            verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.lg),
-        ) {
-            item { UserProfileCard(userProfile = uiState.userProfile, ribbons = uiState.ribbons) }
-            item {
-                UserStatsCard(
-                    title = stringResource(R.string.user_stats_title),
-                    stats = uiState.userStats
-                )
-            }
-            item {
-                HighScoresCard(
-                    title = stringResource(R.string.user_stats_high_score_title),
-                    stats = uiState.userStats
-                )
-            }
-
-            item { ActivityTimeline(history = uiState.history) }
+        item { UserProfileCard(userProfile = uiState.userProfile, ribbons = uiState.ribbons) }
+        item {
+            UserStatsCard(
+                title = stringResource(R.string.user_stats_title),
+                stats = uiState.userStats
+            )
         }
+        item {
+            HighScoresCard(
+                title = stringResource(R.string.user_stats_high_score_title),
+                stats = uiState.userStats
+            )
+        }
+
+        item { ActivityTimeline(history = uiState.history) }
     }
 }
 
