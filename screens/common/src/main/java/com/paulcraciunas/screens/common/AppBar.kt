@@ -1,6 +1,7 @@
 package com.paulcraciunas.screens.common
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -21,20 +22,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.Layout
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
+import com.paulcraciunas.screens.common.design.components.HairlineDivider
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
-import kotlin.math.roundToInt
 
 enum class AppBarAlignment {
     Beginning,
@@ -58,7 +52,6 @@ fun AppBar(
 ) {
     val appBarScope = remember { AppBarScope() }
     val containerColor = Design.colors.surface
-    val dividerColor = Design.colors.divider
 
     val colors = topAppBarColors(
         containerColor = containerColor,
@@ -66,12 +59,7 @@ fun AppBar(
         scrolledContainerColor = containerColor,
     )
 
-    StatusBarAppBarLayout(
-        scrollBehavior = scrollBehavior,
-        containerColor = containerColor,
-        dividerColor = dividerColor,
-        modifier = modifier,
-    ) {
+    Column(modifier = modifier) {
         when (titleAlign) {
             AppBarAlignment.Beginning -> TopAppBar(
                 colors = colors,
@@ -79,7 +67,8 @@ fun AppBar(
                 navigationIcon = { navButton(appBarScope) },
                 actions = { actions() },
                 modifier = Modifier.fillMaxWidth(),
-                windowInsets = WindowInsets(0, 0, 0, 0),
+                windowInsets = WindowInsets.statusBars,
+                scrollBehavior = scrollBehavior,
             )
 
             AppBarAlignment.Center -> CenterAlignedTopAppBar(
@@ -88,65 +77,11 @@ fun AppBar(
                 navigationIcon = { navButton(appBarScope) },
                 actions = { actions() },
                 modifier = Modifier.fillMaxWidth(),
-                windowInsets = WindowInsets(0, 0, 0, 0),
+                windowInsets = WindowInsets.statusBars,
+                scrollBehavior = scrollBehavior,
             )
         }
-    }
-}
-
-/**
- * Wraps the inner [TopAppBar] and adds the status bar height above it.
- * Owns the [scrollBehavior]'s height-offset so the **full** height —
- * including the status-bar area — is collapsible on scroll.
- *
- * The inner TopAppBar must use `windowInsets = WindowInsets(0,0,0,0)` and
- * must NOT receive the [scrollBehavior] itself (this layout drives it).
- */
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun StatusBarAppBarLayout(
-    scrollBehavior: TopAppBarScrollBehavior?,
-    containerColor: Color,
-    dividerColor: Color,
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit,
-) {
-    val density = LocalDensity.current
-    val statusBarTopPx = WindowInsets.statusBars.getTop(density)
-
-    Layout(
-        content = content,
-        modifier = modifier
-            .fillMaxWidth()
-            .clipToBounds()
-            .drawBehind {
-                drawRect(containerColor)
-                val strokeWidth = 1.dp.toPx()
-                val y = size.height - strokeWidth / 2
-                drawLine(
-                    color = dividerColor,
-                    start = Offset(0f, y),
-                    end = Offset(size.width, y),
-                    strokeWidth = strokeWidth,
-                )
-            },
-    ) { measurables, constraints ->
-        val placeable = measurables.first().measure(constraints)
-        val totalHeight = statusBarTopPx + placeable.height
-
-        if (scrollBehavior != null) {
-            val limit = -totalHeight.toFloat()
-            if (scrollBehavior.state.heightOffsetLimit != limit) {
-                scrollBehavior.state.heightOffsetLimit = limit
-            }
-        }
-
-        val offset = scrollBehavior?.state?.heightOffset?.roundToInt() ?: 0
-        val visibleHeight = (totalHeight + offset).coerceAtLeast(0)
-
-        layout(constraints.maxWidth, visibleHeight) {
-            placeable.place(0, statusBarTopPx + offset)
-        }
+        HairlineDivider(modifier = Modifier.fillMaxWidth())
     }
 }
 
@@ -164,11 +99,12 @@ class AppBarScope internal constructor() {
     @Composable
     fun Home(
         onClick: () -> Unit,
-        modifier: Modifier = Modifier
+        modifier: Modifier = Modifier,
     ) {
         IconButton(
             onClick = { onClick() },
-            modifier = modifier.padding(horizontal = Design.dimensions.spacing.xl)
+            modifier = modifier
+                .padding(horizontal = Design.dimensions.spacing.xl)
                 .size(Design.dimensions.sizes.iconButton)
                 .testTag(AppBarTags.HOME_BUTTON)
         ) {
@@ -184,11 +120,12 @@ class AppBarScope internal constructor() {
     @Composable
     fun Back(
         onClick: () -> Unit,
-        modifier: Modifier = Modifier
+        modifier: Modifier = Modifier,
     ) {
         IconButton(
             onClick = { onClick() },
-            modifier = modifier.padding(horizontal = Design.dimensions.spacing.xl)
+            modifier = modifier
+                .padding(horizontal = Design.dimensions.spacing.xl)
                 .size(Design.dimensions.sizes.iconButton)
                 .testTag(AppBarTags.BACK_BUTTON)
         ) {
