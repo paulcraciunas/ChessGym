@@ -18,8 +18,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.screens.common.design.theme.Design
+import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 enum class ChessGymCardStyle { HIGHLIGHT, MUTED }
 
@@ -85,7 +87,7 @@ fun SectionHeader(
         HairlineDivider(
             modifier = Modifier
                 .padding(horizontal = Design.dimensions.spacing.sm)
-                .fillMaxWidth()
+                .weight(1f)
         )
         if (trailing != null) {
             Box(Modifier.padding(start = Design.dimensions.spacing.sm)) { trailing() }
@@ -94,7 +96,7 @@ fun SectionHeader(
 }
 
 @Composable
-private fun DangerBlock(
+fun DangerBlock(
     title: String,
     items: List<String>,
     modifier: Modifier = Modifier,
@@ -146,5 +148,59 @@ fun BrassRule(modifier: Modifier = Modifier) {
                 .background(Design.colors.accent.copy(alpha = 0.6f), Design.shapes.soft)
         )
         HairlineDivider(modifier = Modifier.weight(1f))
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ChessGymCardPreview() {
+    ChessGymTheme {
+        Column(modifier = Modifier.padding(16.dp)) {
+            ChessGymCard {
+                Text(text = "This is a highlight card", color = Design.colors.ink)
+            }
+            Spacer(modifier = Modifier.size(16.dp))
+            ChessGymCard(style = ChessGymCardStyle.MUTED) {
+                Text(text = "This is a muted card", color = Design.colors.ink)
+            }
+            Spacer(modifier = Modifier.size(16.dp))
+            ChessGymHeroCard {
+                Text(text = "This is a hero card", color = Design.colors.ink)
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun SectionHeaderPreview() {
+    ChessGymTheme {
+        Column(modifier = Modifier.padding(16.dp)) {
+            SectionHeader(title = "Puzzles")
+            SectionHeader(
+                title = "Analysis",
+                trailing = { Text("View All", color = Design.colors.primary) }
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun DangerBlockPreview() {
+    ChessGymTheme {
+        DangerBlock(
+            title = "Danger Zone",
+            items = listOf("Delete Account", "Clear History"),
+            modifier = Modifier.padding(16.dp)
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun BrassRulePreview() {
+    ChessGymTheme {
+        BrassRule(modifier = Modifier.padding(16.dp))
     }
 }
