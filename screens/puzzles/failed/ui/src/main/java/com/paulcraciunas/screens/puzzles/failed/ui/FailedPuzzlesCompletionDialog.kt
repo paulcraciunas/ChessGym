@@ -22,11 +22,10 @@ internal fun FailedPuzzlesCompletionDialog(
                 title = stringResource(R.string.puzzle_mode_failed_title),
             )
         },
-        confirmButton = {
+        buttons = {
             Primary(
                 text = stringResource(R.string.generic_continue),
                 onClick = onDismiss,
-                modifier = Modifier.testTag { FailedPuzzlesScreenTags.Completion.DISMISS },
             )
         },
         modifier = modifier.testTag { FailedPuzzlesScreenTags.Completion.DIALOG },

@@ -21,7 +21,7 @@ internal fun RushSummaryDialog(
                 title = stringResource(R.string.puzzle_rush_summary_title),
             )
         },
-        confirmButton = {
+        buttons = {
             Primary(
                 text = stringResource(R.string.generic_continue),
                 onClick = onDismiss,

@@ -54,17 +54,12 @@ internal fun ImportGameDialog(
     ChessGymDialog(
         onDismissRequest = onDismiss,
         title = { SimpleTitle(title = dialogTitle) },
-        confirmButton = {
-            Standard(
-                text = stringResource(R.string.import_dialog_confirm),
-                onClick = { onImport(text) },
-                modifier = Modifier.testTag { ImportGameScreenTags.IMPORT_CONFIRM },
-            )
-        },
-        dismissButton = {
-            Standard(
-                text = stringResource(R.string.import_dialog_cancel),
-                onClick = onDismiss,
+        buttons = {
+            Paired(
+                confirmText = stringResource(R.string.import_dialog_confirm),
+                onConfirm = { onImport(text) },
+                dismissText = stringResource(R.string.import_dialog_cancel),
+                onDismiss = onDismiss,
             )
         },
         modifier = modifier,

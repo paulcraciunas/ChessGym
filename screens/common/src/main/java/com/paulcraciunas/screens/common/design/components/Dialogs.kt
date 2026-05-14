@@ -5,28 +5,30 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.design.theme.Design
+import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 /**
@@ -39,37 +41,32 @@ import com.paulcraciunas.screens.common.theme.ChessGymTheme
  * The [body] lambda is scoped to [DialogBodyScope], which offers predefined composables
  * for common body layouts (Summary, Message, etc.).
  *
- * Buttons are split into [confirmButton] (required, scoped to [DialogButtonScope]) and
- * [dismissButton] (optional, scoped to [DialogDismissScope]) to preserve AlertDialog's
- * built-in accessibility and overflow handling.
+ * Buttons are applied via [buttons], (scoped to [DialogButtonScope]).
  */
 @Composable
 fun ChessGymDialog(
     onDismissRequest: () -> Unit,
-    confirmButton: @Composable DialogButtonScope.() -> Unit,
+    buttons: @Composable DialogButtonScope.() -> Unit,
     modifier: Modifier = Modifier,
     title: (@Composable DialogTitleScope.() -> Unit),
-    dismissButton: (@Composable DialogDismissScope.() -> Unit)? = null,
     body: (@Composable DialogBodyScope.() -> Unit) = {},
 ) {
     val titleScope = remember { DialogTitleScope() }
     val bodyScope = remember { DialogBodyScope() }
-    val confirmScope = remember { DialogButtonScope() }
-    val dismissScope = remember { DialogDismissScope() }
+    val buttonsScope = remember { DialogButtonScope() }
 
     AlertDialog(
+        containerColor = Design.colors.surface,
         onDismissRequest = onDismissRequest,
         modifier = modifier,
         title = { titleScope.title() },
         text = { bodyScope.body() },
-        confirmButton = { confirmScope.confirmButton() },
-        dismissButton = if (dismissButton != null) {
-            { dismissScope.dismissButton() }
-        } else {
-            null
-        },
+        confirmButton = { buttonsScope.buttons() },
+        dismissButton = null
     )
 }
+
+enum class DialogIconTone { Accent, Danger }
 
 @Stable
 class DialogTitleScope internal constructor() {
@@ -79,11 +76,7 @@ class DialogTitleScope internal constructor() {
         title: String,
         modifier: Modifier = Modifier,
     ) {
-        DialogHeader(
-            eyebrow = eyebrow,
-            title = title,
-            modifier = modifier,
-        )
+        DialogHeader(eyebrow = eyebrow, title = title, modifier = modifier)
     }
 
     @Composable
@@ -91,12 +84,9 @@ class DialogTitleScope internal constructor() {
         title: String,
         icon: ImageVector,
         modifier: Modifier = Modifier,
+        tone: DialogIconTone = DialogIconTone.Danger,
     ) {
-        DialogHeader(
-            title = title,
-            icon = icon,
-            modifier = modifier,
-        )
+        DialogHeader(title = title, icon = icon, iconTone = tone, modifier = modifier)
     }
 
     @Composable
@@ -104,10 +94,50 @@ class DialogTitleScope internal constructor() {
         title: String,
         modifier: Modifier = Modifier,
     ) {
-        DialogHeader(
-            title = title,
-            modifier = modifier,
-        )
+        DialogHeader(title = title, modifier = modifier)
+    }
+}
+
+@Composable
+private fun DialogHeader(
+    modifier: Modifier = Modifier,
+    eyebrow: String? = null,
+    title: String? = null,
+    icon: ImageVector? = null,
+    iconTone: DialogIconTone = DialogIconTone.Danger,
+) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        if (icon != null) {
+            IconBadge(
+                imageVector = icon,
+                style = IconStyle.Circle,
+                borderType = when (iconTone) {
+                    DialogIconTone.Accent -> IconBorderType.None
+                    DialogIconTone.Danger -> IconBorderType.Hard
+                },
+                tint = when (iconTone) {
+                    DialogIconTone.Accent -> IconTintType.Accent
+                    DialogIconTone.Danger -> IconTintType.Danger
+                },
+            )
+            ChessGymSpacer(size = SpacerSize.DEFAULT)
+        }
+        if (eyebrow != null) {
+            Eyebrow(text = eyebrow)
+            ChessGymSpacer(size = SpacerSize.SMALL)
+        }
+        if (title != null) {
+            Text(
+                text = title,
+                style = Design.typography.headlineLarge,
+                color = Design.colors.ink,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
     }
 }
 
@@ -124,41 +154,40 @@ class DialogButtonScope internal constructor() {
         PrimaryButton(
             text = text,
             onClick = onClick,
-            modifier = modifier.fillMaxWidth(),
+            modifier = modifier.testTag { ChessGymDialogTags.CONFIRM }.fillMaxWidth(),
         )
     }
 
-    /** Text button — for confirm/dismiss pairs. */
+    /**
+     * Two equally-weighted buttons — outlined dismiss + filled confirm.
+     * Pass this as confirmButton with dismissButton = null, since
+     * it renders both buttons itself.
+     */
     @Composable
-    fun Standard(
-        text: String,
-        onClick: () -> Unit,
-        modifier: Modifier = Modifier,
+    fun Paired(
+        confirmText: String,
+        onConfirm: () -> Unit,
+        dismissText: String,
+        onDismiss: () -> Unit,
         isDestructive: Boolean = false,
     ) {
-        TextButton(onClick = onClick, modifier = modifier) {
-            Text(
-                text = text,
-                color = if (isDestructive) Design.colors.danger else Design.colors.primary,
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.md),
+        ) {
+            PrimaryButton(
+                text = dismissText,
+                onClick = onDismiss,
+                style = PrimaryButtonStyle.Clear,
+                modifier = Modifier.testTag { ChessGymDialogTags.DISMISS }
+                    .weight(1f)
+                    .height(Design.dimensions.sizes.primaryButton),
             )
-        }
-    }
-}
-
-/** Scoped receiver for [ChessGymDialog] dismiss-button slot. */
-@Stable
-class DialogDismissScope internal constructor() {
-    /** Text button — for dismiss actions. */
-    @Composable
-    fun Standard(
-        text: String,
-        onClick: () -> Unit,
-        modifier: Modifier = Modifier,
-    ) {
-        TextButton(onClick = onClick, modifier = modifier) {
-            Text(
-                text = text,
-                color = Design.colors.primary,
+            PrimaryButton(
+                text = confirmText,
+                onClick = onConfirm,
+                style = if (isDestructive) PrimaryButtonStyle.Danger else PrimaryButtonStyle.Normal,
+                modifier = Modifier.testTag { ChessGymDialogTags.CONFIRM }.weight(1f),
             )
         }
     }
@@ -211,34 +240,41 @@ class DialogBodyScope internal constructor() {
         }
     }
 
-    /** Plain body text — for confirmation/info dialogs. */
+    /** Centered body text — for confirmation/info dialogs. */
     @Composable
     fun Message(text: String) {
         Text(
             text = text,
             style = Design.typography.bodyLarge,
             color = Design.colors.inkSoft,
+            textAlign = TextAlign.Center,
         )
     }
 
-    /** Warning message with secondary explanation — for destructive confirmations. */
+    /** Centered rich body text — for messages with bold/italic spans. */
     @Composable
-    fun WarningMessage(
-        text: String,
-        explanation: String,
+    fun Message(text: AnnotatedString) {
+        Text(
+            text = text,
+            style = Design.typography.bodyLarge,
+            color = Design.colors.inkSoft,
+            textAlign = TextAlign.Center,
+        )
+    }
+
+    /** Danger-tinted callout with bullet list — for destructive consequence warnings. */
+    @Composable
+    fun Danger(
+        title: String,
+        items: List<String>,
+        modifier: Modifier = Modifier,
     ) {
-        Column(verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.sm)) {
-            Text(
-                text = text,
-                style = Design.textStyles.title,
-                color = Design.colors.inkSoft,
-            )
-            Text(
-                text = explanation,
-                style = Design.typography.bodyLarge,
-                color = Design.colors.inkMuted,
-            )
-        }
+        ChessGymSpacer(size = SpacerSize.LARGE)
+        DangerBlock(
+            title = title,
+            items = items,
+            modifier = modifier,
+        )
     }
 
     /** Centered body text — for completion/info messages below a Summary. */
@@ -260,53 +296,21 @@ class DialogBodyScope internal constructor() {
     }
 }
 
-@Composable
-private fun DialogHeader(
-    modifier: Modifier = Modifier,
-    eyebrow: String? = null,
-    title: String? = null,
-    icon: ImageVector? = null,
-) {
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        if (icon != null) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = Design.colors.danger,
-                modifier = Modifier.size(Design.dimensions.spacing.section),
-            )
-            ChessGymSpacer(size = SpacerSize.LARGE)
-        }
-        if (eyebrow != null) {
-            Eyebrow(text = eyebrow)
-            ChessGymSpacer(size = SpacerSize.SMALL)
-        }
-        if (title != null) {
-            Text(
-                text = title,
-                style = Design.typography.headlineLarge,
-                color = Design.colors.ink,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth(),
-            )
-        }
-    }
+object ChessGymDialogTags {
+    const val CONFIRM = "ChessGymDialog_confirm"
+    const val DISMISS = "ChessGymDialog_dismiss"
 }
 
 @Composable
 private fun ChessGymDialogPreviewContent(
-    confirmButton: @Composable DialogButtonScope.() -> Unit,
+    buttons: @Composable DialogButtonScope.() -> Unit,
     title: (@Composable DialogTitleScope.() -> Unit)? = null,
-    dismissButton: (@Composable DialogDismissScope.() -> Unit)? = null,
     body: (@Composable DialogBodyScope.() -> Unit)? = null,
 ) {
     Card(
         shape = MaterialTheme.shapes.extraLarge,
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
+            containerColor = Design.colors.surface,
         ),
         modifier = Modifier.padding(16.dp),
     ) {
@@ -322,16 +326,11 @@ private fun ChessGymDialogPreviewContent(
                 with(DialogBodyScope()) { body() }
                 ChessGymSpacer(size = SpacerSize.HUGE)
             }
-            if (dismissButton != null) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End,
-                ) {
-                    with(DialogDismissScope()) { dismissButton() }
-                    with(DialogButtonScope()) { confirmButton() }
-                }
-            } else {
-                with(DialogButtonScope()) { confirmButton() }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+            ) {
+                with(DialogButtonScope()) { buttons() }
             }
         }
     }
@@ -344,7 +343,7 @@ private fun SummaryDialogPreview() {
     ChessGymTheme {
         ChessGymDialogPreviewContent(
             title = { EyebrowTitle(eyebrow = "Puzzle Rush", title = "Run complete") },
-            confirmButton = { Primary(text = "Continue", onClick = {}) },
+            buttons = { Primary(text = "Continue", onClick = {}) },
         ) {
             Summary(value = "12", subtitle = "Puzzles Solved")
         }
@@ -358,7 +357,7 @@ private fun SummaryHighScoreDialogPreview() {
     ChessGymTheme {
         ChessGymDialogPreviewContent(
             title = { EyebrowTitle(eyebrow = "Puzzle Rush", title = "Run complete") },
-            confirmButton = { Primary(text = "Continue", onClick = {}) },
+            buttons = { Primary(text = "Continue", onClick = {}) },
         ) {
             Summary(value = "19", subtitle = "Puzzles Solved")
             HighScoreBadge(text = "New high score")
@@ -372,11 +371,23 @@ private fun SummaryHighScoreDialogPreview() {
 private fun ConfirmationDialogPreview() {
     ChessGymTheme {
         ChessGymDialogPreviewContent(
-            title = { SimpleTitle(title = "Sign Out") },
-            confirmButton = { Standard(text = "OK", onClick = {}) },
-            dismissButton = { Standard(text = "Cancel", onClick = {}) },
+            title = {
+                IconTitle(
+                    title = "Sign out?",
+                    icon = Icons.AutoMirrored.Filled.ExitToApp,
+                    tone = DialogIconTone.Accent,
+                )
+            },
+            buttons = {
+                Paired(
+                    confirmText = "Sign out",
+                    onConfirm = {},
+                    dismissText = "Cancel",
+                    onDismiss = {},
+                )
+            },
         ) {
-            Message(text = "Are you sure you want to sign out? You can sign back in at any time.")
+            Message(text = "Are you sure you want to sign out? Your progress is saved — you can sign back in at any time.")
         }
     }
 }
@@ -387,13 +398,31 @@ private fun ConfirmationDialogPreview() {
 private fun DestructiveDialogPreview() {
     ChessGymTheme {
         ChessGymDialogPreviewContent(
-            title = { IconTitle(title = "Delete Account", icon = Icons.Default.Warning) },
-            confirmButton = { Standard(text = "Delete", onClick = {}, isDestructive = true) },
-            dismissButton = { Standard(text = "Cancel", onClick = {}) },
+            title = {
+                IconTitle(
+                    title = "Delete account?",
+                    icon = Icons.Default.Warning,
+                    tone = DialogIconTone.Danger,
+                )
+            },
+            buttons = {
+                Paired(
+                    confirmText = "Delete",
+                    onConfirm = {},
+                    dismissText = "Cancel",
+                    onDismiss = {},
+                    isDestructive = true,
+                )
+            },
         ) {
-            WarningMessage(
-                text = "This will permanently delete your account and all associated data.",
-                explanation = "Your puzzles, ratings, and achievements will be lost forever.",
+            Message(text = annotatedTextResource(R.string.delete_account_dialog_body))
+            Danger(
+                title = "You will lose",
+                items = listOf(
+                    "Puzzles solved & ratings",
+                    "Streaks & achievements",
+                    "Saved games & analyses",
+                ),
             )
         }
     }
@@ -406,7 +435,7 @@ private fun CompletionDialogPreview() {
     ChessGymTheme {
         ChessGymDialogPreviewContent(
             title = { EyebrowTitle(eyebrow = "All Done!", title = "Failed Puzzles") },
-            confirmButton = { Primary(text = "Continue", onClick = {}) },
+            buttons = { Primary(text = "Continue", onClick = {}) },
         ) {
             Summary(value = "8", subtitle = "Puzzles Solved")
             CenteredMessage(text = "Great work! You solved all the puzzles you previously got wrong.")

@@ -8,6 +8,5 @@ object FailedPuzzlesScreenTags {
     object Completion {
         private const val COMPLETION = "${PREFIX}completion_"
         const val DIALOG = "${COMPLETION}dialog"
-        const val DISMISS = "${COMPLETION}dismiss"
     }
 }

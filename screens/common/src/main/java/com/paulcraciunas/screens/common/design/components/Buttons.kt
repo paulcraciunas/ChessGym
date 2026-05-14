@@ -13,8 +13,11 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.paulcraciunas.screens.common.design.theme.Design
+
+enum class PrimaryButtonStyle { Clear, Normal, Danger }
 
 /** Solid primary button — for the dominant CTA on a screen. */
 @Composable
@@ -22,6 +25,7 @@ fun PrimaryButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    style: PrimaryButtonStyle = PrimaryButtonStyle.Normal,
     leadingIcon: ImageVector? = null,
     enabled: Boolean = true,
 ) {
@@ -30,9 +34,10 @@ fun PrimaryButton(
         modifier = modifier.height(Design.dimensions.sizes.primaryButton),
         enabled = enabled,
         shape = Design.shapes.button,
+        border = if (style == PrimaryButtonStyle.Clear) borderSoft() else null,
         colors = ButtonDefaults.buttonColors(
-            containerColor = Design.colors.primaryDeep,
-            contentColor = Design.colors.onPrimary,
+            containerColor = style.containerColor(),
+            contentColor = style.contentColor(),
         ),
         contentPadding = PaddingValues(horizontal = Design.dimensions.spacing.gut, vertical = Design.dimensions.spacing.lg),
     ) {
@@ -40,7 +45,7 @@ fun PrimaryButton(
             Icon(imageVector = leadingIcon, contentDescription = null, modifier = Modifier.size(Design.dimensions.sizes.primaryButtonIcon))
             ChessGymSpacer()
         }
-        Text(text = text, style = MaterialTheme.typography.titleMedium)
+        Text(text = text, style = MaterialTheme.typography.titleLarge)
     }
 }
 
@@ -50,6 +55,7 @@ fun PrimaryPillButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    style: PrimaryButtonStyle = PrimaryButtonStyle.Normal,
     leadingIcon: ImageVector? = null,
     enabled: Boolean = true,
 ) {
@@ -59,8 +65,8 @@ fun PrimaryPillButton(
         enabled = enabled,
         shape = Design.shapes.circle,
         colors = ButtonDefaults.buttonColors(
-            containerColor = Design.colors.primary,
-            contentColor = Design.colors.onPrimary,
+            containerColor = style.containerColor(),
+            contentColor = style.contentColor(),
         ),
         contentPadding = PaddingValues(horizontal = Design.dimensions.spacing.xgut, vertical = Design.dimensions.spacing.md),
     ) {
@@ -114,4 +120,18 @@ fun IconCircleButton(
             modifier = Modifier.size(Design.dimensions.sizes.icon)
         )
     }
+}
+
+@Composable
+private fun PrimaryButtonStyle.containerColor(): Color = when (this) {
+    PrimaryButtonStyle.Clear -> Design.colors.surface
+    PrimaryButtonStyle.Normal -> Design.colors.primaryDeep
+    PrimaryButtonStyle.Danger -> Design.colors.danger
+}
+
+@Composable
+private fun PrimaryButtonStyle.contentColor(): Color = when (this) {
+    PrimaryButtonStyle.Clear -> Design.colors.inkSoft
+    PrimaryButtonStyle.Normal -> Design.colors.onPrimary
+    PrimaryButtonStyle.Danger -> Color.White
 }

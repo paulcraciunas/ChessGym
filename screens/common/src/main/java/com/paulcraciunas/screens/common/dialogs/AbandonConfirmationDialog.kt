@@ -35,19 +35,13 @@ fun AbandonConfirmationDialog(
     ChessGymDialog(
         onDismissRequest = onDismiss,
         title = { SimpleTitle(title = stringResource(type.getTitle())) },
-        confirmButton = {
-            Standard(
-                text = stringResource(R.string.abandon_puzzle_confirm),
-                onClick = onConfirm,
+        buttons = {
+            Paired(
+                confirmText = stringResource(R.string.abandon_puzzle_confirm),
+                onConfirm = onConfirm,
+                dismissText = stringResource(R.string.abandon_puzzle_cancel),
+                onDismiss = onDismiss,
                 isDestructive = true,
-                modifier = Modifier.testTag { AbandonConfirmationDialogTags.CONFIRM },
-            )
-        },
-        dismissButton = {
-            Standard(
-                text = stringResource(R.string.abandon_puzzle_cancel),
-                onClick = onDismiss,
-                modifier = Modifier.testTag { AbandonConfirmationDialogTags.DISMISS },
             )
         },
         modifier = Modifier.testTag { AbandonConfirmationDialogTags.DIALOG },
