@@ -148,7 +148,7 @@ internal class FailedPuzzlesScreenTest : BaseUiTest() {
 
         Then.puzzleDashboard
             .isDisplayed()
-            .failedPuzzlesCardIsNotClickable()
+            .failedPuzzlesCardIsNotEnabled()
     }
 
     @Test
@@ -167,7 +167,7 @@ internal class FailedPuzzlesScreenTest : BaseUiTest() {
 
         Then.puzzleDashboard
             .isDisplayed()
-            .failedPuzzlesCardIsClickable()
+            .failedPuzzlesCardIsEnabled()
     }
 
     @Test
@@ -175,7 +175,7 @@ internal class FailedPuzzlesScreenTest : BaseUiTest() {
         When.appIsLaunched()
         When.navigation.navigateToPuzzles()
 
-        Then.puzzleDashboard.failedPuzzlesCardIsNotClickable()
+        Then.puzzleDashboard.failedPuzzlesCardIsNotEnabled()
     }
 
     @Test
@@ -185,7 +185,7 @@ internal class FailedPuzzlesScreenTest : BaseUiTest() {
         When.appIsLaunched()
         When.navigation.navigateToPuzzles()
 
-        Then.puzzleDashboard.failedPuzzlesCardIsClickable()
+        Then.puzzleDashboard.failedPuzzlesCardIsEnabled()
     }
 
     @Test
@@ -201,7 +201,7 @@ internal class FailedPuzzlesScreenTest : BaseUiTest() {
 
         When.failedPuzzles.dismissCompletion()
         When.navigation.goBack()
-        Then.puzzleDashboard.failedPuzzlesCardIsNotClickable()
+        Then.puzzleDashboard.failedPuzzlesCardIsNotEnabled()
     }
 
     private companion object {

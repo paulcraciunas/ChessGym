@@ -1,8 +1,8 @@
 package com.paulcraciunas.chessgym.dsl.assertions
 
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasTestTag
+import androidx.compose.ui.test.isEnabled
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performScrollTo
@@ -38,16 +38,15 @@ class PuzzleDashboardAssertions(private val rule: ComposeTestRule) {
             .assertIsDisplayed()
     }
 
-    fun failedPuzzlesCardIsClickable(): PuzzleDashboardAssertions = apply {
+    fun failedPuzzlesCardIsEnabled(): PuzzleDashboardAssertions = apply {
         rule.onNode(
-            hasTestTag(PuzzleDashboardTags.Cards.FAILED_PUZZLES) and hasClickAction()
+            hasTestTag(PuzzleDashboardTags.Cards.FAILED_PUZZLES) and isEnabled()
         ).performScrollTo().assertIsDisplayed()
     }
 
-    // TODO Paul: this is broken. FIXME!!
-    fun failedPuzzlesCardIsNotClickable(): PuzzleDashboardAssertions = apply {
+    fun failedPuzzlesCardIsNotEnabled(): PuzzleDashboardAssertions = apply {
         rule.onNode(
-            hasTestTag(PuzzleDashboardTags.Cards.FAILED_PUZZLES) and !hasClickAction()
+            hasTestTag(PuzzleDashboardTags.Cards.FAILED_PUZZLES) and !isEnabled()
         ).performScrollTo().assertIsDisplayed()
     }
 

@@ -55,7 +55,7 @@ internal class PuzzleDashboardScreenTest : BaseUiTest() {
         When.appIsLaunched()
         When.navigation.navigateToPuzzles()
 
-        Then.puzzleDashboard.failedPuzzlesCardIsNotClickable()
+        Then.puzzleDashboard.failedPuzzlesCardIsNotEnabled()
     }
 
     @Test
@@ -65,7 +65,7 @@ internal class PuzzleDashboardScreenTest : BaseUiTest() {
         When.appIsLaunched()
         When.navigation.navigateToPuzzles()
 
-        Then.puzzleDashboard.failedPuzzlesCardIsClickable()
+        Then.puzzleDashboard.failedPuzzlesCardIsEnabled()
     }
 
     @Test
