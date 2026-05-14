@@ -162,6 +162,13 @@ internal val WalnutTextStyles = DefaultTextStyles(
         lineHeight = 18.sp,
         letterSpacing = 1.4.sp,
     ),
+    displayNumericLarge = TextStyle(
+        fontFamily = InstrumentSerif,
+        fontWeight = FontWeight.Bold,
+        fontSize = 68.sp,
+        lineHeight = 72.sp,
+        letterSpacing = (-2).sp,
+    ),
     displayNumeric = TextStyle(
         fontFamily = InstrumentSerif,
         fontWeight = FontWeight.Normal,

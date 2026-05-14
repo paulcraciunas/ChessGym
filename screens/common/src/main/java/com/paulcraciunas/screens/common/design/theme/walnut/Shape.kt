@@ -27,6 +27,13 @@ internal val WalnutShapes = ChessGymShape(
     circle = CircleShape,
     navBar = RoundedCornerShape(WalnutRadii.xxl),
     button = RoundedCornerShape(WalnutRadii.lg),
+    borderAccent = RoundedCornerShape(
+        topStart = WalnutRadii.md,
+        bottomStart = WalnutRadii.md,
+        topEnd = WalnutRadii.none,
+        bottomEnd = WalnutRadii.none
+    ),
+    buttonOutline = RoundedCornerShape(WalnutRadii.md),
     buttonPill = RoundedCornerShape(WalnutRadii.pill),
 )
 

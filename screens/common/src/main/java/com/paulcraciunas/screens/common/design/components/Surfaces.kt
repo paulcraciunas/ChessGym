@@ -1,13 +1,20 @@
 package com.paulcraciunas.screens.common.design.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,6 +23,10 @@ import com.paulcraciunas.screens.common.design.theme.Design
 
 enum class ChessGymCardStyle { HIGHLIGHT, MUTED }
 
+/**
+ * The standard ChessGym card surface — soft cream/walnut background, hairline
+ * border, sm shadow.
+ */
 @Composable
 fun ChessGymCard(
     modifier: Modifier = Modifier,
@@ -35,28 +46,6 @@ fun ChessGymCard(
         Box(modifier = Modifier.padding(contentPadding)) { content() }
     }
 }
-
-/**
- * The standard ChessGym card surface — soft cream/walnut background, hairline
- * border, sm shadow.
- */
-//@Composable
-//fun ChessGymCard(
-//    modifier: Modifier = Modifier,
-//    contentPadding: PaddingValues = PaddingValues(Design.dimensions.spacing.xxl),
-//    content: @Composable () -> Unit,
-//) {
-//    Surface(
-//        modifier = modifier,
-//        shape = Design.shapes.card,
-//        color = Design.colors.bg,
-//        tonalElevation = Design.dimensions.elevation.sm,
-//        shadowElevation = Design.dimensions.elevation.sm,
-//        border = borderSoft(),
-//    ) {
-//        Box(modifier = Modifier.padding(contentPadding)) { content() }
-//    }
-//}
 
 /**
  * Full-bleed elevated card — for hero rows like the Home profile block.
@@ -100,6 +89,47 @@ fun SectionHeader(
         )
         if (trailing != null) {
             Box(Modifier.padding(start = Design.dimensions.spacing.sm)) { trailing() }
+        }
+    }
+}
+
+@Composable
+private fun DangerBlock(
+    title: String,
+    items: List<String>,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(Design.colors.surfaceAlt, Design.shapes.buttonOutline)
+            .border(borderSoft(), Design.shapes.buttonOutline)
+            // 3dp left border accent
+            .padding(start = Design.dimensions.spacing.xs)
+            .background(Design.colors.danger, Design.shapes.borderAccent)
+            // body
+            .padding(start = Design.dimensions.spacing.none)
+            .background(color = Design.colors.surfaceAlt, shape = Design.shapes.borderAccent)
+            .padding(horizontal = Design.dimensions.spacing.lg, vertical = Design.dimensions.spacing.md),
+    ) {
+        Eyebrow(text = title, type = EyebrowType.Danger)
+        items.forEach { line ->
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(top = Design.dimensions.spacing.xs),
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(Design.dimensions.sizes.bulletPoint)
+                        .background(Design.colors.danger, CircleShape)
+                )
+                Spacer(modifier = Modifier.width(Design.dimensions.spacing.sm))
+                Text(
+                    text = line,
+                    color = Design.colors.inkSoft,
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
         }
     }
 }

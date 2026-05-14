@@ -28,19 +28,35 @@ import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 enum class ChipTone { Soft, Accent, Solved, Failed, Earned, Locked }
 
+enum class ChipStyle { Default, Large }
+
 /** Small rounded label-chip. Defaults to "Soft" tone (primary tint). */
 @Composable
 fun ChessGymChip(
     text: String,
     modifier: Modifier = Modifier,
     tone: ChipTone = ChipTone.Soft,
+    style: ChipStyle = ChipStyle.Default,
     leadingIcon: ImageVector? = null,
 ) {
     Row(
         modifier = modifier
-            .background(color = tone.background(), shape = Design.shapes.circle)
+            .background(
+                color = tone.background(), shape = when (style) {
+                    ChipStyle.Default -> Design.shapes.circle
+                    ChipStyle.Large -> Design.shapes.button
+                }
+            )
             .circleBorder(color = tone.border())
-            .padding(horizontal = Design.dimensions.spacing.md, vertical = Design.dimensions.spacing.xxs),
+            .padding(
+                horizontal = when (style) {
+                    ChipStyle.Default -> Design.dimensions.spacing.md
+                    ChipStyle.Large -> Design.dimensions.spacing.xl
+                }, vertical = when (style) {
+                    ChipStyle.Default -> Design.dimensions.spacing.xxs
+                    ChipStyle.Large -> Design.dimensions.spacing.md
+                }
+            ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.xs),
     ) {
@@ -48,14 +64,22 @@ fun ChessGymChip(
             Icon(
                 imageVector = leadingIcon,
                 contentDescription = null,
-                tint = tone.foreground(),
-                modifier = Modifier.size(Design.dimensions.sizes.iconSmall)
+                tint = foregroundTint(tone, style),
+                modifier = Modifier.size(
+                    when (style) {
+                        ChipStyle.Default -> Design.dimensions.sizes.iconSmall
+                        ChipStyle.Large -> Design.dimensions.sizes.icon
+                    }
+                )
             )
         }
         Text(
             text = text,
-            color = tone.foreground(),
-            style = MaterialTheme.typography.labelMedium,
+            color = foregroundTint(tone, style),
+            style = when (style) {
+                ChipStyle.Default -> MaterialTheme.typography.labelMedium
+                ChipStyle.Large -> MaterialTheme.typography.titleLarge
+            },
         )
     }
 }
@@ -82,13 +106,15 @@ private fun ChipTone.background(): Color = when (this) {
 }
 
 @Composable
-private fun ChipTone.foreground(): Color = when (this) {
-    ChipTone.Soft -> Design.colors.primary
-    ChipTone.Accent -> Design.colors.chipAccentInk
-    ChipTone.Solved -> Design.colors.chipSolvedInk
-    ChipTone.Failed -> Design.colors.danger
-    ChipTone.Earned -> Design.colors.onPrimary
-    ChipTone.Locked -> Design.colors.inkMuted
+private fun foregroundTint(tone: ChipTone, style: ChipStyle): Color = when {
+    style == ChipStyle.Large -> Design.colors.chipAccentInk
+    tone == ChipTone.Soft -> Design.colors.primary
+    tone == ChipTone.Accent -> Design.colors.chipAccentInk
+    tone == ChipTone.Solved -> Design.colors.chipSolvedInk
+    tone == ChipTone.Failed -> Design.colors.danger
+    tone == ChipTone.Earned -> Design.colors.onPrimary
+    tone == ChipTone.Locked -> Design.colors.inkMuted
+    else -> Design.colors.ink
 }
 
 @Composable
@@ -110,6 +136,12 @@ private fun ChipTonesPreview() {
         ) {
             ChessGymChip(text = "Soft Chip", tone = ChipTone.Soft)
             ChessGymChip(text = "Accent Chip", tone = ChipTone.Accent)
+            ChessGymChip(
+                text = "New high score",
+                tone = ChipTone.Accent,
+                style = ChipStyle.Large,
+                leadingIcon = Icons.Default.Star,
+            )
             ChessGymChip(
                 text = "Solved Chip",
                 tone = ChipTone.Solved,

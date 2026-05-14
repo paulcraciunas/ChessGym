@@ -63,7 +63,7 @@ internal fun ClockControls(
                 Eyebrow(
                     text = stringResource(R.string.clock_time_control),
                     modifier = Modifier.testTag { ClockScreenTags.Controls.INCREMENT_SELECTOR },
-                    type = EyebrowType.SOFT,
+                    type = EyebrowType.Soft,
                 )
                 FlowRow(
                     modifier = Modifier.fillMaxWidth(),
@@ -82,7 +82,7 @@ internal fun ClockControls(
                 Eyebrow(
                     text = stringResource(R.string.clock_increment),
                     modifier = Modifier.testTag { ClockScreenTags.Controls.INCREMENT_SELECTOR },
-                    type = EyebrowType.SOFT,
+                    type = EyebrowType.Soft,
                 )
                 FlowRow(
                     modifier = Modifier.fillMaxWidth(),

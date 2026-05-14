@@ -5,7 +5,6 @@ import androidx.compose.material3.Shapes
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import com.paulcraciunas.screens.common.design.theme.walnut.WalnutRadii
 import com.paulcraciunas.screens.common.design.theme.walnut.WalnutShapes
 import com.paulcraciunas.screens.common.design.theme.walnut.WalnutStandardShapes
@@ -19,6 +18,8 @@ data class ChessGymShape(
     val circle: RoundedCornerShape,
     val navBar: RoundedCornerShape,
     val button: RoundedCornerShape,
+    val borderAccent: RoundedCornerShape,
+    val buttonOutline: RoundedCornerShape,
     val buttonPill: RoundedCornerShape,
 )
 

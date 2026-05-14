@@ -52,7 +52,7 @@ private fun ActivityGroupItem(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.sm)
     ) {
-        Eyebrow(text = group.label, type = EyebrowType.SOFT)
+        Eyebrow(text = group.label, type = EyebrowType.Soft)
         group.events.forEach { TimelineEventItem(event = it) }
     }
 }

@@ -31,7 +31,9 @@ internal val WalnutDimensions = ChessGymDimensions(
     /** Minimum interactive sizes — Material requires 48dp. */
     sizes = ChessGymDimensions.Sizes(
         primaryButton = 48.dp,
+        primaryButtonIcon = 16.dp,
         pillButton = 44.dp,
+        pillButtonIcon = 14.dp,
         outlineButton = 40.dp,
         hitTarget = 48.dp,
         iconButton = 38.dp,
@@ -48,8 +50,13 @@ internal val WalnutDimensions = ChessGymDimensions(
         toggleHeight = 24.dp,
         toggleContent = 20.dp,
         progressBar = 6.dp,
+        bulletPoint = 4.dp,
         timeControl = 80.dp,
         progressRing = 80.dp,
         trophyTile = 138.dp,
     ),
+    blur = ChessGymDimensions.Blur(
+        default = 0.dp,
+        standard = 16.dp,
+    )
 )

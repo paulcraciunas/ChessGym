@@ -20,7 +20,7 @@ fun Title(
     )
 }
 
-enum class EyebrowType { SOFT, MUTED }
+enum class EyebrowType { Soft, Muted, Danger }
 
 /**
  * Uppercase, tracked, semi-bold label sat above titles and section heads.
@@ -32,13 +32,14 @@ enum class EyebrowType { SOFT, MUTED }
 fun Eyebrow(
     text: String,
     modifier: Modifier = Modifier,
-    type: EyebrowType = EyebrowType.MUTED,
+    type: EyebrowType = EyebrowType.Muted,
 ) {
     Text(
         text = text.uppercase(),
         color = when (type) {
-            EyebrowType.SOFT -> Design.colors.inkSoft
-            EyebrowType.MUTED -> Design.colors.inkMuted
+            EyebrowType.Soft -> Design.colors.inkSoft
+            EyebrowType.Muted -> Design.colors.inkMuted
+            EyebrowType.Danger -> Design.colors.danger
         },
         style = Design.textStyles.eyebrow,
         modifier = modifier,

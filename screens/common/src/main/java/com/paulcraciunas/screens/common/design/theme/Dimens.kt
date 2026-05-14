@@ -10,6 +10,7 @@ data class ChessGymDimensions(
     val spacing: Spacing,
     val elevation: Elevation,
     val sizes: Sizes,
+    val blur: Blur,
 ) {
     @Immutable
     data class Spacing(
@@ -41,7 +42,9 @@ data class ChessGymDimensions(
     @Immutable
     data class Sizes(
         val primaryButton: Dp,
+        val primaryButtonIcon: Dp,
         val pillButton: Dp,
+        val pillButtonIcon: Dp,
         val outlineButton: Dp,
         val hitTarget: Dp,
         val iconButton: Dp,
@@ -58,10 +61,19 @@ data class ChessGymDimensions(
         val toggleHeight: Dp,
         val toggleContent: Dp,
         val progressBar: Dp,
+        val bulletPoint: Dp,
         val timeControl: Dp,
         val progressRing: Dp,
         val trophyTile: Dp,
     )
+
+    @Immutable
+    data class Blur(
+        val default: Dp,
+        val standard: Dp,
+    ) {
+        fun of(condition: Boolean) = if (condition) standard else default
+    }
 }
 
 internal val LocalChessGymDimensions = staticCompositionLocalOf<ChessGymDimensions> {

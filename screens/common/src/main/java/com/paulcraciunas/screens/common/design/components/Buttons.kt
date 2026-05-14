@@ -3,7 +3,6 @@ package com.paulcraciunas.screens.common.design.components
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -15,7 +14,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.unit.dp
 import com.paulcraciunas.screens.common.design.theme.Design
 
 /** Solid primary button — for the dominant CTA on a screen. */
@@ -31,18 +29,18 @@ fun PrimaryButton(
         onClick = onClick,
         modifier = modifier.height(Design.dimensions.sizes.primaryButton),
         enabled = enabled,
-        shape = RoundedCornerShape(Design.radii.lg),
+        shape = Design.shapes.button,
         colors = ButtonDefaults.buttonColors(
-            containerColor = Design.colors.primary,
+            containerColor = Design.colors.primaryDeep,
             contentColor = Design.colors.onPrimary,
         ),
-        contentPadding = PaddingValues(Design.dimensions.spacing.gut, vertical = Design.dimensions.spacing.lg),
+        contentPadding = PaddingValues(horizontal = Design.dimensions.spacing.gut, vertical = Design.dimensions.spacing.lg),
     ) {
         if (leadingIcon != null) {
-            Icon(leadingIcon, contentDescription = null, modifier = Modifier.size(16.dp))
+            Icon(imageVector = leadingIcon, contentDescription = null, modifier = Modifier.size(Design.dimensions.sizes.primaryButtonIcon))
             ChessGymSpacer()
         }
-        Text(text, style = MaterialTheme.typography.titleMedium)
+        Text(text = text, style = MaterialTheme.typography.titleMedium)
     }
 }
 
@@ -64,13 +62,13 @@ fun PrimaryPillButton(
             containerColor = Design.colors.primary,
             contentColor = Design.colors.onPrimary,
         ),
-        contentPadding = PaddingValues(horizontal = 24.dp, vertical = 10.dp),
+        contentPadding = PaddingValues(horizontal = Design.dimensions.spacing.xgut, vertical = Design.dimensions.spacing.md),
     ) {
         if (leadingIcon != null) {
-            Icon(leadingIcon, contentDescription = null, modifier = Modifier.size(14.dp))
+            Icon(imageVector = leadingIcon, contentDescription = null, modifier = Modifier.size(Design.dimensions.sizes.pillButtonIcon))
             ChessGymSpacer()
         }
-        Text(text, style = MaterialTheme.typography.titleMedium)
+        Text(text = text, style = MaterialTheme.typography.titleMedium)
     }
 }
 
@@ -85,15 +83,15 @@ fun OutlineSegmentButton(
     OutlinedButton(
         onClick = onClick,
         modifier = modifier.height(Design.dimensions.sizes.outlineButton),
-        shape = RoundedCornerShape(Design.radii.md),
+        shape = Design.shapes.buttonOutline,
         border = if (selected) borderPrimary() else borderSoft(),
         colors = ButtonDefaults.outlinedButtonColors(
             containerColor = if (selected) Design.colors.primarySoft else Design.colors.surface,
             contentColor = if (selected) Design.colors.primary else Design.colors.inkSoft,
         ),
-        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
+        contentPadding = PaddingValues(horizontal = Design.dimensions.spacing.lg, vertical = Design.dimensions.spacing.sm),
     ) {
-        Text(text, style = MaterialTheme.typography.labelLarge)
+        Text(text = text, style = MaterialTheme.typography.labelLarge)
     }
 }
 
@@ -107,11 +105,13 @@ fun IconCircleButton(
 ) {
     IconButton(
         onClick = onClick,
-        modifier = modifier.size(38.dp),
-        colors = IconButtonDefaults.iconButtonColors(
-            contentColor = Design.colors.ink,
-        ),
+        modifier = modifier.size(Design.dimensions.sizes.iconButton),
+        colors = IconButtonDefaults.iconButtonColors(contentColor = Design.colors.ink),
     ) {
-        Icon(icon, contentDescription = contentDescription, modifier = Modifier.size(Design.dimensions.sizes.icon))
+        Icon(
+            imageVector = icon,
+            contentDescription = contentDescription,
+            modifier = Modifier.size(Design.dimensions.sizes.icon)
+        )
     }
 }

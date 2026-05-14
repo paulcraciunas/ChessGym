@@ -16,6 +16,7 @@ data class DefaultTextStyles(
     val title: TextStyle,
     val sectionHeader: TextStyle,
     /** Big serif numerals — ratings, scores, "Up Next" hero. */
+    val displayNumericLarge: TextStyle,
     val displayNumeric: TextStyle,
     val displayNumericSmall: TextStyle,
     val monoSmall: TextStyle,
