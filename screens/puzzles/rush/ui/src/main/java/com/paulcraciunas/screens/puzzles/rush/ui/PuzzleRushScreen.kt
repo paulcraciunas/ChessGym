@@ -17,6 +17,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.game.logic.api.Side
@@ -111,6 +112,7 @@ private fun PuzzleRushContent(
     val data = uiState.data
     Column(
         modifier = modifier.fillMaxSize()
+            .blur(Design.dimensions.blur.of(uiState is PuzzleRushUiState.Finished && uiState.showSummaryDialog))
     ) {
         // Animate board transition when puzzle count changes
         AnimatedContent(

@@ -26,6 +26,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.global.resources.R
+import com.paulcraciunas.screens.common.controls.TimerDisplay
 import com.paulcraciunas.screens.common.design.components.HairlineDivider
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
@@ -89,7 +90,7 @@ fun AppBar(
 private fun AppBarTitle(title: String) {
     Text(
         text = title,
-        style = Design.typography.titleLarge,
+        style = Design.typography.headlineSmall,
         color = Design.colors.ink,
     )
 }
@@ -185,7 +186,8 @@ internal fun Preview_Center() {
     ChessGymTheme {
         AppBar(
             title = "ChessGym",
-            titleAlign = AppBarAlignment.Center
+            titleAlign = AppBarAlignment.Center,
+            actions = {TimerDisplay(seconds = 30)}
         )
     }
 }

@@ -1,10 +1,13 @@
 package com.paulcraciunas.screens.common.controls
 
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.paulcraciunas.screens.common.design.theme.Design
+import com.paulcraciunas.global.resources.R.drawable
+import com.paulcraciunas.screens.common.design.components.ChessGymChip
+import com.paulcraciunas.screens.common.design.components.ChipTone
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
@@ -12,17 +15,17 @@ fun TimerDisplay(
     seconds: Int,
     modifier: Modifier = Modifier
 ) {
-    val color = when {
-        seconds <= 10 -> Design.colors.danger
-        seconds <= 20 -> Design.colors.accent
-        else -> Design.colors.ink
+    val tone = when {
+        seconds <= 20 -> ChipTone.Failed
+        seconds <= 60 -> ChipTone.Accent
+        else -> ChipTone.Soft
     }
 
-    Text(
+    ChessGymChip(
         text = formatTime(seconds),
-        style = Design.textStyles.monoTimer,
-        color = color,
-        modifier = modifier
+        tone = tone,
+        leadingIcon = ImageVector.vectorResource(drawable.clock_icon),
+        modifier = modifier,
     )
 }
 
@@ -44,7 +47,7 @@ private fun TimerDisplayNormalPreview() {
 @Composable
 private fun TimerDisplayWarningPreview() {
     ChessGymTheme {
-        TimerDisplay(seconds = 15)
+        TimerDisplay(seconds = 25)
     }
 }
 
