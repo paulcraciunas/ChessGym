@@ -149,6 +149,12 @@ internal val WalnutTextStyles = DefaultTextStyles(
         fontSize = 10.5.sp,
         letterSpacing = 1.4.sp,
     ),
+    eyebrowLarge = TextStyle(
+        fontFamily = InterTight,
+        fontWeight = FontWeight.Bold,
+        fontSize = 12.sp,
+        letterSpacing = 1.sp,
+    ),
     title = TextStyle(
         fontFamily = InterTight,
         fontWeight = FontWeight.SemiBold,

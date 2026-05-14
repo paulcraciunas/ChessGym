@@ -15,7 +15,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.global.resources.R
-import com.paulcraciunas.screens.common.design.components.BrassRule
+import com.paulcraciunas.screens.common.design.components.StylizedDivider
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.design.components.SpacerSize
 import com.paulcraciunas.screens.common.design.theme.Design
@@ -27,7 +27,7 @@ fun Footer(modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxWidth(),
     ) {
-        BrassRule(
+        StylizedDivider(
             modifier = Modifier.padding(
                 horizontal = Design.dimensions.spacing.section,
                 vertical = Design.dimensions.spacing.xxl,

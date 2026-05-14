@@ -13,6 +13,7 @@ data class DefaultTextStyles(
     val label: TextStyle,
     /** Uppercase, tracked, semi-bold label sat above titles. */
     val eyebrow: TextStyle,
+    val eyebrowLarge: TextStyle,
     val title: TextStyle,
     val sectionHeader: TextStyle,
     /** Big serif numerals — ratings, scores, "Up Next" hero. */
