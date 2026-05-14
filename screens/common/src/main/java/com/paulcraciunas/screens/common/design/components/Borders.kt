@@ -12,6 +12,10 @@ import com.paulcraciunas.screens.common.design.theme.Design
 
 @Stable
 @Composable
+fun borderNone(): BorderStroke = BorderStroke(0.dp, Design.colors.borderSoft)
+
+@Stable
+@Composable
 fun borderSoft(): BorderStroke = BorderStroke(1.dp, Design.colors.borderSoft)
 
 @Stable

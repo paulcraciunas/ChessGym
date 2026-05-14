@@ -19,7 +19,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.global.resources.R
@@ -51,10 +50,7 @@ internal fun DashboardCard(
             horizontalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.xxl),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconBadge(enabled = isEnabled) {
-                icon(iconScope)
-            }
-
+            icon(iconScope)
             Column(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.xs)
@@ -93,34 +89,19 @@ internal fun DashboardCard(
 @Stable
 internal class DashboardCardIconScope internal constructor(val isEnabled: Boolean) {
     @Composable
-    fun ResIcon(
-        @DrawableRes icon: Int,
-    ) {
-        Icon(
-            painter = painterResource(icon),
-            contentDescription = null,
-            tint = iconTint(),
-            modifier = Modifier.size(Design.dimensions.sizes.navBarIconHeight)
+    fun ResIcon(@DrawableRes icon: Int) {
+        IconBadge(
+            iconRes = icon,
+            enabled = isEnabled,
         )
     }
 
     @Composable
-    fun VectorIcon(
-        iconVector: ImageVector,
-    ) {
-        Icon(
+    fun VectorIcon(iconVector: ImageVector) {
+        IconBadge(
             imageVector = iconVector,
-            contentDescription = null,
-            tint = iconTint(),
-            modifier = Modifier.size(Design.dimensions.sizes.navBarIconHeight)
+            enabled = isEnabled,
         )
-    }
-
-    @Composable
-    private fun iconTint() = if (isEnabled) {
-        Design.colors.primary
-    } else {
-        Design.colors.primaryDisabled
     }
 }
 
