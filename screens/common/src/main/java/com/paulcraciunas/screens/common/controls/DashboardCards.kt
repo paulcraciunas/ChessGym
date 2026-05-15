@@ -55,7 +55,7 @@ fun PuzzleStreakCard(
     modifier: Modifier = Modifier,
 ) = DashboardCard(
     isEnabled = true,
-    icon = { ResIcon(icon = R.drawable.puzzle_rush_icon) },
+    icon = { ResIcon(icon = R.drawable.puzzle_streak_icon) },
     title = R.string.puzzle_mode_streak_title,
     description = R.string.puzzle_mode_streak_description,
     startContentDescription = R.string.puzzle_mode_start,

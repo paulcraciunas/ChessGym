@@ -82,7 +82,7 @@ private fun HomeUiState.HistoryEvent.iconRes(): Int = when (this) {
     is HomeUiState.HistoryEvent.BlindModeEvent -> R.drawable.blind_mode_icon
     is HomeUiState.HistoryEvent.BlindModeTrainingEvent -> R.drawable.blind_mode_icon
     is HomeUiState.HistoryEvent.RatedPuzzleEvent -> R.drawable.puzzle_icon
-    is HomeUiState.HistoryEvent.PuzzleStreakEvent -> R.drawable.puzzle_rush_icon
+    is HomeUiState.HistoryEvent.PuzzleStreakEvent -> R.drawable.puzzle_streak_icon
     is HomeUiState.HistoryEvent.FailedPuzzleEvent -> R.drawable.retry_icon
 }
 

@@ -194,7 +194,7 @@ private fun StreakCounter(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            painter = painterResource(R.drawable.puzzle_rush_icon),
+            painter = painterResource(R.drawable.puzzle_streak_icon),
             contentDescription = null,
             tint = Design.colors.primary,
             modifier = Modifier.size(Design.dimensions.sizes.icon)
