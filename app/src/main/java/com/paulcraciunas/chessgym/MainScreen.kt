@@ -30,6 +30,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraphBuilder
@@ -272,10 +273,7 @@ fun MainScreen(
                             animatedComposable<Screen.Clock> {
                                 ChessClock(tabNavController = navController)
                             }
-                            composable<Screen.Analysis>(
-                                enterTransition = { enter() },
-                                exitTransition = { exit() },
-                            ) { backStackEntry ->
+                            animatedComposable<Screen.Analysis> { backStackEntry ->
                                 val route = backStackEntry.toRoute<Screen.Analysis>()
                                 AnalysisBoard(
                                     tabNavController = navController,
@@ -310,10 +308,7 @@ fun MainScreen(
                                     },
                                 )
                             }
-                            composable<Screen.AboutDetail>(
-                                enterTransition = { enter() },
-                                exitTransition = { exit() },
-                            ) { backStackEntry ->
+                            animatedComposable<Screen.AboutDetail> { backStackEntry ->
                                 val route = backStackEntry.toRoute<Screen.AboutDetail>()
                                 val section = AboutSection.valueOf(route.section)
                                 AboutDetail(
@@ -339,12 +334,12 @@ fun MainScreen(
     }
 }
 
-private inline fun <reified T : Any> NavGraphBuilder.animatedComposable(noinline content: (@Composable () -> Unit) = {}) {
+private inline fun <reified T : Any> NavGraphBuilder.animatedComposable(noinline content: (@Composable (NavBackStackEntry) -> Unit) = {}) {
     composable<T>(
         enterTransition = { enter() },
         exitTransition = { exit() }
-    ) {
-        content()
+    ) { backStackEntry ->
+        content(backStackEntry)
     }
 }
 
