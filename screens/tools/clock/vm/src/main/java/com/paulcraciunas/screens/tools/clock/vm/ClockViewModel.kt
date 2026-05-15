@@ -42,7 +42,7 @@ class ClockViewModel @Inject constructor(
     private fun onPlayerTapped(side: Side) {
         _uiState.update { state ->
             when (state) {
-                is ClockUiState.Setup -> startPlaying(state, side)
+                is ClockUiState.Setup -> if (side == Side.WHITE) startPlaying(state) else state
                 is ClockUiState.Playing -> updatePlayingState(state, side)
                 else -> state
             }
@@ -83,17 +83,15 @@ class ClockViewModel @Inject constructor(
         )
     } else state
 
-    private fun startPlaying(state: ClockUiState.Setup, side: Side): ClockUiState.Playing {
+    private fun startPlaying(state: ClockUiState.Setup): ClockUiState.Playing {
         selectedMinutes = state.selectedMinutes
         selectedIncrement = state.selectedIncrement
 
         whiteTimer.set(state.whiteTime)
         blackTimer.set(state.blackTime)
 
-        if (side == Side.WHITE) whiteTimer.start(viewModelScope)
-        else blackTimer.start(viewModelScope)
-
-        return ClockUiState.Playing(state.whiteTime, state.blackTime, activePlayer = side)
+        blackTimer.start(viewModelScope)
+        return ClockUiState.Playing(state.whiteTime, state.blackTime, activePlayer = Side.BLACK)
     }
 
     private fun resetToSetup() {
