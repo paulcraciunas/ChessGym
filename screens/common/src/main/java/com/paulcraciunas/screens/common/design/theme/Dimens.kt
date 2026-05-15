@@ -11,6 +11,7 @@ data class ChessGymDimensions(
     val elevation: Elevation,
     val sizes: Sizes,
     val blur: Blur,
+    val scales: Scales,
 ) {
     @Immutable
     data class Spacing(
@@ -65,6 +66,12 @@ data class ChessGymDimensions(
         val timeControl: Dp,
         val progressRing: Dp,
         val trophyTile: Dp,
+    )
+
+    @Immutable
+    data class Scales(
+        val piecePawn: Float,
+        val pieceDefault: Float,
     )
 
     @Immutable

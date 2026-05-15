@@ -12,14 +12,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.paulcraciunas.screens.common.theme.BoardColors
-
+import com.paulcraciunas.screens.common.design.theme.Design
 
 @Composable
 internal fun BorderFiles(
     orientation: BoardOrientation,
     modifier: Modifier = Modifier,
-    height: Dp = 15.dp
+    height: Dp = 15.dp,
 ) {
     Row(
         modifier = modifier
@@ -35,7 +34,7 @@ internal fun BorderFiles(
             ) {
                 Text(
                     text = file.name,
-                    color = BoardColors.boardText,
+                    color = Design.colors.boardText,
                     style = MaterialTheme.typography.labelSmall,
                     textAlign = TextAlign.Center,
                 )

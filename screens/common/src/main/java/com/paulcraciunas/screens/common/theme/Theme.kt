@@ -23,6 +23,8 @@ import com.paulcraciunas.screens.common.design.theme.getChessGymShapes
 import com.paulcraciunas.screens.common.design.theme.getChessGymTypography
 import com.paulcraciunas.screens.common.design.theme.getDefaultTextStyles
 import com.paulcraciunas.screens.common.design.theme.getStandardShapes
+import com.paulcraciunas.screens.common.design.theme.pieces.LocalChessGymPieces
+import com.paulcraciunas.screens.common.design.theme.pieces.getChessGymPieces
 import com.paulcraciunas.screens.common.extensions.DefaultAlpha
 import com.paulcraciunas.screens.common.extensions.LocalAlpha
 import com.paulcraciunas.screens.common.isDarkTheme
@@ -45,13 +47,8 @@ fun ChessGymTheme(
     val chessGymShapes = getChessGymShapes()
     val chessGymStandardShapes = getStandardShapes()
     val chessGymRadii = getChessGymRadii()
+    val pieces = getChessGymPieces()
 
-    val boardPalette = when (definedTheme) {
-        DefinedTheme.Walnut -> WoodenBoardPalette
-        DefinedTheme.Grey -> GreyBoardPalette
-    }
-    val pieces = DefaultPieceSet // We don't currently have multiple piece sets
-    val tokens = DefaultTokens // We don't currently have multiple sets of tokens
     val alpha = DefaultAlpha
     val loadingTypography = createLoadingTypography()
 
@@ -62,9 +59,7 @@ fun ChessGymTheme(
         LocalChessGymDimensions provides chessGymDimensions,
         LocalChessGymShapes provides chessGymShapes,
         LocalChessGymRadii provides chessGymRadii,
-        LocalBoardPalette provides boardPalette,
-        LocalPieceSet provides pieces,
-        LocalTokens provides tokens,
+        LocalChessGymPieces provides pieces,
         LocalAlpha provides alpha,
         LocalLoadingColors provides LoadingColors(),
         LocalLoadingTypography provides loadingTypography,

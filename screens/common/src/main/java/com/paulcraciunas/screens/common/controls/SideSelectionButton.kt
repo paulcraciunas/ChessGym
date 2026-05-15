@@ -20,7 +20,6 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
-import com.paulcraciunas.screens.common.theme.GlobalTokens
 
 @Composable
 internal fun SideSelectionButton(
@@ -53,7 +52,7 @@ internal fun SideSelectionButton(
             painter = painterResource(iconRes),
             contentDescription = contentDescription,
             modifier = Modifier
-                .fillMaxSize(GlobalTokens.scaleFactorDefault)
+                .fillMaxSize(Design.dimensions.scales.pieceDefault)
                 .aspectRatio(1f)
         )
     }

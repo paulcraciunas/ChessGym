@@ -52,7 +52,11 @@ data class ChessGymColors(
     val boardDark: Color,
     val pieceLight: Color,
     val pieceDark: Color,
-    val grain: Color,
+    val boardEdge: Color,
+    val boardText: Color,
+    val boardSquareSelected: Color,
+    val boardMoveAvailable: Color,
+    val boardMovePrevious: Color,
 
     // Chips & misc
     val chipSolvedBg: Color,
@@ -85,7 +89,6 @@ internal fun getChessGymColors(
     darkMode: Boolean,
 ): ChessGymColors = when (definedTheme) {
     DefinedTheme.Walnut -> if (darkMode) WalnutDarkColors else WalnutLightColors
-    else -> throw IllegalArgumentException("Grey theme not implemented yet")
 }
 
 internal fun createChessGymColorScheme(

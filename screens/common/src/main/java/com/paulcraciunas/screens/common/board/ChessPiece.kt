@@ -17,13 +17,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.paulcraciunas.screens.common.theme.ChessGymTheme
-import com.paulcraciunas.screens.common.theme.GlobalTokens
-import com.paulcraciunas.screens.common.theme.PieceIcons
-import com.paulcraciunas.screens.common.theme.PieceSet
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.global.resources.R
+import com.paulcraciunas.screens.common.design.theme.Design
+import com.paulcraciunas.screens.common.design.theme.pieces.ChessGymPieceSet
+import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
 fun ChessPiece(
@@ -52,22 +51,22 @@ private fun Piece.contentDescription(): Int = when (this) {
 
 @Composable
 private fun Piece.scaleFactor(): Float = when (this) {
-    Piece.Pawn -> GlobalTokens.scaleFactorPawn
-    else -> GlobalTokens.scaleFactorDefault
+    Piece.Pawn -> Design.dimensions.scales.piecePawn
+    else -> Design.dimensions.scales.pieceDefault
 }
 
 @Composable
 @DrawableRes
 private fun Piece.resource(of: Side): Int = when (this) {
-    Piece.Pawn -> PieceIcons.of(of).pawn
-    Piece.Rook -> PieceIcons.of(of).rook
-    Piece.Knight -> PieceIcons.of(of).knight
-    Piece.Bishop -> PieceIcons.of(of).bishop
-    Piece.Queen -> PieceIcons.of(of).queen
-    Piece.King -> PieceIcons.of(of).king
+    Piece.Pawn -> Design.pieces.of(of).pawn
+    Piece.Rook -> Design.pieces.of(of).rook
+    Piece.Knight -> Design.pieces.of(of).knight
+    Piece.Bishop -> Design.pieces.of(of).bishop
+    Piece.Queen -> Design.pieces.of(of).queen
+    Piece.King -> Design.pieces.of(of).king
 }
 
-private fun PieceSet.of(side: Side) = if (side == Side.WHITE) white else black
+private fun ChessGymPieceSet.of(side: Side) = if (side == Side.WHITE) white else black
 
 @Preview(showBackground = true)
 @Preview("Dark mode", uiMode = UI_MODE_NIGHT_YES)

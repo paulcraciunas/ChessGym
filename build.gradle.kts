@@ -36,14 +36,16 @@ subprojects {
         }
     }
     plugins.withId("com.android.application") {
-        rootProject.tasks.named("unitTestAll") {
-            dependsOn(tasks.named("testUitestUnitTest"))
-        }
-        rootProject.tasks.named("lintAllDebug") {
-            dependsOn(tasks.named("lintDebug"))
-        }
-        rootProject.tasks.named("instrumentedTestAllCi") {
-            dependsOn(tasks.named("ciDeviceUitestAndroidTest"))
+        if (project.name != "previews") {
+            rootProject.tasks.named("unitTestAll") {
+                dependsOn(tasks.named("testUitestUnitTest"))
+            }
+            rootProject.tasks.named("lintAllDebug") {
+                dependsOn(tasks.named("lintDebug"))
+            }
+            rootProject.tasks.named("instrumentedTestAllCi") {
+                dependsOn(tasks.named("ciDeviceUitestAndroidTest"))
+            }
         }
     }
     plugins.withId("org.jetbrains.kotlin.jvm") {

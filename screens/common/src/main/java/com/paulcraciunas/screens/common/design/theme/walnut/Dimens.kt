@@ -58,5 +58,9 @@ internal val WalnutDimensions = ChessGymDimensions(
     blur = ChessGymDimensions.Blur(
         default = 0.dp,
         standard = 16.dp,
+    ),
+    scales = ChessGymDimensions.Scales(
+        piecePawn = 0.65f,
+        pieceDefault = 0.8f,
     )
 )

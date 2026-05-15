@@ -20,12 +20,11 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.paulcraciunas.screens.common.theme.BoardColors
-import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.design.theme.Design
+import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
 fun BoardSquare(
@@ -65,7 +64,7 @@ class SquareScope internal constructor(
         alpha: Float = 1f,
     ) {
         val background = background()
-        val selectedBackground = BoardColors.boardSquareSelected
+        val selectedBackground = Design.colors.boardSquareSelected
         Canvas(modifier = modifier.fillMaxSize(1f)) {
             if (selected) {
                 drawRect(color = selectedBackground)
@@ -98,7 +97,7 @@ class SquareScope internal constructor(
     fun MoveIndicatorOverlay() {
         Image(
             painter = painterResource(id = R.drawable.move_available),
-            colorFilter = ColorFilter.tint(BoardColors.boardMoveAvailable),
+            colorFilter = ColorFilter.tint(Design.colors.boardMoveAvailable),
             contentDescription = null,
             modifier = Modifier
                 .fillMaxSize(0.4f)
@@ -107,7 +106,7 @@ class SquareScope internal constructor(
     }
 
     @Composable
-    private fun background() = if (highlight) BoardColors.boardMovePrevious else side.background()
+    private fun background() = if (highlight) Design.colors.boardMovePrevious else side.background()
 
     @Composable
     private fun Side.background(): Color = when (this) {
