@@ -30,7 +30,6 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Rank
-import com.paulcraciunas.screens.common.design.theme.DefinedTheme
 import com.paulcraciunas.screens.common.model.AnimatingPiece
 import com.paulcraciunas.screens.common.model.BoardViewData
 import com.paulcraciunas.screens.common.model.BoardViewDataBuilder
@@ -281,21 +280,6 @@ private fun WhitePerspectivePreview() {
 @Composable
 private fun BlackPerspectivePreview() {
     ChessGymTheme {
-        ChessBoard(
-            board = BoardViewDataBuilder().build(),
-            orientation = BoardOrientation.Black,
-            onClick = { _ -> },
-            showBorders = false
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun GreyThemePreview() {
-    ChessGymTheme(
-        definedTheme = DefinedTheme.Grey
-    ) {
         ChessBoard(
             board = BoardViewDataBuilder().build(),
             orientation = BoardOrientation.Black,
