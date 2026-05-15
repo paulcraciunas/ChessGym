@@ -110,8 +110,8 @@ class SquareScope internal constructor(
 
     @Composable
     private fun Side.background(): Color = when (this) {
-        Side.WHITE -> BoardColors.boardSquareWhite
-        Side.BLACK -> BoardColors.boardSquareBlack
+        Side.WHITE -> Design.colors.boardLight
+        Side.BLACK -> Design.colors.boardDark
     }
 }
 
