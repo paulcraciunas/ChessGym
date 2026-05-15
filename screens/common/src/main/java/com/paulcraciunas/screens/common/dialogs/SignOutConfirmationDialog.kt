@@ -1,10 +1,10 @@
 package com.paulcraciunas.screens.common.dialogs
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.design.components.ChessGymDialog
 import com.paulcraciunas.screens.common.design.components.DialogIconTone
@@ -21,7 +21,7 @@ fun SignOutConfirmationDialog(
         title = {
             IconTitle(
                 title = stringResource(R.string.sign_out_dialog_title),
-                icon = Icons.AutoMirrored.Filled.ExitToApp,
+                icon = ImageVector.vectorResource(id = R.drawable.logout_icon),
                 tone = DialogIconTone.Accent,
             )
         },

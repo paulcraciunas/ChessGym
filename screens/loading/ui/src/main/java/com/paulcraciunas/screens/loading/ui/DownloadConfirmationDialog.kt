@@ -24,7 +24,7 @@ import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.common.theme.LoadingTheme
 
 @Composable
-internal fun DownloadConfirmationDialog(
+fun DownloadConfirmationDialog(
     onCancelled: () -> Unit,
     onConfirmed: () -> Unit,
     modifier: Modifier = Modifier

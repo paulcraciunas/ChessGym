@@ -33,7 +33,7 @@ import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.tools.importgame.vm.ImportType
 
 @Composable
-internal fun ImportGameDialog(
+fun ImportGameDialog(
     type: ImportType,
     error: String?,
     onImport: (String) -> Unit,

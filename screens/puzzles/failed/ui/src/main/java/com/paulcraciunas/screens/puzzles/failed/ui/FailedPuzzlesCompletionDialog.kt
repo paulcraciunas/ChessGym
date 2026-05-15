@@ -1,5 +1,6 @@
 package com.paulcraciunas.screens.puzzles.failed.ui
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
@@ -9,7 +10,7 @@ import com.paulcraciunas.screens.common.design.components.ChessGymDialog
 import com.paulcraciunas.screens.common.testTag
 
 @Composable
-internal fun FailedPuzzlesCompletionDialog(
+fun FailedPuzzlesCompletionDialog(
     puzzlesSolved: Int,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
@@ -30,14 +31,12 @@ internal fun FailedPuzzlesCompletionDialog(
         },
         modifier = modifier.testTag { FailedPuzzlesScreenTags.Completion.DIALOG },
     ) {
-        Summary(
-            value = puzzlesSolved.toString(),
-            subtitle = pluralStringResource(
-                R.plurals.failed_puzzles_solved_count,
-                puzzlesSolved,
-                puzzlesSolved,
-            ),
-        )
-        CenteredMessage(text = stringResource(R.string.failed_puzzles_complete_message))
+        Column {
+            Summary(
+                value = puzzlesSolved.toString(),
+                subtitle = stringResource(R.string.failed_puzzles_solved_count),
+            )
+            CenteredMessage(text = stringResource(R.string.failed_puzzles_complete_message))
+        }
     }
 }

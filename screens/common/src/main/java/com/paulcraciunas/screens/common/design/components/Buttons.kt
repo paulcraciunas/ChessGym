@@ -125,7 +125,7 @@ fun IconCircleButton(
 @Composable
 private fun PrimaryButtonStyle.containerColor(): Color = when (this) {
     PrimaryButtonStyle.Clear -> Design.colors.surface
-    PrimaryButtonStyle.Normal -> Design.colors.primaryDeep
+    PrimaryButtonStyle.Normal -> Design.colors.primary
     PrimaryButtonStyle.Danger -> Design.colors.danger
 }
 

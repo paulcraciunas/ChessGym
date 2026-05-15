@@ -1,5 +1,6 @@
 package com.paulcraciunas.screens.common.dialogs
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.Composable
@@ -37,14 +38,16 @@ fun DeleteAccountConfirmationDialog(
         },
         modifier = modifier.testTag { DeleteAccountDialogTags.DIALOG },
     ) {
-        Message(text = annotatedTextResource(R.string.delete_account_dialog_body))
-        Danger(
-            title = stringResource(R.string.delete_account_dialog_consequences_title),
-            items = listOf(
-                stringResource(R.string.delete_account_dialog_consequence_puzzles),
-                stringResource(R.string.delete_account_dialog_consequence_streaks),
-                stringResource(R.string.delete_account_dialog_consequence_games),
-            ),
-        )
+        Column {
+            Message(text = annotatedTextResource(R.string.delete_account_dialog_body))
+            Danger(
+                title = stringResource(R.string.delete_account_dialog_consequences_title),
+                items = listOf(
+                    stringResource(R.string.delete_account_dialog_consequence_puzzles),
+                    stringResource(R.string.delete_account_dialog_consequence_streaks),
+                    stringResource(R.string.delete_account_dialog_consequence_games),
+                ),
+            )
+        }
     }
 }

@@ -24,7 +24,7 @@ import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.common.theme.LoadingTheme
 
 @Composable
-internal fun CrashReportingConsentDialog(
+fun CrashReportingConsentDialog(
     onAccepted: () -> Unit,
     onDeclined: () -> Unit,
     modifier: Modifier = Modifier

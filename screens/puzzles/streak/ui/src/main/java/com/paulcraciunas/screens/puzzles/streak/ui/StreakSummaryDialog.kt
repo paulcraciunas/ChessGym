@@ -1,5 +1,6 @@
 package com.paulcraciunas.screens.puzzles.streak.ui
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -8,7 +9,7 @@ import com.paulcraciunas.screens.common.design.components.ChessGymDialog
 import com.paulcraciunas.screens.common.testTag
 
 @Composable
-internal fun StreakSummaryDialog(
+fun StreakSummaryDialog(
     streakCount: Int,
     isNewHighScore: Boolean,
     onDismiss: () -> Unit,
@@ -31,12 +32,14 @@ internal fun StreakSummaryDialog(
         },
         modifier = modifier.testTag { PuzzleStreakScreenTags.Summary.DIALOG },
     ) {
-        Summary(
-            value = streakCount.toString(),
-            subtitle = stringResource(R.string.puzzle_streak_summary_puzzles_solved),
-        )
-        if (isNewHighScore) {
-            HighScoreBadge(text = stringResource(R.string.generic_new_high_score))
+        Column {
+            Summary(
+                value = streakCount.toString(),
+                subtitle = stringResource(R.string.puzzle_streak_summary_puzzles_solved),
+            )
+            if (isNewHighScore) {
+                HighScoreBadge(text = stringResource(R.string.generic_new_high_score))
+            }
         }
     }
 }
