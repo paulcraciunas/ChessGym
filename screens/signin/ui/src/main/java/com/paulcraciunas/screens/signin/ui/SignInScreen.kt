@@ -28,11 +28,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.paulcraciunas.screens.common.AppBar
 import com.paulcraciunas.screens.common.Footer
 import com.paulcraciunas.screens.common.controls.Header
 import com.paulcraciunas.screens.common.controls.HeaderAlign
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.signin.vm.SignInUiState
 import com.paulcraciunas.global.resources.R as GlobalR
@@ -86,8 +86,8 @@ fun SignInScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 24.dp, vertical = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+                .padding(horizontal = Design.dimensions.spacing.xxl, vertical = Design.dimensions.spacing.xxl),
+            verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.xxl),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             AnimatedContent(
@@ -101,7 +101,7 @@ fun SignInScreen(
                     eyebrowRes = if (isSignUp) GlobalR.string.sign_up_eyebrow else GlobalR.string.sign_in_eyebrow,
                     titleRes = GlobalR.string.sign_in_welcome,
                     subtitleRes = if (isSignUp) GlobalR.string.sign_up_subtitle else GlobalR.string.sign_in_subtitle,
-                    align = HeaderAlign.Centered
+                    align = HeaderAlign.Centered,
                 )
             }
             GoogleSignInSection(
