@@ -52,6 +52,7 @@ data class ChessGymColors(
     val boardDark: Color,
     val pieceLight: Color,
     val pieceDark: Color,
+    val grain: Color,
 
     // Chips & misc
     val chipSolvedBg: Color,

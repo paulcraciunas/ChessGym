@@ -34,6 +34,7 @@ internal val WalnutLightColors = ChessGymColors(
     boardDark = Color(0xFFA8743F),
     pieceLight = Color(0xFFFAFAFA),
     pieceDark = Color(0xFF101A26),
+    grain = Color(0x0F000000),
 
     chipSolvedBg = Color(0xFFE9F3EB),
     chipSolvedBorder = Color(0xFFCFE5D2),
@@ -83,6 +84,7 @@ internal val WalnutDarkColors = ChessGymColors(
     boardDark = Color(0xFF6B4424),
     pieceLight = Color(0xFFF4E8D4),
     pieceDark = Color(0xFF0C0805),
+    grain = Color(0x0F000000),
 
     chipSolvedBg = Color(0x2E7FB085),
     chipSolvedBorder = Color(0x5C7FB085),
