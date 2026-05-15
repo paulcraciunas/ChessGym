@@ -12,6 +12,7 @@ import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.board.ChessBoardTags
+import com.paulcraciunas.screens.common.design.components.ChessGymDialogTags
 import com.paulcraciunas.screens.tools.importgame.ui.ImportGameScreenTags
 
 class ImportGameScreenAssertions(private val rule: ComposeTestRule) {
@@ -55,11 +56,11 @@ class ImportGameScreenAssertions(private val rule: ComposeTestRule) {
     }
 
     fun confirmButtonIsEnabled(): ImportGameScreenAssertions = apply {
-        rule.onNodeWithTag(ImportGameScreenTags.IMPORT_CONFIRM).assertIsEnabled()
+        rule.onNodeWithTag(ChessGymDialogTags.CONFIRM).assertIsEnabled()
     }
 
     fun confirmButtonIsDisabled(): ImportGameScreenAssertions = apply {
-        rule.onNodeWithTag(ImportGameScreenTags.IMPORT_CONFIRM).assertIsNotEnabled()
+        rule.onNodeWithTag(ChessGymDialogTags.CONFIRM).assertIsNotEnabled()
     }
 
     fun navigationNextIsDisabled(): ImportGameScreenAssertions = apply {

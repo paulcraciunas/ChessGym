@@ -11,9 +11,9 @@ import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.screens.common.board.ChessBoardTags
+import com.paulcraciunas.screens.common.design.components.ChessGymDialogTags
 import com.paulcraciunas.screens.common.dialogs.PromotionDialogTags
 import com.paulcraciunas.screens.puzzles.dashboard.ui.PuzzleDashboardTags
-import com.paulcraciunas.screens.puzzles.failed.ui.FailedPuzzlesScreenTags
 
 /**
  * User actions that can be performed on the Failed Puzzles screen.
@@ -80,7 +80,7 @@ class FailedPuzzlesScreenActions(private val rule: ComposeTestRule) {
     }
 
     fun dismissCompletion(): FailedPuzzlesScreenActions = apply {
-        rule.onNodeWithTag(FailedPuzzlesScreenTags.Completion.DISMISS).performClick()
+        rule.onNodeWithTag(ChessGymDialogTags.CONFIRM).performClick()
         rule.waitForIdle()
     }
 

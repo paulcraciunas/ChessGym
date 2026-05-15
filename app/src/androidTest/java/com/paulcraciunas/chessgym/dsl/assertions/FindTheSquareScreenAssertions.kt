@@ -43,7 +43,7 @@ class FindTheSquareScreenAssertions(private val rule: ComposeTestRule) {
     }
 
     fun showsNewHighScore(): FindTheSquareScreenAssertions = apply {
-        rule.onNodeWithText("\uD83C\uDF89 New High Score! \uD83C\uDF89").assertIsDisplayed()
+        rule.onNodeWithText("New high score").assertIsDisplayed()
     }
 
     fun showsHighScore(highScore: Int): FindTheSquareScreenAssertions = apply {

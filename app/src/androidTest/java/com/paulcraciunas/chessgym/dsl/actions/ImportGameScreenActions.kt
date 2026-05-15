@@ -4,6 +4,7 @@ import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
+import com.paulcraciunas.screens.common.design.components.ChessGymDialogTags
 import com.paulcraciunas.screens.tools.importgame.ui.ImportGameScreenTags
 
 class ImportGameScreenActions(private val rule: ComposeTestRule) {
@@ -24,7 +25,7 @@ class ImportGameScreenActions(private val rule: ComposeTestRule) {
     }
 
     fun confirmImport(): ImportGameScreenActions = apply {
-        rule.onNodeWithTag(ImportGameScreenTags.IMPORT_CONFIRM).performClick()
+        rule.onNodeWithTag(ChessGymDialogTags.CONFIRM).performClick()
         rule.waitForIdle()
     }
 

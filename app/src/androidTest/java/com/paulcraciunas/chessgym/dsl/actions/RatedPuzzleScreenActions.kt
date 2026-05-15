@@ -11,7 +11,7 @@ import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.screens.common.board.ChessBoardTags
 import com.paulcraciunas.screens.common.controls.DefaultPuzzleControlsTags
-import com.paulcraciunas.screens.common.dialogs.AbandonConfirmationDialogTags
+import com.paulcraciunas.screens.common.design.components.ChessGymDialogTags
 import com.paulcraciunas.screens.common.dialogs.PromotionDialogTags
 import com.paulcraciunas.screens.puzzles.dashboard.ui.PuzzleDashboardTags
 import com.paulcraciunas.screens.puzzles.rated.ui.RatedPuzzleScreenTags
@@ -116,12 +116,12 @@ class RatedPuzzleScreenActions(private val rule: ComposeTestRule) {
     }
 
     fun confirmAbandon(): RatedPuzzleScreenActions = apply {
-        rule.onNodeWithTag(AbandonConfirmationDialogTags.CONFIRM).performClick()
+        rule.onNodeWithTag(ChessGymDialogTags.CONFIRM).performClick()
         rule.waitForIdle()
     }
 
     fun dismissAbandon(): RatedPuzzleScreenActions = apply {
-        rule.onNodeWithTag(AbandonConfirmationDialogTags.DISMISS).performClick()
+        rule.onNodeWithTag(ChessGymDialogTags.DISMISS).performClick()
         rule.waitForIdle()
     }
 

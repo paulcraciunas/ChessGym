@@ -170,6 +170,7 @@ class DialogButtonScope internal constructor() {
         dismissText: String,
         onDismiss: () -> Unit,
         isDestructive: Boolean = false,
+        confirmEnabled: Boolean = true,
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -186,6 +187,7 @@ class DialogButtonScope internal constructor() {
             PrimaryButton(
                 text = confirmText,
                 onClick = onConfirm,
+                enabled = confirmEnabled,
                 style = if (isDestructive) PrimaryButtonStyle.Danger else PrimaryButtonStyle.Normal,
                 modifier = Modifier.testTag { ChessGymDialogTags.CONFIRM }.weight(1f),
             )
@@ -384,6 +386,34 @@ private fun ConfirmationDialogPreview() {
                     onConfirm = {},
                     dismissText = "Cancel",
                     onDismiss = {},
+                )
+            },
+        ) {
+            Message(text = "Are you sure you want to sign out? Your progress is saved — you can sign back in at any time.")
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Preview("Dark mode", uiMode = UI_MODE_NIGHT_YES, showBackground = true)
+@Composable
+private fun ConfirmationDisabledDialogPreview() {
+    ChessGymTheme {
+        ChessGymDialogPreviewContent(
+            title = {
+                IconTitle(
+                    title = "Sign out?",
+                    icon = Icons.AutoMirrored.Filled.ExitToApp,
+                    tone = DialogIconTone.Accent,
+                )
+            },
+            buttons = {
+                Paired(
+                    confirmText = "Sign out",
+                    onConfirm = {},
+                    dismissText = "Cancel",
+                    onDismiss = {},
+                    confirmEnabled = false,
                 )
             },
         ) {

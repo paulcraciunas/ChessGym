@@ -60,9 +60,10 @@ internal fun ImportGameDialog(
                 onConfirm = { onImport(text) },
                 dismissText = stringResource(R.string.import_dialog_cancel),
                 onDismiss = onDismiss,
+                confirmEnabled = text.isNotBlank(),
             )
         },
-        modifier = modifier,
+        modifier = modifier.testTag { ImportGameScreenTags.IMPORT_DIALOG },
     ) {
         Custom {
             OutlinedTextField(
