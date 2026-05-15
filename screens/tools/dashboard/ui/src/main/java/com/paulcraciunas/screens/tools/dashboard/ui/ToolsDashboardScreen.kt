@@ -21,7 +21,7 @@ import com.paulcraciunas.screens.common.LoadingContent
 
 import com.paulcraciunas.screens.common.controls.AnalysisCard
 import com.paulcraciunas.screens.common.controls.ClockCard
-import com.paulcraciunas.screens.common.controls.DashboardHeader
+import com.paulcraciunas.screens.common.controls.Header
 import com.paulcraciunas.screens.common.controls.ImportGameCard
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag
@@ -72,7 +72,7 @@ private fun DashboardContent(
             .background(Design.colors.primarySoft)
     ) {
         item {
-            DashboardHeader(
+            Header(
                 eyebrowRes = R.string.tools_dashboard_eyebrow,
                 titleRes = R.string.tools_dashboard_title,
                 subtitleRes = R.string.tools_dashboard_subtitle,

@@ -20,7 +20,7 @@ import com.paulcraciunas.screens.common.AppBar
 import com.paulcraciunas.screens.common.AppBarAlignment
 import com.paulcraciunas.screens.common.LoadingContent
 
-import com.paulcraciunas.screens.common.controls.DashboardHeader
+import com.paulcraciunas.screens.common.controls.Header
 import com.paulcraciunas.screens.common.controls.FindTheSquareCard
 import com.paulcraciunas.screens.common.controls.MoveThePieceCard
 import com.paulcraciunas.screens.common.design.theme.Design
@@ -72,7 +72,7 @@ private fun DashboardContent(
             .background(Design.colors.primarySoft),
     ) {
         item {
-            DashboardHeader(
+            Header(
                 eyebrowRes = R.string.boardvis_dashboard_eyebrow,
                 titleRes = R.string.boardvis_dashboard_title,
                 subtitleRes = R.string.boardvis_dashboard_subtitle,

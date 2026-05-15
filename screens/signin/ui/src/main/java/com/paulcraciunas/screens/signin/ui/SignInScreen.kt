@@ -1,6 +1,11 @@
 package com.paulcraciunas.screens.signin.ui
 
+import androidx.compose.animation.AnimatedContent
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,6 +31,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.screens.common.AppBar
 import com.paulcraciunas.screens.common.Footer
+import com.paulcraciunas.screens.common.controls.Header
+import com.paulcraciunas.screens.common.controls.HeaderAlign
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.signin.vm.SignInUiState
 import com.paulcraciunas.global.resources.R as GlobalR
@@ -83,7 +90,20 @@ fun SignInScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            SignInHeader()
+            AnimatedContent(
+                targetState = isSignUpMode,
+                transitionSpec = {
+                    fadeIn(animationSpec = tween(300)) togetherWith fadeOut(animationSpec = tween(300))
+                },
+                label = "HeaderTransition"
+            ) { isSignUp ->
+                Header(
+                    eyebrowRes = if (isSignUp) GlobalR.string.sign_up_eyebrow else GlobalR.string.sign_in_eyebrow,
+                    titleRes = GlobalR.string.sign_in_welcome,
+                    subtitleRes = if (isSignUp) GlobalR.string.sign_up_subtitle else GlobalR.string.sign_in_subtitle,
+                    align = HeaderAlign.Centered
+                )
+            }
             GoogleSignInSection(
                 onGoogleSignIn = onGoogleSignIn,
                 isLoading = isLoading,

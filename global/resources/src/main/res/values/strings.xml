@@ -637,19 +637,22 @@
     <!-- Sign In Screen -->
     <string name="sign_in_title">Sign In</string>
     <string name="sign_up_title">Create Account</string>
+    <string name="sign_in_eyebrow">Welcome back</string>
+    <string name="sign_up_eyebrow">Join us today</string>
     <string name="sign_in_welcome">Welcome to ChessGym</string>
     <string name="sign_in_subtitle">Sign in to sync your progress across devices</string>
+    <string name="sign_up_subtitle">Sign-up to save your progress and backup data safely</string>
     <string name="sign_in_google">Sign in with Google</string>
     <string name="sign_up_google">Sign up with Google</string>
-    <string name="sign_in_divider">or continue with email</string>
+    <string name="sign_in_divider">or with email</string>
     <string name="sign_in_email_label">Email</string>
     <string name="sign_in_password_label">Password</string>
     <string name="sign_in_password_show">Show</string>
     <string name="sign_in_password_hide">Hide</string>
     <string name="sign_in_button">Sign In</string>
     <string name="sign_up_button">Create Account</string>
-    <string name="sign_in_switch_to_sign_up">Don\'t have an account? Create one</string>
-    <string name="sign_in_switch_to_sign_in">Already have an account? Sign In</string>
+    <string name="sign_in_switch_to_sign_up">Don\'t have an account? &lt;b>&lt;u>Create one&lt;/u>&lt;/b></string>
+    <string name="sign_in_switch_to_sign_in">Already have an account? &lt;b>&lt;u>Sign In&lt;/u>&lt;/b></string>
     <!-- endregion -->
 
 </resources>

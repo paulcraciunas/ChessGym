@@ -40,19 +40,42 @@ fun StylizedDivider(modifier: Modifier = Modifier) {
     }
 }
 
+/** An eyebrow centred between two hairlines. */
+@Composable
+fun EyebrowDivider(
+    text: String,
+    modifier: Modifier = Modifier,
+) {
+    Row(modifier = modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        HairlineDivider(modifier = Modifier.weight(1f))
+        Eyebrow(text = text, modifier = Modifier.padding(horizontal = Design.dimensions.spacing.sm))
+        HairlineDivider(modifier = Modifier.weight(1f))
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun HairlineDividerPreview() {
     ChessGymTheme {
-        HairlineDivider(modifier = Modifier.fillMaxWidth().padding(16.dp))
+        HairlineDivider(modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp))
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable
 private fun StylizedDividerPreview() {
     ChessGymTheme {
         StylizedDivider(modifier = Modifier.padding(16.dp))
+    }
+}
+
+
+@Preview(showBackground = true)
+@Composable
+private fun EyebrowDividerPreview() {
+    ChessGymTheme {
+        EyebrowDivider(text = "Or with email", modifier = Modifier.padding(16.dp))
     }
 }

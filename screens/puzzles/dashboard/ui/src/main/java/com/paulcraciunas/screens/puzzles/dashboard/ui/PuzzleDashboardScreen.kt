@@ -19,7 +19,7 @@ import com.paulcraciunas.screens.common.AppBarAlignment
 import com.paulcraciunas.screens.common.Footer
 import com.paulcraciunas.screens.common.LoadingContent
 
-import com.paulcraciunas.screens.common.controls.DashboardHeader
+import com.paulcraciunas.screens.common.controls.Header
 import com.paulcraciunas.screens.common.controls.FailedPuzzlesCard
 import com.paulcraciunas.screens.common.controls.PuzzleRushCard
 import com.paulcraciunas.screens.common.controls.PuzzleStreakCard
@@ -75,7 +75,7 @@ private fun DashboardContent(
             .background(Design.colors.primarySoft)
     ) {
         item {
-            DashboardHeader(
+            Header(
                 eyebrowRes = R.string.puzzle_dashboard_eyebrow,
                 titleRes = R.string.puzzle_dashboard_title,
                 subtitleRes = R.string.puzzle_dashboard_subtitle,
