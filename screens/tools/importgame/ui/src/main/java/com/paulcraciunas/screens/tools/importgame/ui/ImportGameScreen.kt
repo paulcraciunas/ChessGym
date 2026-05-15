@@ -8,10 +8,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -22,7 +20,6 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -30,15 +27,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
-import androidx.compose.ui.semantics.semantics
 import com.paulcraciunas.screens.common.AppBar
-import com.paulcraciunas.screens.common.backgroundColor
+
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
-import com.paulcraciunas.screens.common.controls.DefaultButton
+import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
+import com.paulcraciunas.screens.common.design.components.PrimaryButton
+import com.paulcraciunas.screens.common.design.components.PrimaryButtonStyle
+import com.paulcraciunas.screens.common.design.components.SpacerSize
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.dialogs.PromotionDialog
 import com.paulcraciunas.screens.common.previews.SampleBoardViewData
 import com.paulcraciunas.screens.common.testTag
@@ -59,7 +59,7 @@ fun ImportGameScreen(
     interactions: ImportGameScreenInteractor,
     modifier: Modifier = Modifier,
 ) {
-    val bgColor = MaterialTheme.colorScheme.background
+    val bgColor = Design.colors.primarySoft
     Scaffold(
         topBar = {
             AppBar(
@@ -67,15 +67,13 @@ fun ImportGameScreen(
                 navButton = { Back(onClick = onNavigateBack) },
             )
         },
-        modifier = modifier
-            .testTag { ImportGameScreenTags.SCREEN }
-            .semantics { this.backgroundColor = bgColor },
+        modifier = modifier.testTag { ImportGameScreenTags.SCREEN },
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(bgColor)
                 .padding(innerPadding)
-                .background(MaterialTheme.colorScheme.background)
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -92,9 +90,7 @@ fun ImportGameScreen(
                 enableAnimations = enableAnimations,
                 modifier = Modifier.fillMaxWidth(),
             )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
+            ChessGymSpacer(size = SpacerSize.XXLARGE)
             AnimatedVisibility(
                 visible = uiState.isGameLoaded,
                 enter = expandVertically(),
@@ -109,9 +105,7 @@ fun ImportGameScreen(
                     onJumpToEnd = interactions::onJumpToEnd,
                 )
             }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
+            ChessGymSpacer()
             ImportButtons(
                 onFenClicked = interactions::onFenClicked,
                 onPgnClicked = interactions::onPgnClicked,
@@ -149,7 +143,7 @@ private fun MoveNavigationControls(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp),
+            .padding(horizontal = Design.dimensions.spacing.xgut),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -161,7 +155,7 @@ private fun MoveNavigationControls(
             Icon(
                 painter = painterResource(R.drawable.keyboard_double_arrow_left),
                 contentDescription = stringResource(R.string.import_game_jump_to_start),
-                modifier = Modifier.size(32.dp),
+                modifier = Modifier.size(Design.dimensions.spacing.section),
             )
         }
         IconButton(
@@ -172,7 +166,7 @@ private fun MoveNavigationControls(
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                 contentDescription = stringResource(R.string.import_game_previous_move),
-                modifier = Modifier.size(32.dp),
+                modifier = Modifier.size(Design.dimensions.spacing.section),
             )
         }
         IconButton(
@@ -183,7 +177,7 @@ private fun MoveNavigationControls(
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = stringResource(R.string.import_game_next_move),
-                modifier = Modifier.size(32.dp),
+                modifier = Modifier.size(Design.dimensions.spacing.section),
             )
         }
         IconButton(
@@ -194,7 +188,7 @@ private fun MoveNavigationControls(
             Icon(
                 painter = painterResource(R.drawable.keyboard_double_arrow_right),
                 contentDescription = stringResource(R.string.import_game_jump_to_end),
-                modifier = Modifier.size(32.dp),
+                modifier = Modifier.size(Design.dimensions.spacing.section),
             )
         }
     }
@@ -209,22 +203,24 @@ private fun ImportButtons(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
+            .padding(horizontal = Design.dimensions.spacing.xgut),
+        horizontalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.xxl),
     ) {
-        DefaultButton(
+        PrimaryButton(
+            text = stringResource(R.string.import_fen),
             onClick = onFenClicked,
             modifier = Modifier
                 .weight(1f)
                 .testTag { ImportGameScreenTags.FEN_BUTTON },
-            text = R.string.import_fen
+            style = PrimaryButtonStyle.Clear,
         )
-        DefaultButton(
+        PrimaryButton(
+            text = stringResource(R.string.import_pgn),
             onClick = onPgnClicked,
             modifier = Modifier
                 .weight(1f)
                 .testTag { ImportGameScreenTags.PGN_BUTTON },
-            text = R.string.import_pgn
+            style = PrimaryButtonStyle.Clear,
         )
     }
 }

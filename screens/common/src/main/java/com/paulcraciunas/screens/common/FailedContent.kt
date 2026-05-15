@@ -5,10 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -27,7 +25,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
-import com.paulcraciunas.screens.common.controls.RefreshButton
+import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
+import com.paulcraciunas.screens.common.design.components.RefreshButton
+import com.paulcraciunas.screens.common.design.components.SpacerSize
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 private val ErrorBadgeSize = 96.dp
@@ -44,7 +45,7 @@ fun FailedContent(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
+            .background(Design.colors.primarySoft),
     ) {
         ErrorBody(
             title = title,
@@ -72,7 +73,7 @@ private fun ErrorBody(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         ErrorBadge()
-        Spacer(modifier = Modifier.height(24.dp))
+        ChessGymSpacer(size = SpacerSize.HUGE)
         Text(
             text = title,
             style = MaterialTheme.typography.titleLarge,
@@ -80,7 +81,7 @@ private fun ErrorBody(
             color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center,
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        ChessGymSpacer()
         Text(
             text = message,
             style = MaterialTheme.typography.bodyLarge,
@@ -88,8 +89,8 @@ private fun ErrorBody(
             textAlign = TextAlign.Center,
         )
         onRetry?.let { retry ->
-            Spacer(modifier = Modifier.height(24.dp))
-            RefreshButton(onClick = retry, text = R.string.generic_retry)
+            ChessGymSpacer(size = SpacerSize.HUGE)
+            RefreshButton(onClick = retry, textId = R.string.generic_retry)
         }
     }
 }

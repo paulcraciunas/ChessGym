@@ -26,7 +26,7 @@ class AchievementsViewModel @Inject constructor(
         emit(adaptedState)
     }.catch { e ->
         Timber.w(e, "Error loading achievements")
-        emit(AchievementsUiState(isLoading = false, isError = true, achievements = emptyList()))
+        emit(AchievementsUiState(isLoading = false, isError = true))
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),

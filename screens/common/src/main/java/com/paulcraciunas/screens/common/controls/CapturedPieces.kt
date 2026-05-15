@@ -5,20 +5,17 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ColorScheme
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Piece
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
@@ -31,8 +28,8 @@ fun CapturedPieces(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(24.dp)
-            .padding(horizontal = 16.dp),
+            .height(Design.dimensions.sizes.navBarIconHeight)
+            .padding(horizontal = Design.dimensions.spacing.xxl),
         contentAlignment = Alignment.CenterStart
     ) {
         if (capturedPieces.isNotEmpty()) {
@@ -40,8 +37,8 @@ fun CapturedPieces(
                 text = capturedPieces.joinToString("") { piece ->
                     piece.toUnicodeChar(normalizedSide)
                 },
-                style = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp),
-                color = MaterialTheme.colorScheme.onSurface,
+                style = Design.typography.bodyLarge.copy(fontSize = 18.sp),
+                color = Design.colors.ink,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -60,11 +57,7 @@ private fun Piece.toUnicodeChar(side: Side): String = when (this) {
 
 @Composable
 @Stable
-private fun ColorScheme.isLightMode() = this.background.luminance() > 0.5
-
-@Composable
-@Stable
-private fun Side.normalize(): Side = if (MaterialTheme.colorScheme.isLightMode()) this else this.other()
+private fun Side.normalize(): Side = if (!Design.colors.isDark) this else this.other()
 
 @Preview(showBackground = true)
 @Preview("Dark mode", uiMode = UI_MODE_NIGHT_YES)

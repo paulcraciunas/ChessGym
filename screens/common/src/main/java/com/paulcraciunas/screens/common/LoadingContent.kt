@@ -4,10 +4,8 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
@@ -21,6 +19,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.controls.InfiniteProgressIndicator
+import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
+import com.paulcraciunas.screens.common.design.components.SpacerSize
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 private val ProgressSize = 56.dp
@@ -33,7 +34,7 @@ fun LoadingContent(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
+            .background(Design.colors.primarySoft),
     ) {
         LoadingBody(
             message = message,
@@ -57,7 +58,7 @@ private fun LoadingBody(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         InfiniteProgressIndicator(modifier = Modifier.size(ProgressSize))
-        Spacer(modifier = Modifier.height(16.dp))
+        ChessGymSpacer(size = SpacerSize.XXLARGE)
         Text(
             text = message,
             style = MaterialTheme.typography.titleSmall,

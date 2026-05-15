@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -15,9 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.global.resources.R
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
@@ -47,11 +46,11 @@ fun DefaultPuzzleControls(
                 painter = painterResource(R.drawable.lightbulb_icon),
                 contentDescription = stringResource(R.string.puzzle_hint),
                 tint = if (!hintEnabled) {
-                    MaterialTheme.colorScheme.outline
+                    Design.colors.border
                 } else {
-                    MaterialTheme.colorScheme.primary
+                    Design.colors.primary
                 },
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(Design.dimensions.sizes.navBarIconHeight)
             )
         }
         OutlinedIconButton(
@@ -63,11 +62,11 @@ fun DefaultPuzzleControls(
                 painter = painterResource(R.drawable.flag_icon),
                 contentDescription = stringResource(R.string.puzzle_abandon),
                 tint = if (!abandonEnabled) {
-                    MaterialTheme.colorScheme.outline
+                    Design.colors.border
                 } else {
-                    MaterialTheme.colorScheme.error
+                    Design.colors.danger
                 },
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(Design.dimensions.sizes.navBarIconHeight)
             )
         }
         YourMoveIndicator(toMove = toMove, textRes = moveIndicatorTextRes)

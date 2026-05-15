@@ -1,22 +1,21 @@
 package com.paulcraciunas.screens.blindmode.ui
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.style.TextAlign
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.blindmode.vm.BlindModeScreenInteractor
 import com.paulcraciunas.screens.blindmode.vm.BlindModeUiState
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
-import com.paulcraciunas.screens.common.controls.RefreshButton
+import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
+import com.paulcraciunas.screens.common.design.components.RefreshButton
+import com.paulcraciunas.screens.common.design.components.SpacerSize
+import com.paulcraciunas.screens.common.design.theme.Design
 
 @Composable
 internal fun GameOverContent(
@@ -32,26 +31,15 @@ internal fun GameOverContent(
         enableAnimations = false,
         modifier = Modifier.fillMaxWidth()
     )
-
-    Spacer(modifier = Modifier.height(12.dp))
-
+    ChessGymSpacer(size = SpacerSize.LARGE)
     Text(
         text = stringResource(state.result.stringRes()),
-        style = MaterialTheme.typography.headlineSmall,
-        fontWeight = FontWeight.Bold,
-        color = if (state.result == BlindModeUiState.GameResult.Win) {
-            MaterialTheme.colorScheme.primary
-        } else {
-            MaterialTheme.colorScheme.error
-        },
+        style = Design.typography.headlineLarge,
+        color = Design.colors.ink,
+        textAlign = TextAlign.Center,
     )
-
-    Spacer(modifier = Modifier.height(12.dp))
-
-    RefreshButton(
-        onClick = interactions::onPlayAgain,
-        text = R.string.blind_mode_play_again,
-    )
+    ChessGymSpacer(size = SpacerSize.LARGE)
+    RefreshButton(onClick = interactions::onPlayAgain)
 
     if (state.moveHistory.isNotEmpty()) {
         MoveHistoryDisplay(moveHistory = state.moveHistory)

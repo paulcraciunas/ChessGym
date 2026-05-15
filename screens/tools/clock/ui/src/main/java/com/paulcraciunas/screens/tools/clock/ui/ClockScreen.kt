@@ -4,12 +4,9 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.media.AudioManager
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -20,14 +17,15 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
+
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.paulcraciunas.domain.api.general.CountdownTimer
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.global.resources.R
-import androidx.compose.ui.semantics.semantics
 import com.paulcraciunas.screens.common.AppBar
-import com.paulcraciunas.screens.common.backgroundColor
+
+import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.tools.clock.vm.ClockScreenInteractor
@@ -53,7 +51,7 @@ fun ClockScreen(
         TonePlayer.PlayFinishedSound(triggerFeedback)
     }
 
-    val bgColor = MaterialTheme.colorScheme.background
+    val bgColor = Design.colors.bg
     Scaffold(
         topBar = {
             AppBar(
@@ -61,17 +59,15 @@ fun ClockScreen(
                 navButton = { Back(onClick = onNavigateBack) },
             )
         },
-        modifier = modifier
-            .testTag { ClockScreenTags.SCREEN }
-            .semantics { this.backgroundColor = bgColor },
+        modifier = modifier.testTag { ClockScreenTags.SCREEN }
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(MaterialTheme.colorScheme.background),
+                .background(bgColor),
         ) {
-            Spacer(modifier = Modifier.height(8.dp))
+            ChessGymSpacer()
 
             val players = listOf(Side.BLACK, Side.WHITE)
             players.forEachIndexed { index, side ->
@@ -95,9 +91,8 @@ fun ClockScreen(
                         .testTag { if (side == Side.BLACK) ClockScreenTags.BLACK_BUTTON else ClockScreenTags.WHITE_BUTTON },
                 )
 
-                if (index == 0) Spacer(modifier = Modifier.height(8.dp))
+                if (index == 0) ChessGymSpacer()
             }
-
             ClockControls(uiState = uiState, interactions = interactions)
         }
     }

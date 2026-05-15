@@ -7,32 +7,31 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.semantics
+
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.global.resources.R
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.AppBar
 import com.paulcraciunas.screens.common.FailedContent
 import com.paulcraciunas.screens.common.LoadingContent
-import com.paulcraciunas.screens.common.backgroundColor
+
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
 import com.paulcraciunas.screens.common.controls.CapturedPieces
 import com.paulcraciunas.screens.common.controls.DefaultPuzzleControls
+import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.dialogs.AbandonConfirmationDialog
 import com.paulcraciunas.screens.common.dialogs.PromotionDialog
 import com.paulcraciunas.screens.common.model.PuzzleData
@@ -58,7 +57,7 @@ fun RatedPuzzleScreen(
         is RatedPuzzleUiState.BoardState -> stringResource(R.string.rated_puzzle_title, uiState.data.rating)
         else -> stringResource(R.string.puzzle_mode_rated_title)
     }
-    val backgroundColor = MaterialTheme.colorScheme.background
+    val backgroundColor = Design.colors.primarySoft
     Scaffold(
         topBar = {
             AppBar(
@@ -66,9 +65,7 @@ fun RatedPuzzleScreen(
                 navButton = { Back(onClick = onNavigateBack) }
             )
         },
-        modifier = modifier
-            .testTag { RatedPuzzleScreenTags.SCREEN }
-            .semantics { this.backgroundColor = backgroundColor }
+        modifier = modifier.testTag { RatedPuzzleScreenTags.SCREEN },
     ) { innerPadding ->
         when (uiState) {
             is RatedPuzzleUiState.Loading -> {
@@ -94,7 +91,8 @@ fun RatedPuzzleScreen(
                     highlightLegalMoves = highlightLegalMoves,
                     enableAnimations = enableAnimations,
                     interactions = interactions,
-                    modifier = Modifier.padding(innerPadding)
+                    modifier = Modifier.background(backgroundColor)
+                        .padding(innerPadding)
                 )
             }
         }
@@ -134,7 +132,7 @@ private fun RatedPuzzleContent(
             side = data.player.other(),
             modifier = Modifier.fillMaxWidth()
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        ChessGymSpacer()
         AnimatedContent(
             targetState = uiState is RatedPuzzleUiState.Finished,
             transitionSpec = {
@@ -178,7 +176,7 @@ private fun RatedPuzzleContent(
                 )
             }
         }
-        Spacer(modifier = Modifier.height(8.dp))
+        ChessGymSpacer()
     }
 }
 

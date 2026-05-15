@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -25,6 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.screens.common.controls.InfiniteProgressIndicator
+import com.paulcraciunas.screens.common.design.components.EyebrowDivider
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.global.resources.R as GlobalR
 
@@ -45,8 +45,7 @@ internal fun GoogleSignInSection(
         } else {
             InfiniteProgressIndicator(modifier = Modifier.size(40.dp))
         }
-
-        SignInDivider()
+        EyebrowDivider(text = stringResource(GlobalR.string.sign_in_divider))
     }
 }
 
@@ -81,23 +80,6 @@ internal fun GoogleSignInButton(
                 )
             )
         }
-    }
-}
-
-@Composable
-private fun SignInDivider() {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        HorizontalDivider(Modifier.weight(1f))
-        Text(
-            text = stringResource(GlobalR.string.sign_in_divider),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        HorizontalDivider(Modifier.weight(1f))
     }
 }
 

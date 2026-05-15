@@ -4,18 +4,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -34,8 +29,13 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.paulcraciunas.screens.common.design.components.IconCircleButton
+import com.paulcraciunas.screens.common.design.components.PrimaryButton
+import com.paulcraciunas.screens.common.design.components.annotatedTextResource
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.global.resources.R as GlobalR
 
@@ -72,6 +72,11 @@ internal fun EmailSignInForm(
                 imeAction = ImeAction.Next,
                 autoCorrectEnabled = false
             ),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = Design.colors.bg,
+                unfocusedContainerColor = Design.colors.surface,
+                disabledContainerColor = Design.colors.surfaceAlt
+            )
         )
         OutlinedTextField(
             value = password,
@@ -88,21 +93,15 @@ internal fun EmailSignInForm(
                 },
             enabled = !isLoading,
             singleLine = true,
-            visualTransformation = if (isPasswordVisible) {
-                VisualTransformation.None
-            } else {
-                PasswordVisualTransformation()
-            },
+            visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
                 val icon = if (isPasswordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility
-                val description = if (isPasswordVisible) {
-                    stringResource(GlobalR.string.sign_in_password_hide)
-                } else {
-                    stringResource(GlobalR.string.sign_in_password_show)
-                }
-                IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
-                    Icon(imageVector = icon, contentDescription = description)
-                }
+                val description = if (isPasswordVisible) stringResource(GlobalR.string.sign_in_password_hide) else stringResource(GlobalR.string.sign_in_password_show)
+                IconCircleButton(
+                    icon = icon,
+                    onClick = { isPasswordVisible = !isPasswordVisible },
+                    contentDescription = description,
+                )
             },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password,
@@ -110,32 +109,31 @@ internal fun EmailSignInForm(
                 autoCorrectEnabled = false
             ),
             keyboardActions = KeyboardActions(onDone = { onSubmit() }),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = Design.colors.bg,
+                unfocusedContainerColor = Design.colors.surface,
+                disabledContainerColor = Design.colors.surfaceAlt
+            )
         )
-        Button(
+        PrimaryButton(
+            text = if (isSignUpMode) stringResource(GlobalR.string.sign_up_button)
+            else stringResource(GlobalR.string.sign_in_button),
             onClick = onSubmit,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = Design.dimensions.spacing.sm),
             enabled = !isLoading,
-        ) {
-            if (isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(20.dp),
-                    strokeWidth = 2.dp,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                )
-            } else {
-                Text(
-                    if (isSignUpMode) stringResource(GlobalR.string.sign_up_button)
-                    else stringResource(GlobalR.string.sign_in_button)
-                )
-            }
-        }
+        )
         TextButton(
             onClick = onToggleMode,
             enabled = !isLoading,
         ) {
             Text(
-                if (isSignUpMode) stringResource(GlobalR.string.sign_in_switch_to_sign_in)
-                else stringResource(GlobalR.string.sign_in_switch_to_sign_up)
+                text = if (isSignUpMode) annotatedTextResource(GlobalR.string.sign_in_switch_to_sign_in)
+                else annotatedTextResource(GlobalR.string.sign_in_switch_to_sign_up),
+                style = Design.typography.bodyLarge,
+                color = Design.colors.inkSoft,
+                textAlign = TextAlign.Center,
             )
         }
     }

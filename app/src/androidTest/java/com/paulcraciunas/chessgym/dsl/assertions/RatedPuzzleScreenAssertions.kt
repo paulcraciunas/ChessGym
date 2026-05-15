@@ -1,8 +1,5 @@
 package com.paulcraciunas.chessgym.dsl.assertions
 
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.test.SemanticsMatcher
-import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
@@ -13,7 +10,6 @@ import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.platform.app.InstrumentationRegistry
 import com.paulcraciunas.global.resources.R
-import com.paulcraciunas.screens.common.SemanticsKeys
 import com.paulcraciunas.screens.common.dialogs.AbandonConfirmationDialogTags
 import com.paulcraciunas.screens.common.dialogs.PromotionDialogTags
 import com.paulcraciunas.screens.puzzles.rated.ui.RatedPuzzleScreenTags
@@ -22,12 +18,6 @@ class RatedPuzzleScreenAssertions(private val rule: ComposeTestRule) {
 
     fun isDisplayed(): RatedPuzzleScreenAssertions = apply {
         rule.onNodeWithTag(RatedPuzzleScreenTags.SCREEN).assertIsDisplayed()
-    }
-
-    fun hasBackgroundColor(color: Color): RatedPuzzleScreenAssertions = apply {
-        rule.onNodeWithTag(RatedPuzzleScreenTags.SCREEN).assert(
-            SemanticsMatcher.expectValue(SemanticsKeys.BackgroundColor, color)
-        )
     }
 
     fun isFinishedWithSuccess(): RatedPuzzleScreenAssertions = apply {

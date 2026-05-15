@@ -135,6 +135,7 @@ dependencies {
     testImplementation(project(":domain:api"))
     testImplementation(project(":domain:impl"))
     testImplementation(project(":user:api"))
+    testImplementation(testFixtures(project(":domain:api")))
     testImplementation(testFixtures(project(":user:api")))
     testImplementation(testFixtures(project(":settings:application:api")))
     testImplementation(testFixtures(project(":global:device:api")))

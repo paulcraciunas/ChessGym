@@ -8,8 +8,6 @@ import com.paulcraciunas.chessgym.dsl.When
 import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Rank
-import com.paulcraciunas.screens.common.theme.DarkBackground
-import com.paulcraciunas.screens.common.theme.LightBackground
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
 import org.junit.Test
@@ -259,9 +257,8 @@ internal class FindTheSquareScreenTest : BaseUiTest() {
 
         navigateToFindTheSquare()
 
-        Then.findTheSquare
-            .isDisplayed()
-            .hasBackgroundColor(LightBackground)
+        Then.findTheSquare.isDisplayed()
+        Then.theme.isLightMode()
     }
 
     @Test
@@ -270,9 +267,8 @@ internal class FindTheSquareScreenTest : BaseUiTest() {
 
         navigateToFindTheSquare()
 
-        Then.findTheSquare
-            .isDisplayed()
-            .hasBackgroundColor(DarkBackground)
+        Then.findTheSquare.isDisplayed()
+        Then.theme.isDarkMode()
     }
 
     @Test

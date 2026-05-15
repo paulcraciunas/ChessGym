@@ -1,26 +1,16 @@
 package com.paulcraciunas.chessgym.dsl.assertions
 
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.test.SemanticsMatcher
-import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import com.paulcraciunas.screens.boardvis.squares.ui.FindTheSquareTags
-import com.paulcraciunas.screens.common.SemanticsKeys
 import com.paulcraciunas.screens.common.controls.SideSelectionTags
 
 class FindTheSquareScreenAssertions(private val rule: ComposeTestRule) {
 
     fun isDisplayed(): FindTheSquareScreenAssertions = apply {
         rule.onNodeWithTag(FindTheSquareTags.SCREEN).assertIsDisplayed()
-    }
-
-    fun hasBackgroundColor(color: Color): FindTheSquareScreenAssertions = apply {
-        rule.onNodeWithTag(FindTheSquareTags.SCREEN).assert(
-            SemanticsMatcher.expectValue(SemanticsKeys.BackgroundColor, color)
-        )
     }
 
     fun isInSetupPhase(): FindTheSquareScreenAssertions = apply {
@@ -53,7 +43,7 @@ class FindTheSquareScreenAssertions(private val rule: ComposeTestRule) {
     }
 
     fun showsNewHighScore(): FindTheSquareScreenAssertions = apply {
-        rule.onNodeWithText("\uD83C\uDF89 New High Score! \uD83C\uDF89").assertIsDisplayed()
+        rule.onNodeWithText("New high score").assertIsDisplayed()
     }
 
     fun showsHighScore(highScore: Int): FindTheSquareScreenAssertions = apply {

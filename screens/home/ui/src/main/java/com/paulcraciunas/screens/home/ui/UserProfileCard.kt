@@ -11,22 +11,24 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.paulcraciunas.domain.api.achievements.Achievement
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.achievements.tierName
+import com.paulcraciunas.screens.common.design.components.ChessGymHeroCard
+import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
+import com.paulcraciunas.screens.common.design.components.Eyebrow
+import com.paulcraciunas.screens.common.design.components.HairlineDivider
+import com.paulcraciunas.screens.common.design.components.SpacerSize
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.home.vm.HomeUiState
@@ -37,72 +39,29 @@ import java.time.format.DateTimeFormatter
 internal fun UserProfileCard(
     userProfile: HomeUiState.UserProfile,
     ribbons: List<HomeUiState.Ribbon>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-    Box(
+    ChessGymHeroCard(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.surface)
-            .padding(16.dp)
             .testTag { HomeScreenTags.Profile.CARD }
     ) {
         Column(
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.lg)
         ) {
-            // Main row: Avatar, Name, Rating
+            NameAndRating(userProfile = userProfile)
+            HairlineDivider(modifier = Modifier.fillMaxWidth())
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalAlignment = Alignment.CenterVertically
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                // User Avatar
-                Box(
-                    modifier = Modifier
-                        .size(56.dp)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = userProfile.initials(),
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.primary,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.testTag { HomeScreenTags.Profile.INITIALS }
-                    )
-                }
-
-                Text(
-                    text = userProfile.name,
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .weight(1f)
-                        .testTag { HomeScreenTags.Profile.NAME }
-                )
-
-                Text(
-                    text = userProfile.currentRating.toString(),
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.testTag { HomeScreenTags.Profile.RATING }
-                )
-            }
-
-            // Stats Rows
-            Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                StatRow(
-                    label = "Activities",
+                Property(
+                    label = stringResource(R.string.home_label_activities),
                     value = userProfile.totalActivities.toString(),
                     modifier = Modifier.testTag { HomeScreenTags.Profile.ACTIVITIES }
                 )
-                StatRow(
-                    label = "Member Since",
+                Property(
+                    label = stringResource(R.string.home_label_member_since),
                     value = userProfile.joinDate.format(formatter)
                 )
             }
@@ -114,6 +73,80 @@ internal fun UserProfileCard(
     }
 }
 
+@Composable
+private fun NameAndRating(
+    userProfile: HomeUiState.UserProfile,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.Top
+    ) {
+        Box(
+            modifier = Modifier
+                .size(Design.dimensions.sizes.avatar)
+                .clip(Design.shapes.circle)
+                .background(Design.colors.primary),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = userProfile.initials(),
+                style = Design.typography.headlineSmall,
+                color = Design.colors.onPrimary,
+                modifier = Modifier.testTag { HomeScreenTags.Profile.INITIALS }
+            )
+        }
+        ChessGymSpacer(size = SpacerSize.LARGE)
+        Column(modifier = Modifier.weight(1f)) {
+            ChessGymSpacer(size = SpacerSize.SMALL)
+            Eyebrow(text = stringResource(R.string.home_label_profile))
+            Text(
+                text = userProfile.name,
+                style = Design.typography.headlineSmall,
+                color = Design.colors.ink,
+                modifier = Modifier
+                    .testTag { HomeScreenTags.Profile.NAME }
+            )
+        }
+        Column(
+            horizontalAlignment = Alignment.End
+        ) {
+            ChessGymSpacer(size = SpacerSize.SMALL)
+            Eyebrow(text = stringResource(R.string.home_label_rating))
+            Text(
+                text = userProfile.currentRating.toString(),
+                style = Design.typography.displaySmall,
+                color = Design.colors.primary,
+                modifier = Modifier.testTag { HomeScreenTags.Profile.RATING }
+            )
+        }
+    }
+}
+
+@Composable
+internal fun Property(
+    label: String,
+    value: String,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.xs),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = label,
+            style = Design.typography.bodySmall,
+            color = Design.colors.inkMuted,
+        )
+        Text(
+            text = value,
+            style = Design.textStyles.title,
+            color = Design.colors.ink,
+        )
+    }
+}
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun RibbonRow(
@@ -122,15 +155,15 @@ private fun RibbonRow(
 ) {
     FlowRow(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
+        horizontalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.xs),
+        verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.xs),
     ) {
         ribbons.forEach { ribbon ->
             Icon(
                 painter = painterResource(id = R.drawable.military_medal_icon),
                 contentDescription = ribbon.achievement.tierName(ribbon.tier),
-                modifier = Modifier.size(20.dp),
-                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(Design.dimensions.sizes.icon),
+                tint = Design.colors.accent,
             )
         }
     }
@@ -154,7 +187,7 @@ private fun UserProfileCardPreview() {
                 HomeUiState.Ribbon(Achievement.RATED_PUZZLES_SOLVED, Achievement.Tier.THREE),
                 HomeUiState.Ribbon(Achievement.PUZZLE_RUSH_SESSIONS, Achievement.Tier.ONE),
             ),
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(Design.dimensions.spacing.xxl)
         )
     }
 }

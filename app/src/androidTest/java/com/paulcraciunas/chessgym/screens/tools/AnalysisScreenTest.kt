@@ -4,8 +4,6 @@ import com.paulcraciunas.chessgym.base.BaseUiTest
 import com.paulcraciunas.chessgym.dsl.Given
 import com.paulcraciunas.chessgym.dsl.Then
 import com.paulcraciunas.chessgym.dsl.When
-import com.paulcraciunas.screens.common.theme.DarkBackground
-import com.paulcraciunas.screens.common.theme.LightBackground
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
 import org.junit.Test
@@ -66,9 +64,8 @@ internal class AnalysisScreenTest : BaseUiTest() {
 
         navigateToAnalysis()
 
-        Then.analysisScreen
-            .isDisplayed()
-            .hasBackgroundColor(LightBackground)
+        Then.analysisScreen.isDisplayed()
+        Then.theme.isLightMode()
     }
 
     @Test
@@ -77,9 +74,8 @@ internal class AnalysisScreenTest : BaseUiTest() {
 
         navigateToAnalysis()
 
-        Then.analysisScreen
-            .isDisplayed()
-            .hasBackgroundColor(DarkBackground)
+        Then.analysisScreen.isDisplayed()
+        Then.theme.isDarkMode()
     }
 
     @Test

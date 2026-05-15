@@ -1,26 +1,11 @@
 package com.paulcraciunas.chessgym.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.paulcraciunas.chessgym.MainScreen
-import androidx.navigation.toRoute
-import com.paulcraciunas.chessgym.error_reporting.NavigationLogger
-import com.paulcraciunas.chessgym.screens.About
-import com.paulcraciunas.chessgym.screens.AboutDetail
-import com.paulcraciunas.chessgym.screens.Settings
-import com.paulcraciunas.chessgym.auth.GoogleTokenSource
-import com.paulcraciunas.screens.signin.ui.SignInScreen
-import com.paulcraciunas.screens.signin.vm.SignInViewModel
-import com.paulcraciunas.screens.about.vm.AboutSection
 import com.paulcraciunas.screens.loading.ui.LoadingScreen
 import com.paulcraciunas.screens.loading.vm.LoadingViewModel
 
@@ -29,81 +14,24 @@ fun NavGraph(
     modifier: Modifier = Modifier,
     viewModel: NavGraphViewModel = hiltViewModel(),
 ) {
-    val navController = rememberNavController()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    DisposableEffect(navController) {
-        navController.addOnDestinationChangedListener(NavigationLogger)
-        onDispose { navController.removeOnDestinationChangedListener(NavigationLogger) }
-    }
-
-    // Splash screen handles the loading state, so we wait until it's ready
     if (uiState.isLoading) {
-        // Return early - splash screen is still showing
         return
     }
 
-    val startDestination = if (uiState.puzzlesDownloaded) {
-        Screen.Main
+    if (!uiState.puzzlesDownloaded) {
+        val vm: LoadingViewModel = hiltViewModel()
+        val loadingState by vm.uiState.collectAsStateWithLifecycle()
+        LoadingScreen(
+            onComplete = { },
+            onDownload = vm::onDownload,
+            onDownloadConfirmation = vm::onDownloadConfirmation,
+            onPermissionReceived = vm::onPermissionReceived,
+            onCrashConsentResponse = vm::onCrashConsentResponse,
+            uiState = loadingState,
+        )
     } else {
-        Screen.Loading
-    }
-
-    NavHost(
-        modifier = modifier,
-        navController = navController,
-        startDestination = startDestination,
-    ) {
-        composable<Screen.Loading> {
-            val vm: LoadingViewModel = hiltViewModel()
-            val loadingState by vm.uiState.collectAsStateWithLifecycle()
-            LoadingScreen(
-                onComplete = { navController.navigateToTopLevel(Screen.Main) },
-                onDownload = vm::onDownload,
-                onDownloadConfirmation = vm::onDownloadConfirmation,
-                onPermissionReceived = vm::onPermissionReceived,
-                onCrashConsentResponse = vm::onCrashConsentResponse,
-                uiState = loadingState,
-            )
-        }
-        composable<Screen.Main> {
-            MainScreen(
-                onDrawerScreen = { screen -> navController.navigate(screen) },
-                notificationManager = viewModel.achievementNotificationManager,
-            )
-        }
-        composable<Screen.Settings> {
-            Settings(onNavigateBack = navController::popBackStack)
-        }
-        composable<Screen.SignUp> {
-            val vm: SignInViewModel = hiltViewModel()
-            val signInState by vm.uiState.collectAsStateWithLifecycle()
-            val webClientId = stringResource(com.paulcraciunas.chessgym.R.string.default_web_client_id)
-            val context = LocalContext.current
-            SignInScreen(
-                uiState = signInState,
-                onGoogleSignIn = { vm.onGoogleSignIn(GoogleTokenSource(webClientId, context)) },
-                onEmailSignIn = vm::onEmailSignIn,
-                onEmailSignUp = vm::onEmailSignUp,
-                onNavigateBack = navController::popBackStack,
-                onClearError = vm::clearError,
-            )
-        }
-        composable<Screen.About> {
-            About(
-                onNavigateBack = navController::popBackStack,
-                onSectionClicked = { section ->
-                    navController.navigate(Screen.AboutDetail(section = section.name))
-                },
-            )
-        }
-        composable<Screen.AboutDetail> { backStackEntry ->
-            val route = backStackEntry.toRoute<Screen.AboutDetail>()
-            val section = AboutSection.valueOf(route.section)
-            AboutDetail(
-                section = section,
-                onNavigateBack = navController::popBackStack,
-            )
-        }
+        MainScreen(modifier = modifier)
     }
 }

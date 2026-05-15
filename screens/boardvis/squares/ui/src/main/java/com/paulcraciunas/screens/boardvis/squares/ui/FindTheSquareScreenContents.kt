@@ -3,25 +3,24 @@ package com.paulcraciunas.screens.boardvis.squares.ui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.boardvis.squares.vm.FindTheSquareScreenInteractor
 import com.paulcraciunas.screens.boardvis.squares.vm.FindTheSquareUiState
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
+import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
+import com.paulcraciunas.screens.common.design.components.SpacerSize
+import com.paulcraciunas.screens.common.design.theme.Design
 
 @Composable
 internal fun FindTheSquareScreenContents(
@@ -56,9 +55,7 @@ internal fun FindTheSquareScreenContents(
                 )
             }
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
+        ChessGymSpacer(size = SpacerSize.XXLARGE)
         when (state) {
             is FindTheSquareUiState.Setup -> {
                 FindTheSquareControls(
@@ -75,7 +72,7 @@ internal fun FindTheSquareScreenContents(
                     isNewHighScore = state.isNewHighScore,
                     previousHighScore = state.previousHighScore,
                     onPlayAgain = interactions::onPlayAgain,
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier.padding(Design.dimensions.spacing.xxl)
                 )
             }
         }
@@ -88,17 +85,17 @@ internal fun PlayingControls(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.fillMaxWidth().padding(24.dp),
+        modifier = modifier.fillMaxWidth().padding(Design.dimensions.spacing.xgut),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.lg)
     ) {
         // Score display during game
         Text(
             text = stringResource(R.string.boardvis_find_square_score, score),
-            style = MaterialTheme.typography.titleMedium,
+            style = Design.typography.titleMedium,
             fontSize = 32.sp,
             fontWeight = FontWeight.Medium,
-            color = MaterialTheme.colorScheme.primary,
+            color = Design.colors.primary,
         )
     }
 }

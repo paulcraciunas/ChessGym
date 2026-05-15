@@ -2,25 +2,23 @@ package com.paulcraciunas.screens.puzzles.rated.ui
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
-import com.paulcraciunas.screens.common.controls.PlayButton
-import com.paulcraciunas.screens.common.controls.RatingChangeChip
+import com.paulcraciunas.screens.common.design.components.ChessGymChip
+import com.paulcraciunas.screens.common.design.components.PrimaryPillButton
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
-import com.paulcraciunas.screens.common.theme.LoadingTheme
 
 @Composable
 internal fun FinishedPuzzleControls(
@@ -32,7 +30,10 @@ internal fun FinishedPuzzleControls(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(
+                horizontal = Design.dimensions.spacing.xxl,
+                vertical = Design.dimensions.spacing.sm,
+            ),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -40,33 +41,22 @@ internal fun FinishedPuzzleControls(
             horizontalArrangement = Arrangement.Absolute.Left,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Finished state: rating change + navigation controls + play next
-            RatingChangeChip(
-                ratingChange = if (success) ratingChange else -ratingChange,
-                iconSize = 24.dp,
-                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
-                textStyle = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.testTag { RatedPuzzleScreenTags.Finished.RATING_CHANGE }
-            )
+            ChessGymChip(ratingChange = if (success) ratingChange else -ratingChange)
             Text(
                 text = stringResource(if (success) R.string.generic_success else R.string.generic_failed),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = if (success) {
-                    LoadingTheme.colors.success
-                } else {
-                    MaterialTheme.colorScheme.error
-                },
+                style = Design.typography.titleMedium,
+                color = if (success) Design.colors.success else Design.colors.danger,
                 modifier = Modifier
-                    .padding(horizontal = 10.dp)
+                    .padding(horizontal = Design.dimensions.spacing.md)
                     .testTag { RatedPuzzleScreenTags.Finished.RESULT_TEXT }
             )
         }
 
-        PlayButton(
+        PrimaryPillButton(
+            text = stringResource(R.string.rated_puzzle_next_description),
             onClick = onPlayNext,
-            text = R.string.rated_puzzle_next_description,
-            modifier = Modifier.testTag { RatedPuzzleScreenTags.Finished.PLAY_NEXT }
+            modifier = Modifier.testTag { RatedPuzzleScreenTags.Finished.PLAY_NEXT },
+            leadingIcon = Icons.Filled.PlayArrow,
         )
     }
 }

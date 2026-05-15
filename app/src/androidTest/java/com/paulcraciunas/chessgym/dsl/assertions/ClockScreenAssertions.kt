@@ -1,26 +1,16 @@
 package com.paulcraciunas.chessgym.dsl.assertions
 
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.test.SemanticsMatcher
-import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onNodeWithTag
-import com.paulcraciunas.screens.common.SemanticsKeys
 import com.paulcraciunas.screens.tools.clock.ui.ClockScreenTags
 
 class ClockScreenAssertions(private val rule: ComposeTestRule) {
 
     fun isDisplayed(): ClockScreenAssertions = apply {
         rule.onNodeWithTag(ClockScreenTags.SCREEN).assertIsDisplayed()
-    }
-
-    fun hasBackgroundColor(color: Color): ClockScreenAssertions = apply {
-        rule.onNodeWithTag(ClockScreenTags.SCREEN).assert(
-            SemanticsMatcher.expectValue(SemanticsKeys.BackgroundColor, color)
-        )
     }
 
     fun isInSetupPhase(): ClockScreenAssertions = apply {

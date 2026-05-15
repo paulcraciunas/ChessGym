@@ -10,9 +10,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.paulcraciunas.screens.common.controls.PlayButton
 import com.paulcraciunas.screens.common.controls.SideSelection
 import com.paulcraciunas.screens.common.controls.SideSelectionControls
+import com.paulcraciunas.screens.common.design.components.PlayButton
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
@@ -27,7 +28,7 @@ internal fun FindTheSquareControls(
     Column(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.xxl)
     ) {
         if (!isPlaying) {
             SideSelectionControls(

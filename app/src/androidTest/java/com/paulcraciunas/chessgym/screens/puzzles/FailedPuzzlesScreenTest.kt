@@ -4,8 +4,6 @@ import com.paulcraciunas.chessgym.base.BaseUiTest
 import com.paulcraciunas.chessgym.dsl.Given
 import com.paulcraciunas.chessgym.dsl.Then
 import com.paulcraciunas.chessgym.dsl.When
-import com.paulcraciunas.screens.common.theme.DarkBackground
-import com.paulcraciunas.screens.common.theme.LightBackground
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
 import org.junit.Test
@@ -45,9 +43,8 @@ internal class FailedPuzzlesScreenTest : BaseUiTest() {
         When.navigation.navigateToPuzzles()
         When.failedPuzzles.open()
 
-        Then.failedPuzzles
-            .isDisplayed()
-            .hasBackgroundColor(LightBackground)
+        Then.failedPuzzles.isDisplayed()
+        Then.theme.isLightMode()
     }
 
     @Test
@@ -59,9 +56,8 @@ internal class FailedPuzzlesScreenTest : BaseUiTest() {
         When.navigation.navigateToPuzzles()
         When.failedPuzzles.open()
 
-        Then.failedPuzzles
-            .isDisplayed()
-            .hasBackgroundColor(DarkBackground)
+        Then.failedPuzzles.isDisplayed()
+        Then.theme.isDarkMode()
     }
 
     @Test
@@ -152,7 +148,7 @@ internal class FailedPuzzlesScreenTest : BaseUiTest() {
 
         Then.puzzleDashboard
             .isDisplayed()
-            .failedPuzzlesCardIsNotClickable()
+            .failedPuzzlesCardIsNotEnabled()
     }
 
     @Test
@@ -171,7 +167,7 @@ internal class FailedPuzzlesScreenTest : BaseUiTest() {
 
         Then.puzzleDashboard
             .isDisplayed()
-            .failedPuzzlesCardIsClickable()
+            .failedPuzzlesCardIsEnabled()
     }
 
     @Test
@@ -179,7 +175,7 @@ internal class FailedPuzzlesScreenTest : BaseUiTest() {
         When.appIsLaunched()
         When.navigation.navigateToPuzzles()
 
-        Then.puzzleDashboard.failedPuzzlesCardIsNotClickable()
+        Then.puzzleDashboard.failedPuzzlesCardIsNotEnabled()
     }
 
     @Test
@@ -189,7 +185,7 @@ internal class FailedPuzzlesScreenTest : BaseUiTest() {
         When.appIsLaunched()
         When.navigation.navigateToPuzzles()
 
-        Then.puzzleDashboard.failedPuzzlesCardIsClickable()
+        Then.puzzleDashboard.failedPuzzlesCardIsEnabled()
     }
 
     @Test
@@ -205,7 +201,7 @@ internal class FailedPuzzlesScreenTest : BaseUiTest() {
 
         When.failedPuzzles.dismissCompletion()
         When.navigation.goBack()
-        Then.puzzleDashboard.failedPuzzlesCardIsNotClickable()
+        Then.puzzleDashboard.failedPuzzlesCardIsNotEnabled()
     }
 
     private companion object {

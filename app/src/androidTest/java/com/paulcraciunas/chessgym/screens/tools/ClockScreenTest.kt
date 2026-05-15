@@ -4,8 +4,6 @@ import com.paulcraciunas.chessgym.base.BaseUiTest
 import com.paulcraciunas.chessgym.dsl.Given
 import com.paulcraciunas.chessgym.dsl.Then
 import com.paulcraciunas.chessgym.dsl.When
-import com.paulcraciunas.screens.common.theme.DarkBackground
-import com.paulcraciunas.screens.common.theme.LightBackground
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
 import org.junit.Test
@@ -64,15 +62,14 @@ internal class ClockScreenTest : BaseUiTest() {
     }
 
     @Test
-    fun GIVEN_setup_phase_WHEN_tapping_black_THEN_game_starts() {
+    fun GIVEN_setup_phase_WHEN_tapping_black_THEN_game_does_not_start() {
         navigateToClock()
 
         When.clockScreen.tapBlack()
 
         Then.clockScreen
             .isDisplayed()
-            .isInPlayingPhase()
-            .showsStopButton()
+            .isInSetupPhase()
     }
 
     @Test
@@ -104,6 +101,7 @@ internal class ClockScreenTest : BaseUiTest() {
     fun GIVEN_playing_phase_WHEN_white_timer_expires_THEN_shows_finished() {
         navigateToClock()
         When.clockScreen.tapWhite()
+        When.clockScreen.tapBlack()
         Then.clockScreen.isInPlayingPhase()
 
         Given.clock.expireWhiteTimer()
@@ -133,6 +131,7 @@ internal class ClockScreenTest : BaseUiTest() {
     fun GIVEN_finished_phase_WHEN_new_game_THEN_returns_to_setup() {
         navigateToClock()
         When.clockScreen.tapWhite()
+        When.clockScreen.tapBlack()
         Given.clock.expireWhiteTimer()
         When.compose.waitForIdle()
         Then.clockScreen.isInFinishedPhase()
@@ -148,9 +147,8 @@ internal class ClockScreenTest : BaseUiTest() {
 
         navigateToClock()
 
-        Then.clockScreen
-            .isDisplayed()
-            .hasBackgroundColor(LightBackground)
+        Then.clockScreen.isDisplayed()
+        Then.theme.isLightMode()
     }
 
     @Test
@@ -159,9 +157,8 @@ internal class ClockScreenTest : BaseUiTest() {
 
         navigateToClock()
 
-        Then.clockScreen
-            .isDisplayed()
-            .hasBackgroundColor(DarkBackground)
+        Then.clockScreen.isDisplayed()
+        Then.theme.isDarkMode()
     }
 
     @Test

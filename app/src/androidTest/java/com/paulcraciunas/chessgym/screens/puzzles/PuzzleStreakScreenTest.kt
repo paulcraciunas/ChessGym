@@ -5,8 +5,6 @@ import com.paulcraciunas.chessgym.di.TestPuzzleInterceptor
 import com.paulcraciunas.chessgym.dsl.Given
 import com.paulcraciunas.chessgym.dsl.Then
 import com.paulcraciunas.chessgym.dsl.When
-import com.paulcraciunas.screens.common.theme.DarkBackground
-import com.paulcraciunas.screens.common.theme.LightBackground
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
 import org.junit.Test
@@ -46,9 +44,8 @@ internal class PuzzleStreakScreenTest : BaseUiTest() {
         When.navigation.navigateToPuzzles()
         When.puzzleStreak.open()
 
-        Then.puzzleStreak
-            .isDisplayed()
-            .hasBackgroundColor(LightBackground)
+        Then.puzzleStreak.isDisplayed()
+        Then.theme.isLightMode()
     }
 
     @Test
@@ -60,9 +57,8 @@ internal class PuzzleStreakScreenTest : BaseUiTest() {
         When.navigation.navigateToPuzzles()
         When.puzzleStreak.open()
 
-        Then.puzzleStreak
-            .isDisplayed()
-            .hasBackgroundColor(DarkBackground)
+        Then.puzzleStreak.isDisplayed()
+        Then.theme.isDarkMode()
     }
 
     @Test

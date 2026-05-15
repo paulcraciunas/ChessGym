@@ -1,6 +1,12 @@
 package com.paulcraciunas.chessgym
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.DrawerState
@@ -20,9 +26,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraphBuilder
@@ -33,11 +41,14 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.paulcraciunas.chessgym.animations.enter
 import com.paulcraciunas.chessgym.animations.exit
+import com.paulcraciunas.chessgym.auth.GoogleTokenSource
 import com.paulcraciunas.chessgym.debug.DebugMenuProvider
 import com.paulcraciunas.chessgym.error_reporting.NavigationLogger
 import com.paulcraciunas.chessgym.navigation.BottomNavigationBar
 import com.paulcraciunas.chessgym.navigation.Screen
 import com.paulcraciunas.chessgym.navigation.navigateToTopLevel
+import com.paulcraciunas.chessgym.screens.About
+import com.paulcraciunas.chessgym.screens.AboutDetail
 import com.paulcraciunas.chessgym.screens.AnalysisBoard
 import com.paulcraciunas.chessgym.screens.BlindMode
 import com.paulcraciunas.chessgym.screens.BoardVisDashboard
@@ -50,8 +61,9 @@ import com.paulcraciunas.chessgym.screens.PuzzleDashboard
 import com.paulcraciunas.chessgym.screens.PuzzleRush
 import com.paulcraciunas.chessgym.screens.PuzzleStreak
 import com.paulcraciunas.chessgym.screens.RatedPuzzle
+import com.paulcraciunas.chessgym.screens.Settings
 import com.paulcraciunas.chessgym.screens.ToolsDashboard
-import com.paulcraciunas.domain.api.achievements.AchievementNotificationManager
+import com.paulcraciunas.screens.about.vm.AboutSection
 import com.paulcraciunas.screens.achievements.ui.AchievementBannerHost
 import com.paulcraciunas.screens.achievements.ui.AchievementsScreen
 import com.paulcraciunas.screens.achievements.vm.AchievementsViewModel
@@ -61,29 +73,30 @@ import com.paulcraciunas.screens.common.dialogs.DeleteAccountConfirmationDialog
 import com.paulcraciunas.screens.common.dialogs.SignOutConfirmationDialog
 import com.paulcraciunas.screens.home.ui.HomeScreen
 import com.paulcraciunas.screens.home.vm.HomeViewModel
+import com.paulcraciunas.screens.signin.ui.SignInScreen
+import com.paulcraciunas.screens.signin.vm.SignInViewModel
 import kotlinx.coroutines.launch
 import com.paulcraciunas.global.resources.R as GlobalR
 
 @Composable
 fun MainScreen(
-    onDrawerScreen: (Screen) -> Unit,
     modifier: Modifier = Modifier,
-    notificationManager: AchievementNotificationManager? = null,
 ) {
     val mainScreenViewModel: MainScreenViewModel = hiltViewModel()
     val mainScreenState by mainScreenViewModel.uiState.collectAsStateWithLifecycle()
     val debugMenuProvider: DebugMenuProvider = mainScreenViewModel.debugMenuProvider
+    val notificationManager = mainScreenViewModel.achievementNotificationManager
 
-    val tabNavController = rememberNavController()
-    val navBackStackEntry by tabNavController.currentBackStackEntryAsState()
+    val navController = rememberNavController()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
     val isTopLevelScreen by remember(currentDestination) {
         derivedStateOf { currentDestination?.isTopLevelRoute() ?: true }
     }
 
-    DisposableEffect(tabNavController) {
-        tabNavController.addOnDestinationChangedListener(NavigationLogger)
-        onDispose { tabNavController.removeOnDestinationChangedListener(NavigationLogger) }
+    DisposableEffect(navController) {
+        navController.addOnDestinationChangedListener(NavigationLogger)
+        onDispose { navController.removeOnDestinationChangedListener(NavigationLogger) }
     }
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -144,24 +157,33 @@ fun MainScreen(
                         AppDrawer(
                             drawerState = drawerState,
                             isSignedIn = mainScreenState.isSignedIn,
-                            onSignIn = { onDrawerScreen(Screen.SignUp) },
+                            onSignIn = {
+                                closeDrawer()
+                                navController.navigate(Screen.SignUp)
+                            },
                             onSignOut = { mainScreenViewModel.showSignOutDialog() },
                             onHome = {
                                 scope.launch {
-                                    tabNavController.navigate(Screen.Home) {
+                                    navController.navigate(Screen.Home) {
                                         popUpTo(Screen.Home) { inclusive = true }
                                     }
                                 }
                             },
-                            onSettings = { onDrawerScreen(Screen.Settings) },
-                            onAbout = { onDrawerScreen(Screen.About) },
+                            onSettings = {
+                                closeDrawer()
+                                navController.navigate(Screen.Settings)
+                            },
+                            onAbout = {
+                                closeDrawer()
+                                navController.navigate(Screen.About)
+                            },
                             onDeleteAccount = { mainScreenViewModel.showDeleteAccountDialog() },
                             closeDrawer = { closeDrawer() },
                             trailingContent = {
                                 with(debugMenuProvider) {
                                     DrawerContent(
                                         closeDrawer = { closeDrawer() },
-                                        onNavigate = { screen -> tabNavController.navigate(screen) },
+                                        onNavigate = { screen -> navController.navigate(screen) },
                                     )
                                 }
                             },
@@ -172,21 +194,28 @@ fun MainScreen(
                 ) {
                     Scaffold(
                         modifier = modifier,
+                        contentWindowInsets = WindowInsets(0, 0, 0, 0),
                         snackbarHost = { SnackbarHost(snackbarHostState) },
                         bottomBar = {
-                            if (isTopLevelScreen) {
+                            AnimatedVisibility(
+                                visible = isTopLevelScreen,
+                                enter = slideInVertically { it },
+                                exit = slideOutVertically { it },
+                            ) {
                                 BottomNavigationBar(
                                     currentDestination = currentDestination,
-                                    onItemSelected = { item -> tabNavController.navigateToTopLevel(item.screen) }
+                                    onItemSelected = { item -> navController.navigateToTopLevel(item.screen) }
                                 )
                             }
                         },
                     ) { innerPadding ->
                         NavHost(
-                            navController = tabNavController,
+                            navController = navController,
                             startDestination = Screen.Home,
                             modifier = if (isTopLevelScreen) {
-                                Modifier.padding(bottom = innerPadding.calculateBottomPadding())
+                                Modifier
+                                    .padding(bottom = innerPadding.calculateBottomPadding())
+                                    .consumeWindowInsets(WindowInsets.navigationBars)
                             } else {
                                 Modifier
                             }
@@ -198,7 +227,7 @@ fun MainScreen(
                                     state = homeState,
                                     onDrawerToggle = onDrawerToggle,
                                     onAchievements = {
-                                        tabNavController.navigate(Screen.Achievements)
+                                        navController.navigate(Screen.Achievements)
                                     },
                                 )
                             }
@@ -208,81 +237,109 @@ fun MainScreen(
                                 AchievementsScreen(
                                     state = achievementsState,
                                     interactions = vm,
-                                    onBack = { tabNavController.popBackStack() },
+                                    onBack = { navController.popBackStack() },
                                 )
                             }
                             animatedComposable<Screen.PuzzleDashboard> {
-                                PuzzleDashboard(tabNavController, onDrawerToggle = onDrawerToggle)
+                                PuzzleDashboard(navController, onDrawerToggle = onDrawerToggle)
                             }
                             animatedComposable<Screen.RatedPuzzle> {
-                                RatedPuzzle(tabNavController = tabNavController)
+                                RatedPuzzle(tabNavController = navController)
                             }
                             animatedComposable<Screen.PuzzleRush> {
-                                PuzzleRush(tabNavController = tabNavController)
+                                PuzzleRush(tabNavController = navController)
                             }
                             animatedComposable<Screen.FailedPuzzles> {
-                                FailedPuzzles(tabNavController = tabNavController)
+                                FailedPuzzles(tabNavController = navController)
                             }
                             animatedComposable<Screen.PuzzleStreak> {
-                                PuzzleStreak(tabNavController = tabNavController)
+                                PuzzleStreak(tabNavController = navController)
                             }
                             animatedComposable<Screen.BoardVisualization> {
-                                BoardVisDashboard(tabNavController, onDrawerToggle = onDrawerToggle)
+                                BoardVisDashboard(navController, onDrawerToggle = onDrawerToggle)
                             }
                             animatedComposable<Screen.FindTheSquare> {
-                                FindTheSquare(tabNavController = tabNavController)
+                                FindTheSquare(tabNavController = navController)
                             }
                             animatedComposable<Screen.MoveThePiece> {
-                                MoveThePiece(tabNavController = tabNavController)
+                                MoveThePiece(tabNavController = navController)
                             }
                             animatedComposable<Screen.BlindMode> {
                                 BlindMode(onDrawerToggle = onDrawerToggle)
                             }
                             animatedComposable<Screen.ToolsDashboard> {
-                                ToolsDashboard(tabNavController, onDrawerToggle = onDrawerToggle)
+                                ToolsDashboard(navController, onDrawerToggle = onDrawerToggle)
                             }
                             animatedComposable<Screen.Clock> {
-                                ChessClock(tabNavController = tabNavController)
+                                ChessClock(tabNavController = navController)
                             }
-                            composable<Screen.Analysis>(
-                                enterTransition = { enter() },
-                                exitTransition = { exit() },
-                            ) { backStackEntry ->
+                            animatedComposable<Screen.Analysis> { backStackEntry ->
                                 val route = backStackEntry.toRoute<Screen.Analysis>()
                                 AnalysisBoard(
-                                    tabNavController = tabNavController,
+                                    tabNavController = navController,
                                     fen = route.fen,
                                 )
                             }
                             animatedComposable<Screen.ImportGame> {
-                                ImportGame(tabNavController = tabNavController)
+                                ImportGame(tabNavController = navController)
+                            }
+                            animatedComposable<Screen.Settings> {
+                                Settings(onNavigateBack = navController::popBackStack)
+                            }
+                            animatedComposable<Screen.SignUp> {
+                                val vm: SignInViewModel = hiltViewModel()
+                                val signInState by vm.uiState.collectAsStateWithLifecycle()
+                                val webClientId = stringResource(R.string.default_web_client_id)
+                                val context = LocalContext.current
+                                SignInScreen(
+                                    uiState = signInState,
+                                    onGoogleSignIn = { vm.onGoogleSignIn(GoogleTokenSource(webClientId, context)) },
+                                    onEmailSignIn = vm::onEmailSignIn,
+                                    onEmailSignUp = vm::onEmailSignUp,
+                                    onNavigateBack = navController::popBackStack,
+                                    onClearError = vm::clearError,
+                                )
+                            }
+                            animatedComposable<Screen.About> {
+                                About(
+                                    onNavigateBack = navController::popBackStack,
+                                    onSectionClicked = { section ->
+                                        navController.navigate(Screen.AboutDetail(section = section.name))
+                                    },
+                                )
+                            }
+                            animatedComposable<Screen.AboutDetail> { backStackEntry ->
+                                val route = backStackEntry.toRoute<Screen.AboutDetail>()
+                                val section = AboutSection.valueOf(route.section)
+                                AboutDetail(
+                                    section = section,
+                                    onNavigateBack = navController::popBackStack,
+                                )
                             }
                             with(debugMenuProvider) {
-                                registerDebugScreens(navController = tabNavController)
+                                registerDebugScreens(navController = navController)
                             }
                         }
                     }
                 }
 
-                notificationManager?.let { manager ->
-                    AchievementBannerHost(
-                        notificationManager = manager,
-                        modifier = Modifier
-                            .align(Alignment.TopCenter)
-                            .statusBarsPadding(),
-                    )
-                }
+                AchievementBannerHost(
+                    notificationManager = notificationManager,
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .statusBarsPadding(),
+                )
             }
         }
     }
 }
 
-private inline fun <reified T : Any> NavGraphBuilder.animatedComposable(noinline content: (@Composable () -> Unit) = {}) {
+private inline fun <reified T : Any> NavGraphBuilder.animatedComposable(noinline content: (@Composable (NavBackStackEntry) -> Unit) = {}) {
     composable<T>(
         enterTransition = { enter() },
         exitTransition = { exit() }
-    ) {
-        content()
+    ) { backStackEntry ->
+        content(backStackEntry)
     }
 }
 
@@ -299,4 +356,3 @@ private suspend fun DrawerState.toggle() {
         close()
     }
 }
-

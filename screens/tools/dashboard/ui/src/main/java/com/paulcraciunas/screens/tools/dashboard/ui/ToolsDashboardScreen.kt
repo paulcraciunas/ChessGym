@@ -8,21 +8,22 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.semantics.semantics
+
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.AppBar
 import com.paulcraciunas.screens.common.AppBarAlignment
 import com.paulcraciunas.screens.common.Footer
 import com.paulcraciunas.screens.common.LoadingContent
-import com.paulcraciunas.screens.common.backgroundColor
+
 import com.paulcraciunas.screens.common.controls.AnalysisCard
 import com.paulcraciunas.screens.common.controls.ClockCard
+import com.paulcraciunas.screens.common.controls.Header
 import com.paulcraciunas.screens.common.controls.ImportGameCard
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.tools.dashboard.vm.ToolsDashboardUiState
@@ -36,7 +37,6 @@ fun ToolsDashboardScreen(
     modifier: Modifier = Modifier,
     onDrawerToggle: () -> Unit = {},
 ) {
-    val bgColor = MaterialTheme.colorScheme.background
     Scaffold(
         topBar = {
             AppBar(
@@ -44,12 +44,10 @@ fun ToolsDashboardScreen(
                 navButton = { Home(onClick = onDrawerToggle) }
             )
         },
-        modifier = modifier
-            .testTag { ToolsDashboardTags.SCREEN }
-            .semantics { this.backgroundColor = bgColor }
+        modifier = modifier.testTag { ToolsDashboardTags.SCREEN },
     ) { innerPadding ->
         when {
-            state.isLoading -> LoadingContent(Modifier.padding(innerPadding))
+            state.isLoading -> LoadingContent(modifier = Modifier.padding(innerPadding))
             else -> DashboardContent(
                 onModeSelected = onModeSelected,
                 modifier = Modifier.padding(innerPadding)
@@ -65,16 +63,20 @@ private fun DashboardContent(
 ) {
     LazyColumn(
         contentPadding = PaddingValues(
-            horizontal = 20.dp,
-            vertical = 24.dp
+            horizontal = Design.dimensions.spacing.gut,
+            vertical = Design.dimensions.spacing.xgut,
         ),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.lg),
         modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(Design.colors.primarySoft)
     ) {
         item {
-            DashboardHeader()
+            Header(
+                eyebrowRes = R.string.tools_dashboard_eyebrow,
+                titleRes = R.string.tools_dashboard_title,
+                subtitleRes = R.string.tools_dashboard_subtitle,
+            )
         }
 
         item {

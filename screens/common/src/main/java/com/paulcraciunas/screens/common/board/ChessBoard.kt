@@ -30,13 +30,12 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Rank
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.model.AnimatingPiece
 import com.paulcraciunas.screens.common.model.BoardViewData
 import com.paulcraciunas.screens.common.model.BoardViewDataBuilder
 import com.paulcraciunas.screens.common.model.SquareViewData
 import com.paulcraciunas.screens.common.testTag
-import com.paulcraciunas.screens.common.theme.BoardColors
-import com.paulcraciunas.screens.common.theme.BoardTheme
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import kotlin.math.roundToInt
 
@@ -69,7 +68,7 @@ fun ChessBoard(
     Box(
         modifier = modifier
             .aspectRatio(1f)
-            .background(color = BoardColors.boardEdge),
+            .background(color = Design.colors.boardEdge),
         contentAlignment = Alignment.Center
     ) {
         if (showBorders) {
@@ -281,21 +280,6 @@ private fun WhitePerspectivePreview() {
 @Composable
 private fun BlackPerspectivePreview() {
     ChessGymTheme {
-        ChessBoard(
-            board = BoardViewDataBuilder().build(),
-            orientation = BoardOrientation.Black,
-            onClick = { _ -> },
-            showBorders = false
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun GreyThemePreview() {
-    ChessGymTheme(
-        boardTheme = BoardTheme.Grey
-    ) {
         ChessBoard(
             board = BoardViewDataBuilder().build(),
             orientation = BoardOrientation.Black,

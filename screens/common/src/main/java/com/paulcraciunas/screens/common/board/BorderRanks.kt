@@ -12,8 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag
-import com.paulcraciunas.screens.common.theme.BoardColors
 
 @Composable
 internal fun BorderRanks(
@@ -36,7 +36,7 @@ internal fun BorderRanks(
             ) {
                 Text(
                     text = rank.name,
-                    color = BoardColors.boardText,
+                    color = Design.colors.boardText,
                     style = MaterialTheme.typography.labelSmall,
                     textAlign = TextAlign.Center,
                 )

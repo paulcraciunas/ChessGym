@@ -29,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
@@ -48,6 +49,7 @@ fun AppDrawer(
     ModalDrawerSheet(
         drawerState = drawerState,
         modifier = modifier,
+        drawerContainerColor = Design.colors.bg,
     ) {
         Column(
             modifier = Modifier

@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
+import com.paulcraciunas.screens.common.design.theme.Design
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -17,7 +17,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.paulcraciunas.game.engine.api.EngineLine
 import com.paulcraciunas.game.engine.api.EngineMove
 import com.paulcraciunas.game.engine.api.Evaluation
@@ -28,9 +27,9 @@ import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.global.resources.R
-import androidx.compose.ui.semantics.semantics
+
 import com.paulcraciunas.screens.common.AppBar
-import com.paulcraciunas.screens.common.backgroundColor
+
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
 import com.paulcraciunas.screens.common.controls.CapturedPieces
@@ -54,7 +53,7 @@ fun AnalysisScreen(
     interactions: AnalysisScreenInteractor,
     modifier: Modifier = Modifier,
 ) {
-    val bgColor = MaterialTheme.colorScheme.background
+    val bgColor = Design.colors.primarySoft
     Scaffold(
         topBar = {
             AppBar(
@@ -62,15 +61,13 @@ fun AnalysisScreen(
                 navButton = { Back(onClick = onNavigateBack) },
             )
         },
-        modifier = modifier
-            .testTag { AnalysisScreenTags.SCREEN }
-            .semantics { this.backgroundColor = bgColor },
+        modifier = modifier.testTag { AnalysisScreenTags.SCREEN }
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(MaterialTheme.colorScheme.background),
+                .background(bgColor),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             val displayBoard = remember(
@@ -104,7 +101,7 @@ fun AnalysisScreen(
                     modifier = Modifier
                         .matchParentSize()
                         .let { mod ->
-                            if (showBorders) mod.padding(14.dp) else mod
+                            if (showBorders) mod.padding(Design.dimensions.spacing.xl) else mod
                         },
                 )
             }
@@ -113,23 +110,23 @@ fun AnalysisScreen(
                 side = uiState.playerSide.other(),
                 modifier = Modifier.fillMaxWidth(),
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(Design.dimensions.spacing.sm))
             EvaluationBar(
                 evaluation = uiState.evaluation,
                 depth = uiState.analysisDepth,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
+                    .padding(horizontal = Design.dimensions.spacing.xxl)
                     .testTag { AnalysisScreenTags.EVALUATION_BAR },
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(Design.dimensions.spacing.sm))
             EngineLines(
                 lines = uiState.engineLines,
                 modifier = Modifier
                     .fillMaxWidth()
                     .testTag { AnalysisScreenTags.ENGINE_LINES },
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(Design.dimensions.spacing.xxl))
         }
     }
 

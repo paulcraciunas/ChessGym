@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
@@ -23,6 +22,7 @@ import com.paulcraciunas.game.engine.api.EngineLine
 import com.paulcraciunas.game.engine.api.EngineMove
 import com.paulcraciunas.game.engine.api.Evaluation
 import com.paulcraciunas.game.engine.api.UciMoveParser
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 private const val EVAL_WIDTH_DP = 52
@@ -37,8 +37,8 @@ internal fun EngineLines(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(2.dp),
+            .padding(horizontal = Design.dimensions.spacing.xxl),
+        verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.xxs),
     ) {
         lines.forEach { line ->
             // Use rank as a key for efficient list updates
@@ -74,7 +74,7 @@ private fun EngineLineRow(
             text = formattedMoves,
             fontSize = 13.sp,
             fontWeight = if (isTopLine) FontWeight.Medium else FontWeight.Normal,
-            color = MaterialTheme.colorScheme.onSurface.copy(
+            color = Design.colors.ink.copy(
                 alpha = if (isTopLine) 1f else 0.7f
             ),
             maxLines = 1,
@@ -108,7 +108,7 @@ private fun evaluationColor(evaluation: Evaluation, isTopLine: Boolean): Color {
         is Evaluation.Centipawns -> evaluation.value >= 0
         is Evaluation.Mate -> evaluation.movesToMate > 0
     }
-    val baseColor = if (isPositive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
+    val baseColor = if (isPositive) Design.colors.primary else Design.colors.danger
     return if (isTopLine) baseColor else baseColor.copy(alpha = 0.7f)
 }
 

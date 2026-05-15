@@ -10,12 +10,10 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,9 +21,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.model.PuzzleResult
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
-import com.paulcraciunas.screens.common.theme.LoadingTheme
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -36,8 +34,8 @@ fun PuzzleResultsGrid(
 ) {
     FlowRow(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.sm),
+        verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.sm),
     ) {
         results.forEach { result ->
             PuzzleResultItem(
@@ -57,39 +55,39 @@ private fun PuzzleResultItem(
     modifier: Modifier = Modifier,
 ) {
     val backgroundColor = if (result.success) {
-        LoadingTheme.colors.success.copy(alpha = 0.15f)
+        Design.colors.chipSolvedBg
     } else {
-        MaterialTheme.colorScheme.error.copy(alpha = 0.15f)
+        Design.colors.danger.copy(alpha = 0.15f)
     }
 
     val iconColor = if (result.success) {
-        LoadingTheme.colors.success
+        Design.colors.success
     } else {
-        MaterialTheme.colorScheme.error
+        Design.colors.danger
     }
 
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(8.dp))
+            .clip(Design.shapes.cardCompact)
             .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
             .background(backgroundColor)
-            .padding(8.dp),
+            .padding(Design.dimensions.spacing.sm),
         contentAlignment = Alignment.Center
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(2.dp)
+            verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.xxs)
         ) {
             Icon(
                 imageVector = if (result.success) Icons.Filled.Check else Icons.Filled.Close,
                 contentDescription = null,
                 tint = iconColor,
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(Design.dimensions.sizes.icon)
             )
             Text(
                 text = result.rating.toString(),
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurface,
+                style = Design.textStyles.monoSmall,
+                color = Design.colors.ink,
             )
         }
     }

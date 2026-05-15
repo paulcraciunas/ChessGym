@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
                 AppSettings.LightMode.Dark -> true
                 AppSettings.LightMode.System -> isSystemInDarkTheme()
             }
-            ChessGymTheme(darkTheme = isDarkTheme) {
+            ChessGymTheme(darkMode = isDarkTheme) {
                 NavGraph(Modifier.fillMaxSize())
             }
         }

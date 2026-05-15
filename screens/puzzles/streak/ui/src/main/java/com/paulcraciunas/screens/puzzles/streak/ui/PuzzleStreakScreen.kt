@@ -7,41 +7,38 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.ui.semantics.semantics
+
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.global.resources.R
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.AppBar
 import com.paulcraciunas.screens.common.FailedContent
 import com.paulcraciunas.screens.common.LoadingContent
-import com.paulcraciunas.screens.common.backgroundColor
+
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
 import com.paulcraciunas.screens.common.controls.CapturedPieces
 import com.paulcraciunas.screens.common.controls.DefaultPuzzleControls
+import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.dialogs.AbandonConfirmationDialog
 import com.paulcraciunas.screens.common.dialogs.PromotionDialog
 import com.paulcraciunas.screens.common.model.PuzzleData
@@ -68,7 +65,6 @@ fun PuzzleStreakScreen(
         is PuzzleStreakUiState.StreakEnded -> 0
         else -> 0
     }
-    val bgColor = MaterialTheme.colorScheme.background
     Scaffold(
         topBar = {
             AppBar(
@@ -77,9 +73,7 @@ fun PuzzleStreakScreen(
                 actions = { if (streakCount > 0) StreakCounter(count = streakCount) }
             )
         },
-        modifier = modifier
-            .testTag { PuzzleStreakScreenTags.SCREEN }
-            .semantics { this.backgroundColor = bgColor }
+        modifier = modifier.testTag { PuzzleStreakScreenTags.SCREEN },
     ) { innerPadding ->
         when (uiState) {
             is PuzzleStreakUiState.Loading -> {
@@ -95,7 +89,8 @@ fun PuzzleStreakScreen(
                     highlightLegalMoves = highlightLegalMoves,
                     enableAnimations = enableAnimations,
                     interactions = interactions,
-                    modifier = Modifier.padding(innerPadding)
+                    modifier = Modifier.background(Design.colors.primarySoft)
+                        .padding(innerPadding)
                 )
             }
         }
@@ -135,7 +130,7 @@ private fun PuzzleStreakContent(
             side = data.player.other(),
             modifier = Modifier.fillMaxWidth()
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        ChessGymSpacer()
         AnimatedContent(
             targetState = uiState is PuzzleStreakUiState.StreakEnded,
             transitionSpec = {
@@ -184,7 +179,7 @@ private fun PuzzleStreakContent(
                 onDismiss = interactions::onDismissSummary
             )
         }
-        Spacer(modifier = Modifier.height(8.dp))
+        ChessGymSpacer()
     }
 }
 
@@ -194,22 +189,21 @@ private fun StreakCounter(
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+        modifier = modifier.padding(horizontal = Design.dimensions.spacing.lg, vertical = Design.dimensions.spacing.sm),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            painter = painterResource(R.drawable.puzzle_rush_icon),
+            painter = painterResource(R.drawable.puzzle_streak_icon),
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(20.dp)
+            tint = Design.colors.primary,
+            modifier = Modifier.size(Design.dimensions.sizes.icon)
         )
-        Spacer(modifier = Modifier.width(6.dp))
+        ChessGymSpacer()
         Text(
             text = count.toString(),
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary,
+            style = Design.typography.titleLarge,
+            color = Design.colors.primary,
             modifier = Modifier.testTag { PuzzleStreakScreenTags.STREAK_COUNTER }
         )
     }
