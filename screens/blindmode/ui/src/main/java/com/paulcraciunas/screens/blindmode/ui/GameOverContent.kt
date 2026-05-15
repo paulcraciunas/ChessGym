@@ -6,13 +6,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.blindmode.vm.BlindModeScreenInteractor
 import com.paulcraciunas.screens.blindmode.vm.BlindModeUiState
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
-import com.paulcraciunas.screens.common.controls.RefreshButton
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
+import com.paulcraciunas.screens.common.design.components.RefreshButton
 import com.paulcraciunas.screens.common.design.components.SpacerSize
 import com.paulcraciunas.screens.common.design.theme.Design
 
@@ -30,25 +31,15 @@ internal fun GameOverContent(
         enableAnimations = false,
         modifier = Modifier.fillMaxWidth()
     )
-
     ChessGymSpacer(size = SpacerSize.LARGE)
-
     Text(
         text = stringResource(state.result.stringRes()),
-        style = Design.typography.headlineSmall,
-        color = if (state.result == BlindModeUiState.GameResult.Win) {
-            Design.colors.primary
-        } else {
-            Design.colors.danger
-        },
+        style = Design.typography.headlineLarge,
+        color = Design.colors.ink,
+        textAlign = TextAlign.Center,
     )
-
     ChessGymSpacer(size = SpacerSize.LARGE)
-
-    RefreshButton(
-        onClick = interactions::onPlayAgain,
-        text = R.string.blind_mode_play_again,
-    )
+    RefreshButton(onClick = interactions::onPlayAgain)
 
     if (state.moveHistory.isNotEmpty()) {
         MoveHistoryDisplay(moveHistory = state.moveHistory)

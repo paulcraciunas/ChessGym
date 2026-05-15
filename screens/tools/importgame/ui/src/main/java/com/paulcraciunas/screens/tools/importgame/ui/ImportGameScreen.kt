@@ -34,8 +34,9 @@ import com.paulcraciunas.screens.common.AppBar
 
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
-import com.paulcraciunas.screens.common.controls.DefaultButton
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
+import com.paulcraciunas.screens.common.design.components.PrimaryButton
+import com.paulcraciunas.screens.common.design.components.PrimaryButtonStyle
 import com.paulcraciunas.screens.common.design.components.SpacerSize
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.dialogs.PromotionDialog
@@ -205,19 +206,21 @@ private fun ImportButtons(
             .padding(horizontal = Design.dimensions.spacing.xgut),
         horizontalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.xxl),
     ) {
-        DefaultButton(
+        PrimaryButton(
+            text = stringResource(R.string.import_fen),
             onClick = onFenClicked,
             modifier = Modifier
                 .weight(1f)
                 .testTag { ImportGameScreenTags.FEN_BUTTON },
-            text = R.string.import_fen
+            style = PrimaryButtonStyle.Clear,
         )
-        DefaultButton(
+        PrimaryButton(
+            text = stringResource(R.string.import_pgn),
             onClick = onPgnClicked,
             modifier = Modifier
                 .weight(1f)
                 .testTag { ImportGameScreenTags.PGN_BUTTON },
-            text = R.string.import_pgn
+            style = PrimaryButtonStyle.Clear,
         )
     }
 }

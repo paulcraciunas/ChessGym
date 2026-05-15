@@ -16,8 +16,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.global.resources.R
-import com.paulcraciunas.screens.common.controls.RefreshButton
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
+import com.paulcraciunas.screens.common.design.components.RefreshButton
 import com.paulcraciunas.screens.common.design.components.SpacerSize
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag
@@ -67,8 +67,7 @@ internal fun StreakEndedControls(
 
             RefreshButton(
                 onClick = onNewStreak,
-                text = R.string.puzzle_streak_new,
-                modifier = Modifier.testTag { PuzzleStreakScreenTags.Ended.NEW_STREAK }
+                modifier = Modifier.testTag { PuzzleStreakScreenTags.Ended.NEW_STREAK },
             )
         }
     }

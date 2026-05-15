@@ -9,9 +9,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,10 +29,9 @@ import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.boardvis.pieces.vm.MoveThePieceUiState
 import com.paulcraciunas.screens.common.board.ChessPiece
-import com.paulcraciunas.screens.common.controls.PlayButton
-import com.paulcraciunas.screens.common.controls.RefreshButton
-import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
-import com.paulcraciunas.screens.common.design.components.SpacerSize
+import com.paulcraciunas.screens.common.design.components.PlayButton
+import com.paulcraciunas.screens.common.design.components.PrimaryPillButton
+import com.paulcraciunas.screens.common.design.components.ToggleRow
 import com.paulcraciunas.screens.common.design.components.borderSoft
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.extensions.alpha
@@ -52,32 +51,18 @@ internal fun MoveThePieceSetupControls(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.xxl)
     ) {
-        // Training mode toggle
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = stringResource(R.string.boardvis_move_piece_training_mode),
-                style = Design.typography.titleMedium,
-                color = Design.colors.ink
-            )
-            ChessGymSpacer(size = SpacerSize.LARGE)
-            Switch(
-                checked = isTrainingMode,
-                onCheckedChange = onTrainingModeToggled
-            )
-        }
-
+        ToggleRow(
+            title = stringResource(R.string.boardvis_move_piece_training_mode),
+            on = isTrainingMode,
+            onChange = onTrainingModeToggled,
+            last = true,
+        )
         PieceSelectionRow(
             selectedPiece = selectedPiece,
             enabled = isTrainingMode,
             onPieceSelected = onPieceSelected
         )
-
         PlayButton(onClick = onPlayClicked)
-
         // Rules text
         Text(
             text = stringResource(R.string.boardvis_move_piece_rules),
@@ -131,18 +116,18 @@ private fun PieceSelectionButton(
         enabled = enabled,
         modifier = modifier
             .size(Design.dimensions.sizes.avatar)
-            .clip(CircleShape)
+            .clip(Design.shapes.circle)
             .background(Color.Black.copy(alpha = enabled.alpha))
             .border(
-                width = 4.dp,
+                width = Design.dimensions.spacing.xxs,
                 color = borderColor,
-                shape = CircleShape
+                shape = Design.shapes.circle,
             )
     ) {
         ChessPiece(
             piece = piece,
             side = Side.WHITE,
-            modifier = Modifier.size(40.dp)
+            modifier = Modifier.size(Design.dimensions.sizes.iconButton),
         )
     }
 }
@@ -218,7 +203,11 @@ internal fun MoveThePieceGameOverControls(
             )
         }
 
-        RefreshButton(onClick = onPlayAgain)
+        PrimaryPillButton(
+            text = stringResource(R.string.boardvis_play_again),
+            onClick = onPlayAgain,
+            leadingIcon = Icons.Filled.Refresh,
+        )
     }
 }
 

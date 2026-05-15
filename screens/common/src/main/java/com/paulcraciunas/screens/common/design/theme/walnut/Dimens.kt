@@ -31,9 +31,9 @@ internal val WalnutDimensions = ChessGymDimensions(
     /** Minimum interactive sizes — Material requires 48dp. */
     sizes = ChessGymDimensions.Sizes(
         primaryButton = 48.dp,
-        primaryButtonIcon = 16.dp,
+        primaryButtonIcon = 20.dp,
         pillButton = 44.dp,
-        pillButtonIcon = 14.dp,
+        pillButtonIcon = 20.dp,
         outlineButton = 40.dp,
         hitTarget = 48.dp,
         iconButton = 38.dp,

@@ -1,8 +1,12 @@
 package com.paulcraciunas.screens.common.design.components
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -15,6 +19,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
+import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.design.theme.Design
 
 enum class PrimaryButtonStyle { Clear, Normal, Danger }
@@ -45,7 +51,7 @@ fun PrimaryButton(
             Icon(imageVector = leadingIcon, contentDescription = null, modifier = Modifier.size(Design.dimensions.sizes.primaryButtonIcon))
             ChessGymSpacer()
         }
-        Text(text = text, style = MaterialTheme.typography.titleLarge)
+        Text(text = text, style = MaterialTheme.typography.titleMedium)
     }
 }
 
@@ -68,7 +74,7 @@ fun PrimaryPillButton(
             containerColor = style.containerColor(),
             contentColor = style.contentColor(),
         ),
-        contentPadding = PaddingValues(horizontal = Design.dimensions.spacing.xgut, vertical = Design.dimensions.spacing.md),
+        contentPadding = PaddingValues(horizontal = Design.dimensions.spacing.gut, vertical = Design.dimensions.spacing.md),
     ) {
         if (leadingIcon != null) {
             Icon(imageVector = leadingIcon, contentDescription = null, modifier = Modifier.size(Design.dimensions.sizes.pillButtonIcon))
@@ -76,6 +82,35 @@ fun PrimaryPillButton(
         }
         Text(text = text, style = MaterialTheme.typography.titleMedium)
     }
+}
+
+
+@Composable
+fun PlayButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    @StringRes textId: Int = R.string.boardvis_play,
+) {
+    PrimaryPillButton(
+        text = stringResource(textId),
+        onClick = onClick,
+        modifier = modifier,
+        leadingIcon = Icons.Filled.PlayArrow
+    )
+}
+
+@Composable
+fun RefreshButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    @StringRes textId: Int = R.string.boardvis_play_again,
+) {
+    PrimaryPillButton(
+        text = stringResource(textId),
+        onClick = onClick,
+        modifier = modifier,
+        leadingIcon = Icons.Filled.Refresh
+    )
 }
 
 /** Hairline-bordered secondary button — segmented controls etc. */

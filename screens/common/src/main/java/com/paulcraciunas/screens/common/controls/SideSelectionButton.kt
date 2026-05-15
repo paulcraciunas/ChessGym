@@ -15,7 +15,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.design.theme.Design
@@ -43,9 +42,9 @@ internal fun SideSelectionButton(
             .clip(Design.shapes.circle)
             .background(if (side == Side.BLACK) Color.White else Color.Black)
             .border(
-                width = 4.dp,
+                width = Design.dimensions.spacing.xxs,
                 color = borderColor,
-                shape = Design.shapes.circle
+                shape = Design.shapes.circle,
             )
     ) {
         Image(

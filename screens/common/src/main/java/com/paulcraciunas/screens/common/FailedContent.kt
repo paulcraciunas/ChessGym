@@ -25,8 +25,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
-import com.paulcraciunas.screens.common.controls.RefreshButton
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
+import com.paulcraciunas.screens.common.design.components.RefreshButton
 import com.paulcraciunas.screens.common.design.components.SpacerSize
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
@@ -90,7 +90,7 @@ private fun ErrorBody(
         )
         onRetry?.let { retry ->
             ChessGymSpacer(size = SpacerSize.HUGE)
-            RefreshButton(onClick = retry, text = R.string.generic_retry)
+            RefreshButton(onClick = retry, textId = R.string.generic_retry)
         }
     }
 }
