@@ -25,6 +25,7 @@ import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.global.resources.R
+import com.paulcraciunas.screens.common.design.theme.Design
 
 @Composable
 fun BoardSquare(
