@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -97,11 +99,14 @@ fun SectionHeader(
     }
 }
 
+enum class FactBlockStyle { Info, Danger }
+
 @Composable
-fun DangerBlock(
+fun FactBlock(
     title: String,
     items: List<String>,
     modifier: Modifier = Modifier,
+    style: FactBlockStyle = FactBlockStyle.Info,
 ) {
     Box(modifier = modifier.fillMaxWidth()) {
         Surface(
@@ -110,27 +115,46 @@ fun DangerBlock(
             color = Design.colors.surfaceAlt,
             border = borderSoft(),
         ) {
-            Row(modifier = Modifier.height(IntrinsicSize.Min)) {
+            Row(
+                modifier = Modifier.height(IntrinsicSize.Min)
+                    .padding(
+                        vertical = Design.dimensions.spacing.xl,
+                        horizontal = Design.dimensions.spacing.md
+                    ),
+            ) {
                 ChessGymSpacer(size = SpacerSize.SMALL)
                 Spacer(modifier = Modifier.width(Design.dimensions.spacing.xs))
+                if (style == FactBlockStyle.Info) {
+                    IconBadge(
+                        imageVector = Icons.Default.Info,
+                        style = IconStyle.Circle,
+                        borderType = IconBorderType.None,
+                        tint = IconTintType.Accent,
+                        size = IconSize.Small
+                    )
+                }
                 Column(
                     modifier = Modifier.padding(
                         horizontal = Design.dimensions.spacing.lg,
-                        vertical = Design.dimensions.spacing.md
                     )
                 ) {
-                    Eyebrow(text = title, type = EyebrowType.Danger)
+                    Eyebrow(text = title, type = when (style) {
+                        FactBlockStyle.Info -> EyebrowType.Muted
+                        FactBlockStyle.Danger -> EyebrowType.Danger
+                    })
                     items.forEach { line ->
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.padding(top = Design.dimensions.spacing.xs),
                         ) {
-                            Box(
-                                modifier = Modifier
-                                    .size(Design.dimensions.sizes.bulletPoint)
-                                    .background(Design.colors.danger, Design.shapes.circle)
-                            )
-                            ChessGymSpacer()
+                            if (style != FactBlockStyle.Info) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(Design.dimensions.sizes.bulletPoint)
+                                        .background(Design.colors.danger, Design.shapes.circle)
+                                )
+                                ChessGymSpacer()
+                            }
                             Text(
                                 text = line,
                                 color = Design.colors.inkSoft,
@@ -150,7 +174,10 @@ fun DangerBlock(
                 modifier = Modifier
                     .width(Design.dimensions.spacing.xs)
                     .fillMaxHeight()
-                    .background(Design.colors.danger)
+                    .background(when (style) {
+                        FactBlockStyle.Info -> Design.colors.accent
+                        FactBlockStyle.Danger -> Design.colors.danger
+                    })
             )
         }
     }
@@ -192,12 +219,26 @@ private fun SectionHeaderPreview() {
 
 @Preview(showBackground = true)
 @Composable
-private fun DangerBlockPreview() {
+private fun InfoBlockPreview() {
     ChessGymTheme {
-        DangerBlock(
+        FactBlock(
             title = "Danger Zone",
             items = listOf("Delete Account", "Clear History"),
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(16.dp),
+            style = FactBlockStyle.Info,
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun DangerBlockPreview() {
+    ChessGymTheme {
+        FactBlock(
+            title = "Danger Zone",
+            items = listOf("Delete Account", "Clear History"),
+            modifier = Modifier.padding(16.dp),
+            style = FactBlockStyle.Danger,
         )
     }
 }
