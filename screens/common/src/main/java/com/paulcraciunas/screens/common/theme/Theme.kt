@@ -50,7 +50,6 @@ fun ChessGymTheme(
     val pieces = getChessGymPieces()
 
     val alpha = DefaultAlpha
-    val loadingTypography = createLoadingTypography()
 
     CompositionLocalProvider(
         LocalChessGymColors provides chessGymColors,
@@ -61,11 +60,6 @@ fun ChessGymTheme(
         LocalChessGymRadii provides chessGymRadii,
         LocalChessGymPieces provides pieces,
         LocalAlpha provides alpha,
-        LocalLoadingColors provides LoadingColors(),
-        LocalLoadingTypography provides loadingTypography,
-        LocalLoadingDimensions provides LoadingDimensions(),
-        LocalLoadingAlphas provides LoadingAlphas(),
-        LocalLoadingBorders provides LoadingBorders()
     ) {
         MaterialTheme(
             colorScheme = chessGymColorScheme,

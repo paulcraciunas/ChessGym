@@ -5,12 +5,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.paulcraciunas.screens.loading.vm.DatabaseTier
 import com.paulcraciunas.screens.loading.vm.LoadingState
 
 @Composable
 fun LoadingScreen(
-    onComplete: () -> Unit,
     onDownload: () -> Unit,
+    onTierSelected: (DatabaseTier) -> Unit,
     onDownloadConfirmation: (Boolean) -> Unit,
     onPermissionReceived: (Boolean) -> Unit,
     onCrashConsentResponse: (Boolean) -> Unit,
@@ -24,6 +25,7 @@ fun LoadingScreen(
         when (uiState) {
             is LoadingState.Ready -> LandingCard(
                 onDownload = onDownload,
+                onTierSelected = onTierSelected,
                 onDownloadConfirmation = onDownloadConfirmation,
                 onPermissionResponse = onPermissionReceived,
                 onCrashConsentResponse = onCrashConsentResponse,
@@ -31,7 +33,9 @@ fun LoadingScreen(
             )
 
             is LoadingState.Downloading -> DownloadProgressCard(progress = uiState.progress)
-            is LoadingState.Complete -> onComplete()
+            is LoadingState.Complete -> DownloadProgressCard(
+                progress = LoadingState.Downloading.Progress(download = 100, unpack = 100)
+            )
         }
     }
 }
