@@ -32,9 +32,12 @@ fun LoadingScreen(
                 state = uiState
             )
 
-            is LoadingState.Downloading -> DownloadProgressCard(progress = uiState.progress)
+            is LoadingState.Downloading -> DownloadProgressCard(
+                progress = uiState.progress,
+                factIndex = uiState.factIndex,
+            )
             is LoadingState.Complete -> DownloadProgressCard(
-                progress = LoadingState.Downloading.Progress(download = 100, unpack = 100)
+                progress = LoadingState.Downloading.Progress(download = 100, unpack = 100),
             )
         }
     }

@@ -48,6 +48,7 @@ import com.paulcraciunas.screens.loading.vm.LoadingState
 internal fun DownloadProgressCard(
     progress: LoadingState.Downloading.Progress,
     modifier: Modifier = Modifier,
+    factIndex: Int = 0,
 ) {
     Box(
         modifier = modifier
@@ -84,7 +85,7 @@ internal fun DownloadProgressCard(
                     progress = progress.unpack,
                 )
             }
-            InterestingFactCard(downloadProgress = progress.download)
+            InterestingFactCard(factIndex = factIndex)
             ChessGymSpacer(size = SpacerSize.SECTION)
             Footer()
         }
@@ -139,7 +140,7 @@ private fun ProgressStep(
                 label = "progress_animation",
             ) { isComplete ->
                 Text(
-                    text = if (isComplete) "DONE" else "${progress}%",
+                    text = if (isComplete) stringResource(R.string.generic_done) else "${progress}%",
                     style = Design.typography.titleMedium,
                     color = if (isComplete) Design.colors.success else Design.colors.ink,
                 )

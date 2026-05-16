@@ -225,6 +225,7 @@
 
     <!-- region generic text resources which can be reused across screens -->
     <string name="generic_continue">Continue</string>
+    <string name="generic_done">Done</string>
     <string name="generic_download">Download</string>
     <string name="generic_error_title">Something went wrong</string>
     <string name="generic_error_try_again">Woops, something went wrong. Please try again.</string>

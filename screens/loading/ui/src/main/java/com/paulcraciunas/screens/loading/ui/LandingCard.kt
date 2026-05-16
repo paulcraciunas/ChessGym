@@ -1,50 +1,42 @@
 package com.paulcraciunas.screens.loading.ui
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.Footer
 import com.paulcraciunas.screens.common.controls.Header
 import com.paulcraciunas.screens.common.controls.HeaderAlign
 import com.paulcraciunas.screens.common.controls.HeaderSize
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
-import com.paulcraciunas.screens.common.design.components.Eyebrow
-import com.paulcraciunas.screens.common.design.components.IconBadge
-import com.paulcraciunas.screens.common.design.components.IconBorderType
-import com.paulcraciunas.screens.common.design.components.IconSize
-import com.paulcraciunas.screens.common.design.components.IconStyle
-import com.paulcraciunas.screens.common.design.components.IconTintType
-import com.paulcraciunas.screens.common.design.components.OutlineSegmentButton
 import com.paulcraciunas.screens.common.design.components.PrimaryPillButton
 import com.paulcraciunas.screens.common.design.components.SpacerSize
 import com.paulcraciunas.screens.common.design.components.annotatedTextResource
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
+import com.paulcraciunas.screens.loading.ui.elements.ErrorCard
+import com.paulcraciunas.screens.loading.ui.elements.FeatureList
+import com.paulcraciunas.screens.loading.ui.elements.TierSelector
 import com.paulcraciunas.screens.loading.vm.DatabaseTier
 import com.paulcraciunas.screens.loading.vm.LoadingState
 
@@ -63,15 +55,30 @@ internal fun LandingCard(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(Design.colors.bg)
-            .padding(horizontal = Design.dimensions.spacing.section),
-        contentAlignment = Alignment.Center,
+            .background(Design.colors.bg),
     ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = Design.dimensions.spacing.xsection)
+        ) {
+            ChessboardPattern()
+            KnightDecoration(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(40.dp)
+                    .offset(x = 40.dp, y = 16.dp),
+            )
+        }
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.Bottom,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = Design.dimensions.spacing.section)
+                .verticalScroll(rememberScrollState()),
         ) {
-            ChessGymSpacer(size = SpacerSize.SECTION)
             Header(
                 eyebrow = stringResource(R.string.landing_eyebrow),
                 title = annotatedTextResource(id = R.string.landing_download_title),
@@ -87,10 +94,6 @@ internal fun LandingCard(
                 onTierSelected = onTierSelected,
             )
             ChessGymSpacer(size = SpacerSize.LARGE)
-            if (state.error != LoadingState.Error.None) {
-                ErrorCard(error = state.error)
-                ChessGymSpacer(size = SpacerSize.LARGE)
-            }
             PrimaryPillButton(
                 text = stringResource(state.primaryButtonTextRes()),
                 onClick = onDownload,
@@ -105,7 +108,9 @@ internal fun LandingCard(
                 color = Design.colors.inkMuted,
                 textAlign = TextAlign.Center,
             )
-            ChessGymSpacer(size = SpacerSize.SECTION)
+            ChessGymSpacer(size = SpacerSize.LARGE)
+            ErrorCard(error = state.error)
+            ChessGymSpacer(size = SpacerSize.DEFAULT)
             Footer()
             ChessGymSpacer(size = SpacerSize.LARGE)
         }
@@ -122,109 +127,6 @@ internal fun LandingCard(
         )
         LoadingState.Dialog.Permission -> PermissionDialog(onPermissionResponse)
         LoadingState.Dialog.None -> {}
-    }
-}
-
-@Composable
-private fun FeatureList(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.sm),
-    ) {
-        FeatureItem(text = stringResource(R.string.landing_feature_puzzles))
-        FeatureItem(text = stringResource(R.string.landing_feature_offline))
-        FeatureItem(text = stringResource(R.string.landing_feature_rating))
-    }
-}
-
-@Composable
-private fun FeatureItem(text: String, modifier: Modifier = Modifier) {
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.lg),
-    ) {
-        IconBadge(
-            imageVector = Icons.Default.Check,
-            style = IconStyle.Circle,
-            borderType = IconBorderType.None,
-            tint = IconTintType.Accent,
-            size = IconSize.Small
-        )
-        Text(
-            text = text,
-            style = Design.typography.bodyLarge,
-            color = Design.colors.inkSoft,
-        )
-    }
-}
-
-@Composable
-private fun TierSelector(
-    selectedTier: DatabaseTier,
-    onTierSelected: (DatabaseTier) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.md),
-    ) {
-        Eyebrow(text = stringResource(R.string.landing_tier_label))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.sm),
-        ) {
-            DatabaseTier.entries.forEach { tier ->
-                OutlineSegmentButton(
-                    text = tier.label,
-                    selected = tier == selectedTier,
-                    onClick = { onTierSelected(tier) },
-                    modifier = Modifier.weight(1f),
-                )
-            }
-        }
-
-        Text(
-            text = selectedTier.description,
-            style = Design.typography.bodySmall,
-            color = Design.colors.inkMuted,
-            textAlign = TextAlign.Center,
-        )
-    }
-}
-
-@Composable
-private fun ErrorCard(
-    error: LoadingState.Error,
-    modifier: Modifier = Modifier,
-) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(Design.colors.danger.copy(alpha = 0.1f), Design.shapes.buttonOutline)
-            .padding(Design.dimensions.spacing.xxl),
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.lg),
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            error.iconRes()?.let { iconRes ->
-                Icon(
-                    painter = painterResource(iconRes),
-                    contentDescription = null,
-                    tint = Design.colors.danger,
-                    modifier = Modifier.size(Design.dimensions.sizes.icon),
-                )
-            }
-            Text(
-                text = stringResource(error.res()),
-                style = Design.typography.bodyMedium,
-                color = Design.colors.danger,
-                textAlign = TextAlign.Center,
-            )
-        }
     }
 }
 
@@ -248,25 +150,6 @@ private fun LoadingState.Error.isRetryable(): Boolean = when (this) {
     LoadingState.Error.GenericRuntime,
     -> true
     else -> false
-}
-
-@StringRes
-private fun LoadingState.Error.res(): Int = when (this) {
-    LoadingState.Error.DownloadFailed -> R.string.loading_error_download_failed
-    LoadingState.Error.DecompressionFailed -> R.string.loading_error_decompression_failed
-    LoadingState.Error.DatabaseWriteFailed -> R.string.loading_error_database_write_failed
-    LoadingState.Error.NoPermission -> R.string.loading_error_permission
-    LoadingState.Error.ConsentRequired -> R.string.loading_error_consent_required
-    LoadingState.Error.NoInternet -> R.string.loading_error_no_internet
-    LoadingState.Error.NotEnoughDiskSpace -> R.string.loading_error_not_enough_disk_space
-    else -> R.string.loading_error_generic
-}
-
-@DrawableRes
-private fun LoadingState.Error.iconRes(): Int? = when (this) {
-    LoadingState.Error.NoInternet -> R.drawable.icon_no_network
-    LoadingState.Error.NotEnoughDiskSpace -> R.drawable.icon_no_disk_space
-    else -> null
 }
 
 @Preview("LandingCard - Normal")
