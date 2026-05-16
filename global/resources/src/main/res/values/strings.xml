@@ -134,9 +134,18 @@
     <!-- endregion -->
 
     <!-- region Loading -->
-    <string name="landing_download_title">Welcome to ChessGym</string>
-    <string name="landing_download_explanation">To get started, we need to download the puzzle database. This is a one-time process that will prepare everything for your chess training.</string>
+    <string name="landing_eyebrow">The Chess Training Studio</string>
+    <string name="landing_download_eyebrow">One-time setup</string>
+    <string name="landing_download_title">Welcome to &lt;i>ChessGym&lt;/i></string>
+    <string name="landing_download_explanation">To get started, we need to download the puzzle database. A one-time setup that prepares everything for your training.</string>
+    <string name="landing_feature_puzzles">Millions of tactical puzzles</string>
+    <string name="landing_feature_offline">Works offline, always</string>
+    <string name="landing_feature_rating">Tracks your rating progress</string>
+    <string name="landing_tier_label">Database size</string>
     <string name="landing_download_button">Download Database</string>
+    <string name="landing_get_started_button">Get Started</string>
+    <string name="landing_size_hint_onetime">%s — One-time</string>
+    <string name="landing_size_hint_included">Included with app</string>
     <string name="landing_download_content_title">Setting up your chess training</string>
     <string name="landing_download_subtitle">Downloading puzzle database. This may take a few minutes, depending on the speed of your internet connection.</string>
     <string name="landing_download_progress">Downloading puzzles</string>
@@ -162,9 +171,34 @@
     <string name="crash_consent_dialog_body">ChessGym uses crash reporting to detect and fix application errors. This data is used solely to identify crashes and improve app stability for all users.\n\nNo personal information, game data, or usage patterns are collected — only technical crash details (such as stack traces and device model) when something goes wrong.\n\nYou can change this setting later in the app.</string>
     <string name="crash_consent_dialog_accept">I Agree</string>
     <string name="crash_consent_dialog_refuse">Not Now</string>
+    <string name="loading_fact_eyebrow">Did you know?</string>
     <string name="loading_fact_1">Chess has been around for over 1,500 years and originated in India.</string>
     <string name="loading_fact_2">The number of possible chess games is greater than the number of atoms in the observable universe.</string>
     <string name="loading_fact_3">The longest recorded chess game lasted 269 moves and ended in a draw.</string>
+    <string-array name="loading_fact_titles">
+        <item>The Powerless Queen</item>
+        <item>The Book of Chess</item>
+        <item>A Priest&#39;s Invention</item>
+        <item>The Longest Possible Game</item>
+        <item>No Mates in Nearly a Century</item>
+        <item>Monochrome Boards</item>
+        <item>Space Invaders</item>
+        <item>An Illegal Secret Rule</item>
+        <item>The King is Slain</item>
+        <item>Police Raids</item>
+    </string-array>
+    <string-array name="loading_fact_bodies">
+        <item>Originally, the most powerful piece on the board was actually the weakest. The Queen could only move exactly one square diagonally. It was given its modern, unrestricted powers in 15th-century Spain, largely to honor Queen Isabella.</item>
+        <item>The second book ever to be printed in the English language (in 1474) was about chess. William Caxton translated a manuscript originally titled The Game and Playe of the Chesse.</item>
+        <item>The folding chessboard was invented by a priest who was forbidden by his religious order from playing the game. He made a clever workaround by folding the board in half and placing it on a bookshelf so it looked like two books.</item>
+        <item>While the longest grandmaster game on record lasted 269 moves, mathematics dictates a theoretical maximum game length in traditional chess of 5,949 moves without an automatic draw being triggered.</item>
+        <item>There has not been a single checkmate in a World Chess Championship match since 1929. The last one was in Game 8 between Alexander Alekhine and Efim Bogoljubov. Since then, all championship deciding matches have been won via resignation or time forfeit.</item>
+        <item>Early European chessboards actually featured monochrome (same color) squares, and it wasn&#39;t until around the year 1090 that the alternating light and dark square design was introduced.</item>
+        <item>The first game of chess played in outer space took place on June 9, 1970, between the Soviet Soyuz 9 crew and controllers back on Earth. The crew used a special set featuring pegs and slots so the pieces wouldn&#39;t float away in zero gravity.</item>
+        <item>The famous en passant (French for \"in passing\") pawn capture was introduced in Spain in 1280. It is one of the most frequently missed rules by beginners, largely because if you do not play it on the exact turn the enemy pawn moves, you permanently lose the ability to do so.</item>
+        <item>The word \"Checkmate\" comes from the Persian phrase \"Shah Mat\" (شاه مات). Surprisingly, it doesn&#39;t mean \"the king is trapped,\" but rather, directly translates to \"the King is dead\".</item>
+        <item>In 1973, police in Cleveland, Ohio, raided a chess tournament, arrested the tournament director, and confiscated the chess sets. They charged the organizers with allowing gambling (for cash prizes) and possessing gambling devices (the chessboards).</item>
+    </string-array>
     <!-- endregion -->
 
     <!-- region Rated Puzzle Screen -->
@@ -229,7 +263,7 @@
     <string name="puzzle_rush_play_again">Play Again</string>
     <string name="puzzle_rush_summary_title">Run complete</string>
     <string name="puzzle_rush_summary_puzzles_solved">Puzzles Solved</string>
-    <string name="puzzle_rush_time_up">Time\'s Up!</string>
+    <string name="puzzle_rush_time_up">Time&#39;s Up!</string>
     <string name="puzzle_rush_puzzle_failed">Puzzle Failed!</string>
     <!-- endregion -->
 
@@ -257,9 +291,9 @@
     </plurals>
     <string name="failed_puzzles_progress">%1$d / %2$d solved</string>
     <string name="failed_puzzles_empty_title">No Failed Puzzles</string>
-    <string name="failed_puzzles_empty_description">Great job! You don\'t have any failed puzzles to retry.</string>
+    <string name="failed_puzzles_empty_description">Great job! You don&#39;t have any failed puzzles to retry.</string>
     <string name="failed_puzzles_complete_title">All Done!</string>
-    <string name="failed_puzzles_complete_message">Great work! You\'ve finished reviewing all your failed puzzles.</string>
+    <string name="failed_puzzles_complete_message">Great work! You&#39;ve finished reviewing all your failed puzzles.</string>
     <string name="failed_puzzles_solved_count">Puzzles Solved</string>
     <!-- endregion -->
 
@@ -284,7 +318,7 @@
     <string name="boardvis_play_random">Random side</string>
     <string name="boardvis_play">Play</string>
     <string name="boardvis_play_again">Play Again</string>
-    <string name="boardvis_game_over">Time\'s Up!</string>
+    <string name="boardvis_game_over">Time&#39;s Up!</string>
     <string name="boardvis_final_score">Final Score: %1$d</string>
     <string name="boardvis_high_score">High Score: %1$d</string>
     <!-- endregion -->
@@ -334,7 +368,7 @@
     <string name="about_contact_description">For legal concerns, commercial opportunities, or any other inquiries, please reach out via email.</string>
     <string name="about_contact_email">contact@chessgym.app</string>
     <string name="about_feedback_title">Feedback</string>
-    <string name="about_feedback_description">Found a bug? Have an idea for a new feature or improvement? We\'d love to hear from you.</string>
+    <string name="about_feedback_description">Found a bug? Have an idea for a new feature or improvement? We&#39;d love to hear from you.</string>
     <string name="about_feedback_email">feedback@chessgym.app</string>
     <string name="about_support_title">Support</string>
     <string name="about_donate_title">Donate</string>
@@ -370,7 +404,7 @@
     <string name="clock_black">Black</string>
     <string name="clock_stop">Stop</string>
     <string name="clock_new_game">New Game</string>
-    <string name="clock_time_up">Time\'s Up!</string>
+    <string name="clock_time_up">Time&#39;s Up!</string>
     <string name="clock_time_control">Time</string>
     <string name="clock_increment">Increment</string>
     <string name="clock_minutes_format">%1$d min</string>
@@ -399,7 +433,7 @@
     <!-- region Blind Mode -->
     <string name="blind_mode_title">Blind Mode</string>
     <string name="blind_mode_training_mode">Training Mode</string>
-    <string name="blind_mode_training_description">Games won\'t affect your rating</string>
+    <string name="blind_mode_training_description">Games won&#39;t affect your rating</string>
     <string name="blind_mode_play">Play</string>
     <string name="blind_mode_resign">Resign</string>
     <string name="blind_mode_reveal">Reveal</string>
@@ -419,14 +453,14 @@
     <string name="achievement_category_failed_puzzles_redeemed">Failed Puzzles Redeemed</string>
     <string name="achievement_category_find_square_sessions">Find Square Sessions</string>
     <string name="achievement_category_move_piece_sessions">Move Piece Sessions</string>
-    <string name="achievement_category_blind_mode_wins">Homer\'s Legacy</string>
+    <string name="achievement_category_blind_mode_wins">Homer&#39;s Legacy</string>
     <string name="achievement_category_rated_win_streak">Rated Win Streak</string>
     <string name="achievement_category_rating_climber">Rating Climber</string>
     <string name="achievement_category_blind_strategist">Blind Strategist</string>
     <string name="achievement_category_rush_champion">Rush Champion</string>
     <string name="achievement_category_streak_legend">Streak Legend</string>
     <string name="achievement_category_eagle_eye">Eagle Eye</string>
-    <string name="achievement_category_knights_path">Knight\'s Path</string>
+    <string name="achievement_category_knights_path">Knight&#39;s Path</string>
     <string name="achievement_category_puzzle_addict">Puzzle Addict</string>
     <string name="achievement_category_time_invested">Time Invested</string>
     <string name="achievement_category_daily_grinder">Daily Grinder</string>
@@ -477,9 +511,9 @@
     <string name="achievement_move_piece_sessions_five">Piece Grandmaster</string>
 
     <!-- Tier names: BLIND_MODE_WINS -->
-    <string name="achievement_blind_mode_wins_one">Odin\'s Apprentice</string>
-    <string name="achievement_blind_mode_wins_two">Tiresias\' Student</string>
-    <string name="achievement_blind_mode_wins_three">Homer\'s Heir</string>
+    <string name="achievement_blind_mode_wins_one">Odin&#39;s Apprentice</string>
+    <string name="achievement_blind_mode_wins_two">Tiresias&#39; Student</string>
+    <string name="achievement_blind_mode_wins_three">Homer&#39;s Heir</string>
     <string name="achievement_blind_mode_wins_four">The Blind Prophet</string>
     <string name="achievement_blind_mode_wins_five">The All-Seer</string>
 
@@ -528,9 +562,9 @@
     <!-- Tier names: KNIGHTS_PATH -->
     <string name="achievement_knights_path_one">First Steps</string>
     <string name="achievement_knights_path_two">Pathfinder</string>
-    <string name="achievement_knights_path_three">Knight\'s Journey</string>
-    <string name="achievement_knights_path_four">Knight\'s Odyssey</string>
-    <string name="achievement_knights_path_five">Knight\'s Conquest</string>
+    <string name="achievement_knights_path_three">Knight&#39;s Journey</string>
+    <string name="achievement_knights_path_four">Knight&#39;s Odyssey</string>
+    <string name="achievement_knights_path_five">Knight&#39;s Conquest</string>
 
     <!-- Tier names: PUZZLE_ADDICT -->
     <string name="achievement_puzzle_addict_one">Getting Started</string>
@@ -651,7 +685,7 @@
     <string name="sign_in_password_hide">Hide</string>
     <string name="sign_in_button">Sign In</string>
     <string name="sign_up_button">Create Account</string>
-    <string name="sign_in_switch_to_sign_up">Don\'t have an account? &lt;b>&lt;u>Create one&lt;/u>&lt;/b></string>
+    <string name="sign_in_switch_to_sign_up">Don&#39;t have an account? &lt;b>&lt;u>Create one&lt;/u>&lt;/b></string>
     <string name="sign_in_switch_to_sign_in">Already have an account? &lt;b>&lt;u>Sign In&lt;/u>&lt;/b></string>
     <!-- endregion -->
 
