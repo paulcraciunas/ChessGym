@@ -172,13 +172,10 @@
     <string name="crash_consent_dialog_accept">I Agree</string>
     <string name="crash_consent_dialog_refuse">Not Now</string>
     <string name="loading_fact_eyebrow">Did you know?</string>
-    <string name="loading_fact_1">Chess has been around for over 1,500 years and originated in India.</string>
-    <string name="loading_fact_2">The number of possible chess games is greater than the number of atoms in the observable universe.</string>
-    <string name="loading_fact_3">The longest recorded chess game lasted 269 moves and ended in a draw.</string>
     <string-array name="loading_fact_titles">
         <item>The Powerless Queen</item>
         <item>The Book of Chess</item>
-        <item>A Priest&#39;s Invention</item>
+        <item>A Priest\'s Invention</item>
         <item>The Longest Possible Game</item>
         <item>No Mates in Nearly a Century</item>
         <item>Monochrome Boards</item>
@@ -193,10 +190,10 @@
         <item>The folding chessboard was invented by a priest who was forbidden by his religious order from playing the game. He made a clever workaround by folding the board in half and placing it on a bookshelf so it looked like two books.</item>
         <item>While the longest grandmaster game on record lasted 269 moves, mathematics dictates a theoretical maximum game length in traditional chess of 5,949 moves without an automatic draw being triggered.</item>
         <item>There has not been a single checkmate in a World Chess Championship match since 1929. The last one was in Game 8 between Alexander Alekhine and Efim Bogoljubov. Since then, all championship deciding matches have been won via resignation or time forfeit.</item>
-        <item>Early European chessboards actually featured monochrome (same color) squares, and it wasn&#39;t until around the year 1090 that the alternating light and dark square design was introduced.</item>
-        <item>The first game of chess played in outer space took place on June 9, 1970, between the Soviet Soyuz 9 crew and controllers back on Earth. The crew used a special set featuring pegs and slots so the pieces wouldn&#39;t float away in zero gravity.</item>
+        <item>Early European chessboards actually featured monochrome (same color) squares, and it wasn\'t until around the year 1090 that the alternating light and dark square design was introduced.</item>
+        <item>The first game of chess played in outer space took place on June 9, 1970, between the Soviet Soyuz 9 crew and controllers back on Earth. The crew used a special set featuring pegs and slots so the pieces wouldn\'t float away in zero gravity.</item>
         <item>The famous en passant (French for \"in passing\") pawn capture was introduced in Spain in 1280. It is one of the most frequently missed rules by beginners, largely because if you do not play it on the exact turn the enemy pawn moves, you permanently lose the ability to do so.</item>
-        <item>The word \"Checkmate\" comes from the Persian phrase \"Shah Mat\" (شاه مات). Surprisingly, it doesn&#39;t mean \"the king is trapped,\" but rather, directly translates to \"the King is dead\".</item>
+        <item>The word \"Checkmate\" comes from the Persian phrase \"Shah Mat\" (شاه مات). Surprisingly, it doesn\'t mean \"the king is trapped,\" but rather, directly translates to \"the King is dead\".</item>
         <item>In 1973, police in Cleveland, Ohio, raided a chess tournament, arrested the tournament director, and confiscated the chess sets. They charged the organizers with allowing gambling (for cash prizes) and possessing gambling devices (the chessboards).</item>
     </string-array>
     <!-- endregion -->
@@ -263,7 +260,7 @@
     <string name="puzzle_rush_play_again">Play Again</string>
     <string name="puzzle_rush_summary_title">Run complete</string>
     <string name="puzzle_rush_summary_puzzles_solved">Puzzles Solved</string>
-    <string name="puzzle_rush_time_up">Time&#39;s Up!</string>
+    <string name="puzzle_rush_time_up">Time\'s Up!</string>
     <string name="puzzle_rush_puzzle_failed">Puzzle Failed!</string>
     <!-- endregion -->
 
@@ -291,9 +288,9 @@
     </plurals>
     <string name="failed_puzzles_progress">%1$d / %2$d solved</string>
     <string name="failed_puzzles_empty_title">No Failed Puzzles</string>
-    <string name="failed_puzzles_empty_description">Great job! You don&#39;t have any failed puzzles to retry.</string>
+    <string name="failed_puzzles_empty_description">Great job! You don\'t have any failed puzzles to retry.</string>
     <string name="failed_puzzles_complete_title">All Done!</string>
-    <string name="failed_puzzles_complete_message">Great work! You&#39;ve finished reviewing all your failed puzzles.</string>
+    <string name="failed_puzzles_complete_message">Great work! You\'ve finished reviewing all your failed puzzles.</string>
     <string name="failed_puzzles_solved_count">Puzzles Solved</string>
     <!-- endregion -->
 
@@ -318,7 +315,7 @@
     <string name="boardvis_play_random">Random side</string>
     <string name="boardvis_play">Play</string>
     <string name="boardvis_play_again">Play Again</string>
-    <string name="boardvis_game_over">Time&#39;s Up!</string>
+    <string name="boardvis_game_over">Time\'s Up!</string>
     <string name="boardvis_final_score">Final Score: %1$d</string>
     <string name="boardvis_high_score">High Score: %1$d</string>
     <!-- endregion -->
@@ -368,7 +365,7 @@
     <string name="about_contact_description">For legal concerns, commercial opportunities, or any other inquiries, please reach out via email.</string>
     <string name="about_contact_email">contact@chessgym.app</string>
     <string name="about_feedback_title">Feedback</string>
-    <string name="about_feedback_description">Found a bug? Have an idea for a new feature or improvement? We&#39;d love to hear from you.</string>
+    <string name="about_feedback_description">Found a bug? Have an idea for a new feature or improvement? We\'d love to hear from you.</string>
     <string name="about_feedback_email">feedback@chessgym.app</string>
     <string name="about_support_title">Support</string>
     <string name="about_donate_title">Donate</string>
@@ -380,7 +377,7 @@
     <string name="about_terms_title">Terms of Use</string>
     <string name="about_terms_content">ChessGym is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\n\nChessGym is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License along with this program. If not, see https://www.gnu.org/licenses/.\n\nThe complete source code for ChessGym is available at: https://github.com/paulcraciunas/ChessGym\n\nChessGym incorporates Stockfish, a free and open-source chess engine licensed under the GNU General Public License v3.0. The Stockfish source code is available at: https://github.com/official-stockfish/Stockfish\n\nAll chess puzzle data is sourced from publicly available databases. ChessGym and its logo are the intellectual property of Paul Mihai Craciunas.\n\n© 2025–2026 Paul Mihai Craciunas.</string>
     <string name="about_terms_and_conditions_title">Terms and Conditions</string>
-    <string name="about_terms_and_conditions_content">By downloading, installing, or using ChessGym ("the App"), you agree to the following terms and conditions. If you do not agree, please discontinue use of the App immediately.\n\nThe App is provided "as is" and "as available" without warranties of any kind, whether express or implied, including but not limited to implied warranties of merchantability, fitness for a particular purpose, and non-infringement.\n\nIn no event shall the developer be liable for any direct, indirect, incidental, special, consequential, or punitive damages arising from or related to your use of or inability to use the App, even if the developer has been advised of the possibility of such damages.\n\nThe App may contain links to third-party websites or services that are not owned or controlled by the developer. The developer has no control over and assumes no responsibility for the content, privacy policies, or practices of any third-party websites or services.\n\nThe developer reserves the right to modify, suspend, or discontinue the App at any time without notice. The developer shall not be liable to you or to any third party for any modification, suspension, or discontinuation of the App.\n\nYour use of the App is also governed by the GNU General Public License v3.0, the full text of which is available under the Terms of Use section.\n\nThese terms and conditions are effective as of the date of your first use of the App. The developer reserves the right to update these terms at any time. Continued use of the App constitutes acceptance of any changes.\n\nFor questions or concerns about these terms, please contact us at contact@chessgym.app.</string>
+    <string name="about_terms_and_conditions_content">By downloading, installing, or using ChessGym (&quot;the App&quot;), you agree to the following terms and conditions. If you do not agree, please discontinue use of the App immediately.\n\nThe App is provided &quot;as is&quot; and &quot;as available&quot; without warranties of any kind, whether express or implied, including but not limited to implied warranties of merchantability, fitness for a particular purpose, and non-infringement.\n\nIn no event shall the developer be liable for any direct, indirect, incidental, special, consequential, or punitive damages arising from or related to your use of or inability to use the App, even if the developer has been advised of the possibility of such damages.\n\nThe App may contain links to third-party websites or services that are not owned or controlled by the developer. The developer has no control over and assumes no responsibility for the content, privacy policies, or practices of any third-party websites or services.\n\nThe developer reserves the right to modify, suspend, or discontinue the App at any time without notice. The developer shall not be liable to you or to any third party for any modification, suspension, or discontinuation of the App.\n\nYour use of the App is also governed by the GNU General Public License v3.0, the full text of which is available under the Terms of Use section.\n\nThese terms and conditions are effective as of the date of your first use of the App. The developer reserves the right to update these terms at any time. Continued use of the App constitutes acceptance of any changes.\n\nFor questions or concerns about these terms, please contact us at contact@chessgym.app.</string>
     <!-- endregion -->
 
     <!-- region Tools -->
@@ -404,7 +401,7 @@
     <string name="clock_black">Black</string>
     <string name="clock_stop">Stop</string>
     <string name="clock_new_game">New Game</string>
-    <string name="clock_time_up">Time&#39;s Up!</string>
+    <string name="clock_time_up">Time\'s Up!</string>
     <string name="clock_time_control">Time</string>
     <string name="clock_increment">Increment</string>
     <string name="clock_minutes_format">%1$d min</string>
@@ -433,7 +430,7 @@
     <!-- region Blind Mode -->
     <string name="blind_mode_title">Blind Mode</string>
     <string name="blind_mode_training_mode">Training Mode</string>
-    <string name="blind_mode_training_description">Games won&#39;t affect your rating</string>
+    <string name="blind_mode_training_description">Games won\'t affect your rating</string>
     <string name="blind_mode_play">Play</string>
     <string name="blind_mode_resign">Resign</string>
     <string name="blind_mode_reveal">Reveal</string>
@@ -453,14 +450,14 @@
     <string name="achievement_category_failed_puzzles_redeemed">Failed Puzzles Redeemed</string>
     <string name="achievement_category_find_square_sessions">Find Square Sessions</string>
     <string name="achievement_category_move_piece_sessions">Move Piece Sessions</string>
-    <string name="achievement_category_blind_mode_wins">Homer&#39;s Legacy</string>
+    <string name="achievement_category_blind_mode_wins">Homer\'s Legacy</string>
     <string name="achievement_category_rated_win_streak">Rated Win Streak</string>
     <string name="achievement_category_rating_climber">Rating Climber</string>
     <string name="achievement_category_blind_strategist">Blind Strategist</string>
     <string name="achievement_category_rush_champion">Rush Champion</string>
     <string name="achievement_category_streak_legend">Streak Legend</string>
     <string name="achievement_category_eagle_eye">Eagle Eye</string>
-    <string name="achievement_category_knights_path">Knight&#39;s Path</string>
+    <string name="achievement_category_knights_path">Knight\'s Path</string>
     <string name="achievement_category_puzzle_addict">Puzzle Addict</string>
     <string name="achievement_category_time_invested">Time Invested</string>
     <string name="achievement_category_daily_grinder">Daily Grinder</string>
@@ -511,9 +508,9 @@
     <string name="achievement_move_piece_sessions_five">Piece Grandmaster</string>
 
     <!-- Tier names: BLIND_MODE_WINS -->
-    <string name="achievement_blind_mode_wins_one">Odin&#39;s Apprentice</string>
-    <string name="achievement_blind_mode_wins_two">Tiresias&#39; Student</string>
-    <string name="achievement_blind_mode_wins_three">Homer&#39;s Heir</string>
+    <string name="achievement_blind_mode_wins_one">Odin\'s Apprentice</string>
+    <string name="achievement_blind_mode_wins_two">Tiresias\' Student</string>
+    <string name="achievement_blind_mode_wins_three">Homer\'s Heir</string>
     <string name="achievement_blind_mode_wins_four">The Blind Prophet</string>
     <string name="achievement_blind_mode_wins_five">The All-Seer</string>
 
@@ -562,9 +559,9 @@
     <!-- Tier names: KNIGHTS_PATH -->
     <string name="achievement_knights_path_one">First Steps</string>
     <string name="achievement_knights_path_two">Pathfinder</string>
-    <string name="achievement_knights_path_three">Knight&#39;s Journey</string>
-    <string name="achievement_knights_path_four">Knight&#39;s Odyssey</string>
-    <string name="achievement_knights_path_five">Knight&#39;s Conquest</string>
+    <string name="achievement_knights_path_three">Knight\'s Journey</string>
+    <string name="achievement_knights_path_four">Knight\'s Odyssey</string>
+    <string name="achievement_knights_path_five">Knight\'s Conquest</string>
 
     <!-- Tier names: PUZZLE_ADDICT -->
     <string name="achievement_puzzle_addict_one">Getting Started</string>
@@ -685,7 +682,7 @@
     <string name="sign_in_password_hide">Hide</string>
     <string name="sign_in_button">Sign In</string>
     <string name="sign_up_button">Create Account</string>
-    <string name="sign_in_switch_to_sign_up">Don&#39;t have an account? &lt;b>&lt;u>Create one&lt;/u>&lt;/b></string>
+    <string name="sign_in_switch_to_sign_up">Don\'t have an account? &lt;b>&lt;u>Create one&lt;/u>&lt;/b></string>
     <string name="sign_in_switch_to_sign_in">Already have an account? &lt;b>&lt;u>Sign In&lt;/u>&lt;/b></string>
     <!-- endregion -->
 
