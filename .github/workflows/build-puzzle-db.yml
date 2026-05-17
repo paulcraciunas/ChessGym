@@ -1,0 +1,101 @@
+name: Build Puzzle Database
+
+on:
+  workflow_dispatch:
+    inputs:
+      lichess_url:
+        description: "URL to the Lichess puzzle CSV (zstd-compressed)"
+        required: false
+        default: "https://database.lichess.org/lichess_db_puzzle.csv.zst"
+      release_tag:
+        description: "GitHub Release tag to upload to"
+        required: false
+        default: "puzzle-db-v1"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Install zstd
+        run: sudo apt-get update && sudo apt-get install -y zstd
+
+      - name: Download Lichess puzzle CSV
+        run: |
+          echo "Downloading from ${{ github.event.inputs.lichess_url }}..."
+          curl -L -o puzzles.csv.zst "${{ github.event.inputs.lichess_url }}"
+          zstd -d puzzles.csv.zst -o puzzles.csv
+          echo "Total puzzles: $(wc -l < puzzles.csv)"
+
+      - name: Build tiered databases
+        run: bash tools/build-puzzle-db.sh puzzles.csv
+
+      # Tier names and file naming convention are defined in:
+      #   PuzzleDatabaseContract (game/puzzles/api/.../PuzzleDatabaseContract.kt)
+      # The puzzle-db-builder tool uses those constants to generate files.
+      # Keep TIERS in sync with PuzzleDatabaseContract.Tier values.
+      - name: Verify databases
+        env:
+          TIERS: "full compact lite"
+        run: |
+          sudo apt-get install -y sqlite3
+          for tier in $TIERS; do
+            echo "=== $tier ==="
+            db="puzzles-${tier}.db"
+            sqlite3 "$db" "PRAGMA integrity_check;"
+            sqlite3 "$db" "SELECT COUNT(*) AS total, MIN(rating) AS min_rating, MAX(rating) AS max_rating FROM Puzzle;"
+            sqlite3 "$db" "SELECT COUNT(DISTINCT rating) AS distinct_ratings FROM Puzzle;"
+            echo ""
+          done
+
+      - name: Compress databases
+        env:
+          TIERS: "full compact lite"
+        run: |
+          for tier in $TIERS; do
+            zstd --ultra -22 "puzzles-${tier}.db" -o "puzzles-${tier}.db.zst"
+            echo "${tier}: $(du -h puzzles-${tier}.db.zst | cut -f1)"
+          done
+
+      # LITE_ASSET_PATH must match PuzzleDatabaseContract.LITE_ASSET_PATH
+      - name: Copy Lite DB to app assets
+        run: |
+          mkdir -p app/src/main/assets/databases
+          cp puzzles-lite.db app/src/main/assets/databases/puzzles-lite.db
+          echo "Lite DB copied to app assets: $(du -h app/src/main/assets/databases/puzzles-lite.db | cut -f1)"
+
+      - name: Upload to GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TIERS: "full compact lite"
+        run: |
+          TAG="${{ github.event.inputs.release_tag }}"
+
+          gh release view "$TAG" 2>/dev/null || \
+            gh release create "$TAG" \
+              --title "Puzzle Database $TAG" \
+              --notes "Pre-built puzzle database files for ChessGym" \
+              --latest=false
+
+          for tier in $TIERS; do
+            gh release upload "$TAG" "puzzles-${tier}.db.zst" --clobber
+          done
+
+          echo "Uploaded all databases to release $TAG"
+
+      - name: Upload Lite DB as artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: puzzles-lite-db
+          path: app/src/main/assets/databases/puzzles-lite.db
+          retention-days: 365
