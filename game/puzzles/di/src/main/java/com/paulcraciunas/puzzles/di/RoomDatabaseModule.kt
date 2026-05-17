@@ -22,16 +22,15 @@ internal object RoomDatabaseModule {
     fun provideDatabase(
         @ApplicationContext context: Context,
         @DbName dbName: String,
-        variant: DbVariant,
+        @DbAssetPath assetPath: String,
     ): AbstractPuzzleDatabase {
-        val builder = Room.databaseBuilder(
+        return Room.databaseBuilder(
             context.applicationContext,
             AbstractPuzzleDatabase::class.java,
-            dbName
+            dbName,
         )
-        if (variant == DbVariant.Asset) builder.createFromAsset(dbName)
-
-        return builder.fallbackToDestructiveMigration(true)
+            .createFromAsset(assetPath)
+            .fallbackToDestructiveMigration(true)
             .build()
     }
 }

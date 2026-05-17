@@ -2,6 +2,7 @@ package com.paulcraciunas.screens.common.design.components
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -9,7 +10,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -17,46 +20,71 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 enum class IconStyle { Card, Circle }
 enum class IconBorderType { None, Soft, Hard }
-enum class IconTintType { Normal, Accent, Danger }
+enum class IconTintType { Normal, Accent, Danger, Success }
+enum class IconTintMode { Normal, Reversed }
+enum class IconSize { Small, Normal, Large }
 
 /**
  * Bordered, rounded-square icon container used in dashboard cards
  * and other contexts requiring a framed icon.
  */
 @Composable
-fun IconBadgeLayout(
+internal fun IconBadgeLayout(
     modifier: Modifier = Modifier,
+    size: Dp = Design.dimensions.sizes.avatar,
     style: IconStyle = IconStyle.Card,
-    borderType: IconBorderType = IconBorderType.Soft,
+    border: BorderStroke = borderSoft(),
     enabled: Boolean = true,
+    background: Color? = null,
     content: @Composable () -> Unit,
 ) {
     val shape = when (style) {
         IconStyle.Card -> Design.shapes.card
         IconStyle.Circle -> Design.shapes.circle
     }
-    val border = when (borderType) {
-        IconBorderType.None -> borderNone()
-        IconBorderType.Soft -> borderSoft()
-        IconBorderType.Hard -> borderPrimary()
-    }
     Box(
         modifier = modifier
-            .size(Design.dimensions.sizes.avatar)
+            .size(size)
             .clip(shape)
             .border(border, shape)
             .background(
-                if (enabled) Design.colors.primarySoft
-                else Design.colors.primarySoftDisabled
+                when {
+                    background != null -> background
+                    enabled -> Design.colors.primarySoft
+                    else -> Design.colors.primarySoftDisabled
+                }
             ),
         contentAlignment = Alignment.Center,
     ) {
         content()
+    }
+}
+
+@Composable
+fun TextBadge(
+    text: String,
+    modifier: Modifier = Modifier,
+    style: IconStyle = IconStyle.Circle,
+    borderType: IconBorderType = IconBorderType.None,
+    tint: IconTintType = IconTintType.Accent,
+    size: IconSize = IconSize.Normal,
+) {
+    IconBadgeLayout(
+        modifier = modifier,
+        size = size.dp() * 2,
+        style = style,
+        border = borderType.borderStroke(),
+    ) {
+        Text(
+            text = text,
+            color = tint.color(),
+        )
     }
 }
 
@@ -67,22 +95,23 @@ fun IconBadge(
     style: IconStyle,
     borderType: IconBorderType,
     tint: IconTintType,
+    tintMode: IconTintMode = IconTintMode.Normal,
+    size: IconSize = IconSize.Large,
 ) {
-    val tint = when (tint) {
-        IconTintType.Normal -> Design.colors.primary
-        IconTintType.Accent -> Design.colors.accent
-        IconTintType.Danger -> Design.colors.danger
-    }
+    val tintColor = tint.color()
+    val sizeDp = size.dp()
     IconBadgeLayout(
         modifier = modifier,
+        size = sizeDp * 2,
         style = style,
-        borderType = borderType
+        border = borderType.borderStroke(),
+        background = if (tintMode == IconTintMode.Reversed) tintColor else null
     ) {
         Icon(
             imageVector = imageVector,
             contentDescription = null,
-            tint = tint,
-            modifier = Modifier.size(Design.dimensions.sizes.navBarIconHeight),
+            tint = if (tintMode == IconTintMode.Reversed) Color.White else tintColor,
+            modifier = Modifier.size(sizeDp),
         )
     }
 }
@@ -121,12 +150,46 @@ fun IconBadge(
     }
 }
 
+@Composable
+@Stable
+private fun IconBorderType.borderStroke(): BorderStroke = when (this) {
+    IconBorderType.None -> borderNone()
+    IconBorderType.Soft -> borderSoft()
+    IconBorderType.Hard -> borderPrimary()
+}
+
+@Composable
+@Stable
+private fun IconTintType.color(): Color = when (this) {
+    IconTintType.Normal -> Design.colors.primary
+    IconTintType.Accent -> Design.colors.accent
+    IconTintType.Danger -> Design.colors.danger
+    IconTintType.Success -> Design.colors.success
+}
+
+@Composable
+@Stable
+private fun IconSize.dp(): Dp = when (this) {
+    IconSize.Small -> Design.dimensions.sizes.iconSmall
+    IconSize.Normal -> Design.dimensions.sizes.icon
+    IconSize.Large -> Design.dimensions.sizes.navBarIconHeight
+}
+
 @Preview("IconBadge")
 @Preview("IconBadge (dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 private fun IconBadgePreview() {
     ChessGymTheme {
         IconBadge(imageVector = Icons.Default.Star)
+    }
+}
+
+@Preview("IconBadge")
+@Preview("IconBadge (dark)", uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun TextBadgePreview() {
+    ChessGymTheme {
+        TextBadge(text = "1")
     }
 }
 
@@ -137,7 +200,6 @@ private fun IconBadgeDisabledPreview() {
         IconBadge(imageVector = Icons.Default.Star, enabled = false)
     }
 }
-
 
 @Preview("IconBadge CircleSoftDanger", showBackground = true)
 @Composable

@@ -1,18 +1,19 @@
 package com.paulcraciunas.puzzles.impl.network
 
-import androidx.room.Room
+import android.database.sqlite.SQLiteDatabase
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.work.ListenableWorker
 import androidx.work.testing.TestListenableWorkerBuilder
 import androidx.work.workDataOf
-import com.paulcraciunas.puzzles.impl.impl.AbstractPuzzleDatabase
+import com.paulcraciunas.puzzles.api.PuzzleDatabaseContract
 import com.paulcraciunas.puzzles.impl.network.PuzzleSyncWorker.Companion.ERROR_DECOMPRESSION_FAILED
 import com.paulcraciunas.puzzles.impl.network.PuzzleSyncWorker.Companion.ERROR_DOWNLOAD_FAILED
 import com.paulcraciunas.puzzles.impl.network.PuzzleSyncWorker.Companion.ERROR_TYPE
 import com.paulcraciunas.puzzles.impl.network.PuzzleSyncWorker.Companion.FAILED_STEP
 import com.paulcraciunas.puzzles.impl.network.PuzzleSyncWorker.Step
 import com.paulcraciunas.puzzles.impl.network.fakes.FakeWorkerFactory
+import com.paulcraciunas.puzzles.impl.network.fakes.TestDatabaseBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -23,8 +24,8 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
-import org.junit.Test
 import org.junit.Before
+import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
@@ -33,20 +34,22 @@ internal class PuzzleSyncWorkerIntegrationTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val testDispatcher: TestDispatcher = StandardTestDispatcher()
 
-    private val testDatabase = Room.inMemoryDatabaseBuilder(
-        context.applicationContext,
-        AbstractPuzzleDatabase::class.java
-    ).allowMainThreadQueries().build()
-    private val factory = FakeWorkerFactory(database = testDatabase, dispatcher = testDispatcher)
+    private val factory = FakeWorkerFactory(dispatcher = testDispatcher)
+    private val roomDbPath get() = context.getDatabasePath(PuzzleDatabaseContract.ROOM_DATABASE_NAME)
 
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
+        factory.databaseSource.testDbContent = TestDatabaseBuilder.buildTestDatabase(
+            context,
+            listOf(TEST_PUZZLE),
+        )
     }
 
     @After
     fun tearDown() {
         Dispatchers.resetMain()
+        roomDbPath.delete()
     }
 
     @Test
@@ -56,12 +59,17 @@ internal class PuzzleSyncWorkerIntegrationTest {
 
         // When
         val result = worker.doWork()
-        val puzzles = testDatabase.get(10)
 
         // Then
         assertEquals(ListenableWorker.Result.success(), result)
-        assertEquals(1, puzzles.size)
-        assertEquals(1411, puzzles[0].rating)
+
+        SQLiteDatabase.openDatabase(roomDbPath.path, null, SQLiteDatabase.OPEN_READONLY).use { db ->
+            db.rawQuery("SELECT COUNT(*), rating FROM Puzzle", null).use { cursor ->
+                assertTrue(cursor.moveToFirst())
+                assertEquals(1, cursor.getInt(0))
+                assertEquals(TEST_PUZZLE.rating, cursor.getInt(1))
+            }
+        }
     }
 
     @Test
@@ -72,7 +80,6 @@ internal class PuzzleSyncWorkerIntegrationTest {
 
         // When
         val result = worker.doWork()
-        val puzzles = testDatabase.get(1)
 
         // Then
         assertEquals(
@@ -80,7 +87,7 @@ internal class PuzzleSyncWorkerIntegrationTest {
                 workDataOf(ERROR_TYPE to ERROR_DOWNLOAD_FAILED, FAILED_STEP to (Step.Download.toString()))
             ), result
         )
-        assertTrue(puzzles.isEmpty())
+        assertTrue(!roomDbPath.exists())
     }
 
     @Test
@@ -91,7 +98,6 @@ internal class PuzzleSyncWorkerIntegrationTest {
 
         // When
         val result = worker.doWork()
-        val puzzles = testDatabase.get(1)
 
         // Then
         assertEquals(
@@ -99,10 +105,18 @@ internal class PuzzleSyncWorkerIntegrationTest {
                 workDataOf(ERROR_TYPE to ERROR_DECOMPRESSION_FAILED, FAILED_STEP to (Step.Unpack.toString()))
             ), result
         )
-        assertTrue(puzzles.isEmpty())
+        assertTrue(!roomDbPath.exists())
     }
 
     private fun createWorker() = TestListenableWorkerBuilder<PuzzleSyncWorker>(context = context)
         .setWorkerFactory(factory)
         .build()
+
+    companion object {
+        private val TEST_PUZZLE = TestDatabaseBuilder.TestPuzzle(
+            fen = "rnbqkb1r/pppp1ppp/5n2/4p3/2B1P3/8/PPPP1PPP/RNBQK1NR w KQkq - 2 3",
+            moves = "f2f3 d8h4",
+            rating = 1411,
+        )
+    }
 }

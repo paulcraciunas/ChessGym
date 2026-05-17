@@ -14,7 +14,7 @@ internal class DownloadNotificationFactory @Inject constructor() : NotificationF
         val name = context.getString(R.string.download_channel_name)
         val desc = context.getString(R.string.download_channel_desc)
         val channel = NotificationChannel(
-            CHANNEL_ID, name, NotificationManager.IMPORTANCE_HIGH
+            CHANNEL_ID, name, NotificationManager.IMPORTANCE_LOW
         ).apply { description = desc }
 
         val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -26,7 +26,7 @@ internal class DownloadNotificationFactory @Inject constructor() : NotificationF
         .setContentText(context.getString(R.string.download_notification_text))
         .setSmallIcon(android.R.drawable.stat_sys_download)
         .setOngoing(true)
-        .setPriority(NotificationCompat.PRIORITY_HIGH)
+        .setPriority(NotificationCompat.PRIORITY_LOW)
         .build()
 
     companion object {

@@ -53,6 +53,12 @@ object InstrumentedTests : BuildType({
             executionMode = BuildStep.ExecutionMode.RUN_ON_FAILURE
             scriptContent = "powershell -NoProfile -ExecutionPolicy Bypass -File ci/archive-instrumented-reports.ps1"
         }
+        gradle {
+            name = "Clean Managed Devices"
+            executionMode = BuildStep.ExecutionMode.ALWAYS
+            tasks = "cleanManagedDevices"
+            useGradleWrapper = true
+        }
     }
 
     failureConditions {

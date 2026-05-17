@@ -266,10 +266,11 @@ class DialogBodyScope internal constructor() {
         modifier: Modifier = Modifier,
     ) {
         ChessGymSpacer(size = SpacerSize.LARGE)
-        DangerBlock(
+        FactBlock(
             title = title,
             items = items,
             modifier = modifier,
+            style = FactBlockStyle.Danger,
         )
     }
 

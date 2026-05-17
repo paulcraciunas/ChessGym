@@ -134,9 +134,18 @@
     <!-- endregion -->
 
     <!-- region Loading -->
-    <string name="landing_download_title">Welcome to ChessGym</string>
-    <string name="landing_download_explanation">To get started, we need to download the puzzle database. This is a one-time process that will prepare everything for your chess training.</string>
+    <string name="landing_eyebrow">The Chess Training Studio</string>
+    <string name="landing_download_eyebrow">One-time setup</string>
+    <string name="landing_download_title">Welcome to &lt;i>ChessGym&lt;/i></string>
+    <string name="landing_download_explanation">To get started, we need to download the puzzle database. A one-time setup that prepares everything for your training.</string>
+    <string name="landing_feature_puzzles">Millions of tactical puzzles</string>
+    <string name="landing_feature_offline">Works offline, always</string>
+    <string name="landing_feature_rating">Tracks your rating progress</string>
+    <string name="landing_tier_label">Database size</string>
     <string name="landing_download_button">Download Database</string>
+    <string name="landing_get_started_button">Get Started</string>
+    <string name="landing_size_hint_onetime">%s — One-time</string>
+    <string name="landing_size_hint_included">Included with app</string>
     <string name="landing_download_content_title">Setting up your chess training</string>
     <string name="landing_download_subtitle">Downloading puzzle database. This may take a few minutes, depending on the speed of your internet connection.</string>
     <string name="landing_download_progress">Downloading puzzles</string>
@@ -162,9 +171,37 @@
     <string name="crash_consent_dialog_body">ChessGym uses crash reporting to detect and fix application errors. This data is used solely to identify crashes and improve app stability for all users.\n\nNo personal information, game data, or usage patterns are collected — only technical crash details (such as stack traces and device model) when something goes wrong.\n\nYou can change this setting later in the app.</string>
     <string name="crash_consent_dialog_accept">I Agree</string>
     <string name="crash_consent_dialog_refuse">Not Now</string>
-    <string name="loading_fact_1">Chess has been around for over 1,500 years and originated in India.</string>
-    <string name="loading_fact_2">The number of possible chess games is greater than the number of atoms in the observable universe.</string>
-    <string name="loading_fact_3">The longest recorded chess game lasted 269 moves and ended in a draw.</string>
+    <string name="loading_fact_eyebrow">Did you know?</string>
+    <string-array name="loading_fact_titles">
+        <item>The Powerless Queen</item>
+        <item>The Book of Chess</item>
+        <item>A Priest\'s Invention</item>
+        <item>The Longest Possible Game</item>
+        <item>No Mates in Nearly a Century</item>
+        <item>Monochrome Boards</item>
+        <item>Space Invaders</item>
+        <item>An Illegal Secret Rule</item>
+        <item>The King is Slain</item>
+        <item>Police Raids</item>
+    </string-array>
+    <string-array name="loading_fact_bodies">
+        <item>Originally, the most powerful piece on the board was actually the weakest. The Queen could only move exactly one square diagonally. It was given its modern, unrestricted powers in 15th-century Spain, largely to honor Queen Isabella.</item>
+        <item>The second book ever to be printed in the English language (in 1474) was about chess. William Caxton translated a manuscript originally titled The Game and Playe of the Chesse.</item>
+        <item>The folding chessboard was invented by a priest who was forbidden by his religious order from playing the game. He made a clever workaround by folding the board in half and placing it on a bookshelf so it looked like two books.</item>
+        <item>While the longest grandmaster game on record lasted 269 moves, mathematics dictates a theoretical maximum game length in traditional chess of 5,949 moves without an automatic draw being triggered.</item>
+        <item>There has not been a single checkmate in a World Chess Championship match since 1929. The last one was in Game 8 between Alexander Alekhine and Efim Bogoljubov. Since then, all championship deciding matches have been won via resignation or time forfeit.</item>
+        <item>Early European chessboards actually featured monochrome (same color) squares, and it wasn\'t until around the year 1090 that the alternating light and dark square design was introduced.</item>
+        <item>The first game of chess played in outer space took place on June 9, 1970, between the Soviet Soyuz 9 crew and controllers back on Earth. The crew used a special set featuring pegs and slots so the pieces wouldn\'t float away in zero gravity.</item>
+        <item>The famous en passant (French for \"in passing\") pawn capture was introduced in Spain in 1280. It is one of the most frequently missed rules by beginners, largely because if you do not play it on the exact turn the enemy pawn moves, you permanently lose the ability to do so.</item>
+        <item>The word \"Checkmate\" comes from the Persian phrase \"Shah Mat\" (شاه مات). Surprisingly, it doesn\'t mean \"the king is trapped,\" but rather, directly translates to \"the King is dead\".</item>
+        <item>In 1973, police in Cleveland, Ohio, raided a chess tournament, arrested the tournament director, and confiscated the chess sets. They charged the organizers with allowing gambling (for cash prizes) and possessing gambling devices (the chessboards).</item>
+    </string-array>
+    <string name="loading_tier_complete">Complete</string>
+    <string name="loading_tier_compact">Compact</string>
+    <string name="loading_tier_lite">Quick Start</string>
+    <string name="loading_tier_description_complete">All puzzles, full experience</string>
+    <string name="loading_tier_description_compact">Great for most players</string>
+    <string name="loading_tier_description_lite">Instant setup, minimal storage</string>
     <!-- endregion -->
 
     <!-- region Rated Puzzle Screen -->
@@ -194,6 +231,7 @@
 
     <!-- region generic text resources which can be reused across screens -->
     <string name="generic_continue">Continue</string>
+    <string name="generic_done">Done</string>
     <string name="generic_download">Download</string>
     <string name="generic_error_title">Something went wrong</string>
     <string name="generic_error_try_again">Woops, something went wrong. Please try again.</string>
@@ -346,7 +384,7 @@
     <string name="about_terms_title">Terms of Use</string>
     <string name="about_terms_content">ChessGym is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\n\nChessGym is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License along with this program. If not, see https://www.gnu.org/licenses/.\n\nThe complete source code for ChessGym is available at: https://github.com/paulcraciunas/ChessGym\n\nChessGym incorporates Stockfish, a free and open-source chess engine licensed under the GNU General Public License v3.0. The Stockfish source code is available at: https://github.com/official-stockfish/Stockfish\n\nAll chess puzzle data is sourced from publicly available databases. ChessGym and its logo are the intellectual property of Paul Mihai Craciunas.\n\n© 2025–2026 Paul Mihai Craciunas.</string>
     <string name="about_terms_and_conditions_title">Terms and Conditions</string>
-    <string name="about_terms_and_conditions_content">By downloading, installing, or using ChessGym ("the App"), you agree to the following terms and conditions. If you do not agree, please discontinue use of the App immediately.\n\nThe App is provided "as is" and "as available" without warranties of any kind, whether express or implied, including but not limited to implied warranties of merchantability, fitness for a particular purpose, and non-infringement.\n\nIn no event shall the developer be liable for any direct, indirect, incidental, special, consequential, or punitive damages arising from or related to your use of or inability to use the App, even if the developer has been advised of the possibility of such damages.\n\nThe App may contain links to third-party websites or services that are not owned or controlled by the developer. The developer has no control over and assumes no responsibility for the content, privacy policies, or practices of any third-party websites or services.\n\nThe developer reserves the right to modify, suspend, or discontinue the App at any time without notice. The developer shall not be liable to you or to any third party for any modification, suspension, or discontinuation of the App.\n\nYour use of the App is also governed by the GNU General Public License v3.0, the full text of which is available under the Terms of Use section.\n\nThese terms and conditions are effective as of the date of your first use of the App. The developer reserves the right to update these terms at any time. Continued use of the App constitutes acceptance of any changes.\n\nFor questions or concerns about these terms, please contact us at contact@chessgym.app.</string>
+    <string name="about_terms_and_conditions_content">By downloading, installing, or using ChessGym (&quot;the App&quot;), you agree to the following terms and conditions. If you do not agree, please discontinue use of the App immediately.\n\nThe App is provided &quot;as is&quot; and &quot;as available&quot; without warranties of any kind, whether express or implied, including but not limited to implied warranties of merchantability, fitness for a particular purpose, and non-infringement.\n\nIn no event shall the developer be liable for any direct, indirect, incidental, special, consequential, or punitive damages arising from or related to your use of or inability to use the App, even if the developer has been advised of the possibility of such damages.\n\nThe App may contain links to third-party websites or services that are not owned or controlled by the developer. The developer has no control over and assumes no responsibility for the content, privacy policies, or practices of any third-party websites or services.\n\nThe developer reserves the right to modify, suspend, or discontinue the App at any time without notice. The developer shall not be liable to you or to any third party for any modification, suspension, or discontinuation of the App.\n\nYour use of the App is also governed by the GNU General Public License v3.0, the full text of which is available under the Terms of Use section.\n\nThese terms and conditions are effective as of the date of your first use of the App. The developer reserves the right to update these terms at any time. Continued use of the App constitutes acceptance of any changes.\n\nFor questions or concerns about these terms, please contact us at contact@chessgym.app.</string>
     <!-- endregion -->
 
     <!-- region Tools -->

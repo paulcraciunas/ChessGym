@@ -1,14 +1,14 @@
 package com.paulcraciunas.domain.impl.puzzles
 
-import com.paulcraciunas.domain.api.puzzles.GetPuzzleSeries
 import com.paulcraciunas.domain.api.general.RandomFactory
+import com.paulcraciunas.domain.api.puzzles.GetPuzzleByRating
+import com.paulcraciunas.domain.api.puzzles.GetPuzzleSeries
 import com.paulcraciunas.game.logic.api.Puzzle
-import com.paulcraciunas.puzzles.api.PuzzleRepository
 import javax.inject.Inject
 
 class GetPuzzleSeriesImpl @Inject constructor(
-    private val repository: PuzzleRepository,
-    private val randomFactory: RandomFactory
+    private val getPuzzleByRating: GetPuzzleByRating,
+    private val randomFactory: RandomFactory,
 ) : GetPuzzleSeries {
 
     override suspend fun invoke(count: Int, increment: Int, from: Int): List<Puzzle> {
@@ -16,10 +16,16 @@ class GetPuzzleSeriesImpl @Inject constructor(
         var rating = from
 
         repeat(count) {
-            repository.getByRating(rating)?.let {
-                result.add(it)
+            try {
+                // getPuzzleByRating uses rating expanding logic. We need to make sure we didn't previously add this puzzle
+                val puzzle = getPuzzleByRating(rating)
+                if (puzzle.rating == result.lastOrNull()?.rating)
+                    return@repeat // Can't have 2 puzzles with the same rating in a series
+                result.add(puzzle)
                 rating += randomFactory.nextInt(1, increment)
-            } ?: return@repeat // If we can't find a desired puzzle, we have to stop
+            } catch (_: IllegalArgumentException) {
+                return result
+            }
         }
         return result
     }

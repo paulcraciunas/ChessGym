@@ -13,6 +13,8 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 //noinspection PureDomain
 import androidx.work.WorkManager
+//noinspection PureDomain
+import androidx.work.workDataOf
 import com.paulcraciunas.notifications.api.NotificationFactory
 import com.paulcraciunas.puzzles.api.usecases.FetchPuzzleDatabase
 import com.paulcraciunas.puzzles.impl.network.PuzzleSyncWorker
@@ -28,18 +30,20 @@ class FetchPuzzleDatabaseImpl @Inject constructor(
     private val dataAdapter: WorkInfoDataAdapter,
 ) : FetchPuzzleDatabase {
 
-    override operator fun invoke(): Flow<FetchPuzzleDatabase.Progress> {
+    override operator fun invoke(tierSegment: String): Flow<FetchPuzzleDatabase.Progress> {
         notificationFactory.createChannel(context)
 
         val request = OneTimeWorkRequestBuilder<PuzzleSyncWorker>()
             .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 10, TimeUnit.SECONDS)
             .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+            .setInputData(workDataOf(PuzzleSyncWorker.INPUT_TIER to tierSegment))
             .addTag(PuzzleSyncWorker.TAG)
             .build()
 
         val workManager = WorkManager.getInstance(context)
         workManager.enqueueUniqueWork(PuzzleSyncWorker.TAG, ExistingWorkPolicy.KEEP, request)
 
-        return workManager.getWorkInfoByIdFlow(request.id).map { dataAdapter.adapt(it) }
+        return workManager.getWorkInfosForUniqueWorkFlow(PuzzleSyncWorker.TAG)
+            .map { workInfos -> dataAdapter.adapt(workInfos.firstOrNull()) }
     }
 }

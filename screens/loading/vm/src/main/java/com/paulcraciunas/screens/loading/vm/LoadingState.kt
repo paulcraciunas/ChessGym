@@ -1,21 +1,39 @@
 package com.paulcraciunas.screens.loading.vm
 
+import com.paulcraciunas.puzzles.api.PuzzleDatabaseContract
+
+enum class DatabaseTier(
+    val approximateSize: String, // Does not need to be translated
+    val tierSegment: String,
+    val isBundled: Boolean,
+) {
+    Full("~ 500 MB", PuzzleDatabaseContract.Tier.FULL, false),
+    Compact("~ 100 MB", PuzzleDatabaseContract.Tier.COMPACT, false),
+    Lite("0", PuzzleDatabaseContract.Tier.LITE, true);
+
+    companion object {
+        val DEFAULT: DatabaseTier = Compact
+    }
+}
+
 sealed class LoadingState {
-    data class Downloading(val progress: Progress = Progress.empty()) : LoadingState() {
+    data class Downloading(
+        val progress: Progress = Progress.empty(),
+        val factIndex: Int = 0,
+    ) : LoadingState() {
         data class Progress(
             val download: Int,
             val unpack: Int,
-            val buildDb: Int,
         ) {
             companion object {
-                fun empty(): Progress =
-                    Progress(download = 0, unpack = 0, buildDb = 0)
+                fun empty(): Progress = Progress(download = 0, unpack = 0)
             }
         }
     }
 
     data object Complete : LoadingState()
     data class Ready(
+        val selectedTier: DatabaseTier = DatabaseTier.DEFAULT,
         val requiresConfirmation: Boolean = true,
         val requiresPermission: Boolean = true,
         val dialog: Dialog = Dialog.None,
@@ -42,40 +60,40 @@ sealed class LoadingState {
     }
 
     companion object {
-        fun ready() = Ready()
+        fun ready(): Ready = Ready()
 
-        fun error(error: Error) = Ready(
+        fun error(error: Error): Ready = Ready(
             requiresConfirmation = false,
             requiresPermission = false,
             dialog = Dialog.None,
             error = error
         )
 
-        fun runtimeError(error: Error) = Ready(
+        fun runtimeError(error: Error): Ready = Ready(
             requiresConfirmation = false,
             requiresPermission = false,
             dialog = Dialog.None,
             error = error
         )
 
-        fun downloadAccepted() = Ready(
+        fun downloadAccepted(): Ready = Ready(
             requiresConfirmation = false,
             dialog = Dialog.Permission,
         )
 
-        fun permissionDenied() = Ready(
+        fun permissionDenied(): Ready = Ready(
             requiresConfirmation = false,
             error = Error.NoPermission
         )
 
-        fun consentDeclined() = Ready(
+        fun consentDeclined(): Ready = Ready(
             requiresConfirmation = false,
             requiresPermission = false,
             dialog = Dialog.None,
             error = Error.ConsentRequired
         )
 
-        fun consentAccepted() = Ready(
+        fun consentAccepted(): Ready = Ready(
             requiresConfirmation = true,
             dialog = Dialog.Download,
         )

@@ -1,7 +1,7 @@
 package com.paulcraciunas.chessgym.di
 
+import com.paulcraciunas.puzzles.di.DbAssetPath
 import com.paulcraciunas.puzzles.di.DbName
-import com.paulcraciunas.puzzles.di.DbVariant
 import com.paulcraciunas.puzzles.di.RoomConfigurationModule
 import dagger.Module
 import dagger.Provides
@@ -19,5 +19,6 @@ object TestDatabaseModule {
     fun provideDbName(): String = "test_puzzles.db"
 
     @Provides
-    fun provideDbVariant(): DbVariant = DbVariant.Asset
+    @DbAssetPath
+    fun provideDbAssetPath(): String = "test_puzzles.db"
 }

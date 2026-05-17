@@ -9,6 +9,7 @@ import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -40,8 +41,8 @@ class LoadingViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<LoadingState>(LoadingState.ready())
     val uiState: StateFlow<LoadingState> = _uiState.asStateFlow()
 
-    // track the provisioning process (checks + download) to avoid overlaps
     private var provisioningJob: Job? = null
+    private var factRotationJob: Job? = null
 
     init {
         observeNetworkRecovery()
@@ -62,21 +63,36 @@ class LoadingViewModel @Inject constructor(
             .launchIn(viewModelScope)
     }
 
+    fun onTierSelected(tier: DatabaseTier) {
+        _uiState.update { state ->
+            val ready = state as? LoadingState.Ready ?: return@update state
+            ready.copy(selectedTier = tier)
+        }
+    }
+
     fun onDownload() {
-        // Use updateAndGet to atomically update and get the RESULTING state
         val newState = _uiState.updateAndGet { state ->
             val ready = state as? LoadingState.Ready ?: return@updateAndGet state
             when {
                 !crashReportingConsent.value -> ready.copy(dialog = LoadingState.Dialog.CrashConsent)
+                ready.selectedTier.isBundled -> ready.copy(
+                    requiresConfirmation = false,
+                    requiresPermission = false,
+                    dialog = LoadingState.Dialog.None,
+                    error = LoadingState.Error.None,
+                )
                 ready.requiresConfirmation -> ready.copy(dialog = LoadingState.Dialog.Download)
                 ready.requiresPermission -> ready.copy(dialog = LoadingState.Dialog.Permission)
                 else -> ready.copy(error = LoadingState.Error.None)
             }
         }
 
-        // Trigger side effects only if the NEW state is "Ready" with no dialogs
         if (newState is LoadingState.Ready && newState.dialog == LoadingState.Dialog.None) {
-            checkDeviceConditions()
+            if (newState.selectedTier.isBundled) {
+                provisionBundledTier()
+            } else {
+                checkDeviceConditions()
+            }
         }
     }
 
@@ -103,9 +119,19 @@ class LoadingViewModel @Inject constructor(
         }
     }
 
+    private fun provisionBundledTier() {
+        provisioningJob = viewModelScope.launch {
+            _uiState.update { LoadingState.Complete }
+            delay(COMPLETION_HOLD_MS)
+            appSettingsRepository.updatePuzzlesDownloaded(true)
+        }
+    }
+
     private fun checkDeviceConditions() {
         if (provisioningJob?.isActive == true
             || _uiState.value is LoadingState.Complete) return
+
+        val selectedTier = (_uiState.value as? LoadingState.Ready)?.selectedTier ?: DatabaseTier.DEFAULT
 
         provisioningJob = viewModelScope.launch {
             val currentNetworkState = getNetworkState().first()
@@ -113,20 +139,21 @@ class LoadingViewModel @Inject constructor(
                 _uiState.update { LoadingState.error(error = LoadingState.Error.NoInternet) }
                 return@launch
             }
-            if (!getFreeDiskSpace().hasEnoughSpace(REQUIRED_DISK_SPACE_BYTES)) {
+            if (!getFreeDiskSpace().hasEnoughSpace(selectedTier.requiredDiskSpaceBytes())) {
                 _uiState.update { LoadingState.error(error = LoadingState.Error.NotEnoughDiskSpace) }
                 return@launch
             }
-            // All checks passed, start download
-            downloadPuzzles()
+            downloadPuzzles(selectedTier)
         }
     }
 
-    private suspend fun downloadPuzzles() {
+    private suspend fun downloadPuzzles(tier: DatabaseTier) {
         _uiState.update { LoadingState.Downloading() }
+        startFactRotation()
 
-        fetchPuzzleDatabase()
+        fetchPuzzleDatabase(tier.tierSegment)
             .onCompletion {
+                stopFactRotation()
                 if (it != null && it !is CancellationException) {
                     Timber.e(it, "Unexpected error during puzzle database provisioning")
                     _uiState.update { LoadingState.runtimeError(LoadingState.Error.GenericRuntime) }
@@ -135,28 +162,61 @@ class LoadingViewModel @Inject constructor(
             .collect(::updateDownloadProgress)
     }
 
+    private fun startFactRotation() {
+        factRotationJob?.cancel()
+        factRotationJob = viewModelScope.launch {
+            while (true) {
+                delay(FACT_ROTATION_INTERVAL_MS)
+                _uiState.update { state ->
+                    val downloading = state as? LoadingState.Downloading ?: return@update state
+                    downloading.copy(factIndex = downloading.factIndex + 1)
+                }
+            }
+        }
+    }
+
+    private fun stopFactRotation() {
+        factRotationJob?.cancel()
+        factRotationJob = null
+    }
+
     private fun updateDownloadProgress(progress: FetchPuzzleDatabase.Progress) {
-        _uiState.update {
+        _uiState.update { currentState ->
             when {
                 progress.hasError() -> {
                     Timber.w("Download failed with error: ${progress.error}")
                     LoadingState.runtimeError(progress.error.toLoadingState())
                 }
-                progress.isComplete() -> LoadingState.Complete
-                else -> LoadingState.Downloading(
-                    LoadingState.Downloading.Progress(
-                        download = progress.download,
-                        unpack = progress.unpack,
-                        buildDb = progress.buildDb
+                progress.isComplete() -> {
+                    viewModelScope.launch {
+                        delay(COMPLETION_HOLD_MS)
+                        appSettingsRepository.updatePuzzlesDownloaded(true)
+                    }
+                    LoadingState.Complete
+                }
+                else -> {
+                    val currentFactIndex = (currentState as? LoadingState.Downloading)?.factIndex ?: 0
+                    LoadingState.Downloading(
+                        progress = LoadingState.Downloading.Progress(
+                            download = progress.download,
+                            unpack = progress.unpack,
+                        ),
+                        factIndex = currentFactIndex,
                     )
-                )
+                }
             }
         }
     }
 
     companion object {
-        // Required space for puzzle database: ~1.8GB for download, unpack, and final database
-        private const val REQUIRED_DISK_SPACE_BYTES = 1_800_000_000L
+        private const val COMPLETION_HOLD_MS = 1_000L
+        private const val FACT_ROTATION_INTERVAL_MS = 10_000L
+
+        private fun DatabaseTier.requiredDiskSpaceBytes(): Long = when (this) {
+            DatabaseTier.Full -> 1_000_000_000L
+            DatabaseTier.Compact -> 500_000_000L
+            DatabaseTier.Lite -> 100_000_000L
+        }
     }
 }
 

@@ -2,151 +2,133 @@ package com.paulcraciunas.screens.loading.ui
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
+import com.paulcraciunas.screens.common.Footer
+import com.paulcraciunas.screens.common.controls.Header
+import com.paulcraciunas.screens.common.controls.HeaderAlign
+import com.paulcraciunas.screens.common.controls.HeaderSize
+import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
+import com.paulcraciunas.screens.common.design.components.IconBadge
+import com.paulcraciunas.screens.common.design.components.IconBorderType
+import com.paulcraciunas.screens.common.design.components.IconSize
+import com.paulcraciunas.screens.common.design.components.IconStyle
+import com.paulcraciunas.screens.common.design.components.IconTintMode
+import com.paulcraciunas.screens.common.design.components.IconTintType
+import com.paulcraciunas.screens.common.design.components.LinearProgress
+import com.paulcraciunas.screens.common.design.components.SpacerSize
+import com.paulcraciunas.screens.common.design.components.TextBadge
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
-import com.paulcraciunas.screens.common.theme.LoadingTheme
 import com.paulcraciunas.screens.loading.vm.LoadingState
 
 @Composable
 internal fun DownloadProgressCard(
     progress: LoadingState.Downloading.Progress,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    factIndex: Int = 0,
 ) {
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .padding(horizontal = LoadingTheme.dimensions.horizontalPadding),
-        contentAlignment = Alignment.Center
+            .background(Design.colors.bg)
+            .padding(horizontal = Design.dimensions.spacing.section),
+        contentAlignment = Alignment.Center,
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(LoadingTheme.dimensions.sectionSpacing)
         ) {
-            // App Title
-            Text(
-                text = stringResource(R.string.app_name),
-                style = LoadingTheme.typography.appTitleLarge,
-                color = MaterialTheme.colorScheme.onBackground,
-                textAlign = TextAlign.Center
+            Header(
+                eyebrowRes = R.string.landing_download_eyebrow,
+                titleRes = R.string.landing_download_content_title,
+                align = HeaderAlign.Beginning,
+                size = HeaderSize.Large
             )
-
-            Spacer(modifier = Modifier.height(LoadingTheme.dimensions.titleSpacing))
-
-            // Main Title
-            Text(
-                text = stringResource(R.string.landing_download_content_title),
-                style = LoadingTheme.typography.contentTitle,
-                color = MaterialTheme.colorScheme.onBackground,
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(LoadingTheme.dimensions.contentSpacing))
-
-            // Progress Items
+            ChessGymSpacer(size = SpacerSize.HUGE)
             Column(
-                verticalArrangement = Arrangement.spacedBy(LoadingTheme.dimensions.sectionSpacing),
-                modifier = Modifier.fillMaxWidth()
+                verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.section),
+                modifier = Modifier.fillMaxWidth(),
             ) {
-                ModernProgressItem(
+                ProgressStep(
+                    stepNumber = 1,
                     label = stringResource(R.string.landing_download_progress),
                     description = stringResource(R.string.landing_download_subtitle),
-                    progress = progress.download
+                    progress = progress.download,
                 )
 
-                ModernProgressItem(
+                ProgressStep(
+                    stepNumber = 2,
                     label = stringResource(R.string.landing_unpack_progress),
                     description = stringResource(R.string.landing_unpack_subtitle),
-                    progress = progress.unpack
-                )
-
-                ModernProgressItem(
-                    label = stringResource(R.string.landing_write_to_db_progress),
-                    description = stringResource(R.string.landing_write_to_db_subtitle),
-                    progress = progress.buildDb
+                    progress = progress.unpack,
                 )
             }
-
-            // Interesting facts during building phase
-            AnimatedVisibility(
-                visible = progress.buildDb in 1..99,
-                enter = slideInVertically(
-                    animationSpec = tween(300),
-                    initialOffsetY = { it / 2 }
-                ) + fadeIn(animationSpec = tween(300)),
-                exit = slideOutVertically(
-                    animationSpec = tween(200),
-                    targetOffsetY = { -it / 2 }
-                ) + fadeOut(animationSpec = tween(200))
-            ) {
-                InterestingFactCard(buildProgress = progress.buildDb)
-            }
-
-            Spacer(modifier = Modifier.height(LoadingTheme.dimensions.bottomSpacing))
-
-            // App name at bottom
-            Text(
-                text = stringResource(R.string.app_name),
-                style = LoadingTheme.typography.appTitleSmall,
-                color = MaterialTheme.colorScheme.primary,
-                textAlign = TextAlign.Center
-            )
+            InterestingFactCard(factIndex = factIndex)
+            ChessGymSpacer(size = SpacerSize.SECTION)
+            Footer()
         }
     }
 }
 
-
 @Composable
-private fun ModernProgressItem(
+private fun ProgressStep(
+    stepNumber: Int,
     label: String,
     description: String,
     progress: Int,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(LoadingTheme.dimensions.itemSpacing)
+        verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.lg),
     ) {
-        // Header with label and percentage
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            horizontalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.lg),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
+            if (progress == 100) {
+                IconBadge(
+                    imageVector = Icons.Default.Check,
+                    style = IconStyle.Circle,
+                    borderType = IconBorderType.None,
+                    tint = IconTintType.Success,
+                    tintMode = IconTintMode.Reversed,
+                    size = IconSize.Small
+                )
+            } else {
+                TextBadge(
+                    text = "$stepNumber",
+                    size = IconSize.Small
+                )
+            }
             Text(
-                text = "$label...",
-                style = LoadingTheme.typography.progressLabel,
-                color = MaterialTheme.colorScheme.onBackground
+                text = label,
+                style = Design.typography.titleMedium,
+                color = Design.colors.ink,
+                modifier = Modifier.weight(1f)
             )
 
             AnimatedContent(
@@ -155,48 +137,27 @@ private fun ModernProgressItem(
                     (fadeIn(animationSpec = tween(300)) + scaleIn(animationSpec = tween(300))) togetherWith
                             (fadeOut(animationSpec = tween(150)) + scaleOut(animationSpec = tween(150)))
                 },
-                label = "progress_animation"
+                label = "progress_animation",
             ) { isComplete ->
                 Text(
-                    text = if (isComplete) "✓" else "${progress}%",
-                    style = LoadingTheme.typography.progressValue,
-                    color = if (isComplete)
-                        LoadingTheme.colors.success
-                    else
-                        MaterialTheme.colorScheme.onBackground
+                    text = if (isComplete) stringResource(R.string.generic_done) else "${progress}%",
+                    style = Design.typography.titleMedium,
+                    color = if (isComplete) Design.colors.success else Design.colors.ink,
                 )
             }
         }
 
-        // Progress bar
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(LoadingTheme.dimensions.progressBarHeight)
-                .clip(RoundedCornerShape(LoadingTheme.dimensions.progressBarRadius))
-                .background(MaterialTheme.colorScheme.surfaceVariant)
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(progress / 100f)
-                    .height(LoadingTheme.dimensions.progressBarHeight)
-                    .clip(RoundedCornerShape(LoadingTheme.dimensions.progressBarRadius))
-                    .background(
-                        if (progress == 100)
-                            LoadingTheme.colors.success
-                        else
-                            MaterialTheme.colorScheme.primary
-                    )
-            )
-        }
+        LinearProgress(
+            progress = progress / 100f,
+            color = if (progress == 100) Design.colors.success else Design.colors.primary,
+        )
 
-        // Description (only show when not complete)
         if (progress < 100) {
             Text(
                 text = description,
-                style = LoadingTheme.typography.description,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Start
+                style = Design.typography.bodyMedium,
+                color = Design.colors.inkSoft,
+                textAlign = TextAlign.Start,
             )
         }
     }
@@ -210,8 +171,7 @@ private fun DownloadProgressCardPreview() {
         DownloadProgressCard(
             progress = LoadingState.Downloading.Progress(
                 download = 100,
-                unpack = 100,
-                buildDb = 45
+                unpack = 45,
             )
         )
     }
@@ -219,26 +179,23 @@ private fun DownloadProgressCardPreview() {
 
 @Preview(showBackground = true)
 @Composable
-private fun ModernProgressItemPreview() {
+private fun ProgressStepPreview() {
     ChessGymTheme {
         Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            modifier = Modifier.padding(Design.dimensions.spacing.xxl),
+            verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.xxl),
         ) {
-            ModernProgressItem(
+            ProgressStep(
+                stepNumber = 1,
                 label = "Downloading",
-                description = "Downloading puzzle database. This may take a few minutes, depending on the speed of your internet connection.",
-                progress = 33
+                description = "Downloading puzzle database...",
+                progress = 100,
             )
-            ModernProgressItem(
+            ProgressStep(
+                stepNumber = 2,
                 label = "Unpacking",
-                description = "Unpacking puzzle database. This may take a few minutes.",
-                progress = 66
-            )
-            ModernProgressItem(
-                label = "Building",
-                description = "Building puzzle database. This may take a few minutes.",
-                progress = 100
+                description = "Unpacking puzzle database...",
+                progress = 66,
             )
         }
     }
