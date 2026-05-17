@@ -1,5 +1,6 @@
 package com.paulcraciunas.puzzles.impl.network.source
 
+import com.paulcraciunas.puzzles.api.PuzzleDatabaseContract
 import com.paulcraciunas.utils.IoDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -13,8 +14,8 @@ class LichessDatabaseSource @Inject constructor(
 ) : PuzzleDatabaseSource {
     private lateinit var connection: URLConnection
 
-    override suspend fun open(): Long = withContext(ioDispatcher) {
-        connection = URL(LICHESS_URL).openConnection()
+    override suspend fun open(tierSegment: String): Long = withContext(ioDispatcher) {
+        connection = URL(buildDownloadUrl(tierSegment)).openConnection()
         return@withContext connection.contentLength.toLong()
     }
 
@@ -24,6 +25,11 @@ class LichessDatabaseSource @Inject constructor(
     }
 
     companion object {
-        private const val LICHESS_URL = "https://database.lichess.org/lichess_db_puzzle.csv.zst"
+        // The name "puzzle-db-v1" is also set in the "build-puzzle-db.yml" build pipeline.
+        // CAUTION: if you change this, also update the aforementioned CI build
+        private const val BASE_URL = "https://github.com/paulcraciunas/ChessGym/releases/download/puzzle-db-v1"
+
+        private fun buildDownloadUrl(tierSegment: String): String =
+            "$BASE_URL/${PuzzleDatabaseContract.compressedFileName(tierSegment)}"
     }
 }

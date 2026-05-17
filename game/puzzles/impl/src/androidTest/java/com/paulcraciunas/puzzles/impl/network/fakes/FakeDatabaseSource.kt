@@ -5,18 +5,17 @@ import java.io.ByteArrayInputStream
 import java.io.InputStream
 
 internal class FakeDatabaseSource : Failable(), PuzzleDatabaseSource {
-    val testCsvContent = """
-            PuzzleId,FEN,Moves,Rating,RatingDeviation,Popularity,NbPlays,Themes,GameUrl,OpeningTags
-            00008,rnbqkb1r/pppp1ppp/5n2/4p3/2B1P3/8/PPPP1PPP/RNBQK1NR w KQkq - 2 3,f2f3 d8h4,1411,74,88,135,advantage,https://lichess.org/test,Italian_Game
-        """.trimIndent()
+    var testDbContent: ByteArray = ByteArray(64)
+    var configuredTier: String? = null
 
-    override suspend fun open(): Long {
+    override suspend fun open(tierSegment: String): Long {
+        configuredTier = tierSegment
         check()
-        return testCsvContent.length.toLong()
+        return testDbContent.size.toLong()
     }
 
     override suspend fun read(): InputStream {
         check()
-        return ByteArrayInputStream(testCsvContent.toByteArray())
+        return ByteArrayInputStream(testDbContent)
     }
 }
