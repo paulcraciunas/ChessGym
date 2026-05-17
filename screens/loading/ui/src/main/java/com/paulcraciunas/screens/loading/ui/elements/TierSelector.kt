@@ -1,5 +1,6 @@
 package com.paulcraciunas.screens.loading.ui.elements
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,7 +35,7 @@ internal fun TierSelector(
         ) {
             DatabaseTier.entries.forEach { tier ->
                 OutlineSegmentButton(
-                    text = tier.label,
+                    text = stringResource(tier.label()),
                     selected = tier == selectedTier,
                     onClick = { onTierSelected(tier) },
                     modifier = Modifier.weight(1f),
@@ -43,10 +44,24 @@ internal fun TierSelector(
         }
 
         Text(
-            text = selectedTier.description,
+            text = stringResource(selectedTier.description()),
             style = Design.typography.bodySmall,
             color = Design.colors.inkMuted,
             textAlign = TextAlign.Center,
         )
     }
+}
+
+@StringRes
+private fun DatabaseTier.label(): Int = when (this) {
+    DatabaseTier.Full -> R.string.loading_tier_complete
+    DatabaseTier.Compact -> R.string.loading_tier_compact
+    DatabaseTier.Lite -> R.string.loading_tier_lite
+}
+
+@StringRes
+private fun DatabaseTier.description(): Int = when (this) {
+    DatabaseTier.Full -> R.string.loading_tier_description_complete
+    DatabaseTier.Compact -> R.string.loading_tier_description_compact
+    DatabaseTier.Lite -> R.string.loading_tier_description_lite
 }
