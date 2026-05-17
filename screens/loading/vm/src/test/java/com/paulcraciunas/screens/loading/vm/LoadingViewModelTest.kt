@@ -80,7 +80,7 @@ internal class LoadingViewModelTest {
             fakeGetNetworkState.setState(GetNetworkState.NetworkState.Connected)
             fakeGetFreeDiskSpace.setDiskSpace(
                 GetFreeDiskSpace.DiskSpace(
-                    freeBytes = 200_000_000L, // Less than required 500GB
+                    freeBytes = 100_000_000L, // Less than required 500GB
                     totalBytes = 2_000_000_000L
                 )
             )
@@ -108,7 +108,7 @@ internal class LoadingViewModelTest {
         fakeGetNetworkState.setState(GetNetworkState.NetworkState.Connected)
         fakeGetFreeDiskSpace.setDiskSpace(
             GetFreeDiskSpace.DiskSpace(
-                freeBytes = 2_000_000_000L, // More than required 1.8GB
+                freeBytes = 2_000_000_000L, // More than required 525 MB
                 totalBytes = 4_000_000_000L
             )
         )

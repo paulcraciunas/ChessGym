@@ -213,9 +213,9 @@ class LoadingViewModel @Inject constructor(
         private const val FACT_ROTATION_INTERVAL_MS = 10_000L
 
         private fun DatabaseTier.requiredDiskSpaceBytes(): Long = when (this) {
-            DatabaseTier.Full -> 1_000_000_000L
-            DatabaseTier.Compact -> 500_000_000L
-            DatabaseTier.Lite -> 100_000_000L
+            DatabaseTier.Full -> 525_000_000L
+            DatabaseTier.Compact -> 200_000_000L
+            DatabaseTier.Lite -> 50_000_000L
         }
     }
 }
