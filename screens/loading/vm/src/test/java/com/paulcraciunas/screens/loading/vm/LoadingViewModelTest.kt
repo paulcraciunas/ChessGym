@@ -80,7 +80,7 @@ internal class LoadingViewModelTest {
             fakeGetNetworkState.setState(GetNetworkState.NetworkState.Connected)
             fakeGetFreeDiskSpace.setDiskSpace(
                 GetFreeDiskSpace.DiskSpace(
-                    freeBytes = 500_000_000L, // Less than required 1.8GB
+                    freeBytes = 200_000_000L, // Less than required 500GB
                     totalBytes = 2_000_000_000L
                 )
             )
@@ -188,7 +188,7 @@ internal class LoadingViewModelTest {
 }
 
 private class FakeFetchPuzzleDatabase : FetchPuzzleDatabase {
-    override fun invoke() = flowOf(
-        FetchPuzzleDatabase.Progress(download = 100, unpack = 100, buildDb = 100)
+    override fun invoke(tierSegment: String) = flowOf(
+        FetchPuzzleDatabase.Progress(download = 100, unpack = 100)
     )
 }
