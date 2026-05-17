@@ -196,6 +196,12 @@
         <item>The word \"Checkmate\" comes from the Persian phrase \"Shah Mat\" (شاه مات). Surprisingly, it doesn\'t mean \"the king is trapped,\" but rather, directly translates to \"the King is dead\".</item>
         <item>In 1973, police in Cleveland, Ohio, raided a chess tournament, arrested the tournament director, and confiscated the chess sets. They charged the organizers with allowing gambling (for cash prizes) and possessing gambling devices (the chessboards).</item>
     </string-array>
+    <string name="loading_tier_complete">Complete</string>
+    <string name="loading_tier_compact">Compact</string>
+    <string name="loading_tier_lite">Quick Start</string>
+    <string name="loading_tier_description_complete">All puzzles, full experience</string>
+    <string name="loading_tier_description_compact">Great for most players</string>
+    <string name="loading_tier_description_lite">Instant setup, minimal storage</string>
     <!-- endregion -->
 
     <!-- region Rated Puzzle Screen -->
