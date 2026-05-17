@@ -1,6 +1,6 @@
 package com.paulcraciunas.screens.boardvis.squares.ui
 
-import androidx.compose.foundation.layout.Arrangement
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -11,8 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.boardvis.squares.vm.FindTheSquareScreenInteractor
 import com.paulcraciunas.screens.boardvis.squares.vm.FindTheSquareUiState
@@ -20,7 +20,9 @@ import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.design.components.SpacerSize
+import com.paulcraciunas.screens.common.design.components.Title
 import com.paulcraciunas.screens.common.design.theme.Design
+import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
 internal fun FindTheSquareScreenContents(
@@ -85,17 +87,29 @@ internal fun PlayingControls(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.fillMaxWidth().padding(Design.dimensions.spacing.xgut),
+        modifier = modifier.fillMaxWidth().padding(Design.dimensions.spacing.xl),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.lg)
     ) {
-        // Score display during game
+        Title(
+            text = stringResource(R.string.generic_current_score),
+        )
         Text(
-            text = stringResource(R.string.boardvis_find_square_score, score),
-            style = Design.typography.titleMedium,
-            fontSize = 32.sp,
-            fontWeight = FontWeight.Medium,
+            text = "$score",
+            style = Design.textStyles.displayNumericLarge,
             color = Design.colors.primary,
+        )
+    }
+}
+
+
+@Preview("PlayingControls", showBackground = true)
+@Preview("GameSummary - New High Score (dark)", uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun PlayingControlsPreview() {
+    ChessGymTheme {
+        PlayingControls(
+            score = 9,
+            modifier = Modifier.padding(16.dp)
         )
     }
 }

@@ -231,6 +231,7 @@
 
     <!-- region generic text resources which can be reused across screens -->
     <string name="generic_continue">Continue</string>
+    <string name="generic_current_score">Current Score</string>
     <string name="generic_done">Done</string>
     <string name="generic_download">Download</string>
     <string name="generic_error_title">Something went wrong</string>
