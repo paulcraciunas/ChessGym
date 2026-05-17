@@ -83,7 +83,7 @@ private fun AchievementBanner(
             )
             .shadow(elevation = Design.dimensions.elevation.nav, shape = shape)
             .clip(shape)
-            .background(Design.colors.surface)
+            .background(Design.colors.accent)
             .padding(Design.dimensions.spacing.lg),
     ) {
         Row(
