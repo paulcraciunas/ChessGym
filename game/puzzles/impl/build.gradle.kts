@@ -27,6 +27,8 @@ dependencies {
 
     testImplementation(testFixtures(project(":settings:application:api")))
 
+    androidTestImplementation(project(":game:logic:impl"))
+    androidTestImplementation(project(":game:serializer:impl"))
     androidTestImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.work.test)
     androidTestImplementation(testFixtures(project(":settings:application:api")))

@@ -6,6 +6,8 @@ import android.content.Context
 //noinspection PureDomain
 import android.content.pm.ServiceInfo
 //noinspection PureDomain
+import android.database.sqlite.SQLiteDatabase
+//noinspection PureDomain
 import android.os.Build
 //noinspection PureDomain
 import androidx.hilt.work.HiltWorker
@@ -18,11 +20,12 @@ import androidx.work.WorkerParameters
 //noinspection PureDomain
 import androidx.work.workDataOf
 import com.paulcraciunas.notifications.api.NotificationFactory
+import com.paulcraciunas.puzzles.api.PuzzleDatabaseContract
 import com.paulcraciunas.puzzles.impl.network.progress.ProgressReporter
-import com.paulcraciunas.puzzles.impl.network.save.PuzzleDatabaseWriter
 import com.paulcraciunas.puzzles.impl.network.source.PuzzleDatabaseSource
 import com.paulcraciunas.puzzles.impl.network.unpack.FileDecompressor
 import com.paulcraciunas.puzzles.impl.network.writer.FileWriter
+import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import com.paulcraciunas.utils.IoDispatcher
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -41,7 +44,7 @@ class PuzzleSyncWorker @AssistedInject constructor(
     private val databaseSource: PuzzleDatabaseSource,
     private val fileWriter: FileWriter,
     private val decompressor: FileDecompressor,
-    private val puzzleDatabaseWriter: PuzzleDatabaseWriter,
+    private val appSettingsRepository: AppSettingsRepository,
 ) : CoroutineWorker(context, workerParams) {
     private val ioDispatcher = dispatcher
     private var step: Step = Step.Download
@@ -52,29 +55,29 @@ class PuzzleSyncWorker @AssistedInject constructor(
             setProgress(workDataOf(STEP to step.toString(), PROGRESS_NAME to progress))
         }
 
+        val tierSegment = inputData.getString(INPUT_TIER) ?: PuzzleDatabaseContract.Tier.COMPACT
         val zstFile = File(applicationContext.cacheDir, DOWNLOAD_FILENAME)
-        val csvFile = File(applicationContext.cacheDir, UNPACK_FILENAME)
+        val dbFile = File(applicationContext.cacheDir, UNPACK_FILENAME)
 
         try {
-            downloadPuzzleDatabase(zstFile, csvFile)?.let { return@withContext it }
-            decompressPuzzleDatabase(zstFile, csvFile)?.let { return@withContext it }
-            return@withContext writePuzzlesToDatabase(csvFile)
+            downloadPuzzleDatabase(tierSegment, zstFile, dbFile)?.let { return@withContext it }
+            decompressPuzzleDatabase(zstFile, dbFile)?.let { return@withContext it }
+            return@withContext placePuzzleDatabase(dbFile)
         } catch (e: Exception) {
             Timber.e(e, "Unexpected error during puzzle database sync")
-            // Clean up any partial files on unexpected errors
             zstFile.delete()
-            csvFile.delete()
+            dbFile.delete()
             return@withContext Result.failure(
-                workDataOf(ERROR_TYPE to ERROR_UNKNOWN, FAILED_STEP to (step.toString()))
+                workDataOf(ERROR_TYPE to ERROR_UNKNOWN, FAILED_STEP to step.toString())
             )
         }
     }
 
-    private suspend fun downloadPuzzleDatabase(destination: File, csvFile: File): Result? {
+    private suspend fun downloadPuzzleDatabase(tierSegment: String, destination: File, dbFile: File): Result? {
         step = Step.Download
-        if (!destination.exists() && !csvFile.exists()) {
+        if (!destination.exists() && !dbFile.exists()) {
             try {
-                fileWriter.onBegin(databaseSource.open())
+                fileWriter.onBegin(databaseSource.open(tierSegment))
                 fileWriter.write(databaseSource.read(), destination)
             } catch (e: Exception) {
                 Timber.e(e, "Download failed")
@@ -99,36 +102,65 @@ class PuzzleSyncWorker @AssistedInject constructor(
                 source.delete() // Only delete download file after successful decompression
                 Timber.i("Download file deleted after successful decompression")
             } catch (e: Exception) {
-                Timber.e(e,"Decompression failed")
+                Timber.e(e, "Decompression failed")
                 destination.delete() // Keep download file for retry, but clean up any partial decompression
                 return Result.failure(
                     workDataOf(ERROR_TYPE to ERROR_DECOMPRESSION_FAILED, FAILED_STEP to Step.Unpack.toString())
                 )
             }
         } else {
-            Timber.i("CSV file already exists, skipping decompression step")
+            Timber.i("DB file already exists, skipping decompression step")
             source.delete() // Make sure the downloaded file is cleared
             setProgress(workDataOf(STEP to step.toString(), PROGRESS_NAME to 100))
         }
+
         return null
     }
 
-    private suspend fun writePuzzlesToDatabase(source: File): Result {
-        step = Step.BuildDb
+    private suspend fun placePuzzleDatabase(dbFile: File): Result {
+        val roomDbPath = applicationContext.getDatabasePath(PuzzleDatabaseContract.ROOM_DATABASE_NAME)
         try {
-            progressReporter.onBegin(DB_SIZE)
-            puzzleDatabaseWriter.writePuzzlesToDatabase(source)
-            source.delete() // Only delete CSV file after successful database write
-            Timber.i("CSV file deleted after successful database write")
+            roomDbPath.parentFile?.mkdirs()
+            dbFile.copyTo(roomDbPath, overwrite = true)
+            dbFile.delete()
+
+            verifyDatabaseIntegrity(roomDbPath)
+            updateDatabaseStats(roomDbPath)
+
+            appSettingsRepository.updatePuzzlesDownloaded(true)
+            Timber.i("Puzzle database placed and verified successfully")
+            return Result.success()
         } catch (e: Exception) {
-            Timber.e(e,"Database write failed")
+            Timber.e(e, "Database placement failed")
+            roomDbPath.delete()
             return Result.failure(
-                workDataOf(ERROR_TYPE to ERROR_DATABASE_WRITE_FAILED, FAILED_STEP to Step.BuildDb.toString())
+                workDataOf(ERROR_TYPE to ERROR_DATABASE_WRITE_FAILED, FAILED_STEP to Step.Unpack.toString())
             )
         }
+    }
 
-        Timber.i("Puzzle database sync completed successfully")
-        return Result.success()
+    private fun verifyDatabaseIntegrity(dbFile: File) {
+        SQLiteDatabase.openDatabase(dbFile.path, null, SQLiteDatabase.OPEN_READONLY).use { db ->
+            db.rawQuery("PRAGMA integrity_check", null).use { cursor ->
+                if (cursor.moveToFirst()) {
+                    val result = cursor.getString(0)
+                    check(result == "ok") { "Database integrity check failed: $result" }
+                }
+            }
+        }
+    }
+
+    private fun updateDatabaseStats(dbFile: File) {
+        SQLiteDatabase.openDatabase(dbFile.path, null, SQLiteDatabase.OPEN_READONLY).use { db ->
+            db.rawQuery("SELECT COUNT(*), MIN(rating), MAX(rating) FROM Puzzle", null).use { cursor ->
+                if (cursor.moveToFirst()) {
+                    val count = cursor.getInt(0)
+                    val minRating = cursor.getInt(1)
+                    val maxRating = cursor.getInt(2)
+                    Timber.i("Database stats: count=$count, minRating=$minRating, maxRating=$maxRating")
+                }
+            }
+        }
     }
 
     private fun createForegroundInfo(): ForegroundInfo {
@@ -143,14 +175,12 @@ class PuzzleSyncWorker @AssistedInject constructor(
 
     enum class Step {
         Download,
-        Unpack,
-        BuildDb;
+        Unpack;
 
         companion object {
-            fun fromString(value: String?) = when (value) {
+            fun fromString(value: String?): Step? = when (value) {
                 "Download" -> Download
                 "Unpack" -> Unpack
-                "BuildDb" -> BuildDb
                 else -> null
             }
         }
@@ -158,17 +188,16 @@ class PuzzleSyncWorker @AssistedInject constructor(
 
     companion object {
         private const val COMPRESS_FACTOR = 3.7f
-        private const val DB_SIZE = 5_000_000L
-        private const val DOWNLOAD_FILENAME = "puzzles.zst"
-        private const val UNPACK_FILENAME = "puzzles.csv"
+        private const val DOWNLOAD_FILENAME = "puzzles.db.zst"
+        private const val UNPACK_FILENAME = "puzzles.db"
 
+        const val INPUT_TIER = "tier"
         const val STEP = "step"
         const val PROGRESS_NAME = "progress"
         const val ERROR_TYPE = "error_type"
         const val FAILED_STEP = "failed_step"
         const val TAG = "PuzzleSync"
 
-        // Error types
         const val ERROR_DOWNLOAD_FAILED = "download_failed"
         const val ERROR_DECOMPRESSION_FAILED = "decompression_failed"
         const val ERROR_DATABASE_WRITE_FAILED = "database_write_failed"
