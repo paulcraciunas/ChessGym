@@ -23,20 +23,21 @@ if [ ! -f "$CSV_FILE" ]; then
 fi
 
 CSV_ABSOLUTE="$(cd "$(dirname "$CSV_FILE")" && pwd)/$(basename "$CSV_FILE")"
+OUTPUT_DIR="$PROJECT_ROOT"
 
 echo "=== Building Puzzle Databases ==="
 echo "Source: $CSV_ABSOLUTE"
-echo "Project: $PROJECT_ROOT"
+echo "Output: $OUTPUT_DIR"
 echo ""
 
 cd "$PROJECT_ROOT"
-./gradlew :tools:puzzle-db-builder:run --args="$CSV_ABSOLUTE" --quiet
+./gradlew :tools:puzzle-db-builder:run --args="$CSV_ABSOLUTE $OUTPUT_DIR" --quiet
 
 echo ""
 echo "Database files generated:"
 for tier in full compact lite; do
-  if [ -f "puzzles-${tier}.db" ]; then
-    size=$(du -h "puzzles-${tier}.db" | cut -f1)
+  if [ -f "$OUTPUT_DIR/puzzles-${tier}.db" ]; then
+    size=$(du -h "$OUTPUT_DIR/puzzles-${tier}.db" | cut -f1)
     echo "  puzzles-${tier}.db ($size)"
   fi
 done

@@ -50,6 +50,9 @@ fun main(args: Array<String>) {
         exitProcess(1)
     }
 
+    val outputDir = File(args.getOrElse(1) { File(csvFile).absoluteFile.parent })
+    outputDir.mkdirs()
+
     val writer = BinaryPuzzleWriter(
         FenSerializer(RealGameFactory()),
         BinaryAdapter(),
@@ -63,18 +66,19 @@ fun main(args: Array<String>) {
 
     println("=== Building Puzzle Databases ===")
     println("Source: $csvFile")
+    println("Output: ${outputDir.absolutePath}")
     println()
 
     tiers.forEach { tier ->
-        buildDatabase(csvFile, tier, writer)
+        buildDatabase(csvFile, tier, writer, outputDir)
     }
 
     println()
     println("=== Build Complete ===")
     tiers.forEach { tier ->
-        val dbFile = File(PuzzleDatabaseContract.databaseFileName(tier.name))
+        val dbFile = File(outputDir, PuzzleDatabaseContract.databaseFileName(tier.name))
         val size = formatFileSize(dbFile.length())
-        val count = countPuzzles(PuzzleDatabaseContract.databaseFileName(tier.name))
+        val count = countPuzzles(dbFile.absolutePath)
         println("  ${tier.name}: $count puzzles ($size)")
     }
 }
@@ -83,8 +87,9 @@ private fun buildDatabase(
     csvFile: String,
     tier: TierConfig,
     writer: BinaryPuzzleWriter,
+    outputDir: File,
 ) {
-    val dbFile = PuzzleDatabaseContract.databaseFileName(tier.name)
+    val dbFile = File(outputDir, PuzzleDatabaseContract.databaseFileName(tier.name)).absolutePath
     println("Building ${tier.name} database (factor=${tier.factor}, min=$MIN_PER_RATING per rating)...")
 
     File(dbFile).delete()
