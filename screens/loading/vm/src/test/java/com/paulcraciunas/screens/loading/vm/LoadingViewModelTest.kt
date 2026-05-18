@@ -16,6 +16,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -48,7 +49,7 @@ internal class LoadingViewModelTest {
         advanceUntilIdle()
 
         // Then
-        assertEquals(LoadingState.ready(), underTest.uiState.value)
+        assertEquals(LoadingState.Ready(), underTest.uiState.value)
     }
 
     @Test
@@ -177,6 +178,83 @@ internal class LoadingViewModelTest {
 
         // Then - error should be automatically cleared and download should start
         assertEquals(LoadingState.Complete, underTest.uiState.value)
+    }
+
+    @Test
+    fun given_liteTierSelected_WHEN_onDownloadWithConsent_THEN_provisionsBundledDirectly() = runTest {
+        // Given
+        fakeAppSettingsRepository.updateCrashReportingConsent(true)
+        underTest = createViewModel()
+        advanceUntilIdle()
+
+        underTest.onTierSelected(DatabaseTier.Lite)
+        advanceUntilIdle()
+
+        // When
+        underTest.onDownload()
+        advanceUntilIdle()
+
+        // Then - should mark puzzles as downloaded without going through Complete state
+        assertTrue(fakeAppSettingsRepository.getCurrentSettings().puzzlesDownloaded)
+    }
+
+    @Test
+    fun given_liteTierSelected_WHEN_crashConsentDeclined_THEN_preservesTierSelection() = runTest {
+        // Given
+        underTest = createViewModel()
+        advanceUntilIdle()
+
+        underTest.onTierSelected(DatabaseTier.Lite)
+        advanceUntilIdle()
+
+        // When - triggers crash consent dialog, then decline
+        underTest.onDownload()
+        advanceUntilIdle()
+        underTest.onCrashConsentResponse(false)
+        advanceUntilIdle()
+
+        // Then - tier should still be Lite, error shows consent required
+        val state = underTest.uiState.value as LoadingState.Ready
+        assertEquals(DatabaseTier.Lite, state.selectedTier)
+        assertEquals(LoadingState.Error.ConsentRequired, state.error)
+    }
+
+    @Test
+    fun given_liteTierSelected_WHEN_crashConsentAccepted_THEN_provisionsBundledDirectly() = runTest {
+        // Given
+        underTest = createViewModel()
+        advanceUntilIdle()
+
+        underTest.onTierSelected(DatabaseTier.Lite)
+        advanceUntilIdle()
+
+        // When - triggers crash consent dialog, then accept
+        underTest.onDownload()
+        advanceUntilIdle()
+        underTest.onCrashConsentResponse(true)
+        advanceUntilIdle()
+
+        // Then - should provision bundled tier directly, no download confirmation
+        assertTrue(fakeAppSettingsRepository.getCurrentSettings().puzzlesDownloaded)
+    }
+
+    @Test
+    fun given_liteTierSelectedWithNoNetwork_WHEN_onDownloadWithConsent_THEN_skipsNetworkCheck() = runTest {
+        // Given - no network, but Lite doesn't need it
+        fakeAppSettingsRepository.updateCrashReportingConsent(true)
+        fakeGetNetworkState.setState(GetNetworkState.NetworkState.Disconnected)
+        underTest = createViewModel()
+        advanceUntilIdle()
+
+        underTest.onTierSelected(DatabaseTier.Lite)
+        advanceUntilIdle()
+
+        // When
+        underTest.onDownload()
+        advanceUntilIdle()
+
+        // Then - should still provision successfully despite no network
+        assertTrue(fakeAppSettingsRepository.getCurrentSettings().puzzlesDownloaded)
     }
 
     private fun createViewModel() = LoadingViewModel(

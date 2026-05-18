@@ -38,7 +38,7 @@ class LoadingViewModel @Inject constructor(
         .map { it.crashReportingConsent }
         .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
-    private val _uiState = MutableStateFlow<LoadingState>(LoadingState.ready())
+    private val _uiState = MutableStateFlow<LoadingState>(LoadingState.Ready())
     val uiState: StateFlow<LoadingState> = _uiState.asStateFlow()
 
     private var provisioningJob: Job? = null
@@ -97,32 +97,66 @@ class LoadingViewModel @Inject constructor(
     }
 
     fun onCrashConsentResponse(accepted: Boolean) {
-        viewModelScope.launch {
-            if (accepted) {
+        if (accepted) {
+            viewModelScope.launch {
                 appSettingsRepository.updateCrashReportingConsent(true)
-                _uiState.update { LoadingState.consentAccepted() }
-            } else {
-                _uiState.update { LoadingState.consentDeclined() }
+                val newState = _uiState.updateAndGet { state ->
+                    val ready = state as? LoadingState.Ready ?: return@updateAndGet state
+                    if (ready.selectedTier.isBundled) {
+                        ready.copy(
+                            requiresConfirmation = false,
+                            requiresPermission = false,
+                            dialog = LoadingState.Dialog.None,
+                            error = LoadingState.Error.None,
+                        )
+                    } else {
+                        ready.copy(dialog = LoadingState.Dialog.Download)
+                    }
+                }
+                if (newState is LoadingState.Ready && newState.selectedTier.isBundled) {
+                    provisionBundledTier()
+                }
+            }
+        } else {
+            _uiState.update { state ->
+                when (state) {
+                    is LoadingState.Ready -> state.copy(
+                        dialog = LoadingState.Dialog.None,
+                        error = LoadingState.Error.ConsentRequired,
+                    )
+                    else -> state
+                }
             }
         }
     }
 
     fun onDownloadConfirmation(accepted: Boolean) {
-        _uiState.update { if (accepted) LoadingState.downloadAccepted() else LoadingState.ready() }
+        _uiState.update { state ->
+            val ready = state as? LoadingState.Ready ?: return@update state
+            if (accepted) {
+                ready.copy(requiresConfirmation = false, dialog = LoadingState.Dialog.Permission)
+            } else {
+                LoadingState.Ready()
+            }
+        }
     }
 
     fun onPermissionReceived(isGranted: Boolean) {
         if (isGranted) {
             checkDeviceConditions()
         } else {
-            _uiState.update { LoadingState.permissionDenied() }
+            _uiState.update { state ->
+                val ready = state as? LoadingState.Ready ?: return@update state
+                ready.copy(
+                    requiresConfirmation = false,
+                    error = LoadingState.Error.NoPermission,
+                )
+            }
         }
     }
 
     private fun provisionBundledTier() {
         provisioningJob = viewModelScope.launch {
-            _uiState.update { LoadingState.Complete }
-            delay(COMPLETION_HOLD_MS)
             appSettingsRepository.updatePuzzlesDownloaded(true)
         }
     }
@@ -131,16 +165,35 @@ class LoadingViewModel @Inject constructor(
         if (provisioningJob?.isActive == true
             || _uiState.value is LoadingState.Complete) return
 
-        val selectedTier = (_uiState.value as? LoadingState.Ready)?.selectedTier ?: DatabaseTier.DEFAULT
+        val ready = _uiState.value as? LoadingState.Ready ?: return
+        if (ready.selectedTier.isBundled) return
+
+        val selectedTier = ready.selectedTier
 
         provisioningJob = viewModelScope.launch {
             val currentNetworkState = getNetworkState().first()
             if (currentNetworkState == GetNetworkState.NetworkState.Disconnected) {
-                _uiState.update { LoadingState.error(error = LoadingState.Error.NoInternet) }
+                _uiState.update { state ->
+                    val current = state as? LoadingState.Ready ?: return@update state
+                    current.copy(
+                        requiresConfirmation = false,
+                        requiresPermission = false,
+                        dialog = LoadingState.Dialog.None,
+                        error = LoadingState.Error.NoInternet,
+                    )
+                }
                 return@launch
             }
             if (!getFreeDiskSpace().hasEnoughSpace(selectedTier.requiredDiskSpaceBytes())) {
-                _uiState.update { LoadingState.error(error = LoadingState.Error.NotEnoughDiskSpace) }
+                _uiState.update { state ->
+                    val current = state as? LoadingState.Ready ?: return@update state
+                    current.copy(
+                        requiresConfirmation = false,
+                        requiresPermission = false,
+                        dialog = LoadingState.Dialog.None,
+                        error = LoadingState.Error.NotEnoughDiskSpace,
+                    )
+                }
                 return@launch
             }
             downloadPuzzles(selectedTier)
@@ -156,10 +209,17 @@ class LoadingViewModel @Inject constructor(
                 stopFactRotation()
                 if (it != null && it !is CancellationException) {
                     Timber.e(it, "Unexpected error during puzzle database provisioning")
-                    _uiState.update { LoadingState.runtimeError(LoadingState.Error.GenericRuntime) }
+                    _uiState.update {
+                        LoadingState.Ready(
+                            selectedTier = tier,
+                            requiresConfirmation = false,
+                            requiresPermission = false,
+                            error = LoadingState.Error.GenericRuntime,
+                        )
+                    }
                 }
             }
-            .collect(::updateDownloadProgress)
+            .collect { progress -> updateDownloadProgress(progress, tier) }
     }
 
     private fun startFactRotation() {
@@ -180,12 +240,17 @@ class LoadingViewModel @Inject constructor(
         factRotationJob = null
     }
 
-    private fun updateDownloadProgress(progress: FetchPuzzleDatabase.Progress) {
+    private fun updateDownloadProgress(progress: FetchPuzzleDatabase.Progress, tier: DatabaseTier) {
         _uiState.update { currentState ->
             when {
                 progress.hasError() -> {
                     Timber.w("Download failed with error: ${progress.error}")
-                    LoadingState.runtimeError(progress.error.toLoadingState())
+                    LoadingState.Ready(
+                        selectedTier = tier,
+                        requiresConfirmation = false,
+                        requiresPermission = false,
+                        error = progress.error.toLoadingState(),
+                    )
                 }
                 progress.isComplete() -> {
                     viewModelScope.launch {
@@ -209,7 +274,7 @@ class LoadingViewModel @Inject constructor(
     }
 
     companion object {
-        private const val COMPLETION_HOLD_MS = 1_000L
+        private const val COMPLETION_HOLD_MS = 500L
         private const val FACT_ROTATION_INTERVAL_MS = 10_000L
 
         private fun DatabaseTier.requiredDiskSpaceBytes(): Long = when (this) {

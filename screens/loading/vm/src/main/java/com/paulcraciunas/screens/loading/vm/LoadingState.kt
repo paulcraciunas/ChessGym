@@ -58,44 +58,4 @@ sealed class LoadingState {
         Permission,
         None
     }
-
-    companion object {
-        fun ready(): Ready = Ready()
-
-        fun error(error: Error): Ready = Ready(
-            requiresConfirmation = false,
-            requiresPermission = false,
-            dialog = Dialog.None,
-            error = error
-        )
-
-        fun runtimeError(error: Error): Ready = Ready(
-            requiresConfirmation = false,
-            requiresPermission = false,
-            dialog = Dialog.None,
-            error = error
-        )
-
-        fun downloadAccepted(): Ready = Ready(
-            requiresConfirmation = false,
-            dialog = Dialog.Permission,
-        )
-
-        fun permissionDenied(): Ready = Ready(
-            requiresConfirmation = false,
-            error = Error.NoPermission
-        )
-
-        fun consentDeclined(): Ready = Ready(
-            requiresConfirmation = false,
-            requiresPermission = false,
-            dialog = Dialog.None,
-            error = Error.ConsentRequired
-        )
-
-        fun consentAccepted(): Ready = Ready(
-            requiresConfirmation = true,
-            dialog = Dialog.Download,
-        )
-    }
 }
