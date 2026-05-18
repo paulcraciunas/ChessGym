@@ -13,6 +13,8 @@ interface GameInteractor {
 
     fun canPlay(from: Locus, to: Locus): Boolean
     fun moves(from: Locus): List<Locus>
+    fun isPromotion(move: String): Piece? // Returns the piece the move would promote
+    fun play(move: String) // This has to be in simplified algebraic format (e.g. e2e4, Kc3, a7a8q)
     fun play(from: Locus, to: Locus)
     fun canPromote(from: Locus, to: Locus): Boolean
     fun promote(from: Locus, to: Locus, result: Piece)

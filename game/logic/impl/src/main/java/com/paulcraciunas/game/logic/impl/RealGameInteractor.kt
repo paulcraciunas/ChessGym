@@ -24,6 +24,7 @@ class RealGameInteractor : GameInteractor {
         get() = _player!!
     override val lastPly: Ply?
         get() = game.info.lastPly
+    private val moveAdapter = MoveAdapter()
 
     override fun load(game: Game, player: Side) {
         _game = game
@@ -35,6 +36,19 @@ class RealGameInteractor : GameInteractor {
 
     override fun canPlay(from: Locus, to: Locus): Boolean = game.ply(from, to) != null
     override fun moves(from: Locus): List<Locus> = game.plies(from).map { it.to }
+    override fun isPromotion(move: String): Piece? = moveAdapter.from(move).promotion
+    override fun play(move: String) {
+        val move = moveAdapter.from(move)
+        assert(canPlay(move.from, move.to))
+        game.plies(move.from).first { it.to == move.to }.apply {
+            if (move.promotion != null) {
+                promote(from, to,move.promotion)
+            } else {
+                play(from, to)
+            }
+        }
+    }
+
     override fun play(from: Locus, to: Locus) {
         assert(canPlay(from, to))
         game.play(from, to)

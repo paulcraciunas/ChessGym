@@ -2,6 +2,7 @@ package com.paulcraciunas.screens.common.model
 
 import com.paulcraciunas.game.logic.api.Game
 import com.paulcraciunas.game.logic.api.GameInteractor
+import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
@@ -24,6 +25,8 @@ class GameViewModelHelper(
 
         return buildPuzzleData()
     }
+
+    fun isReady(): Boolean = boardViewBuilder.isReady()
 
     fun buildPuzzleData(): GameData = GameData(
         player = player,
@@ -73,6 +76,13 @@ class GameViewModelHelper(
         )
     }
 
+    fun isPromotion(move: String): Piece? = gameInteractor.isPromotion(move)
+    fun playMove(move: String): GameData {
+        gameInteractor.play(move)
+        refreshBoardWithAnimation()
+        return buildPuzzleData()
+    }
+
     fun playMove(from: Locus, to: Locus, promotion: Piece? = null): GameData {
         if (promotion != null) {
             gameInteractor.promote(from, to, promotion)
@@ -82,6 +92,7 @@ class GameViewModelHelper(
         refreshBoardWithAnimation()
         return buildPuzzleData()
     }
+    fun lastMove(): Ply? = gameInteractor.lastPly
 
     fun resign() {
         gameInteractor.resign()
