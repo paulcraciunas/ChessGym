@@ -23,9 +23,6 @@ class AchievementsViewModel @Inject constructor(
     private val stateAdapter: AchievementsUiStateAdapter,
 ) : ViewModel(), AchievementsInteractor {
 
-    // TODO Paul: couldn't this be a channel maybe? It would be simpler than combining states
-//    private val _achievementEvents = Channel<AchievementEvent>(Channel.BUFFERED)
-//    private val achievementEvents = _achievementEvents.receiveAsFlow()
     private val _selectedAchievement = MutableStateFlow<AchievementsUiState.AchievementState?>(null)
 
     val uiState: StateFlow<AchievementsUiState> = flow {
@@ -53,8 +50,6 @@ class AchievementsViewModel @Inject constructor(
     }
 
     override fun onAchievementClicked(achievement: AchievementsUiState.AchievementState) {
-        // TODO Paul: and here just emit a value to the channel
-        // _achievementEvents.emit(AchievementEvent.ShowAchievementDetail(achievement))
         _selectedAchievement.value = achievement
     }
 
