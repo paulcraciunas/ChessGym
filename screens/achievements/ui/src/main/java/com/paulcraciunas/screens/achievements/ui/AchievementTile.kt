@@ -16,6 +16,7 @@ import com.paulcraciunas.screens.common.design.theme.Design
 @Composable
 internal fun AchievementTile(
     item: AchievementState,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     TrophyShelfTile(
@@ -26,6 +27,7 @@ internal fun AchievementTile(
         valueMax = if (item is AchievementState.Incomplete) item.nextThreshold.toInt() else item.currentProgress.toInt(),
         earned = item.isCompleted(),
         locked = !item.hasProgress(),
+        onClick = onClick,
         modifier = modifier,
         icon = {
             Icon(

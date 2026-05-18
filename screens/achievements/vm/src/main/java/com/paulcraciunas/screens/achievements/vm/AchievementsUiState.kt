@@ -5,6 +5,7 @@ import com.paulcraciunas.domain.api.achievements.Achievement
 data class AchievementsUiState(
     val summary: TrophyCaseSummary = TrophyCaseSummary(),
     val categories: List<CategoryGroup> = emptyList(),
+    val selectedAchievement: AchievementState? = null,
     val isLoading: Boolean = true,
     val isError: Boolean = false,
 ) {
@@ -84,4 +85,5 @@ data class AchievementsUiState(
             override fun displayTier(): Achievement.Tier = currentTier
         }
     }
+
 }

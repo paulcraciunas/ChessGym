@@ -354,7 +354,7 @@ internal class AchievementsUiStateAdapterTest {
     @Nested
     internal inner class Summary {
         @Test
-        fun `GIVEN mixed states WHEN adapt THEN summary counts are correct`() {
+        fun `GIVEN mixed states WHEN adapt THEN summary counts tiers earned`() {
             val result = adapt(
                 achievementState(Achievement.RATED_PUZZLES_SOLVED, Achievement.Tier.FIVE, 1000, null),
                 achievementState(Achievement.FAILED_PUZZLES_REDEEMED, Achievement.Tier.TWO, 50, 100),
@@ -363,8 +363,8 @@ internal class AchievementsUiStateAdapterTest {
             )
 
             val summary = result.summary
-            assertEquals(1, summary.totalEarned)
-            assertEquals(4, summary.totalAchievements)
+            assertEquals(7, summary.totalEarned) // 5 (complete) + 2 (tier TWO)
+            assertEquals(20, summary.totalAchievements) // 4 achievements * 5 tiers
             assertEquals(2, summary.inProgress)
             assertEquals(1, summary.locked)
         }
@@ -380,13 +380,14 @@ internal class AchievementsUiStateAdapterTest {
         }
 
         @Test
-        fun `GIVEN all complete WHEN adapt THEN all counted as earned`() {
+        fun `GIVEN all complete WHEN adapt THEN all tiers counted as earned`() {
             val result = adapt(
                 achievementState(Achievement.RATED_PUZZLES_SOLVED, Achievement.Tier.FIVE, 1000, null),
                 achievementState(Achievement.PUZZLE_RUSH_SESSIONS, Achievement.Tier.FIVE, 1000, null),
             )
 
-            assertEquals(2, result.summary.totalEarned)
+            assertEquals(10, result.summary.totalEarned) // 5 + 5
+            assertEquals(10, result.summary.totalAchievements) // 2 * 5
             assertEquals(0, result.summary.inProgress)
             assertEquals(0, result.summary.locked)
         }

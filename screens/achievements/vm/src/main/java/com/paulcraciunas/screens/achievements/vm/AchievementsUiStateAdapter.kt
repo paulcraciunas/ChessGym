@@ -23,14 +23,15 @@ class AchievementsUiStateAdapter @Inject constructor() {
             )
         }
 
-        val totalEarned = sorted.count { it.isCompleted() }
+        val totalTiers = Achievement.Tier.entries.size
+        val totalEarned = sorted.sumOf { it.earnedTierCount() }
         val inProgress = sorted.count { !it.isCompleted() && it.hasProgress() }
         val locked = sorted.count { !it.hasProgress() }
 
         return AchievementsUiState(
             summary = AchievementsUiState.TrophyCaseSummary(
                 totalEarned = totalEarned,
-                totalAchievements = sorted.size,
+                totalAchievements = sorted.size * totalTiers,
                 inProgress = inProgress,
                 locked = locked,
             ),
@@ -79,5 +80,8 @@ class AchievementsUiStateAdapter @Inject constructor() {
                 currentProgress > 0 -> 1
                 else -> 0
             }
+
+        internal fun AchievementsUiState.AchievementState.earnedTierCount(): Int =
+            currentTier?.ordinal?.plus(1) ?: 0
     }
 }
