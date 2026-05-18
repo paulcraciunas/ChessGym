@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -16,7 +18,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
+import com.paulcraciunas.screens.common.design.components.ChessGymChip
+import com.paulcraciunas.screens.common.design.components.ChipStyle
+import com.paulcraciunas.screens.common.design.components.ChipTone
+import com.paulcraciunas.screens.common.design.components.Eyebrow
 import com.paulcraciunas.screens.common.design.components.RefreshButton
+import com.paulcraciunas.screens.common.design.components.Title
 import com.paulcraciunas.screens.common.design.components.borderSoft
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag
@@ -46,25 +53,19 @@ internal fun GameSummary(
             style = Design.typography.headlineSmall,
             color = Design.colors.ink
         )
-
-        Text(
+        Title(
             text = stringResource(R.string.boardvis_final_score, score),
-            style = Design.typography.titleLarge,
-            color = Design.colors.ink
+            color = Design.colors.primary,
         )
-
         if (isNewHighScore) {
-            Text(
+            ChessGymChip(
                 text = stringResource(R.string.generic_new_high_score),
-                style = Design.typography.titleMedium,
-                color = Design.colors.primary
+                tone = ChipTone.Accent,
+                style = ChipStyle.Default,
+                leadingIcon = Icons.Default.Star,
             )
         } else {
-            Text(
-                text = stringResource(R.string.boardvis_high_score, previousHighScore),
-                style = Design.typography.bodyMedium,
-                color = Design.colors.inkSoft
-            )
+            Eyebrow(text = stringResource(R.string.boardvis_high_score, previousHighScore))
         }
 
         RefreshButton(

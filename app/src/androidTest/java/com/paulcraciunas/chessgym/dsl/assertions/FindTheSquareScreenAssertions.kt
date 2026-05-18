@@ -31,11 +31,11 @@ class FindTheSquareScreenAssertions(private val rule: ComposeTestRule) {
     }
 
     fun hasScore(score: Int): FindTheSquareScreenAssertions = apply {
-        rule.onNodeWithText("Current Score: $score").assertIsDisplayed()
+        rule.onNodeWithText("CURRENT SCORE").assertIsDisplayed()
     }
 
     fun hasFinalScore(score: Int): FindTheSquareScreenAssertions = apply {
-        rule.onNodeWithText("Final Score: $score").assertIsDisplayed()
+        rule.onNodeWithText("FINAL SCORE: $score").assertIsDisplayed()
     }
 
     fun showsGameOverTitle(): FindTheSquareScreenAssertions = apply {
@@ -47,7 +47,7 @@ class FindTheSquareScreenAssertions(private val rule: ComposeTestRule) {
     }
 
     fun showsHighScore(highScore: Int): FindTheSquareScreenAssertions = apply {
-        rule.onNodeWithText("High Score: $highScore").assertIsDisplayed()
+        rule.onNodeWithText("HIGH SCORE: $highScore").assertIsDisplayed()
     }
 
     fun showsSquareName(squareName: String): FindTheSquareScreenAssertions = apply {

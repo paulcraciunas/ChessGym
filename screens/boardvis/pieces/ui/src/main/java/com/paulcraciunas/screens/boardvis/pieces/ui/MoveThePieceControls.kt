@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,18 +20,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.boardvis.pieces.vm.MoveThePieceUiState
 import com.paulcraciunas.screens.common.board.ChessPiece
+import com.paulcraciunas.screens.common.design.components.ChessGymChip
+import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
+import com.paulcraciunas.screens.common.design.components.ChipStyle
+import com.paulcraciunas.screens.common.design.components.ChipTone
+import com.paulcraciunas.screens.common.design.components.Eyebrow
 import com.paulcraciunas.screens.common.design.components.PlayButton
 import com.paulcraciunas.screens.common.design.components.PrimaryPillButton
+import com.paulcraciunas.screens.common.design.components.SpacerSize
+import com.paulcraciunas.screens.common.design.components.Title
 import com.paulcraciunas.screens.common.design.components.ToggleRow
 import com.paulcraciunas.screens.common.design.components.borderSoft
 import com.paulcraciunas.screens.common.design.theme.Design
@@ -141,22 +147,19 @@ internal fun MoveThePiecePlayingControls(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(Design.dimensions.spacing.xgut),
+            .padding(horizontal = Design.dimensions.spacing.lg),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.lg)
     ) {
-        Text(
+        Title(
             text = stringResource(R.string.boardvis_move_piece_moves_remaining, movesRemaining),
-            style = Design.typography.titleLarge,
-            color = Design.colors.primary
+            color = Design.colors.ink,
         )
-
+        ChessGymSpacer(size = SpacerSize.LARGE)
+        Eyebrow(text = stringResource(R.string.generic_current_score))
         Text(
-            text = stringResource(R.string.boardvis_move_piece_current_score, currentScore),
-            style = Design.typography.titleMedium,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Medium,
-            color = Design.colors.ink
+            text = "$currentScore",
+            style = Design.textStyles.displayNumericLarge,
+            color = Design.colors.primary,
         )
     }
 }
@@ -188,21 +191,18 @@ internal fun MoveThePieceGameOverControls(
             style = Design.typography.headlineSmall,
             color = Design.colors.ink
         )
-
-        Text(
+        Title(
             text = stringResource(R.string.boardvis_final_score, finalScore),
-            style = Design.typography.titleLarge,
-            color = Design.colors.ink
+            color = Design.colors.primary,
         )
-
         if (isNewHighScore) {
-            Text(
+            ChessGymChip(
                 text = stringResource(R.string.generic_new_high_score),
-                style = Design.typography.titleMedium,
-                color = Design.colors.primary
+                tone = ChipTone.Accent,
+                style = ChipStyle.Default,
+                leadingIcon = Icons.Default.Star,
             )
         }
-
         PrimaryPillButton(
             text = stringResource(R.string.boardvis_play_again),
             onClick = onPlayAgain,
@@ -227,7 +227,7 @@ private fun MoveThePieceSetupControlsPreview() {
     }
 }
 
-@Preview("MoveThePieceSetupControls - Training Disabled")
+@Preview("MoveThePieceSetupControls - Training Disabled", showBackground = true)
 @Composable
 private fun MoveThePieceSetupControlsDisabledPreview() {
     ChessGymTheme {
@@ -242,7 +242,7 @@ private fun MoveThePieceSetupControlsDisabledPreview() {
     }
 }
 
-@Preview("MoveThePiecePlayingControls")
+@Preview("MoveThePiecePlayingControls", showBackground = true)
 @Composable
 private fun MoveThePiecePlayingControlsPreview() {
     ChessGymTheme {

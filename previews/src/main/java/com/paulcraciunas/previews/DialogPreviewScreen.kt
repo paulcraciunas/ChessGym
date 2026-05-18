@@ -20,7 +20,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.paulcraciunas.domain.api.achievements.Achievement
 import com.paulcraciunas.game.logic.api.Side
+import com.paulcraciunas.screens.achievements.ui.AchievementDetailDialog
+import com.paulcraciunas.screens.achievements.vm.AchievementsUiState.AchievementState
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.dialogs.AbandonConfirmationDialog
 import com.paulcraciunas.screens.common.dialogs.AbandonConfirmationType
@@ -45,6 +48,8 @@ private enum class DialogEntry(val label: String, val section: String) {
 
     DownloadConfirmation("Download Confirmation", "Loading"),
     CrashReportingConsent("Crash Reporting Consent", "Loading"),
+
+    AchievementDetail("Achievement Detail", "Achievements"),
 
     RushSummary("Rush Summary", "Puzzles"),
     RushSummaryHighScore("Rush Summary (High Score)", "Puzzles"),
@@ -170,6 +175,16 @@ private fun DialogContent(
         DialogEntry.CrashReportingConsent -> CrashReportingConsentDialog(
             onAccepted = onDismiss,
             onDeclined = onDismiss,
+        )
+        DialogEntry.AchievementDetail -> AchievementDetailDialog(
+            achievementState = AchievementState.Earned(
+                achievement = Achievement.RATED_PUZZLES_SOLVED,
+                unseen = false,
+                currentTier = Achievement.Tier.ONE,
+                currentProgress = 3,
+                nextThreshold = 5,
+            ),
+            onDismiss = onDismiss,
         )
         DialogEntry.RushSummary -> RushSummaryDialog(
             puzzlesSolved = 12,

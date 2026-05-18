@@ -78,6 +78,13 @@ fun AchievementsScreen(
             }
         }
     }
+
+    state.selectedAchievement?.let { achievement ->
+        AchievementDetailDialog(
+            achievementState = achievement,
+            onDismiss = interactions::onDismissDetail,
+        )
+    }
 }
 
 @Composable
@@ -127,7 +134,10 @@ private fun AchievementsContent(
                     contentPadding = PaddingValues(horizontal = Design.dimensions.spacing.xxl),
                 ) {
                     items(group.achievements, key = { it.achievement.name }) { achievement ->
-                        AchievementTile(item = achievement)
+                        AchievementTile(
+                            item = achievement,
+                            onClick = { interactions.onAchievementClicked(achievement) },
+                        )
                     }
                 }
             }

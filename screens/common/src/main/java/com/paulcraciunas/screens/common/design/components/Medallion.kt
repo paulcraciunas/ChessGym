@@ -95,9 +95,12 @@ fun TrophyShelfTile(
     modifier: Modifier = Modifier,
     earned: Boolean = false,
     locked: Boolean = false,
+    onClick: (() -> Unit)? = null,
     icon: @Composable (() -> Unit),
 ) {
     Surface(
+        onClick = onClick ?: {},
+        enabled = onClick != null,
         modifier = modifier.width(Design.dimensions.sizes.trophyTile),
         shape = RoundedCornerShape(Design.radii.lg),
         color = Design.colors.surface,

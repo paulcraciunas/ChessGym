@@ -166,7 +166,7 @@
     <string name="loading_error_no_internet">No internet connection. Please check your connection and try again.</string>
     <string name="loading_error_not_enough_disk_space">Not enough disk space. Please free up some space and try again.</string>
     <string name="loading_error_generic">An error occurred. Please try again.</string>
-    <string name="loading_error_consent_required">Crash reporting consent is required to proceed with the download. We only collect technical crash data to improve app stability.</string>
+    <string name="loading_error_consent_required">Crash reporting consent is required to proceed. We only collect technical crash data to improve app stability.</string>
     <string name="crash_consent_dialog_title">Help Us Improve</string>
     <string name="crash_consent_dialog_body">ChessGym uses crash reporting to detect and fix application errors. This data is used solely to identify crashes and improve app stability for all users.\n\nNo personal information, game data, or usage patterns are collected — only technical crash details (such as stack traces and device model) when something goes wrong.\n\nYou can change this setting later in the app.</string>
     <string name="crash_consent_dialog_accept">I Agree</string>
@@ -231,6 +231,7 @@
 
     <!-- region generic text resources which can be reused across screens -->
     <string name="generic_continue">Continue</string>
+    <string name="generic_current_score">Current Score</string>
     <string name="generic_done">Done</string>
     <string name="generic_download">Download</string>
     <string name="generic_error_title">Something went wrong</string>
@@ -246,6 +247,7 @@
     <string name="generic_success">Success</string>
     <string name="generic_failed">Failed</string>
     <string name="generic_new_high_score">New high score</string>
+    <string name="generic_close">Close</string>
     <!-- endregion -->
 
     <!-- region Puzzle Dashboard -->
@@ -644,6 +646,8 @@
     <string name="achievement_earned_label">EARNED</string>
     <string name="achievement_earned_count">%1$d / %2$d earned</string>
     <string name="achievement_earned_total">of %1$d</string>
+    <string name="achievement_detail_next_tier">%1$d / %2$d toward next tier</string>
+    <string name="achievement_detail_progress">%1$d / %2$d</string>
     <string name="achievement_see_all">See all</string>
     <string name="achievement_group_puzzles">Puzzles</string>
     <string name="achievement_group_rush_and_streak">Rush &amp; Streak</string>

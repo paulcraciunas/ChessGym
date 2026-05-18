@@ -55,6 +55,7 @@ data class ChessGymDimensions(
         val medallion: Dp,
         val medallionText: Dp,
         val medallionLg: Dp,
+        val medallionContainer: Dp,
         val navBarHeight: Dp,
         val navBarIconHeight: Dp,
         val appBarHeight: Dp,
@@ -72,7 +73,11 @@ data class ChessGymDimensions(
     data class Scales(
         val piecePawn: Float,
         val pieceDefault: Float,
-    )
+        val achievementDetail: Float,
+        val achievementDetailFocused: Float,
+    ) {
+        fun achievementDetail(isFocused: Boolean) = if (isFocused) achievementDetailFocused else achievementDetail
+    }
 
     @Immutable
     data class Blur(

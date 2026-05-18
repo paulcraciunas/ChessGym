@@ -143,7 +143,6 @@ private fun LoadingState.Ready.primaryButtonTextRes(): Int = when {
 }
 
 private fun LoadingState.Error.isRetryable(): Boolean = when (this) {
-    LoadingState.Error.ConsentRequired,
     LoadingState.Error.DownloadFailed,
     LoadingState.Error.DecompressionFailed,
     LoadingState.Error.DatabaseWriteFailed,

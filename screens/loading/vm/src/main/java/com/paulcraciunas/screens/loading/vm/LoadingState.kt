@@ -7,8 +7,8 @@ enum class DatabaseTier(
     val tierSegment: String,
     val isBundled: Boolean,
 ) {
-    Full("~ 500 MB", PuzzleDatabaseContract.Tier.FULL, false),
-    Compact("~ 100 MB", PuzzleDatabaseContract.Tier.COMPACT, false),
+    Full("~ 185 MB", PuzzleDatabaseContract.Tier.FULL, false),
+    Compact("~ 76 MB", PuzzleDatabaseContract.Tier.COMPACT, false),
     Lite("0", PuzzleDatabaseContract.Tier.LITE, true);
 
     companion object {
@@ -57,45 +57,5 @@ sealed class LoadingState {
         Download,
         Permission,
         None
-    }
-
-    companion object {
-        fun ready(): Ready = Ready()
-
-        fun error(error: Error): Ready = Ready(
-            requiresConfirmation = false,
-            requiresPermission = false,
-            dialog = Dialog.None,
-            error = error
-        )
-
-        fun runtimeError(error: Error): Ready = Ready(
-            requiresConfirmation = false,
-            requiresPermission = false,
-            dialog = Dialog.None,
-            error = error
-        )
-
-        fun downloadAccepted(): Ready = Ready(
-            requiresConfirmation = false,
-            dialog = Dialog.Permission,
-        )
-
-        fun permissionDenied(): Ready = Ready(
-            requiresConfirmation = false,
-            error = Error.NoPermission
-        )
-
-        fun consentDeclined(): Ready = Ready(
-            requiresConfirmation = false,
-            requiresPermission = false,
-            dialog = Dialog.None,
-            error = Error.ConsentRequired
-        )
-
-        fun consentAccepted(): Ready = Ready(
-            requiresConfirmation = true,
-            dialog = Dialog.Download,
-        )
     }
 }
