@@ -84,8 +84,8 @@ internal fun PuzzleRush(tabNavController: NavHostController) {
     val puzzleRushState by vm.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        vm.navigateToAnalysis.collect { fen ->
-            tabNavController.navigate(Screen.Analysis(fen = fen))
+        vm.navigateToAnalysis.collect { data ->
+            tabNavController.navigate(Screen.Analysis(fen = data.fen, firstMove = data.firstMove))
         }
     }
 
@@ -111,8 +111,8 @@ internal fun FailedPuzzles(tabNavController: NavHostController) {
     LifecycleEventEffect(Lifecycle.Event.ON_START) { vm.onStart() }
 
     LaunchedEffect(Unit) {
-        vm.navigateToAnalysis.collect { fen ->
-            tabNavController.navigate(Screen.Analysis(fen = fen))
+        vm.navigateToAnalysis.collect { data ->
+            tabNavController.navigate(Screen.Analysis(fen = data.fen, firstMove = data.firstMove))
         }
     }
 

@@ -1,17 +1,13 @@
 package com.paulcraciunas.domain.api.puzzles
 
 class FakeGetPuzzleFen : GetPuzzleFen {
-    private val fenByPuzzleId = mutableMapOf<Int, String>()
+    private val dataByPuzzleId = mutableMapOf<Int, PuzzleAnalysisData>()
 
     var lastRequestedId: Int? = null
         private set
 
-    fun setFen(puzzleId: Int, fen: String) {
-        fenByPuzzleId[puzzleId] = fen
-    }
-
-    override suspend fun invoke(puzzleId: Int): String? {
+    override suspend fun invoke(puzzleId: Int): PuzzleAnalysisData? {
         lastRequestedId = puzzleId
-        return fenByPuzzleId[puzzleId]
+        return dataByPuzzleId[puzzleId]
     }
 }
