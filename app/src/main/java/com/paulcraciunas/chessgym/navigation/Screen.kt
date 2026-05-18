@@ -41,7 +41,7 @@ sealed class Screen {
     data object Clock : Screen()
 
     @Serializable
-    data class Analysis(val fen: String? = null) : Screen()
+    data class Analysis(val fen: String? = null, val firstMove: String? = null) : Screen()
 
     @Serializable
     data object ImportGame : Screen()
