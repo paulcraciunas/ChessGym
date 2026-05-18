@@ -219,7 +219,7 @@ private fun PlayingPreview() {
                 data = PuzzleData(
                     rating = 650,
                     player = Side.WHITE,
-                    boardData = SampleBoardViewData.startingBoardComposable(),
+                    boardData = SampleBoardViewData.startingBoard(),
                     captured = hashMapOf(
                         Side.WHITE to listOf(Piece.Pawn, Piece.Knight),
                         Side.BLACK to listOf(Piece.Bishop, Piece.Pawn)
@@ -247,7 +247,7 @@ private fun StreakEndedPreview() {
                 data = PuzzleData(
                     rating = 850,
                     player = Side.BLACK,
-                    boardData = SampleBoardViewData.startingBoardComposable(),
+                    boardData = SampleBoardViewData.startingBoard(),
                     captured = hashMapOf(
                         Side.WHITE to listOf(Piece.Queen),
                         Side.BLACK to listOf(Piece.Rook, Piece.Pawn, Piece.Pawn)

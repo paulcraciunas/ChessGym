@@ -1,6 +1,5 @@
 package com.paulcraciunas.screens.common.previews
 
-import androidx.compose.runtime.Composable
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Piece
@@ -21,12 +20,6 @@ object SampleBoardViewData {
         squares.addBlackPieces()
         return BoardViewData(squares)
     }
-
-    @Composable
-    fun startingBoardComposable(): BoardViewData = startingBoard()
-
-    @Composable
-    fun emptyBoardComposable(): BoardViewData = emptyBoard()
 
     private fun Array<Array<SquareViewData>>.addWhitePieces() = apply {
         File.entries.forEach { file ->
