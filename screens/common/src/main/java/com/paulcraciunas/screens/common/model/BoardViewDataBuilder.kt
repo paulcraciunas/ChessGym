@@ -22,6 +22,8 @@ class BoardViewDataBuilder {
     var selected: Locus? = null
         private set
 
+    fun isReady(): Boolean = _boardData != null
+
     fun load(puzzle: Puzzle) {
         _boardData = PuzzleBackedBoardViewDataSource(puzzle)
         refresh()

@@ -10,8 +10,6 @@ import com.paulcraciunas.screens.common.previews.SampleBoardViewData
 
 data class AnalysisUiState(
     val boardData: BoardViewData = SampleBoardViewData.startingBoard(),
-    val selectedSquare: Locus? = null,
-    val legalMoves: List<Locus> = emptyList(),
     val pendingPromotion: PendingPromotion? = null,
     val playerSide: Side = Side.WHITE,
     val evaluation: Evaluation? = null,
@@ -23,6 +21,8 @@ data class AnalysisUiState(
         this[Side.WHITE] = emptyList()
         this[Side.BLACK] = emptyList()
     },
+    val currentMoveIndex: Int = 0,
+    val totalMoves: Int = 0,
 )
 
 data class PendingPromotion(val from: Locus, val to: Locus)

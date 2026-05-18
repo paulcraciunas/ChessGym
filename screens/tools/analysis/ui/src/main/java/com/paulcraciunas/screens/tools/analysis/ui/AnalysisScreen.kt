@@ -12,7 +12,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import com.paulcraciunas.screens.common.design.theme.Design
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -33,6 +32,7 @@ import com.paulcraciunas.screens.common.AppBar
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
 import com.paulcraciunas.screens.common.controls.CapturedPieces
+import com.paulcraciunas.screens.common.controls.MoveNavigationControls
 import com.paulcraciunas.screens.common.dialogs.PromotionDialog
 import com.paulcraciunas.screens.common.previews.SampleBoardViewData
 import com.paulcraciunas.screens.common.testTag
@@ -70,24 +70,13 @@ fun AnalysisScreen(
                 .background(bgColor),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            val displayBoard = remember(
-                uiState.boardData,
-                uiState.selectedSquare,
-                uiState.legalMoves,
-            ) {
-                uiState.boardData.withMoveIndicators(
-                    uiState.selectedSquare,
-                    uiState.legalMoves,
-                )
-            }
-
             CapturedPieces(
                 capturedPieces = uiState.captured[uiState.playerSide.other()]!!,
                 side = uiState.playerSide,
                 modifier = Modifier.fillMaxWidth(),
             )
             ChessBoard(
-                board = displayBoard,
+                board = uiState.boardData,
                 orientation = BoardOrientation.fromSide(uiState.playerSide),
                 onClick = interactions::onSquareClicked,
                 showBorders = showBorders,
@@ -109,6 +98,15 @@ fun AnalysisScreen(
                 capturedPieces = uiState.captured[uiState.playerSide]!!,
                 side = uiState.playerSide.other(),
                 modifier = Modifier.fillMaxWidth(),
+            )
+            Spacer(modifier = Modifier.height(Design.dimensions.spacing.sm))
+            MoveNavigationControls(
+                canGoBack = uiState.currentMoveIndex > 0,
+                canGoForward = uiState.currentMoveIndex < uiState.totalMoves,
+                onJumpToStart = interactions::onJumpToStart,
+                onPreviousMove = interactions::onPreviousMove,
+                onNextMove = interactions::onNextMove,
+                onJumpToEnd = interactions::onJumpToEnd,
             )
             Spacer(modifier = Modifier.height(Design.dimensions.spacing.sm))
             EvaluationBar(
@@ -167,6 +165,8 @@ private fun AnalysisScreenStartingPreview() {
                     Side.WHITE to listOf(Piece.Pawn, Piece.Knight, Piece.Pawn),
                     Side.BLACK to listOf(Piece.Bishop, Piece.Pawn, Piece.Pawn, Piece.Rook)
                 ),
+                currentMoveIndex = 5,
+                totalMoves = 10,
             ),
             showBorders = true,
             highlightLegalMoves = true,

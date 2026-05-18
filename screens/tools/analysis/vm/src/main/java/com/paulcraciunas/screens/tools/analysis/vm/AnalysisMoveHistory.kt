@@ -89,6 +89,7 @@ internal class AnalysisMoveHistory(
     }
 
     fun fenAtIndex(index: Int): String {
+        if (index == 0) return initialFen
         val game = reconstructAtIndex(index) ?: return initialFen
         return fenSerializer.of(game)
     }
