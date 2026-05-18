@@ -1,6 +1,7 @@
 package com.paulcraciunas.logic.di
 
 import com.paulcraciunas.game.logic.api.GameFactory
+import com.paulcraciunas.game.logic.api.GameInteractor
 import com.paulcraciunas.game.logic.api.MoveValidator
 import com.paulcraciunas.game.logic.api.PuzzleInteractor
 import com.paulcraciunas.game.logic.impl.RealGameFactory
@@ -19,6 +20,9 @@ internal class LogicModule {
 
     @Provides
     fun providePuzzleInteractor(gameFactory: GameFactory): PuzzleInteractor = gameFactory.puzzleInteractor()
+
+    @Provides
+    fun provideGameInteractor(gameFactory: GameFactory): GameInteractor = gameFactory.gameInteractor()
 
     @Provides
     fun provideMoveValidator(gameFactory: GameFactory): MoveValidator = gameFactory.moveValidator()

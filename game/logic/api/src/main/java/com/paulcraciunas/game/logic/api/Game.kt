@@ -17,6 +17,7 @@ interface Game {
     fun start()
     fun plies(): List<Ply>
     fun plies(from: Locus): List<Ply>
+    fun ply(from: Locus, to: Locus): Ply?
 
     fun play(ply: Ply)
     fun play(from: Locus, to: Locus)

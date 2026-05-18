@@ -41,6 +41,7 @@ internal class MutableGame(
 
     override fun plies(): List<Ply> = plies
     override fun plies(from: Locus): List<Ply> = plies.filter { it.from == from }
+    override fun ply(from: Locus, to: Locus): Ply? = plies.firstOrNull { it.from == from && it.to == to }
     override fun play(ply: Ply) {
         assert(state == Game.GameState.InProgress)
 
