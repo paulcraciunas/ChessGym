@@ -12,6 +12,7 @@ import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.board.ChessBoardTags
+import com.paulcraciunas.screens.common.controls.MoveNavigationTags
 import com.paulcraciunas.screens.common.design.components.ChessGymDialogTags
 import com.paulcraciunas.screens.tools.importgame.ui.ImportGameScreenTags
 
@@ -64,21 +65,21 @@ class ImportGameScreenAssertions(private val rule: ComposeTestRule) {
     }
 
     fun navigationNextIsDisabled(): ImportGameScreenAssertions = apply {
-        rule.onNodeWithTag(ImportGameScreenTags.NAV_NEXT).assertIsNotEnabled()
+        rule.onNodeWithTag(MoveNavigationTags.NEXT).assertIsNotEnabled()
     }
 
     fun navigationPreviousIsEnabled(): ImportGameScreenAssertions = apply {
-        rule.onNodeWithTag(ImportGameScreenTags.NAV_PREVIOUS).assertIsEnabled()
+        rule.onNodeWithTag(MoveNavigationTags.PREVIOUS).assertIsEnabled()
     }
 
     fun navigationPreviousIsDisabled(): ImportGameScreenAssertions = apply {
-        rule.onNodeWithTag(ImportGameScreenTags.NAV_PREVIOUS).assertIsNotEnabled()
+        rule.onNodeWithTag(MoveNavigationTags.PREVIOUS).assertIsNotEnabled()
     }
 
     fun navigationControlsAreVisible(): ImportGameScreenAssertions = apply {
-        rule.onNodeWithTag(ImportGameScreenTags.NAV_NEXT).assertIsDisplayed()
-        rule.onNodeWithTag(ImportGameScreenTags.NAV_PREVIOUS).assertIsDisplayed()
-        rule.onNodeWithTag(ImportGameScreenTags.NAV_JUMP_TO_START).assertIsDisplayed()
-        rule.onNodeWithTag(ImportGameScreenTags.NAV_JUMP_TO_END).assertIsDisplayed()
+        rule.onNodeWithTag(MoveNavigationTags.NEXT).assertIsDisplayed()
+        rule.onNodeWithTag(MoveNavigationTags.PREVIOUS).assertIsDisplayed()
+        rule.onNodeWithTag(MoveNavigationTags.JUMP_TO_START).assertIsDisplayed()
+        rule.onNodeWithTag(MoveNavigationTags.JUMP_TO_END).assertIsDisplayed()
     }
 }
