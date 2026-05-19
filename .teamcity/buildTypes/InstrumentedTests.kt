@@ -21,7 +21,7 @@ object InstrumentedTests : BuildType({
     params {
         param(
             "env.ANDROID_USER_HOME",
-            """C:\android-user-home""",
+            """%teamcity.build.checkoutDir%\.android""",
         )
     }
 
@@ -36,16 +36,10 @@ object InstrumentedTests : BuildType({
     }
 
     steps {
-        powerShell {
-            name = "Kill Stuck Emulators"
-            executionMode = BuildStep.ExecutionMode.ALWAYS
-            scriptMode = script {
-                content = """
-                    Stop-Process -Name "emulator" -Force -ErrorAction SilentlyContinue
-                    Stop-Process -Name "qemu-system-x86_64" -Force -ErrorAction SilentlyContinue
-                """.trimIndent()
-            }
-        }
+        // Startup clean - heal problems from previous builds
+        killEmulatorsAndDaemons("Kill Stuck Emulators - Startup")
+        clearLockFiles("Clear Leftover Lock Files - Startup")
+
         gradle {
             name = "Run Instrumented Tests"
             tasks = "instrumentedTestAllCi"
@@ -66,6 +60,11 @@ object InstrumentedTests : BuildType({
             executionMode = BuildStep.ExecutionMode.RUN_ON_FAILURE
             scriptContent = "powershell -NoProfile -ExecutionPolicy Bypass -File ci/archive-instrumented-reports.ps1"
         }
+
+        // Teardown preparation
+        killEmulatorsAndDaemons("Kill Stuck Emulators - Pre-Clean", BuildStep.ExecutionMode.ALWAYS)
+        clearLockFiles("Clear Leftover Lock Files - Pre-Clean", BuildStep.ExecutionMode.ALWAYS)
+
         gradle {
             name = "Clean Managed Devices"
             executionMode = BuildStep.ExecutionMode.ALWAYS

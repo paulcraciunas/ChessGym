@@ -1,11 +1,14 @@
 package buildTypes
 
 import jetbrains.buildServer.configs.kotlin.AbsoluteId
+import jetbrains.buildServer.configs.kotlin.BuildStep
+import jetbrains.buildServer.configs.kotlin.BuildSteps
 import jetbrains.buildServer.configs.kotlin.BuildType
 import jetbrains.buildServer.configs.kotlin.buildFeatures.PullRequests
 import jetbrains.buildServer.configs.kotlin.buildFeatures.commitStatusPublisher
 import jetbrains.buildServer.configs.kotlin.buildFeatures.pullRequests
 import jetbrains.buildServer.configs.kotlin.buildSteps.powerShell
+import jetbrains.buildServer.configs.kotlin.buildSteps.script
 import jetbrains.buildServer.configs.kotlin.triggers.vcs
 
 fun BuildType.applyCommonConfiguration() {
@@ -72,6 +75,39 @@ fun BuildType.decodeGoogleServicesJson() {
                     }
                 """.trimIndent()
             }
+        }
+    }
+}
+
+fun BuildSteps.killEmulatorsAndDaemons(stepName: String, mode: BuildStep.ExecutionMode = BuildStep.ExecutionMode.DEFAULT) {
+    powerShell {
+        name = stepName
+        executionMode = mode
+        scriptMode = script {
+            content = """
+                if (Test-Path .\gradlew.bat) { 
+                    ./gradlew.bat --stop
+                }
+                Get-Process -Name "emulator" -ErrorAction SilentlyContinue | Stop-Process -Force
+                Get-Process -Name "qemu-system-x86_64" -ErrorAction SilentlyContinue | Stop-Process -Force
+                ${'$'}LastExitCode = 0
+            """.trimIndent()
+        }
+    }
+}
+
+fun BuildSteps.clearLockFiles(stepName: String, mode: BuildStep.ExecutionMode = BuildStep.ExecutionMode.DEFAULT) {
+    powerShell {
+        name = stepName
+        executionMode = mode
+        scriptMode = script {
+            content = """
+                ${'$'}avdPath = "%env.ANDROID_USER_HOME%\avd"
+                if (Test-Path ${'$'}avdPath) {
+                    Get-ChildItem -Path ${'$'}avdPath -Filter "*.lock" -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force
+                }
+                ${'$'}LastExitCode = 0
+            """.trimIndent()
         }
     }
 }
