@@ -45,7 +45,6 @@ object InstrumentedTests : BuildType({
             tasks = "instrumentedTestAllCi"
             useGradleWrapper = true
             gradleParams = """
-                --no-daemon
                 --continue 
                 --build-cache 
                 --parallel
