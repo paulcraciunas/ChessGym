@@ -13,15 +13,6 @@ To apply the patch, change the buildType with id = 'InstrumentedTests'
 accordingly, and delete the patch script.
 */
 changeBuildType(RelativeId("InstrumentedTests")) {
-    params {
-        expect {
-            param("env.ANDROID_USER_HOME", """C:\android-user-home""")
-        }
-        update {
-            param("env.ANDROID_USER_HOME", """%teamcity.build.checkoutDir%\.android""")
-        }
-    }
-
     features {
         val feature1 = find<PullRequests> {
             pullRequests {
