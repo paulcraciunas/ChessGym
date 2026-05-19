@@ -15,9 +15,9 @@ class FakeAppSettingsRepository : AppSettingsRepository {
             maxPuzzleRating = 0,
             minPuzzleRating = 0,
             playSoundOnMove = true,
-            preferredTheme = AppSettings.Theme.Wood,
             lightMode = AppSettings.LightMode.System,
             autoPromote = true,
+            autoNextPuzzle = false,
             showBorders = true,
             enableVibrations = true,
             highlightLegalMoves = true,
@@ -48,16 +48,16 @@ class FakeAppSettingsRepository : AppSettingsRepository {
         _appSettings.value = _appSettings.value.copy(playSoundOnMove = enabled)
     }
 
-    override suspend fun updatePreferredTheme(theme: AppSettings.Theme) {
-        _appSettings.value = _appSettings.value.copy(preferredTheme = theme)
-    }
-
     override suspend fun updateLightMode(mode: AppSettings.LightMode) {
         _appSettings.value = _appSettings.value.copy(lightMode = mode)
     }
 
     override suspend fun updateAutoPromote(enabled: Boolean) {
         _appSettings.value = _appSettings.value.copy(autoPromote = enabled)
+    }
+
+    override suspend fun updateAutoNextPuzzle(enabled: Boolean) {
+        _appSettings.value = _appSettings.value.copy(autoNextPuzzle = enabled)
     }
 
     override suspend fun updateShowBorders(enabled: Boolean) {
@@ -105,9 +105,9 @@ class FakeAppSettingsRepository : AppSettingsRepository {
             maxPuzzleRating = 2500,
             minPuzzleRating = 400,
             playSoundOnMove = true,
-            preferredTheme = AppSettings.Theme.Wood,
             lightMode = AppSettings.LightMode.System,
             autoPromote = true,
+            autoNextPuzzle = false,
             showBorders = true,
             enableVibrations = true,
             highlightLegalMoves = true,

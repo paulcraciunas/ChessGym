@@ -33,9 +33,9 @@ class DataStoreAppSettingsRepository @Inject constructor(
     override suspend fun updateMaxPuzzleRating(maxRating: Int) = dataStore.update(PUZZLES_MAX_RATING, maxRating)
     override suspend fun updateMinPuzzleRating(minRating: Int) = dataStore.update(PUZZLES_MIN_RATING, minRating)
     override suspend fun updatePlaySoundOnMove(enabled: Boolean) = dataStore.update(PLAY_SOUND_ON_MOVE, enabled)
-    override suspend fun updatePreferredTheme(theme: AppSettings.Theme) = dataStore.update(PREFERRED_THEME, theme.name)
     override suspend fun updateLightMode(mode: AppSettings.LightMode) = dataStore.update(LIGHT_MODE, mode.name)
     override suspend fun updateAutoPromote(enabled: Boolean) = dataStore.update(AUTO_PROMOTE, enabled)
+    override suspend fun updateAutoNextPuzzle(enabled: Boolean) = dataStore.update(AUTO_NEXT_PUZZLE, enabled)
     override suspend fun updateShowBorders(enabled: Boolean) = dataStore.update(SHOW_BORDERS, enabled)
     override suspend fun updateEnableVibrations(enabled: Boolean) = dataStore.update(ENABLE_VIBRATIONS, enabled)
     override suspend fun updateHighlightLegalMoves(enabled: Boolean) = dataStore.update(HIGHLIGHT_LEGAL_MOVES, enabled)
@@ -50,9 +50,9 @@ class DataStoreAppSettingsRepository @Inject constructor(
             maxPuzzleRating = this[PUZZLES_MAX_RATING] ?: 0,
             minPuzzleRating = this[PUZZLES_MIN_RATING] ?: 0,
             playSoundOnMove = this[PLAY_SOUND_ON_MOVE] ?: true,
-            preferredTheme = this[PREFERRED_THEME].toEnumOrDefault(AppSettings.Theme.Wood),
             lightMode = this[LIGHT_MODE].toEnumOrDefault(AppSettings.LightMode.System),
             autoPromote = this[AUTO_PROMOTE] ?: true,
+            autoNextPuzzle = this[AUTO_NEXT_PUZZLE] ?: false,
             showBorders = this[SHOW_BORDERS] ?: true,
             enableVibrations = this[ENABLE_VIBRATIONS] ?: true,
             highlightLegalMoves = this[HIGHLIGHT_LEGAL_MOVES] ?: true,
@@ -68,9 +68,9 @@ class DataStoreAppSettingsRepository @Inject constructor(
         private val PUZZLES_MAX_RATING = intPreferencesKey("max_puzzle_rating")
         private val PUZZLES_MIN_RATING = intPreferencesKey("min_puzzle_rating")
         private val PLAY_SOUND_ON_MOVE = booleanPreferencesKey("play_sound_on_move")
-        private val PREFERRED_THEME = stringPreferencesKey("preferred_theme")
         private val LIGHT_MODE = stringPreferencesKey("light_mode")
         private val AUTO_PROMOTE = booleanPreferencesKey("auto_promote")
+        private val AUTO_NEXT_PUZZLE = booleanPreferencesKey("auto_next_puzzle")
         private val SHOW_BORDERS = booleanPreferencesKey("show_borders")
         private val ENABLE_VIBRATIONS = booleanPreferencesKey("enable_vibrations")
         private val HIGHLIGHT_LEGAL_MOVES = booleanPreferencesKey("highlight_legal_moves")
