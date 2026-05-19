@@ -34,11 +34,18 @@ object InstrumentedTests : BuildType({
     }
 
     steps {
+        script {
+            name = "Kill Stuck Emulators"
+            executionMode = BuildStep.ExecutionMode.ALWAYS
+            scriptContent = "powershell stop-process -name \"emulator\" -Force -ErrorAction SilentlyContinue\n" +
+                "stop-process -name \"qemu-system-x86_64\" -Force -ErrorAction SilentlyContinue"
+        }
         gradle {
             name = "Run Instrumented Tests"
             tasks = "instrumentedTestAllCi"
             useGradleWrapper = true
             gradleParams = """
+                --no-daemon
                 --continue 
                 --build-cache 
                 --parallel
