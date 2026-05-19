@@ -96,25 +96,31 @@ internal class MoveAdapterTest {
     }
 
     @Test
-    fun `GIVEN move with lowercase promotion WHEN parsing THEN throws exception`() {
+    fun `GIVEN move with lowercase promotion WHEN parsing THEN returns correct move with promotion`() {
         // Given
         val moveString = "e7e8q"
 
-        // When & Then
-        assertThrows<IllegalArgumentException> {
-            underTest.from(moveString)
-        }
+        // When
+        val result = underTest.from(moveString)
+
+        // Then
+        assertEquals(Locus.from("e7")!!, result.from)
+        assertEquals(Locus.from("e8")!!, result.to)
+        assertEquals(Piece.Queen, result.promotion)
     }
 
     @Test
-    fun `GIVEN move with lowercase knight promotion WHEN parsing THEN throws exception`() {
+    fun `GIVEN move with lowercase knight promotion WHEN parsing THEN returns correct move with promotion`() {
         // Given
         val moveString = "e7e8n"
 
-        // When & Then
-        assertThrows<IllegalArgumentException> {
-            underTest.from(moveString)
-        }
+        // When
+        val result = underTest.from(moveString)
+
+        // Then
+        assertEquals(Locus.from("e7")!!, result.from)
+        assertEquals(Locus.from("e8")!!, result.to)
+        assertEquals(Piece.Knight, result.promotion)
     }
 
     @Test

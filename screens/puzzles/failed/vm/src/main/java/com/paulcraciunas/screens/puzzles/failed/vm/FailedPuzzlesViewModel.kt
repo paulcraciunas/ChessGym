@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.paulcraciunas.domain.api.general.Timer
 import com.paulcraciunas.domain.api.puzzles.GetFailedPuzzles
 import com.paulcraciunas.domain.api.puzzles.GetPuzzleFen
+import com.paulcraciunas.domain.api.puzzles.PuzzleAnalysisData
 import com.paulcraciunas.domain.api.puzzles.OnFailedPuzzleComplete
 import com.paulcraciunas.game.logic.api.PuzzleInteractor
 import com.paulcraciunas.game.logic.api.board.Locus
@@ -33,8 +34,8 @@ class FailedPuzzlesViewModel @Inject constructor(
 ) : ViewModel(), FailedPuzzlesScreenInteractor {
     private val helper = PuzzleViewModelHelper(puzzleInteractor = puzzleInteractor)
 
-    private val _navigateToAnalysis = Channel<String>(Channel.BUFFERED)
-    val navigateToAnalysis: Flow<String> = _navigateToAnalysis.receiveAsFlow()
+    private val _navigateToAnalysis = Channel<PuzzleAnalysisData>(Channel.BUFFERED)
+    val navigateToAnalysis: Flow<PuzzleAnalysisData> = _navigateToAnalysis.receiveAsFlow()
 
     private val _uiState = MutableStateFlow<FailedPuzzlesUiState>(FailedPuzzlesUiState.Loading)
     val uiState: StateFlow<FailedPuzzlesUiState> = _uiState.asStateFlow()
@@ -101,7 +102,7 @@ class FailedPuzzlesViewModel @Inject constructor(
 
     override fun onAnalyzeFailedPuzzle(puzzleId: Int) {
         viewModelScope.launch {
-            getPuzzleFen(puzzleId)?.let { fen -> _navigateToAnalysis.send(fen) } ?: Timber.w("Failed to get puzzle fen")
+            getPuzzleFen(puzzleId)?.let { data -> _navigateToAnalysis.send(data) } ?: Timber.w("Failed to get puzzle fen")
         }
     }
 

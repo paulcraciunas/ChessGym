@@ -16,6 +16,7 @@ enum class Piece(private val algebraic: String, val code: Int) {
             else throw IllegalArgumentException("Wrong decimal value. Expecting [0 - 5]")
 
         fun fromAlgebraic(alg: String): Piece =
-            Piece.entries.find { it.alg() == alg } ?: throw IllegalArgumentException("Wrong algebraic value. Expecting [RBNQK ]")
+            Piece.entries.find { it.alg().equals(alg, ignoreCase = true) }
+                ?: throw IllegalArgumentException("Wrong algebraic value. Expecting [RBNQK ]")
     }
 }

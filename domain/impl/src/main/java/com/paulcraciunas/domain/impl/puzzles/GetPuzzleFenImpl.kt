@@ -1,6 +1,7 @@
 package com.paulcraciunas.domain.impl.puzzles
 
 import com.paulcraciunas.domain.api.puzzles.GetPuzzleFen
+import com.paulcraciunas.domain.api.puzzles.PuzzleAnalysisData
 import com.paulcraciunas.puzzles.api.PuzzleRepository
 import com.paulcraciunas.serializer.api.Serializer
 
@@ -9,12 +10,11 @@ class GetPuzzleFenImpl(
     private val fenSerializer: Serializer,
 ) : GetPuzzleFen {
 
-    override suspend fun invoke(puzzleId: Int): String? {
+    override suspend fun invoke(puzzleId: Int): PuzzleAnalysisData? {
         val puzzle = puzzleRepository.getById(puzzleId) ?: return null
-        // It's important to make the opponent move before we get the position for the player's move
         puzzle.start()
-        puzzle.playNextMove()
-        // Now we can serialize the position
-        return fenSerializer.of(puzzle)
+        val firstMove = puzzle.expectedMoves.firstOrNull() ?: return null
+        val fen = fenSerializer.of(puzzle)
+        return PuzzleAnalysisData(fen = fen, firstMove = firstMove)
     }
 }

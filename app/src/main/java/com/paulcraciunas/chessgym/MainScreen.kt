@@ -278,6 +278,7 @@ fun MainScreen(
                                 AnalysisBoard(
                                     tabNavController = navController,
                                     fen = route.fen,
+                                    firstMove = route.firstMove,
                                 )
                             }
                             animatedComposable<Screen.ImportGame> {

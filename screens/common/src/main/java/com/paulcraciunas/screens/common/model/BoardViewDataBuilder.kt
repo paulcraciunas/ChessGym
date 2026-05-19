@@ -1,5 +1,7 @@
 package com.paulcraciunas.screens.common.model
 
+import com.paulcraciunas.game.logic.api.Game
+import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File
@@ -11,17 +13,24 @@ class BoardViewDataBuilder {
     private val squares: Array<Array<SquareViewData>> = Array(Rank.entries.size) {
         Array(File.entries.size) { SquareViewData(piece = null) }
     }
-    private var _puzzle: Puzzle? = null
-    private val puzzle: Puzzle
-        get() = _puzzle!!
+    private var _boardData: BoardViewDataSource? = null
+    private val boardData: BoardViewDataSource
+        get() = _boardData!!
     private val availableMoves: MutableList<Locus> = mutableListOf()
     private var animatingPiece: AnimatingPiece? = null
 
     var selected: Locus? = null
         private set
 
+    fun isReady(): Boolean = _boardData != null
+
     fun load(puzzle: Puzzle) {
-        _puzzle = puzzle
+        _boardData = PuzzleBackedBoardViewDataSource(puzzle)
+        refresh()
+    }
+
+    fun load(game: Game) {
+        _boardData = GameBackedBoardViewDataSource(game)
         refresh()
     }
 
@@ -31,8 +40,10 @@ class BoardViewDataBuilder {
         availableMoves.clear()
         animatingPiece = null
         // update from the puzzle
-        loadBoard(puzzle.board)
-        withLastMove(puzzle.info.lastPly!!.from, puzzle.info.lastPly!!.to)
+        loadBoard(boardData.board)
+        boardData.lastPly()?.let {
+            withLastMove(it.from, it.to)
+        }
     }
 
     fun withAnimatingPiece(from: Locus, to: Locus): BoardViewDataBuilder = apply {
@@ -110,6 +121,21 @@ class BoardViewDataBuilder {
 
     companion object {
         fun fromBoard(board: IBoard): BoardViewData = BoardViewDataBuilder().loadBoard(board).build()
+    }
+
+    private interface BoardViewDataSource {
+        val board: IBoard
+        fun lastPly(): Ply?
+    }
+
+    private class PuzzleBackedBoardViewDataSource(val puzzle: Puzzle) : BoardViewDataSource{
+        override val board: IBoard = puzzle.board
+        override fun lastPly(): Ply? = puzzle.info.lastPly
+    }
+
+    private class GameBackedBoardViewDataSource(val game: Game) : BoardViewDataSource{
+        override val board: IBoard = game.board
+        override fun lastPly(): Ply? = game.info.lastPly
     }
 }
 

@@ -23,7 +23,7 @@ internal fun SetupContent(
     interactions: BlindModeScreenInteractor,
 ) {
     ChessBoard(
-        board = SampleBoardViewData.emptyBoardComposable(),
+        board = SampleBoardViewData.emptyBoard(),
         orientation = BoardOrientation.White,
         onClick = {},
         showBorders = showBorders,

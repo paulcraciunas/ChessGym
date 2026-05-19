@@ -6,6 +6,7 @@ import com.paulcraciunas.domain.api.general.CountdownTimer
 import com.paulcraciunas.domain.api.general.DefaultTimer
 import com.paulcraciunas.domain.api.puzzles.GetBufferedPuzzleSeries
 import com.paulcraciunas.domain.api.puzzles.GetPuzzleFen
+import com.paulcraciunas.domain.api.puzzles.PuzzleAnalysisData
 import com.paulcraciunas.domain.api.puzzles.OnPuzzleRushComplete
 import com.paulcraciunas.domain.api.puzzles.PuzzleRushResult
 import com.paulcraciunas.game.logic.api.PuzzleInteractor
@@ -41,8 +42,8 @@ class PuzzleRushViewModel @Inject constructor(
 ) : ViewModel(), PuzzleRushScreenInteractor {
     private val helper = PuzzleViewModelHelper(puzzleInteractor = puzzleInteractor)
 
-    private val _navigateToAnalysis = Channel<String>(Channel.BUFFERED)
-    val navigateToAnalysis: Flow<String> = _navigateToAnalysis.receiveAsFlow()
+    private val _navigateToAnalysis = Channel<PuzzleAnalysisData>(Channel.BUFFERED)
+    val navigateToAnalysis: Flow<PuzzleAnalysisData> = _navigateToAnalysis.receiveAsFlow()
 
     private val _gameState = MutableStateFlow<GameState>(GameState.Loading)
     val uiState: StateFlow<PuzzleRushUiState> = combine(
@@ -117,7 +118,7 @@ class PuzzleRushViewModel @Inject constructor(
 
     override fun onAnalyzeFailedPuzzle(puzzleId: Int) {
         viewModelScope.launch {
-            getPuzzleFen(puzzleId)?.let { fen -> _navigateToAnalysis.send(fen) } ?: Timber.w("Failed to get puzzle fen")
+            getPuzzleFen(puzzleId)?.let { data -> _navigateToAnalysis.send(data) } ?: Timber.w("Failed to get puzzle fen")
         }
     }
 

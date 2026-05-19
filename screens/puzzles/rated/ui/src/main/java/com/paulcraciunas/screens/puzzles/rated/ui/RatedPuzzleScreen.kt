@@ -190,7 +190,7 @@ private fun WhitePlayingPreview() {
                 data = PuzzleData(
                     rating = 1450,
                     player = Side.WHITE,
-                    boardData = SampleBoardViewData.startingBoardComposable(),
+                    boardData = SampleBoardViewData.startingBoard(),
                     captured = hashMapOf(
                         Side.WHITE to listOf(Piece.Pawn, Piece.Knight, Piece.Pawn),
                         Side.BLACK to listOf(Piece.Bishop, Piece.Pawn, Piece.Pawn, Piece.Rook)
@@ -217,7 +217,7 @@ private fun BlackPlayingPreview() {
                 data = PuzzleData(
                     rating = 1450,
                     player = Side.BLACK,
-                    boardData = SampleBoardViewData.startingBoardComposable(),
+                    boardData = SampleBoardViewData.startingBoard(),
                     captured = hashMapOf(
                         Side.WHITE to listOf(Piece.Pawn, Piece.Knight, Piece.Pawn),
                         Side.BLACK to listOf(Piece.Bishop, Piece.Pawn, Piece.Pawn, Piece.Rook)

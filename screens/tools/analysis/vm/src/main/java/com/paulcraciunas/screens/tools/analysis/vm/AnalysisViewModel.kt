@@ -4,11 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.paulcraciunas.domain.api.analysis.AnalyzePosition
 import com.paulcraciunas.game.engine.api.EngineLine
-import com.paulcraciunas.game.logic.api.Game
+import com.paulcraciunas.game.engine.api.Evaluation
+import com.paulcraciunas.game.logic.api.GameInteractor
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.screens.common.model.BoardViewDataBuilder
+import com.paulcraciunas.screens.common.model.GameData
+import com.paulcraciunas.screens.common.model.GameViewModelHelper
 import com.paulcraciunas.serializer.api.Serializer
 import com.paulcraciunas.serializer.di.SerializerFen
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,94 +32,129 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
-import kotlin.collections.mutableMapOf
-import kotlin.collections.set
 
 @HiltViewModel
 class AnalysisViewModel @Inject constructor(
     @param:SerializerFen private val fenSerializer: Serializer,
     private val analyzePosition: AnalyzePosition,
+    gameInteractor: GameInteractor,
 ) : ViewModel(), AnalysisScreenInteractor {
 
     private val _uiState = MutableStateFlow(AnalysisUiState())
     val uiState: StateFlow<AnalysisUiState> = _uiState.asStateFlow()
 
-    private var game: Game? = null
+    private val helper = GameViewModelHelper(gameInteractor)
+    private val moveHistory = AnalysisMoveHistory(fenSerializer)
     private var analysisJob: Job? = null
-    private var isFlipped: Boolean = false
+    private var navigationDebounceJob: Job? = null
     internal var enableThrottling: Boolean = true
 
     internal fun disableThrottling() {
         enableThrottling = false
     }
 
-    fun loadPosition(fen: String? = null) {
+    fun loadPosition(fen: String? = null, firstMove: String? = null) {
         val targetFen = fen ?: STARTING_FEN
-        try {
-            val importedGame = fenSerializer.from(targetFen)
-            if (importedGame.state == Game.GameState.Ready) {
-                importedGame.start()
+        if (firstMove != null) {
+            try {
+                val game = fenSerializer.from(targetFen)
+                moveHistory.initialize(targetFen)
+
+                helper.load(game = game, player = game.info.turn.other())
+                val gameData = helper.playMove(firstMove)
+                helper.lastMove()?.let { lastMove ->
+                    if (helper.isPromotion(firstMove) != null) {
+                        moveHistory.recordMove(lastMove.from, lastMove.to, helper.isPromotion(firstMove))
+                    } else {
+                        moveHistory.recordMove(lastMove.from, lastMove.to, null)
+                    }
+                }
+                beginGame(gameData)
+                return
+            } catch (e: Exception) {
+                Timber.w(e, "Failed to load FEN position: $fen")
             }
-            game = importedGame
-            _uiState.update {
-                it.copy(
-                    boardData = BoardViewDataBuilder.fromBoard(importedGame.board),
-                    playerSide = importedGame.info.turn,
-                    captured = HashMap<Side, List<Piece>>().apply {
-                        this[Side.WHITE] = emptyList()
-                        this[Side.BLACK] = emptyList()
-                    },
-                )
-            }
-            analyze(fen = targetFen, start = true)
-        } catch (e: Exception) {
-            Timber.w(e, "Failed to load FEN position: $fen")
         }
+
+        val game = fenSerializer.from(targetFen)
+        moveHistory.initialize(targetFen)
+        beginGame(helper.load(game = game, player = game.info.turn))
     }
 
     override fun onSquareClicked(locus: Locus) {
-        val currentGame = game ?: return
-        if (currentGame.state is Game.GameState.Finished) return
+        if (!helper.isReady()) {
+            loadPosition()
+        }
 
-        val currentState = _uiState.value
-        val currentlySelected = currentState.selectedSquare
-        if (currentlySelected != null) {
-            handleMoveAttempt(currentlySelected, locus, currentGame)
-        } else {
-            handleSelection(locus, currentGame)
+        if (!moveHistory.isAtLatestPosition) {
+            moveHistory.truncate()
+            val fen = moveHistory.fenAtIndex(moveHistory.currentIndex)
+            val game = fenSerializer.from(fen)
+            helper.load(game, game.info.turn)
+        }
+
+        val result = helper.handleSquareClick(locus)
+        applyGameData(result.data)
+
+        if (result.promotion != null) {
+            _uiState.update {
+                it.copy(
+                    pendingPromotion = PendingPromotion(
+                        from = result.moveFrom ?: locus,
+                        to = result.promotion!!.at,
+                    )
+                )
+            }
+            return
+        }
+
+        if (result.movePlayed && result.moveFrom != null) {
+            moveHistory.recordMove(result.moveFrom!!, locus, null)
+            updateNavigationState()
+            navigationDebounceJob?.cancel()
+            val currentFen = moveHistory.fenAtIndex(moveHistory.currentIndex)
+            val sideToMove = moveHistory.sideToMoveAt(moveHistory.currentIndex)
+            analyze(fen = currentFen, sideToMove = sideToMove)
         }
     }
 
     override fun onPromote(to: Piece) {
-        val currentGame = game ?: return
-        val currentState = _uiState.value
-        val pending = currentState.pendingPromotion ?: return
+        val pending = _uiState.value.pendingPromotion ?: return
+        val result = helper.promote(to, pending.to)
+        applyGameData(result.data)
+        _uiState.update { it.copy(pendingPromotion = null) }
 
-        val ply = currentGame.plies(pending.from).find { it.to == pending.to }
-        if (ply != null) {
-            ply.promote(to)
-            currentGame.play(ply)
-            onMoveCompleted(currentGame)
-        }
-        _uiState.value = _uiState.value.copy(
-            pendingPromotion = null,
-            selectedSquare = null,
-            legalMoves = emptyList(),
-        )
+        moveHistory.recordMove(pending.from, pending.to, to)
+        updateNavigationState()
+
+        navigationDebounceJob?.cancel()
+        val currentFen = moveHistory.fenAtIndex(moveHistory.currentIndex)
+        val sideToMove = moveHistory.sideToMoveAt(moveHistory.currentIndex)
+        analyze(fen = currentFen, sideToMove = sideToMove)
     }
 
-    override fun onFlipBoard() {
-        isFlipped = !isFlipped
-        val currentSide = _uiState.value.playerSide
-        _uiState.value = _uiState.value.copy(
-            playerSide = currentSide.other(),
-        )
+    override fun onJumpToStart() {
+        moveHistory.jumpToStart()
+        onNavigationChanged()
+    }
+
+    override fun onPreviousMove() {
+        moveHistory.previousMove()
+        onNavigationChanged()
+    }
+
+    override fun onNextMove() {
+        moveHistory.nextMove()
+        onNavigationChanged()
+    }
+
+    override fun onJumpToEnd() {
+        moveHistory.jumpToEnd()
+        onNavigationChanged()
     }
 
     override fun onCleared() {
         analysisJob?.cancel()
-        // Use GlobalScope or a dedicated long-lived scope for process cleanup
-        // to ensure the native engine process is actually killed.
         @OptIn(DelicateCoroutinesApi::class)
         GlobalScope.launch {
             withContext(NonCancellable) {
@@ -129,68 +166,53 @@ class AnalysisViewModel @Inject constructor(
         }
     }
 
-    private fun handleSelection(locus: Locus, currentGame: Game) {
-        val plies = currentGame.plies(locus)
-        if (plies.isEmpty()) {
-            _uiState.value = _uiState.value.copy(
-                selectedSquare = null,
-                legalMoves = emptyList(),
-            )
-        } else {
-            _uiState.value = _uiState.value.copy(
-                selectedSquare = locus,
-                legalMoves = plies.map { it.to },
+    private fun beginGame(gameData: GameData) {
+        applyGameData(gameData)
+        updateNavigationState()
+        val currentFen = moveHistory.fenAtIndex(moveHistory.currentIndex)
+        val sideToMove = moveHistory.sideToMoveAt(moveHistory.currentIndex)
+        analyze(fen = currentFen, sideToMove = sideToMove, start = true)
+    }
+
+    private fun onNavigationChanged() {
+        val fen = moveHistory.fenAtIndex(moveHistory.currentIndex)
+        val game = fenSerializer.from(fen)
+        val gameData = helper.load(game, game.info.turn)
+        applyGameData(gameData)
+        updateNavigationState()
+
+        val sideToMove = game.info.turn
+        debounceAnalysis(fen, sideToMove)
+    }
+
+    private fun applyGameData(data: GameData) {
+        _uiState.update {
+            it.copy(
+                boardData = data.boardData,
+                playerSide = data.player,
+                captured = data.captured,
             )
         }
     }
 
-    private fun handleMoveAttempt(from: Locus, to: Locus, currentGame: Game) {
-        val ply = currentGame.plies(from).find { it.to == to }
-        if (ply == null) {
-            handleSelection(to, currentGame)
-            return
-        }
-
-        if (ply.isPromotion()) {
-            _uiState.value = _uiState.value.copy(
-                pendingPromotion = PendingPromotion(from = from, to = to),
-                selectedSquare = null,
-                legalMoves = emptyList(),
+    private fun updateNavigationState() {
+        _uiState.update {
+            it.copy(
+                currentMoveIndex = moveHistory.currentIndex,
+                totalMoves = moveHistory.totalMoves,
             )
-            return
         }
-
-        currentGame.play(ply)
-        onMoveCompleted(currentGame)
     }
 
-    private fun onMoveCompleted(currentGame: Game) {
-        val capturedPieces = mutableMapOf<Side, MutableList<Piece>>().apply {
-            this[Side.WHITE] = mutableListOf()
-            this[Side.BLACK] = mutableListOf()
+    private fun debounceAnalysis(fen: String, sideToMove: Side) {
+        navigationDebounceJob?.cancel()
+        navigationDebounceJob = viewModelScope.launch {
+            kotlinx.coroutines.delay(NAVIGATION_DEBOUNCE_MS)
+            analyze(fen = fen, sideToMove = sideToMove)
         }
-        currentGame.history.forEach { ply ->
-            val captured = ply.captured()
-            if (captured != null) {
-                if (ply.turn == Side.WHITE) {
-                    capturedPieces[Side.BLACK]!!.add(captured)
-                } else {
-                    capturedPieces[Side.WHITE]!!.add(captured)
-                }
-            }
-        }
-
-        _uiState.value = _uiState.value.copy(
-            boardData = BoardViewDataBuilder.fromBoard(currentGame.board),
-            selectedSquare = null,
-            legalMoves = emptyList(),
-            captured = capturedPieces,
-        )
-
-        analyze(fen = fenSerializer.of(currentGame))
     }
 
-    private fun analyze(fen: String, start: Boolean = false) {
+    private fun analyze(fen: String, sideToMove: Side = Side.WHITE, start: Boolean = false) {
         val previousJob = analysisJob
         analysisJob = viewModelScope.launch {
             if (previousJob != null) {
@@ -224,13 +246,29 @@ class AnalysisViewModel @Inject constructor(
                 .collect { result ->
                     _uiState.update {
                         it.copy(
-                            evaluation = result.evaluation,
-                            engineLines = result.lines,
+                            evaluation = normalizeEvaluation(
+                                result.evaluation, sideToMove
+                            ),
+                            engineLines = result.lines.map { line ->
+                                line.copy(
+                                    evaluation = normalizeEvaluation(
+                                        line.evaluation, sideToMove
+                                    )
+                                )
+                            },
                             analysisDepth = result.depth,
                             topMoveArrow = extractTopMoveArrow(result.lines),
                         )
                     }
                 }
+        }
+    }
+
+    private fun normalizeEvaluation(evaluation: Evaluation, sideToMove: Side): Evaluation {
+        if (sideToMove == Side.WHITE) return evaluation
+        return when (evaluation) {
+            is Evaluation.Centipawns -> Evaluation.Centipawns(-evaluation.value)
+            is Evaluation.Mate -> Evaluation.Mate(-evaluation.movesToMate)
         }
     }
 
@@ -245,6 +283,7 @@ class AnalysisViewModel @Inject constructor(
 
     companion object {
         private const val ANALYSIS_SAMPLE_PERIOD_MS = 200L
+        private const val NAVIGATION_DEBOUNCE_MS = 300L
         internal const val STARTING_FEN =
             "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
     }

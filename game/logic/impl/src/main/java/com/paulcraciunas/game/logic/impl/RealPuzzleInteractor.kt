@@ -86,7 +86,7 @@ class RealPuzzleInteractor : PuzzleInteractor {
     }
 }
 
-private fun Piece.startingCount(): Int = when (this) {
+internal fun Piece.startingCount(): Int = when (this) {
     Piece.Pawn -> 8
     Piece.Knight -> 2
     Piece.Bishop -> 2

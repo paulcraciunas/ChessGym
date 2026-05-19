@@ -66,13 +66,14 @@ internal fun ChessClock(
 internal fun AnalysisBoard(
     tabNavController: NavHostController,
     fen: String?,
+    firstMove: String? = null,
 ) {
     val settings = LocalAppSettings.current
     val vm: AnalysisViewModel = hiltViewModel()
     val analysisState by vm.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        vm.loadPosition(fen)
+        vm.loadPosition(fen, firstMove)
     }
 
     AnalysisScreen(
