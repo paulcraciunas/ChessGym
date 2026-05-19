@@ -18,13 +18,6 @@ object InstrumentedTests : BuildType({
         instrumented-test-results.zip
     """.trimIndent()
 
-    params {
-        param(
-            "env.ANDROID_USER_HOME",
-            """%teamcity.build.checkoutDir%\.android""",
-        )
-    }
-
     applyCommonConfiguration()
 
     // Don't run tests if the basic build fails
