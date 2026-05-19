@@ -5,6 +5,7 @@ import jetbrains.buildServer.configs.kotlin.BuildType
 import jetbrains.buildServer.configs.kotlin.FailureAction
 import jetbrains.buildServer.configs.kotlin.buildSteps.gradle
 import jetbrains.buildServer.configs.kotlin.buildSteps.script
+import kotlin.text.trimIndent
 
 object InstrumentedTests : BuildType({
     id("InstrumentedTests")
@@ -34,11 +35,13 @@ object InstrumentedTests : BuildType({
     }
 
     steps {
-        script {
+        powerShell {
             name = "Kill Stuck Emulators"
             executionMode = BuildStep.ExecutionMode.ALWAYS
-            scriptContent = "powershell stop-process -name \"emulator\" -Force -ErrorAction SilentlyContinue\n" +
-                "stop-process -name \"qemu-system-x86_64\" -Force -ErrorAction SilentlyContinue"
+            scriptContent = """
+                Stop-Process -Name "emulator" -Force -ErrorAction SilentlyContinue
+                Stop-Process -Name "qemu-system-x86_64" -Force -ErrorAction SilentlyContinue
+            """.trimIndent()
         }
         gradle {
             name = "Run Instrumented Tests"
