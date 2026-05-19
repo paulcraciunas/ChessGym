@@ -38,10 +38,12 @@ object InstrumentedTests : BuildType({
         powerShell {
             name = "Kill Stuck Emulators"
             executionMode = BuildStep.ExecutionMode.ALWAYS
-            scriptContent = """
-                Stop-Process -Name "emulator" -Force -ErrorAction SilentlyContinue
-                Stop-Process -Name "qemu-system-x86_64" -Force -ErrorAction SilentlyContinue
-            """.trimIndent()
+            scriptMode = script {
+                content = """
+                    Stop-Process -Name "emulator" -Force -ErrorAction SilentlyContinue
+                    Stop-Process -Name "qemu-system-x86_64" -Force -ErrorAction SilentlyContinue
+                """.trimIndent()
+            }
         }
         gradle {
             name = "Run Instrumented Tests"
