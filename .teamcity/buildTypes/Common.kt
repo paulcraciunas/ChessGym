@@ -102,7 +102,7 @@ fun BuildSteps.clearLockFiles(stepName: String, mode: BuildStep.ExecutionMode = 
         executionMode = mode
         scriptMode = script {
             content = """
-                ${'$'}avdPath = "%env.ANDROID_USER_HOME%\avd"
+                ${'$'}avdPath = "${'$'}env.ANDROID_USER_HOME\avd"
                 if (Test-Path ${'$'}avdPath) {
                     Get-ChildItem -Path ${'$'}avdPath -Filter "*.lock" -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force
                 }
