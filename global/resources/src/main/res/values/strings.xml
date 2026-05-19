@@ -281,6 +281,7 @@
     <string name="puzzle_streak_title">Puzzle Streak - Rating: %1$d</string>
     <string name="puzzle_streak_ended">Streak Ended</string>
     <string name="puzzle_streak_new">New Streak</string>
+    <string name="puzzle_streak_next_puzzle">Next Puzzle</string>
     <string name="puzzle_streak_summary_title">Streak Complete</string>
     <string name="puzzle_streak_summary_puzzles_solved">Puzzles Solved</string>
     <string name="puzzle_white_to_move">White to move</string>
@@ -348,6 +349,8 @@
     <string name="settings_haptic_feedback_description">Vibrate on interactions</string>
     <string name="settings_auto_promote">Auto-promote</string>
     <string name="settings_auto_promote_description">Automatically promote pawns to queen</string>
+    <string name="settings_auto_next_puzzle">Auto-advance puzzle</string>
+    <string name="settings_auto_next_puzzle_description">Automatically load the next puzzle when you solve one in Puzzle Streak</string>
     <string name="settings_show_borders">Show borders</string>
     <string name="settings_show_borders_description">Display coordinates around the board</string>
     <string name="settings_highlight_legal_moves">Highlight legal moves</string>
