@@ -17,11 +17,5 @@ changeProject(DslContext.projectId) {
         update {
             password("env.GOOGLE_SERVICES_JSON", "credentialsJSON:0b91870b-dd45-4ddb-a2d0-59a51c3330fc", label = "google-services.json (base64)", display = ParameterDisplay.HIDDEN)
         }
-        expect {
-            param("env.ANDROID_USER_HOME", """C:\android-user-home""")
-        }
-        update {
-            param("env.ANDROID_USER_HOME", """%teamcity.build.checkoutDir%\.android""")
-        }
     }
 }
