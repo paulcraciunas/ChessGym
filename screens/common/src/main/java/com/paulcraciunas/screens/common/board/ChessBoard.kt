@@ -51,7 +51,7 @@ enum class BoardOrientation(val ranks: List<Rank>, val files: List<File>) {
     }
 }
 
-private const val ANIMATION_DURATION_MS = 200
+const val PIECE_MOVE_ANIMATION_DURATION_MS = 200
 
 @Composable
 fun ChessBoard(
@@ -177,7 +177,7 @@ private fun AnimatedPieceOverlay(
             animatedOffset.snapTo(fromOffset)
             animatedOffset.animateTo(
                 targetValue = toOffset,
-                animationSpec = tween(durationMillis = ANIMATION_DURATION_MS)
+                animationSpec = tween(durationMillis = PIECE_MOVE_ANIMATION_DURATION_MS)
             )
         }
     }
