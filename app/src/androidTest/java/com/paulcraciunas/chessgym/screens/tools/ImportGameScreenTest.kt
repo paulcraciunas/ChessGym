@@ -136,6 +136,23 @@ internal class ImportGameScreenTest : BaseUiTest() {
     }
 
     @Test
+    fun GIVEN_pgn_WHEN_navigating_back_and_forth_multiple_times_THEN_controls_remain_consistent() {
+        When.importGame.openPgnDialog()
+            .typeInDialog(SAMPLE_PGN)
+            .confirmImport()
+            .jumpToStart()
+            .jumpToEnd()
+            .previousMove()
+            .previousMove()
+            .nextMove()
+            .jumpToStart()
+
+        Then.importGame
+            .navigationPreviousIsDisabled()
+            .isDisplayed()
+    }
+
+    @Test
     fun GIVEN_light_mode_WHEN_navigated_to_import_game_THEN_shows_light_background() {
         Given.settings.lightMode()
 

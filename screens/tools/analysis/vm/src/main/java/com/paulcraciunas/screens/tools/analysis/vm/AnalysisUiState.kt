@@ -21,8 +21,8 @@ data class AnalysisUiState(
         this[Side.WHITE] = emptyList()
         this[Side.BLACK] = emptyList()
     },
-    val currentMoveIndex: Int = 0,
-    val totalMoves: Int = 0,
+    val canNavigateBack: Boolean = false,
+    val canNavigateForward: Boolean = false,
 )
 
 data class PendingPromotion(val from: Locus, val to: Locus)

@@ -19,6 +19,7 @@ sealed class FailedPuzzlesUiState {
         override val data: PuzzleData,
         override val progress: Progress,
         override val results: List<PuzzleResult>,
+        val isAnimating: Boolean = false,
         val promotion: PuzzleViewModelHelper.Promotion?,
     ) : BoardState()
 

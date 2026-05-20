@@ -2,6 +2,8 @@ package com.paulcraciunas.screens.puzzles.streak.ui
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
@@ -18,7 +20,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,16 +30,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.global.resources.R
-import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.AppBar
 import com.paulcraciunas.screens.common.FailedContent
 import com.paulcraciunas.screens.common.LoadingContent
-
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
 import com.paulcraciunas.screens.common.controls.CapturedPieces
 import com.paulcraciunas.screens.common.controls.DefaultPuzzleControls
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
+import com.paulcraciunas.screens.common.design.components.PrimaryButton
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.dialogs.AbandonConfirmationDialog
 import com.paulcraciunas.screens.common.dialogs.PromotionDialog
 import com.paulcraciunas.screens.common.model.PuzzleData
@@ -108,6 +109,8 @@ private fun PuzzleStreakContent(
 ) {
     val data = uiState.data
     val isShowingSolution = uiState is PuzzleStreakUiState.Playing && uiState.isShowingSolution
+    val isAwaitingNext = uiState is PuzzleStreakUiState.Playing && uiState.isAwaitingNextPuzzle
+    val isBoardInteractive = !isShowingSolution && !isAwaitingNext
     Column(
         modifier = modifier.fillMaxSize()
     ) {
@@ -119,7 +122,7 @@ private fun PuzzleStreakContent(
         ChessBoard(
             board = data.boardData,
             orientation = BoardOrientation.fromSide(data.player),
-            onClick = if (isShowingSolution) { _ -> } else interactions::onSquareClicked,
+            onClick = if (isBoardInteractive) interactions::onSquareClicked else { _ -> },
             showBorders = showBorders,
             highlightLegalMoves = highlightLegalMoves,
             enableAnimations = enableAnimations,
@@ -134,8 +137,12 @@ private fun PuzzleStreakContent(
         AnimatedContent(
             targetState = uiState is PuzzleStreakUiState.StreakEnded,
             transitionSpec = {
-                (slideInVertically { height -> height } + fadeIn())
-                    .togetherWith(slideOutVertically { height -> -height } + fadeOut())
+                if (enableAnimations) {
+                    (slideInVertically { height -> height } + fadeIn())
+                        .togetherWith(slideOutVertically { height -> -height } + fadeOut())
+                } else {
+                    EnterTransition.None togetherWith ExitTransition.None
+                }
             },
             label = "ControlsAnimation"
         ) { isEnded ->
@@ -146,14 +153,22 @@ private fun PuzzleStreakContent(
                     modifier = Modifier.fillMaxWidth(),
                 )
             } else if (uiState is PuzzleStreakUiState.Playing) {
-                DefaultPuzzleControls(
-                    hintEnabled = uiState.hintEnabled && !isShowingSolution,
-                    toMove = data.player,
-                    onHintRequested = interactions::onHintRequested,
-                    onAbandonRequested = interactions::onAbandon,
-                    modifier = Modifier.fillMaxWidth(),
-                    abandonEnabled = !isShowingSolution,
-                )
+                if (isAwaitingNext) {
+                    NextPuzzleControls(
+                        streakCount = uiState.streakCount,
+                        onNextPuzzle = interactions::onNextPuzzle,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                } else {
+                    DefaultPuzzleControls(
+                        hintEnabled = uiState.hintEnabled && !isShowingSolution,
+                        toMove = data.player,
+                        onHintRequested = interactions::onHintRequested,
+                        onAbandonRequested = interactions::onAbandon,
+                        modifier = Modifier.fillMaxWidth(),
+                        abandonEnabled = !isShowingSolution,
+                    )
+                }
             }
         }
 
@@ -180,6 +195,45 @@ private fun PuzzleStreakContent(
             )
         }
         ChessGymSpacer()
+    }
+}
+
+@Composable
+private fun NextPuzzleControls(
+    streakCount: Int,
+    onNextPuzzle: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier
+            .padding(horizontal = Design.dimensions.spacing.xxl, vertical = Design.dimensions.spacing.sm),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painter = painterResource(R.drawable.puzzle_streak_icon),
+                    contentDescription = null,
+                    tint = Design.colors.success,
+                    modifier = Modifier.size(Design.dimensions.sizes.icon)
+                )
+                ChessGymSpacer()
+                Text(
+                    text = streakCount.toString(),
+                    style = Design.typography.titleLarge,
+                    color = Design.colors.success,
+                )
+            }
+            PrimaryButton(
+                text = stringResource(R.string.puzzle_streak_next_puzzle),
+                onClick = onNextPuzzle,
+                modifier = Modifier.testTag { PuzzleStreakScreenTags.NEXT_PUZZLE },
+            )
+        }
     }
 }
 
@@ -236,6 +290,36 @@ private fun PlayingPreview() {
         )
     }
 }
+
+@Preview
+@Preview("Dark mode", uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun PuzzleEndedPreview() {
+    ChessGymTheme {
+        PuzzleStreakScreen(
+            uiState = PuzzleStreakUiState.Playing(
+                data = PuzzleData(
+                    rating = 650,
+                    player = Side.WHITE,
+                    boardData = SampleBoardViewData.startingBoard(),
+                    captured = hashMapOf(
+                        Side.WHITE to listOf(Piece.Pawn, Piece.Knight),
+                        Side.BLACK to listOf(Piece.Bishop, Piece.Pawn)
+                    ),
+                ),
+                streakCount = 12,
+                hintEnabled = true,
+                isAwaitingNextPuzzle = true,
+                showAbandonDialog = false,
+                promotion = null,
+            ),
+            showBorders = true,
+            highlightLegalMoves = true,
+            enableAnimations = true
+        )
+    }
+}
+
 
 @Preview
 @Preview("Dark mode", uiMode = UI_MODE_NIGHT_YES)

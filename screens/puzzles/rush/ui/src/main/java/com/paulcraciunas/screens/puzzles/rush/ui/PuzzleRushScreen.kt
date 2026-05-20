@@ -3,6 +3,8 @@ package com.paulcraciunas.screens.puzzles.rush.ui
 import android.annotation.SuppressLint
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
@@ -118,8 +120,12 @@ private fun PuzzleRushContent(
         AnimatedContent(
             targetState = uiState.results.size,
             transitionSpec = {
-                (slideInHorizontally { width -> width } + fadeIn())
-                    .togetherWith(slideOutHorizontally { width -> -width } + fadeOut())
+                if (enableAnimations) {
+                    (slideInHorizontally { width -> width } + fadeIn())
+                        .togetherWith(slideOutHorizontally { width -> -width } + fadeOut())
+                } else {
+                    EnterTransition.None togetherWith ExitTransition.None
+                }
             },
             label = "BoardTransition"
         ) { _ ->
@@ -137,7 +143,13 @@ private fun PuzzleRushContent(
         // Controls section with animation
         AnimatedContent(
             targetState = uiState,
-            transitionSpec = { fadeIn() togetherWith fadeOut() },
+            transitionSpec = {
+                if (enableAnimations) {
+                    fadeIn() togetherWith fadeOut()
+                } else {
+                    EnterTransition.None togetherWith ExitTransition.None
+                }
+            },
             label = "RushControlsAnimation"
         ) { state ->
             when (state) {

@@ -11,6 +11,12 @@ class SettingsSetup(private val repository: FakeAppSettingsRepository) {
         )
     }
 
+    fun autoNext(): SettingsSetup = apply {
+        repository.setAppSettings(
+            repository.getCurrentSettings().copy(autoNextPuzzle = true)
+        )
+    }
+
     fun noAnimations(): SettingsSetup = apply {
         repository.setAppSettings(
             repository.getCurrentSettings().copy(enableAnimations = false)

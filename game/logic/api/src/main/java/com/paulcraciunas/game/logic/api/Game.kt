@@ -13,6 +13,8 @@ interface Game {
     val board: IBoard
     val state: GameState
     val history: List<Ply>
+    val historySize: Int
+    val currentMoveIndex: Int
 
     fun start()
     fun plies(): List<Ply>
@@ -23,6 +25,13 @@ interface Game {
     fun play(from: Locus, to: Locus)
     fun resign()
     fun draw()
+
+    fun canUndo(): Boolean
+    fun undoLast()
+    fun undoAll()
+    fun canReplay(): Boolean
+    fun replayNext()
+    fun replayAll()
 
     sealed class GameState {
         data object Ready : GameState()

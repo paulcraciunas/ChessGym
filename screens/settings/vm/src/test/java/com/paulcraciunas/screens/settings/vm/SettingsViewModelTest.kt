@@ -48,6 +48,7 @@ internal class SettingsViewModelTest {
             assertFalse(state.isLoading)
             assertTrue(state.isHapticFeedbackEnabled)
             assertTrue(state.isAutoPromoteEnabled)
+            assertFalse(state.isAutoNextPuzzleEnabled)
             assertTrue(state.isShowBordersEnabled)
             assertTrue(state.isHighlightLegalMovesEnabled)
             assertTrue(state.isAnimationsEnabled)
@@ -135,6 +136,32 @@ internal class SettingsViewModelTest {
 
             assertTrue(underTest.uiState.value.isAutoPromoteEnabled)
             assertTrue(appSettingsRepository.getCurrentSettings().autoPromote)
+        }
+    }
+
+    @Nested
+    internal inner class AutoNextPuzzleToggle {
+        @Test
+        fun `GIVEN auto-next puzzle disabled WHEN toggled on THEN setting is updated`() = runTest {
+            createViewModel()
+
+            underTest.onAutoNextPuzzleToggled(true)
+            testDispatcher.scheduler.advanceUntilIdle()
+
+            assertTrue(underTest.uiState.value.isAutoNextPuzzleEnabled)
+            assertTrue(appSettingsRepository.getCurrentSettings().autoNextPuzzle)
+        }
+
+        @Test
+        fun `GIVEN auto-next puzzle enabled WHEN toggled off THEN setting is updated`() = runTest {
+            appSettingsRepository.updateAutoNextPuzzle(true)
+            createViewModel()
+
+            underTest.onAutoNextPuzzleToggled(false)
+            testDispatcher.scheduler.advanceUntilIdle()
+
+            assertFalse(underTest.uiState.value.isAutoNextPuzzleEnabled)
+            assertFalse(appSettingsRepository.getCurrentSettings().autoNextPuzzle)
         }
     }
 

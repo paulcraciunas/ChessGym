@@ -12,7 +12,7 @@ import com.paulcraciunas.game.logic.impl.plies.StandardPly
 
 internal data class MutableGameInfo(
     override var turn: Side = Side.WHITE,
-    override var lastPly: Ply? = null,
+    override var lastPly: Playable? = null,
     override var inCheckCount: CheckCount = CheckCount.None,
     override var whiteCastling: Set<CastleType> = CastleType.entries.toSet(),
     override var blackCastling: Set<CastleType> = CastleType.entries.toSet(),
@@ -31,6 +31,16 @@ internal data class MutableGameInfo(
         whiteCastling = updateCastling(Side.WHITE, ply)
         blackCastling = updateCastling(Side.BLACK, ply)
         plieClock = if (!ply.isPawnMoveOrCapture()) plieClock + 1 else 0
+    }
+
+    fun update(to: MutableGameInfo) {
+        moveIndex = to.moveIndex
+        turn = to.turn
+        lastPly = to.lastPly
+        inCheckCount = to.inCheckCount
+        whiteCastling = HashSet(to.whiteCastling)
+        blackCastling = HashSet(to.blackCastling)
+        plieClock = to.plieClock
     }
 
     private fun updateCastling(side: Side, ply: Ply): Set<CastleType> =

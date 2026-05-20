@@ -2,10 +2,13 @@ package com.paulcraciunas.chessgym.dsl.assertions
 
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsEnabled
+import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import com.paulcraciunas.screens.common.board.ChessBoardTags
+import com.paulcraciunas.screens.common.controls.MoveNavigationTags
 import com.paulcraciunas.screens.tools.analysis.ui.AnalysisScreenTags
 
 class AnalysisScreenAssertions(private val rule: ComposeTestRule) {
@@ -28,5 +31,21 @@ class AnalysisScreenAssertions(private val rule: ComposeTestRule) {
 
     fun doesNotShowBorders(): AnalysisScreenAssertions = apply {
         rule.onNodeWithTag(ChessBoardTags.BORDER).assertDoesNotExist()
+    }
+
+    fun navigationPreviousIsEnabled(): AnalysisScreenAssertions = apply {
+        rule.onNodeWithTag(MoveNavigationTags.PREVIOUS).assertIsEnabled()
+    }
+
+    fun navigationPreviousIsDisabled(): AnalysisScreenAssertions = apply {
+        rule.onNodeWithTag(MoveNavigationTags.PREVIOUS).assertIsNotEnabled()
+    }
+
+    fun navigationNextIsEnabled(): AnalysisScreenAssertions = apply {
+        rule.onNodeWithTag(MoveNavigationTags.NEXT).assertIsEnabled()
+    }
+
+    fun navigationNextIsDisabled(): AnalysisScreenAssertions = apply {
+        rule.onNodeWithTag(MoveNavigationTags.NEXT).assertIsNotEnabled()
     }
 }

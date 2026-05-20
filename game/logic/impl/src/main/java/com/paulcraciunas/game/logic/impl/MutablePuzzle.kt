@@ -90,5 +90,5 @@ internal class MutablePuzzle(
         }
     }
 
-    override fun savePly(playable: Playable) {}
+    override fun saveInfo() {}
 }

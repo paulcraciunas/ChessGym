@@ -31,6 +31,8 @@ class PuzzleViewModelHelper(
 ) {
     private val boardViewBuilder = BoardViewDataBuilder()
 
+    var autoPromote: Boolean = false
+
     val rating: Int
         get() = puzzleInteractor.rating
 
@@ -61,7 +63,14 @@ class PuzzleViewModelHelper(
             val current = boardViewBuilder.selected!!
             when {
                 current == selection || !puzzleInteractor.canPlay(current, selection) -> boardViewBuilder.clearSelection()
-                puzzleInteractor.canPromote(current, selection) -> promotionAt = selection
+                puzzleInteractor.canPromote(current, selection) -> {
+                    if (autoPromote) {
+                        puzzleInteractor.promote(current, selection, Piece.Queen)
+                        refreshBoardWithAnimation()
+                    } else {
+                        promotionAt = selection
+                    }
+                }
                 else -> {
                     puzzleInteractor.play(current, selection)
                     refreshBoardWithAnimation()

@@ -26,6 +26,7 @@ class SettingsViewModel @Inject constructor(
 
     override fun onHapticFeedbackToggled(isEnabled: Boolean) = update { updateEnableVibrations(isEnabled) }
     override fun onAutoPromoteToggled(isEnabled: Boolean) = update { updateAutoPromote(isEnabled) }
+    override fun onAutoNextPuzzleToggled(isEnabled: Boolean) = update { updateAutoNextPuzzle(isEnabled) }
     override fun onShowBordersToggled(isEnabled: Boolean) = update { updateShowBorders(isEnabled) }
     override fun onHighlightLegalMovesToggled(isEnabled: Boolean) = update { updateHighlightLegalMoves(isEnabled) }
     override fun onLightModeSelected(mode: AppSettings.LightMode) = update { updateLightMode(mode) }
@@ -41,6 +42,7 @@ class SettingsViewModel @Inject constructor(
     private fun mapToUiState(settings: AppSettings): SettingsUiState = SettingsUiState(
         isHapticFeedbackEnabled = settings.enableVibrations,
         isAutoPromoteEnabled = settings.autoPromote,
+        isAutoNextPuzzleEnabled = settings.autoNextPuzzle,
         isShowBordersEnabled = settings.showBorders,
         isHighlightLegalMovesEnabled = settings.highlightLegalMoves,
         lightMode = settings.lightMode,

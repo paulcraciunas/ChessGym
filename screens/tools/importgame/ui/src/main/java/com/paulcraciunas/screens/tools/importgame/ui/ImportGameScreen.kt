@@ -16,7 +16,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -69,13 +68,9 @@ fun ImportGameScreen(
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            val displayBoard = remember(uiState.boardData, uiState.selectedSquare, uiState.legalMoves) {
-                uiState.boardData.withMoveIndicators(uiState.selectedSquare, uiState.legalMoves)
-            }
-
             ChessBoard(
-                board = displayBoard,
-                orientation = BoardOrientation.fromSide(uiState.playerSide),
+                board = uiState.boardData,
+                orientation = BoardOrientation.fromSide(uiState.orientation),
                 onClick = if (uiState.isGameLoaded) interactions::onSquareClicked else { _ -> },
                 showBorders = showBorders,
                 highlightLegalMoves = highlightLegalMoves,

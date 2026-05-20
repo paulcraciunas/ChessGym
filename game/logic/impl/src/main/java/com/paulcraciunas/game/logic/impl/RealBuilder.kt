@@ -3,7 +3,6 @@ package com.paulcraciunas.game.logic.impl
 import com.paulcraciunas.game.logic.api.Builder
 import com.paulcraciunas.game.logic.api.CastleType
 import com.paulcraciunas.game.logic.api.Game
-import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.IBoard
@@ -12,6 +11,7 @@ import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.state.MetaData
 import com.paulcraciunas.game.logic.impl.board.Board
 import com.paulcraciunas.game.logic.impl.board.BoardFactory
+import com.paulcraciunas.game.logic.impl.plies.Playable
 import com.paulcraciunas.game.logic.impl.plies.PlyFactory
 import com.paulcraciunas.game.logic.impl.plies.StandardPly
 
@@ -22,7 +22,7 @@ internal class RealBuilder(private val plyFactory: PlyFactory) : Builder {
     private var moves: MutableList<String> = mutableListOf()
     private var metaData: MetaData = MetaData()
     private var turn: Side = Side.WHITE
-    private var lastPly: Ply? = null
+    private var lastPly: Playable? = null
     private var whiteCastling: Set<CastleType> = CastleType.entries.toSet()
     private var blackCastling: Set<CastleType> = CastleType.entries.toSet()
     private var plieClock: Int = 0

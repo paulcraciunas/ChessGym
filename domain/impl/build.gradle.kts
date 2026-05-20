@@ -11,6 +11,7 @@ dependencies {
     implementation(project(":settings:application:api"))
     implementation(project(":user:api"))
     implementation(project(":global:device:api"))
+    implementation(project(":global:qualifiers"))
     implementation(libs.javax.inject)
 
     testImplementation(project(":game:logic:impl"))

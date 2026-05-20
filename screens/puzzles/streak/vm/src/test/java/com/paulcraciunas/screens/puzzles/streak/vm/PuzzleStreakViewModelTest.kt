@@ -12,6 +12,7 @@ import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.game.logic.api.board.loc
 import com.paulcraciunas.game.logic.impl.RealGameFactory
+import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -36,6 +37,7 @@ internal class PuzzleStreakViewModelTest {
     private val onStreakPuzzleComplete = FakeOnStreakPuzzleComplete()
     private val onStreakComplete = FakeOnStreakComplete()
     private val timer = FakeTimer()
+    private val appSettingsRepository = FakeAppSettingsRepository()
 
     @BeforeEach
     fun setUp() {
@@ -121,6 +123,7 @@ internal class PuzzleStreakViewModelTest {
     @Test
     fun `GIVEN promotion move WHEN onSquareClicked THEN promotion chooser is shown`() = runTest {
         // Given
+        appSettingsRepository.updateAutoPromote(false)
         val underTest = buildVm(buildPromotionPuzzle())
         underTest.onSquareClicked("a7".loc())
 
@@ -138,6 +141,8 @@ internal class PuzzleStreakViewModelTest {
     @Test
     fun `GIVEN promotion wins WHEN promotion selected THEN move to next puzzle`() = runTest {
         // Given
+        appSettingsRepository.updateAutoPromote(false)
+        appSettingsRepository.updateAutoNextPuzzle(true)
         val underTest = buildVm(buildPromotionPuzzle())
         val nextPuzzle = buildStandardPuzzle(rating = 450)
         getStreakPuzzle.enqueue(GetStreakPuzzle.Data(nextPuzzle, currentStreakCount = 1))
@@ -172,6 +177,7 @@ internal class PuzzleStreakViewModelTest {
     @Test
     fun `GIVEN puzzle completed successfully WHEN move played THEN streak increments and next puzzle loads`() = runTest {
         // Given
+        appSettingsRepository.updateAutoNextPuzzle(true)
         val underTest = buildVm(buildOneMoveWinPuzzle())
         val nextPuzzle = buildStandardPuzzle(rating = 450)
         getStreakPuzzle.enqueue(GetStreakPuzzle.Data(nextPuzzle, currentStreakCount = 1))
@@ -261,6 +267,86 @@ internal class PuzzleStreakViewModelTest {
         assertFalse(endedStateAfter.showSummary)
     }
 
+    @Test
+    fun `GIVEN autoNextPuzzle disabled WHEN puzzle completed successfully THEN isAwaitingNextPuzzle is true`() = runTest {
+        // Given
+        appSettingsRepository.updateAutoNextPuzzle(false)
+        val underTest = buildVm(buildOneMoveWinPuzzle())
+
+        // When - play the winning move
+        underTest.onSquareClicked("e8".loc())
+        underTest.onSquareClicked("e1".loc())
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Then
+        val playingState = underTest.uiState.value as PuzzleStreakUiState.Playing
+        assertTrue(playingState.isAwaitingNextPuzzle)
+    }
+
+    @Test
+    fun `GIVEN isAwaitingNextPuzzle WHEN onNextPuzzle THEN loads next puzzle`() = runTest {
+        // Given
+        appSettingsRepository.updateAutoNextPuzzle(false)
+        val underTest = buildVm(buildOneMoveWinPuzzle())
+        val nextPuzzle = buildStandardPuzzle(rating = 500)
+        getStreakPuzzle.enqueue(GetStreakPuzzle.Data(nextPuzzle, currentStreakCount = 1))
+
+        underTest.onSquareClicked("e8".loc())
+        underTest.onSquareClicked("e1".loc())
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // When
+        underTest.onNextPuzzle()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Then
+        val playingState = underTest.uiState.value as PuzzleStreakUiState.Playing
+        assertEquals(1, playingState.streakCount)
+        assertEquals(500, playingState.data.rating)
+        assertFalse(playingState.isAwaitingNextPuzzle)
+    }
+
+    @Test
+    fun `GIVEN autoNextPuzzle enabled WHEN puzzle completed successfully THEN auto-advances to next puzzle`() = runTest {
+        // Given
+        appSettingsRepository.updateAutoNextPuzzle(true)
+        val underTest = buildVm(buildOneMoveWinPuzzle())
+        val nextPuzzle = buildStandardPuzzle(rating = 500)
+        getStreakPuzzle.enqueue(GetStreakPuzzle.Data(nextPuzzle, currentStreakCount = 1))
+
+        // When - play the winning move
+        underTest.onSquareClicked("e8".loc())
+        underTest.onSquareClicked("e1".loc())
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Then - should auto-advance without setting isAwaitingNextPuzzle
+        val playingState = underTest.uiState.value as PuzzleStreakUiState.Playing
+        assertFalse(playingState.isAwaitingNextPuzzle)
+        assertEquals(1, playingState.streakCount)
+        assertEquals(500, playingState.data.rating)
+    }
+
+    @Test
+    fun `GIVEN isAwaitingNextPuzzle WHEN onSquareClicked THEN interaction is blocked`() = runTest {
+        // Given
+        appSettingsRepository.updateAutoNextPuzzle(false)
+        val underTest = buildVm(buildOneMoveWinPuzzle())
+
+        underTest.onSquareClicked("e8".loc())
+        underTest.onSquareClicked("e1".loc())
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val stateBefore = underTest.uiState.value as PuzzleStreakUiState.Playing
+        assertTrue(stateBefore.isAwaitingNextPuzzle)
+
+        // When - try to interact
+        underTest.onSquareClicked("e7".loc())
+
+        // Then - state should not change
+        val stateAfter = underTest.uiState.value as PuzzleStreakUiState.Playing
+        assertTrue(stateAfter.isAwaitingNextPuzzle)
+    }
+
     private fun buildVm(
         withPuzzle: Puzzle,
         currentStreakCount: Int = 0
@@ -270,6 +356,7 @@ internal class PuzzleStreakViewModelTest {
             getStreakPuzzle = getStreakPuzzle,
             onStreakPuzzleComplete = onStreakPuzzleComplete,
             onStreakComplete = onStreakComplete,
+            appSettingsRepository = appSettingsRepository,
             timer = timer,
             puzzleInteractor = RealGameFactory().puzzleInteractor()
         )

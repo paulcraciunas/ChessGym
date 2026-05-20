@@ -112,6 +112,12 @@ private fun GeneralSection(
                 onChange = interactions::onAutoPromoteToggled,
             )
             ToggleRow(
+                title = stringResource(R.string.settings_auto_next_puzzle),
+                subtitle = stringResource(R.string.settings_auto_next_puzzle_description),
+                on = uiState.isAutoNextPuzzleEnabled,
+                onChange = interactions::onAutoNextPuzzleToggled,
+            )
+            ToggleRow(
                 title = stringResource(R.string.settings_show_borders),
                 subtitle = stringResource(R.string.settings_show_borders_description),
                 on = uiState.isShowBordersEnabled,
@@ -239,6 +245,7 @@ private fun SettingsScreenPreview() {
 private object PreviewInteractions : SettingsScreenInteractor {
     override fun onHapticFeedbackToggled(isEnabled: Boolean) {}
     override fun onAutoPromoteToggled(isEnabled: Boolean) {}
+    override fun onAutoNextPuzzleToggled(isEnabled: Boolean) {}
     override fun onShowBordersToggled(isEnabled: Boolean) {}
     override fun onHighlightLegalMovesToggled(isEnabled: Boolean) {}
     override fun onLightModeSelected(mode: AppSettings.LightMode) {}

@@ -95,7 +95,6 @@ internal abstract class DomainModule {
     abstract fun bindOnFailedPuzzleComplete(impl: OnFailedPuzzleCompleteImpl): OnFailedPuzzleComplete
 
     @Binds
-    @Singleton
     abstract fun bindGetPuzzleByRatingUseCase(impl: GetPuzzleByRatingImpl): GetPuzzleByRating
 
     @Binds

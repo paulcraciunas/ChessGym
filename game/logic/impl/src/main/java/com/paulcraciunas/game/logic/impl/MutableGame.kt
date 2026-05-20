@@ -24,11 +24,28 @@ internal class MutableGame(
     override val info: MutableGameInfo = MutableGameInfo(),
     override val board: Board = BoardFactory.defaultBoard(),
     override var state: Game.GameState = Game.GameState.Ready,
-    override val history: MutableList<Playable> = mutableListOf(),
     override val plyFactory: PlyFactory = PlyFactory(),
-    override val plies: MutableList<Playable> = mutableListOf()
+    override val plies: MutableList<Playable> = mutableListOf(),
+    private val fullHistory: MutableList<MutableGameInfo> = mutableListOf(),
 ) : Game, Executable() {
     constructor(board: Board, turn: Side) : this(board = board, info = MutableGameInfo(turn = turn))
+
+    override val history: List<Ply>
+        get() = fullHistory.drop(1).take(historyIndex).mapNotNull { it.lastPly }
+
+    override val historySize: Int
+        get() = fullHistory.size - 1
+
+    override val currentMoveIndex: Int
+        get() = historyIndex
+
+    private var historyIndex = 0
+
+    init {
+        if (fullHistory.isEmpty()) {
+            fullHistory.add(info.copy())
+        }
+    }
 
     override fun start() {
         assert(state == Game.GameState.Ready)
@@ -59,8 +76,70 @@ internal class MutableGame(
         }
     }
 
-    override fun savePly(playable: Playable) {
-        history.add(if (plyFactory.isCheck(playable, board)) CheckPly(playable) else playable)
+    override fun saveInfo() {
+        // Clear future history if we're not at the end
+        while (canReplay()) {
+            fullHistory.removeLastOrNull()
+        }
+
+        info.lastPly?.let {
+            info.lastPly = if (plyFactory.isCheck(it, board)) CheckPly(it) else it
+        }
+        fullHistory.add(info.copy())
+        historyIndex++
+    }
+
+    override fun canUndo(): Boolean = historyIndex > 0
+
+    override fun undoLast() {
+        assert(canUndo())
+        // If the game ended, we need to un-End it, otherwise attempting to play a move will throw an exception
+        if (state is Game.GameState.Finished) {
+            state = Game.GameState.InProgress
+        }
+
+        --historyIndex
+        info.lastPly?.undo(on = board)
+        info.update(to = fullHistory[historyIndex])
+        updateState()
+    }
+
+    override fun undoAll() {
+        if (!canUndo()) return
+
+        // If the game ended, we need to un-End it, otherwise attempting to play a move will throw an exception
+        if (state is Game.GameState.Finished) {
+            state = Game.GameState.InProgress
+        }
+
+        while (canUndo()) {
+            info.lastPly?.undo(on = board)
+            --historyIndex
+            info.update(to = fullHistory[historyIndex])
+        }
+        updateState()
+    }
+
+    override fun canReplay(): Boolean = historyIndex < fullHistory.size - 1
+
+    override fun replayNext() {
+        assert(canReplay())
+
+        ++historyIndex
+        info.update(to = fullHistory[historyIndex])
+        info.lastPly?.exec(on = board)
+        updateState()
+    }
+
+    override fun replayAll() {
+        if (!canReplay()) return
+
+        while (canReplay()) {
+            ++historyIndex
+            info.update(to = fullHistory[historyIndex])
+            info.lastPly?.exec(on = board)
+        }
+        updateState()
     }
 
     private fun finish(result: Result) {
