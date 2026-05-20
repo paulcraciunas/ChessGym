@@ -13,6 +13,7 @@ import com.paulcraciunas.screens.common.model.GameData
 import com.paulcraciunas.screens.common.model.GameViewModelHelper
 import com.paulcraciunas.serializer.api.Serializer
 import com.paulcraciunas.serializer.di.SerializerFen
+import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -37,6 +38,7 @@ import javax.inject.Inject
 class AnalysisViewModel @Inject constructor(
     @param:SerializerFen private val fenSerializer: Serializer,
     private val analyzePosition: AnalyzePosition,
+    private val appSettingsRepository: AppSettingsRepository,
     gameInteractor: GameInteractor,
 ) : ViewModel(), AnalysisScreenInteractor {
 
@@ -49,6 +51,18 @@ class AnalysisViewModel @Inject constructor(
     private var navigationDebounceJob: Job? = null
     internal var enableThrottling: Boolean = true
 
+    init {
+        observeSettings()
+    }
+
+    private fun observeSettings() {
+        viewModelScope.launch {
+            appSettingsRepository.appSettings.collect { settings ->
+                helper.autoPromote = settings.autoPromote
+            }
+        }
+    }
+
     internal fun disableThrottling() {
         enableThrottling = false
     }
@@ -58,16 +72,14 @@ class AnalysisViewModel @Inject constructor(
         if (firstMove != null) {
             try {
                 val game = fenSerializer.from(targetFen)
-                moveHistory.initialize(targetFen)
+                moveHistory.initialize(targetFen, game.info.turn)
 
                 helper.load(game = game, player = game.info.turn.other())
                 val gameData = helper.playMove(firstMove)
-                helper.lastMove()?.let { lastMove ->
-                    if (helper.isPromotion(firstMove) != null) {
-                        moveHistory.recordMove(lastMove.from, lastMove.to, helper.isPromotion(firstMove))
-                    } else {
-                        moveHistory.recordMove(lastMove.from, lastMove.to, null)
-                    }
+                if (helper.isPromotion(firstMove) != null) {
+                    moveHistory.recordMove(helper.game, helper.isPromotion(firstMove))
+                } else {
+                    moveHistory.recordMove(helper.game)
                 }
                 beginGame(gameData)
                 return
@@ -77,7 +89,7 @@ class AnalysisViewModel @Inject constructor(
         }
 
         val game = fenSerializer.from(targetFen)
-        moveHistory.initialize(targetFen)
+        moveHistory.initialize(targetFen, game.info.turn)
         beginGame(helper.load(game = game, player = game.info.turn))
     }
 
@@ -86,21 +98,20 @@ class AnalysisViewModel @Inject constructor(
             loadPosition()
         }
 
-        if (!moveHistory.isAtLatestPosition) {
+        if (!moveHistory.isAtEnd()) {
             moveHistory.truncate()
-            val fen = moveHistory.fenAtIndex(moveHistory.currentIndex)
-            val game = fenSerializer.from(fen)
+            val game = fenSerializer.from(moveHistory.currentFen())
             helper.load(game, game.info.turn)
         }
 
         val result = helper.handleSquareClick(locus)
         applyGameData(result.data)
 
-        if (result.promotion != null) {
+        if (result.promotion != null && result.moveFrom != null) {
             _uiState.update {
                 it.copy(
                     pendingPromotion = PendingPromotion(
-                        from = result.moveFrom ?: locus,
+                        from = result.moveFrom!!,
                         to = result.promotion!!.at,
                     )
                 )
@@ -109,12 +120,10 @@ class AnalysisViewModel @Inject constructor(
         }
 
         if (result.movePlayed && result.moveFrom != null) {
-            moveHistory.recordMove(result.moveFrom!!, locus, null)
+            moveHistory.recordMove(helper.game, result.autoPromotedTo)
             updateNavigationState()
             navigationDebounceJob?.cancel()
-            val currentFen = moveHistory.fenAtIndex(moveHistory.currentIndex)
-            val sideToMove = moveHistory.sideToMoveAt(moveHistory.currentIndex)
-            analyze(fen = currentFen, sideToMove = sideToMove)
+            analyze(fen = moveHistory.currentFen(), sideToMove = moveHistory.currentSide())
         }
     }
 
@@ -124,13 +133,11 @@ class AnalysisViewModel @Inject constructor(
         applyGameData(result.data)
         _uiState.update { it.copy(pendingPromotion = null) }
 
-        moveHistory.recordMove(pending.from, pending.to, to)
+        moveHistory.recordMove(helper.game, to)
         updateNavigationState()
 
         navigationDebounceJob?.cancel()
-        val currentFen = moveHistory.fenAtIndex(moveHistory.currentIndex)
-        val sideToMove = moveHistory.sideToMoveAt(moveHistory.currentIndex)
-        analyze(fen = currentFen, sideToMove = sideToMove)
+        analyze(fen = moveHistory.currentFen(), sideToMove = moveHistory.currentSide())
     }
 
     override fun onJumpToStart() {
@@ -169,13 +176,11 @@ class AnalysisViewModel @Inject constructor(
     private fun beginGame(gameData: GameData) {
         applyGameData(gameData)
         updateNavigationState()
-        val currentFen = moveHistory.fenAtIndex(moveHistory.currentIndex)
-        val sideToMove = moveHistory.sideToMoveAt(moveHistory.currentIndex)
-        analyze(fen = currentFen, sideToMove = sideToMove, start = true)
+        analyze(fen = moveHistory.currentFen(), sideToMove = moveHistory.currentSide())
     }
 
     private fun onNavigationChanged() {
-        val fen = moveHistory.fenAtIndex(moveHistory.currentIndex)
+        val fen = moveHistory.currentFen()
         val game = fenSerializer.from(fen)
         val gameData = helper.load(game, game.info.turn)
         applyGameData(gameData)
@@ -198,8 +203,8 @@ class AnalysisViewModel @Inject constructor(
     private fun updateNavigationState() {
         _uiState.update {
             it.copy(
-                currentMoveIndex = moveHistory.currentIndex,
-                totalMoves = moveHistory.totalMoves,
+                canNavigateForward = !moveHistory.isAtEnd(),
+                canNavigateBack = !moveHistory.isAtStart(),
             )
         }
     }

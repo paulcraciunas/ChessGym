@@ -5,13 +5,6 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.serializer.api.Serializer
-import timber.log.Timber
-
-internal data class RecordedMove(
-    val from: Locus,
-    val to: Locus,
-    val promotionPiece: Piece?,
-)
 
 /**
  * Manages move history and navigation for the analysis board.
@@ -20,22 +13,44 @@ internal data class RecordedMove(
 internal class AnalysisMoveHistory(
     private val fenSerializer: Serializer,
 ) {
-    private val moves: MutableList<RecordedMove> = mutableListOf()
+    private val records: MutableList<HistoryItem> = mutableListOf()
     private var initialFen: String = ""
+    private var initialPlayer: Side = Side.WHITE
 
     var currentIndex: Int = 0
         private set
-    val totalMoves: Int get() = moves.size
-    val isAtLatestPosition: Boolean get() = currentIndex >= totalMoves
 
-    fun initialize(fen: String) {
+    fun initialize(fen: String, player: Side) {
         reset()
         initialFen = fen
+        initialPlayer = player
     }
 
-    fun recordMove(from: Locus, to: Locus, promotionPiece: Piece?) {
-        moves.add(RecordedMove(from, to, promotionPiece))
-        currentIndex = totalMoves
+    fun size(): Int = records.size
+    fun isAtEnd(): Boolean = currentIndex == size()
+    fun isAtStart(): Boolean = currentIndex == 0
+
+    fun recordMove(game: Game, promotionPiece: Piece? = null) {
+        recordMove(
+            from = game.history.last().from,
+            to = game.history.last().to,
+            promotionPiece = promotionPiece,
+            resultFen = fenSerializer.of(game),
+            sideToMove = game.info.turn
+        )
+    }
+
+    fun recordMove(from: Locus, to: Locus, promotionPiece: Piece?, resultFen: String, sideToMove: Side) {
+        records.add(
+            HistoryItem(
+                from = from,
+                to = to,
+                promotion = promotionPiece,
+                resultFen = resultFen,
+                sideToMove = sideToMove
+            )
+        )
+        currentIndex = size()
     }
 
     fun jumpToStart() {
@@ -47,56 +62,41 @@ internal class AnalysisMoveHistory(
     }
 
     fun nextMove() {
-        if (currentIndex < totalMoves) currentIndex++
+        if (currentIndex < size()) currentIndex++
     }
 
     fun jumpToEnd() {
-        currentIndex = totalMoves
+        currentIndex = size()
     }
 
     /**
      * Truncates forward history at the current position.
      */
     fun truncate() {
-        val movesToKeep = moves.take(currentIndex)
-        moves.clear()
-        moves.addAll(movesToKeep)
+        val recordsToKeep = records.take(currentIndex)
+        records.clear()
+        records.addAll(recordsToKeep)
     }
 
-    fun reconstructAtCurrentIndex(): Game? = reconstructAtIndex(currentIndex)
-    fun reconstructAtIndex(index: Int): Game? {
-        return try {
-            val game = fenSerializer.from(initialFen)
-            if (game.state == Game.GameState.Ready) {
-                game.start()
-            }
-            val movesToReplay = moves.take(index)
-            for (move in movesToReplay) {
-                val ply = game.plies(move.from).first { it.to == move.to }
-                move.promotionPiece?.let { ply.promote(it) }
-                game.play(ply)
-            }
-            game
-        } catch (e: Exception) {
-            Timber.w(e, "Failed to reconstruct game for analysis at index $index")
-            null
-        }
-    }
+    fun currentFen(): String =
+        if (currentIndex == 0) initialFen
+        else records[currentIndex - 1].resultFen
 
-    fun sideToMoveAt(index: Int): Side {
-        val game = reconstructAtIndex(index) ?: return Side.WHITE
-        return game.info.turn
-    }
-
-    fun fenAtIndex(index: Int): String {
-        if (index == 0) return initialFen
-        val game = reconstructAtIndex(index) ?: return initialFen
-        return fenSerializer.of(game)
-    }
+    fun currentSide(): Side =
+        if (currentIndex == 0) initialPlayer
+        else records[currentIndex - 1].sideToMove
 
     private fun reset() {
-        moves.clear()
+        records.clear()
         currentIndex = 0
         initialFen = ""
     }
+
+    private data class HistoryItem(
+        val from: Locus,
+        val to: Locus,
+        val promotion: Piece?,
+        val resultFen: String,
+        val sideToMove: Side,
+    )
 }

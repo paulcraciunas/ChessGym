@@ -9,10 +9,12 @@ import com.paulcraciunas.game.engine.api.FakeChessEngine
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
+import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.game.logic.api.board.loc
 import com.paulcraciunas.game.logic.impl.RealGameFactory
 import com.paulcraciunas.serializer.impl.FenSerializer
+import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -21,7 +23,6 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -38,6 +39,7 @@ internal class AnalysisViewModelTest {
     private val fenSerializer = FenSerializer(gameFactory)
     private val fakeEngine = FakeChessEngine()
     private val fakeAnalyzePosition = FakeAnalyzePosition(fakeEngine)
+    private val appSettingsRepository = FakeAppSettingsRepository()
 
     private lateinit var underTest: AnalysisViewModel
 
@@ -49,6 +51,7 @@ internal class AnalysisViewModelTest {
         underTest = AnalysisViewModel(
             fenSerializer = fenSerializer,
             analyzePosition = fakeAnalyzePosition,
+            appSettingsRepository = appSettingsRepository,
             gameInteractor = gameFactory.gameInteractor(),
         ).also { it.disableThrottling() }
     }
@@ -71,8 +74,7 @@ internal class AnalysisViewModelTest {
         @Test
         fun `WHEN viewModel created THEN navigation state is at zero`() {
             val state = underTest.uiState.value
-            assertEquals(0, state.currentMoveIndex)
-            assertEquals(0, state.totalMoves)
+            state.assertCannotNavigate()
         }
     }
 
@@ -146,8 +148,8 @@ internal class AnalysisViewModelTest {
 
             val arrow = underTest.uiState.value.topMoveArrow
             assertNotNull(arrow)
-            assertEquals(Locus(File.e, Rank.`2`), arrow!!.from)
-            assertEquals(Locus(File.e, Rank.`4`), arrow.to)
+            assertEquals("e2".loc(), arrow!!.from)
+            assertEquals("e4".loc(), arrow.to)
         }
 
         @Test
@@ -156,8 +158,7 @@ internal class AnalysisViewModelTest {
             advanceUntilIdle()
 
             val state = underTest.uiState.value
-            assertEquals(0, state.currentMoveIndex)
-            assertEquals(0, state.totalMoves)
+            state.assertCannotNavigate()
         }
     }
 
@@ -169,8 +170,7 @@ internal class AnalysisViewModelTest {
             advanceUntilIdle()
 
             val state = underTest.uiState.value
-            assertEquals(1, state.currentMoveIndex)
-            assertEquals(1, state.totalMoves)
+            state.assertCanNavigateBack()
             // After e4, it's black's turn
             assertEquals(Side.BLACK, state.playerSide)
         }
@@ -270,7 +270,7 @@ internal class AnalysisViewModelTest {
             underTest.loadPosition()
             advanceUntilIdle()
 
-            underTest.onSquareClicked(Locus(File.e, Rank.`2`))
+            underTest.onSquareClicked("e2".loc())
 
             val state = underTest.uiState.value
             assertNotNull(state.boardData)
@@ -281,13 +281,11 @@ internal class AnalysisViewModelTest {
             underTest.loadPosition()
             advanceUntilIdle()
 
-            underTest.onSquareClicked(Locus(File.e, Rank.`2`))
-            underTest.onSquareClicked(Locus(File.e, Rank.`4`))
+            playMove("e2", "e4")
             advanceUntilIdle()
 
             val state = underTest.uiState.value
-            assertEquals(1, state.currentMoveIndex)
-            assertEquals(1, state.totalMoves)
+            state.assertCanNavigateBack()
         }
 
         @Test
@@ -323,8 +321,7 @@ internal class AnalysisViewModelTest {
             advanceUntilIdle()
             assertEquals(Evaluation.Centipawns(30), underTest.uiState.value.evaluation)
 
-            underTest.onSquareClicked(Locus(File.e, Rank.`2`))
-            underTest.onSquareClicked(Locus(File.e, Rank.`4`))
+            playMove("e2", "e4")
             advanceUntilIdle()
 
             val state = underTest.uiState.value
@@ -342,6 +339,110 @@ internal class AnalysisViewModelTest {
     }
 
     @Nested
+    internal inner class Promotion {
+        @Test
+        fun `GIVEN pawn on 7th rank WHEN promotion move clicked THEN pendingPromotion has correct from square`() = runTest {
+            val fen = PROMOTION_FEN
+            appSettingsRepository.updateAutoPromote(false)
+            advanceUntilIdle()
+
+            underTest.loadPosition(fen)
+            advanceUntilIdle()
+
+            playMove("e7", "e8")
+
+            val state = underTest.uiState.value
+            val pending = state.pendingPromotion
+            assertNotNull(pending)
+            assertEquals(Locus(File.e, Rank.`7`), pending!!.from)
+            assertEquals(Locus(File.e, Rank.`8`), pending.to)
+        }
+
+        @Test
+        fun `GIVEN pending promotion WHEN onPromote THEN move is recorded with correct from and piece`() = runTest {
+            val fen = PROMOTION_FEN
+            appSettingsRepository.updateAutoPromote(false)
+            advanceUntilIdle()
+
+            underTest.loadPosition(fen)
+            advanceUntilIdle()
+
+            playMove("e7", "e8")
+            assertNotNull(underTest.uiState.value.pendingPromotion)
+
+            underTest.onPromote(Piece.Queen)
+            advanceUntilIdle()
+
+            val state = underTest.uiState.value
+            assertNull(state.pendingPromotion)
+            state.assertCanNavigateBack()
+        }
+
+        @Test
+        fun `GIVEN pending promotion WHEN onPromote THEN navigating back and replaying succeeds`() = runTest {
+            appSettingsRepository.updateAutoPromote(false)
+            advanceUntilIdle()
+
+            underTest.loadPosition(PROMOTION_FEN)
+            advanceUntilIdle()
+
+            playMove("e7", "e8")
+            underTest.onPromote(Piece.Rook)
+            advanceUntilIdle()
+            underTest.uiState.value.assertCanNavigateBack()
+
+            underTest.onJumpToStart()
+            advanceUntilIdle()
+            underTest.uiState.value.assertCanNavigateForward()
+
+            // Navigate forward -- this would crash if from was incorrectly recorded
+            underTest.onNextMove()
+            advanceUntilIdle()
+            underTest.uiState.value.assertCanNavigateBack()
+        }
+
+        @Test
+        fun `GIVEN autoPromote enabled WHEN promotion move clicked THEN move is auto-promoted and recorded`() = runTest {
+            val fen = PROMOTION_FEN
+            appSettingsRepository.updateAutoPromote(true)
+            advanceUntilIdle()
+
+            underTest.loadPosition(fen)
+            advanceUntilIdle()
+
+            playMove("e7", "e8")
+            advanceUntilIdle()
+
+            val state = underTest.uiState.value
+            assertNull(state.pendingPromotion)
+            underTest.uiState.value.assertCanNavigateBack()
+        }
+
+        @Test
+        fun `GIVEN autoPromote enabled WHEN promotion move played THEN navigating back and replaying succeeds`() = runTest {
+            val fen = PROMOTION_FEN
+            appSettingsRepository.updateAutoPromote(true)
+            advanceUntilIdle()
+
+            underTest.loadPosition(fen)
+            advanceUntilIdle()
+
+            playMove("e7", "e8")
+            advanceUntilIdle()
+            underTest.uiState.value.assertCanNavigateBack()
+
+            underTest.onJumpToStart()
+            advanceUntilIdle()
+            underTest.uiState.value.assertCanNavigateForward()
+
+            // Navigate forward -- validates the recorded move can be replayed correctly
+            underTest.onNextMove()
+            advanceUntilIdle()
+            underTest.uiState.value.assertCanNavigateBack()
+        }
+    }
+
+    @Nested
     internal inner class Navigation {
         @Test
         fun `GIVEN moves played WHEN previousMove THEN shows previous position`() = runTest {
@@ -350,13 +451,11 @@ internal class AnalysisViewModelTest {
 
             playMove("e2", "e4")
             advanceUntilIdle()
-            assertEquals(1, underTest.uiState.value.currentMoveIndex)
+            underTest.uiState.value.assertCanNavigateBack()
 
             underTest.onPreviousMove()
             advanceUntilIdle()
-
-            assertEquals(0, underTest.uiState.value.currentMoveIndex)
-            assertEquals(1, underTest.uiState.value.totalMoves)
+            underTest.uiState.value.assertCanNavigateForward()
         }
 
         @Test
@@ -369,12 +468,11 @@ internal class AnalysisViewModelTest {
 
             underTest.onPreviousMove()
             advanceUntilIdle()
-            assertEquals(0, underTest.uiState.value.currentMoveIndex)
+            underTest.uiState.value.assertCanNavigateForward()
 
             underTest.onNextMove()
             advanceUntilIdle()
-
-            assertEquals(1, underTest.uiState.value.currentMoveIndex)
+            underTest.uiState.value.assertCanNavigateBack()
         }
 
         @Test
@@ -386,13 +484,11 @@ internal class AnalysisViewModelTest {
             advanceUntilIdle()
             playMove("e7", "e5")
             advanceUntilIdle()
-            assertEquals(2, underTest.uiState.value.currentMoveIndex)
+            underTest.uiState.value.assertCanNavigateBack()
 
             underTest.onJumpToStart()
             advanceUntilIdle()
-
-            assertEquals(0, underTest.uiState.value.currentMoveIndex)
-            assertEquals(2, underTest.uiState.value.totalMoves)
+            underTest.uiState.value.assertCanNavigateForward()
         }
 
         @Test
@@ -407,12 +503,11 @@ internal class AnalysisViewModelTest {
 
             underTest.onJumpToStart()
             advanceUntilIdle()
-            assertEquals(0, underTest.uiState.value.currentMoveIndex)
+            underTest.uiState.value.assertCanNavigateForward()
 
             underTest.onJumpToEnd()
             advanceUntilIdle()
-
-            assertEquals(2, underTest.uiState.value.currentMoveIndex)
+            underTest.uiState.value.assertCanNavigateBack()
         }
 
         @Test
@@ -424,23 +519,40 @@ internal class AnalysisViewModelTest {
             advanceUntilIdle()
             playMove("e7", "e5")
             advanceUntilIdle()
-            assertEquals(2, underTest.uiState.value.totalMoves)
+            underTest.uiState.value.assertCanNavigateBack()
 
             underTest.onJumpToStart()
             advanceUntilIdle()
 
             playMove("d2", "d4")
             advanceUntilIdle()
-
-            val state = underTest.uiState.value
-            assertEquals(1, state.currentMoveIndex)
-            assertEquals(1, state.totalMoves)
+            underTest.uiState.value.assertCanNavigateBack()
         }
     }
 
     private fun playMove(from: String, to: String) {
         underTest.onSquareClicked(from.loc())
         underTest.onSquareClicked(to.loc())
+    }
+
+    private fun AnalysisUiState.assertCannotNavigate() {
+        assertEquals(false, canNavigateBack)
+        assertEquals(false, canNavigateForward)
+    }
+
+    private fun AnalysisUiState.assertCanNavigateBack() {
+        assertEquals(true, canNavigateBack)
+        assertEquals(false, canNavigateForward)
+    }
+
+    private fun AnalysisUiState.assertCanNavigateForward() {
+        assertEquals(false, canNavigateBack)
+        assertEquals(true, canNavigateForward)
+    }
+
+    private companion object {
+        // White pawn on e7, e8 empty, black king on h8, white king on a1
+        const val PROMOTION_FEN = "7k/4P3/8/8/8/8/8/K7 w - - 0 1"
     }
 }
 

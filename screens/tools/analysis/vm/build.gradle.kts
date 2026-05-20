@@ -21,5 +21,6 @@ dependencies {
 
     testImplementation(project(":game:logic:impl"))
     testImplementation(project(":game:serializer:impl"))
+    testImplementation(testFixtures(project(":settings:application:api")))
     testImplementation(testFixtures(project(":game:engine:api")))
 }

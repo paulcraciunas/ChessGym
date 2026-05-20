@@ -101,8 +101,8 @@ fun AnalysisScreen(
             )
             Spacer(modifier = Modifier.height(Design.dimensions.spacing.sm))
             MoveNavigationControls(
-                canGoBack = uiState.currentMoveIndex > 0,
-                canGoForward = uiState.currentMoveIndex < uiState.totalMoves,
+                canGoBack = uiState.canNavigateBack,
+                canGoForward = uiState.canNavigateForward,
                 onJumpToStart = interactions::onJumpToStart,
                 onPreviousMove = interactions::onPreviousMove,
                 onNextMove = interactions::onNextMove,
@@ -165,8 +165,8 @@ private fun AnalysisScreenStartingPreview() {
                     Side.WHITE to listOf(Piece.Pawn, Piece.Knight, Piece.Pawn),
                     Side.BLACK to listOf(Piece.Bishop, Piece.Pawn, Piece.Pawn, Piece.Rook)
                 ),
-                currentMoveIndex = 5,
-                totalMoves = 10,
+                canNavigateBack = true,
+                canNavigateForward = false,
             ),
             showBorders = true,
             highlightLegalMoves = true,
@@ -186,7 +186,9 @@ private fun AnalysisScreenEmptyPreview() {
                 captured = hashMapOf(
                     Side.WHITE to emptyList(),
                     Side.BLACK to emptyList()
-                )
+                ),
+                canNavigateBack = true,
+                canNavigateForward = false,
             ),
             showBorders = false,
             highlightLegalMoves = true,
