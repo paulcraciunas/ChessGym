@@ -4,6 +4,7 @@ object PuzzleStreakScreenTags {
     private const val PREFIX = "puzzle_streak_"
     const val SCREEN = "${PREFIX}screen"
     const val STREAK_COUNTER = "${PREFIX}counter"
+    const val NEXT_PUZZLE = "${PREFIX}next_puzzle"
 
     object Summary {
         private const val SUMMARY = "${PREFIX}summary_"

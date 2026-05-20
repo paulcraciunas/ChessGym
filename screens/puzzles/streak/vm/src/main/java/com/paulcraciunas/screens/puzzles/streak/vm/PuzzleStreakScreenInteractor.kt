@@ -11,6 +11,7 @@ interface PuzzleStreakScreenInteractor {
     fun onAbandonConfirmed()
     fun onAbandonDismissed()
     fun onNewStreak()
+    fun onNextPuzzle()
     fun onDismissSummary()
 }
 
@@ -22,5 +23,6 @@ class StubPuzzleStreakScreenInteractor : PuzzleStreakScreenInteractor {
     override fun onAbandonConfirmed() {}
     override fun onAbandonDismissed() {}
     override fun onNewStreak() {}
+    override fun onNextPuzzle() {}
     override fun onDismissSummary() {}
 }

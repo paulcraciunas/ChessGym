@@ -17,6 +17,7 @@ sealed class PuzzleStreakUiState {
         val hintEnabled: Boolean = true,
         val showAbandonDialog: Boolean = false,
         val isShowingSolution: Boolean = false,
+        val isAwaitingNextPuzzle: Boolean = false,
         val promotion: PuzzleViewModelHelper.Promotion?,
     ) : BoardState()
 
