@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.paulcraciunas.game.logic.api.GameInteractor
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
+import com.paulcraciunas.screens.common.model.GameData
 import com.paulcraciunas.screens.common.model.GameViewModelHelper
 import com.paulcraciunas.serializer.api.SerializeException
 import com.paulcraciunas.serializer.api.Serializer
@@ -31,7 +32,6 @@ class ImportGameViewModel @Inject constructor(
     val uiState: StateFlow<ImportGameUiState> = _uiState.asStateFlow()
 
     private val helper = GameViewModelHelper(gameInteractor)
-    internal val moveHistory = MoveHistory(fenSerializer)
 
     init {
         observeSettings()
@@ -70,23 +70,18 @@ class ImportGameViewModel @Inject constructor(
 
         try {
             val importedGame = serializer.from(text)
-            helper.load(importedGame, importedGame.info.turn)
-
-            when (dialogType) {
-                ImportType.FEN -> moveHistory.initForFen(importedGame, text)
-                ImportType.PGN -> moveHistory.initForPgn(importedGame, text)
-            }
+            val gameData = helper.load(importedGame, importedGame.info.turn)
 
             _uiState.value = currentState.copy(
-                boardData = moveHistory.currentSnapshot,
+                boardData = gameData.boardData,
                 isGameLoaded = true,
                 importDialogType = null,
                 importError = null,
                 pendingPromotion = null,
                 orientation = importedGame.info.turn,
                 playerSide = importedGame.info.turn,
-                currentMoveIndex = moveHistory.currentIndex,
-                totalMoves = moveHistory.totalMoves,
+                currentMoveIndex = helper.game.currentMoveIndex,
+                totalMoves = helper.game.historySize,
                 importSource = dialogType,
             )
         } catch (e: SerializeException) {
@@ -110,54 +105,31 @@ class ImportGameViewModel @Inject constructor(
         if (currentState.importSource == ImportType.PGN) return
         if (!currentState.isGameLoaded) return
 
-        if (!moveHistory.isAtLatestPosition) {
-            val freshGame = moveHistory.truncateAndReconstruct()
-            helper.load(freshGame, freshGame.info.turn)
-            updateNavigationState()
-        }
-
         val result = helper.handleSquareClick(locus)
-        applyResult(result, destination = locus)
+        applyResult(result)
     }
 
     override fun onPromote(to: Piece) {
         val pending = _uiState.value.pendingPromotion ?: return
 
         val result = helper.promote(to, pending.to)
-        moveHistory.recordMoveFromHelper(pending.from, pending.to, to, result.data.boardData)
-
         _uiState.value = _uiState.value.copy(
             boardData = result.data.boardData,
             pendingPromotion = null,
             playerSide = result.data.player,
-            currentMoveIndex = moveHistory.currentIndex,
-            totalMoves = moveHistory.totalMoves,
+            currentMoveIndex = helper.game.currentMoveIndex,
+            totalMoves = helper.game.historySize,
         )
     }
 
-    override fun onJumpToStart() {
-        moveHistory.jumpToStart()
-        updateNavigationState()
-    }
+    override fun onJumpToStart() = navigate { helper.undoAll() }
+    override fun onPreviousMove() = navigate { helper.undoLast() }
+    override fun onNextMove() = navigate { helper.replayNext() }
+    override fun onJumpToEnd() = navigate { helper.replayAll() }
 
-    override fun onPreviousMove() {
-        moveHistory.previousMove()
-        updateNavigationState()
-    }
-
-    override fun onNextMove() {
-        moveHistory.nextMove()
-        updateNavigationState()
-    }
-
-    override fun onJumpToEnd() {
-        moveHistory.jumpToEnd()
-        updateNavigationState()
-    }
-
-    private fun applyResult(result: GameViewModelHelper.OnSquareClick, destination: Locus) {
-        val moveFrom = result.moveFrom
+    private fun applyResult(result: GameViewModelHelper.OnSquareClick) {
         val promotion = result.promotion
+        val moveFrom = result.moveFrom
         if (promotion != null && moveFrom != null) {
             _uiState.value = _uiState.value.copy(
                 boardData = result.data.boardData,
@@ -169,23 +141,20 @@ class ImportGameViewModel @Inject constructor(
             return
         }
 
-        if (result.movePlayed && moveFrom != null) {
-            moveHistory.recordMoveFromHelper(moveFrom, destination, result.autoPromotedTo, result.data.boardData)
-        }
-
         _uiState.value = _uiState.value.copy(
             boardData = result.data.boardData,
-            playerSide = if (result.movePlayed) result.data.player.other() else result.data.player,
-            currentMoveIndex = moveHistory.currentIndex,
-            totalMoves = moveHistory.totalMoves,
+            playerSide = result.data.player,
+            currentMoveIndex = helper.game.currentMoveIndex,
+            totalMoves = helper.game.historySize,
         )
     }
 
-    private fun updateNavigationState() {
+    private fun navigate(gameDataSource: () -> GameData) {
+        val data = gameDataSource()
         _uiState.value = _uiState.value.copy(
-            boardData = moveHistory.currentSnapshot,
-            currentMoveIndex = moveHistory.currentIndex,
-            totalMoves = moveHistory.totalMoves,
+            boardData = data.boardData,
+            currentMoveIndex = helper.game.currentMoveIndex,
+            totalMoves = helper.game.historySize,
         )
     }
 }

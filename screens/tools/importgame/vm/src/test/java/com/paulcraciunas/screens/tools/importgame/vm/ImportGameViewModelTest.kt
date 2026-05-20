@@ -346,26 +346,6 @@ internal class ImportGameViewModelTest {
         }
     }
 
-    @Nested
-    internal inner class MoveHistoryUnit {
-        @Test
-        fun `GIVEN MoveHistory WHEN initForPgn THEN has correct snapshot count`() = runTest {
-            importPgn("1.e4 e5 2.Nf3 Nc6 3.Bb5 a6")
-
-            assertEquals(6, underTest.moveHistory.totalMoves)
-            assertEquals(6, underTest.moveHistory.currentIndex)
-            assertFalse(underTest.moveHistory.isAtLatestPosition.not())
-        }
-
-        @Test
-        fun `GIVEN MoveHistory WHEN jumpToStart THEN index is zero`() = runTest {
-            importPgn("1.e4 e5")
-            underTest.moveHistory.jumpToStart()
-            assertEquals(0, underTest.moveHistory.currentIndex)
-            assertTrue(underTest.moveHistory.isAtLatestPosition.not())
-        }
-    }
-
     private fun importStartingPosition() {
         underTest.onFenClicked()
         underTest.onImport(STARTING_FEN)
