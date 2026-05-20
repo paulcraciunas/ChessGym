@@ -1,6 +1,7 @@
 package com.paulcraciunas.domain.api.puzzles
 
 import com.paulcraciunas.game.logic.api.Puzzle
+import kotlinx.coroutines.CoroutineScope
 
 /**
  * Provides puzzles one at a time, loading them in batches for efficiency.
@@ -26,7 +27,8 @@ interface GetBufferedPuzzleSeries {
      * @param ratingStart Starting rating for puzzles
      * @param increment Maximum rating increment between puzzles
      */
-    operator fun invoke(
+    fun start(
+        scope: CoroutineScope,
         batchSize: Int = BATCH_SIZE,
         ratingStart: Int = RATING_START,
         increment: Int = INCREMENT,
@@ -35,9 +37,9 @@ interface GetBufferedPuzzleSeries {
     /**
      * Returns the next puzzle, loading a new batch if needed.
      *
-     * @return The next puzzle, or null if no more puzzles are available
+     * @return The next puzzle, or throws exception if no more puzzles are available
      */
-    suspend fun next(): Puzzle?
+    suspend fun next(): Puzzle
 
     companion object Defaults {
         const val BATCH_SIZE = 10

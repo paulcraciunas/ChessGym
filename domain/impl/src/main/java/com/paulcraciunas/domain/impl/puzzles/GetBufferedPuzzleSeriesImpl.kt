@@ -1,56 +1,65 @@
 package com.paulcraciunas.domain.impl.puzzles
 
+import com.paulcraciunas.domain.api.general.RandomFactory
 import com.paulcraciunas.domain.api.puzzles.GetBufferedPuzzleSeries
 import com.paulcraciunas.domain.api.puzzles.GetPuzzleByRating
-import com.paulcraciunas.domain.api.general.RandomFactory
 import com.paulcraciunas.game.logic.api.Puzzle
-import java.util.ArrayDeque
-import java.util.Deque
+import com.paulcraciunas.global.qualifiers.IoDispatcher
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.coroutines.cancellation.CancellationException
 
 /**
  * Implementation of [GetBufferedPuzzleSeries] that loads puzzles in batches.
  *
  * Puzzles are loaded with increasing ratings, similar to [GetPuzzleSeriesImpl],
  * but in smaller batches for memory efficiency.
+ *
+ * Note: Both [start] and [next] must be called from the same logical thread (Main).
  */
 class GetBufferedPuzzleSeriesImpl @Inject constructor(
     private val getPuzzleByRating: GetPuzzleByRating,
     private val randomFactory: RandomFactory,
+    @param:IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : GetBufferedPuzzleSeries {
+    private var puzzleChannel = Channel<Puzzle>(capacity = 10).apply { close() }
+    private var producerJob: Job? = null
 
-    private val buffer: Deque<Puzzle> = ArrayDeque()
+    override fun start(scope: CoroutineScope, batchSize: Int, ratingStart: Int, increment: Int) {
+        producerJob?.cancel()
+        puzzleChannel.close()
+        puzzleChannel = Channel(capacity = batchSize)
 
-    private var batchSize = GetBufferedPuzzleSeries.BATCH_SIZE
-    private var increment = GetBufferedPuzzleSeries.INCREMENT
-    private var currentRating = GetBufferedPuzzleSeries.RATING_START
-    private var exhausted = false
-
-    override operator fun invoke(batchSize: Int, ratingStart: Int, increment: Int) {
-        buffer.clear()
-        this.batchSize = batchSize
-        this.currentRating = ratingStart
-        this.increment = increment
-        this.exhausted = false
-    }
-
-    override suspend fun next(): Puzzle? {
-        if (buffer.isEmpty() && !exhausted) {
-            loadNextBatch()
-        }
-        return buffer.pollFirst()
-    }
-
-    private suspend fun loadNextBatch() {
-        repeat(batchSize) {
-            try {
-                val puzzle = getPuzzleByRating(currentRating)
-                buffer.addLast(puzzle)
-                currentRating += randomFactory.nextInt(1, increment)
-            } catch (_: Exception) {
-                exhausted = true
-                return
+        producerJob = scope.launch(ioDispatcher) {
+            var currentRating = ratingStart
+            var consecutiveFailures = 0
+            while (isActive) {
+                try {
+                    val puzzle = getPuzzleByRating(currentRating)
+                    puzzleChannel.send(puzzle)
+                    currentRating += randomFactory.nextInt(1, increment + 1)
+                    consecutiveFailures = 0
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: Exception) {
+                    consecutiveFailures++
+                    if (consecutiveFailures >= MAX_CONSECUTIVE_FAILURES) {
+                        puzzleChannel.close(e)
+                        return@launch
+                    }
+                }
             }
         }
+    }
+
+    override suspend fun next(): Puzzle = puzzleChannel.receive()
+
+    companion object {
+        private const val MAX_CONSECUTIVE_FAILURES = 3
     }
 }
