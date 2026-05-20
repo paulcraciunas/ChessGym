@@ -193,6 +193,39 @@ internal class PuzzleViewModelHelperTest {
         }
 
         @Test
+        fun `GIVEN autoPromote enabled WHEN pawn reaches back rank THEN promotes to queen directly`() {
+            // Given
+            underTest.autoPromote = true
+            underTest.load(buildPromotionPuzzle())
+            underTest.handleSquareClick("a7".loc())
+
+            // When
+            val result = underTest.handleSquareClick("a8".loc())
+
+            // Then
+            assertNull(result.promotion)
+            val queenSquare = result.data.boardData.at(Rank.`8`, File.a)
+            assertNotNull(queenSquare.piece)
+            assertEquals(Piece.Queen, queenSquare.piece?.piece)
+            assertEquals(Side.WHITE, queenSquare.piece?.side)
+        }
+
+        @Test
+        fun `GIVEN autoPromote disabled WHEN pawn reaches back rank THEN shows promotion chooser`() {
+            // Given
+            underTest.autoPromote = false
+            underTest.load(buildPromotionPuzzle())
+            underTest.handleSquareClick("a7".loc())
+
+            // When
+            val result = underTest.handleSquareClick("a8".loc())
+
+            // Then
+            assertNotNull(result.promotion)
+            assertTrue(result.promotion!!.showChooser)
+        }
+
+        @Test
         fun `GIVEN no selection WHEN clicking empty square THEN nothing is selected`() {
             // Given
             underTest.load(buildStandardPuzzle())

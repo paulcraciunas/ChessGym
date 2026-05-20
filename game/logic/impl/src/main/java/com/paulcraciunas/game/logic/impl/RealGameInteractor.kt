@@ -15,7 +15,7 @@ class RealGameInteractor : GameInteractor {
     }
     private var _game: Game? = null
     private var _player: Side? = null
-    private val game: Game
+    override val game: Game
         get() = _game!!
     override var captured = _captured
     override val rating: Int?
@@ -30,7 +30,9 @@ class RealGameInteractor : GameInteractor {
         _game = game
         _player = player
 
-        game.start()
+        if (game.state == Game.GameState.Ready) {
+            game.start()
+        }
         updateCaptured()
     }
 

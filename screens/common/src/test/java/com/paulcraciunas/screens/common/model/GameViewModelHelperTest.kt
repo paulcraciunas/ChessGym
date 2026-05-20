@@ -266,6 +266,45 @@ internal class GameViewModelHelperTest {
             assertNotNull(result.promotion)
             assertTrue(result.promotion!!.showChooser)
             assertEquals(Locus(File.a, Rank.`8`), result.promotion.at)
+            assertEquals("a7".loc(), result.moveFrom)
+        }
+
+        @Test
+        fun `GIVEN autoPromote enabled WHEN pawn reaches back rank THEN promotes to queen directly`() {
+            // Given
+            underTest.autoPromote = true
+            underTest.load(buildPromotionGame(), Side.WHITE)
+            underTest.handleSquareClick("a7".loc())
+
+            // When
+            val result = underTest.handleSquareClick("a8".loc())
+
+            // Then
+            assertNull(result.promotion)
+            assertTrue(result.movePlayed)
+            assertEquals("a7".loc(), result.moveFrom)
+            assertEquals(Piece.Queen, result.autoPromotedTo)
+            val queenSquare = result.data.boardData.at(Rank.`8`, File.a)
+            assertNotNull(queenSquare.piece)
+            assertEquals(Piece.Queen, queenSquare.piece?.piece)
+            assertEquals(Side.WHITE, queenSquare.piece?.side)
+        }
+
+        @Test
+        fun `GIVEN autoPromote disabled WHEN pawn reaches back rank THEN shows promotion chooser`() {
+            // Given
+            underTest.autoPromote = false
+            underTest.load(buildPromotionGame(), Side.WHITE)
+            underTest.handleSquareClick("a7".loc())
+
+            // When
+            val result = underTest.handleSquareClick("a8".loc())
+
+            // Then
+            assertNotNull(result.promotion)
+            assertTrue(result.promotion!!.showChooser)
+            assertNull(result.autoPromotedTo)
+            assertEquals("a7".loc(), result.moveFrom)
         }
 
         @Test

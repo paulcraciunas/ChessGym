@@ -2,7 +2,6 @@ package com.paulcraciunas.screens.common.model
 
 import com.paulcraciunas.game.logic.api.Game
 import com.paulcraciunas.game.logic.api.GameInteractor
-import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
@@ -12,11 +11,16 @@ class GameViewModelHelper(
 ) {
     private val boardViewBuilder = BoardViewDataBuilder()
 
+    var autoPromote: Boolean = false
+
     val rating: Int?
         get() = gameInteractor.rating
 
     val player: Side
         get() = gameInteractor.player
+
+    val game: Game
+        get() = gameInteractor.game
 
     fun load(game: Game, player: Side): GameData {
         gameInteractor.load(game, player)
@@ -38,11 +42,23 @@ class GameViewModelHelper(
         var promotionAt: Locus? = null
         var movePlayed = false
         var moveFrom: Locus? = null
+        var autoPromotedTo: Piece? = null
         if (boardViewBuilder.selected != null) {
             val current = boardViewBuilder.selected!!
             when {
                 current == selection || !gameInteractor.canPlay(current, selection) -> boardViewBuilder.clearSelection()
-                gameInteractor.canPromote(current, selection) -> promotionAt = selection
+                gameInteractor.canPromote(current, selection) -> {
+                    if (autoPromote) {
+                        moveFrom = current
+                        gameInteractor.promote(current, selection, Piece.Queen)
+                        refreshBoardWithAnimation()
+                        movePlayed = true
+                        autoPromotedTo = Piece.Queen
+                    } else {
+                        moveFrom = current
+                        promotionAt = selection
+                    }
+                }
                 else -> {
                     moveFrom = current
                     gameInteractor.play(current, selection)
@@ -62,6 +78,7 @@ class GameViewModelHelper(
             isOver = gameInteractor.isOver(),
             movePlayed = movePlayed,
             moveFrom = moveFrom,
+            autoPromotedTo = autoPromotedTo,
         )
     }
 
@@ -92,7 +109,6 @@ class GameViewModelHelper(
         refreshBoardWithAnimation()
         return buildPuzzleData()
     }
-    fun lastMove(): Ply? = gameInteractor.lastPly
 
     fun resign() {
         gameInteractor.resign()
@@ -111,6 +127,7 @@ class GameViewModelHelper(
         val isOver: Boolean,
         val movePlayed: Boolean = false,
         val moveFrom: Locus? = null,
+        val autoPromotedTo: Piece? = null,
     )
 
     data class Promotion(
