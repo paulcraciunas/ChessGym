@@ -3,6 +3,8 @@ package com.paulcraciunas.screens.puzzles.failed.ui
 import android.annotation.SuppressLint
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
@@ -131,8 +133,12 @@ private fun FailedPuzzlesContent(
         AnimatedContent(
             targetState = uiState.results.size,
             transitionSpec = {
-                (slideInHorizontally { width -> width } + fadeIn())
-                    .togetherWith(slideOutHorizontally { width -> -width } + fadeOut())
+                if (enableAnimations) {
+                    (slideInHorizontally { width -> width } + fadeIn())
+                        .togetherWith(slideOutHorizontally { width -> -width } + fadeOut())
+                } else {
+                    EnterTransition.None togetherWith ExitTransition.None
+                }
             },
             label = "BoardTransition"
         ) { _ ->

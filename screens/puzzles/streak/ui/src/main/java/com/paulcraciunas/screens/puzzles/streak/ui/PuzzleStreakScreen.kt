@@ -2,6 +2,8 @@ package com.paulcraciunas.screens.puzzles.streak.ui
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
@@ -135,8 +137,12 @@ private fun PuzzleStreakContent(
         AnimatedContent(
             targetState = uiState is PuzzleStreakUiState.StreakEnded,
             transitionSpec = {
-                (slideInVertically { height -> height } + fadeIn())
-                    .togetherWith(slideOutVertically { height -> -height } + fadeOut())
+                if (enableAnimations) {
+                    (slideInVertically { height -> height } + fadeIn())
+                        .togetherWith(slideOutVertically { height -> -height } + fadeOut())
+                } else {
+                    EnterTransition.None togetherWith ExitTransition.None
+                }
             },
             label = "ControlsAnimation"
         ) { isEnded ->
