@@ -16,21 +16,21 @@ internal abstract class Executable {
 
     abstract fun isRunning(): Boolean
     abstract fun recomputeState()
-    abstract fun savePly(playable: Playable)
+    abstract fun saveInfo()
 
     fun execute(ply: Ply) {
         assert(plies.contains(ply))
-        val playable = plies.find { it == ply }!!
+        val playable = plies.find { it.from == ply.from && it.to == ply.to }!!
 
         // Execute and keep track
         playable.resolve(plies.filter { it.piece == ply.piece && it.to == ply.to }
             .disambiguate())
         playable.exec(board)
-        savePly(playable)
         PlayedMovesLog.record(playable.algebraic())
 
         // Update state
         info.update(playable, checkCount = checkCount(info.turn.other()))
+        saveInfo()
         updateState()
     }
 
