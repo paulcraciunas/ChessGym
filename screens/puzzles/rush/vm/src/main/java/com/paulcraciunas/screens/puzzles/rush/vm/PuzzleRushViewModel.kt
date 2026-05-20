@@ -52,7 +52,7 @@ class PuzzleRushViewModel @Inject constructor(
     private val _navigateToAnalysis = Channel<PuzzleAnalysisData>(Channel.BUFFERED)
     val navigateToAnalysis: Flow<PuzzleAnalysisData> = _navigateToAnalysis.receiveAsFlow()
 
-    private var highScore: Int = 0
+    private var currentHighScore: Int = 0
     private var timerObserverJob: Job? = null
     private val _gameState = MutableStateFlow<GameState>(GameState.Loading)
     val uiState: StateFlow<PuzzleRushUiState> = combine(
@@ -76,7 +76,6 @@ class PuzzleRushViewModel @Inject constructor(
             appSettingsRepository.appSettings.collect { settings ->
                 helper.autoPromote = settings.autoPromote
             }
-            highScore = userRepository.get().highScores.puzzleRush
         }
     }
 
@@ -95,6 +94,7 @@ class PuzzleRushViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 puzzleSeries.start(this@launch)
+                currentHighScore = userRepository.get().highScores.puzzleRush
                 val puzzle = puzzleSeries.next()
                 countdownTimer.set(durationSeconds = DURATION_SECONDS)
                 val puzzleData = helper.load(puzzle)
@@ -221,7 +221,7 @@ class PuzzleRushViewModel @Inject constructor(
                 puzzleData = state.puzzleData,
                 results = results,
                 showSummaryDialog = true,
-                isNewHighScore = puzzlesSolved > highScore,
+                isNewHighScore = puzzlesSolved > currentHighScore,
             )
         }
     }
