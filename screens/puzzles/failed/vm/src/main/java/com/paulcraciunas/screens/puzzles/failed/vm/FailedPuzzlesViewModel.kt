@@ -37,6 +37,7 @@ class FailedPuzzlesViewModel @Inject constructor(
     puzzleInteractor: PuzzleInteractor,
 ) : ViewModel(), FailedPuzzlesScreenInteractor {
     private val helper = PuzzleViewModelHelper(puzzleInteractor = puzzleInteractor)
+    private var enableAnimations: Boolean = true
 
     private val _navigateToAnalysis = Channel<PuzzleAnalysisData>(Channel.BUFFERED)
     val navigateToAnalysis: Flow<PuzzleAnalysisData> = _navigateToAnalysis.receiveAsFlow()
@@ -55,6 +56,7 @@ class FailedPuzzlesViewModel @Inject constructor(
         viewModelScope.launch {
             appSettingsRepository.appSettings.collect { settings ->
                 helper.autoPromote = settings.autoPromote
+                enableAnimations = settings.enableAnimations
             }
         }
     }
@@ -96,11 +98,11 @@ class FailedPuzzlesViewModel @Inject constructor(
         }
     }
 
-    override fun onSquareClicked(selection: Locus) = whilePlaying { _ ->
+    override fun onSquareClicked(selection: Locus) = whilePlayingInteractive { _ ->
         handleMoveResult(helper.handleSquareClick(selection))
     }
 
-    override fun onPromote(to: Piece) = whilePlaying { state->
+    override fun onPromote(to: Piece) = whilePlayingInteractive { state ->
         state.promotion?.let {
             handleMoveResult(helper.promote(to, state.promotion.at))
         }
@@ -123,11 +125,11 @@ class FailedPuzzlesViewModel @Inject constructor(
         when {
             result.promotion != null -> _uiState.value = state.copy(promotion = result.promotion)
             !result.isOver -> _uiState.value = state.copy(data = helper.buildPuzzleData(), promotion = null)
-            else -> handlePuzzleOver(result.isSuccess)
+            else -> onPuzzleCompleted(result.isSuccess)
         }
     }
 
-    private fun handlePuzzleOver(isSuccess: Boolean) = whilePlaying { state ->
+    private fun onPuzzleCompleted(isSuccess: Boolean) = whilePlaying { state ->
         val timeSpent = timer.elapsed()
         val updatedResults = state.results + PuzzleResult(
             id = helper.id,
@@ -145,10 +147,13 @@ class FailedPuzzlesViewModel @Inject constructor(
         _uiState.value = state.copy(
             data = helper.buildPuzzleData(),
             promotion = null,
+            isAnimating = true,
         )
 
         viewModelScope.launch {
-            delay(ANIMATION_WAIT_MS)
+            if (enableAnimations) {
+                delay(ANIMATION_WAIT_MS)
+            }
 
             val nextPuzzle = getFailedPuzzles.next()
             if (nextPuzzle != null) {
@@ -183,6 +188,12 @@ class FailedPuzzlesViewModel @Inject constructor(
     private fun whilePlaying(block: (FailedPuzzlesUiState.Playing) -> Unit) {
         val state = _uiState.value
         if (state !is FailedPuzzlesUiState.Playing) return
+        block(state)
+    }
+
+    private fun whilePlayingInteractive(block: (FailedPuzzlesUiState.Playing) -> Unit) {
+        val state = _uiState.value
+        if (state !is FailedPuzzlesUiState.Playing || state.isAnimating) return
         block(state)
     }
 }

@@ -33,6 +33,7 @@ class PuzzleStreakViewModel @Inject constructor(
     puzzleInteractor: PuzzleInteractor,
 ) : ViewModel(), PuzzleStreakScreenInteractor {
     private val helper = PuzzleViewModelHelper(puzzleInteractor = puzzleInteractor)
+    private var enableAnimations: Boolean = true
 
     private val _uiState = MutableStateFlow<PuzzleStreakUiState>(PuzzleStreakUiState.Loading)
     val uiState: StateFlow<PuzzleStreakUiState> = _uiState.asStateFlow()
@@ -46,6 +47,7 @@ class PuzzleStreakViewModel @Inject constructor(
         viewModelScope.launch {
             appSettingsRepository.appSettings.collect { settings ->
                 helper.autoPromote = settings.autoPromote
+                enableAnimations = settings.enableAnimations
             }
         }
     }
@@ -132,7 +134,7 @@ class PuzzleStreakViewModel @Inject constructor(
         when {
             result.promotion != null -> _uiState.value = state.copy(promotion = result.promotion)
             !result.isOver -> _uiState.value = state.copy(data = helper.buildPuzzleData(), promotion = null)
-            else -> handlePuzzleOver(result.isSuccess)
+            else -> onPuzzleCompleted(result.isSuccess)
         }
     }
 
@@ -144,15 +146,19 @@ class PuzzleStreakViewModel @Inject constructor(
         }
     }
 
-    private fun handlePuzzleOver(isSuccess: Boolean) = whilePlaying { state ->
-        viewModelScope.launch {
-            if (isSuccess) {
-                _uiState.value = state.copy(
-                    data = helper.buildPuzzleData(),
-                    promotion = null,
-                )
-                delay(ANIMATION_WAIT_MS)
+    private fun onPuzzleCompleted(isSuccess: Boolean) = whilePlaying { state ->
+        _uiState.value = state.copy(
+            data = helper.buildPuzzleData(),
+            promotion = null,
+            isAnimating = true,
+        )
 
+        viewModelScope.launch {
+            if (enableAnimations) {
+                delay(ANIMATION_WAIT_MS)
+            }
+
+            if (isSuccess) {
                 val timeSpent = timer.elapsed()
                 onStreakPuzzleComplete(timeSpent)
 
@@ -160,15 +166,13 @@ class PuzzleStreakViewModel @Inject constructor(
                     goToNext()
                 } else {
                     whilePlaying { current ->
-                        _uiState.value = current.copy(isAwaitingNextPuzzle = true)
+                        _uiState.value = current.copy(
+                            isAwaitingNextPuzzle = true,
+                            isAnimating = false,
+                        )
                     }
                 }
             } else {
-                _uiState.value = state.copy(
-                    data = helper.buildPuzzleData(),
-                    promotion = null,
-                )
-                delay(ANIMATION_WAIT_MS)
                 endStreak()
             }
         }
@@ -215,10 +219,10 @@ class PuzzleStreakViewModel @Inject constructor(
         block(state)
     }
 
-    /** Same as [whilePlaying] but also blocks interaction while showing solution or awaiting next */
+    /** Same as [whilePlaying] but also blocks interaction while showing solution, awaiting next, or animating */
     private fun whilePlayingInteractive(block: (PuzzleStreakUiState.Playing) -> Unit) {
         val state = _uiState.value
-        if (state !is PuzzleStreakUiState.Playing || state.isShowingSolution || state.isAwaitingNextPuzzle) return
+        if (state !is PuzzleStreakUiState.Playing || state.isShowingSolution || state.isAwaitingNextPuzzle || state.isAnimating) return
         block(state)
     }
 

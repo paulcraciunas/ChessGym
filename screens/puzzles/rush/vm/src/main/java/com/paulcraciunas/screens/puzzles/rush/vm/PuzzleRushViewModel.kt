@@ -151,33 +151,34 @@ class PuzzleRushViewModel @Inject constructor(
     }
 
     private fun handleMoveResult(result: OnSquareClick) {
+        if (result.isOver) {
+            onPuzzleCompleted(result)
+            return
+        }
         _gameState.update { state ->
             if (state !is GameState.Playing) return@update state
-
             when {
                 result.promotion != null -> state.copy(promotion = result.promotion)
-                !result.isOver -> state.copy(
-                    puzzleData = result.data,
-                    promotion = null,
-                )
-                else -> {
-                    advanceAfterAnimation(result.isSuccess)
-                    state.copy(
-                        puzzleData = result.data,
-                        promotion = null,
-                        isAnimating = true,
-                        results = state.results + PuzzleResult(
-                            id = helper.id,
-                            rating = helper.rating,
-                            success = result.isSuccess,
-                        ),
-                    )
-                }
+                else -> state.copy(puzzleData = result.data, promotion = null)
             }
         }
     }
 
-    private fun advanceAfterAnimation(isSuccess: Boolean) {
+    private fun onPuzzleCompleted(result: OnSquareClick) {
+        _gameState.update { state ->
+            if (state !is GameState.Playing) return@update state
+            state.copy(
+                puzzleData = result.data,
+                promotion = null,
+                isAnimating = true,
+                results = state.results + PuzzleResult(
+                    id = helper.id,
+                    rating = helper.rating,
+                    success = result.isSuccess,
+                ),
+            )
+        }
+
         viewModelScope.launch {
             if (enableAnimations) {
                 delay(ANIMATION_WAIT_MS)
@@ -185,13 +186,12 @@ class PuzzleRushViewModel @Inject constructor(
 
             val currentState = _gameState.value as? GameState.Playing ?: return@launch
 
-            if (!isSuccess) {
+            if (!result.isSuccess) {
                 finishRush(currentState.results)
                 return@launch
             }
             try {
-                val nextPuzzle = puzzleSeries.next()
-                val nextData = helper.load(nextPuzzle)
+                val nextData = helper.load(puzzleSeries.next())
                 _gameState.update { state ->
                     if (state is GameState.Playing) {
                         state.copy(puzzleData = nextData, isAnimating = false)
