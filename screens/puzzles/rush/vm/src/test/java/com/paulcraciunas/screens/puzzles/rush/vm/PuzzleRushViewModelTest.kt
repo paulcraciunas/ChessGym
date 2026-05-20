@@ -9,7 +9,9 @@ import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.loc
 import com.paulcraciunas.game.logic.impl.RealGameFactory
+import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
 import com.paulcraciunas.user.api.FakeUserRepository
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -34,6 +36,7 @@ internal class PuzzleRushViewModelTest {
     private val countdownTimer = FakeCountdownTimer()
     private val userRepository = FakeUserRepository()
     private val getPuzzleFen = FakeGetPuzzleFen()
+    private val appSettingsRepository = FakeAppSettingsRepository()
 
     @BeforeEach
     fun setUp() {
@@ -232,6 +235,35 @@ internal class PuzzleRushViewModelTest {
     }
 
     @Test
+    fun `GIVEN puzzle solved WHEN timer expires during animation THEN solve is credited`() = runTest {
+        // Given
+        puzzleSeries.enqueue(buildStandardPuzzle())
+        puzzleSeries.enqueue(buildStandardPuzzle(rating = 1250))
+        val underTest = buildVm()
+
+        // Start the rush
+        underTest.onSquareClicked("e7".loc())
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Make correct moves to complete puzzle
+        underTest.onSquareClicked("e5".loc())
+        testDispatcher.scheduler.advanceUntilIdle()
+        underTest.onSquareClicked("b8".loc())
+        underTest.onSquareClicked("c6".loc())
+        // Don't advance -- simulating the animation delay period
+
+        // Timer expires during animation
+        countdownTimer.advanceUntilIdle()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Then - the solve should be credited even though timer expired during animation
+        assertTrue(underTest.uiState.value is PuzzleRushUiState.Finished)
+        val finished = underTest.uiState.value as PuzzleRushUiState.Finished
+        assertEquals(1, finished.results.size)
+        assertTrue(finished.results.first().success)
+    }
+
+    @Test
     fun `GIVEN no selection WHEN onSquareClicked THEN selection and moves are marked`() = runTest {
         // Given
         puzzleSeries.enqueue(buildStandardPuzzle())
@@ -252,6 +284,7 @@ internal class PuzzleRushViewModelTest {
             puzzleSeries = puzzleSeries,
             onPuzzleRushComplete = onPuzzleRushComplete,
             countdownTimer = countdownTimer,
+            appSettingsRepository = appSettingsRepository,
             userRepository = userRepository,
             getPuzzleFen = getPuzzleFen,
             puzzleInteractor = RealGameFactory().puzzleInteractor(),
@@ -288,13 +321,13 @@ private class FakeGetBufferedPuzzleSeries : GetBufferedPuzzleSeries {
         this.exception = exception
     }
 
-    override fun invoke(batchSize: Int, ratingStart: Int, increment: Int) {
+    override fun start(scope: CoroutineScope, batchSize: Int, ratingStart: Int, increment: Int) {
         invokeCallCount++
     }
 
-    override suspend fun next(): Puzzle? {
+    override suspend fun next(): Puzzle {
         exception?.let { throw it }
-        return puzzles.removeFirstOrNull()
+        return puzzles.removeFirst()
     }
 }
 
