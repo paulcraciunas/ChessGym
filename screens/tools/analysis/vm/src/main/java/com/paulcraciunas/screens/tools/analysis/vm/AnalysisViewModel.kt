@@ -176,7 +176,7 @@ class AnalysisViewModel @Inject constructor(
     private fun beginGame(gameData: GameData) {
         applyGameData(gameData)
         updateNavigationState()
-        analyze(fen = moveHistory.currentFen(), sideToMove = moveHistory.currentSide())
+        analyze(fen = moveHistory.currentFen(), sideToMove = moveHistory.currentSide(), start = true)
     }
 
     private fun onNavigationChanged() {
