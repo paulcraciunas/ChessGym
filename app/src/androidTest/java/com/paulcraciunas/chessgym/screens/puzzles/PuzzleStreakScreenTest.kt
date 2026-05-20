@@ -87,6 +87,7 @@ internal class PuzzleStreakScreenTest : BaseUiTest() {
 
     @Test
     fun WHEN_solving_puzzle_THEN_streak_continues_with_next_puzzle() {
+        Given.settings.autoNext()
         Given.user.withPuzzleStreak(currentCount = STREAK_FOR_NEXT, lastPuzzleId = PUZZLE_ID)
 
         When.appIsLaunched()
