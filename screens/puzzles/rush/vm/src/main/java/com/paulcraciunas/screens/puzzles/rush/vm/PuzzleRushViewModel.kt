@@ -48,6 +48,7 @@ class PuzzleRushViewModel @Inject constructor(
     puzzleInteractor: PuzzleInteractor,
 ) : ViewModel(), PuzzleRushScreenInteractor {
     private val helper = PuzzleViewModelHelper(puzzleInteractor = puzzleInteractor)
+    private var enableAnimations: Boolean = true
 
     private val _navigateToAnalysis = Channel<PuzzleAnalysisData>(Channel.BUFFERED)
     val navigateToAnalysis: Flow<PuzzleAnalysisData> = _navigateToAnalysis.receiveAsFlow()
@@ -75,6 +76,7 @@ class PuzzleRushViewModel @Inject constructor(
         viewModelScope.launch {
             appSettingsRepository.appSettings.collect { settings ->
                 helper.autoPromote = settings.autoPromote
+                enableAnimations = settings.enableAnimations
             }
         }
     }
@@ -177,7 +179,9 @@ class PuzzleRushViewModel @Inject constructor(
 
     private fun advanceAfterAnimation(isSuccess: Boolean) {
         viewModelScope.launch {
-            delay(ANIMATION_WAIT_MS)
+            if (enableAnimations) {
+                delay(ANIMATION_WAIT_MS)
+            }
 
             val currentState = _gameState.value as? GameState.Playing ?: return@launch
 
@@ -185,8 +189,8 @@ class PuzzleRushViewModel @Inject constructor(
                 finishRush(currentState.results)
                 return@launch
             }
-            val nextPuzzle = puzzleSeries.next()
             try {
+                val nextPuzzle = puzzleSeries.next()
                 val nextData = helper.load(nextPuzzle)
                 _gameState.update { state ->
                     if (state is GameState.Playing) {
@@ -253,7 +257,7 @@ class PuzzleRushViewModel @Inject constructor(
             override fun toUiState(remainingSeconds: Int) = PuzzleRushUiState.Playing(
                 data = puzzleData,
                 timeRemainingSeconds = remainingSeconds.coerceAtLeast(0),
-                results = results,
+                results = if (isAnimating) results.dropLast(1) else results,
                 promotion = promotion,
             )
         }
