@@ -93,7 +93,6 @@ class GameViewModelHelper(
         )
     }
 
-    fun isPromotion(move: String): Piece? = gameInteractor.isPromotion(move)
     fun playMove(move: String): GameData {
         gameInteractor.play(move)
         refreshBoardWithAnimation()
@@ -107,6 +106,19 @@ class GameViewModelHelper(
             gameInteractor.play(from, to)
         }
         refreshBoardWithAnimation()
+        return buildPuzzleData()
+    }
+
+    fun canUndo(): Boolean = game.canUndo()
+    fun canReplay(): Boolean = game.canReplay()
+    fun undoLast(): GameData = navigate { game.undoLast() }
+    fun undoAll(): GameData = navigate { game.undoAll() }
+    fun replayNext(): GameData = navigate { game.replayNext() }
+    fun replayAll(): GameData = navigate { game.replayAll() }
+
+    private fun navigate(action: () -> Unit): GameData {
+        action()
+        boardViewBuilder.refresh()
         return buildPuzzleData()
     }
 

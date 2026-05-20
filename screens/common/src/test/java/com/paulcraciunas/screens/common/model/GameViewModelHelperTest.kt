@@ -521,6 +521,110 @@ internal class GameViewModelHelperTest {
         }
     }
 
+    @Nested
+    internal inner class Navigation {
+        @Test
+        fun `GIVEN game at start WHEN canUndo THEN returns false`() {
+            underTest.load(buildDefaultGame(), Side.WHITE)
+
+            assertFalse(underTest.canUndo())
+        }
+
+        @Test
+        fun `GIVEN game at start WHEN canReplay THEN returns false`() {
+            underTest.load(buildDefaultGame(), Side.WHITE)
+
+            assertFalse(underTest.canReplay())
+        }
+
+        @Test
+        fun `GIVEN game with moves WHEN undoLast THEN boardData reflects previous position`() {
+            underTest.load(buildDefaultGame(), Side.WHITE)
+            underTest.handleSquareClick("e2".loc())
+            underTest.handleSquareClick("e4".loc())
+            assertTrue(underTest.canUndo())
+
+            val result = underTest.undoLast()
+
+            val e2Square = result.boardData.at(Rank.`2`, File.e)
+            val e4Square = result.boardData.at(Rank.`4`, File.e)
+            assertNotNull(e2Square.piece)
+            assertEquals(Piece.Pawn, e2Square.piece?.piece)
+            assertNull(e4Square.piece)
+        }
+
+        @Test
+        fun `GIVEN game with moves WHEN undoAll THEN boardData reflects starting position`() {
+            underTest.load(buildDefaultGame(), Side.WHITE)
+            underTest.handleSquareClick("e2".loc())
+            underTest.handleSquareClick("e4".loc())
+
+            val result = underTest.undoAll()
+
+            val e2Square = result.boardData.at(Rank.`2`, File.e)
+            assertNotNull(e2Square.piece)
+            assertEquals(Piece.Pawn, e2Square.piece?.piece)
+            assertFalse(underTest.canUndo())
+            assertTrue(underTest.canReplay())
+        }
+
+        @Test
+        fun `GIVEN game undone WHEN replayNext THEN boardData shows next move`() {
+            underTest.load(buildDefaultGame(), Side.WHITE)
+            underTest.handleSquareClick("e2".loc())
+            underTest.handleSquareClick("e4".loc())
+            underTest.undoLast()
+
+            val result = underTest.replayNext()
+
+            val e4Square = result.boardData.at(Rank.`4`, File.e)
+            assertNotNull(e4Square.piece)
+            assertEquals(Piece.Pawn, e4Square.piece?.piece)
+            assertTrue(e4Square.lastMove)
+        }
+
+        @Test
+        fun `GIVEN game undone WHEN replayNext THEN animating piece is not set`() {
+            underTest.load(buildDefaultGame(), Side.WHITE)
+            underTest.handleSquareClick("e2".loc())
+            underTest.handleSquareClick("e4".loc())
+            underTest.undoLast()
+
+            val result = underTest.replayNext()
+
+            val animating = result.boardData.animatingPiece
+            assertNull(animating)
+        }
+
+        @Test
+        fun `GIVEN game fully undone WHEN replayAll THEN boardData shows final position`() {
+            underTest.load(buildDefaultGame(), Side.WHITE)
+            underTest.handleSquareClick("e2".loc())
+            underTest.handleSquareClick("e4".loc())
+            underTest.undoAll()
+
+            val result = underTest.replayAll()
+
+            val e4Square = result.boardData.at(Rank.`4`, File.e)
+            assertNotNull(e4Square.piece)
+            assertFalse(underTest.canReplay())
+        }
+
+        @Test
+        fun `GIVEN game undone WHEN undoLast THEN no last move highlights`() {
+            underTest.load(buildDefaultGame(), Side.WHITE)
+            underTest.handleSquareClick("e2".loc())
+            underTest.handleSquareClick("e4".loc())
+
+            val result = underTest.undoLast()
+
+            val e2Square = result.boardData.at(Rank.`2`, File.e)
+            val e4Square = result.boardData.at(Rank.`4`, File.e)
+            assertFalse(e2Square.lastMove)
+            assertFalse(e4Square.lastMove)
+        }
+    }
+
     private fun buildDefaultGame(): Game = gameFactory.builder()
         .withDefaultBoard()
         .buildGame()
