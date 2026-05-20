@@ -1,6 +1,7 @@
 package com.paulcraciunas.chessgym.dsl
 
 import androidx.compose.ui.test.junit4.ComposeTestRule
+import com.paulcraciunas.chessgym.dsl.actions.AnalysisScreenActions
 import com.paulcraciunas.chessgym.dsl.actions.BoardVisDashboardActions
 import com.paulcraciunas.chessgym.dsl.actions.ClockScreenActions
 import com.paulcraciunas.chessgym.dsl.actions.FailedPuzzlesScreenActions
@@ -27,6 +28,7 @@ object When {
     lateinit var toolsDashboard: ToolsDashboardActions
     lateinit var clockScreen: ClockScreenActions
     lateinit var importGame: ImportGameScreenActions
+    lateinit var analysisScreen: AnalysisScreenActions
 
     fun init(rule: ComposeTestRule, launcher: () -> Unit) {
         compose = rule
@@ -42,6 +44,7 @@ object When {
         toolsDashboard = ToolsDashboardActions(rule)
         clockScreen = ClockScreenActions(rule)
         importGame = ImportGameScreenActions(rule)
+        analysisScreen = AnalysisScreenActions(rule)
     }
 
     fun appIsLaunched(): When = apply {

@@ -109,6 +109,55 @@ internal class AnalysisScreenTest : BaseUiTest() {
             .doesNotShowBorders()
     }
 
+    @Test
+    fun GIVEN_move_played_WHEN_navigating_back_and_forward_THEN_navigation_state_updates() {
+        navigateToAnalysis()
+        Then.analysisScreen.isDisplayed()
+
+        When.analysisScreen
+            .clickSquare("e2")
+            .clickSquare("e4")
+
+        Then.analysisScreen.navigationPreviousIsEnabled()
+
+        When.analysisScreen.previousMove()
+
+        Then.analysisScreen
+            .navigationNextIsEnabled()
+            .navigationPreviousIsDisabled()
+    }
+
+    @Test
+    fun GIVEN_move_played_WHEN_jump_to_start_THEN_previous_disabled_next_enabled() {
+        navigateToAnalysis()
+        Then.analysisScreen.isDisplayed()
+
+        When.analysisScreen
+            .clickSquare("e2")
+            .clickSquare("e4")
+            .jumpToStart()
+
+        Then.analysisScreen
+            .navigationPreviousIsDisabled()
+            .navigationNextIsEnabled()
+    }
+
+    @Test
+    fun GIVEN_navigated_to_start_WHEN_jump_to_end_THEN_previous_enabled_next_disabled() {
+        navigateToAnalysis()
+        Then.analysisScreen.isDisplayed()
+
+        When.analysisScreen
+            .clickSquare("e2")
+            .clickSquare("e4")
+            .jumpToStart()
+            .jumpToEnd()
+
+        Then.analysisScreen
+            .navigationPreviousIsEnabled()
+            .navigationNextIsDisabled()
+    }
+
     private fun navigateToAnalysis() {
         When.appIsLaunched()
         When.navigation.navigateToTools()
