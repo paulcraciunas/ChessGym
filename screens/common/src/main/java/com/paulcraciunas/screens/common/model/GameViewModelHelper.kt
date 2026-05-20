@@ -111,14 +111,16 @@ class GameViewModelHelper(
 
     fun canUndo(): Boolean = game.canUndo()
     fun canReplay(): Boolean = game.canReplay()
-    fun undoLast(): GameData = navigate { game.undoLast() }
-    fun undoAll(): GameData = navigate { game.undoAll() }
-    fun replayNext(): GameData = navigate { game.replayNext() }
-    fun replayAll(): GameData = navigate { game.replayAll() }
+    fun undoLast(): GameData = navigate(guard = game.canUndo()) { game.undoLast() }
+    fun undoAll(): GameData = navigate(guard = game.canUndo()) { game.undoAll() }
+    fun replayNext(): GameData = navigate(guard = game.canReplay()) { game.replayNext() }
+    fun replayAll(): GameData = navigate(guard = game.canReplay()) { game.replayAll() }
 
-    private fun navigate(action: () -> Unit): GameData {
-        action()
-        boardViewBuilder.refresh()
+    private fun navigate(guard: Boolean, action: () -> Unit): GameData {
+        if (guard) {
+            action()
+            boardViewBuilder.refresh()
+        }
         return buildPuzzleData()
     }
 
