@@ -7,7 +7,6 @@ import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.screens.common.model.BoardViewData
 import com.paulcraciunas.screens.common.model.BoardViewDataBuilder
 import com.paulcraciunas.serializer.api.Serializer
-import timber.log.Timber
 
 /**
  * Manages move history, board snapshots, and navigation state for imported games.
@@ -68,11 +67,13 @@ internal class MoveHistory(
     }
 
     /**
-     * Records a move played by the user and adds a new board snapshot.
+     * Records a move using the current game state obtained by reconstructing up to
+     * the move that was just played. Used when the move is managed externally.
+     *
      */
-    fun recordMove(game: Game, from: Locus, to: Locus, promotionPiece: Piece?) {
+    fun recordMoveFromHelper(from: Locus, to: Locus, promotionPiece: Piece?, boardViewData: BoardViewData) {
         moves.add(RecordedMove(from, to, promotionPiece))
-        snapshots.add(BoardViewDataBuilder.fromBoard(game.board))
+        snapshots.add(boardViewData)
         currentIndex = totalMoves
     }
 
@@ -98,7 +99,7 @@ internal class MoveHistory(
      *
      * @return the reconstructed [Game] at the current position, or null on failure
      */
-    fun truncateAndReconstruct(): Game? {
+    fun truncateAndReconstruct(): Game {
         val movesToKeep = moves.take(currentIndex)
         moves.clear()
         moves.addAll(movesToKeep)
@@ -110,20 +111,13 @@ internal class MoveHistory(
         return reconstructGame()
     }
 
-    private fun reconstructGame(): Game? {
-        return try {
-            val game = fenSerializer.from(originalImportText)
-            if (game.state == Game.GameState.Ready) {
-                game.start()
-            }
-            for (move in moves) {
-                replayMove(game, move)
-            }
-            game
-        } catch (e: Exception) {
-            Timber.w(e, "Failed to reconstruct game from import")
-            null
+    private fun reconstructGame(): Game {
+        val game = fenSerializer.from(originalImportText)
+        game.start()
+        for (move in moves) {
+            replayMove(game, move)
         }
+        return game
     }
 
     private fun replayMove(game: Game, move: RecordedMove) {

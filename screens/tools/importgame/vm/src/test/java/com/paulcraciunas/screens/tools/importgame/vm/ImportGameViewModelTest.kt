@@ -4,9 +4,11 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Rank
+import com.paulcraciunas.game.logic.api.board.loc
 import com.paulcraciunas.game.logic.impl.RealGameFactory
 import com.paulcraciunas.serializer.impl.FenSerializer
 import com.paulcraciunas.serializer.impl.PgnSerializer
+import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -29,6 +31,7 @@ internal class ImportGameViewModelTest {
     private val gameFactory = RealGameFactory()
     private val fenSerializer = FenSerializer(gameFactory)
     private val pgnSerializer = PgnSerializer(gameFactory)
+    private val appSettingsRepository = FakeAppSettingsRepository()
 
     private lateinit var underTest: ImportGameViewModel
 
@@ -37,7 +40,12 @@ internal class ImportGameViewModelTest {
     @BeforeEach
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
-        underTest = ImportGameViewModel(fenSerializer, pgnSerializer)
+        underTest = ImportGameViewModel(
+            fenSerializer = fenSerializer,
+            pgnSerializer = pgnSerializer,
+            appSettingsRepository = appSettingsRepository,
+            gameInteractor = gameFactory.gameInteractor(),
+        )
     }
 
     @AfterEach
@@ -144,9 +152,9 @@ internal class ImportGameViewModelTest {
         fun `GIVEN PGN imported WHEN square clicked THEN ignored`() = runTest {
             importPgn("1.e4 e5 2.Nf3 Nc6")
 
-            underTest.onSquareClicked(Locus(File.e, Rank.`2`))
+            underTest.onSquareClicked("e2".loc())
 
-            assertNull(underTest.uiState.value.selectedSquare)
+            assertNull(underTest.uiState.value.boardData.at("e2".loc()).piece?.isSelected)
         }
     }
 
@@ -231,8 +239,7 @@ internal class ImportGameViewModelTest {
 
             underTest.onPreviousMove()
 
-            assertNull(underTest.uiState.value.selectedSquare)
-            assertTrue(underTest.uiState.value.legalMoves.isEmpty())
+            assertNull(underTest.uiState.value.boardData.at("e2".loc()).piece?.isSelected)
         }
     }
 
@@ -242,11 +249,9 @@ internal class ImportGameViewModelTest {
         fun `GIVEN FEN imported WHEN square with piece clicked THEN square selected`() = runTest {
             importStartingPosition()
 
-            underTest.onSquareClicked(Locus(File.e, Rank.`2`))
+            underTest.onSquareClicked("e2".loc())
 
-            val state = underTest.uiState.value
-            assertEquals(Locus(File.e, Rank.`2`), state.selectedSquare)
-            assertTrue(state.legalMoves.isNotEmpty())
+            assertEquals(true, underTest.uiState.value.boardData.at("e2".loc()).piece?.isSelected)
         }
 
         @Test
@@ -257,8 +262,8 @@ internal class ImportGameViewModelTest {
             underTest.onSquareClicked(Locus(File.e, Rank.`4`))
 
             val state = underTest.uiState.value
-            assertNull(state.selectedSquare)
-            assertTrue(state.legalMoves.isEmpty())
+            assertNull(underTest.uiState.value.boardData.at("e2".loc()).piece?.isSelected)
+            assertEquals(false, underTest.uiState.value.boardData.at("e4".loc()).piece?.isSelected)
             assertEquals(1, state.currentMoveIndex)
             assertEquals(1, state.totalMoves)
         }
@@ -266,8 +271,8 @@ internal class ImportGameViewModelTest {
         @Test
         fun `GIVEN multiple moves played WHEN navigate back THEN shows previous position`() = runTest {
             importStartingPosition()
-            playMove(File.e, Rank.`2`, File.e, Rank.`4`)
-            playMove(File.e, Rank.`7`, File.e, Rank.`5`)
+            playMove("e2", "e4")
+            playMove("e7", "e5")
             assertEquals(2, underTest.uiState.value.totalMoves)
 
             underTest.onPreviousMove()
@@ -279,11 +284,11 @@ internal class ImportGameViewModelTest {
         @Test
         fun `GIVEN navigated back WHEN new move played THEN forward history truncated`() = runTest {
             importStartingPosition()
-            playMove(File.e, Rank.`2`, File.e, Rank.`4`)
-            playMove(File.e, Rank.`7`, File.e, Rank.`5`)
+            playMove("e2", "e4")
+            playMove("e7", "e5")
 
             underTest.onJumpToStart()
-            playMove(File.d, Rank.`2`, File.d, Rank.`4`)
+            playMove("d2", "d4")
 
             val state = underTest.uiState.value
             assertEquals(1, state.currentMoveIndex)
@@ -304,8 +309,8 @@ internal class ImportGameViewModelTest {
         @Test
         fun `GIVEN FEN navigated back WHEN next and jump to end work THEN navigates forward`() = runTest {
             importStartingPosition()
-            playMove(File.e, Rank.`2`, File.e, Rank.`4`)
-            playMove(File.e, Rank.`7`, File.e, Rank.`5`)
+            playMove("e2", "e4")
+            playMove("e7", "e5")
             underTest.onJumpToStart()
 
             underTest.onNextMove()
@@ -318,21 +323,21 @@ internal class ImportGameViewModelTest {
         @Test
         fun `GIVEN no game loaded WHEN square clicked THEN nothing happens`() = runTest {
             underTest.onSquareClicked(Locus(File.e, Rank.`4`))
-            assertNull(underTest.uiState.value.selectedSquare)
+            assertNull(underTest.uiState.value.boardData.at("e4".loc()).piece?.isSelected)
         }
 
         @Test
         fun `GIVEN FEN navigated back WHEN playing from history THEN game reconstructed correctly`() = runTest {
             importStartingPosition()
-            playMove(File.e, Rank.`2`, File.e, Rank.`4`)
-            playMove(File.e, Rank.`7`, File.e, Rank.`5`)
-            playMove(File.g, Rank.`1`, File.f, Rank.`3`)
+            playMove("e2", "e4")
+            playMove("e7", "e5")
+            playMove("g1", "f3")
 
             underTest.onPreviousMove()
             underTest.onPreviousMove()
             assertEquals(1, underTest.uiState.value.currentMoveIndex)
 
-            playMove(File.d, Rank.`7`, File.d, Rank.`5`)
+            playMove("d7", "d5")
 
             val state = underTest.uiState.value
             assertEquals(2, state.currentMoveIndex)
@@ -371,9 +376,9 @@ internal class ImportGameViewModelTest {
         underTest.onImport(pgn)
     }
 
-    private fun playMove(fromFile: File, fromRank: Rank, toFile: File, toRank: Rank) {
-        underTest.onSquareClicked(Locus(fromFile, fromRank))
-        underTest.onSquareClicked(Locus(toFile, toRank))
+    private fun playMove(from: String, to: String) {
+        underTest.onSquareClicked(from.loc())
+        underTest.onSquareClicked(to.loc())
     }
 
     companion object {

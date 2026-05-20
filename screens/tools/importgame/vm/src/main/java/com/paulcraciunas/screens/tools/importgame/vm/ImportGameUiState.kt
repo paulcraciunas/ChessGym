@@ -8,12 +8,11 @@ import com.paulcraciunas.screens.common.previews.SampleBoardViewData
 
 data class ImportGameUiState(
     val boardData: BoardViewData = SampleBoardViewData.emptyBoard(),
-    val selectedSquare: Locus? = null,
-    val legalMoves: List<Locus> = emptyList(),
     val pendingPromotion: PendingPromotion? = null,
     val importDialogType: ImportType? = null,
     val importError: String? = null,
     val isGameLoaded: Boolean = false,
+    val orientation: Side = Side.WHITE,
     val playerSide: Side = Side.WHITE,
     val currentMoveIndex: Int = 0,
     val totalMoves: Int = 0,

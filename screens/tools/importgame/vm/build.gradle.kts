@@ -11,6 +11,7 @@ dependencies {
     implementation(project(":game:logic:api"))
     implementation(project(":game:serializer:api"))
     implementation(project(":game:serializer:di"))
+    implementation(project(":settings:application:api"))
     implementation(project(":screens:common"))
 
     implementation(libs.public.timber)
@@ -18,4 +19,5 @@ dependencies {
 
     testImplementation(project(":game:logic:impl"))
     testImplementation(project(":game:serializer:impl"))
+    testImplementation(testFixtures(project(":settings:application:api")))
 }
