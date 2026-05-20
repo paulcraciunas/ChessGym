@@ -8,6 +8,7 @@ import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.loc
 import com.paulcraciunas.game.logic.impl.RealGameFactory
+import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -30,6 +31,7 @@ internal class FailedPuzzlesViewModelTest {
     private val onFailedPuzzleComplete = FakeOnFailedPuzzleComplete()
     private val getPuzzleFen = FakeGetPuzzleFen()
     private val timer = FakeTimer()
+    private val appSettingsRepository = FakeAppSettingsRepository()
 
     @BeforeEach
     fun setUp() {
@@ -293,6 +295,7 @@ internal class FailedPuzzlesViewModelTest {
             getFailedPuzzles = getFailedPuzzles,
             onFailedPuzzleComplete = onFailedPuzzleComplete,
             getPuzzleFen = getPuzzleFen,
+            appSettingsRepository = appSettingsRepository,
             timer = timer,
             puzzleInteractor = RealGameFactory().puzzleInteractor(),
         )
@@ -335,6 +338,7 @@ internal class FailedPuzzlesViewModelTest {
             getFailedPuzzles = getFailedPuzzles,
             onFailedPuzzleComplete = onFailedPuzzleComplete,
             getPuzzleFen = getPuzzleFen,
+            appSettingsRepository = appSettingsRepository,
             timer = timer,
             puzzleInteractor = RealGameFactory().puzzleInteractor(),
         )

@@ -12,6 +12,7 @@ import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.screens.common.model.PuzzleViewModelHelper
 import com.paulcraciunas.screens.common.model.PuzzleViewModelHelper.OnSquareClick
+import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,6 +25,7 @@ import javax.inject.Inject
 class RatedPuzzleViewModel @Inject constructor(
     private val getRatedPuzzle: GetRatedPuzzle,
     private val onPuzzleComplete: OnPuzzleComplete,
+    private val appSettingsRepository: AppSettingsRepository,
     private val timer: Timer,
     puzzleInteractor: PuzzleInteractor,
 ) : ViewModel(), RatedPuzzleScreenInteractor {
@@ -34,7 +36,16 @@ class RatedPuzzleViewModel @Inject constructor(
     private var puzzleData: GetRatedPuzzle.Data? = null
 
     init {
+        observeSettings()
         loadPuzzle()
+    }
+
+    private fun observeSettings() {
+        viewModelScope.launch {
+            appSettingsRepository.appSettings.collect { settings ->
+                helper.autoPromote = settings.autoPromote
+            }
+        }
     }
 
     private fun loadPuzzle() {

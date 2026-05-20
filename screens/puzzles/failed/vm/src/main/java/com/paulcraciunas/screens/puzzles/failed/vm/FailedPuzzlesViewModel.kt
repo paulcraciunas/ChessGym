@@ -10,11 +10,14 @@ import com.paulcraciunas.domain.api.puzzles.OnFailedPuzzleComplete
 import com.paulcraciunas.game.logic.api.PuzzleInteractor
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
+import com.paulcraciunas.screens.common.board.PIECE_MOVE_ANIMATION_DURATION_MS
 import com.paulcraciunas.screens.common.model.PuzzleResult
 import com.paulcraciunas.screens.common.model.PuzzleViewModelHelper
 import com.paulcraciunas.screens.common.model.PuzzleViewModelHelper.OnSquareClick
+import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,6 +32,7 @@ class FailedPuzzlesViewModel @Inject constructor(
     private val getFailedPuzzles: GetFailedPuzzles,
     private val onFailedPuzzleComplete: OnFailedPuzzleComplete,
     private val getPuzzleFen: GetPuzzleFen,
+    private val appSettingsRepository: AppSettingsRepository,
     private val timer: Timer,
     puzzleInteractor: PuzzleInteractor,
 ) : ViewModel(), FailedPuzzlesScreenInteractor {
@@ -43,7 +47,16 @@ class FailedPuzzlesViewModel @Inject constructor(
     private var solvedCount: Int = 0
 
     init {
+        observeSettings()
         loadPuzzles()
+    }
+
+    private fun observeSettings() {
+        viewModelScope.launch {
+            appSettingsRepository.appSettings.collect { settings ->
+                helper.autoPromote = settings.autoPromote
+            }
+        }
     }
 
     fun onStop() {
@@ -129,7 +142,14 @@ class FailedPuzzlesViewModel @Inject constructor(
             }
         }
 
+        _uiState.value = state.copy(
+            data = helper.buildPuzzleData(),
+            promotion = null,
+        )
+
         viewModelScope.launch {
+            delay(ANIMATION_WAIT_MS)
+
             val nextPuzzle = getFailedPuzzles.next()
             if (nextPuzzle != null) {
                 timer.start()
@@ -148,6 +168,10 @@ class FailedPuzzlesViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    companion object {
+        internal const val ANIMATION_WAIT_MS = PIECE_MOVE_ANIMATION_DURATION_MS + 50L
     }
 
     private fun currentProgress(): FailedPuzzlesUiState.Progress =

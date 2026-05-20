@@ -13,6 +13,7 @@ import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.game.logic.api.board.loc
 import com.paulcraciunas.game.logic.impl.RealGameFactory
+import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -36,6 +37,7 @@ internal class RatedPuzzleViewModelTest {
     private val getRatedPuzzle = FakeGetRatedPuzzle()
     private val onPuzzleComplete = FakeOnPuzzleComplete()
     private val timer = FakeTimer()
+    private val appSettingsRepository = FakeAppSettingsRepository()
 
     @BeforeEach
     fun setUp() {
@@ -113,6 +115,7 @@ internal class RatedPuzzleViewModelTest {
     @Test
     fun `GIVEN promotion move WHEN onSquareClicked THEN promotion chooser is shown`() = runTest {
         // Given
+        appSettingsRepository.updateAutoPromote(false)
         val underTest = buildVm(buildPromotionPuzzle())
         underTest.onSquareClicked("a7".loc())
 
@@ -130,6 +133,7 @@ internal class RatedPuzzleViewModelTest {
     @Test
     fun `GIVEN promotion chooser WHEN onPromote THEN pawn is promoted and state updated`() = runTest {
         // Given
+        appSettingsRepository.updateAutoPromote(false)
         val underTest = buildVm(buildPromotionPuzzle())
         underTest.onSquareClicked("a7".loc())
         underTest.onSquareClicked("a8".loc())
@@ -283,6 +287,7 @@ internal class RatedPuzzleViewModelTest {
         val underTest = RatedPuzzleViewModel(
             getRatedPuzzle = getRatedPuzzle,
             onPuzzleComplete = onPuzzleComplete,
+            appSettingsRepository = appSettingsRepository,
             timer = timer,
             puzzleInteractor = RealGameFactory().puzzleInteractor()
         )
