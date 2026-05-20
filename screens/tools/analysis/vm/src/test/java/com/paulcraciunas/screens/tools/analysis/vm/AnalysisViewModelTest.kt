@@ -25,6 +25,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -527,6 +528,72 @@ internal class AnalysisViewModelTest {
             playMove("d2", "d4")
             advanceUntilIdle()
             underTest.uiState.value.assertCanNavigateBack()
+        }
+
+        @Test
+        fun `GIVEN moves played WHEN navigating back and forth THEN playerSide stays consistent`() = runTest {
+            underTest.loadPosition()
+            advanceUntilIdle()
+            val originalSide = underTest.uiState.value.playerSide
+
+            playMove("e2", "e4")
+            advanceUntilIdle()
+            playMove("e7", "e5")
+            advanceUntilIdle()
+
+            underTest.onPreviousMove()
+            advanceUntilIdle()
+            assertEquals(originalSide, underTest.uiState.value.playerSide)
+
+            underTest.onNextMove()
+            advanceUntilIdle()
+            assertEquals(originalSide, underTest.uiState.value.playerSide)
+
+            underTest.onJumpToStart()
+            advanceUntilIdle()
+            assertEquals(originalSide, underTest.uiState.value.playerSide)
+
+            underTest.onJumpToEnd()
+            advanceUntilIdle()
+            assertEquals(originalSide, underTest.uiState.value.playerSide)
+        }
+
+        @Test
+        fun `GIVEN move played WHEN navigating to start THEN no last move highlights`() = runTest {
+            underTest.loadPosition()
+            advanceUntilIdle()
+
+            playMove("e2", "e4")
+            advanceUntilIdle()
+
+            underTest.onJumpToStart()
+            advanceUntilIdle()
+
+            val boardData = underTest.uiState.value.boardData
+            val e2 = boardData.at("e2".loc())
+            val e4 = boardData.at("e4".loc())
+            assertFalse(e2.lastMove)
+            assertFalse(e4.lastMove)
+        }
+
+        @Test
+        fun `GIVEN multiple moves WHEN navigating back THEN last move highlights match previous move`() = runTest {
+            underTest.loadPosition()
+            advanceUntilIdle()
+
+            playMove("e2", "e4")
+            advanceUntilIdle()
+            playMove("e7", "e5")
+            advanceUntilIdle()
+
+            underTest.onPreviousMove()
+            advanceUntilIdle()
+
+            val boardData = underTest.uiState.value.boardData
+            val e2 = boardData.at("e2".loc())
+            val e4 = boardData.at("e4".loc())
+            assertTrue(e2.lastMove)
+            assertTrue(e4.lastMove)
         }
     }
 

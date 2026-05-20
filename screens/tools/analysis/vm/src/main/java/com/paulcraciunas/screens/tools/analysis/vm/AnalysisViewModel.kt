@@ -20,6 +20,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -46,7 +47,6 @@ class AnalysisViewModel @Inject constructor(
     val uiState: StateFlow<AnalysisUiState> = _uiState.asStateFlow()
 
     private val helper = GameViewModelHelper(gameInteractor)
-    private val moveHistory = AnalysisMoveHistory(fenSerializer)
     private var analysisJob: Job? = null
     private var navigationDebounceJob: Job? = null
     internal var enableThrottling: Boolean = true
@@ -72,15 +72,8 @@ class AnalysisViewModel @Inject constructor(
         if (firstMove != null) {
             try {
                 val game = fenSerializer.from(targetFen)
-                moveHistory.initialize(targetFen, game.info.turn)
-
                 helper.load(game = game, player = game.info.turn.other())
                 val gameData = helper.playMove(firstMove)
-                if (helper.isPromotion(firstMove) != null) {
-                    moveHistory.recordMove(helper.game, helper.isPromotion(firstMove))
-                } else {
-                    moveHistory.recordMove(helper.game)
-                }
                 beginGame(gameData)
                 return
             } catch (e: Exception) {
@@ -89,19 +82,12 @@ class AnalysisViewModel @Inject constructor(
         }
 
         val game = fenSerializer.from(targetFen)
-        moveHistory.initialize(targetFen, game.info.turn)
         beginGame(helper.load(game = game, player = game.info.turn))
     }
 
     override fun onSquareClicked(locus: Locus) {
         if (!helper.isReady()) {
             loadPosition()
-        }
-
-        if (!moveHistory.isAtEnd()) {
-            moveHistory.truncate()
-            val game = fenSerializer.from(moveHistory.currentFen())
-            helper.load(game, game.info.turn)
         }
 
         val result = helper.handleSquareClick(locus)
@@ -119,11 +105,10 @@ class AnalysisViewModel @Inject constructor(
             return
         }
 
-        if (result.movePlayed && result.moveFrom != null) {
-            moveHistory.recordMove(helper.game, result.autoPromotedTo)
+        if (result.movePlayed) {
             updateNavigationState()
             navigationDebounceJob?.cancel()
-            analyze(fen = moveHistory.currentFen(), sideToMove = moveHistory.currentSide())
+            analyze(fen = currentFen(), sideToMove = helper.game.info.turn)
         }
     }
 
@@ -133,32 +118,15 @@ class AnalysisViewModel @Inject constructor(
         applyGameData(result.data)
         _uiState.update { it.copy(pendingPromotion = null) }
 
-        moveHistory.recordMove(helper.game, to)
         updateNavigationState()
-
         navigationDebounceJob?.cancel()
-        analyze(fen = moveHistory.currentFen(), sideToMove = moveHistory.currentSide())
+        analyze(fen = currentFen(), sideToMove = helper.game.info.turn)
     }
 
-    override fun onJumpToStart() {
-        moveHistory.jumpToStart()
-        onNavigationChanged()
-    }
-
-    override fun onPreviousMove() {
-        moveHistory.previousMove()
-        onNavigationChanged()
-    }
-
-    override fun onNextMove() {
-        moveHistory.nextMove()
-        onNavigationChanged()
-    }
-
-    override fun onJumpToEnd() {
-        moveHistory.jumpToEnd()
-        onNavigationChanged()
-    }
+    override fun onJumpToStart() = navigate { helper.undoAll() }
+    override fun onPreviousMove() = navigate { helper.undoLast() }
+    override fun onNextMove() = navigate { helper.replayNext() }
+    override fun onJumpToEnd() = navigate { helper.replayAll() }
 
     override fun onCleared() {
         analysisJob?.cancel()
@@ -176,19 +144,10 @@ class AnalysisViewModel @Inject constructor(
     private fun beginGame(gameData: GameData) {
         applyGameData(gameData)
         updateNavigationState()
-        analyze(fen = moveHistory.currentFen(), sideToMove = moveHistory.currentSide(), start = true)
+        analyze(fen = currentFen(), sideToMove = helper.game.info.turn, start = true)
     }
 
-    private fun onNavigationChanged() {
-        val fen = moveHistory.currentFen()
-        val game = fenSerializer.from(fen)
-        val gameData = helper.load(game, game.info.turn)
-        applyGameData(gameData)
-        updateNavigationState()
-
-        val sideToMove = game.info.turn
-        debounceAnalysis(fen, sideToMove)
-    }
+    private fun currentFen(): String = fenSerializer.of(helper.game)
 
     private fun applyGameData(data: GameData) {
         _uiState.update {
@@ -203,16 +162,22 @@ class AnalysisViewModel @Inject constructor(
     private fun updateNavigationState() {
         _uiState.update {
             it.copy(
-                canNavigateForward = !moveHistory.isAtEnd(),
-                canNavigateBack = !moveHistory.isAtStart(),
+                canNavigateForward = helper.canReplay(),
+                canNavigateBack = helper.canUndo(),
             )
         }
     }
 
-    private fun debounceAnalysis(fen: String, sideToMove: Side) {
+    private fun navigate(gameDataSource: () -> GameData) {
+        val gameData = gameDataSource()
+        applyGameData(gameData)
+        updateNavigationState()
+
+        val fen = currentFen()
+        val sideToMove = helper.game.info.turn
         navigationDebounceJob?.cancel()
         navigationDebounceJob = viewModelScope.launch {
-            kotlinx.coroutines.delay(NAVIGATION_DEBOUNCE_MS)
+            delay(NAVIGATION_DEBOUNCE_MS)
             analyze(fen = fen, sideToMove = sideToMove)
         }
     }
