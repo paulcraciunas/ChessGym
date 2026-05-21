@@ -120,7 +120,7 @@ internal class UserRemoteDataSourceImplTest {
         val result = underTest.getUser("uid_123")
 
         // Then
-        assertEquals("", result.profile.displayName)
+        assertEquals("ChessEnthusiast", result.profile.displayName)
         assertNull(result.authentication)
     }
 
