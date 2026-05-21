@@ -46,6 +46,7 @@ class UserRepositoryImpl @Inject constructor(
         val localUser = get()
         val remoteUser = remoteDataSource.signIn(authResult, localUser.deviceId)
         val merged = mergeWithRemote(localUser, remoteUser).copy(authentication = authResult.authState)
+        remoteDataSource.updateUser(merged)
         localDataSource.saveUser(merged)
         syncState.markClean()
         return merged
@@ -66,11 +67,12 @@ class UserRepositoryImpl @Inject constructor(
         if (!currentUser.isSignedIn()) return
 
         val userId = currentUser.authentication!!.userId
-        val shouldSync = syncState.isDirty() || syncState.isStale()
-
-        if (!shouldSync) return
+        if (!syncState.isDirty() && !syncState.isStale()) return
 
         try {
+            if (syncState.isDirty()) {
+                remoteDataSource.updateUser(currentUser)
+            }
             val remoteUser = remoteDataSource.getUser(userId)
             val merged = mergeWithRemote(currentUser, remoteUser)
             localDataSource.saveUser(merged)
@@ -83,20 +85,61 @@ class UserRepositoryImpl @Inject constructor(
     private fun mergeWithRemote(local: User, remote: User): User = local.copy(
         profile = remote.profile,
         ratings = local.ratings.copy(
-            current = remote.ratings.current,
-            blindMode = remote.ratings.blindMode,
+            current = maxOf(local.ratings.current, remote.ratings.current),
+            blindMode = maxOf(local.ratings.blindMode, remote.ratings.blindMode),
         ),
-        highScores = remote.highScores,
-        statistics = remote.statistics,
-        achievements = local.achievements.copy(
-            progress = remote.achievements.progress,
-            lastActiveDate = remote.achievements.lastActiveDate,
-            consecutiveDaysStreak = remote.achievements.consecutiveDaysStreak,
-            bestConsecutiveDaysStreak = remote.achievements.bestConsecutiveDaysStreak,
-            currentRatedWinStreak = remote.achievements.currentRatedWinStreak,
-            bestRatedWinStreak = remote.achievements.bestRatedWinStreak,
-        ),
+        highScores = mergeHighScores(local.highScores, remote.highScores),
+        statistics = mergeStatistics(local.statistics, remote.statistics),
+        achievements = mergeAchievements(local.achievements, remote.achievements),
     )
+
+    private fun mergeHighScores(
+        local: User.HighScores,
+        remote: User.HighScores,
+    ): User.HighScores = User.HighScores(
+        ratedPuzzle = maxOf(local.ratedPuzzle, remote.ratedPuzzle),
+        puzzleRush = maxOf(local.puzzleRush, remote.puzzleRush),
+        puzzleStreak = maxOf(local.puzzleStreak, remote.puzzleStreak),
+        findTheSquare = maxOf(local.findTheSquare, remote.findTheSquare),
+        moveThePiece = maxOf(local.moveThePiece, remote.moveThePiece),
+        blindMode = maxOf(local.blindMode, remote.blindMode),
+    )
+
+    private fun mergeStatistics(
+        local: User.Statistics,
+        remote: User.Statistics,
+    ): User.Statistics = User.Statistics(
+        puzzlesPlayed = maxOf(local.puzzlesPlayed, remote.puzzlesPlayed),
+        puzzlesSolved = maxOf(local.puzzlesSolved, remote.puzzlesSolved),
+        totalTimeSpent = maxOf(local.totalTimeSpent, remote.totalTimeSpent),
+        ratedPuzzlesSolved = maxOf(local.ratedPuzzlesSolved, remote.ratedPuzzlesSolved),
+        puzzleRushSessions = maxOf(local.puzzleRushSessions, remote.puzzleRushSessions),
+        streakSessions = maxOf(local.streakSessions, remote.streakSessions),
+        failedPuzzlesRedeemed = maxOf(local.failedPuzzlesRedeemed, remote.failedPuzzlesRedeemed),
+        findSquareSessions = maxOf(local.findSquareSessions, remote.findSquareSessions),
+        moveThePieceSessions = maxOf(local.moveThePieceSessions, remote.moveThePieceSessions),
+        blindModeWins = maxOf(local.blindModeWins, remote.blindModeWins),
+        rushPuzzlesSolved = maxOf(local.rushPuzzlesSolved, remote.rushPuzzlesSolved),
+    )
+
+    private fun mergeAchievements(
+        local: User.Achievements,
+        remote: User.Achievements,
+    ): User.Achievements {
+        val mergedProgress = (local.progress.keys + remote.progress.keys)
+            .associateWith { key ->
+                maxOf(local.progress[key] ?: 0L, remote.progress[key] ?: 0L)
+            }
+        val mergedLastActive = listOfNotNull(local.lastActiveDate, remote.lastActiveDate).maxOrNull()
+        return local.copy(
+            progress = mergedProgress,
+            lastActiveDate = mergedLastActive,
+            consecutiveDaysStreak = maxOf(local.consecutiveDaysStreak, remote.consecutiveDaysStreak),
+            bestConsecutiveDaysStreak = maxOf(local.bestConsecutiveDaysStreak, remote.bestConsecutiveDaysStreak),
+            currentRatedWinStreak = maxOf(local.currentRatedWinStreak, remote.currentRatedWinStreak),
+            bestRatedWinStreak = maxOf(local.bestRatedWinStreak, remote.bestRatedWinStreak),
+        )
+    }
 
     private fun mergeHistory(
         existing: List<User.HistoryItem>,
