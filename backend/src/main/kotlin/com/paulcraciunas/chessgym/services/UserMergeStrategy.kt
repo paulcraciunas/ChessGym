@@ -5,6 +5,7 @@ import com.paulcraciunas.chessgym.models.*
 class UserMergeStrategy {
 
     fun merge(existing: UserDto, incoming: UserDto): UserDto = UserDto(
+        deviceId = existing.deviceId,
         profile = mergeProfile(existing.profile, incoming.profile),
         ratings = mergeRatings(existing.ratings, incoming.ratings),
         highScores = mergeHighScores(existing.highScores, incoming.highScores),

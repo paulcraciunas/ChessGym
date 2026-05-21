@@ -34,54 +34,51 @@ class UserMergeStrategyTest {
     fun `merge uses last-write-wins for profile based on timestamp`() {
         val existing = UserDto(
             profile = ProfileDto(
-                firstName = "OldName",
-                lastName = "OldLast",
+                displayName = "OldName",
                 lastModified = 1000L,
             ),
         )
         val incoming = UserDto(
             profile = ProfileDto(
-                firstName = "NewName",
-                lastName = "NewLast",
+                displayName = "NewName",
                 lastModified = 2000L,
             ),
         )
 
         val merged = strategy.merge(existing, incoming)
-        assertEquals("NewName", merged.profile.firstName)
-        assertEquals("NewLast", merged.profile.lastName)
+        assertEquals("NewName", merged.profile.displayName)
     }
 
     @Test
     fun `merge keeps existing profile when incoming timestamp is older`() {
         val existing = UserDto(
             profile = ProfileDto(
-                firstName = "KeepMe",
+                displayName = "KeepMe",
                 lastModified = 3000L,
             ),
         )
         val incoming = UserDto(
             profile = ProfileDto(
-                firstName = "DiscardMe",
+                displayName = "DiscardMe",
                 lastModified = 1000L,
             ),
         )
 
         val merged = strategy.merge(existing, incoming)
-        assertEquals("KeepMe", merged.profile.firstName)
+        assertEquals("KeepMe", merged.profile.displayName)
     }
 
     @Test
     fun `merge uses incoming profile when timestamps are equal`() {
         val existing = UserDto(
-            profile = ProfileDto(firstName = "Existing", lastModified = 1000L),
+            profile = ProfileDto(displayName = "Existing", lastModified = 1000L),
         )
         val incoming = UserDto(
-            profile = ProfileDto(firstName = "Incoming", lastModified = 1000L),
+            profile = ProfileDto(displayName = "Incoming", lastModified = 1000L),
         )
 
         val merged = strategy.merge(existing, incoming)
-        assertEquals("Incoming", merged.profile.firstName)
+        assertEquals("Incoming", merged.profile.displayName)
     }
 
     @Test
@@ -208,6 +205,15 @@ class UserMergeStrategyTest {
         assertEquals(8, merged.statistics.moveThePieceSessions)
         assertEquals(5, merged.statistics.blindModeWins)
         assertEquals(60, merged.statistics.rushPuzzlesSolved)
+    }
+
+    @Test
+    fun `merge preserves existing deviceId`() {
+        val existing = UserDto(deviceId = "device-original")
+        val incoming = UserDto(deviceId = "")
+
+        val merged = strategy.merge(existing, incoming)
+        assertEquals("device-original", merged.deviceId)
     }
 
     @Test
