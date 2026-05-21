@@ -12,6 +12,7 @@ import com.paulcraciunas.chessgym.dsl.actions.NavigationActions
 import com.paulcraciunas.chessgym.dsl.actions.PuzzleDashboardActions
 import com.paulcraciunas.chessgym.dsl.actions.PuzzleStreakScreenActions
 import com.paulcraciunas.chessgym.dsl.actions.RatedPuzzleScreenActions
+import com.paulcraciunas.chessgym.dsl.actions.SignInScreenActions
 import com.paulcraciunas.chessgym.dsl.actions.ToolsDashboardActions
 
 object When {
@@ -29,6 +30,7 @@ object When {
     lateinit var clockScreen: ClockScreenActions
     lateinit var importGame: ImportGameScreenActions
     lateinit var analysisScreen: AnalysisScreenActions
+    lateinit var signInScreen: SignInScreenActions
 
     fun init(rule: ComposeTestRule, launcher: () -> Unit) {
         compose = rule
@@ -45,6 +47,7 @@ object When {
         clockScreen = ClockScreenActions(rule)
         importGame = ImportGameScreenActions(rule)
         analysisScreen = AnalysisScreenActions(rule)
+        signInScreen = SignInScreenActions(rule)
     }
 
     fun appIsLaunched(): When = apply {

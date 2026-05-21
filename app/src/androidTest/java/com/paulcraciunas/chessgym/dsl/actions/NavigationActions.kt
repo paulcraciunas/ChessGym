@@ -1,5 +1,6 @@
 package com.paulcraciunas.chessgym.dsl.actions
 
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
@@ -31,6 +32,13 @@ class NavigationActions(private val rule: ComposeTestRule) {
 
     fun navigateToTools(): NavigationActions =
         performAction(BottomNavigationTags.tagFor(BottomNavItem.ToolsDashboard))
+
+    fun navigateToSignIn(): NavigationActions = apply {
+        openDrawer()
+        // TODO Paul: add a tag for the drawer options
+        rule.onNode(hasText("Sign in…")).performClick()
+        rule.waitForIdle()
+    }
 
     private fun performAction(tag: String): NavigationActions = apply {
         rule.onNodeWithTag(tag).performClick()
