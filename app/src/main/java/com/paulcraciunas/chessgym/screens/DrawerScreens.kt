@@ -4,24 +4,50 @@ import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
+import com.paulcraciunas.chessgym.R
+import com.paulcraciunas.chessgym.auth.GoogleTokenSource
+import com.paulcraciunas.chessgym.navigation.Screen
 import com.paulcraciunas.screens.about.ui.AboutDetailScreen
 import com.paulcraciunas.screens.about.ui.AboutScreen
 import com.paulcraciunas.screens.about.vm.AboutSection
 import com.paulcraciunas.screens.about.vm.AboutViewModel
+import com.paulcraciunas.screens.signin.ui.SignInScreen
+import com.paulcraciunas.screens.signin.vm.SignInViewModel
 
 @Composable
-internal fun About(
-    onNavigateBack: () -> Unit,
-    onSectionClicked: (AboutSection) -> Unit,
-) {
+internal fun SignIn(tabNavController: NavHostController) {
+    val vm: SignInViewModel = hiltViewModel()
+    val signInState by vm.uiState.collectAsStateWithLifecycle()
+    val webClientId = stringResource(R.string.default_web_client_id)
+    val context = LocalContext.current
+    SignInScreen(
+        uiState = signInState,
+        onGoogleSignIn = { vm.onGoogleSignIn(GoogleTokenSource(webClientId, context)) },
+        onEmailSignIn = vm::onEmailSignIn,
+        onEmailSignUp = vm::onEmailSignUp,
+        onForgotPassword = vm::onForgotPassword,
+        onNavigateBack = tabNavController::popBackStack,
+        onClearError = {
+            vm.clearError()
+            vm.clearFieldErrors()
+        },
+    )
+}
+
+@Composable
+internal fun About(tabNavController: NavHostController) {
     val vm: AboutViewModel = hiltViewModel()
 
     AboutScreen(
-        onNavigateBack = onNavigateBack,
-        onSectionClicked = onSectionClicked,
+        onNavigateBack = tabNavController::popBackStack,
+        onSectionClicked = { section ->
+            tabNavController.navigate(Screen.AboutDetail(section = section.name))
+        },
         interactions = vm,
     )
 }
