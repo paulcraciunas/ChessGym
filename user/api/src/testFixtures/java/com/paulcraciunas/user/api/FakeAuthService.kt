@@ -63,7 +63,7 @@ class FakeAuthService : AuthService {
         users[email] = StoredUser(id = id, password = password)
     }
 
-    fun withExistingUser(token: String, id: String, displayName: String? = null): FakeAuthService = apply {
+    fun withTokenUser(token: String, id: String, displayName: String? = null): FakeAuthService = apply {
         userTokens[token] = TokenUser(id = id, displayName = displayName)
     }
 
