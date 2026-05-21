@@ -63,8 +63,7 @@ internal class SignInScreenTest : BaseUiTest() {
         When.signInScreen.tapSubmit()
 
         Then.signInScreen
-            .hasEmailFieldError("This field is required.")
-            .hasPasswordFieldError("This field is required.")
+            .hasEmailAndPasswordError("This field is required.")
             .hasNoGeneralError()
     }
 
@@ -162,7 +161,7 @@ internal class SignInScreenTest : BaseUiTest() {
             .tapSubmit()
 
         Then.signInScreen
-            .hasDisplayNameFieldError("Display name must be at least 2 characters.")
+            .hasDisplayNameFieldError("Display name must be at least 4 characters.")
     }
 
     @Test

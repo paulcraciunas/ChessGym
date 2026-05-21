@@ -28,7 +28,7 @@ class FakeAuthService : AuthService {
                 userId = users[email]!!.id,
                 provider = User.AuthenticationState.AuthProvider.EMAIL,
             ),
-            displayName = null,
+            displayName = users[email]?.name,
         )
     }
 
@@ -59,8 +59,8 @@ class FakeAuthService : AuthService {
 
     fun isClear(): Boolean = users.isEmpty() && userTokens.isEmpty()
 
-    fun withExistingUser(email: String, password: String, id: String): FakeAuthService = apply {
-        users[email] = StoredUser(id = id, password = password)
+    fun withExistingUser(email: String, password: String, id: String, name: String? = null): FakeAuthService = apply {
+        users[email] = StoredUser(id = id, password = password, name)
     }
 
     fun withTokenUser(token: String, id: String, displayName: String? = null): FakeAuthService = apply {
@@ -75,6 +75,6 @@ class FakeAuthService : AuthService {
         genericError = e
     }
 
-    private class StoredUser(val id: String, val password: String)
+    private class StoredUser(val id: String, val password: String, val name: String? = null)
     private class TokenUser(val id: String, val displayName: String?)
 }

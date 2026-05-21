@@ -1,12 +1,12 @@
 package com.paulcraciunas.chessgym.dsl.actions
 
-import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import com.paulcraciunas.chessgym.navigation.BottomNavItem
 import com.paulcraciunas.chessgym.navigation.BottomNavigationTags
 import com.paulcraciunas.screens.common.AppBarTags
+import com.paulcraciunas.screens.common.AppDrawerTags
 
 /**
  * Shared navigation actions available from any screen: bottom-bar tab switching,
@@ -35,8 +35,7 @@ class NavigationActions(private val rule: ComposeTestRule) {
 
     fun navigateToSignIn(): NavigationActions = apply {
         openDrawer()
-        // TODO Paul: add a tag for the drawer options
-        rule.onNode(hasText("Sign in…")).performClick()
+        rule.onNodeWithTag(AppDrawerTags.SIGN_IN).performClick()
         rule.waitForIdle()
     }
 

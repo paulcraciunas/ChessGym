@@ -1,5 +1,6 @@
 package com.paulcraciunas.chessgym.dsl.actions
 
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
@@ -44,9 +45,7 @@ class FindTheSquareScreenActions(private val rule: ComposeTestRule) {
     fun waitForGameToEnd(timeoutMillis: Long): FindTheSquareScreenActions = apply {
         TestClockTimersModule.defaultTimer.advanceUntilIdle()
         rule.waitUntil(timeoutMillis = timeoutMillis) {
-            rule.onAllNodes(
-                androidx.compose.ui.test.hasTestTag(FindTheSquareTags.GAME_SUMMARY)
-            ).fetchSemanticsNodes().isNotEmpty()
+            rule.onAllNodes(hasTestTag(FindTheSquareTags.GAME_SUMMARY)).fetchSemanticsNodes().isNotEmpty()
         }
     }
 }
