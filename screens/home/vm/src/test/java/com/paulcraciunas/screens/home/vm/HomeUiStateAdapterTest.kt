@@ -21,7 +21,7 @@ internal class HomeUiStateAdapterTest {
         val result = underTest.adapt(user, today)
 
         // Then
-        assertEquals("Chess Enthusiast", result.userProfile.name)
+        assertEquals("ChessEnthusiast", result.userProfile.name)
         assertEquals(1000, result.userProfile.currentRating)
         assertEquals(0, result.userProfile.totalActivities)
 
@@ -44,8 +44,7 @@ internal class HomeUiStateAdapterTest {
         // Given
         val user = User(
             profile = User.Profile(
-                firstName = "John",
-                lastName = "Doe",
+                displayName = "JohnDoe",
                 joinDate = LocalDate.of(2023, 5, 15),
                 avatarUrl = "https://example.com/avatar.jpg"
             ),
@@ -56,7 +55,7 @@ internal class HomeUiStateAdapterTest {
         val result = underTest.adapt(user, today)
 
         // Then
-        assertEquals("John Doe", result.userProfile.name)
+        assertEquals("JohnDoe", result.userProfile.name)
         assertEquals(1450, result.userProfile.currentRating)
         assertEquals(0, result.userProfile.totalActivities)
         assertEquals(LocalDate.of(2023, 5, 15), result.userProfile.joinDate)

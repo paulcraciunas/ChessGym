@@ -13,6 +13,7 @@ import com.paulcraciunas.domain.impl.auth.SignOutUseCaseImpl
 import com.paulcraciunas.global.device.api.fakes.FakeGetNetworkState
 import com.paulcraciunas.global.device.api.usecases.GetNetworkState.NetworkState
 import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
+import com.paulcraciunas.user.api.AuthResult
 import com.paulcraciunas.user.api.FakeAuthService
 import com.paulcraciunas.user.api.FakeSyncScheduler
 import com.paulcraciunas.user.api.FakeSyncState
@@ -303,11 +304,14 @@ internal class MainScreenViewModelTest {
     }
 
     private suspend fun signInUser() {
-        val authState = User.AuthenticationState(
-            userId = UserDefaults.USER_ID,
-            provider = User.AuthenticationState.AuthProvider.GOOGLE,
+        val authResult = AuthResult(
+            authState = User.AuthenticationState(
+                userId = UserDefaults.USER_ID,
+                provider = User.AuthenticationState.AuthProvider.GOOGLE,
+            ),
+            displayName = null,
         )
-        fakeUserRepository.signIn(authState)
+        fakeUserRepository.signIn(authResult)
     }
 
     private class NoOpDebugMenuProvider : DebugMenuProvider {

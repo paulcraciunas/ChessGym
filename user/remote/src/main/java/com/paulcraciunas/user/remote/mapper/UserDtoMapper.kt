@@ -31,16 +31,14 @@ class UserDtoMapper @Inject constructor() {
     )
 
     private fun mapProfile(profile: User.Profile): ProfileDto = ProfileDto(
-        firstName = profile.firstName,
-        lastName = profile.lastName,
+        displayName = profile.displayName,
         joinDate = profile.joinDate.format(DateTimeFormatter.ISO_LOCAL_DATE),
         avatarUrl = profile.avatarUrl,
         lastModified = System.currentTimeMillis(),
     )
 
     private fun parseProfile(dto: ProfileDto): User.Profile = User.Profile(
-        firstName = dto.firstName,
-        lastName = dto.lastName,
+        displayName = dto.displayName,
         joinDate = dto.joinDate.parseLocalDate() ?: LocalDate.now(),
         avatarUrl = dto.avatarUrl,
     )

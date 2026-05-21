@@ -21,7 +21,7 @@ internal class AuthenticateUseCaseImplTest {
     internal inner class GoogleCredentials {
         @Test
         fun `GIVEN valid token WHEN invoke with Google THEN authenticates and returns signed-in user`() = runTest {
-            fakeAuthService.withExistingUser(GOOGLE_TOKEN, UserDefaults.USER_ID)
+            fakeAuthService.withTokenUser(GOOGLE_TOKEN, UserDefaults.USER_ID)
 
             val result = underTest(Credentials.Google { GOOGLE_TOKEN })
 
@@ -34,7 +34,7 @@ internal class AuthenticateUseCaseImplTest {
 
         @Test
         fun `GIVEN auth service throws WHEN invoke with Google THEN exception propagates`() = runTest {
-            fakeAuthService.withExistingUser(GOOGLE_TOKEN, UserDefaults.USER_ID)
+            fakeAuthService.withTokenUser(GOOGLE_TOKEN, UserDefaults.USER_ID)
             fakeAuthService.disconnect()
 
             assertThrows<AuthException.NetworkError> {
@@ -91,7 +91,7 @@ internal class AuthenticateUseCaseImplTest {
     internal inner class NewAccountCredentials {
         @Test
         fun `GIVEN valid credentials WHEN invoke with NewAccount THEN creates account and returns signed-in user`() = runTest {
-            val result = underTest(Credentials.NewAccount(DEFAULT_EMAIL, DEFAULT_PASS))
+            val result = underTest(Credentials.NewAccount(DEFAULT_EMAIL, DEFAULT_PASS, DEFAULT_DISPLAY_NAME))
 
             assertEquals(UserDefaults.USER_ID, result.authentication?.userId)
             assertEquals(
@@ -101,18 +101,27 @@ internal class AuthenticateUseCaseImplTest {
         }
 
         @Test
+        fun `GIVEN valid credentials WHEN invoke with NewAccount THEN display name is saved`() = runTest {
+            val result = underTest(Credentials.NewAccount(DEFAULT_EMAIL, DEFAULT_PASS, DEFAULT_DISPLAY_NAME))
+
+            assertEquals(DEFAULT_DISPLAY_NAME, result.profile.displayName)
+            val storedUser = fakeUserRepository.get()
+            assertEquals(DEFAULT_DISPLAY_NAME, storedUser.profile.displayName)
+        }
+
+        @Test
         fun `GIVEN account exists WHEN invoke with NewAccount THEN exception propagates`() = runTest {
             fakeAuthService.withExistingUser(DEFAULT_EMAIL, DEFAULT_PASS, UserDefaults.USER_ID)
 
             assertThrows<AuthException.AccountCollision> {
-                underTest(Credentials.NewAccount(DEFAULT_EMAIL, DEFAULT_PASS))
+                underTest(Credentials.NewAccount(DEFAULT_EMAIL, DEFAULT_PASS, DEFAULT_DISPLAY_NAME))
             }
         }
 
         @Test
         fun `GIVEN password is too short WHEN invoke with NewAccount THEN exception propagates`() = runTest {
             assertThrows<AuthException.WeakPassword> {
-                underTest(Credentials.NewAccount(DEFAULT_EMAIL, "pass"))
+                underTest(Credentials.NewAccount(DEFAULT_EMAIL, "pass", DEFAULT_DISPLAY_NAME))
             }
         }
     }
@@ -121,7 +130,7 @@ internal class AuthenticateUseCaseImplTest {
     internal inner class RepositoryIntegration {
         @Test
         fun `GIVEN successful auth WHEN invoke THEN user is persisted via repository signIn`() = runTest {
-            fakeAuthService.withExistingUser(GOOGLE_TOKEN, UserDefaults.USER_ID)
+            fakeAuthService.withTokenUser(GOOGLE_TOKEN, UserDefaults.USER_ID)
 
             val result = underTest(Credentials.Google { GOOGLE_TOKEN })
 
@@ -135,5 +144,6 @@ internal class AuthenticateUseCaseImplTest {
         private const val GOOGLE_TOKEN = "google-token-123"
         private const val DEFAULT_EMAIL = "darth.vader@theempire.glx"
         private const val DEFAULT_PASS = "myRealNameIsAnakin"
+        private const val DEFAULT_DISPLAY_NAME = "DarthVader"
     }
 }

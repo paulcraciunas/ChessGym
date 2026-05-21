@@ -19,9 +19,13 @@ class FakeUserRemoteDataSource : UserRemoteDataSource {
         }
     }
 
-    override suspend fun signIn(auth: User.AuthenticationState): User {
+    override suspend fun signIn(authResult: AuthResult, deviceId: String): User {
         exception?.let { throw it }
-        user = User(authentication = auth)
+        val displayName = authResult.displayName.orEmpty()
+        user = User(
+            authentication = authResult.authState,
+            profile = User.Profile(displayName = displayName),
+        )
         return user!!
     }
 

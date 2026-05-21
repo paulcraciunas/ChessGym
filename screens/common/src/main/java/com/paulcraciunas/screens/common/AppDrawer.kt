@@ -32,6 +32,15 @@ import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
+object AppDrawerTags {
+    const val APP_DRAWER_TAG = "app_drawer_tag"
+    const val SIGN_IN = "${APP_DRAWER_TAG}_SIGN_IN"
+    const val SIGN_OUT = "${APP_DRAWER_TAG}_SIGN_OUT"
+    const val SETTINGS = "${APP_DRAWER_TAG}_SETTINGS"
+    const val ABOUT = "${APP_DRAWER_TAG}_ABOUT"
+    const val DELETE_ACCOUNT = "${APP_DRAWER_TAG}_DELETE_ACCOUNT"
+}
+
 @Composable
 fun AppDrawer(
     drawerState: DrawerState,
@@ -74,6 +83,7 @@ fun AppDrawer(
                     },
                     selected = false,
                     onClick = { onSignOut(); closeDrawer() },
+                    modifier = Modifier.testTag { AppDrawerTags.SIGN_OUT },
                 )
             } else {
                 NavigationDrawerItem(
@@ -86,6 +96,7 @@ fun AppDrawer(
                     },
                     selected = false,
                     onClick = { onSignIn(); closeDrawer() },
+                    modifier = Modifier.testTag { AppDrawerTags.SIGN_IN },
                 )
             }
             HorizontalDivider()
@@ -119,12 +130,14 @@ fun AppDrawer(
                     )
                 },
                 onClick = { onSettings(); closeDrawer() },
+                modifier = Modifier.testTag { AppDrawerTags.SETTINGS },
             )
             NavigationDrawerItem(
                 label = { Text(text = stringResource(R.string.nav_drawer_about)) },
                 selected = false,
                 icon = { Icon(imageVector = Icons.Outlined.Info, contentDescription = null) },
                 onClick = { onAbout(); closeDrawer() },
+                modifier = Modifier.testTag { AppDrawerTags.ABOUT },
             )
             if (isSignedIn) {
                 HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
@@ -144,6 +157,7 @@ fun AppDrawer(
                         )
                     },
                     onClick = { onDeleteAccount(); closeDrawer() },
+                    modifier = Modifier.testTag { AppDrawerTags.DELETE_ACCOUNT },
                 )
             }
             trailingContent()

@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class UserDto(
+    val deviceId: String = "",
     val profile: ProfileDto = ProfileDto(),
     val ratings: RatingsDto = RatingsDto(),
     val highScores: HighScoresDto = HighScoresDto(),
@@ -13,17 +14,11 @@ data class UserDto(
 
 @Serializable
 data class ProfileDto(
-    val firstName: String = DEFAULT_FIRST_NAME,
-    val lastName: String = DEFAULT_LAST_NAME,
+    val displayName: String = "",
     val joinDate: String? = null,
     val avatarUrl: String? = null,
     val lastModified: Long = 0L,
-) {
-    companion object {
-        const val DEFAULT_FIRST_NAME: String = "Chess"
-        const val DEFAULT_LAST_NAME: String = "Enthusiast"
-    }
-}
+)
 
 @Serializable
 data class RatingsDto(

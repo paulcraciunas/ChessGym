@@ -23,15 +23,13 @@ class UserSetup(private val repository: FakeUserRepository) {
     }
 
     fun isLoaded(
-        firstName: String = "Chess",
-        lastName: String = "Enthusiast",
+        displayName: String = "ChessEnthusiast",
         rating: Int = 1200,
         joinDate: LocalDate = LocalDate.now(),
     ): UserSetup = apply {
         val user = User(
             profile = User.Profile(
-                firstName = firstName,
-                lastName = lastName,
+                displayName = displayName,
                 joinDate = joinDate,
             ),
             ratings = User.Ratings(current = rating),

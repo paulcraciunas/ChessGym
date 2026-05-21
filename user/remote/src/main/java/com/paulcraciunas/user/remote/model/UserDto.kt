@@ -13,8 +13,7 @@ data class UserDto(
 
 @Serializable
 data class ProfileDto(
-    val firstName: String = "Chess",
-    val lastName: String = "Enthusiast",
+    val displayName: String = "ChessEnthusiast",
     val joinDate: String? = null,
     val avatarUrl: String? = null,
     val lastModified: Long = 0L,

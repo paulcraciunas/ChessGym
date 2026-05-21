@@ -18,6 +18,7 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
+import com.paulcraciunas.user.api.AuthResult as AppAuthResult
 
 @Singleton
 class FirebaseAuthService @Inject constructor(
@@ -25,21 +26,33 @@ class FirebaseAuthService @Inject constructor(
     @param:IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : AuthService {
 
-    override suspend fun signInWithGoogleToken(idToken: String): User.AuthenticationState =
+    override suspend fun signInWithGoogleToken(idToken: String): AppAuthResult =
         performAuth(User.AuthenticationState.AuthProvider.GOOGLE) {
             val credential = GoogleAuthProvider.getCredential(idToken, null)
             firebaseAuth.signInWithCredential(credential)
         }
 
-    override suspend fun signInWithEmail(email: String, password: String): User.AuthenticationState =
+    override suspend fun signInWithEmail(email: String, password: String): AppAuthResult =
         performAuth(User.AuthenticationState.AuthProvider.EMAIL) {
             firebaseAuth.signInWithEmailAndPassword(email, password)
         }
 
-    override suspend fun signUpWithEmail(email: String, password: String): User.AuthenticationState =
+    override suspend fun signUpWithEmail(email: String, password: String): AppAuthResult =
         performAuth(User.AuthenticationState.AuthProvider.EMAIL) {
             firebaseAuth.createUserWithEmailAndPassword(email, password)
         }
+
+    override suspend fun sendPasswordResetEmail(email: String): Unit = withContext(ioDispatcher) {
+        try {
+            firebaseAuth.sendPasswordResetEmail(email).await()
+        } catch (e: FirebaseAuthInvalidUserException) {
+            throw AuthException.UserNotFound(e)
+        } catch (e: FirebaseNetworkException) {
+            throw AuthException.NetworkError(e)
+        } catch (e: Exception) {
+            throw AuthException.Unknown(e)
+        }
+    }
 
     override suspend fun deleteAccount(): Unit = withContext(ioDispatcher) {
         val user = firebaseAuth.currentUser
@@ -56,16 +69,19 @@ class FirebaseAuthService @Inject constructor(
     private suspend fun performAuth(
         provider: User.AuthenticationState.AuthProvider,
         action: () -> Task<AuthResult>,
-    ): User.AuthenticationState = withContext(ioDispatcher) {
+    ): AppAuthResult = withContext(ioDispatcher) {
         try {
             val firebaseResult = action().await()
             val user = firebaseResult.user ?: throw AuthException.Unknown(
                 IllegalStateException("Firebase user is null after $provider sign-in")
             )
 
-            User.AuthenticationState(
-                userId = user.uid,
-                provider = provider,
+            AppAuthResult(
+                authState = User.AuthenticationState(
+                    userId = user.uid,
+                    provider = provider,
+                ),
+                displayName = user.displayName,
             )
         } catch (e: AuthException) {
             throw e

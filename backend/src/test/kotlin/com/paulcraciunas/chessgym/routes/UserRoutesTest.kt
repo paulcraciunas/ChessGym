@@ -50,8 +50,7 @@ class UserRoutesTest {
 
         val userDto = UserDto(
             profile = ProfileDto(
-                firstName = "Paul",
-                lastName = "C",
+                displayName = "Paul",
                 lastModified = 1000L,
             ),
             ratings = RatingsDto(current = 1200, blindMode = 500),
@@ -71,7 +70,7 @@ class UserRoutesTest {
         assertEquals(HttpStatusCode.OK, getResponse.status)
 
         val retrieved = getResponse.body<UserDto>()
-        assertEquals("Paul", retrieved.profile.firstName)
+        assertEquals("Paul", retrieved.profile.displayName)
         assertEquals(1200, retrieved.ratings.current)
         assertEquals(15, retrieved.highScores.puzzleRush)
     }

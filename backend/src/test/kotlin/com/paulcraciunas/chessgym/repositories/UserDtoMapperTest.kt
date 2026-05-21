@@ -20,9 +20,9 @@ class UserDtoMapperTest {
     @Test
     fun `round-trip with fully populated user preserves all fields`() {
         val original = UserDto(
+            deviceId = "device-abc-123",
             profile = ProfileDto(
-                firstName = "Paul",
-                lastName = "Craciunas",
+                displayName = "PaulCraciunas",
                 joinDate = "2025-01-15",
                 avatarUrl = "https://example.com/avatar.png",
                 lastModified = 1717000000L,
@@ -64,13 +64,12 @@ class UserDtoMapperTest {
     @Test
     fun `fromMap handles missing nested fields with defaults`() {
         val data = mapOf(
-            "profile" to mapOf("firstName" to "Test"),
+            "profile" to mapOf("displayName" to "Test"),
             "ratings" to emptyMap<String, Any>(),
         )
 
         val dto = mapper.fromMap(data)
-        assertEquals("Test", dto.profile.firstName)
-        assertEquals(ProfileDto.DEFAULT_LAST_NAME, dto.profile.lastName)
+        assertEquals("Test", dto.profile.displayName)
         assertNull(dto.profile.joinDate)
         assertEquals(RatingsDto.DEFAULT_RATED_PUZZLE_RATING, dto.ratings.current)
     }
@@ -110,12 +109,12 @@ class UserDtoMapperTest {
     @Test
     fun `fromMap handles wrongly typed values by falling back to defaults`() {
         val data = mapOf(
-            "profile" to mapOf("firstName" to 12345),
+            "profile" to mapOf("displayName" to 12345),
             "ratings" to mapOf("current" to "not-a-number"),
         )
 
         val dto = mapper.fromMap(data)
-        assertEquals(ProfileDto.DEFAULT_FIRST_NAME, dto.profile.firstName)
+        assertEquals("", dto.profile.displayName)
         assertEquals(RatingsDto.DEFAULT_RATED_PUZZLE_RATING, dto.ratings.current)
     }
 

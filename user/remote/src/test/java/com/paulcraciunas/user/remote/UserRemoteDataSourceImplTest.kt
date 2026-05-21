@@ -1,12 +1,15 @@
 package com.paulcraciunas.user.remote
 
+import com.paulcraciunas.user.api.AuthResult
 import com.paulcraciunas.user.api.User
 import com.paulcraciunas.user.api.UserApiException
 import com.paulcraciunas.user.remote.mapper.UserDtoMapper
+import com.paulcraciunas.user.remote.model.SignInRequest
 import com.paulcraciunas.user.remote.model.UserDto
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
+import io.ktor.client.engine.mock.toByteArray
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.http.ContentType
@@ -37,12 +40,15 @@ internal class UserRemoteDataSourceImplTest {
     }
 
     @Test
-    fun `GIVEN valid token WHEN signIn THEN POSTs to auth endpoint and returns user`() = runBlocking {
+    fun `GIVEN auth result WHEN signIn THEN POSTs to auth endpoint with body and returns user`() = runBlocking {
         // Given
         val responseDto = UserDto()
         val engine = MockEngine { request ->
             assertEquals("$baseUrl/api/v1/auth/signin", request.url.toString())
             assertEquals(HttpMethod.Post, request.method)
+            val body = json.decodeFromString<SignInRequest>(request.body.toByteArray().decodeToString())
+            assertEquals("device_abc", body.deviceId)
+            assertEquals("TestUser", body.displayName)
             respond(
                 content = json.encodeToString(responseDto),
                 status = HttpStatusCode.Created,
@@ -50,17 +56,49 @@ internal class UserRemoteDataSourceImplTest {
             )
         }
         val underTest = UserRemoteDataSourceImpl(createClient(engine), mapper, api, testDispatcher)
-        val auth = User.AuthenticationState(
-            provider = User.AuthenticationState.AuthProvider.GOOGLE,
-            userId = "uid_123",
+        val authResult = AuthResult(
+            authState = User.AuthenticationState(
+                provider = User.AuthenticationState.AuthProvider.GOOGLE,
+                userId = "uid_123",
+            ),
+            displayName = "TestUser",
         )
 
         // When
-        val result = underTest.signIn(auth)
+        val result = underTest.signIn(authResult, "device_abc")
 
         // Then
-        assertEquals(auth, result.authentication)
-        assertEquals("Chess", result.profile.firstName)
+        assertEquals(authResult.authState, result.authentication)
+    }
+
+    @Test
+    fun `GIVEN auth result without display name WHEN signIn THEN sends null displayName`() = runBlocking {
+        // Given
+        val responseDto = UserDto()
+        val engine = MockEngine { request ->
+            val body = json.decodeFromString<SignInRequest>(request.body.toByteArray().decodeToString())
+            assertEquals("device_abc", body.deviceId)
+            assertNull(body.displayName)
+            respond(
+                content = json.encodeToString(responseDto),
+                status = HttpStatusCode.Created,
+                headers = headersOf(HttpHeaders.ContentType, "application/json"),
+            )
+        }
+        val underTest = UserRemoteDataSourceImpl(createClient(engine), mapper, api, testDispatcher)
+        val authResult = AuthResult(
+            authState = User.AuthenticationState(
+                provider = User.AuthenticationState.AuthProvider.EMAIL,
+                userId = "uid_123",
+            ),
+            displayName = null,
+        )
+
+        // When
+        val result = underTest.signIn(authResult, "device_abc")
+
+        // Then
+        assertEquals(authResult.authState, result.authentication)
     }
 
     @Test
@@ -82,7 +120,7 @@ internal class UserRemoteDataSourceImplTest {
         val result = underTest.getUser("uid_123")
 
         // Then
-        assertEquals("Chess", result.profile.firstName)
+        assertEquals("ChessEnthusiast", result.profile.displayName)
         assertNull(result.authentication)
     }
 

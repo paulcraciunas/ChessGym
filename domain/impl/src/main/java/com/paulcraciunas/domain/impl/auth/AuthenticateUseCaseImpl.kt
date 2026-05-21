@@ -12,7 +12,7 @@ class AuthenticateUseCaseImpl @Inject constructor(
 ) : AuthenticateUseCase {
 
     override suspend fun invoke(credentials: AuthenticateUseCase.Credentials): User {
-        val authState = credentials.authenticate(authService)
-        return userRepository.signIn(authState)
+        val authResult = credentials.authenticate(authService)
+        return userRepository.signIn(authResult)
     }
 }

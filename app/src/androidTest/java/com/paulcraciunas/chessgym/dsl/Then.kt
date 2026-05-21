@@ -15,6 +15,7 @@ import com.paulcraciunas.chessgym.dsl.assertions.PuzzleDashboardAssertions
 import com.paulcraciunas.chessgym.dsl.assertions.PuzzleRushScreenAssertions
 import com.paulcraciunas.chessgym.dsl.assertions.PuzzleStreakScreenAssertions
 import com.paulcraciunas.chessgym.dsl.assertions.RatedPuzzleScreenAssertions
+import com.paulcraciunas.chessgym.dsl.assertions.SignInScreenAssertions
 import com.paulcraciunas.chessgym.dsl.assertions.ThemeAssertions
 import com.paulcraciunas.chessgym.dsl.assertions.ToolsDashboardAssertions
 
@@ -36,6 +37,7 @@ object Then {
     lateinit var clockScreen: ClockScreenAssertions
     lateinit var importGame: ImportGameScreenAssertions
     lateinit var analysisScreen: AnalysisScreenAssertions
+    lateinit var signInScreen: SignInScreenAssertions
 
     fun init(rule: ComposeTestRule) {
         compose = rule
@@ -55,5 +57,6 @@ object Then {
         clockScreen = ClockScreenAssertions(rule)
         importGame = ImportGameScreenAssertions(rule)
         analysisScreen = AnalysisScreenAssertions(rule)
+        signInScreen = SignInScreenAssertions(rule)
     }
 }

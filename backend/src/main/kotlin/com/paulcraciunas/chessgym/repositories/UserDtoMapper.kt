@@ -13,6 +13,7 @@ class UserDtoMapper {
         val achievementsMap = data["achievements"].asMap()
 
         return UserDto(
+            deviceId = data["deviceId"] as? String ?: "",
             profile = parseProfile(profileMap),
             ratings = parseRatings(ratingsMap),
             highScores = parseHighScores(highScoresMap),
@@ -22,9 +23,9 @@ class UserDtoMapper {
     }
 
     fun asMap(user: UserDto): Map<String, Any?> = mapOf(
+        "deviceId" to user.deviceId,
         "profile" to mapOf(
-            "firstName" to user.profile.firstName,
-            "lastName" to user.profile.lastName,
+            "displayName" to user.profile.displayName,
             "joinDate" to user.profile.joinDate,
             "avatarUrl" to user.profile.avatarUrl,
             "lastModified" to user.profile.lastModified,
@@ -65,8 +66,7 @@ class UserDtoMapper {
     )
 
     private fun parseProfile(data: Map<String, Any>): ProfileDto = ProfileDto(
-        firstName = data["firstName"] as? String ?: ProfileDto.DEFAULT_FIRST_NAME,
-        lastName = data["lastName"] as? String ?: ProfileDto.DEFAULT_LAST_NAME,
+        displayName = data["displayName"] as? String ?: "",
         joinDate = data["joinDate"] as? String,
         avatarUrl = data["avatarUrl"] as? String,
         lastModified = data["lastModified"].asLong(),

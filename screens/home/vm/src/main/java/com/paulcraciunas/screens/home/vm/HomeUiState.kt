@@ -17,12 +17,12 @@ data class HomeUiState(
     )
 
     data class UserProfile(
-        val name: String = "Chess Player",
+        val name: String = "ChessPlayer",
         val currentRating: Int = 1200,
         val totalActivities: Int = 0,
         val joinDate: LocalDate = LocalDate.now(),
     ) {
-        fun initials(): String = name.split(" ").map { it.first() }.joinToString(separator = "") { it.toString() }
+        fun initial(): String = name.first().uppercase()
     }
 
     data class Stats(

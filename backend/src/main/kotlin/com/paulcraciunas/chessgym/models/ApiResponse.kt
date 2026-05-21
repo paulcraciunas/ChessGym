@@ -20,6 +20,7 @@ data class ErrorResponse(
 @Serializable
 data class SignInRequest(
     val deviceId: String,
+    val displayName: String? = null,
 )
 
 @Serializable
