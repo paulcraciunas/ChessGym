@@ -671,9 +671,12 @@
     <string name="auth_error_account_already_exists">An account with this email already exists.</string>
     <string name="auth_error_weak_password">Password is too weak. Use at least 6 characters.</string>
     <string name="auth_error_network">Network error. Check your connection and try again.</string>
-    <string name="auth_error_empty_fields">Email and password cannot be empty.</string>
+    <string name="auth_error_empty_fields">This field is required.</string>
     <string name="auth_error_invalid_email">Please enter a valid email address.</string>
     <string name="auth_error_password_too_short">Password must be at least 6 characters.</string>
+    <string name="auth_error_display_name_too_short">Display name must be at least 4 characters.</string>
+    <string name="auth_error_password_reset_user_not_found">No account found with this email address.</string>
+    <string name="auth_error_password_reset_sent">Password reset email sent. Check your inbox.</string>
     <string name="auth_error_no_google_accounts">No Google accounts found on this device. Please add a Google account in your device settings first.</string>
     <string name="auth_error_session_expired">Your session has expired. Please sign in again.</string>
     <string name="auth_error_account_disabled">This account has been disabled.</string>
@@ -690,6 +693,7 @@
     <string name="sign_in_google">Sign in with Google</string>
     <string name="sign_up_google">Sign up with Google</string>
     <string name="sign_in_divider">or with email</string>
+    <string name="sign_in_display_name_label">Display Name</string>
     <string name="sign_in_email_label">Email</string>
     <string name="sign_in_password_label">Password</string>
     <string name="sign_in_password_show">Show</string>
@@ -698,6 +702,7 @@
     <string name="sign_up_button">Create Account</string>
     <string name="sign_in_switch_to_sign_up">Don\'t have an account? &lt;b>&lt;u>Create one&lt;/u>&lt;/b></string>
     <string name="sign_in_switch_to_sign_in">Already have an account? &lt;b>&lt;u>Sign In&lt;/u>&lt;/b></string>
+    <string name="sign_in_forgot_password">Forgot password?</string>
     <!-- endregion -->
 
 </resources>
