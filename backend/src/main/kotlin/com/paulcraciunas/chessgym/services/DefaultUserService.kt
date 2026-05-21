@@ -1,5 +1,6 @@
 package com.paulcraciunas.chessgym.services
 
+import com.paulcraciunas.chessgym.models.ProfileDto
 import com.paulcraciunas.chessgym.models.UserDto
 import com.paulcraciunas.chessgym.repositories.UserRepository
 
@@ -11,12 +12,17 @@ class DefaultUserService(
     override suspend fun findOrCreateUser(
         userId: String,
         deviceId: String,
+        displayName: String?,
     ): Pair<UserDto, Boolean> {
         val existing = userRepository.findById(userId)
         if (existing != null) {
             return existing to false
         }
-        val newUser = UserDto()
+        require(!displayName.isNullOrBlank()) { "Display name is required for new users" }
+        val newUser = UserDto(
+            deviceId = deviceId,
+            profile = ProfileDto(displayName = displayName),
+        )
         userRepository.save(userId, newUser)
         return newUser to true
     }

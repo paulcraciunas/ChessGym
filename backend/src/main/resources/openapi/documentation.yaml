@@ -59,6 +59,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SignInResponse"
+        "400":
+          description: Missing display name for new user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "401":
           description: Invalid or missing token
           content:
@@ -176,7 +182,11 @@ components:
       properties:
         deviceId:
           type: string
-          description: Android device identifier
+          description: Locally generated UUID identifying the user. Persisted server-side when the user is first created.
+        displayName:
+          type: string
+          nullable: true
+          description: Required when creating a new user (returns 400 if blank). Ignored for existing users.
 
     SignInResponse:
       type: object
@@ -191,6 +201,9 @@ components:
     UserDto:
       type: object
       properties:
+        deviceId:
+          type: string
+          description: UUID identifying the user
         profile:
           $ref: "#/components/schemas/ProfileDto"
         ratings:
@@ -205,12 +218,9 @@ components:
     ProfileDto:
       type: object
       properties:
-        firstName:
+        displayName:
           type: string
-          example: Chess
-        lastName:
-          type: string
-          example: Enthusiast
+          example: ChessEnthusiast
         joinDate:
           type: string
           nullable: true

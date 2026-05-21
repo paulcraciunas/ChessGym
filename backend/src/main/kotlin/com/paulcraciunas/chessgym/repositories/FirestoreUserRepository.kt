@@ -39,7 +39,7 @@ class FirestoreUserRepository(
             .get()
             .get()
             .documents
-            .mapNotNull { doc -> doc.data?.let { mapper.fromMap(it) } }
+            .mapNotNull { doc -> doc.data.let { mapper.fromMap(it) } }
     }
 
     companion object {

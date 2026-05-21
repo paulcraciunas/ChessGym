@@ -26,7 +26,18 @@ fun Route.authRoutes(userService: UserService) {
                 }
 
                 val request = call.receive<SignInRequest>()
-                val (user, isNew) = userService.findOrCreateUser(uid, request.deviceId)
+                val (user, isNew) = try {
+                    userService.findOrCreateUser(uid, request.deviceId, request.displayName)
+                } catch (e: IllegalArgumentException) {
+                    call.respond(
+                        HttpStatusCode.BadRequest,
+                        ErrorResponse(
+                            e.message ?: "Invalid request",
+                            ErrorCode.BAD_REQUEST,
+                        ),
+                    )
+                    return@post
+                }
 
                 call.respond(
                     if (isNew) HttpStatusCode.Created else HttpStatusCode.OK,

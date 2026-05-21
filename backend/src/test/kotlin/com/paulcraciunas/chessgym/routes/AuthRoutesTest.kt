@@ -42,24 +42,20 @@ class AuthRoutesTest {
         val response = client.post("/api/v1/auth/signin") {
             contentType(ContentType.Application.Json)
             bearerAuth("valid-token")
-            setBody(SignInRequest(deviceId = "device-1"))
+            setBody(SignInRequest(deviceId = "device-1", displayName = "ChessPlayer"))
         }
 
         assertEquals(HttpStatusCode.Created, response.status)
         val body = response.body<SignInResponse>()
         assertEquals("user-123", body.userId)
         assertTrue(body.isNewUser)
+        assertEquals("ChessPlayer", body.user.profile.displayName)
+        assertEquals("device-1", body.user.deviceId)
     }
 
     @Test
-    fun `POST signin with existing user returns 200`() = testApplication(fakeAuth, repository) { client ->
+    fun `POST signin without displayName for new user returns 400`() = testApplication(fakeAuth, repository) { client ->
         fakeAuth.registerToken("valid-token", uid = "user-123", email = "test@example.com")
-
-        client.post("/api/v1/auth/signin") {
-            contentType(ContentType.Application.Json)
-            bearerAuth("valid-token")
-            setBody(SignInRequest(deviceId = "device-1"))
-        }
 
         val response = client.post("/api/v1/auth/signin") {
             contentType(ContentType.Application.Json)
@@ -67,9 +63,43 @@ class AuthRoutesTest {
             setBody(SignInRequest(deviceId = "device-1"))
         }
 
+        assertEquals(HttpStatusCode.BadRequest, response.status)
+    }
+
+    @Test
+    fun `POST signin with blank displayName for new user returns 400`() = testApplication(fakeAuth, repository) { client ->
+        fakeAuth.registerToken("valid-token", uid = "user-123", email = "test@example.com")
+
+        val response = client.post("/api/v1/auth/signin") {
+            contentType(ContentType.Application.Json)
+            bearerAuth("valid-token")
+            setBody(SignInRequest(deviceId = "device-1", displayName = "   "))
+        }
+
+        assertEquals(HttpStatusCode.BadRequest, response.status)
+    }
+
+    @Test
+    fun `POST signin with existing user returns 200 and preserves original data`() = testApplication(fakeAuth, repository) { client ->
+        fakeAuth.registerToken("valid-token", uid = "user-123", email = "test@example.com")
+
+        client.post("/api/v1/auth/signin") {
+            contentType(ContentType.Application.Json)
+            bearerAuth("valid-token")
+            setBody(SignInRequest(deviceId = "device-1", displayName = "ChessPlayer"))
+        }
+
+        val response = client.post("/api/v1/auth/signin") {
+            contentType(ContentType.Application.Json)
+            bearerAuth("valid-token")
+            setBody(SignInRequest(deviceId = "device-2", displayName = "NewName"))
+        }
+
         assertEquals(HttpStatusCode.OK, response.status)
         val body = response.body<SignInResponse>()
         assertEquals("user-123", body.userId)
         assertTrue(!body.isNewUser)
+        assertEquals("device-1", body.user.deviceId)
+        assertEquals("ChessPlayer", body.user.profile.displayName)
     }
 }
