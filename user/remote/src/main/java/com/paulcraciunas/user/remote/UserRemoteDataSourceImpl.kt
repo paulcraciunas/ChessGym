@@ -1,10 +1,12 @@
 package com.paulcraciunas.user.remote
 
 import com.paulcraciunas.global.qualifiers.IoDispatcher
+import com.paulcraciunas.user.api.AuthResult
 import com.paulcraciunas.user.api.User
 import com.paulcraciunas.user.api.UserApiException
 import com.paulcraciunas.user.api.UserRemoteDataSource
 import com.paulcraciunas.user.remote.mapper.UserDtoMapper
+import com.paulcraciunas.user.remote.model.SignInRequest
 import com.paulcraciunas.user.remote.model.UserDto
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -28,16 +30,20 @@ class UserRemoteDataSourceImpl @Inject constructor(
     @param:IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : UserRemoteDataSource {
 
-    override suspend fun signIn(auth: User.AuthenticationState): User = withContext(ioDispatcher) {
-        val response = httpClient.post(api.v1.signIn)
-        val dto: UserDto = response.safeBody()
-        mapper.fromDto(dto).copy(authentication = auth)
+    override suspend fun signIn(authResult: AuthResult, deviceId: String): User = withContext(ioDispatcher) {
+        val apiUser: UserDto = httpClient.post(api.v1.signIn) {
+            setBody(SignInRequest(
+                deviceId = deviceId,
+                displayName = authResult.displayName,
+            ))
+        }.safeBody()
+        mapper.fromDto(apiUser).copy(authentication = authResult.authState)
     }
 
     override suspend fun getUser(userId: String): User = withContext(ioDispatcher) {
-        val response = httpClient.get(api.v1.user(userId))
-        val dto: UserDto = response.safeBody()
-        mapper.fromDto(dto)
+        val apiUser: UserDto = httpClient.get(api.v1.user(userId))
+            .safeBody()
+        mapper.fromDto(apiUser)
     }
 
     override suspend fun updateUser(user: User): Unit = withContext(ioDispatcher) {

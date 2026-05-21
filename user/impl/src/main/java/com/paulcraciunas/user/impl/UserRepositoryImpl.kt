@@ -1,5 +1,6 @@
 package com.paulcraciunas.user.impl
 
+import com.paulcraciunas.user.api.AuthResult
 import com.paulcraciunas.user.api.SyncScheduler
 import com.paulcraciunas.user.api.SyncState
 import com.paulcraciunas.user.api.User
@@ -41,10 +42,10 @@ class UserRepositoryImpl @Inject constructor(
         localDataSource.saveUser(updatedUser)
     }
 
-    override suspend fun signIn(auth: User.AuthenticationState): User {
-        val remoteUser = remoteDataSource.signIn(auth)
+    override suspend fun signIn(authResult: AuthResult): User {
         val localUser = get()
-        val merged = mergeWithRemote(localUser, remoteUser).copy(authentication = auth)
+        val remoteUser = remoteDataSource.signIn(authResult, localUser.deviceId)
+        val merged = mergeWithRemote(localUser, remoteUser).copy(authentication = authResult.authState)
         localDataSource.saveUser(merged)
         syncState.markClean()
         return merged

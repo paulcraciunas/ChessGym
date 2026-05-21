@@ -42,8 +42,9 @@ class FakeUserRepository(
         return result
     }
 
-    override suspend fun signIn(auth: User.AuthenticationState): User {
-        val signedInUser = remote.signIn(auth)
+    override suspend fun signIn(authResult: AuthResult): User {
+        val localUser = get()
+        val signedInUser = remote.signIn(authResult, localUser.deviceId)
         local.saveUser(signedInUser)
         return signedInUser
     }

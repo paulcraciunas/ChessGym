@@ -2,6 +2,7 @@ package com.paulcraciunas.user.impl
 
 import com.paulcraciunas.user.api.FakeSyncScheduler
 import com.paulcraciunas.user.api.FakeSyncState
+import com.paulcraciunas.user.api.AuthResult
 import com.paulcraciunas.user.api.FakeUserLocalDataSource
 import com.paulcraciunas.user.api.FakeUserRemoteDataSource
 import com.paulcraciunas.user.api.User
@@ -120,20 +121,23 @@ internal class UserRepositoryImplTest {
     }
 
     @Test
-    fun `GIVEN auth state WHEN signIn THEN calls remote and merges with local`() = runBlocking {
+    fun `GIVEN auth result WHEN signIn THEN calls remote and merges with local`() = runBlocking {
         // Given
-        val authState = User.AuthenticationState(
-            provider = User.AuthenticationState.AuthProvider.APPLE,
-            userId = "user_123"
+        val authResult = AuthResult(
+            authState = User.AuthenticationState(
+                provider = User.AuthenticationState.AuthProvider.APPLE,
+                userId = "user_123",
+            ),
+            displayName = "TestUser",
         )
         val localUser = UserTestFixtures.createDefaultUser()
         fakeLocalDataSource.saveUser(localUser)
 
         // When
-        val result = underTest.signIn(authState)
+        val result = underTest.signIn(authResult)
 
         // Then
-        assertEquals(authState, result.authentication)
+        assertEquals(authResult.authState, result.authentication)
         assertEquals(localUser.deviceId, result.deviceId)
         assertEquals(localUser.history, result.history)
         assertEquals(localUser.failedPuzzles, result.failedPuzzles)
@@ -144,14 +148,17 @@ internal class UserRepositoryImplTest {
     fun `GIVEN remote signIn fails WHEN signIn THEN propagates exception`() {
         runBlocking {
             // Given
-            val authState = User.AuthenticationState(
-                provider = User.AuthenticationState.AuthProvider.GOOGLE,
-                userId = "user_123"
+            val authResult = AuthResult(
+                authState = User.AuthenticationState(
+                    provider = User.AuthenticationState.AuthProvider.GOOGLE,
+                    userId = "user_123",
+                ),
+                displayName = null,
             )
             fakeRemoteDataSource.failAll(RuntimeException("Sign in failed"))
 
             // When & Then
-            assertThrows<RuntimeException> { underTest.signIn(authState) }
+            assertThrows<RuntimeException> { underTest.signIn(authResult) }
         }
     }
 

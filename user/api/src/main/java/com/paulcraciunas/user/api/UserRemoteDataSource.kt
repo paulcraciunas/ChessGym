@@ -4,7 +4,7 @@ interface UserRemoteDataSource {
     suspend fun getUser(userId: String): User
     suspend fun updateUser(user: User)
 
-    suspend fun signIn(auth: User.AuthenticationState): User
+    suspend fun signIn(authResult: AuthResult, deviceId: String): User
     suspend fun deleteUser(userId: String)
 }
 
