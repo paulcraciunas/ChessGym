@@ -16,17 +16,17 @@ class HomeScreenAssertions(private val rule: ComposeTestRule) {
         rule.onNodeWithTag(HomeScreenTags.Profile.NAME).assertTextEquals(name)
     }
 
-    fun hasProfileInitials(initials: String): HomeScreenAssertions = apply {
-        rule.onNodeWithTag(HomeScreenTags.Profile.INITIALS).assertTextEquals(initials)
+    fun hasProfileInitial(initial: String): HomeScreenAssertions = apply {
+        rule.onNodeWithTag(HomeScreenTags.Profile.INITIALS).assertTextEquals(initial)
     }
 
     fun hasProfileRating(rating: Int): HomeScreenAssertions = apply {
         rule.onNodeWithTag(HomeScreenTags.Profile.RATING).assertTextEquals(rating.toString())
     }
 
-    fun hasProfileInfo(name: String, initials: String, rating: Int): HomeScreenAssertions = apply {
+    fun hasProfileInfo(name: String, initial: String, rating: Int): HomeScreenAssertions = apply {
         hasProfileName(name)
-        hasProfileInitials(initials)
+        hasProfileInitial(initial)
         hasProfileRating(rating)
     }
 

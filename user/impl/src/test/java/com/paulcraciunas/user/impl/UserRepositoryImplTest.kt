@@ -202,7 +202,7 @@ internal class UserRepositoryImplTest {
         // Given
         val user = UserTestFixtures.createSignedUpUser()
         val remoteUser = user.copy(
-            profile = User.Profile(firstName = "Remote", lastName = "User"),
+            profile = User.Profile(displayName = "RemoteUser"),
             failedPuzzles = emptyList(),
         )
         fakeLocalDataSource.saveUser(user)
@@ -214,7 +214,7 @@ internal class UserRepositoryImplTest {
 
         // Then
         val synced = fakeLocalDataSource.getUser()
-        assertEquals("Remote", synced.profile.firstName)
+        assertEquals("RemoteUser", synced.profile.displayName)
         assertEquals(user.deviceId, synced.deviceId)
         assertEquals(user.history, synced.history)
         assertEquals(user.failedPuzzles, synced.failedPuzzles)

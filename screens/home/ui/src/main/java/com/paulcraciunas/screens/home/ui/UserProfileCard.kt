@@ -90,7 +90,7 @@ private fun NameAndRating(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = userProfile.initials(),
+                text = userProfile.initial(),
                 style = Design.typography.headlineSmall,
                 color = Design.colors.onPrimary,
                 modifier = Modifier.testTag { HomeScreenTags.Profile.INITIALS }
@@ -178,7 +178,7 @@ private fun UserProfileCardPreview() {
     ChessGymTheme {
         UserProfileCard(
             userProfile = HomeUiState.UserProfile(
-                name = "John Doe",
+                name = "JohnDoe",
                 currentRating = 1547,
                 totalActivities = 142,
                 joinDate = LocalDate.of(2024, 3, 15)

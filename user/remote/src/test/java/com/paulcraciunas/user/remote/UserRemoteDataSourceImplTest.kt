@@ -60,7 +60,7 @@ internal class UserRemoteDataSourceImplTest {
 
         // Then
         assertEquals(auth, result.authentication)
-        assertEquals("Chess", result.profile.firstName)
+        assertEquals("ChessEnthusiast", result.profile.displayName)
     }
 
     @Test
@@ -82,7 +82,7 @@ internal class UserRemoteDataSourceImplTest {
         val result = underTest.getUser("uid_123")
 
         // Then
-        assertEquals("Chess", result.profile.firstName)
+        assertEquals("ChessEnthusiast", result.profile.displayName)
         assertNull(result.authentication)
     }
 

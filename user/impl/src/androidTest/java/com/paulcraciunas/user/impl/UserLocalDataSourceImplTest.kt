@@ -60,8 +60,7 @@ internal class UserLocalDataSourceImplTest {
         val user = User(
             deviceId = TEST_DEVICE_ID,
             profile = User.Profile(
-                firstName = "John",
-                lastName = "Doe",
+                displayName = "JohnDoe",
                 joinDate = LocalDate.of(2023, 5, 15),
                 avatarUrl = "https://example.com/avatar.jpg"
             ),
@@ -91,8 +90,7 @@ internal class UserLocalDataSourceImplTest {
         // Then
         assertEquals(complexUser, result)
 
-        assertEquals("Alice", result.profile.firstName)
-        assertEquals("Smith", result.profile.lastName)
+        assertEquals("AliceSmith", result.profile.displayName)
         assertEquals(LocalDate.of(2022, 3, 10), result.profile.joinDate)
         assertEquals("https://example.com/alice.jpg", result.profile.avatarUrl)
 
@@ -262,7 +260,7 @@ internal class UserLocalDataSourceImplTest {
         // Given
         val originalUser = User(
             deviceId = TEST_DEVICE_ID,
-            profile = User.Profile(firstName = "Original", lastName = "User"),
+            profile = User.Profile(displayName = "OriginalUser"),
             ratings = User.Ratings(current = 1200)
         )
         underTest.saveUser(originalUser)
@@ -270,7 +268,7 @@ internal class UserLocalDataSourceImplTest {
         // When
         underTest.updateUser { user ->
             user.copy(
-                profile = user.profile.copy(firstName = "Updated"),
+                profile = user.profile.copy(displayName = "UpdatedUser"),
                 ratings = user.ratings.copy(current = 1500),
                 failedPuzzles = listOf(1, 2, 3)
             )
@@ -278,8 +276,7 @@ internal class UserLocalDataSourceImplTest {
 
         // Then
         val result = underTest.getUser()
-        assertEquals("Updated", result.profile.firstName)
-        assertEquals("User", result.profile.lastName)
+        assertEquals("UpdatedUser", result.profile.displayName)
         assertEquals(1500, result.ratings.current)
         assertEquals(listOf(1, 2, 3), result.failedPuzzles)
     }
@@ -291,11 +288,11 @@ internal class UserLocalDataSourceImplTest {
 
         // When
         underTest.updateUser { user ->
-            user.copy(profile = user.profile.copy(firstName = "Step1"))
+            user.copy(profile = user.profile.copy(displayName = "Step1"))
         }
 
         underTest.updateUser { user ->
-            user.copy(profile = user.profile.copy(lastName = "Step2"))
+            user.copy(profile = user.profile.copy(displayName = "Step2"))
         }
 
         underTest.updateUser { user ->
@@ -304,8 +301,7 @@ internal class UserLocalDataSourceImplTest {
 
         // Then
         val result = underTest.getUser()
-        assertEquals("Step1", result.profile.firstName)
-        assertEquals("Step2", result.profile.lastName)
+        assertEquals("Step2", result.profile.displayName)
         assertEquals(1800, result.ratings.current)
     }
 
@@ -393,8 +389,7 @@ internal class UserLocalDataSourceImplTest {
         val userWithLargeData = User(
             deviceId = TEST_DEVICE_ID,
             profile = User.Profile(
-                firstName = "Large",
-                lastName = "Data",
+                displayName = "LargeData",
                 joinDate = LocalDate.of(2020, 1, 1)
             ),
             history = largeHistoryList,
@@ -458,8 +453,7 @@ internal class UserLocalDataSourceImplTest {
     private fun createComplexUser(): User = User(
         deviceId = TEST_DEVICE_ID,
         profile = User.Profile(
-            firstName = "Alice",
-            lastName = "Smith",
+            displayName = "AliceSmith",
             joinDate = LocalDate.of(2022, 3, 10),
             avatarUrl = "https://example.com/alice.jpg"
         ),

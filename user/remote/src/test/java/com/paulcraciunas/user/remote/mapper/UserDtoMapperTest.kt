@@ -22,8 +22,7 @@ internal class UserDtoMapperTest {
         val dto = underTest.toDto(user)
 
         // Then
-        assertEquals("Chess", dto.profile.firstName)
-        assertEquals("Enthusiast", dto.profile.lastName)
+        assertEquals("ChessEnthusiast", dto.profile.displayName)
         assertNotNull(dto.profile.joinDate)
         assertNull(dto.profile.avatarUrl)
         assert(dto.profile.lastModified > 0)
@@ -42,8 +41,7 @@ internal class UserDtoMapperTest {
         val user = underTest.fromDto(dto)
 
         // Then
-        assertEquals("Chess", user.profile.firstName)
-        assertEquals("Enthusiast", user.profile.lastName)
+        assertEquals("ChessEnthusiast", user.profile.displayName)
         assertEquals(1000, user.ratings.current)
         assertEquals(400, user.ratings.blindMode)
         assertEquals(0, user.highScores.puzzleRush)
@@ -59,8 +57,7 @@ internal class UserDtoMapperTest {
         // Given
         val user = User(
             profile = User.Profile(
-                firstName = "John",
-                lastName = "Doe",
+                displayName = "JohnDoe",
                 joinDate = LocalDate.of(2024, 6, 15),
                 avatarUrl = "https://example.com/avatar.png",
             ),

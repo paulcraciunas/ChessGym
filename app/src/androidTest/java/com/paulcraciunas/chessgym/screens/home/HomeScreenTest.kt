@@ -28,7 +28,7 @@ internal class HomeScreenTest : BaseUiTest() {
         Then.homeScreen
             .isDisplayed()
             .hasProfileCard()
-            .hasProfileInfo(name = "Chess Enthusiast", initials = "CE", rating = 1200)
+            .hasProfileInfo(name = "ChessEnthusiast", initial = "C", rating = 1200)
     }
 
     @Test
@@ -40,14 +40,13 @@ internal class HomeScreenTest : BaseUiTest() {
         Then.homeScreen
             .isDisplayed()
             .hasProfileCard()
-            .hasProfileInfo(name = "Chess Enthusiast", initials = "CE", rating = 1000)
+            .hasProfileInfo(name = "ChessEnthusiast", initial = "C", rating = 1000)
     }
 
     @Test
     fun GIVEN_custom_user_WHEN_app_launched_THEN_shows_correct_profile() {
         Given.user.isLoaded(
-            firstName = "Magnus",
-            lastName = "Carlsen",
+            displayName = "MagnusCarlsen",
             rating = 2882,
             joinDate = LocalDate.of(2024, 1, 15),
         )
@@ -56,7 +55,7 @@ internal class HomeScreenTest : BaseUiTest() {
 
         Then.homeScreen
             .isDisplayed()
-            .hasProfileInfo(name = "Magnus Carlsen", initials = "MC", rating = 2882)
+            .hasProfileInfo(name = "MagnusCarlsen", initial = "M", rating = 2882)
     }
 
     @Test

@@ -6,8 +6,7 @@ object UserDefaults {
     fun signedInUser(): User = User(
         deviceId = DEVICE_ID,
         profile = User.Profile(
-            firstName = FIRST_NAME,
-            lastName = LAST_NAME,
+            displayName = DISPLAY_NAME,
             joinDate = LocalDate.of(2023, 1, 1),
             avatarUrl = null
         ),
@@ -34,8 +33,7 @@ object UserDefaults {
         )
     )
 
-    const val FIRST_NAME = "Darth"
-    const val LAST_NAME = "Vader"
+    const val DISPLAY_NAME = "DarthVader"
     const val RATING = 1200
     const val RATING_BLIND_MODE = User.DEFAULT_BLIND_MODE_RATING
     const val HIGH_SCORE_RATED = 1350
