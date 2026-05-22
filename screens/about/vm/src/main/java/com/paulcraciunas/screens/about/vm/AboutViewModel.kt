@@ -2,6 +2,7 @@ package com.paulcraciunas.screens.about.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.paulcraciunas.global.billing.BillingManager
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -15,6 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AboutViewModel @Inject constructor(
     private val appSettingsRepository: AppSettingsRepository,
+    val billingManager: BillingManager,
 ) : ViewModel(), AboutScreenInteractor {
     private val _aboutEvents = Channel<AboutEvent>(Channel.BUFFERED)
     private val _uiState = MutableStateFlow(AboutUiState(libraries = provideLibraries()))
@@ -22,7 +24,18 @@ class AboutViewModel @Inject constructor(
     val uiEvents = _aboutEvents.receiveAsFlow()
 
     override fun onDonateClicked() {
-        // TODO(https://github.com/paulcraciunas/ChessGym/issues/59): Will be implemented with payment provider integration
+        _uiState.value = _uiState.value.copy(showDonationDialog = true)
+    }
+
+    override fun onDonateAmountSelected(product: BillingManager.DonationType) {
+        _uiState.value = _uiState.value.copy(showDonationDialog = false)
+        viewModelScope.launch {
+            _aboutEvents.send(AboutEvent.Donate(product))
+        }
+    }
+
+    override fun onDismissDonationDialog() {
+        _uiState.value = _uiState.value.copy(showDonationDialog = false)
     }
 
     override fun onRateAppClicked() {

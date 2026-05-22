@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.paulcraciunas.global.billing.BillingManager
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.about.vm.AboutScreenInteractor
 import com.paulcraciunas.screens.about.vm.AboutSection
@@ -52,6 +53,7 @@ fun AboutScreen(
     onNavigateBack: () -> Unit,
     onSectionClicked: (AboutSection) -> Unit,
     interactions: AboutScreenInteractor,
+    showDonationDialog: Boolean,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -70,6 +72,13 @@ fun AboutScreen(
                 .fillMaxSize()
                 .padding(top = innerPadding.calculateTopPadding())
         )
+
+        if (showDonationDialog) {
+            DonationDialog(
+                onDismiss = interactions::onDismissDonationDialog,
+                onAmountSelected = interactions::onDonateAmountSelected,
+            )
+        }
     }
 }
 
@@ -248,11 +257,14 @@ private fun AboutScreenPreview() {
             onNavigateBack = {},
             onSectionClicked = {},
             interactions = PreviewInteractions,
+            showDonationDialog = false,
         )
     }
 }
 
 private object PreviewInteractions : AboutScreenInteractor {
     override fun onDonateClicked() {}
+    override fun onDonateAmountSelected(product: BillingManager.DonationType) {}
+    override fun onDismissDonationDialog() {}
     override fun onRateAppClicked() {}
 }

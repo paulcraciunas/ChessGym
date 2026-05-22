@@ -51,6 +51,7 @@ internal fun SignIn(tabNavController: NavHostController) {
 @Composable
 internal fun About(tabNavController: NavHostController) {
     val vm: AboutViewModel = hiltViewModel()
+    val aboutState by vm.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val activity = LocalActivity.current
 
@@ -68,6 +69,10 @@ internal fun About(tabNavController: NavHostController) {
                         openPlayStoreDirectly(context)
                     }
                 }
+                is AboutEvent.Donate -> {
+                    if (activity == null) return@collect
+                    vm.billingManager.makeDonation(activity, event.product)
+                }
             }
         }
     }
@@ -78,6 +83,7 @@ internal fun About(tabNavController: NavHostController) {
             tabNavController.navigate(Screen.AboutDetail(section = section.name))
         },
         interactions = vm,
+        showDonationDialog = aboutState.showDonationDialog,
     )
 }
 

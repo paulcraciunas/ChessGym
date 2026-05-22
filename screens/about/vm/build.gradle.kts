@@ -9,6 +9,8 @@ androidLibrary {
 }
 
 dependencies {
+    api(project(":global:billing"))
+
     implementation(project(":settings:application:api"))
     implementation(libs.androidx.lifecycle.runtime.ktx)
 
