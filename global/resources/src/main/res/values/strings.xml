@@ -248,6 +248,7 @@
     <string name="generic_close">Close</string>
     <string name="generic_agree">I Agree</string>
     <string name="generic_not_now">Not Now</string>
+    <string name="generic_thank_you">Thank you for your support!</string>
     <!-- endregion -->
 
     <!-- region Puzzle Dashboard -->

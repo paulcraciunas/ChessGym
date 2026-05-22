@@ -14,7 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.paulcraciunas.global.billing.BillingManager
+import com.paulcraciunas.domain.api.billing.BillingUseCase
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.design.components.ChessGymDialog
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
@@ -27,7 +27,7 @@ import com.paulcraciunas.screens.common.design.theme.Design
 @Composable
 fun DonationDialog(
     onDismiss: () -> Unit,
-    onAmountSelected: (BillingManager.DonationType) -> Unit,
+    onAmountSelected: (BillingUseCase.DonationType) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     ChessGymDialog(
@@ -54,17 +54,17 @@ fun DonationDialog(
                 ChessGymSpacer(size = SpacerSize.LARGE)
                 DonationOption(
                     title = stringResource(R.string.about_donate_small),
-                    onClick = { onAmountSelected(BillingManager.DonationType.Small) }
+                    onClick = { onAmountSelected(BillingUseCase.DonationType.Small) }
                 )
                 HairlineDivider(modifier = Modifier.fillMaxWidth())
                 DonationOption(
                     title = stringResource(R.string.about_donate_medium),
-                    onClick = { onAmountSelected(BillingManager.DonationType.Medium) }
+                    onClick = { onAmountSelected(BillingUseCase.DonationType.Medium) }
                 )
                 HairlineDivider(modifier = Modifier.fillMaxWidth())
                 DonationOption(
                     title = stringResource(R.string.about_donate_large),
-                    onClick = { onAmountSelected(BillingManager.DonationType.Large) }
+                    onClick = { onAmountSelected(BillingUseCase.DonationType.Large) }
                 )
             }
         }

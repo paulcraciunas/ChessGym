@@ -25,8 +25,11 @@ import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,7 +37,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.paulcraciunas.global.billing.BillingManager
+import com.paulcraciunas.domain.api.billing.BillingUseCase
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.about.vm.AboutScreenInteractor
 import com.paulcraciunas.screens.about.vm.AboutSection
@@ -54,6 +57,7 @@ fun AboutScreen(
     onSectionClicked: (AboutSection) -> Unit,
     interactions: AboutScreenInteractor,
     showDonationDialog: Boolean,
+    snackbarHostState: SnackbarHostState,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -63,6 +67,7 @@ fun AboutScreen(
                 navButton = { Back(onClick = onNavigateBack) },
             )
         },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         modifier = modifier,
     ) { innerPadding ->
         AboutContent(
@@ -258,13 +263,14 @@ private fun AboutScreenPreview() {
             onSectionClicked = {},
             interactions = PreviewInteractions,
             showDonationDialog = false,
+            snackbarHostState = remember { SnackbarHostState() },
         )
     }
 }
 
 private object PreviewInteractions : AboutScreenInteractor {
     override fun onDonateClicked() {}
-    override fun onDonateAmountSelected(product: BillingManager.DonationType) {}
+    override fun onDonateAmountSelected(product: BillingUseCase.DonationType) {}
     override fun onDismissDonationDialog() {}
     override fun onRateAppClicked() {}
 }

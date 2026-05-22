@@ -1,7 +1,7 @@
 package com.paulcraciunas.screens.about.vm
 
 import androidx.compose.runtime.Immutable
-import com.paulcraciunas.global.billing.BillingManager
+import com.paulcraciunas.domain.api.billing.BillingUseCase
 
 @Immutable
 data class AboutUiState(
@@ -19,5 +19,5 @@ data class LibraryInfo(
 @Immutable
 sealed interface AboutEvent {
     data object RateTheApp : AboutEvent
-    data class Donate(val product: BillingManager.DonationType) : AboutEvent
+    data class Donate(val product: BillingUseCase.DonationType) : AboutEvent
 }

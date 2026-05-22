@@ -2,7 +2,7 @@ package com.paulcraciunas.screens.about.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.paulcraciunas.global.billing.BillingManager
+import com.paulcraciunas.domain.api.billing.BillingUseCase
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -16,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AboutViewModel @Inject constructor(
     private val appSettingsRepository: AppSettingsRepository,
-    val billingManager: BillingManager,
+    val billingUseCase: BillingUseCase,
 ) : ViewModel(), AboutScreenInteractor {
     private val _aboutEvents = Channel<AboutEvent>(Channel.BUFFERED)
     private val _uiState = MutableStateFlow(AboutUiState(libraries = provideLibraries()))
@@ -27,7 +27,7 @@ class AboutViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(showDonationDialog = true)
     }
 
-    override fun onDonateAmountSelected(product: BillingManager.DonationType) {
+    override fun onDonateAmountSelected(product: BillingUseCase.DonationType) {
         _uiState.value = _uiState.value.copy(showDonationDialog = false)
         viewModelScope.launch {
             _aboutEvents.send(AboutEvent.Donate(product))
