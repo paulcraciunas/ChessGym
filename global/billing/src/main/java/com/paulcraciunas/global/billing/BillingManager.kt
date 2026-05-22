@@ -1,6 +1,5 @@
 package com.paulcraciunas.global.billing
 
-import android.app.Activity
 import android.content.Context
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
@@ -12,14 +11,13 @@ import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.consumePurchase
+import com.paulcraciunas.domain.api.billing.BillingUseCase
 import com.paulcraciunas.global.qualifiers.IoDispatcher
-import com.paulcraciunas.user.api.UserRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -28,24 +26,18 @@ import javax.inject.Singleton
 @Singleton
 class BillingManager @Inject constructor(
     @param:ApplicationContext private val context: Context,
-    private val userRepository: UserRepository,
     @IoDispatcher dispatcher: CoroutineDispatcher,
-) : PurchasesUpdatedListener {
+) : PurchasesUpdatedListener, BillingUseCase.BillingEngine {
     private val scope = CoroutineScope(SupervisorJob() + dispatcher)
 
-    private val _purchaseEvents = MutableSharedFlow<PurchaseEvent>()
-    val purchaseEvents = _purchaseEvents.asSharedFlow()
+    override val events = Channel<BillingUseCase.PurchaseEvent>()
 
     private val billingClient = BillingClient.newBuilder(context)
         .setListener(this)
         .enablePendingPurchases(PendingPurchasesParams.newBuilder().enableOneTimeProducts().build())
         .build()
 
-    init {
-        startConnection()
-    }
-
-    private fun startConnection() {
+    override fun start() {
         billingClient.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(billingResult: BillingResult) {
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
@@ -62,10 +54,14 @@ class BillingManager @Inject constructor(
         })
     }
 
-    fun makeDonation(activity: Activity, product: DonationType) {
+    override fun accept(event: BillingUseCase.Donate) {
+        if (event !is PlayStoreDonate) {
+            Timber.e("Wrong event type sent to PlayStore billing manager: ${event.javaClass}")
+            return
+        }
         val productList = listOf(
             QueryProductDetailsParams.Product.newBuilder()
-                .setProductId(product.id)
+                .setProductId(event.type.id)
                 .setProductType(BillingClient.ProductType.INAPP)
                 .build()
         )
@@ -87,11 +83,11 @@ class BillingManager @Inject constructor(
                     )
                     .build()
 
-                billingClient.launchBillingFlow(activity, billingFlowParams)
+                billingClient.launchBillingFlow(event.activity, billingFlowParams)
             } else {
                 Timber.e("Failed to query product details: ${billingResult.debugMessage}")
                 scope.launch {
-                    _purchaseEvents.emit(PurchaseEvent.Error("Failed to load donation details"))
+                    events.send(element = BillingUseCase.PurchaseEvent.Error("Failed to load donation details"))
                 }
             }
         }
@@ -110,7 +106,7 @@ class BillingManager @Inject constructor(
             else -> {
                 Timber.e("Purchase updated failed: ${billingResult.debugMessage}")
                 scope.launch {
-                    _purchaseEvents.emit(PurchaseEvent.Error("Purchase failed: ${billingResult.debugMessage}"))
+                    events.send(element = BillingUseCase.PurchaseEvent.Error("Purchase failed: ${billingResult.debugMessage}"))
                 }
             }
         }
@@ -127,34 +123,12 @@ class BillingManager @Inject constructor(
                 val result = billingClient.consumePurchase(consumeParams)
                 if (result.billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                     Timber.d("Purchase consumed successfully")
-                    val user = userRepository.get()
-                    userRepository.update(user.copy(profile = user.profile.copy(isSupporter = true)))
-                    _purchaseEvents.emit(value = PurchaseEvent.Success(DonationType.fromId(purchase.products.firstOrNull())))
+                    events.send(element = BillingUseCase.PurchaseEvent.Success(BillingUseCase.DonationType.fromId(purchase.products.firstOrNull())))
                 } else {
                     Timber.e("Failed to consume purchase: ${result.billingResult.debugMessage}")
-                    _purchaseEvents.emit(value = PurchaseEvent.Error("Failed to complete donation process"))
+                    events.send(element = BillingUseCase.PurchaseEvent.Error("Failed to complete donation process"))
                 }
             }
         }
-    }
-
-    enum class DonationType(internal val id: String) {
-        Small(id = "donation_small"),
-        Medium(id = "donation_medium"),
-        Large(id = "donation_large");
-
-        companion object {
-            fun fromId(id: String?) : DonationType = when (id) {
-                "donation_small" -> Small
-                "donation_medium" -> Medium
-                "donation_large" -> Large
-                else -> Small
-            }
-        }
-    }
-
-    sealed interface PurchaseEvent {
-        data class Success(val donation: DonationType) : PurchaseEvent
-        data class Error(val message: String) : PurchaseEvent
     }
 }
