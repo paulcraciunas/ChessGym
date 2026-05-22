@@ -33,9 +33,9 @@ fun CrashReportingConsentDialog(
         },
         buttons = {
             Paired(
-                confirmText = stringResource(R.string.crash_consent_dialog_accept),
+                confirmText = stringResource(R.string.generic_agree),
                 onConfirm = onAccepted,
-                dismissText = stringResource(R.string.crash_consent_dialog_refuse),
+                dismissText = stringResource(R.string.generic_not_now),
                 onDismiss = onDeclined,
             )
         },

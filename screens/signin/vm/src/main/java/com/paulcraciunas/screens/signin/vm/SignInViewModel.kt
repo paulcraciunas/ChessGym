@@ -171,12 +171,14 @@ class SignInViewModel @Inject constructor(
     private fun validateDisplayName(displayName: String): AuthError? = when {
         displayName.isBlank() -> AuthError.EMPTY_FIELD
         displayName.length < MIN_DISPLAY_NAME_LENGTH -> AuthError.DISPLAY_NAME_TOO_SHORT
+        displayName.length > MAX_DISPLAY_NAME_LENGTH -> AuthError.DISPLAY_NAME_TOO_LONG
         else -> null
     }
 
     companion object {
         private const val MIN_PASSWORD_LENGTH = 6
         private const val MIN_DISPLAY_NAME_LENGTH = 4
+        private const val MAX_DISPLAY_NAME_LENGTH = 15
         private val emailValidator = Regex("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")
     }
 }
