@@ -94,7 +94,7 @@ fun FindTheSquareCard(
     title = R.string.boardvis_find_square_title,
     description = R.string.boardvis_find_square_description,
     startContentDescription = R.string.boardvis_mode_start,
-    highlight = if (highScore > 0) stringResource(R.string.boardvis_find_square_high_score, highScore) else null,
+    highlight = if (highScore > 0) stringResource(R.string.boardvis_high_score, highScore) else null,
     onClick = onClick,
     modifier = modifier
 )
@@ -106,7 +106,7 @@ fun ClockCard(
 ) = DashboardCard(
     isEnabled = true,
     icon = { ResIcon(icon = R.drawable.clock_icon) },
-    title = R.string.tools_clock_title,
+    title = R.string.clock_title,
     description = R.string.tools_clock_description,
     startContentDescription = R.string.tools_mode_start,
     highlight = null,
@@ -136,7 +136,7 @@ fun ImportGameCard(
 ) = DashboardCard(
     isEnabled = true,
     icon = { ResIcon(icon = R.drawable.puzzle_icon) },
-    title = R.string.tools_import_title,
+    title = R.string.import_game_title,
     description = R.string.tools_import_description,
     startContentDescription = R.string.tools_mode_start,
     highlight = null,

@@ -34,7 +34,7 @@ fun FailedPuzzlesCompletionDialog(
         Column {
             Summary(
                 value = puzzlesSolved.toString(),
-                subtitle = stringResource(R.string.failed_puzzles_solved_count),
+                subtitle = stringResource(R.string.user_stat_puzzles_solved),
             )
             CenteredMessage(text = stringResource(R.string.failed_puzzles_complete_message))
         }

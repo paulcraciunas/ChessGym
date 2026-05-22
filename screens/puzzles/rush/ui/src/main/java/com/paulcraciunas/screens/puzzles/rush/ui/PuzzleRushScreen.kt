@@ -62,7 +62,7 @@ fun PuzzleRushScreen(
     Scaffold(
         topBar = {
             AppBar(
-                title = stringResource(R.string.screen_puzzle_rush),
+                title = stringResource(R.string.puzzle_mode_rush_title),
                 navButton = { Back(onClick = onNavigateBack) },
                 actions = {
                     TimerDisplay(

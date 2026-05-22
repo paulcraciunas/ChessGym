@@ -33,7 +33,7 @@ fun RushSummaryDialog(
         Column {
             Summary(
                 value = puzzlesSolved.toString(),
-                subtitle = stringResource(R.string.puzzle_rush_summary_puzzles_solved),
+                subtitle = stringResource(R.string.user_stat_puzzles_solved),
             )
             if (isNewHighScore) {
                 HighScoreBadge(text = stringResource(R.string.generic_new_high_score))

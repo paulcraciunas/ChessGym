@@ -39,7 +39,7 @@ fun AbandonConfirmationDialog(
             Paired(
                 confirmText = stringResource(R.string.abandon_puzzle_confirm),
                 onConfirm = onConfirm,
-                dismissText = stringResource(R.string.abandon_puzzle_cancel),
+                dismissText = stringResource(R.string.generic_continue),
                 onDismiss = onDismiss,
                 isDestructive = true,
             )

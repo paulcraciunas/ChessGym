@@ -116,7 +116,7 @@ private fun FindTheSquareCardPreview() {
             title = R.string.boardvis_find_square_title,
             description = R.string.boardvis_find_square_description,
             startContentDescription = R.string.boardvis_mode_start,
-            highlight = stringResource(R.string.boardvis_find_square_high_score, 35),
+            highlight = stringResource(R.string.boardvis_high_score, 35),
             onClick = {},
         )
     }
