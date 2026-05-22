@@ -131,6 +131,9 @@ dependencies {
     implementation(libs.credentials.play.services)
     implementation(libs.googleid)
 
+    // Google Play Store
+    implementation(libs.google.play)
+
     // Unit Testing
     testImplementation(project(":domain:api"))
     testImplementation(project(":domain:impl"))

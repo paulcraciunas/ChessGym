@@ -1,26 +1,35 @@
 package com.paulcraciunas.screens.about.vm
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AboutViewModel @Inject constructor() : ViewModel(), AboutScreenInteractor {
-
-    private val _uiState: MutableStateFlow<AboutUiState> = MutableStateFlow(
-        AboutUiState(libraries = provideLibraries())
-    )
+class AboutViewModel @Inject constructor(
+    private val appSettingsRepository: AppSettingsRepository,
+) : ViewModel(), AboutScreenInteractor {
+    private val _aboutEvents = Channel<AboutEvent>(Channel.BUFFERED)
+    private val _uiState = MutableStateFlow(AboutUiState(libraries = provideLibraries()))
     val uiState: StateFlow<AboutUiState> = _uiState.asStateFlow()
+    val uiEvents = _aboutEvents.receiveAsFlow()
 
     override fun onDonateClicked() {
         // TODO(https://github.com/paulcraciunas/ChessGym/issues/59): Will be implemented with payment provider integration
     }
 
     override fun onRateAppClicked() {
-        // TODO(https://github.com/paulcraciunas/ChessGym/issues/58): Will be implemented with Play Store integration
+        viewModelScope.launch {
+            appSettingsRepository.updateHasRatedApp(true)
+            _aboutEvents.send(AboutEvent.RateTheApp)
+        }
     }
 
     private fun provideLibraries(): List<LibraryInfo> = listOf(

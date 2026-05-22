@@ -14,6 +14,7 @@ data class AppSettings(
     val highlightLegalMoves: Boolean,
     val enableAnimations: Boolean,
     val crashReportingConsent: Boolean,
+    val hasRatedApp: Boolean,
 ) {
     enum class LightMode {
         Light,
@@ -35,7 +36,8 @@ data class AppSettings(
             enableVibrations = true,
             highlightLegalMoves = true,
             enableAnimations = true,
-            crashReportingConsent = false
+            crashReportingConsent = false,
+            hasRatedApp = false,
         )
     }
 }

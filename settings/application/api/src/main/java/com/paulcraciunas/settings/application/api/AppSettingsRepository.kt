@@ -18,4 +18,5 @@ interface AppSettingsRepository {
     suspend fun updateHighlightLegalMoves(enabled: Boolean)
     suspend fun updateEnableAnimations(enabled: Boolean)
     suspend fun updateCrashReportingConsent(enabled: Boolean)
+    suspend fun updateHasRatedApp(enabled: Boolean)
 }
