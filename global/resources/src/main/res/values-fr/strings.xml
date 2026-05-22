@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">ChessGym</string>
 
     <!-- region pieces -->
@@ -81,24 +81,20 @@
     <string name="home_title_blind_mode_training">Entraînement mode aveugle</string>
 
     <!-- Timeline stat labels -->
-    <plurals name="home_timeline_stat_run">
+    <plurals name="home_timeline_stat_run" tools:ignore="MissingQuantity">
         <item quantity="one">%1$d Manche</item>
-        <item quantity="many">%1$d Manches</item>
         <item quantity="other">%1$d Manches</item>
     </plurals>
-    <plurals name="home_timeline_stat_game">
+    <plurals name="home_timeline_stat_game" tools:ignore="MissingQuantity">
         <item quantity="one">%1$d Partie</item>
-        <item quantity="many">%1$d Parties</item>
         <item quantity="other">%1$d Parties</item>
     </plurals>
-    <plurals name="home_timeline_stat_session">
+    <plurals name="home_timeline_stat_session" tools:ignore="MissingQuantity">
         <item quantity="one">%1$d Session</item>
-        <item quantity="many">%1$d Sessions</item>
         <item quantity="other">%1$d Sessions</item>
     </plurals>
-    <plurals name="home_timeline_stat_puzzle">
+    <plurals name="home_timeline_stat_puzzle" tools:ignore="MissingQuantity">
         <item quantity="one">%1$d Puzzle</item>
-        <item quantity="many">%1$d Puzzles</item>
         <item quantity="other">%1$d Puzzles</item>
     </plurals>
     <string name="home_timeline_stat_score">%1$d Meilleur score</string>
@@ -278,9 +274,8 @@
     <string name="puzzle_mode_failed_title">Puzzles échoués</string>
     <string name="puzzle_mode_failed_description">Révisez et relancez les puzzles ratés</string>
     <string name="puzzle_mode_failed_none_available">Aucun puzzle échoué disponible</string>
-    <plurals name="puzzle_mode_failed_count">
+    <plurals name="puzzle_mode_failed_count" tools:ignore="MissingQuantity">
         <item quantity="one">%1$d puzzle à refaire</item>
-        <item quantity="many">%1$d puzzles à refaire</item>
         <item quantity="other">%1$d puzzles à refaire</item>
     </plurals>
     <string name="failed_puzzles_progress">%1$d / %2$d résolus</string>
