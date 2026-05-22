@@ -30,7 +30,7 @@ internal val WalnutLightColors = ChessGymColors(
     success = Color(0xFF4A6B3D),
     danger = Color(0xFF9A3220),
 
-    boardLight = Color(0xFFEFDFC3),
+    boardLight = Color(0xFFE2C89C),
     boardDark = Color(0xFFA8743F),
     pieceLight = Color(0xFFFAFAFA),
     pieceDark = Color(0xFF101A26),

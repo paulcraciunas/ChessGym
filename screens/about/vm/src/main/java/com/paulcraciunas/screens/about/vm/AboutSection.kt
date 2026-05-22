@@ -5,6 +5,7 @@ enum class AboutSection {
     CONTACT,
     FEEDBACK,
     LIBRARIES,
+    PRIVACY_POLICY,
     TERMS_OF_USE,
     TERMS_AND_CONDITIONS,
 }

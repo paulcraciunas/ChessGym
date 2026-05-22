@@ -35,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.domain.api.billing.BillingUseCase
@@ -149,6 +150,12 @@ private fun AboutContent(
         ChessGymSpacer(size = SpacerSize.SMALL)
         ChessGymCard(contentPadding = PaddingValues(0.dp)) {
             Column {
+                NavigationRow(
+                    icon = ImageVector.vectorResource(id = R.drawable.icon_shield),
+                    title = stringResource(R.string.about_privacy_policy_title),
+                    onClick = { onSectionClicked(AboutSection.PRIVACY_POLICY) },
+                )
+                HairlineDivider(modifier = Modifier.fillMaxWidth())
                 NavigationRow(
                     icon = Icons.Outlined.CheckCircle,
                     title = stringResource(R.string.about_terms_and_conditions_title),
