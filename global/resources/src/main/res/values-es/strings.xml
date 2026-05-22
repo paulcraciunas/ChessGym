@@ -83,18 +83,22 @@
     <!-- Timeline stat labels -->
     <plurals name="home_timeline_stat_run">
         <item quantity="one">%1$d Partida</item>
+        <item quantity="many">%1$d Partidas</item>
         <item quantity="other">%1$d Partidas</item>
     </plurals>
     <plurals name="home_timeline_stat_game">
         <item quantity="one">%1$d Juego</item>
+        <item quantity="many">%1$d Juegos</item>
         <item quantity="other">%1$d Juegos</item>
     </plurals>
     <plurals name="home_timeline_stat_session">
         <item quantity="one">%1$d Sesión</item>
+        <item quantity="many">%1$d Sesiones</item>
         <item quantity="other">%1$d Sesiones</item>
     </plurals>
     <plurals name="home_timeline_stat_puzzle">
         <item quantity="one">%1$d Puzzle</item>
+        <item quantity="many">%1$d Puzzles</item>
         <item quantity="other">%1$d Puzzles</item>
     </plurals>
     <string name="home_timeline_stat_score">%1$d Puntuación máxima</string>
@@ -276,6 +280,7 @@
     <string name="puzzle_mode_failed_none_available">No hay puzzles fallados disponibles</string>
     <plurals name="puzzle_mode_failed_count">
         <item quantity="one">%1$d puzzle por reintentar</item>
+        <item quantity="many">%1$d puzzles por reintentar</item>
         <item quantity="other">%1$d puzzles por reintentar</item>
     </plurals>
     <string name="failed_puzzles_progress">%1$d / %2$d resueltos</string>
