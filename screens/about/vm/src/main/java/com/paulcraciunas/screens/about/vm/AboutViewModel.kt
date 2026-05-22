@@ -101,5 +101,30 @@ class AboutViewModel @Inject constructor(
             url = "https://github.com/Kotlin/kotlinx.serialization",
             license = "Apache License 2.0",
         ),
+        LibraryInfo(
+            name = "Ktor",
+            url = "https://ktor.io",
+            license = "Apache License 2.0",
+        ),
+        LibraryInfo(
+            name = "Firebase",
+            url = "https://firebase.google.com",
+            license = "Apache License 2.0",
+        ),
+        LibraryInfo(
+            name = "Timber",
+            url = "https://github.com/JakeWharton/timber",
+            license = "Apache License 2.0",
+        ),
+        LibraryInfo(
+            name = "Zstandard (zstd-jni)",
+            url = "https://github.com/luben/zstd-jni",
+            license = "BSD 2-Clause",
+        ),
+        LibraryInfo(
+            name = "Google Play Billing",
+            url = "https://developer.android.com/google/play/billing",
+            license = "Apache License 2.0",
+        ),
     )
 }

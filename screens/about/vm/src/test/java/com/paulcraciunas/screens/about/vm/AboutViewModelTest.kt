@@ -2,15 +2,18 @@ package com.paulcraciunas.screens.about.vm
 
 import com.paulcraciunas.domain.api.billing.BillingUseCase
 import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 internal class AboutViewModelTest {
     private val appSettingsRepository = FakeAppSettingsRepository()
     private val billingUseCase = FakeBillingUseCase()
@@ -109,6 +112,8 @@ internal class AboutViewModelTest {
         @Test
         fun `GIVEN initialized WHEN rate app clicked THEN hasRatedApp is updated`() = runTest {
             underTest.onRateAppClicked()
+
+            advanceUntilIdle()
 
             val hasRated = appSettingsRepository.appSettings.first().hasRatedApp
             assertTrue(hasRated)

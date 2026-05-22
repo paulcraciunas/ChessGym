@@ -85,6 +85,7 @@ private fun DetailContent(
             AboutSection.CONTACT -> ContactContent(onEmailClicked = onEmailClicked)
             AboutSection.FEEDBACK -> FeedbackContent(onEmailClicked = onEmailClicked)
             AboutSection.LIBRARIES -> LibrariesContent(libraries = libraries)
+            AboutSection.PRIVACY_POLICY -> PrivacyPolicyContent()
             AboutSection.TERMS_OF_USE -> TermsOfUseContent()
             AboutSection.TERMS_AND_CONDITIONS -> TermsAndConditionsContent()
         }
@@ -146,6 +147,13 @@ private fun LibrariesContent(
         libraries.forEach { library ->
             LibraryRow(library = library)
         }
+    }
+}
+
+@Composable
+private fun PrivacyPolicyContent(modifier: Modifier = Modifier) {
+    Column(modifier = modifier) {
+        DetailDescription(text = stringResource(R.string.about_privacy_policy_content))
     }
 }
 
@@ -245,6 +253,7 @@ private fun resolveTitle(section: AboutSection): String = when (section) {
     AboutSection.CONTACT -> stringResource(R.string.about_contact_title)
     AboutSection.FEEDBACK -> stringResource(R.string.about_feedback_title)
     AboutSection.LIBRARIES -> stringResource(R.string.about_libraries_title)
+    AboutSection.PRIVACY_POLICY -> stringResource(R.string.about_privacy_policy_title)
     AboutSection.TERMS_OF_USE -> stringResource(R.string.about_terms_title)
     AboutSection.TERMS_AND_CONDITIONS -> stringResource(R.string.about_terms_and_conditions_title)
 }
