@@ -3,7 +3,6 @@ package com.paulcraciunas.screens.puzzles.failed.ui
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.design.components.ChessGymDialog
