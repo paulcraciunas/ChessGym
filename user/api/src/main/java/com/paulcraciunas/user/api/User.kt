@@ -22,7 +22,7 @@ data class User(
         val displayName: String = "ChessEnthusiast",
         @Serializable(with = LocalDateSerializer::class)
         val joinDate: LocalDate = LocalDate.now(),
-        val avatarUrl: String? = null
+        val isSupporter: Boolean = false,
     )
 
     @Serializable
@@ -123,9 +123,6 @@ data class User(
         enum class AuthProvider {
             EMAIL,
             GOOGLE,
-            INSTAGRAM,
-            APPLE,
-            FACEBOOK,
         }
     }
 

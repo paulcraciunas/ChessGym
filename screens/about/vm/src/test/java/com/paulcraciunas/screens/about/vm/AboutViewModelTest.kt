@@ -1,6 +1,9 @@
 package com.paulcraciunas.screens.about.vm
 
+import com.paulcraciunas.domain.api.billing.BillingUseCase
 import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -10,7 +13,11 @@ import org.junit.jupiter.api.Test
 
 internal class AboutViewModelTest {
     private val appSettingsRepository = FakeAppSettingsRepository()
-    private val underTest = AboutViewModel(appSettingsRepository = appSettingsRepository)
+    private val billingUseCase = FakeBillingUseCase()
+    private val underTest = AboutViewModel(
+        appSettingsRepository = appSettingsRepository,
+        billingUseCase = billingUseCase,
+    )
 
     @Nested
     internal inner class Initialization {
@@ -70,13 +77,33 @@ internal class AboutViewModelTest {
     @Nested
     internal inner class Interactions {
         @Test
-        fun `GIVEN initialized WHEN donate clicked THEN state remains unchanged`() {
-            val stateBefore = underTest.uiState.value
-
+        fun `GIVEN initialized WHEN donate clicked THEN donation dialog is shown`() {
             underTest.onDonateClicked()
 
-            val stateAfter = underTest.uiState.value
-            assertTrue(stateBefore == stateAfter)
+            val state = underTest.uiState.value
+            assertTrue(state.showDonationDialog)
+        }
+
+        @Test
+        fun `GIVEN donation dialog shown WHEN dismissed THEN donation dialog is hidden`() {
+            underTest.onDonateClicked()
+            underTest.onDismissDonationDialog()
+
+            val state = underTest.uiState.value
+            assertTrue(!state.showDonationDialog)
+        }
+
+        @Test
+        fun `GIVEN donation dialog shown WHEN amount selected THEN donation dialog is hidden and event is sent`() = runTest {
+            val product = BillingUseCase.DonationType.Small
+            underTest.onDonateClicked()
+            underTest.onDonateAmountSelected(product)
+
+            val state = underTest.uiState.value
+            assertTrue(!state.showDonationDialog)
+
+            val event = underTest.uiEvents.first()
+            assertEquals(AboutEvent.Donate(product), event)
         }
 
         @Test
@@ -94,5 +121,14 @@ internal class AboutViewModelTest {
             val event = underTest.uiEvents.first()
             assertEquals(AboutEvent.RateTheApp, event)
         }
+    }
+}
+
+class FakeBillingUseCase : BillingUseCase {
+    private val _events = MutableSharedFlow<BillingUseCase.PurchaseEvent>()
+    override val events: Flow<BillingUseCase.PurchaseEvent> = _events
+
+    override fun donate(event: BillingUseCase.Donate) {
+        // No-op for this VM test as the VM only sends a UI event
     }
 }

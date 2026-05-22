@@ -24,7 +24,7 @@ class UserDtoMapperTest {
             profile = ProfileDto(
                 displayName = "PaulCraciunas",
                 joinDate = "2025-01-15",
-                avatarUrl = "https://example.com/avatar.png",
+                isSupporter = true,
                 lastModified = 1717000000L,
             ),
             ratings = RatingsDto(current = 1500, blindMode = 800),
@@ -97,13 +97,12 @@ class UserDtoMapperTest {
     @Test
     fun `asMap includes null values for nullable fields`() {
         val user = UserDto(
-            profile = ProfileDto(joinDate = null, avatarUrl = null),
+            profile = ProfileDto(joinDate = null),
         )
         val map = mapper.asMap(user)
         @Suppress("UNCHECKED_CAST")
         val profileMap = map["profile"] as Map<String, Any?>
         assertNull(profileMap["joinDate"])
-        assertNull(profileMap["avatarUrl"])
     }
 
     @Test

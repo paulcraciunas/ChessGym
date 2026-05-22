@@ -24,7 +24,6 @@ internal class UserDtoMapperTest {
         // Then
         assertEquals("ChessEnthusiast", dto.profile.displayName)
         assertNotNull(dto.profile.joinDate)
-        assertNull(dto.profile.avatarUrl)
         assert(dto.profile.lastModified > 0)
         assertEquals(1000, dto.ratings.current)
         assertEquals(400, dto.ratings.blindMode)
@@ -59,7 +58,6 @@ internal class UserDtoMapperTest {
             profile = User.Profile(
                 displayName = "JohnDoe",
                 joinDate = LocalDate.of(2024, 6, 15),
-                avatarUrl = "https://example.com/avatar.png",
             ),
             ratings = User.Ratings(current = 1500, blindMode = 600),
             highScores = User.HighScores(

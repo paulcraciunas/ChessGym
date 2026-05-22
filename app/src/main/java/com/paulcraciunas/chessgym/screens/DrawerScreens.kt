@@ -4,9 +4,11 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import androidx.activity.compose.LocalActivity
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.net.toUri
@@ -19,6 +21,8 @@ import com.google.android.play.core.review.ReviewManagerFactory
 import com.paulcraciunas.chessgym.R
 import com.paulcraciunas.chessgym.auth.GoogleTokenSource
 import com.paulcraciunas.chessgym.navigation.Screen
+import com.paulcraciunas.domain.api.billing.BillingUseCase
+import com.paulcraciunas.global.billing.PlayStoreDonate
 import com.paulcraciunas.screens.about.ui.AboutDetailScreen
 import com.paulcraciunas.screens.about.ui.AboutScreen
 import com.paulcraciunas.screens.about.vm.AboutEvent
@@ -26,7 +30,9 @@ import com.paulcraciunas.screens.about.vm.AboutSection
 import com.paulcraciunas.screens.about.vm.AboutViewModel
 import com.paulcraciunas.screens.signin.ui.SignInScreen
 import com.paulcraciunas.screens.signin.vm.SignInViewModel
+import kotlinx.coroutines.launch
 import timber.log.Timber
+import com.paulcraciunas.global.resources.R as GlobalR
 
 @Composable
 internal fun SignIn(tabNavController: NavHostController) {
@@ -51,21 +57,42 @@ internal fun SignIn(tabNavController: NavHostController) {
 @Composable
 internal fun About(tabNavController: NavHostController) {
     val vm: AboutViewModel = hiltViewModel()
+    val aboutState by vm.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val activity = LocalActivity.current
+    val snackbarHostState = remember { SnackbarHostState() }
+    val thankYouMessage = stringResource(GlobalR.string.generic_thank_you)
 
     LaunchedEffect(Unit) {
-        vm.uiEvents.collect { event ->
-            when (event) {
-                AboutEvent.RateTheApp -> {
-                    if (activity == null) return@collect
-                    val manager = ReviewManagerFactory.create(context)
-                    try {
-                        val reviewInfo = manager.requestReview()
-                        manager.launchReview(activity, reviewInfo)
-                    } catch (e: Exception) {
-                        Timber.w(e, "Failed to open Play Store ReviewManager")
-                        openPlayStoreDirectly(context)
+        launch {
+            vm.uiEvents.collect { event ->
+                when (event) {
+                    AboutEvent.RateTheApp -> {
+                        if (activity == null) return@collect
+                        val manager = ReviewManagerFactory.create(context)
+                        try {
+                            val reviewInfo = manager.requestReview()
+                            manager.launchReview(activity, reviewInfo)
+                        } catch (e: Exception) {
+                            Timber.w(e, "Failed to open Play Store ReviewManager")
+                            openPlayStoreDirectly(context)
+                        }
+                    }
+                    is AboutEvent.Donate -> {
+                        if (activity == null) return@collect
+                        vm.billingUseCase.donate(event = PlayStoreDonate(activity = activity, type = event.product))
+                    }
+                }
+            }
+        }
+        launch {
+            vm.billingUseCase.events.collect { event ->
+                when (event) {
+                    is BillingUseCase.PurchaseEvent.Success -> {
+                        snackbarHostState.showSnackbar(thankYouMessage)
+                    }
+                    is BillingUseCase.PurchaseEvent.Error -> {
+                        snackbarHostState.showSnackbar(event.message)
                     }
                 }
             }
@@ -78,6 +105,8 @@ internal fun About(tabNavController: NavHostController) {
             tabNavController.navigate(Screen.AboutDetail(section = section.name))
         },
         interactions = vm,
+        showDonationDialog = aboutState.showDonationDialog,
+        snackbarHostState = snackbarHostState,
     )
 }
 

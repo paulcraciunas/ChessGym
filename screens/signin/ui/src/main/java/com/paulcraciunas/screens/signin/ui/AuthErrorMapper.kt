@@ -18,6 +18,7 @@ internal fun AuthError.toMessageRes(): Int = when (this) {
     AuthError.INVALID_EMAIL -> GlobalR.string.auth_error_invalid_email
     AuthError.PASSWORD_TOO_SHORT -> GlobalR.string.auth_error_password_too_short
     AuthError.DISPLAY_NAME_TOO_SHORT -> GlobalR.string.auth_error_display_name_too_short
+    AuthError.DISPLAY_NAME_TOO_LONG -> GlobalR.string.auth_error_display_name_too_short
     AuthError.NO_GOOGLE_ACCOUNTS -> GlobalR.string.auth_error_no_google_accounts
     AuthError.SESSION_EXPIRED -> GlobalR.string.auth_error_session_expired
     AuthError.ACCOUNT_DISABLED -> GlobalR.string.auth_error_account_disabled

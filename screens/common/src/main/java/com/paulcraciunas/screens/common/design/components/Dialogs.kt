@@ -139,13 +139,31 @@ class DialogButtonScope internal constructor() {
         text: String,
         onClick: () -> Unit,
         modifier: Modifier = Modifier,
+        wide: Boolean = true,
     ) {
         PrimaryButton(
             text = text,
             onClick = onClick,
             modifier = modifier
+                .expand(shouldExpand = wide)
                 .testTag { ChessGymDialogTags.CONFIRM }
-                .fillMaxWidth(),
+        )
+    }
+
+    @Composable
+    fun Outlined(
+        text: String,
+        onClick: () -> Unit,
+        modifier: Modifier = Modifier,
+        wide: Boolean = true,
+    ) {
+        OutlineSegmentButton(
+            text = text,
+            selected = false,
+            onClick = onClick,
+            modifier = modifier
+                .expand(shouldExpand = wide)
+                .testTag { ChessGymDialogTags.CONFIRM }
         )
     }
 
@@ -299,3 +317,6 @@ object ChessGymDialogTags {
     const val CONFIRM = "ChessGymDialog_confirm"
     const val DISMISS = "ChessGymDialog_dismiss"
 }
+
+@Stable
+private fun Modifier.expand(shouldExpand: Boolean): Modifier = if (shouldExpand) fillMaxWidth() else this

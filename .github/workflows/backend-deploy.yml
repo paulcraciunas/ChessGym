@@ -1,0 +1,34 @@
+name: Backend Deploy
+
+on:
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: backend
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy chessgym-backend \
+            --source . \
+            --region us-central1 \
+            --allow-unauthenticated \
+            --set-env-vars "FIREBASE_PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID }}"

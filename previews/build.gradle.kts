@@ -27,6 +27,7 @@ android {
 
 dependencies {
     implementation(project(":screens:common"))
+    implementation(project(":screens:about:ui"))
     implementation(project(":screens:achievements:ui"))
     implementation(project(":screens:loading:ui"))
     implementation(project(":screens:puzzles:rush:ui"))

@@ -169,8 +169,6 @@
     <string name="loading_error_consent_required">Crash reporting consent is required to proceed. We only collect technical crash data to improve app stability.</string>
     <string name="crash_consent_dialog_title">Help Us Improve</string>
     <string name="crash_consent_dialog_body">ChessGym uses crash reporting to detect and fix application errors. This data is used solely to identify crashes and improve app stability for all users.\n\nNo personal information, game data, or usage patterns are collected — only technical crash details (such as stack traces and device model) when something goes wrong.\n\nYou can change this setting later in the app.</string>
-    <string name="crash_consent_dialog_accept">I Agree</string>
-    <string name="crash_consent_dialog_refuse">Not Now</string>
     <string name="loading_fact_eyebrow">Did you know?</string>
     <string-array name="loading_fact_titles">
         <item>The Powerless Queen</item>
@@ -248,6 +246,9 @@
     <string name="generic_failed">Failed</string>
     <string name="generic_new_high_score">New high score</string>
     <string name="generic_close">Close</string>
+    <string name="generic_agree">I Agree</string>
+    <string name="generic_not_now">Not Now</string>
+    <string name="generic_thank_you">Thank you for your support!</string>
     <!-- endregion -->
 
     <!-- region Puzzle Dashboard -->
@@ -382,6 +383,11 @@
     <string name="about_support_title">Support</string>
     <string name="about_donate_title">Donate</string>
     <string name="about_donate_description">Support the development of ChessGym</string>
+    <string name="about_donate_dialog_title">Support ChessGym</string>
+    <string name="about_donate_dialog_description">Choose an amount to support the continuous development of this project. &lt;b>Thank you!&lt;/b></string>
+    <string name="about_donate_small">Coffee</string>
+    <string name="about_donate_medium">Sandwich</string>
+    <string name="about_donate_large">Pizza</string>
     <string name="about_rate_title">Rate the App</string>
     <string name="about_rate_description">Enjoying ChessGym? Leave a rating on the Play Store</string>
     <string name="about_libraries_title">Open Source Libraries</string>
@@ -675,6 +681,7 @@
     <string name="auth_error_invalid_email">Please enter a valid email address.</string>
     <string name="auth_error_password_too_short">Password must be at least 6 characters.</string>
     <string name="auth_error_display_name_too_short">Display name must be at least 4 characters.</string>
+    <string name="auth_error_display_name_too_long">Display name must be at most 15 characters.</string>
     <string name="auth_error_password_reset_user_not_found">No account found with this email address.</string>
     <string name="auth_error_password_reset_sent">Password reset email sent. Check your inbox.</string>
     <string name="auth_error_no_google_accounts">No Google accounts found on this device. Please add a Google account in your device settings first.</string>

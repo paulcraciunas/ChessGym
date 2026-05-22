@@ -73,6 +73,7 @@ dependencies {
     implementation(project(":domain:api"))
     implementation(project(":global:device:di"))
     implementation(project(":global:notifications"))
+    implementation(project(":global:billing"))
     implementation(project(":global:resources"))
     implementation(project(":global:utils"))
     implementation(project(":global:qualifiers"))
@@ -133,6 +134,7 @@ dependencies {
 
     // Google Play Store
     implementation(libs.google.play)
+    implementation(libs.google.billing)
 
     // Unit Testing
     testImplementation(project(":domain:api"))

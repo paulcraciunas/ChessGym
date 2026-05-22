@@ -9,7 +9,9 @@ androidLibrary {
 }
 
 dependencies {
+    api(project(":domain:api"))
     implementation(project(":settings:application:api"))
+
     implementation(libs.androidx.lifecycle.runtime.ktx)
 
     testImplementation(testFixtures(project(":settings:application:api")))

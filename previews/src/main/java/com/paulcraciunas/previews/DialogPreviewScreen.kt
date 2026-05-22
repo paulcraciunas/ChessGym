@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.domain.api.achievements.Achievement
 import com.paulcraciunas.game.logic.api.Side
+import com.paulcraciunas.screens.about.ui.DonationDialog
 import com.paulcraciunas.screens.achievements.ui.AchievementDetailDialog
 import com.paulcraciunas.screens.achievements.vm.AchievementsUiState.AchievementState
 import com.paulcraciunas.screens.common.design.theme.Design
@@ -50,6 +51,8 @@ private enum class DialogEntry(val label: String, val section: String) {
     CrashReportingConsent("Crash Reporting Consent", "Loading"),
 
     AchievementDetail("Achievement Detail", "Achievements"),
+
+    AboutDonation("Donation Dialog", "About"),
 
     RushSummary("Rush Summary", "Puzzles"),
     RushSummaryHighScore("Rush Summary (High Score)", "Puzzles"),
@@ -185,6 +188,10 @@ private fun DialogContent(
                 nextThreshold = 5,
             ),
             onDismiss = onDismiss,
+        )
+        DialogEntry.AboutDonation -> DonationDialog(
+            onDismiss = onDismiss,
+            onAmountSelected = { onDismiss() }
         )
         DialogEntry.RushSummary -> RushSummaryDialog(
             puzzlesSolved = 12,

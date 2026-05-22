@@ -28,6 +28,7 @@ import com.paulcraciunas.domain.api.achievements.AchievementNotificationManager
 import com.paulcraciunas.domain.api.achievements.GetAchievementState
 import com.paulcraciunas.domain.api.achievements.MarkAchievementsSeen
 import com.paulcraciunas.domain.api.achievements.UpdateAchievementProgress
+import com.paulcraciunas.domain.api.billing.BillingUseCase
 import com.paulcraciunas.domain.impl.analysis.AnalyzePositionImpl
 import com.paulcraciunas.domain.impl.auth.AuthenticateUseCaseImpl
 import com.paulcraciunas.domain.impl.auth.DeleteAccountUseCaseImpl
@@ -56,6 +57,7 @@ import com.paulcraciunas.domain.impl.achievements.AchievementNotificationManager
 import com.paulcraciunas.domain.impl.achievements.GetAchievementStateImpl
 import com.paulcraciunas.domain.impl.achievements.MarkAchievementsSeenImpl
 import com.paulcraciunas.domain.impl.achievements.UpdateAchievementProgressImpl
+import com.paulcraciunas.domain.impl.billing.BillingUseCaseImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -172,4 +174,8 @@ internal abstract class DomainModule {
     @Binds
     @Singleton
     abstract fun bindResetPasswordUseCase(impl: ResetPasswordUseCaseImpl): ResetPasswordUseCase
+
+    @Binds
+    @Singleton
+    abstract fun bindBillingUseCase(impl: BillingUseCaseImpl): BillingUseCase
 }
