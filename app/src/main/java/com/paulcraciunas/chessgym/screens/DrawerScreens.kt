@@ -30,6 +30,7 @@ import com.paulcraciunas.screens.about.vm.AboutSection
 import com.paulcraciunas.screens.about.vm.AboutViewModel
 import com.paulcraciunas.screens.signin.ui.SignInScreen
 import com.paulcraciunas.screens.signin.vm.SignInViewModel
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import com.paulcraciunas.global.resources.R as GlobalR
 
@@ -63,32 +64,36 @@ internal fun About(tabNavController: NavHostController) {
     val thankYouMessage = stringResource(GlobalR.string.generic_thank_you)
 
     LaunchedEffect(Unit) {
-        vm.uiEvents.collect { event ->
-            when (event) {
-                AboutEvent.RateTheApp -> {
-                    if (activity == null) return@collect
-                    val manager = ReviewManagerFactory.create(context)
-                    try {
-                        val reviewInfo = manager.requestReview()
-                        manager.launchReview(activity, reviewInfo)
-                    } catch (e: Exception) {
-                        Timber.w(e, "Failed to open Play Store ReviewManager")
-                        openPlayStoreDirectly(context)
+        launch {
+            vm.uiEvents.collect { event ->
+                when (event) {
+                    AboutEvent.RateTheApp -> {
+                        if (activity == null) return@collect
+                        val manager = ReviewManagerFactory.create(context)
+                        try {
+                            val reviewInfo = manager.requestReview()
+                            manager.launchReview(activity, reviewInfo)
+                        } catch (e: Exception) {
+                            Timber.w(e, "Failed to open Play Store ReviewManager")
+                            openPlayStoreDirectly(context)
+                        }
                     }
-                }
-                is AboutEvent.Donate -> {
-                    if (activity == null) return@collect
-                    vm.billingUseCase.donate(event = PlayStoreDonate(activity = activity, type = event.product))
+                    is AboutEvent.Donate -> {
+                        if (activity == null) return@collect
+                        vm.billingUseCase.donate(event = PlayStoreDonate(activity = activity, type = event.product))
+                    }
                 }
             }
         }
-        vm.billingUseCase.events.collect { event ->
-            when (event) {
-                is BillingUseCase.PurchaseEvent.Success -> {
-                    snackbarHostState.showSnackbar(thankYouMessage)
-                }
-                is BillingUseCase.PurchaseEvent.Error -> {
-                    snackbarHostState.showSnackbar(event.message)
+        launch {
+            vm.billingUseCase.events.collect { event ->
+                when (event) {
+                    is BillingUseCase.PurchaseEvent.Success -> {
+                        snackbarHostState.showSnackbar(thankYouMessage)
+                    }
+                    is BillingUseCase.PurchaseEvent.Error -> {
+                        snackbarHostState.showSnackbar(event.message)
+                    }
                 }
             }
         }
