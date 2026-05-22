@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- region download -->
+    <string name="download_channel_name">Загрузка задач</string>
+    <string name="download_channel_desc">Отображает прогресс загрузки задач</string>
+    <string name="download_notification_title">Загрузка задач</string>
+    <string name="download_notification_text">Подготовка задач к использованию…</string>
+    <!-- endregion -->
+</resources>

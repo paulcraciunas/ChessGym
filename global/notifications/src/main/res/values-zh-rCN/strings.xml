@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- region download -->
+    <string name="download_channel_name">棋谜下载</string>
+    <string name="download_channel_desc">显示棋谜下载进度</string>
+    <string name="download_notification_title">正在下载棋谜</string>
+    <string name="download_notification_text">正在准备棋谜，请稍候…</string>
+    <!-- endregion -->
+</resources>

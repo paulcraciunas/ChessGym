@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- region download -->
+    <string name="download_channel_name">パズルのダウンロード</string>
+    <string name="download_channel_desc">パズルのダウンロード進捗を表示</string>
+    <string name="download_notification_title">パズルをダウンロード中</string>
+    <string name="download_notification_text">パズルを準備しています…</string>
+    <!-- endregion -->
+</resources>

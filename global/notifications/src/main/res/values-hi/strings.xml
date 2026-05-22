@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- region download -->
+    <string name="download_channel_name">पहेली डाउनलोड</string>
+    <string name="download_channel_desc">पहेली डाउनलोड की प्रगति दिखाता है</string>
+    <string name="download_notification_title">पहेलियाँ डाउनलोड हो रही हैं</string>
+    <string name="download_notification_text">पहेलियाँ उपयोग के लिए तैयार हो रही हैं…</string>
+    <!-- endregion -->
+</resources>

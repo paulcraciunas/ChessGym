@@ -1,0 +1,699 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ChessGym</string>
+
+    <!-- region pieces -->
+    <string name="pawn">Пешка</string>
+    <string name="rook">Ладья</string>
+    <string name="knight">Конь</string>
+    <string name="bishop">Слон</string>
+    <string name="queen">Ферзь</string>
+    <string name="king">Король</string>
+    <!-- endregion -->
+
+    <!-- region Common -->
+    <string name="content_description_loading">Загрузка</string>
+    <!-- endregion -->
+
+    <!-- region results -->
+    <string name="result_checkmate">Шах и мат! Вы победили</string>
+    <string name="result_draw">Ничья</string>
+    <string name="result_loss">Поражение</string>
+    <!-- endregion -->
+
+    <!-- region Nav drawer -->
+    <string name="nav_drawer_menu">Меню</string>
+    <string name="nav_drawer_back">Назад</string>
+    <string name="nav_drawer_sign_in">Войти…</string>
+    <string name="nav_drawer_sign_out">Выйти</string>
+    <string name="nav_drawer_delete_account">Удалить аккаунт</string>
+    <string name="nav_drawer_general">Общее</string>
+    <string name="nav_drawer_home">Главная</string>
+    <string name="nav_drawer_application">Приложение</string>
+    <string name="nav_drawer_settings">Настройки</string>
+    <string name="nav_drawer_about">О приложении</string>
+    <string name="sign_out_dialog_title">Выйти?</string>
+    <string name="sign_out_dialog_message">Вы уверены, что хотите выйти? Ваш прогресс сохранён — вы можете войти снова в любое время.</string>
+    <string name="sign_out_dialog_confirm">Выйти</string>
+    <string name="delete_account_dialog_title">Удалить аккаунт?</string>
+    <string name="delete_account_dialog_body">Это &lt;b>навсегда удалит&lt;/b> ваш аккаунт и все связанные данные.</string>
+    <string name="delete_account_dialog_message">Вы уверены, что хотите удалить ваш аккаунт?</string>
+    <string name="delete_account_dialog_explanation">Это действие необратимо. После подтверждения весь сохранённый прогресс и рекорды будут утеряны.</string>
+    <string name="delete_account_dialog_confirm">Удалить</string>
+    <string name="delete_account_dialog_consequences_title">Вы потеряете</string>
+    <string name="delete_account_dialog_consequence_puzzles">Решённые задачи &amp; рейтинги</string>
+    <string name="delete_account_dialog_consequence_streaks">Серии &amp; достижения</string>
+    <string name="delete_account_dialog_consequence_games">Сохранённые партии &amp; анализы</string>
+    <string name="delete_account_error_no_network">Невозможно удалить аккаунт без подключения к сети.</string>
+    <string name="delete_account_error_failed">Не удалось удалить аккаунт. Пожалуйста, попробуйте ещё раз.</string>
+    <string name="sign_out_error_failed">Не удалось выйти из аккаунта. Пожалуйста, попробуйте ещё раз.</string>
+    <string name="dialog_ok">ОК</string>
+    <string name="dialog_cancel">Отмена</string>
+    <!-- endregion -->
+
+
+    <!-- region navigation -->
+    <string name="navigation_home_label">Главная</string>
+    <string name="navigation_home_screen_description">Главный экран</string>
+    <string name="navigation_puzzle_dashboard_label">Задачи</string>
+    <string name="navigation_puzzle_dashboard_content_description">Дашборд задач</string>
+    <string name="navigation_rated_puzzle_label">Рейтинговые</string>
+    <string name="navigation_rated_puzzle_content_description">Рейтинговое испытание</string>
+    <string name="navigation_puzzle_rush_label">Раш</string>
+    <string name="navigation_puzzle_rush_content_description">Режим быстрых задач</string>
+    <string name="navigation_board_viz_label">Доска</string>
+    <string name="navigation_board_viz_content_description">Визуализация доски</string>
+    <string name="navigation_blind_mode_label">Вслепую</string>
+    <string name="navigation_blind_mode_content_description">Режим вслепую</string>
+    <!-- endregion -->
+
+    <!-- region Home screen -->
+    <string name="home_timeline_title">Недавняя активность</string>
+    <string name="home_label_profile">Профиль</string>
+    <string name="home_label_rating">Рейтинг</string>
+    <string name="home_label_activities">Активности</string>
+    <string name="home_label_member_since">Участник с</string>
+    <string name="home_timeline_empty_title">Нет недавней активности</string>
+    <string name="home_timeline_empty_description">Начните играть, чтобы увидеть историю активности здесь</string>
+
+    <!-- Activity titles -->
+    <string name="home_title_board_visualization">Визуализация доски</string>
+    <string name="home_title_blind_mode_training">Тренировка вслепую</string>
+
+    <!-- Timeline stat labels -->
+    <plurals name="home_timeline_stat_run">
+        <item quantity="one">%1$d Запуск</item>
+        <item quantity="few">%1$d Запуска</item>
+        <item quantity="many">%1$d Запусков</item>
+        <item quantity="other">%1$d Запуска</item>
+    </plurals>
+    <plurals name="home_timeline_stat_game">
+        <item quantity="one">%1$d Партия</item>
+        <item quantity="few">%1$d Партии</item>
+        <item quantity="many">%1$d Партий</item>
+        <item quantity="other">%1$d Партии</item>
+    </plurals>
+    <plurals name="home_timeline_stat_session">
+        <item quantity="one">%1$d Сессия</item>
+        <item quantity="few">%1$d Сессии</item>
+        <item quantity="many">%1$d Сессий</item>
+        <item quantity="other">%1$d Сессии</item>
+    </plurals>
+    <plurals name="home_timeline_stat_puzzle">
+        <item quantity="one">%1$d Задача</item>
+        <item quantity="few">%1$d Задачи</item>
+        <item quantity="many">%1$d Задач</item>
+        <item quantity="other">%1$d Задачи</item>
+    </plurals>
+    <string name="home_timeline_stat_score">%1$d Рекорд</string>
+    <string name="home_timeline_stat_moves">Ходы</string>
+    <string name="home_timeline_stat_best_moves">%1$d Лучших ходов</string>
+    <string name="home_timeline_stat_streak">%1$d Серия</string>
+    <string name="home_timeline_stat_solved">%1$d Решено</string>
+    <!-- endregion -->
+
+    <!-- region User stats -->
+    <string name="user_stats_title">Статистика</string>
+    <string name="user_stats_high_score_title">Рекорды</string>
+    <string name="expand_stats">Развернуть статистику</string>
+    <string name="collapse_stats">Свернуть статистику</string>
+    <string name="expand_high_scores">Развернуть рекорды</string>
+    <string name="collapse_high_scores">Свернуть рекорды</string>
+    <string name="user_stat_puzzles_played">Задач сыграно</string>
+    <string name="user_stat_puzzles_solved">Задач решено</string>
+    <string name="user_stat_puzzles_success">Процент успеха</string>
+    <string name="user_stat_current_rating">Текущий рейтинг</string>
+    <string name="user_stat_high_score_rated_puzzle">Лучшая рейтинговая задача</string>
+    <string name="user_stat_high_score_puzzles_rush">Лучший раш задач</string>
+    <string name="user_stat_high_score_blind_mode">Лучший режим вслепую</string>
+    <string name="user_stat_high_score_puzzle_streak">Лучшая серия задач</string>
+    <string name="user_stat_high_score_find_the_square">Лучший поиск клетки</string>
+    <string name="user_stat_high_score_move_the_piece">Лучший ход фигурой</string>
+    <!-- endregion -->
+
+    <!-- region Loading -->
+    <string name="landing_eyebrow">Шахматный тренажёр</string>
+    <string name="landing_download_eyebrow">Однократная настройка</string>
+    <string name="landing_download_title">Добро пожаловать в &lt;i>ChessGym&lt;/i></string>
+    <string name="landing_download_explanation">Для начала нам нужно загрузить базу данных задач. Это однократная настройка, которая подготовит всё для ваших тренировок.</string>
+    <string name="landing_feature_puzzles">Миллионы тактических задач</string>
+    <string name="landing_feature_offline">Работает офлайн, всегда</string>
+    <string name="landing_feature_rating">Отслеживает ваш рейтинг</string>
+    <string name="landing_tier_label">Размер базы данных</string>
+    <string name="landing_download_button">Скачать базу данных</string>
+    <string name="landing_get_started_button">Начать</string>
+    <string name="landing_size_hint_onetime">%s — Однократно</string>
+    <string name="landing_size_hint_included">Включено в приложение</string>
+    <string name="landing_download_content_title">Настройка шахматных тренировок</string>
+    <string name="landing_download_subtitle">Загрузка базы данных задач. Это может занять несколько минут в зависимости от скорости вашего интернет-соединения.</string>
+    <string name="landing_download_progress">Загрузка задач</string>
+    <string name="landing_unpack_progress">Распаковка базы данных</string>
+    <string name="landing_unpack_subtitle">Распаковка базы данных задач. Это может занять несколько минут.</string>
+    <string name="landing_write_to_db_progress">Создание базы данных</string>
+    <string name="landing_write_to_db_subtitle">Создание базы данных задач. Это может занять несколько минут.</string>
+    <string name="database_download_dialog_title">Скачать базу данных</string>
+    <string name="database_download_dialog_body">Будет загружено около 50 МБ данных задач. Убедитесь, что у вас стабильное интернет-соединение.</string>
+    <string name="enable_notifications_dialog_title">Включить уведомления</string>
+    <string name="enable_notifications_dialog_body">Получайте уведомления о вашем прогрессе и достижениях.</string>
+    <string name="enable_notifications_dialog_accept">Включить</string>
+    <string name="enable_notifications_dialog_refuse">Пропустить</string>
+    <string name="loading_error_download_failed">Загрузка не удалась. Проверьте подключение к интернету и попробуйте снова.</string>
+    <string name="loading_error_decompression_failed">Не удалось распаковать базу данных. Пожалуйста, попробуйте снова.</string>
+    <string name="loading_error_database_write_failed">Не удалось создать базу данных. Пожалуйста, попробуйте снова.</string>
+    <string name="loading_error_permission">Отказано в разрешении. Пожалуйста, включите уведомления для продолжения.</string>
+    <string name="loading_error_no_internet">Нет подключения к интернету. Проверьте соединение и попробуйте снова.</string>
+    <string name="loading_error_not_enough_disk_space">Недостаточно места на диске. Освободите место и попробуйте снова.</string>
+    <string name="loading_error_generic">Произошла ошибка. Пожалуйста, попробуйте снова.</string>
+    <string name="loading_error_consent_required">Для продолжения необходимо согласие на отчёты об ошибках. Мы собираем только технические данные о сбоях для улучшения стабильности приложения.</string>
+    <string name="crash_consent_dialog_title">Помогите нам улучшить приложение</string>
+    <string name="crash_consent_dialog_body">ChessGym использует отчёты об ошибках для обнаружения и исправления сбоев приложения. Эти данные используются исключительно для выявления сбоев и улучшения стабильности приложения для всех пользователей.\n\nЛичная информация, игровые данные и шаблоны использования не собираются — только технические данные о сбоях (такие как трассировки стека и модель устройства), когда что-то идёт не так.\n\nВы можете изменить этот параметр позже в приложении.</string>
+    <string name="loading_fact_eyebrow">Знаете ли вы?</string>
+    <string-array name="loading_fact_titles">
+        <item>Беспомощный ферзь</item>
+        <item>Книга о шахматах</item>
+        <item>Изобретение священника</item>
+        <item>Самая длинная возможная партия</item>
+        <item>Ни одного мата почти за столетие</item>
+        <item>Монохромные доски</item>
+        <item>Космические захватчики</item>
+        <item>Незаконное тайное правило</item>
+        <item>Король убит</item>
+        <item>Полицейские облавы</item>
+    </string-array>
+    <string-array name="loading_fact_bodies">
+        <item>Изначально самая сильная фигура на доске была на самом деле самой слабой. Ферзь мог двигаться только ровно на одну клетку по диагонали. Своими современными неограниченными возможностями он был наделён в Испании XV века — во многом в честь королевы Изабеллы.</item>
+        <item>Вторая книга, когда-либо напечатанная на английском языке (в 1474 году), была о шахматах. William Caxton перевёл рукопись, первоначально озаглавленную The Game and Playe of the Chesse.</item>
+        <item>Складная шахматная доска была изобретена священником, которому его религиозный орден запретил играть в эту игру. Он нашёл хитрый выход: сложил доску пополам и поставил её на книжную полку так, чтобы она выглядела как две книги.</item>
+        <item>Хотя самая длинная партия среди гроссмейстеров продолжалась 269 ходов, математика диктует теоретическую максимальную длину партии в традиционных шахматах — 5 949 ходов без автоматической ничьей.</item>
+        <item>Ни одного шаха и мата в матче на первенство мира по шахматам не было с 1929 года. Последний произошёл в 8-й партии между Alexander Alekhine и Efim Bogoljubov. С тех пор все решающие матчи выигрывались путём сдачи или просрочки времени.</item>
+        <item>Ранние европейские шахматные доски на самом деле имели монохромные (одного цвета) клетки, и лишь около 1090 года был введён дизайн с чередующимися светлыми и тёмными клетками.</item>
+        <item>Первая шахматная партия в открытом космосе состоялась 9 июня 1970 года между экипажем советского «Союза-9» и операторами на Земле. Экипаж использовал специальный набор с колышками и пазами, чтобы фигуры не улетали в условиях невесомости.</item>
+        <item>Знаменитое взятие на проходе (en passant, по-французски «при прохождении») было введено в Испании в 1280 году. Это одно из наиболее часто упускаемых правил среди начинающих — во многом потому, что если не сыграть его именно в тот ход, когда двигается пешка соперника, эта возможность теряется навсегда.</item>
+        <item>Слово «шах и мат» происходит от персидской фразы «Shah Mat» (شاه مات). Удивительно, но оно не означает «король в ловушке» — оно буквально переводится как «Король мёртв».</item>
+        <item>В 1973 году полиция Кливленда, штат Огайо, совершила налёт на шахматный турнир, арестовала директора турнира и конфисковала шахматные наборы. Организаторам предъявили обвинения в организации азартных игр (за денежные призы) и хранении игорного оборудования (шахматные доски).</item>
+    </string-array>
+    <string name="loading_tier_complete">Полная</string>
+    <string name="loading_tier_compact">Компактная</string>
+    <string name="loading_tier_lite">Быстрый старт</string>
+    <string name="loading_tier_description_complete">Все задачи, полный опыт</string>
+    <string name="loading_tier_description_compact">Отлично подходит для большинства игроков</string>
+    <string name="loading_tier_description_lite">Мгновенная установка, минимальное хранилище</string>
+    <!-- endregion -->
+
+    <!-- region Rated Puzzle Screen -->
+    <string name="rated_puzzle_next_description">Следующая</string>
+    <string name="rated_puzzle_moves">Ходы: %1$s</string>
+    <string name="rated_puzzle_title">Рейтинг задачи: %1$d</string>
+    <string name="navigate_back">Назад</string>
+    <string name="puzzle_hint">Подсказка</string>
+    <string name="puzzle_abandon">Сдаться</string>
+    <string name="rated_puzzle_find_best_move_white">Найдите лучший ход для белых</string>
+    <string name="rated_puzzle_find_best_move_black">Найдите лучший ход для чёрных</string>
+    <string name="abandon_puzzle_title">Сдаться?</string>
+    <string name="choose_promotion_title">Превратить в</string>
+    <string name="abandon_puzzle_message">Вы уверены, что хотите сдаться? Ваш прогресс будет потерян.</string>
+    <string name="abandon_puzzle_confirm">Сдаться</string>
+    <string name="puzzle_solved">Задача решена!</string>
+    <string name="puzzle_failed">Задача не решена</string>
+    <string name="puzzle_abandoned">Задача заброшена</string>
+    <string name="rating_gained">Рейтинг увеличен: +%1$d</string>
+    <string name="rating_lost">Рейтинг уменьшен: -%1$d</string>
+    <!-- endregion -->
+
+    <!-- region generic text resources which can be reused across screens -->
+    <string name="generic_continue">Продолжить</string>
+    <string name="generic_current_score">Текущий счёт</string>
+    <string name="generic_done">Готово</string>
+    <string name="generic_download">Скачать</string>
+    <string name="generic_error_title">Что-то пошло не так</string>
+    <string name="generic_error_try_again">Упс, что-то пошло не так. Пожалуйста, попробуйте снова.</string>
+    <string name="generic_loading_message">Настройка доски…</string>
+    <string name="generic_retry">Повторить</string>
+    <string name="generic_today">Сегодня</string>
+    <string name="generic_yesterday">Вчера</string>
+    <string name="generic_this_week">На этой неделе</string>
+    <string name="generic_this_month">В этом месяце</string>
+    <string name="generic_this_year">В этом году</string>
+    <string name="generic_older">Раньше</string>
+    <string name="generic_success">Успех</string>
+    <string name="generic_failed">Неудача</string>
+    <string name="generic_new_high_score">Новый рекорд</string>
+    <string name="generic_close">Закрыть</string>
+    <string name="generic_agree">Я согласен</string>
+    <string name="generic_not_now">Не сейчас</string>
+    <string name="generic_thank_you">Спасибо за вашу поддержку!</string>
+    <!-- endregion -->
+
+    <!-- region Puzzle Dashboard -->
+    <string name="puzzle_dashboard_eyebrow">Задачи</string>
+    <string name="puzzle_dashboard_title">Выберите испытание</string>
+    <string name="puzzle_dashboard_subtitle">Тренируйте тактическое видение в четырёх режимах.</string>
+    <!-- endregion -->
+
+    <!-- Rated Puzzle Mode -->
+    <string name="puzzle_mode_rated_title">Рейтинговые задачи</string>
+    <string name="puzzle_mode_rated_description">Решайте задачи на своём уровне мастерства</string>
+    <string name="puzzle_mode_rated_rating">Ваш рейтинг: %1$d</string>
+    <!-- endregion -->
+
+    <!-- Puzzle Rush Mode -->
+    <string name="puzzle_mode_rush_title">Раш задач</string>
+    <string name="puzzle_mode_rush_description">Решите как можно больше задач за 3 минуты</string>
+    <string name="puzzle_rush_play_to_start">Сделайте ход, чтобы начать</string>
+    <string name="puzzle_rush_summary_title">Серия завершена</string>
+    <string name="puzzle_rush_puzzle_failed">Задача не решена!</string>
+    <!-- endregion -->
+
+    <!-- Puzzle Streak Mode -->
+    <string name="puzzle_mode_streak_title">Серия задач</string>
+    <string name="puzzle_mode_streak_description">Решайте задачи подряд как можно дольше</string>
+    <string name="puzzle_mode_streak_new">Начать новую серию</string>
+    <string name="puzzle_mode_streak_continue">Продолжить серию из %1$d задач</string>
+    <string name="puzzle_streak_title">Серия задач — Рейтинг: %1$d</string>
+    <string name="puzzle_streak_ended">Серия прервана</string>
+    <string name="puzzle_streak_new">Новая серия</string>
+    <string name="puzzle_streak_next_puzzle">Следующая задача</string>
+    <string name="puzzle_streak_summary_title">Серия завершена</string>
+    <string name="puzzle_white_to_move">Белые ходят</string>
+    <string name="puzzle_black_to_move">Чёрные ходят</string>
+    <!-- endregion -->
+
+    <!-- Failed Puzzles Mode -->
+    <string name="puzzle_mode_failed_title">Нерешённые задачи</string>
+    <string name="puzzle_mode_failed_description">Просматривайте и повторяйте задачи, которые вы не решили</string>
+    <string name="puzzle_mode_failed_none_available">Нет доступных нерешённых задач</string>
+    <plurals name="puzzle_mode_failed_count">
+        <item quantity="one">%1$d задача для повтора</item>
+        <item quantity="few">%1$d задачи для повтора</item>
+        <item quantity="many">%1$d задач для повтора</item>
+        <item quantity="other">%1$d задачи для повтора</item>
+    </plurals>
+    <string name="failed_puzzles_progress">%1$d / %2$d решено</string>
+    <string name="failed_puzzles_empty_title">Нет нерешённых задач</string>
+    <string name="failed_puzzles_empty_description">Отличная работа! У вас нет нерешённых задач для повтора.</string>
+    <string name="failed_puzzles_complete_title">Всё готово!</string>
+    <string name="failed_puzzles_complete_message">Отличная работа! Вы завершили просмотр всех нерешённых задач.</string>
+    <!-- endregion -->
+
+    <!-- Common -->
+    <string name="puzzle_mode_start">Начать режим задач</string>
+    <!-- endregion -->
+
+    <!-- region Board Visualization Dashboard -->
+    <string name="boardvis_dashboard_eyebrow">Визуализация</string>
+    <string name="boardvis_dashboard_title">Осознание доски</string>
+    <string name="boardvis_dashboard_subtitle">Тренируйте зрительную память и пространственную интуицию.</string>
+    <string name="boardvis_mode_start">Начать режим визуализации</string>
+    <!-- endregion -->
+
+    <!-- region Find the Square -->
+    <string name="boardvis_find_square_title">Найти клетку</string>
+    <string name="boardvis_find_square_description">Нажмите на указанную клетку на доске как можно быстрее</string>
+    <string name="boardvis_play_as_white">Играть белыми</string>
+    <string name="boardvis_play_as_black">Играть чёрными</string>
+    <string name="boardvis_play_random">Случайная сторона</string>
+    <string name="boardvis_play">Играть</string>
+    <string name="boardvis_play_again">Играть снова</string>
+    <string name="boardvis_game_over">Время вышло!</string>
+    <string name="boardvis_final_score">Итоговый счёт: %1$d</string>
+    <string name="boardvis_high_score">Рекорд: %1$d</string>
+    <!-- endregion -->
+
+    <!-- region Move the Piece -->
+    <string name="boardvis_move_piece_title">Ходить фигурой</string>
+    <string name="boardvis_move_piece_description">Визуализируйте и делайте правильные ходы на доске</string>
+    <string name="boardvis_move_piece_training_mode">Режим тренировки</string>
+    <string name="boardvis_move_piece_moves_remaining">Осталось ходов: %1$d</string>
+    <string name="boardvis_move_piece_rules">Ходите фигурой, не попадая на поля, атакованные соперником. Выполните необходимые ходы для перехода на следующий уровень!</string>
+    <string name="boardvis_move_piece_captured">Захвачена!</string>
+    <!-- endregion -->
+
+    <!-- region Settings -->
+    <string name="settings_title">Настройки</string>
+    <string name="settings_section_general">Общее</string>
+    <string name="settings_section_ui">Внешний вид</string>
+    <string name="settings_haptic_feedback">Тактильная отдача</string>
+    <string name="settings_haptic_feedback_description">Вибрация при взаимодействии</string>
+    <string name="settings_auto_promote">Автопревращение</string>
+    <string name="settings_auto_promote_description">Автоматически превращать пешки в ферзя</string>
+    <string name="settings_auto_next_puzzle">Авто-переход к задаче</string>
+    <string name="settings_auto_next_puzzle_description">Автоматически загружать следующую задачу при решении в режиме «Серия задач»</string>
+    <string name="settings_show_borders">Показывать границы</string>
+    <string name="settings_show_borders_description">Отображать координаты вокруг доски</string>
+    <string name="settings_highlight_legal_moves">Подсвечивать допустимые ходы</string>
+    <string name="settings_highlight_legal_moves_description">Показывать доступные клетки при выборе фигуры</string>
+    <string name="settings_light_mode">Тема</string>
+    <string name="settings_light_mode_light">Светлая</string>
+    <string name="settings_light_mode_dark">Тёмная</string>
+    <string name="settings_light_mode_system">Системная</string>
+    <string name="settings_enable_animations">Анимации</string>
+    <string name="settings_enable_animations_description">Включить анимации интерфейса</string>
+    <string name="settings_section_privacy">Конфиденциальность</string>
+    <string name="settings_crash_reporting">Отчёты об ошибках</string>
+    <string name="settings_crash_reporting_description">Помогите улучшить стабильность приложения, делясь данными о сбоях</string>
+    <string name="settings_build_version">Версия %1$s-%2$s</string>
+    <!-- endregion -->
+
+    <!-- region About -->
+    <string name="about_title">О приложении</string>
+    <string name="about_general_title">Общее</string>
+    <string name="about_legal_title">Правовая информация</string>
+    <string name="about_creator_title">Создатель</string>
+    <string name="about_creator_description">ChessGym был создан Paul Mihai Craciunas, Android-инженером из Лондона, увлечённым шахматами, стремящимся помочь людям на пути к совершенствованию.</string>
+    <string name="about_contact_title">Контакты</string>
+    <string name="about_contact_description">По юридическим вопросам, коммерческим предложениям или другим запросам, пожалуйста, свяжитесь с нами по электронной почте.</string>
+    <string name="about_contact_email">contact@chessgym.app</string>
+    <string name="about_feedback_title">Обратная связь</string>
+    <string name="about_feedback_description">Нашли ошибку? Есть идея для новой функции или улучшения? Мы будем рады услышать от вас.</string>
+    <string name="about_feedback_email">feedback@chessgym.app</string>
+    <string name="about_support_title">Поддержка</string>
+    <string name="about_donate_title">Пожертвовать</string>
+    <string name="about_donate_description">Поддержите разработку ChessGym</string>
+    <string name="about_donate_dialog_title">Поддержать ChessGym</string>
+    <string name="about_donate_dialog_description">Выберите сумму для поддержки непрерывной разработки этого проекта. &lt;b>Спасибо!&lt;/b></string>
+    <string name="about_donate_small">Кофе</string>
+    <string name="about_donate_medium">Бутерброд</string>
+    <string name="about_donate_large">Пицца</string>
+    <string name="about_rate_title">Оценить приложение</string>
+    <string name="about_rate_description">Нравится ChessGym? Оставьте оценку в Play Store</string>
+    <string name="about_libraries_title">Библиотеки с открытым исходным кодом</string>
+    <string name="about_libraries_description">ChessGym построен с использованием следующих библиотек с открытым исходным кодом:</string>
+    <string name="about_privacy_policy_title">Политика конфиденциальности</string>
+    <string name="about_privacy_policy_content">Дата вступления в силу: май 2026 года\n\nChessGym (&quot;Приложение&quot;) разработано Paul Mihai Craciunas. Настоящая Политика конфиденциальности объясняет, какие данные собираются, как они используются и каковы ваши права в отношении этих данных.\n\n&lt;b>1. Данные, которые мы собираем&lt;/b>\n\n• &lt;b>Информация об аккаунте:&lt;/b> Если вы входите в систему, мы сохраняем ваше отображаемое имя, адрес электронной почты и уникальный идентификатор пользователя через Firebase Authentication.\n• &lt;b>Игровые данные:&lt;/b> Рейтинги задач, статистика и прогресс достижений хранятся для обеспечения персонализированного опыта.\n• &lt;b>Сбои и диагностика:&lt;/b> Firebase Crashlytics автоматически собирает модель устройства, версию ОС и трассировки стека сбоев для помощи в исправлении ошибок.\n• &lt;b>Биллинг:&lt;/b> Транзакции пожертвований полностью обрабатываются Google Play. Мы не храним платёжные данные.\n\n&lt;b>2. Как мы используем ваши данные&lt;/b>\n\n• Для предоставления и персонализации опыта Приложения (рейтинги, достижения, синхронизация прогресса).\n• Для диагностики и исправления сбоев и проблем производительности.\n• Для включения облачного резервного копирования вашего прогресса при входе в систему.\n\n&lt;b>3. Хранение и безопасность данных&lt;/b>\n\nДанные хранятся в Google Cloud Firestore с шифрованием при передаче (TLS) и в покое. Доступ ограничен только аутентифицированными запросами.\n\n&lt;b>4. Сторонние сервисы&lt;/b>\n\n• Firebase Authentication (Google)\n• Firebase Crashlytics (Google)\n• Google Play Billing\n\nМы не продаём, не передаём и не переносим ваши личные данные каким-либо третьим лицам.\n\n&lt;b>5. Ваши права&lt;/b>\n\nВ соответствии с GDPR и аналогичными нормами вы имеете право:\n• Получить доступ к своим личным данным\n• Запросить исправление неточных данных\n• Запросить удаление ваших данных\n• Экспортировать ваши данные (переносимость данных)\n• Отозвать согласие в любое время\n\nДля реализации любого из этих прав свяжитесь с нами по адресу contact@chessgym.app. Мы ответим в течение 30 дней.\n\n&lt;b>6. Хранение данных&lt;/b>\n\nВаши данные хранятся до тех пор, пока существует ваш аккаунт. Если вы удалите аккаунт, все связанные данные будут окончательно удалены в течение 30 дней.\n\n&lt;b>7. Конфиденциальность детей&lt;/b>\n\nПриложение намеренно не собирает данные от детей до 13 лет. Если вы считаете, что мы собрали такие данные, пожалуйста, немедленно свяжитесь с нами.\n\n&lt;b>8. Изменения в этой Политике&lt;/b>\n\nМы можем периодически обновлять настоящую Политику конфиденциальности. Изменения будут отражены в Приложении с обновлённой датой вступления в силу.\n\n&lt;b>9. Контакты&lt;/b>\n\nПо вопросам или запросам данных:\ncontact@chessgym.app</string>
+    <string name="about_terms_title">Условия использования</string>
+    <string name="about_terms_content">ChessGym является свободным программным обеспечением: вы можете распространять его и/или изменять в соответствии с условиями Стандартной общественной лицензии GNU, опубликованной Free Software Foundation, либо версии 3 Лицензии, либо (по вашему выбору) любой более поздней версии.\n\nChessGym распространяется в надежде, что будет полезен, но БЕЗ КАКИХ-ЛИБО ГАРАНТИЙ; без даже подразумеваемой гарантии КОММЕРЧЕСКОЙ ПРИГОДНОСТИ или ПРИГОДНОСТИ ДЛЯ КОНКРЕТНОЙ ЦЕЛИ. Подробнее см. в Стандартной общественной лицензии GNU.\n\nВместе с этой программой вы должны были получить копию Стандартной общественной лицензии GNU. Если нет, см. https://www.gnu.org/licenses/.\n\nПолный исходный код ChessGym доступен по адресу: https://github.com/paulcraciunas/ChessGym\n\nChessGym включает Stockfish, бесплатный шахматный движок с открытым исходным кодом, лицензированный в соответствии со Стандартной общественной лицензией GNU v3.0. Исходный код Stockfish доступен по адресу: https://github.com/official-stockfish/Stockfish\n\nВсе данные шахматных задач получены из общедоступных баз данных. ChessGym и его логотип являются интеллектуальной собственностью Paul Mihai Craciunas.\n\n© 2025–2026 Paul Mihai Craciunas.</string>
+    <string name="about_terms_and_conditions_title">Правила и условия</string>
+    <string name="about_terms_and_conditions_content">Загружая, устанавливая или используя ChessGym (&quot;Приложение&quot;), вы соглашаетесь со следующими правилами и условиями. Если вы не согласны, пожалуйста, немедленно прекратите использование Приложения.\n\nПриложение предоставляется &quot;как есть&quot; и &quot;как доступно&quot; без каких-либо гарантий, явных или подразумеваемых, включая, но не ограничиваясь подразумеваемыми гарантиями товарной пригодности, пригодности для конкретной цели и ненарушения прав.\n\nНи при каких обстоятельствах разработчик не несёт ответственности за прямые, косвенные, случайные, специальные, последующие или штрафные убытки, возникшие в связи с использованием или невозможностью использования Приложения, даже если разработчик был предупреждён о возможности таких убытков.\n\nПриложение может содержать ссылки на сторонние веб-сайты или сервисы, которые не принадлежат и не контролируются разработчиком. Разработчик не осуществляет контроль и не несёт ответственности за содержание, политику конфиденциальности или практику каких-либо сторонних веб-сайтов или сервисов.\n\nРазработчик оставляет за собой право изменять, приостанавливать или прекращать работу Приложения в любое время без предварительного уведомления. Разработчик не несёт ответственности перед вами или третьими лицами за любые изменения, приостановку или прекращение работы Приложения.\n\nИспользование вами Приложения также регулируется Стандартной общественной лицензией GNU v3.0, полный текст которой доступен в разделе «Условия использования».\n\nНастоящие правила и условия вступают в силу с даты вашего первого использования Приложения. Разработчик оставляет за собой право обновлять эти условия в любое время. Продолжение использования Приложения означает принятие любых изменений.\n\nПо вопросам или проблемам, связанным с этими условиями, пожалуйста, свяжитесь с нами по адресу contact@chessgym.app.</string>
+    <!-- endregion -->
+
+    <!-- region Tools -->
+    <string name="navigation_tools_label">Инструменты</string>
+    <string name="navigation_tools_content_description">Шахматные инструменты</string>
+    <string name="tools_dashboard_eyebrow">Инструменты</string>
+    <string name="tools_dashboard_title">Шахматные инструменты</string>
+    <string name="tools_dashboard_subtitle">Полезные утилиты для ваших шахматных партий.</string>
+    <string name="tools_mode_start">Запустить инструмент</string>
+    <string name="tools_clock_description">Отсчитывайте время партий с настраиваемыми параметрами</string>
+    <string name="tools_analysis_title">Анализ</string>
+    <string name="tools_analysis_description">Анализируйте позиции с помощью движка</string>
+    <string name="tools_import_description">Импортировать партию из нотации FEN или PGN</string>
+    <!-- endregion -->
+
+    <!-- region Clock Screen -->
+    <string name="clock_title">Шахматные часы</string>
+    <string name="clock_white">Белые</string>
+    <string name="clock_black">Чёрные</string>
+    <string name="clock_stop">Стоп</string>
+    <string name="clock_new_game">Новая партия</string>
+    <string name="clock_time_up">Время вышло!</string>
+    <string name="clock_time_control">Время</string>
+    <string name="clock_increment">Добавление</string>
+    <string name="clock_minutes_format">%1$d мин</string>
+    <string name="clock_seconds_format">%1$d сек</string>
+    <string name="clock_tap_to_start">Нажмите для начала</string>
+    <!-- endregion -->
+
+    <!-- region Import Game Screen -->
+    <string name="import_game_title">Импорт партии</string>
+    <string name="import_fen">FEN</string>
+    <string name="import_pgn">PGN</string>
+    <string name="import_dialog_title_fen">Импорт FEN</string>
+    <string name="import_dialog_title_pgn">Импорт PGN</string>
+    <string name="import_dialog_hint_fen">Вставьте строку FEN здесь…</string>
+    <string name="import_dialog_hint_pgn">Вставьте текст PGN здесь…</string>
+    <string name="import_dialog_confirm">Импортировать</string>
+    <string name="import_error_invalid_fen">Неверная нотация FEN. Проверьте и попробуйте снова.</string>
+    <string name="import_error_invalid_pgn">Неверная нотация PGN. Проверьте и попробуйте снова.</string>
+    <string name="import_game_jump_to_start">Перейти к началу</string>
+    <string name="import_game_previous_move">Предыдущий ход</string>
+    <string name="import_game_next_move">Следующий ход</string>
+    <string name="import_game_jump_to_end">Перейти к концу</string>
+    <!-- endregion -->
+
+    <!-- region Blind Mode -->
+    <string name="blind_mode_title">Режим вслепую</string>
+    <string name="blind_mode_training_mode">Режим тренировки</string>
+    <string name="blind_mode_training_description">Партии не влияют на рейтинг</string>
+    <string name="blind_mode_play">Играть</string>
+    <string name="blind_mode_resign">Сдаться</string>
+    <string name="blind_mode_reveal">Показать</string>
+    <string name="blind_mode_thinking">Движок думает…</string>
+    <string name="blind_mode_your_turn">Ваш ход</string>
+    <string name="blind_mode_moves">Ходы</string>
+    <string name="abandon_game_title">Сдаться?</string>
+    <string name="abandon_game_message">Вы уверены, что хотите сдаться? Ваш прогресс будет потерян.</string>
+    <!-- endregion -->
+
+    <!-- region Achievements -->
+    <!-- Category display names -->
+    <string name="achievement_category_rated_puzzles_solved">Решённые рейтинговые задачи</string>
+    <string name="achievement_category_puzzle_rush_sessions">Сессии раша задач</string>
+    <string name="achievement_category_streak_sessions">Сессии серий</string>
+    <string name="achievement_category_failed_puzzles_redeemed">Исправленные нерешённые задачи</string>
+    <string name="achievement_category_find_square_sessions">Сессии поиска клетки</string>
+    <string name="achievement_category_move_piece_sessions">Сессии хода фигурой</string>
+    <string name="achievement_category_blind_mode_wins">Наследие Гомера</string>
+    <string name="achievement_category_rated_win_streak">Серия побед в рейтинге</string>
+    <string name="achievement_category_rating_climber">Покоритель рейтинга</string>
+    <string name="achievement_category_blind_strategist">Слепой стратег</string>
+    <string name="achievement_category_rush_champion">Чемпион раша</string>
+    <string name="achievement_category_streak_legend">Легенда серий</string>
+    <string name="achievement_category_eagle_eye">Орлиный взор</string>
+    <string name="achievement_category_knights_path">Путь коня</string>
+    <string name="achievement_category_puzzle_addict">Поклонник задач</string>
+    <string name="achievement_category_time_invested">Вложенное время</string>
+    <string name="achievement_category_daily_grinder">Ежедневный игрок</string>
+    <string name="achievement_category_consistency_king">Король постоянства</string>
+    <string name="achievement_category_board_vision">Видение доски</string>
+    <string name="achievement_category_rush_solver">Решатель раша</string>
+
+    <!-- Tier names: RATED_PUZZLES_SOLVED -->
+    <string name="achievement_rated_puzzles_solved_one">Любитель задач</string>
+    <string name="achievement_rated_puzzles_solved_two">Шахматный любитель</string>
+    <string name="achievement_rated_puzzles_solved_three">Эксперт по задачам</string>
+    <string name="achievement_rated_puzzles_solved_four">Мастер задач</string>
+    <string name="achievement_rated_puzzles_solved_five">Гроссмейстер задач</string>
+
+    <!-- Tier names: PUZZLE_RUSH_SESSIONS -->
+    <string name="achievement_puzzle_rush_sessions_one">Новичок раша</string>
+    <string name="achievement_puzzle_rush_sessions_two">Игрок раша</string>
+    <string name="achievement_puzzle_rush_sessions_three">Ветеран раша</string>
+    <string name="achievement_puzzle_rush_sessions_four">Капитан раша</string>
+    <string name="achievement_puzzle_rush_sessions_five">Легенда раша</string>
+
+    <!-- Tier names: STREAK_SESSIONS -->
+    <string name="achievement_streak_sessions_one">Начинающий серийщик</string>
+    <string name="achievement_streak_sessions_two">Искатель серий</string>
+    <string name="achievement_streak_sessions_three">Охотник за сериями</string>
+    <string name="achievement_streak_sessions_four">Сокрушитель серий</string>
+    <string name="achievement_streak_sessions_five">Фанатик серий</string>
+
+    <!-- Tier names: FAILED_PUZZLES_REDEEMED -->
+    <string name="achievement_failed_puzzles_redeemed_one">Второй шанс</string>
+    <string name="achievement_failed_puzzles_redeemed_two">Возвращение</string>
+    <string name="achievement_failed_puzzles_redeemed_three">Ищущий искупления</string>
+    <string name="achievement_failed_puzzles_redeemed_four">Мастер искупления</string>
+    <string name="achievement_failed_puzzles_redeemed_five">Никогда не сдавайся</string>
+
+    <!-- Tier names: FIND_SQUARE_SESSIONS -->
+    <string name="achievement_find_square_sessions_one">Новичок клеток</string>
+    <string name="achievement_find_square_sessions_two">Искатель клеток</string>
+    <string name="achievement_find_square_sessions_three">Эксперт клеток</string>
+    <string name="achievement_find_square_sessions_four">Мастер клеток</string>
+    <string name="achievement_find_square_sessions_five">Гроссмейстер клеток</string>
+
+    <!-- Tier names: MOVE_PIECE_SESSIONS -->
+    <string name="achievement_move_piece_sessions_one">Начинающий ходок</string>
+    <string name="achievement_move_piece_sessions_two">Двигатель фигур</string>
+    <string name="achievement_move_piece_sessions_three">Навигатор фигур</string>
+    <string name="achievement_move_piece_sessions_four">Мастер фигур</string>
+    <string name="achievement_move_piece_sessions_five">Гроссмейстер фигур</string>
+
+    <!-- Tier names: BLIND_MODE_WINS -->
+    <string name="achievement_blind_mode_wins_one">Ученик Одина</string>
+    <string name="achievement_blind_mode_wins_two">Студент Тиресия</string>
+    <string name="achievement_blind_mode_wins_three">Наследник Гомера</string>
+    <string name="achievement_blind_mode_wins_four">Слепой пророк</string>
+    <string name="achievement_blind_mode_wins_five">Всевидящий</string>
+
+    <!-- Tier names: RATED_WIN_STREAK -->
+    <string name="achievement_rated_win_streak_one">Счастливая серия</string>
+    <string name="achievement_rated_win_streak_two">Острый ум</string>
+    <string name="achievement_rated_win_streak_three">Безупречный тактик</string>
+    <string name="achievement_rated_win_streak_four">Машина побед</string>
+    <string name="achievement_rated_win_streak_five">Непобедимый</string>
+
+    <!-- Tier names: RATING_CLIMBER -->
+    <string name="achievement_rating_climber_one">Восходящая пешка</string>
+    <string name="achievement_rating_climber_two">Восходящий конь</string>
+    <string name="achievement_rating_climber_three">Парящий слон</string>
+    <string name="achievement_rating_climber_four">Возвышающаяся ладья</string>
+    <string name="achievement_rating_climber_five">Царствующий ферзь</string>
+
+    <!-- Tier names: BLIND_STRATEGIST -->
+    <string name="achievement_blind_strategist_one">Слепой разведчик</string>
+    <string name="achievement_blind_strategist_two">Слепой тактик</string>
+    <string name="achievement_blind_strategist_three">Слепой стратег</string>
+    <string name="achievement_blind_strategist_four">Слепой командир</string>
+    <string name="achievement_blind_strategist_five">Слепой гений</string>
+
+    <!-- Tier names: RUSH_CHAMPION -->
+    <string name="achievement_rush_champion_one">Начинающий игрок раша</string>
+    <string name="achievement_rush_champion_two">Претендент раша</string>
+    <string name="achievement_rush_champion_three">Чемпион раша</string>
+    <string name="achievement_rush_champion_four">Герой раша</string>
+    <string name="achievement_rush_champion_five">Феномен раша</string>
+
+    <!-- Tier names: STREAK_LEGEND -->
+    <string name="achievement_streak_legend_one">Горячий старт</string>
+    <string name="achievement_streak_legend_two">В огне</string>
+    <string name="achievement_streak_legend_three">Неостановимый</string>
+    <string name="achievement_streak_legend_four">Легендарная серия</string>
+    <string name="achievement_streak_legend_five">Бессмертная серия</string>
+
+    <!-- Tier names: EAGLE_EYE -->
+    <string name="achievement_eagle_eye_one">Зоркий глаз</string>
+    <string name="achievement_eagle_eye_two">Острый глаз</string>
+    <string name="achievement_eagle_eye_three">Орлиный взор</string>
+    <string name="achievement_eagle_eye_four">Взор ястреба</string>
+    <string name="achievement_eagle_eye_five">Всевидящее око</string>
+
+    <!-- Tier names: KNIGHTS_PATH -->
+    <string name="achievement_knights_path_one">Первые шаги</string>
+    <string name="achievement_knights_path_two">Следопыт</string>
+    <string name="achievement_knights_path_three">Путешествие коня</string>
+    <string name="achievement_knights_path_four">Одиссея коня</string>
+    <string name="achievement_knights_path_five">Завоевание коня</string>
+
+    <!-- Tier names: PUZZLE_ADDICT -->
+    <string name="achievement_puzzle_addict_one">Начало пути</string>
+    <string name="achievement_puzzle_addict_two">Формирование привычек</string>
+    <string name="achievement_puzzle_addict_three">Преданный решатель</string>
+    <string name="achievement_puzzle_addict_four">Поклонник задач</string>
+    <string name="achievement_puzzle_addict_five">Машина задач</string>
+
+    <!-- Tier names: TIME_INVESTED -->
+    <string name="achievement_time_invested_one">Первый час</string>
+    <string name="achievement_time_invested_two">Серьёзный подход</string>
+    <string name="achievement_time_invested_three">Преданный</string>
+    <string name="achievement_time_invested_four">Обязательный</string>
+    <string name="achievement_time_invested_five">Вечный ученик</string>
+
+    <!-- Tier names: DAILY_GRINDER -->
+    <string name="achievement_daily_grinder_one">Первые шаги</string>
+    <string name="achievement_daily_grinder_two">Еженедельная привычка</string>
+    <string name="achievement_daily_grinder_three">Трёхнедельная серия</string>
+    <string name="achievement_daily_grinder_four">Преданный игрок</string>
+    <string name="achievement_daily_grinder_five">Вечный игрок</string>
+
+    <!-- Tier names: CONSISTENCY_KING -->
+    <string name="achievement_consistency_king_one">Трёхдневная серия</string>
+    <string name="achievement_consistency_king_two">Еженедельный воин</string>
+    <string name="achievement_consistency_king_three">Двухнедельная сила</string>
+    <string name="achievement_consistency_king_four">Месячное чудо</string>
+    <string name="achievement_consistency_king_five">Герой ста дней</string>
+
+    <!-- Tier names: BOARD_VISION -->
+    <string name="achievement_board_vision_one">Стажёр видения</string>
+    <string name="achievement_board_vision_two">Ученик видения</string>
+    <string name="achievement_board_vision_three">Эксперт видения</string>
+    <string name="achievement_board_vision_four">Мастер видения</string>
+    <string name="achievement_board_vision_five">Мудрец доски</string>
+
+    <!-- Tier names: RUSH_SOLVER -->
+    <string name="achievement_rush_solver_one">Решатель раша</string>
+    <string name="achievement_rush_solver_two">Неутомимый решатель</string>
+    <string name="achievement_rush_solver_three">Скоростной демон</string>
+    <string name="achievement_rush_solver_four">Машина раша</string>
+    <string name="achievement_rush_solver_five">Терминатор раша</string>
+
+    <!-- Achievement descriptions -->
+    <string name="achievement_desc_rated_puzzles_solved">Решайте рейтинговые задачи для получения этого достижения</string>
+    <string name="achievement_desc_puzzle_rush_sessions">Завершайте сессии раша задач для получения этого достижения</string>
+    <string name="achievement_desc_streak_sessions">Завершайте сессии серий задач для получения этого достижения</string>
+    <string name="achievement_desc_failed_puzzles_redeemed">Повторите и решите ранее проваленные задачи</string>
+    <string name="achievement_desc_find_square_sessions">Играйте в «Найти клетку» для получения этого достижения</string>
+    <string name="achievement_desc_move_piece_sessions">Играйте в «Ходить фигурой» для получения этого достижения</string>
+    <string name="achievement_desc_blind_mode_wins">Побеждайте в рейтинговых играх вслепую для получения этого достижения</string>
+    <string name="achievement_desc_rated_win_streak">Выигрывайте рейтинговые задачи подряд без ошибок</string>
+    <string name="achievement_desc_rating_climber">Повышайте рейтинг задач для достижения новых высот</string>
+    <string name="achievement_desc_blind_strategist">Повышайте рейтинг режима вслепую для получения этого достижения</string>
+    <string name="achievement_desc_rush_champion">Установите рекорд в раше задач</string>
+    <string name="achievement_desc_streak_legend">Установите рекорд в серии задач</string>
+    <string name="achievement_desc_eagle_eye">Установите рекорд в «Найти клетку»</string>
+    <string name="achievement_desc_knights_path">Установите рекорд в «Ходить фигурой»</string>
+    <string name="achievement_desc_puzzle_addict">Решайте задачи во всех игровых режимах</string>
+    <string name="achievement_desc_time_invested">Тратьте время на тренировки во всех игровых режимах</string>
+    <string name="achievement_desc_daily_grinder">Играйте в последовательные дни для создания серии</string>
+    <string name="achievement_desc_consistency_king">Достигните лучшей непрерывной ежедневной серии</string>
+    <string name="achievement_desc_board_vision">Завершайте сессии «Найти клетку» и «Ходить фигурой»</string>
+    <string name="achievement_desc_rush_solver">Решайте задачи во время сессий раша</string>
+
+    <!-- Achievement UI -->
+    <string name="achievement_screen_title">Достижения</string>
+    <string name="achievement_banner_unlocked">%1$s — Уровень %2$d разблокирован!</string>
+    <string name="achievement_trophy_case_title">Ваша коллекция трофеев</string>
+    <string name="achievement_trophy_case_keep_going">Продолжайте — осталось %1$d</string>
+    <string name="achievement_trophy_case_all_earned">Все получены — отличная работа!</string>
+    <string name="achievement_trophy_case_summary">%1$d в процессе · %2$d заблокировано</string>
+    <string name="achievement_earned_label">ПОЛУЧЕНО</string>
+    <string name="achievement_earned_count">%1$d / %2$d получено</string>
+    <string name="achievement_earned_total">из %1$d</string>
+    <string name="achievement_detail_next_tier">%1$d / %2$d до следующего уровня</string>
+    <string name="achievement_detail_progress">%1$d / %2$d</string>
+    <string name="achievement_see_all">Смотреть все</string>
+    <string name="achievement_group_puzzles">Задачи</string>
+    <string name="achievement_group_rush_and_streak">Раш &amp; Серии</string>
+    <string name="achievement_group_board_vision">Видение доски</string>
+    <string name="achievement_group_skill_and_mastery">Навык &amp; Мастерство</string>
+    <string name="achievement_group_dedication">Преданность</string>
+    <!-- endregion -->
+
+    <!-- temporary values; these will be deleted as we build features -->
+    <string name="under_construction">В разработке</string>
+
+    <!-- region auth errors -->
+    <string name="auth_error_google_sign_in_failed">Вход через Google не удался. Пожалуйста, попробуйте снова.</string>
+    <string name="auth_error_sign_in_failed">Вход не удался. Пожалуйста, попробуйте снова.</string>
+    <string name="auth_error_sign_up_failed">Регистрация не удалась. Пожалуйста, попробуйте снова.</string>
+    <string name="auth_error_invalid_credentials">Неверный пароль. Пожалуйста, попробуйте снова.</string>
+    <string name="auth_error_user_not_found">Аккаунт с этим email не найден.</string>
+    <string name="auth_error_account_already_exists">Аккаунт с этим email уже существует.</string>
+    <string name="auth_error_weak_password">Пароль слишком слабый. Используйте не менее 6 символов.</string>
+    <string name="auth_error_network">Ошибка сети. Проверьте подключение и попробуйте снова.</string>
+    <string name="auth_error_empty_fields">Это поле обязательно для заполнения.</string>
+    <string name="auth_error_invalid_email">Пожалуйста, введите корректный адрес электронной почты.</string>
+    <string name="auth_error_password_too_short">Пароль должен содержать не менее 6 символов.</string>
+    <string name="auth_error_display_name_too_short">Отображаемое имя должно содержать не менее 4 символов.</string>
+    <string name="auth_error_display_name_too_long">Отображаемое имя должно содержать не более 15 символов.</string>
+    <string name="auth_error_password_reset_user_not_found">Аккаунт с этим адресом электронной почты не найден.</string>
+    <string name="auth_error_password_reset_sent">Письмо для сброса пароля отправлено. Проверьте почту.</string>
+    <string name="auth_error_no_google_accounts">Google-аккаунты не найдены на этом устройстве. Пожалуйста, сначала добавьте Google-аккаунт в настройках устройства.</string>
+    <string name="auth_error_session_expired">Ваша сессия истекла. Пожалуйста, войдите снова.</string>
+    <string name="auth_error_account_disabled">Этот аккаунт отключён.</string>
+    <string name="auth_error_server">Ошибка сервера. Пожалуйста, попробуйте позже.</string>
+
+    <!-- Sign In Screen -->
+    <string name="sign_in_title">Войти</string>
+    <string name="sign_up_title">Создать аккаунт</string>
+    <string name="sign_in_eyebrow">С возвращением</string>
+    <string name="sign_up_eyebrow">Присоединяйтесь сегодня</string>
+    <string name="sign_in_welcome">Добро пожаловать в ChessGym</string>
+    <string name="sign_in_subtitle">Войдите, чтобы синхронизировать прогресс на всех устройствах</string>
+    <string name="sign_up_subtitle">Зарегистрируйтесь, чтобы сохранить прогресс и безопасно создать резервную копию данных</string>
+    <string name="sign_in_google">Войти через Google</string>
+    <string name="sign_up_google">Зарегистрироваться через Google</string>
+    <string name="sign_in_divider">или по электронной почте</string>
+    <string name="sign_in_display_name_label">Отображаемое имя</string>
+    <string name="sign_in_email_label">Email</string>
+    <string name="sign_in_password_label">Пароль</string>
+    <string name="sign_in_password_show">Показать</string>
+    <string name="sign_in_password_hide">Скрыть</string>
+    <string name="sign_in_button">Войти</string>
+    <string name="sign_up_button">Создать аккаунт</string>
+    <string name="sign_in_switch_to_sign_up">Нет аккаунта? &lt;b>&lt;u>Создайте его&lt;/u>&lt;/b></string>
+    <string name="sign_in_switch_to_sign_in">Уже есть аккаунт? &lt;b>&lt;u>Войти&lt;/u>&lt;/b></string>
+    <string name="sign_in_forgot_password">Забыли пароль?</string>
+    <!-- endregion -->
+
+</resources>
