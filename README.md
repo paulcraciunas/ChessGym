@@ -60,15 +60,10 @@ graph TD
 
     Screens --> Domain
     Screens --> Game[game]
-    Screens --> Global[global]
 
     Domain --> Game
     Domain --> User
     Domain --> Settings
-
-    Game --> Global
-    User --> Global
-    Settings --> Global
 
     User --> Backend["backend (Cloud Run)"]
 ```
