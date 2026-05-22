@@ -9,3 +9,7 @@ data class LibraryInfo(
     val url: String,
     val license: String,
 )
+
+sealed interface AboutEvent {
+    data object RateTheApp : AboutEvent
+}

@@ -41,6 +41,7 @@ class DataStoreAppSettingsRepository @Inject constructor(
     override suspend fun updateHighlightLegalMoves(enabled: Boolean) = dataStore.update(HIGHLIGHT_LEGAL_MOVES, enabled)
     override suspend fun updateEnableAnimations(enabled: Boolean) = dataStore.update(ENABLE_ANIMATIONS, enabled)
     override suspend fun updateCrashReportingConsent(enabled: Boolean) = dataStore.update(CRASH_REPORTING_CONSENT, enabled)
+    override suspend fun updateHasRatedApp(enabled: Boolean) = dataStore.update(HAS_RATED_APP, enabled)
     private suspend fun <T> DataStore<Preferences>.update(key: Preferences.Key<T>, with: T) = safeUpdate(TAG) { it[key] = with }
 
     private fun Preferences.toAppSettings(): AppSettings {
@@ -57,7 +58,8 @@ class DataStoreAppSettingsRepository @Inject constructor(
             enableVibrations = this[ENABLE_VIBRATIONS] ?: true,
             highlightLegalMoves = this[HIGHLIGHT_LEGAL_MOVES] ?: true,
             enableAnimations = this[ENABLE_ANIMATIONS] ?: true,
-            crashReportingConsent = this[CRASH_REPORTING_CONSENT] ?: false
+            crashReportingConsent = this[CRASH_REPORTING_CONSENT] ?: false,
+            hasRatedApp = this[HAS_RATED_APP] ?: false,
         )
     }
 
@@ -76,5 +78,6 @@ class DataStoreAppSettingsRepository @Inject constructor(
         private val HIGHLIGHT_LEGAL_MOVES = booleanPreferencesKey("highlight_legal_moves")
         private val ENABLE_ANIMATIONS = booleanPreferencesKey("enable_animations")
         private val CRASH_REPORTING_CONSENT = booleanPreferencesKey("crash_reporting_consent")
+        private val HAS_RATED_APP = booleanPreferencesKey("has_rated_app")
     }
 }

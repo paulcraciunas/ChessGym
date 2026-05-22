@@ -32,6 +32,7 @@ googleServices = "4.4.4"
 ktorClient = "3.4.3"
 credentials = "1.6.0"
 googleid = "1.1.1"
+googlePlayReview = "2.0.2"
 
 [libraries]
 ## Unit testing
@@ -112,6 +113,7 @@ ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktorCli
 credentials = { module = "androidx.credentials:credentials", version.ref = "credentials" }
 credentials-play-services = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentials" }
 googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
+google-play = { module = "com.google.android.play:review-ktx", version.ref = "googlePlayReview" }
 
 ## Database
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }

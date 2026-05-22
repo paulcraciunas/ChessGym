@@ -1,18 +1,16 @@
 package com.paulcraciunas.screens.about.vm
 
+import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 internal class AboutViewModelTest {
-    private lateinit var underTest: AboutViewModel
-
-    @BeforeEach
-    fun setUp() {
-        underTest = AboutViewModel()
-    }
+    private val appSettingsRepository = FakeAppSettingsRepository()
+    private val underTest = AboutViewModel(appSettingsRepository = appSettingsRepository)
 
     @Nested
     internal inner class Initialization {
@@ -82,13 +80,19 @@ internal class AboutViewModelTest {
         }
 
         @Test
-        fun `GIVEN initialized WHEN rate app clicked THEN state remains unchanged`() {
-            val stateBefore = underTest.uiState.value
-
+        fun `GIVEN initialized WHEN rate app clicked THEN hasRatedApp is updated`() = runTest {
             underTest.onRateAppClicked()
 
-            val stateAfter = underTest.uiState.value
-            assertTrue(stateBefore == stateAfter)
+            val hasRated = appSettingsRepository.appSettings.first().hasRatedApp
+            assertTrue(hasRated)
+        }
+
+        @Test
+        fun `GIVEN initialized WHEN rate app clicked THEN rate app event is sent`() = runTest {
+            underTest.onRateAppClicked()
+
+            val event = underTest.uiEvents.first()
+            assertEquals(AboutEvent.RateTheApp, event)
         }
     }
 }

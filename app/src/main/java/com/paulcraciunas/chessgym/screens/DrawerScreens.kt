@@ -1,7 +1,11 @@
 package com.paulcraciunas.chessgym.screens
 
+import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
+import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -9,15 +13,20 @@ import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import com.google.android.play.core.ktx.launchReview
+import com.google.android.play.core.ktx.requestReview
+import com.google.android.play.core.review.ReviewManagerFactory
 import com.paulcraciunas.chessgym.R
 import com.paulcraciunas.chessgym.auth.GoogleTokenSource
 import com.paulcraciunas.chessgym.navigation.Screen
 import com.paulcraciunas.screens.about.ui.AboutDetailScreen
 import com.paulcraciunas.screens.about.ui.AboutScreen
+import com.paulcraciunas.screens.about.vm.AboutEvent
 import com.paulcraciunas.screens.about.vm.AboutSection
 import com.paulcraciunas.screens.about.vm.AboutViewModel
 import com.paulcraciunas.screens.signin.ui.SignInScreen
 import com.paulcraciunas.screens.signin.vm.SignInViewModel
+import timber.log.Timber
 
 @Composable
 internal fun SignIn(tabNavController: NavHostController) {
@@ -42,6 +51,26 @@ internal fun SignIn(tabNavController: NavHostController) {
 @Composable
 internal fun About(tabNavController: NavHostController) {
     val vm: AboutViewModel = hiltViewModel()
+    val context = LocalContext.current
+    val activity = LocalActivity.current
+
+    LaunchedEffect(Unit) {
+        vm.uiEvents.collect { event ->
+            when (event) {
+                AboutEvent.RateTheApp -> {
+                    if (activity == null) return@collect
+                    val manager = ReviewManagerFactory.create(context)
+                    try {
+                        val reviewInfo = manager.requestReview()
+                        manager.launchReview(activity, reviewInfo)
+                    } catch (e: Exception) {
+                        Timber.w(e, "Failed to open Play Store ReviewManager")
+                        openPlayStoreDirectly(context)
+                    }
+                }
+            }
+        }
+    }
 
     AboutScreen(
         onNavigateBack = tabNavController::popBackStack,
@@ -80,4 +109,21 @@ private fun resolveEmailUri(section: AboutSection): String? = when (section) {
     AboutSection.CONTACT -> "mailto:contact@chessgym.app"
     AboutSection.FEEDBACK -> "mailto:feedback@chessgym.app"
     else -> null
+}
+
+private fun openPlayStoreDirectly(context: Context) {
+    val playStoreAppUri = "market://details?id=${context.packageName}".toUri()
+    val playStoreWebUri = "https://play.google.com/store/apps/details?id=${context.packageName}".toUri()
+
+    try {
+        val appIntent = Intent(Intent.ACTION_VIEW, playStoreAppUri).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NEW_DOCUMENT)
+        }
+        context.startActivity(appIntent)
+    } catch (e: ActivityNotFoundException) {
+        Timber.w(e, "Failed to open Google Play Store application page")
+        // Fallback to the web browser if "market://" fails
+        val webIntent = Intent(Intent.ACTION_VIEW, playStoreWebUri)
+        context.startActivity(webIntent)
+    }
 }
