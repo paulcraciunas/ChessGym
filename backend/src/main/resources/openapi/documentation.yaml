@@ -225,9 +225,9 @@ components:
           type: string
           nullable: true
           example: "2026-01-15"
-        avatarUrl:
-          type: string
-          nullable: true
+        isSupporter:
+          type: boolean
+          example: true
         lastModified:
           type: integer
           format: int64

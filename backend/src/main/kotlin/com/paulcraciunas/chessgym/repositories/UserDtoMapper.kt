@@ -27,7 +27,7 @@ class UserDtoMapper {
         "profile" to mapOf(
             "displayName" to user.profile.displayName,
             "joinDate" to user.profile.joinDate,
-            "avatarUrl" to user.profile.avatarUrl,
+            "isSupporter" to user.profile.isSupporter,
             "lastModified" to user.profile.lastModified,
         ),
         "ratings" to mapOf(
@@ -68,7 +68,7 @@ class UserDtoMapper {
     private fun parseProfile(data: Map<String, Any>): ProfileDto = ProfileDto(
         displayName = data["displayName"] as? String ?: "",
         joinDate = data["joinDate"] as? String,
-        avatarUrl = data["avatarUrl"] as? String,
+        isSupporter = data["isSupporter"] as? Boolean ?: false,
         lastModified = data["lastModified"].asLong(),
     )
 

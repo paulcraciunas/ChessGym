@@ -16,7 +16,7 @@ data class UserDto(
 data class ProfileDto(
     val displayName: String = "",
     val joinDate: String? = null,
-    val avatarUrl: String? = null,
+    val isSupporter: Boolean = false,
     val lastModified: Long = 0L,
 )
 
