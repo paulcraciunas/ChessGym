@@ -33,6 +33,7 @@ ktorClient = "3.4.3"
 credentials = "1.6.0"
 googleid = "1.1.1"
 googlePlayReview = "2.0.2"
+billing = "9.0.0"
 
 [libraries]
 ## Unit testing
@@ -114,6 +115,7 @@ credentials = { module = "androidx.credentials:credentials", version.ref = "cred
 credentials-play-services = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentials" }
 googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
 google-play = { module = "com.google.android.play:review-ktx", version.ref = "googlePlayReview" }
+google-billing = { module = "com.android.billingclient:billing-ktx", version.ref = "billing" }
 
 ## Database
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
