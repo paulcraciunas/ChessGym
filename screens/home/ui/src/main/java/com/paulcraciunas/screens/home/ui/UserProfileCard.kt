@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -100,13 +102,24 @@ private fun NameAndRating(
         Column(modifier = Modifier.weight(1f)) {
             ChessGymSpacer(size = SpacerSize.SMALL)
             Eyebrow(text = stringResource(R.string.home_label_profile))
-            Text(
-                text = userProfile.name,
-                style = Design.typography.headlineSmall,
-                color = Design.colors.ink,
-                modifier = Modifier
-                    .testTag { HomeScreenTags.Profile.NAME }
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = userProfile.name,
+                    style = Design.typography.headlineSmall,
+                    color = Design.colors.ink,
+                    modifier = Modifier
+                        .testTag { HomeScreenTags.Profile.NAME }
+                )
+                if (userProfile.isSupporter) {
+                    ChessGymSpacer(size = SpacerSize.SMALL)
+                    Icon(
+                        imageVector = Icons.Default.Favorite,
+                        contentDescription = "Supporter",
+                        tint = Design.colors.accent,
+                        modifier = Modifier.size(Design.dimensions.sizes.icon)
+                    )
+                }
+            }
         }
         Column(
             horizontalAlignment = Alignment.End
@@ -181,7 +194,8 @@ private fun UserProfileCardPreview() {
                 name = "JohnDoe",
                 currentRating = 1547,
                 totalActivities = 142,
-                joinDate = LocalDate.of(2024, 3, 15)
+                joinDate = LocalDate.of(2024, 3, 15),
+                isSupporter = true,
             ),
             ribbons = listOf(
                 HomeUiState.Ribbon(Achievement.RATED_PUZZLES_SOLVED, Achievement.Tier.THREE),

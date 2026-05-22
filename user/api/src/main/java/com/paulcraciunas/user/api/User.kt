@@ -22,7 +22,8 @@ data class User(
         val displayName: String = "ChessEnthusiast",
         @Serializable(with = LocalDateSerializer::class)
         val joinDate: LocalDate = LocalDate.now(),
-        val avatarUrl: String? = null
+        val avatarUrl: String? = null,
+        val isSupporter: Boolean = false,
     )
 
     @Serializable

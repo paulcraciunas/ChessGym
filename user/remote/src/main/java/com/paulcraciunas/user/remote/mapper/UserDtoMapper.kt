@@ -34,6 +34,7 @@ class UserDtoMapper @Inject constructor() {
         displayName = profile.displayName,
         joinDate = profile.joinDate.format(DateTimeFormatter.ISO_LOCAL_DATE),
         avatarUrl = profile.avatarUrl,
+        isSupporter = profile.isSupporter,
         lastModified = System.currentTimeMillis(),
     )
 
@@ -41,6 +42,7 @@ class UserDtoMapper @Inject constructor() {
         displayName = dto.displayName,
         joinDate = dto.joinDate.parseLocalDate() ?: LocalDate.now(),
         avatarUrl = dto.avatarUrl,
+        isSupporter = dto.isSupporter,
     )
 
     private fun mapRatings(ratings: User.Ratings): RatingsDto = RatingsDto(

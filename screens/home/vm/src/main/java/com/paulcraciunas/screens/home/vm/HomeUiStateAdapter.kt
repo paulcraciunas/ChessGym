@@ -24,7 +24,8 @@ class HomeUiStateAdapter @Inject constructor() {
         name = user.profile.displayName,
         currentRating = user.ratings.current,
         totalActivities = user.history.size,
-        joinDate = user.profile.joinDate
+        joinDate = user.profile.joinDate,
+        isSupporter = user.profile.isSupporter
     )
 
     private fun adaptUserStats(user: User) = HomeUiState.Stats(

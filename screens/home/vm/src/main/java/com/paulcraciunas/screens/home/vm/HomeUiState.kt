@@ -21,6 +21,7 @@ data class HomeUiState(
         val currentRating: Int = 1200,
         val totalActivities: Int = 0,
         val joinDate: LocalDate = LocalDate.now(),
+        val isSupporter: Boolean = false,
     ) {
         fun initial(): String = name.first().uppercase()
     }
