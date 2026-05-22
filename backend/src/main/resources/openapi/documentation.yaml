@@ -159,6 +159,8 @@ paths:
       description: Returns aggregated achievement completion percentages across all users. Useful for displaying "only X% of users reached this level".
       operationId: getAchievementStatistics
       tags: [Statistics]
+      security:
+        - bearerAuth: []
       responses:
         "200":
           description: Achievement statistics
@@ -166,6 +168,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/AchievementStatisticsResponse"
+        "401":
+          description: Invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
 components:
   securitySchemes:
