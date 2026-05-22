@@ -125,7 +125,7 @@ internal class UserRepositoryImplTest {
         // Given
         val authResult = AuthResult(
             authState = User.AuthenticationState(
-                provider = User.AuthenticationState.AuthProvider.APPLE,
+                provider = User.AuthenticationState.AuthProvider.GOOGLE,
                 userId = "user_123",
             ),
             displayName = "TestUser",
@@ -155,7 +155,7 @@ internal class UserRepositoryImplTest {
         // Given
         val authResult = AuthResult(
             authState = User.AuthenticationState(
-                provider = User.AuthenticationState.AuthProvider.APPLE,
+                provider = User.AuthenticationState.AuthProvider.GOOGLE,
                 userId = "user_123",
             ),
             displayName = "TestUser",

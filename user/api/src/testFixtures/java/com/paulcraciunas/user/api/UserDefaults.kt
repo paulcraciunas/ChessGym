@@ -8,7 +8,6 @@ object UserDefaults {
         profile = User.Profile(
             displayName = DISPLAY_NAME,
             joinDate = LocalDate.of(2023, 1, 1),
-            avatarUrl = null
         ),
         ratings = User.Ratings(
             current = RATING,

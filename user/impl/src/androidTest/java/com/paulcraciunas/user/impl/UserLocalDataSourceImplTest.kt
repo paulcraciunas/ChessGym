@@ -62,7 +62,6 @@ internal class UserLocalDataSourceImplTest {
             profile = User.Profile(
                 displayName = "JohnDoe",
                 joinDate = LocalDate.of(2023, 5, 15),
-                avatarUrl = "https://example.com/avatar.jpg"
             ),
             ratings = User.Ratings(
                 current = 1450,
@@ -92,7 +91,6 @@ internal class UserLocalDataSourceImplTest {
 
         assertEquals("AliceSmith", result.profile.displayName)
         assertEquals(LocalDate.of(2022, 3, 10), result.profile.joinDate)
-        assertEquals("https://example.com/alice.jpg", result.profile.avatarUrl)
 
         assertEquals(1650, result.ratings.current)
         assertEquals(800, result.ratings.blindMode)
@@ -221,9 +219,6 @@ internal class UserLocalDataSourceImplTest {
         val authProviders = listOf(
             User.AuthenticationState.AuthProvider.EMAIL,
             User.AuthenticationState.AuthProvider.GOOGLE,
-            User.AuthenticationState.AuthProvider.INSTAGRAM,
-            User.AuthenticationState.AuthProvider.APPLE,
-            User.AuthenticationState.AuthProvider.FACEBOOK
         )
 
         for (provider in authProviders) {
@@ -455,7 +450,6 @@ internal class UserLocalDataSourceImplTest {
         profile = User.Profile(
             displayName = "AliceSmith",
             joinDate = LocalDate.of(2022, 3, 10),
-            avatarUrl = "https://example.com/alice.jpg"
         ),
         ratings = User.Ratings(
             current = 1650,

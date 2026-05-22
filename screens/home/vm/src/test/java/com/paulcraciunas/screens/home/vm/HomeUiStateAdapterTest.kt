@@ -46,7 +46,6 @@ internal class HomeUiStateAdapterTest {
             profile = User.Profile(
                 displayName = "JohnDoe",
                 joinDate = LocalDate.of(2023, 5, 15),
-                avatarUrl = "https://example.com/avatar.jpg"
             ),
             ratings = User.Ratings(current = 1450, blindMode = 600)
         )

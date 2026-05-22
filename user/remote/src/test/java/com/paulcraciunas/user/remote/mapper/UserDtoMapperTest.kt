@@ -59,7 +59,6 @@ internal class UserDtoMapperTest {
             profile = User.Profile(
                 displayName = "JohnDoe",
                 joinDate = LocalDate.of(2024, 6, 15),
-                avatarUrl = "https://example.com/avatar.png",
             ),
             ratings = User.Ratings(current = 1500, blindMode = 600),
             highScores = User.HighScores(

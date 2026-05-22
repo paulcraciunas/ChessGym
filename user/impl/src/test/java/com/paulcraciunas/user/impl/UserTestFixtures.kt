@@ -10,7 +10,6 @@ internal object UserTestFixtures {
         profile = User.Profile(
             displayName = "TestPlayer",
             joinDate = LocalDate.of(2023, 1, 1),
-            avatarUrl = null
         ),
         ratings = User.Ratings(
             current = 1350,

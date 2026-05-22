@@ -33,7 +33,6 @@ class UserDtoMapper @Inject constructor() {
     private fun mapProfile(profile: User.Profile): ProfileDto = ProfileDto(
         displayName = profile.displayName,
         joinDate = profile.joinDate.format(DateTimeFormatter.ISO_LOCAL_DATE),
-        avatarUrl = profile.avatarUrl,
         isSupporter = profile.isSupporter,
         lastModified = System.currentTimeMillis(),
     )
@@ -41,7 +40,6 @@ class UserDtoMapper @Inject constructor() {
     private fun parseProfile(dto: ProfileDto): User.Profile = User.Profile(
         displayName = dto.displayName,
         joinDate = dto.joinDate.parseLocalDate() ?: LocalDate.now(),
-        avatarUrl = dto.avatarUrl,
         isSupporter = dto.isSupporter,
     )
 
