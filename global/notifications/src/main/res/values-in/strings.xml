@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- region download -->
+    <string name="download_channel_name">Unduhan Teka-teki</string>
+    <string name="download_channel_desc">Menampilkan progres unduhan teka-teki</string>
+    <string name="download_notification_title">Mengunduh teka-teki</string>
+    <string name="download_notification_text">Mempersiapkan teka-teki untuk digunakan…</string>
+    <!-- endregion -->
+</resources>

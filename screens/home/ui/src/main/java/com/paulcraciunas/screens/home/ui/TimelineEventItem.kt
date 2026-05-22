@@ -88,13 +88,13 @@ private fun HomeUiState.HistoryEvent.iconRes(): Int = when (this) {
 
 @StringRes
 private fun HomeUiState.HistoryEvent.titleRes(): Int = when (this) {
-    is HomeUiState.HistoryEvent.PuzzleRushEvent -> R.string.home_title_puzzle_rush
+    is HomeUiState.HistoryEvent.PuzzleRushEvent -> R.string.puzzle_mode_rush_title
     is HomeUiState.HistoryEvent.BoardVizEvent -> R.string.home_title_board_visualization
-    is HomeUiState.HistoryEvent.BlindModeEvent -> R.string.home_title_blind_mode
+    is HomeUiState.HistoryEvent.BlindModeEvent -> R.string.blind_mode_title
     is HomeUiState.HistoryEvent.BlindModeTrainingEvent -> R.string.home_title_blind_mode_training
-    is HomeUiState.HistoryEvent.RatedPuzzleEvent -> R.string.home_title_rated_puzzle
-    is HomeUiState.HistoryEvent.PuzzleStreakEvent -> R.string.home_title_puzzle_streak
-    is HomeUiState.HistoryEvent.FailedPuzzleEvent -> R.string.home_title_failed_puzzles
+    is HomeUiState.HistoryEvent.RatedPuzzleEvent -> R.string.puzzle_mode_rated_title
+    is HomeUiState.HistoryEvent.PuzzleStreakEvent -> R.string.puzzle_mode_streak_title
+    is HomeUiState.HistoryEvent.FailedPuzzleEvent -> R.string.puzzle_mode_failed_title
 }
 
 @Preview("TimelineEventItem")

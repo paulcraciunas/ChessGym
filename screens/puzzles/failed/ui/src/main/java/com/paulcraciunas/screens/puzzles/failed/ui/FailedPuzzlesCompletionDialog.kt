@@ -3,7 +3,6 @@ package com.paulcraciunas.screens.puzzles.failed.ui
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.design.components.ChessGymDialog
@@ -34,7 +33,7 @@ fun FailedPuzzlesCompletionDialog(
         Column {
             Summary(
                 value = puzzlesSolved.toString(),
-                subtitle = stringResource(R.string.failed_puzzles_solved_count),
+                subtitle = stringResource(R.string.user_stat_puzzles_solved),
             )
             CenteredMessage(text = stringResource(R.string.failed_puzzles_complete_message))
         }

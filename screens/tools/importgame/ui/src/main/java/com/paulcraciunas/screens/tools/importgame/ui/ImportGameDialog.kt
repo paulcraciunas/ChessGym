@@ -58,7 +58,7 @@ fun ImportGameDialog(
             Paired(
                 confirmText = stringResource(R.string.import_dialog_confirm),
                 onConfirm = { onImport(text) },
-                dismissText = stringResource(R.string.import_dialog_cancel),
+                dismissText = stringResource(R.string.dialog_cancel),
                 onDismiss = onDismiss,
                 confirmEnabled = text.isNotBlank(),
             )

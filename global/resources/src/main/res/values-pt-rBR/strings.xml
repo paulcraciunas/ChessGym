@@ -1,0 +1,689 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">ChessGym</string>
+
+    <!-- region pieces -->
+    <string name="pawn">Peão</string>
+    <string name="rook">Torre</string>
+    <string name="knight">Cavalo</string>
+    <string name="bishop">Bispo</string>
+    <string name="queen">Dama</string>
+    <string name="king">Rei</string>
+    <!-- endregion -->
+
+    <!-- region Common -->
+    <string name="content_description_loading">Carregando</string>
+    <!-- endregion -->
+
+    <!-- region results -->
+    <string name="result_checkmate">Xeque-mate! Você venceu</string>
+    <string name="result_draw">Empate</string>
+    <string name="result_loss">Derrota</string>
+    <!-- endregion -->
+
+    <!-- region Nav drawer -->
+    <string name="nav_drawer_menu">Menu</string>
+    <string name="nav_drawer_back">Voltar</string>
+    <string name="nav_drawer_sign_in">Entrar…</string>
+    <string name="nav_drawer_sign_out">Sair</string>
+    <string name="nav_drawer_delete_account">Excluir conta</string>
+    <string name="nav_drawer_general">Geral</string>
+    <string name="nav_drawer_home">Início</string>
+    <string name="nav_drawer_application">Aplicativo</string>
+    <string name="nav_drawer_settings">Configurações</string>
+    <string name="nav_drawer_about">Sobre</string>
+    <string name="sign_out_dialog_title">Sair da conta?</string>
+    <string name="sign_out_dialog_message">Tem certeza de que deseja sair? Seu progresso está salvo — você pode entrar novamente a qualquer momento.</string>
+    <string name="sign_out_dialog_confirm">Sair</string>
+    <string name="delete_account_dialog_title">Excluir conta?</string>
+    <string name="delete_account_dialog_body">Isso irá &lt;b>excluir permanentemente&lt;/b> sua conta e todos os dados associados.</string>
+    <string name="delete_account_dialog_message">Tem certeza de que deseja excluir sua conta?</string>
+    <string name="delete_account_dialog_explanation">Esta ação é irreversível. Uma vez confirmada, todo o seu progresso salvo e recordes serão perdidos.</string>
+    <string name="delete_account_dialog_confirm">Excluir</string>
+    <string name="delete_account_dialog_consequences_title">Você perderá</string>
+    <string name="delete_account_dialog_consequence_puzzles">Puzzles resolvidos &amp; pontuações</string>
+    <string name="delete_account_dialog_consequence_streaks">Sequências &amp; conquistas</string>
+    <string name="delete_account_dialog_consequence_games">Partidas salvas &amp; análises</string>
+    <string name="delete_account_error_no_network">Não é possível excluir a conta sem conexão com a internet.</string>
+    <string name="delete_account_error_failed">Falha ao excluir a conta. Por favor, tente novamente.</string>
+    <string name="sign_out_error_failed">Falha ao sair da conta. Por favor, tente novamente.</string>
+    <string name="dialog_ok">OK</string>
+    <string name="dialog_cancel">Cancelar</string>
+    <!-- endregion -->
+
+
+    <!-- region navigation -->
+    <string name="navigation_home_label">Início</string>
+    <string name="navigation_home_screen_description">Tela inicial</string>
+    <string name="navigation_puzzle_dashboard_label">Puzzles</string>
+    <string name="navigation_puzzle_dashboard_content_description">Painel de puzzles</string>
+    <string name="navigation_rated_puzzle_label">Ranqueado</string>
+    <string name="navigation_rated_puzzle_content_description">Desafio de puzzle ranqueado</string>
+    <string name="navigation_puzzle_rush_label">Rush</string>
+    <string name="navigation_puzzle_rush_content_description">Modo Puzzle Rush</string>
+    <string name="navigation_board_viz_label">Tabuleiro</string>
+    <string name="navigation_board_viz_content_description">Visualização do tabuleiro</string>
+    <string name="navigation_blind_mode_label">Cego</string>
+    <string name="navigation_blind_mode_content_description">Modo cego</string>
+    <!-- endregion -->
+
+    <!-- region Home screen -->
+    <string name="home_timeline_title">Atividade recente</string>
+    <string name="home_label_profile">Perfil</string>
+    <string name="home_label_rating">Pontuação</string>
+    <string name="home_label_activities">Atividades</string>
+    <string name="home_label_member_since">Membro desde</string>
+    <string name="home_timeline_empty_title">Sem atividade recente</string>
+    <string name="home_timeline_empty_description">Comece a jogar para ver seu histórico de atividades aqui</string>
+
+    <!-- Activity titles -->
+    <string name="home_title_board_visualization">Visualização do tabuleiro</string>
+    <string name="home_title_blind_mode_training">Treinamento no modo cego</string>
+
+    <!-- Timeline stat labels -->
+    <plurals name="home_timeline_stat_run" tools:ignore="MissingQuantity">
+        <item quantity="one">%1$d Partida</item>
+        <item quantity="other">%1$d Partidas</item>
+    </plurals>
+    <plurals name="home_timeline_stat_game" tools:ignore="MissingQuantity">
+        <item quantity="one">%1$d Jogo</item>
+        <item quantity="other">%1$d Jogos</item>
+    </plurals>
+    <plurals name="home_timeline_stat_session" tools:ignore="MissingQuantity">
+        <item quantity="one">%1$d Sessão</item>
+        <item quantity="other">%1$d Sessões</item>
+    </plurals>
+    <plurals name="home_timeline_stat_puzzle" tools:ignore="MissingQuantity">
+        <item quantity="one">%1$d Puzzle</item>
+        <item quantity="other">%1$d Puzzles</item>
+    </plurals>
+    <string name="home_timeline_stat_score">%1$d Recorde</string>
+    <string name="home_timeline_stat_moves">Movimentos</string>
+    <string name="home_timeline_stat_best_moves">%1$d Melhores movimentos</string>
+    <string name="home_timeline_stat_streak">%1$d Sequência</string>
+    <string name="home_timeline_stat_solved">%1$d Resolvidos</string>
+    <!-- endregion -->
+
+    <!-- region User stats -->
+    <string name="user_stats_title">Estatísticas</string>
+    <string name="user_stats_high_score_title">Recordes</string>
+    <string name="expand_stats">Expandir estatísticas</string>
+    <string name="collapse_stats">Recolher estatísticas</string>
+    <string name="expand_high_scores">Expandir recordes</string>
+    <string name="collapse_high_scores">Recolher recordes</string>
+    <string name="user_stat_puzzles_played">Puzzles jogados</string>
+    <string name="user_stat_puzzles_solved">Puzzles resolvidos</string>
+    <string name="user_stat_puzzles_success">Taxa de acerto</string>
+    <string name="user_stat_current_rating">Pontuação atual</string>
+    <string name="user_stat_high_score_rated_puzzle">Melhor puzzle ranqueado</string>
+    <string name="user_stat_high_score_puzzles_rush">Melhor Puzzle Rush</string>
+    <string name="user_stat_high_score_blind_mode">Melhor modo cego</string>
+    <string name="user_stat_high_score_puzzle_streak">Melhor Puzzle Streak</string>
+    <string name="user_stat_high_score_find_the_square">Melhor Encontre a Casa</string>
+    <string name="user_stat_high_score_move_the_piece">Melhor Mova a Peça</string>
+    <!-- endregion -->
+
+    <!-- region Loading -->
+    <string name="landing_eyebrow">O Estúdio de Treinamento de Xadrez</string>
+    <string name="landing_download_eyebrow">Configuração única</string>
+    <string name="landing_download_title">Bem-vindo ao &lt;i>ChessGym&lt;/i></string>
+    <string name="landing_download_explanation">Para começar, precisamos baixar o banco de dados de puzzles. Uma configuração única que prepara tudo para o seu treinamento.</string>
+    <string name="landing_feature_puzzles">Milhões de puzzles táticos</string>
+    <string name="landing_feature_offline">Funciona offline, sempre</string>
+    <string name="landing_feature_rating">Acompanha seu progresso de pontuação</string>
+    <string name="landing_tier_label">Tamanho do banco de dados</string>
+    <string name="landing_download_button">Baixar banco de dados</string>
+    <string name="landing_get_started_button">Começar</string>
+    <string name="landing_size_hint_onetime">%s — Uma única vez</string>
+    <string name="landing_size_hint_included">Incluído no app</string>
+    <string name="landing_download_content_title">Configurando seu treinamento de xadrez</string>
+    <string name="landing_download_subtitle">Baixando banco de dados de puzzles. Isso pode levar alguns minutos, dependendo da velocidade da sua conexão com a internet.</string>
+    <string name="landing_download_progress">Baixando puzzles</string>
+    <string name="landing_unpack_progress">Descompactando banco de dados</string>
+    <string name="landing_unpack_subtitle">Descompactando banco de dados de puzzles. Isso pode levar alguns minutos.</string>
+    <string name="landing_write_to_db_progress">Construindo banco de dados</string>
+    <string name="landing_write_to_db_subtitle">Construindo banco de dados de puzzles. Isso pode levar alguns minutos.</string>
+    <string name="database_download_dialog_title">Baixar banco de dados</string>
+    <string name="database_download_dialog_body">Isso vai baixar cerca de 50 MB de dados de puzzles. Certifique-se de ter uma conexão estável com a internet.</string>
+    <string name="enable_notifications_dialog_title">Ativar notificações</string>
+    <string name="enable_notifications_dialog_body">Receba notificações sobre seu progresso e conquistas.</string>
+    <string name="enable_notifications_dialog_accept">Ativar</string>
+    <string name="enable_notifications_dialog_refuse">Pular</string>
+    <string name="loading_error_download_failed">Falha no download. Por favor, verifique sua conexão com a internet e tente novamente.</string>
+    <string name="loading_error_decompression_failed">Falha ao descompactar o banco de dados. Por favor, tente novamente.</string>
+    <string name="loading_error_database_write_failed">Falha ao construir o banco de dados. Por favor, tente novamente.</string>
+    <string name="loading_error_permission">Permissão negada. Por favor, ative as notificações para continuar.</string>
+    <string name="loading_error_no_internet">Sem conexão com a internet. Por favor, verifique sua conexão e tente novamente.</string>
+    <string name="loading_error_not_enough_disk_space">Espaço em disco insuficiente. Por favor, libere espaço e tente novamente.</string>
+    <string name="loading_error_generic">Ocorreu um erro. Por favor, tente novamente.</string>
+    <string name="loading_error_consent_required">O consentimento para relatórios de falhas é necessário para continuar. Coletamos apenas dados técnicos de falhas para melhorar a estabilidade do app.</string>
+    <string name="crash_consent_dialog_title">Ajude-nos a melhorar</string>
+    <string name="crash_consent_dialog_body">ChessGym usa relatórios de falhas para detectar e corrigir erros do aplicativo. Esses dados são usados exclusivamente para identificar falhas e melhorar a estabilidade do app para todos os usuários.\n\nNenhuma informação pessoal, dados de jogo ou padrões de uso são coletados — apenas detalhes técnicos de falhas (como rastros de pilha e modelo do dispositivo) quando algo dá errado.\n\nVocê pode alterar essa configuração posteriormente no app.</string>
+    <string name="loading_fact_eyebrow">Você sabia?</string>
+    <string-array name="loading_fact_titles">
+        <item>A Dama sem poder</item>
+        <item>O livro do xadrez</item>
+        <item>A invenção de um padre</item>
+        <item>A partida mais longa possível</item>
+        <item>Nenhum xeque-mate em quase um século</item>
+        <item>Tabuleiros monocromáticos</item>
+        <item>Invasores do espaço</item>
+        <item>Uma regra secreta ilegal</item>
+        <item>O rei foi morto</item>
+        <item>Operações policiais</item>
+    </string-array>
+    <string-array name="loading_fact_bodies">
+        <item>Originalmente, a peça mais poderosa do tabuleiro era, na verdade, a mais fraca. A Dama só podia se mover exatamente uma casa na diagonal. Ela recebeu seus poderes modernos e irrestritos na Espanha do século XV, em grande parte para homenagear a Rainha Isabella.</item>
+        <item>O segundo livro já impresso em inglês (em 1474) era sobre xadrez. William Caxton traduziu um manuscrito originalmente intitulado The Game and Playe of the Chesse.</item>
+        <item>O tabuleiro de xadrez dobrável foi inventado por um padre que tinha proibição de jogar por sua ordem religiosa. Ele criou uma solução engenhosa dobrando o tabuleiro ao meio e colocando-o em uma estante para que parecesse dois livros.</item>
+        <item>Embora a partida de grão-mestre mais longa já registrada tenha durado 269 lances, a matemática determina um comprimento máximo teórico de 5.949 lances no xadrez tradicional sem que um empate automático seja acionado.</item>
+        <item>Não houve um único xeque-mate em uma partida do Campeonato Mundial de Xadrez desde 1929. O último ocorreu na Partida 8 entre Alexander Alekhine e Efim Bogoljubov. Desde então, todas as partidas decisivas do campeonato foram vencidas por abandono ou tempo esgotado.</item>
+        <item>Os primeiros tabuleiros de xadrez europeus eram monocromáticos (da mesma cor), e foi só por volta do ano 1090 que o design com casas alternadas claras e escuras foi introduzido.</item>
+        <item>A primeira partida de xadrez jogada no espaço ocorreu em 9 de junho de 1970, entre a tripulação soviética da Soyuz 9 e os controladores na Terra. A tripulação usou um conjunto especial com pinos e ranhuras para que as peças não flutuassem em gravidade zero.</item>
+        <item>A famosa captura en passant (do francês "de passagem") foi introduzida na Espanha em 1280. É uma das regras mais frequentemente esquecidas por iniciantes, principalmente porque, se você não a realizar no turno exato em que o peão inimigo avança, perde permanentemente a possibilidade de fazê-lo.</item>
+        <item>A palavra "Xeque-mate" vem da expressão persa "Shah Mat" (شاه مات). Surpreendentemente, não significa "o rei está preso", mas sim se traduz diretamente como "o rei está morto".</item>
+        <item>Em 1973, a polícia de Cleveland, Ohio, invadiu um torneio de xadrez, prendeu o diretor do torneio e confiscou os jogos de xadrez. Eles acusaram os organizadores de permitir jogos de azar (pelos prêmios em dinheiro) e de possuir dispositivos de jogo (os tabuleiros de xadrez).</item>
+    </string-array>
+    <string name="loading_tier_complete">Completo</string>
+    <string name="loading_tier_compact">Compacto</string>
+    <string name="loading_tier_lite">Início rápido</string>
+    <string name="loading_tier_description_complete">Todos os puzzles, experiência completa</string>
+    <string name="loading_tier_description_compact">Ótimo para a maioria dos jogadores</string>
+    <string name="loading_tier_description_lite">Configuração instantânea, armazenamento mínimo</string>
+    <!-- endregion -->
+
+    <!-- region Rated Puzzle Screen -->
+    <string name="rated_puzzle_next_description">Próximo</string>
+    <string name="rated_puzzle_moves">Movimentos: %1$s</string>
+    <string name="rated_puzzle_title">Pontuação do puzzle: %1$d</string>
+    <string name="navigate_back">Voltar</string>
+    <string name="puzzle_hint">Dica</string>
+    <string name="puzzle_abandon">Abandonar puzzle</string>
+    <string name="rated_puzzle_find_best_move_white">Encontre o melhor lance para as brancas</string>
+    <string name="rated_puzzle_find_best_move_black">Encontre o melhor lance para as pretas</string>
+    <string name="abandon_puzzle_title">Abandonar puzzle?</string>
+    <string name="choose_promotion_title">Promover para</string>
+    <string name="abandon_puzzle_message">Tem certeza de que deseja abandonar o puzzle atual? Seu progresso será perdido.</string>
+    <string name="abandon_puzzle_confirm">Abandonar</string>
+    <string name="puzzle_solved">Puzzle resolvido!</string>
+    <string name="puzzle_failed">Puzzle falhou</string>
+    <string name="puzzle_abandoned">Puzzle abandonado</string>
+    <string name="rating_gained">Pontuação ganha: +%1$d</string>
+    <string name="rating_lost">Pontuação perdida: -%1$d</string>
+    <!-- endregion -->
+
+    <!-- region generic text resources which can be reused across screens -->
+    <string name="generic_continue">Continuar</string>
+    <string name="generic_current_score">Pontuação atual</string>
+    <string name="generic_done">Concluído</string>
+    <string name="generic_download">Baixar</string>
+    <string name="generic_error_title">Algo deu errado</string>
+    <string name="generic_error_try_again">Ops, algo deu errado. Por favor, tente novamente.</string>
+    <string name="generic_loading_message">Preparando o tabuleiro…</string>
+    <string name="generic_retry">Tentar novamente</string>
+    <string name="generic_today">Hoje</string>
+    <string name="generic_yesterday">Ontem</string>
+    <string name="generic_this_week">Esta semana</string>
+    <string name="generic_this_month">Este mês</string>
+    <string name="generic_this_year">Este ano</string>
+    <string name="generic_older">Anteriores</string>
+    <string name="generic_success">Sucesso</string>
+    <string name="generic_failed">Falhou</string>
+    <string name="generic_new_high_score">Novo recorde</string>
+    <string name="generic_close">Fechar</string>
+    <string name="generic_agree">Concordo</string>
+    <string name="generic_not_now">Agora não</string>
+    <string name="generic_thank_you">Obrigado pelo seu apoio!</string>
+    <!-- endregion -->
+
+    <!-- region Puzzle Dashboard -->
+    <string name="puzzle_dashboard_eyebrow">Puzzles</string>
+    <string name="puzzle_dashboard_title">Escolha seu desafio</string>
+    <string name="puzzle_dashboard_subtitle">Treine a visão tática com quatro modos focados.</string>
+    <!-- endregion -->
+
+    <!-- Rated Puzzle Mode -->
+    <string name="puzzle_mode_rated_title">Puzzles ranqueados</string>
+    <string name="puzzle_mode_rated_description">Resolva puzzles no seu nível de habilidade</string>
+    <string name="puzzle_mode_rated_rating">Sua pontuação: %1$d</string>
+    <!-- endregion -->
+
+    <!-- Puzzle Rush Mode -->
+    <string name="puzzle_mode_rush_title">Puzzle Rush</string>
+    <string name="puzzle_mode_rush_description">Resolva o máximo de puzzles possível em 3 minutos</string>
+    <string name="puzzle_rush_play_to_start">Faça um lance para começar</string>
+    <string name="puzzle_rush_summary_title">Partida concluída</string>
+    <string name="puzzle_rush_puzzle_failed">Puzzle falhou!</string>
+    <!-- endregion -->
+
+    <!-- Puzzle Streak Mode -->
+    <string name="puzzle_mode_streak_title">Puzzle Streak</string>
+    <string name="puzzle_mode_streak_description">Resolva o máximo de puzzles seguidos possível</string>
+    <string name="puzzle_mode_streak_new">Iniciar uma nova sequência</string>
+    <string name="puzzle_mode_streak_continue">Continuar sua sequência de %1$d puzzles</string>
+    <string name="puzzle_streak_title">Puzzle Streak - Pontuação: %1$d</string>
+    <string name="puzzle_streak_ended">Sequência encerrada</string>
+    <string name="puzzle_streak_new">Nova sequência</string>
+    <string name="puzzle_streak_next_puzzle">Próximo puzzle</string>
+    <string name="puzzle_streak_summary_title">Sequência concluída</string>
+    <string name="puzzle_white_to_move">Brancas jogam</string>
+    <string name="puzzle_black_to_move">Pretas jogam</string>
+    <!-- endregion -->
+
+    <!-- Failed Puzzles Mode -->
+    <string name="puzzle_mode_failed_title">Puzzles falhos</string>
+    <string name="puzzle_mode_failed_description">Revise e repita os puzzles que errou</string>
+    <string name="puzzle_mode_failed_none_available">Nenhum puzzle falho disponível</string>
+    <plurals name="puzzle_mode_failed_count" tools:ignore="MissingQuantity">
+        <item quantity="one">%1$d puzzle para repetir</item>
+        <item quantity="other">%1$d puzzles para repetir</item>
+    </plurals>
+    <string name="failed_puzzles_progress">%1$d / %2$d resolvidos</string>
+    <string name="failed_puzzles_empty_title">Nenhum puzzle falho</string>
+    <string name="failed_puzzles_empty_description">Ótimo trabalho! Você não tem nenhum puzzle falho para repetir.</string>
+    <string name="failed_puzzles_complete_title">Tudo pronto!</string>
+    <string name="failed_puzzles_complete_message">Ótimo trabalho! Você terminou de revisar todos os seus puzzles falhos.</string>
+    <!-- endregion -->
+
+    <!-- Common -->
+    <string name="puzzle_mode_start">Iniciar modo puzzle</string>
+    <!-- endregion -->
+
+    <!-- region Board Visualization Dashboard -->
+    <string name="boardvis_dashboard_eyebrow">Visualização</string>
+    <string name="boardvis_dashboard_title">Consciência do tabuleiro</string>
+    <string name="boardvis_dashboard_subtitle">Treine sua memória visual e intuição espacial.</string>
+    <string name="boardvis_mode_start">Iniciar modo visualização</string>
+    <!-- endregion -->
+
+    <!-- region Find the Square -->
+    <string name="boardvis_find_square_title">Encontre a Casa</string>
+    <string name="boardvis_find_square_description">Clique na casa mostrada no tabuleiro o mais rápido possível</string>
+    <string name="boardvis_play_as_white">Jogar com as brancas</string>
+    <string name="boardvis_play_as_black">Jogar com as pretas</string>
+    <string name="boardvis_play_random">Lado aleatório</string>
+    <string name="boardvis_play">Jogar</string>
+    <string name="boardvis_play_again">Jogar novamente</string>
+    <string name="boardvis_game_over">Tempo esgotado!</string>
+    <string name="boardvis_final_score">Pontuação final: %1$d</string>
+    <string name="boardvis_high_score">Recorde: %1$d</string>
+    <!-- endregion -->
+
+    <!-- region Move the Piece -->
+    <string name="boardvis_move_piece_title">Mova a Peça</string>
+    <string name="boardvis_move_piece_description">Visualize e faça os movimentos corretos no tabuleiro</string>
+    <string name="boardvis_move_piece_training_mode">Modo treinamento</string>
+    <string name="boardvis_move_piece_moves_remaining">Movimentos restantes: %1$d</string>
+    <string name="boardvis_move_piece_rules">Mova sua peça sem pousar em uma casa atacada pelo oponente. Complete os movimentos necessários para avançar ao próximo nível!</string>
+    <string name="boardvis_move_piece_captured">Capturada!</string>
+    <!-- endregion -->
+
+    <!-- region Settings -->
+    <string name="settings_title">Configurações</string>
+    <string name="settings_section_general">Geral</string>
+    <string name="settings_section_ui">Aparência</string>
+    <string name="settings_haptic_feedback">Vibração tátil</string>
+    <string name="settings_haptic_feedback_description">Vibrar ao interagir</string>
+    <string name="settings_auto_promote">Promoção automática</string>
+    <string name="settings_auto_promote_description">Promover peões para dama automaticamente</string>
+    <string name="settings_auto_next_puzzle">Avançar puzzle automaticamente</string>
+    <string name="settings_auto_next_puzzle_description">Carregar automaticamente o próximo puzzle ao resolver um no Puzzle Streak</string>
+    <string name="settings_show_borders">Mostrar bordas</string>
+    <string name="settings_show_borders_description">Exibir coordenadas ao redor do tabuleiro</string>
+    <string name="settings_highlight_legal_moves">Destacar lances legais</string>
+    <string name="settings_highlight_legal_moves_description">Mostrar casas disponíveis ao selecionar uma peça</string>
+    <string name="settings_light_mode">Tema</string>
+    <string name="settings_light_mode_light">Claro</string>
+    <string name="settings_light_mode_dark">Escuro</string>
+    <string name="settings_light_mode_system">Sistema</string>
+    <string name="settings_enable_animations">Animações</string>
+    <string name="settings_enable_animations_description">Ativar animações da interface</string>
+    <string name="settings_section_privacy">Privacidade</string>
+    <string name="settings_crash_reporting">Relatório de falhas</string>
+    <string name="settings_crash_reporting_description">Ajude a melhorar a estabilidade do app compartilhando dados de falhas</string>
+    <string name="settings_build_version">Versão %1$s-%2$s</string>
+    <!-- endregion -->
+
+    <!-- region About -->
+    <string name="about_title">Sobre</string>
+    <string name="about_general_title">Geral</string>
+    <string name="about_legal_title">Jurídico</string>
+    <string name="about_creator_title">O criador</string>
+    <string name="about_creator_description">ChessGym foi criado por Paul Mihai Craciunas, um engenheiro Android de Londres, apaixonado por xadrez, esperando ajudar as pessoas em sua jornada de melhoria.</string>
+    <string name="about_contact_title">Contato</string>
+    <string name="about_contact_description">Para questões legais, oportunidades comerciais ou qualquer outra consulta, entre em contato por e-mail.</string>
+    <string name="about_contact_email">contact@chessgym.app</string>
+    <string name="about_feedback_title">Feedback</string>
+    <string name="about_feedback_description">Encontrou um bug? Tem uma ideia para um novo recurso ou melhoria? Adoraríamos ouvir você.</string>
+    <string name="about_feedback_email">feedback@chessgym.app</string>
+    <string name="about_support_title">Suporte</string>
+    <string name="about_donate_title">Doar</string>
+    <string name="about_donate_description">Apoie o desenvolvimento do ChessGym</string>
+    <string name="about_donate_dialog_title">Apoie o ChessGym</string>
+    <string name="about_donate_dialog_description">Escolha um valor para apoiar o desenvolvimento contínuo deste projeto. &lt;b>Obrigado!&lt;/b></string>
+    <string name="about_donate_small">Café</string>
+    <string name="about_donate_medium">Sanduíche</string>
+    <string name="about_donate_large">Pizza</string>
+    <string name="about_rate_title">Avalie o app</string>
+    <string name="about_rate_description">Está gostando do ChessGym? Deixe uma avaliação na Play Store</string>
+    <string name="about_libraries_title">Bibliotecas de código aberto</string>
+    <string name="about_libraries_description">ChessGym é construído com as seguintes bibliotecas de código aberto:</string>
+    <string name="about_privacy_policy_title">Política de Privacidade</string>
+    <string name="about_privacy_policy_content">Data de vigência: maio de 2026\n\nChessGym (&quot;o App&quot;) é desenvolvido por Paul Mihai Craciunas. Esta Política de Privacidade explica quais dados são coletados, como são utilizados e seus direitos em relação a esses dados.\n\n&lt;b>1. Dados que coletamos&lt;/b>\n\n• &lt;b>Informações da conta:&lt;/b> Se você entrar, armazenamos seu nome de exibição, endereço de e-mail e um identificador de usuário único via Firebase Authentication.\n• &lt;b>Dados de jogo:&lt;/b> Pontuações de puzzles, estatísticas e progresso de conquistas são armazenados para proporcionar uma experiência personalizada.\n• &lt;b>Falhas e diagnósticos:&lt;/b> O Firebase Crashlytics coleta automaticamente o modelo do dispositivo, a versão do sistema operacional e os rastros de falhas para nos ajudar a corrigir bugs.\n• &lt;b>Faturamento:&lt;/b> As transações de doação são processadas inteiramente pelo Google Play. Não armazenamos dados de pagamento.\n\n&lt;b>2. Como usamos seus dados&lt;/b>\n\n• Para fornecer e personalizar a experiência do App (pontuações, conquistas, sincronização de progresso).\n• Para diagnosticar e corrigir falhas e problemas de desempenho.\n• Para habilitar o backup em nuvem do seu progresso quando você estiver conectado.\n\n&lt;b>3. Armazenamento e segurança de dados&lt;/b>\n\nOs dados são armazenados no Google Cloud Firestore com criptografia em trânsito (TLS) e em repouso. O acesso é restrito apenas a solicitações autenticadas.\n\n&lt;b>4. Serviços de terceiros&lt;/b>\n\n• Firebase Authentication (Google)\n• Firebase Crashlytics (Google)\n• Google Play Billing\n\nNão vendemos, compartilhamos nem transferimos seus dados pessoais para terceiros.\n\n&lt;b>5. Seus direitos&lt;/b>\n\nSob a LGPD e regulamentos similares, você tem o direito de:\n• Acessar seus dados pessoais\n• Solicitar a correção de dados imprecisos\n• Solicitar a exclusão de seus dados\n• Exportar seus dados (portabilidade de dados)\n• Retirar o consentimento a qualquer momento\n\nPara exercer qualquer um desses direitos, entre em contato conosco em contact@chessgym.app. Responderemos em até 30 dias.\n\n&lt;b>6. Retenção de dados&lt;/b>\n\nSeus dados são mantidos enquanto sua conta existir. Se você excluir sua conta, todos os dados associados serão removidos permanentemente em até 30 dias.\n\n&lt;b>7. Privacidade infantil&lt;/b>\n\nO App não coleta intencionalmente dados de crianças menores de 13 anos. Se acreditar que coletamos esses dados, entre em contato conosco imediatamente.\n\n&lt;b>8. Alterações nesta política&lt;/b>\n\nPodemos atualizar esta Política de Privacidade periodicamente. As alterações serão refletidas no App com uma data de vigência atualizada.\n\n&lt;b>9. Contato&lt;/b>\n\nPara perguntas ou solicitações de dados:\ncontact@chessgym.app</string>
+    <string name="about_terms_title">Termos de Uso</string>
+    <string name="about_terms_content">ChessGym é software livre: você pode redistribuí-lo e/ou modificá-lo sob os termos da Licença Pública Geral GNU publicada pela Free Software Foundation, seja a versão 3 da Licença, ou (a seu critério) qualquer versão posterior.\n\nChessGym é distribuído na esperança de que seja útil, mas SEM NENHUMA GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou ADEQUAÇÃO A UM DETERMINADO FIM. Consulte a Licença Pública Geral GNU para mais detalhes.\n\nVocê deveria ter recebido uma cópia da Licença Pública Geral GNU junto com este programa. Se não, consulte https://www.gnu.org/licenses/.\n\nO código-fonte completo do ChessGym está disponível em: https://github.com/paulcraciunas/ChessGym\n\nChessGym incorpora o Stockfish, um motor de xadrez livre e de código aberto licenciado sob a Licença Pública Geral GNU v3.0. O código-fonte do Stockfish está disponível em: https://github.com/official-stockfish/Stockfish\n\nTodos os dados de puzzles de xadrez são provenientes de bancos de dados publicamente disponíveis. ChessGym e seu logotipo são propriedade intelectual de Paul Mihai Craciunas.\n\n© 2025–2026 Paul Mihai Craciunas.</string>
+    <string name="about_terms_and_conditions_title">Termos e Condições</string>
+    <string name="about_terms_and_conditions_content">Ao baixar, instalar ou usar o ChessGym (&quot;o App&quot;), você concorda com os seguintes termos e condições. Se não concordar, por favor, interrompa o uso do App imediatamente.\n\nO App é fornecido &quot;no estado em que se encontra&quot; e &quot;conforme disponível&quot; sem garantias de qualquer tipo, expressas ou implícitas, incluindo, entre outras, garantias implícitas de comercialização, adequação a um fim específico e não violação.\n\nEm nenhum caso o desenvolvedor será responsável por danos diretos, indiretos, incidentais, especiais, consequenciais ou punitivos decorrentes ou relacionados ao uso ou à incapacidade de usar o App, mesmo que o desenvolvedor tenha sido avisado da possibilidade de tais danos.\n\nO App pode conter links para sites ou serviços de terceiros que não são de propriedade ou controlados pelo desenvolvedor. O desenvolvedor não tem controle e não assume nenhuma responsabilidade pelo conteúdo, políticas de privacidade ou práticas de qualquer site ou serviço de terceiros.\n\nO desenvolvedor reserva-se o direito de modificar, suspender ou descontinuar o App a qualquer momento sem aviso prévio. O desenvolvedor não será responsável perante você ou terceiros por qualquer modificação, suspensão ou descontinuação do App.\n\nO uso do App também é regido pela Licença Pública Geral GNU v3.0, cujo texto completo está disponível na seção Termos de Uso.\n\nEstes termos e condições entram em vigor na data do seu primeiro uso do App. O desenvolvedor reserva-se o direito de atualizar estes termos a qualquer momento. O uso continuado do App constitui aceitação de quaisquer alterações.\n\nPara perguntas ou dúvidas sobre estes termos, entre em contato conosco em contact@chessgym.app.</string>
+    <!-- endregion -->
+
+    <!-- region Tools -->
+    <string name="navigation_tools_label">Ferramentas</string>
+    <string name="navigation_tools_content_description">Ferramentas de xadrez</string>
+    <string name="tools_dashboard_eyebrow">Ferramentas</string>
+    <string name="tools_dashboard_title">Ferramentas de xadrez</string>
+    <string name="tools_dashboard_subtitle">Utilitários úteis para suas partidas de xadrez.</string>
+    <string name="tools_mode_start">Iniciar ferramenta</string>
+    <string name="tools_clock_description">Cronometre suas partidas com controles configuráveis</string>
+    <string name="tools_analysis_title">Análise</string>
+    <string name="tools_analysis_description">Analise posições com o motor</string>
+    <string name="tools_import_description">Importe uma partida em notação FEN ou PGN</string>
+    <!-- endregion -->
+
+    <!-- region Clock Screen -->
+    <string name="clock_title">Relógio de xadrez</string>
+    <string name="clock_white">Brancas</string>
+    <string name="clock_black">Pretas</string>
+    <string name="clock_stop">Parar</string>
+    <string name="clock_new_game">Nova partida</string>
+    <string name="clock_time_up">Tempo esgotado!</string>
+    <string name="clock_time_control">Tempo</string>
+    <string name="clock_increment">Incremento</string>
+    <string name="clock_minutes_format">%1$d min</string>
+    <string name="clock_seconds_format">%1$d seg</string>
+    <string name="clock_tap_to_start">Toque para começar</string>
+    <!-- endregion -->
+
+    <!-- region Import Game Screen -->
+    <string name="import_game_title">Importar partida</string>
+    <string name="import_fen">FEN</string>
+    <string name="import_pgn">PGN</string>
+    <string name="import_dialog_title_fen">Importar FEN</string>
+    <string name="import_dialog_title_pgn">Importar PGN</string>
+    <string name="import_dialog_hint_fen">Cole a string FEN aqui…</string>
+    <string name="import_dialog_hint_pgn">Cole o texto PGN aqui…</string>
+    <string name="import_dialog_confirm">Importar</string>
+    <string name="import_error_invalid_fen">Notação FEN inválida. Por favor, verifique e tente novamente.</string>
+    <string name="import_error_invalid_pgn">Notação PGN inválida. Por favor, verifique e tente novamente.</string>
+    <string name="import_game_jump_to_start">Ir para o início</string>
+    <string name="import_game_previous_move">Lance anterior</string>
+    <string name="import_game_next_move">Próximo lance</string>
+    <string name="import_game_jump_to_end">Ir para o final</string>
+    <!-- endregion -->
+
+    <!-- region Blind Mode -->
+    <string name="blind_mode_title">Modo cego</string>
+    <string name="blind_mode_training_mode">Modo treinamento</string>
+    <string name="blind_mode_training_description">As partidas não afetarão sua pontuação</string>
+    <string name="blind_mode_play">Jogar</string>
+    <string name="blind_mode_resign">Resignar</string>
+    <string name="blind_mode_reveal">Revelar</string>
+    <string name="blind_mode_thinking">O motor está pensando…</string>
+    <string name="blind_mode_your_turn">Sua vez</string>
+    <string name="blind_mode_moves">Movimentos</string>
+    <string name="abandon_game_title">Abandonar partida?</string>
+    <string name="abandon_game_message">Tem certeza de que deseja abandonar a partida atual? Seu progresso será perdido.</string>
+    <!-- endregion -->
+
+    <!-- region Achievements -->
+    <!-- Category display names -->
+    <string name="achievement_category_rated_puzzles_solved">Puzzles ranqueados resolvidos</string>
+    <string name="achievement_category_puzzle_rush_sessions">Sessões de Puzzle Rush</string>
+    <string name="achievement_category_streak_sessions">Sessões de sequência</string>
+    <string name="achievement_category_failed_puzzles_redeemed">Puzzles falhos remediados</string>
+    <string name="achievement_category_find_square_sessions">Sessões de Encontre a Casa</string>
+    <string name="achievement_category_move_piece_sessions">Sessões de Mova a Peça</string>
+    <string name="achievement_category_blind_mode_wins">O legado de Homero</string>
+    <string name="achievement_category_rated_win_streak">Sequência de vitórias ranqueadas</string>
+    <string name="achievement_category_rating_climber">Escalador de pontuação</string>
+    <string name="achievement_category_blind_strategist">Estrategista cego</string>
+    <string name="achievement_category_rush_champion">Campeão do Rush</string>
+    <string name="achievement_category_streak_legend">Lenda da sequência</string>
+    <string name="achievement_category_eagle_eye">Olho de águia</string>
+    <string name="achievement_category_knights_path">Caminho do cavalo</string>
+    <string name="achievement_category_puzzle_addict">Viciado em puzzles</string>
+    <string name="achievement_category_time_invested">Tempo investido</string>
+    <string name="achievement_category_daily_grinder">Constância diária</string>
+    <string name="achievement_category_consistency_king">Rei da constância</string>
+    <string name="achievement_category_board_vision">Visão do tabuleiro</string>
+    <string name="achievement_category_rush_solver">Resolvedor do Rush</string>
+
+    <!-- Tier names: RATED_PUZZLES_SOLVED -->
+    <string name="achievement_rated_puzzles_solved_one">Entusiasta de puzzles</string>
+    <string name="achievement_rated_puzzles_solved_two">Amador de puzzles</string>
+    <string name="achievement_rated_puzzles_solved_three">Especialista em puzzles</string>
+    <string name="achievement_rated_puzzles_solved_four">Mestre em puzzles</string>
+    <string name="achievement_rated_puzzles_solved_five">Grão-mestre em puzzles</string>
+
+    <!-- Tier names: PUZZLE_RUSH_SESSIONS -->
+    <string name="achievement_puzzle_rush_sessions_one">Novato do Rush</string>
+    <string name="achievement_puzzle_rush_sessions_two">Regular do Rush</string>
+    <string name="achievement_puzzle_rush_sessions_three">Veterano do Rush</string>
+    <string name="achievement_puzzle_rush_sessions_four">Capitão do Rush</string>
+    <string name="achievement_puzzle_rush_sessions_five">Lenda do Rush</string>
+
+    <!-- Tier names: STREAK_SESSIONS -->
+    <string name="achievement_streak_sessions_one">Iniciador de sequência</string>
+    <string name="achievement_streak_sessions_two">Buscador de sequência</string>
+    <string name="achievement_streak_sessions_three">Caçador de sequência</string>
+    <string name="achievement_streak_sessions_four">Destruidor de sequência</string>
+    <string name="achievement_streak_sessions_five">Fanático por sequência</string>
+
+    <!-- Tier names: FAILED_PUZZLES_REDEEMED -->
+    <string name="achievement_failed_puzzles_redeemed_one">Segunda chance</string>
+    <string name="achievement_failed_puzzles_redeemed_two">O retornante</string>
+    <string name="achievement_failed_puzzles_redeemed_three">Buscador de redenção</string>
+    <string name="achievement_failed_puzzles_redeemed_four">Mestre da redenção</string>
+    <string name="achievement_failed_puzzles_redeemed_five">Nunca desista</string>
+
+    <!-- Tier names: FIND_SQUARE_SESSIONS -->
+    <string name="achievement_find_square_sessions_one">Novato de casas</string>
+    <string name="achievement_find_square_sessions_two">Observador de casas</string>
+    <string name="achievement_find_square_sessions_three">Especialista em casas</string>
+    <string name="achievement_find_square_sessions_four">Mestre de casas</string>
+    <string name="achievement_find_square_sessions_five">Grão-mestre de casas</string>
+
+    <!-- Tier names: MOVE_PIECE_SESSIONS -->
+    <string name="achievement_move_piece_sessions_one">Iniciante com peças</string>
+    <string name="achievement_move_piece_sessions_two">Movedor de peças</string>
+    <string name="achievement_move_piece_sessions_three">Navegador de peças</string>
+    <string name="achievement_move_piece_sessions_four">Mestre de peças</string>
+    <string name="achievement_move_piece_sessions_five">Grão-mestre de peças</string>
+
+    <!-- Tier names: BLIND_MODE_WINS -->
+    <string name="achievement_blind_mode_wins_one">Aprendiz de Odin</string>
+    <string name="achievement_blind_mode_wins_two">Aluno de Tirésias</string>
+    <string name="achievement_blind_mode_wins_three">Herdeiro de Homero</string>
+    <string name="achievement_blind_mode_wins_four">O profeta cego</string>
+    <string name="achievement_blind_mode_wins_five">O que tudo vê</string>
+
+    <!-- Tier names: RATED_WIN_STREAK -->
+    <string name="achievement_rated_win_streak_one">Sequência de sorte</string>
+    <string name="achievement_rated_win_streak_two">Mente afiada</string>
+    <string name="achievement_rated_win_streak_three">Tático impecável</string>
+    <string name="achievement_rated_win_streak_four">Máquina vencedora</string>
+    <string name="achievement_rated_win_streak_five">O invencível</string>
+
+    <!-- Tier names: RATING_CLIMBER -->
+    <string name="achievement_rating_climber_one">Peão ascendente</string>
+    <string name="achievement_rating_climber_two">Cavalo escalador</string>
+    <string name="achievement_rating_climber_three">Bispo voador</string>
+    <string name="achievement_rating_climber_four">Torre imponente</string>
+    <string name="achievement_rating_climber_five">Dama reinante</string>
+
+    <!-- Tier names: BLIND_STRATEGIST -->
+    <string name="achievement_blind_strategist_one">Explorador cego</string>
+    <string name="achievement_blind_strategist_two">Tático cego</string>
+    <string name="achievement_blind_strategist_three">Estrategista cego</string>
+    <string name="achievement_blind_strategist_four">Comandante cego</string>
+    <string name="achievement_blind_strategist_five">Gênio cego</string>
+
+    <!-- Tier names: RUSH_CHAMPION -->
+    <string name="achievement_rush_champion_one">Iniciante do Rush</string>
+    <string name="achievement_rush_champion_two">Aspirante ao Rush</string>
+    <string name="achievement_rush_champion_three">Campeão do Rush</string>
+    <string name="achievement_rush_champion_four">Herói do Rush</string>
+    <string name="achievement_rush_champion_five">Fenômeno do Rush</string>
+
+    <!-- Tier names: STREAK_LEGEND -->
+    <string name="achievement_streak_legend_one">Começo explosivo</string>
+    <string name="achievement_streak_legend_two">Em chamas</string>
+    <string name="achievement_streak_legend_three">Imparável</string>
+    <string name="achievement_streak_legend_four">Sequência lendária</string>
+    <string name="achievement_streak_legend_five">Imortal das sequências</string>
+
+    <!-- Tier names: EAGLE_EYE -->
+    <string name="achievement_eagle_eye_one">Olho perspicaz</string>
+    <string name="achievement_eagle_eye_two">Olho afiado</string>
+    <string name="achievement_eagle_eye_three">Olho de águia</string>
+    <string name="achievement_eagle_eye_four">Visão de falcão</string>
+    <string name="achievement_eagle_eye_five">Olho de Sauron</string>
+
+    <!-- Tier names: KNIGHTS_PATH -->
+    <string name="achievement_knights_path_one">Primeiros passos</string>
+    <string name="achievement_knights_path_two">Explorador de caminhos</string>
+    <string name="achievement_knights_path_three">Jornada do cavalo</string>
+    <string name="achievement_knights_path_four">Odisseia do cavalo</string>
+    <string name="achievement_knights_path_five">Conquista do cavalo</string>
+
+    <!-- Tier names: PUZZLE_ADDICT -->
+    <string name="achievement_puzzle_addict_one">Começando</string>
+    <string name="achievement_puzzle_addict_two">Criando hábitos</string>
+    <string name="achievement_puzzle_addict_three">Resolvedor dedicado</string>
+    <string name="achievement_puzzle_addict_four">Viciado em puzzles</string>
+    <string name="achievement_puzzle_addict_five">Máquina de puzzles</string>
+
+    <!-- Tier names: TIME_INVESTED -->
+    <string name="achievement_time_invested_one">Primeira hora</string>
+    <string name="achievement_time_invested_two">Ficando sério</string>
+    <string name="achievement_time_invested_three">Dedicado</string>
+    <string name="achievement_time_invested_four">Comprometido</string>
+    <string name="achievement_time_invested_five">Aprendiz eterno</string>
+
+    <!-- Tier names: DAILY_GRINDER -->
+    <string name="achievement_daily_grinder_one">Primeiros passos</string>
+    <string name="achievement_daily_grinder_two">Hábito semanal</string>
+    <string name="achievement_daily_grinder_three">Sequência de três semanas</string>
+    <string name="achievement_daily_grinder_four">Regular dedicado</string>
+    <string name="achievement_daily_grinder_five">Jogador eterno</string>
+
+    <!-- Tier names: CONSISTENCY_KING -->
+    <string name="achievement_consistency_king_one">Sequência de três dias</string>
+    <string name="achievement_consistency_king_two">Guerreiro semanal</string>
+    <string name="achievement_consistency_king_three">Força quinzenal</string>
+    <string name="achievement_consistency_king_four">Maravilha mensal</string>
+    <string name="achievement_consistency_king_five">Herói dos cem dias</string>
+
+    <!-- Tier names: BOARD_VISION -->
+    <string name="achievement_board_vision_one">Estagiário de visão</string>
+    <string name="achievement_board_vision_two">Aprendiz de visão</string>
+    <string name="achievement_board_vision_three">Especialista em visão</string>
+    <string name="achievement_board_vision_four">Mestre da visão</string>
+    <string name="achievement_board_vision_five">Sábio do tabuleiro</string>
+
+    <!-- Tier names: RUSH_SOLVER -->
+    <string name="achievement_rush_solver_one">Resolvedor do Rush</string>
+    <string name="achievement_rush_solver_two">Trabalhador do Rush</string>
+    <string name="achievement_rush_solver_three">Demônio da velocidade</string>
+    <string name="achievement_rush_solver_four">Máquina do Rush</string>
+    <string name="achievement_rush_solver_five">Exterminador do Rush</string>
+
+    <!-- Achievement descriptions -->
+    <string name="achievement_desc_rated_puzzles_solved">Resolva puzzles ranqueados para ganhar esta conquista</string>
+    <string name="achievement_desc_puzzle_rush_sessions">Complete sessões de Puzzle Rush para ganhar esta conquista</string>
+    <string name="achievement_desc_streak_sessions">Complete sessões de Puzzle Streak para ganhar esta conquista</string>
+    <string name="achievement_desc_failed_puzzles_redeemed">Repita e resolva puzzles que falhou anteriormente</string>
+    <string name="achievement_desc_find_square_sessions">Jogue sessões de Encontre a Casa para ganhar esta conquista</string>
+    <string name="achievement_desc_move_piece_sessions">Jogue sessões de Mova a Peça para ganhar esta conquista</string>
+    <string name="achievement_desc_blind_mode_wins">Vença partidas ranqueadas no Modo cego para ganhar esta conquista</string>
+    <string name="achievement_desc_rated_win_streak">Vença puzzles ranqueados consecutivos sem falhar</string>
+    <string name="achievement_desc_rating_climber">Aumente sua pontuação de puzzles para alcançar novos patamares</string>
+    <string name="achievement_desc_blind_strategist">Aumente sua pontuação no Modo cego para ganhar esta conquista</string>
+    <string name="achievement_desc_rush_champion">Estabeleça um recorde no Puzzle Rush</string>
+    <string name="achievement_desc_streak_legend">Estabeleça um recorde no Puzzle Streak</string>
+    <string name="achievement_desc_eagle_eye">Estabeleça um recorde em Encontre a Casa</string>
+    <string name="achievement_desc_knights_path">Estabeleça um recorde em Mova a Peça</string>
+    <string name="achievement_desc_puzzle_addict">Resolva puzzles em todos os modos de jogo</string>
+    <string name="achievement_desc_time_invested">Dedique tempo praticando em todos os modos de jogo</string>
+    <string name="achievement_desc_daily_grinder">Jogue em dias consecutivos para construir sua sequência</string>
+    <string name="achievement_desc_consistency_king">Alcance sua melhor sequência diária consecutiva</string>
+    <string name="achievement_desc_board_vision">Complete sessões de Encontre a Casa e Mova a Peça</string>
+    <string name="achievement_desc_rush_solver">Resolva puzzles durante as sessões de Puzzle Rush</string>
+
+    <!-- Achievement UI -->
+    <string name="achievement_screen_title">Conquistas</string>
+    <string name="achievement_banner_unlocked">%1$s — Nível %2$d desbloqueado!</string>
+    <string name="achievement_trophy_case_title">Sua vitrine de troféus</string>
+    <string name="achievement_trophy_case_keep_going">Continue assim — %1$d para terminar</string>
+    <string name="achievement_trophy_case_all_earned">Tudo conquistado — parabéns!</string>
+    <string name="achievement_trophy_case_summary">%1$d em progresso · %2$d bloqueados</string>
+    <string name="achievement_earned_label">CONQUISTADO</string>
+    <string name="achievement_earned_count">%1$d / %2$d conquistados</string>
+    <string name="achievement_earned_total">de %1$d</string>
+    <string name="achievement_detail_next_tier">%1$d / %2$d para o próximo nível</string>
+    <string name="achievement_detail_progress">%1$d / %2$d</string>
+    <string name="achievement_see_all">Ver tudo</string>
+    <string name="achievement_group_puzzles">Puzzles</string>
+    <string name="achievement_group_rush_and_streak">Rush &amp; Sequência</string>
+    <string name="achievement_group_board_vision">Visão do tabuleiro</string>
+    <string name="achievement_group_skill_and_mastery">Habilidade &amp; Maestria</string>
+    <string name="achievement_group_dedication">Dedicação</string>
+    <!-- endregion -->
+
+    <!-- temporary values; these will be deleted as we build features -->
+    <string name="under_construction">Em construção</string>
+
+    <!-- region auth errors -->
+    <string name="auth_error_google_sign_in_failed">Falha ao entrar com o Google. Por favor, tente novamente.</string>
+    <string name="auth_error_sign_in_failed">Falha ao entrar. Por favor, tente novamente.</string>
+    <string name="auth_error_sign_up_failed">Falha ao criar conta. Por favor, tente novamente.</string>
+    <string name="auth_error_invalid_credentials">Senha incorreta. Por favor, tente novamente.</string>
+    <string name="auth_error_user_not_found">Nenhuma conta encontrada com este e-mail.</string>
+    <string name="auth_error_account_already_exists">Já existe uma conta com este e-mail.</string>
+    <string name="auth_error_weak_password">A senha é muito fraca. Use pelo menos 6 caracteres.</string>
+    <string name="auth_error_network">Erro de rede. Verifique sua conexão e tente novamente.</string>
+    <string name="auth_error_empty_fields">Este campo é obrigatório.</string>
+    <string name="auth_error_invalid_email">Por favor, insira um endereço de e-mail válido.</string>
+    <string name="auth_error_password_too_short">A senha deve ter pelo menos 6 caracteres.</string>
+    <string name="auth_error_display_name_too_short">O nome de exibição deve ter pelo menos 4 caracteres.</string>
+    <string name="auth_error_display_name_too_long">O nome de exibição deve ter no máximo 15 caracteres.</string>
+    <string name="auth_error_password_reset_user_not_found">Nenhuma conta encontrada com este endereço de e-mail.</string>
+    <string name="auth_error_password_reset_sent">E-mail de redefinição de senha enviado. Verifique sua caixa de entrada.</string>
+    <string name="auth_error_no_google_accounts">Nenhuma conta do Google encontrada neste dispositivo. Por favor, adicione uma conta do Google nas configurações do seu dispositivo primeiro.</string>
+    <string name="auth_error_session_expired">Sua sessão expirou. Por favor, entre novamente.</string>
+    <string name="auth_error_account_disabled">Esta conta foi desativada.</string>
+    <string name="auth_error_server">Erro no servidor. Por favor, tente novamente mais tarde.</string>
+
+    <!-- Sign In Screen -->
+    <string name="sign_in_title">Entrar</string>
+    <string name="sign_up_title">Criar conta</string>
+    <string name="sign_in_eyebrow">Bem-vindo de volta</string>
+    <string name="sign_up_eyebrow">Junte-se a nós hoje</string>
+    <string name="sign_in_welcome">Bem-vindo ao ChessGym</string>
+    <string name="sign_in_subtitle">Entre para sincronizar seu progresso em todos os dispositivos</string>
+    <string name="sign_up_subtitle">Cadastre-se para salvar seu progresso e fazer backup dos dados com segurança</string>
+    <string name="sign_in_google">Entrar com o Google</string>
+    <string name="sign_up_google">Cadastrar com o Google</string>
+    <string name="sign_in_divider">ou com e-mail</string>
+    <string name="sign_in_display_name_label">Nome de exibição</string>
+    <string name="sign_in_email_label">E-mail</string>
+    <string name="sign_in_password_label">Senha</string>
+    <string name="sign_in_password_show">Mostrar</string>
+    <string name="sign_in_password_hide">Ocultar</string>
+    <string name="sign_in_button">Entrar</string>
+    <string name="sign_up_button">Criar conta</string>
+    <string name="sign_in_switch_to_sign_up">Não tem uma conta? &lt;b>&lt;u>Crie uma&lt;/u>&lt;/b></string>
+    <string name="sign_in_switch_to_sign_in">Já tem uma conta? &lt;b>&lt;u>Entre&lt;/u>&lt;/b></string>
+    <string name="sign_in_forgot_password">Esqueceu a senha?</string>
+    <!-- endregion -->
+
+</resources>

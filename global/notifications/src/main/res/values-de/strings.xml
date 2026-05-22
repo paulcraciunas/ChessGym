@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- region download -->
+    <string name="download_channel_name">Rätsel-Download</string>
+    <string name="download_channel_desc">Zeigt den Fortschritt des Rätsel-Downloads</string>
+    <string name="download_notification_title">Rätsel werden heruntergeladen</string>
+    <string name="download_notification_text">Rätsel werden vorbereitet…</string>
+    <!-- endregion -->
+</resources>

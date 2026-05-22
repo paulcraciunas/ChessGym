@@ -1,0 +1,684 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ChessGym</string>
+
+    <!-- region pieces -->
+    <string name="pawn">폰</string>
+    <string name="rook">룩</string>
+    <string name="knight">나이트</string>
+    <string name="bishop">비숍</string>
+    <string name="queen">퀸</string>
+    <string name="king">킹</string>
+    <!-- endregion -->
+
+    <!-- region Common -->
+    <string name="content_description_loading">로딩 중</string>
+    <!-- endregion -->
+
+    <!-- region results -->
+    <string name="result_checkmate">체크메이트! 승리했습니다</string>
+    <string name="result_draw">무승부</string>
+    <string name="result_loss">패배</string>
+    <!-- endregion -->
+
+    <!-- region Nav drawer -->
+    <string name="nav_drawer_menu">메뉴</string>
+    <string name="nav_drawer_back">뒤로</string>
+    <string name="nav_drawer_sign_in">로그인…</string>
+    <string name="nav_drawer_sign_out">로그아웃</string>
+    <string name="nav_drawer_delete_account">계정 삭제</string>
+    <string name="nav_drawer_general">일반</string>
+    <string name="nav_drawer_home">홈</string>
+    <string name="nav_drawer_application">앱</string>
+    <string name="nav_drawer_settings">설정</string>
+    <string name="nav_drawer_about">정보</string>
+    <string name="sign_out_dialog_title">로그아웃하시겠습니까?</string>
+    <string name="sign_out_dialog_message">정말 로그아웃하시겠습니까? 진행 상황이 저장되어 있으며 언제든지 다시 로그인할 수 있습니다.</string>
+    <string name="sign_out_dialog_confirm">로그아웃</string>
+    <string name="delete_account_dialog_title">계정을 삭제하시겠습니까?</string>
+    <string name="delete_account_dialog_body">이 작업은 계정과 관련된 모든 데이터를 &lt;b>영구적으로 삭제&lt;/b>합니다.</string>
+    <string name="delete_account_dialog_message">정말 계정을 삭제하시겠습니까?</string>
+    <string name="delete_account_dialog_explanation">이 작업은 되돌릴 수 없습니다. 선택하면 저장된 모든 진행 상황과 최고 점수가 삭제됩니다.</string>
+    <string name="delete_account_dialog_confirm">삭제</string>
+    <string name="delete_account_dialog_consequences_title">삭제되는 항목</string>
+    <string name="delete_account_dialog_consequence_puzzles">풀린 퍼즐 &amp; 레이팅</string>
+    <string name="delete_account_dialog_consequence_streaks">연속 기록 &amp; 업적</string>
+    <string name="delete_account_dialog_consequence_games">저장된 게임 &amp; 분석</string>
+    <string name="delete_account_error_no_network">네트워크 연결 없이 계정을 삭제할 수 없습니다.</string>
+    <string name="delete_account_error_failed">계정 삭제에 실패했습니다. 다시 시도해 주세요.</string>
+    <string name="sign_out_error_failed">계정에서 로그아웃하는 데 실패했습니다. 다시 시도해 주세요.</string>
+    <string name="dialog_ok">확인</string>
+    <string name="dialog_cancel">취소</string>
+    <!-- endregion -->
+
+
+    <!-- region navigation -->
+    <string name="navigation_home_label">홈</string>
+    <string name="navigation_home_screen_description">홈 화면</string>
+    <string name="navigation_puzzle_dashboard_label">퍼즐</string>
+    <string name="navigation_puzzle_dashboard_content_description">퍼즐 대시보드</string>
+    <string name="navigation_rated_puzzle_label">레이티드</string>
+    <string name="navigation_rated_puzzle_content_description">레이티드 퍼즐 도전</string>
+    <string name="navigation_puzzle_rush_label">러시</string>
+    <string name="navigation_puzzle_rush_content_description">퍼즐 러시 모드</string>
+    <string name="navigation_board_viz_label">보드</string>
+    <string name="navigation_board_viz_content_description">보드 시각화</string>
+    <string name="navigation_blind_mode_label">블라인드</string>
+    <string name="navigation_blind_mode_content_description">블라인드 모드</string>
+    <!-- endregion -->
+
+    <!-- region Home screen -->
+    <string name="home_timeline_title">최근 활동</string>
+    <string name="home_label_profile">프로필</string>
+    <string name="home_label_rating">레이팅</string>
+    <string name="home_label_activities">활동</string>
+    <string name="home_label_member_since">가입일</string>
+    <string name="home_timeline_empty_title">최근 활동 없음</string>
+    <string name="home_timeline_empty_description">활동 타임라인을 보려면 게임을 시작하세요</string>
+
+    <!-- Activity titles -->
+    <string name="home_title_board_visualization">보드 시각화</string>
+    <string name="home_title_blind_mode_training">블라인드 모드 훈련</string>
+
+    <!-- Timeline stat labels -->
+    <plurals name="home_timeline_stat_run">
+        <item quantity="other">%1$d 회</item>
+    </plurals>
+    <plurals name="home_timeline_stat_game">
+        <item quantity="other">%1$d 게임</item>
+    </plurals>
+    <plurals name="home_timeline_stat_session">
+        <item quantity="other">%1$d 세션</item>
+    </plurals>
+    <plurals name="home_timeline_stat_puzzle">
+        <item quantity="other">%1$d 퍼즐</item>
+    </plurals>
+    <string name="home_timeline_stat_score">%1$d 최고 점수</string>
+    <string name="home_timeline_stat_moves">수</string>
+    <string name="home_timeline_stat_best_moves">%1$d 최선의 수</string>
+    <string name="home_timeline_stat_streak">%1$d 연속</string>
+    <string name="home_timeline_stat_solved">%1$d 해결</string>
+    <!-- endregion -->
+
+    <!-- region User stats -->
+    <string name="user_stats_title">통계</string>
+    <string name="user_stats_high_score_title">최고 점수</string>
+    <string name="expand_stats">통계 펼치기</string>
+    <string name="collapse_stats">통계 접기</string>
+    <string name="expand_high_scores">최고 점수 펼치기</string>
+    <string name="collapse_high_scores">최고 점수 접기</string>
+    <string name="user_stat_puzzles_played">퍼즐 플레이 수</string>
+    <string name="user_stat_puzzles_solved">퍼즐 해결 수</string>
+    <string name="user_stat_puzzles_success">성공률</string>
+    <string name="user_stat_current_rating">현재 레이팅</string>
+    <string name="user_stat_high_score_rated_puzzle">최고 레이티드 퍼즐</string>
+    <string name="user_stat_high_score_puzzles_rush">최고 퍼즐 러시</string>
+    <string name="user_stat_high_score_blind_mode">최고 블라인드 모드</string>
+    <string name="user_stat_high_score_puzzle_streak">최고 퍼즐 스트릭</string>
+    <string name="user_stat_high_score_find_the_square">최고 칸 찾기</string>
+    <string name="user_stat_high_score_move_the_piece">최고 기물 이동</string>
+    <!-- endregion -->
+
+    <!-- region Loading -->
+    <string name="landing_eyebrow">체스 훈련 스튜디오</string>
+    <string name="landing_download_eyebrow">최초 설정</string>
+    <string name="landing_download_title">&lt;i>ChessGym&lt;/i>에 오신 것을 환영합니다</string>
+    <string name="landing_download_explanation">시작하려면 퍼즐 데이터베이스를 다운로드해야 합니다. 한 번만 설정하면 훈련을 위한 모든 준비가 완료됩니다.</string>
+    <string name="landing_feature_puzzles">수백만 개의 전술 퍼즐</string>
+    <string name="landing_feature_offline">항상 오프라인으로 작동</string>
+    <string name="landing_feature_rating">레이팅 진행 상황 추적</string>
+    <string name="landing_tier_label">데이터베이스 크기</string>
+    <string name="landing_download_button">데이터베이스 다운로드</string>
+    <string name="landing_get_started_button">시작하기</string>
+    <string name="landing_size_hint_onetime">%s — 최초 1회</string>
+    <string name="landing_size_hint_included">앱에 포함됨</string>
+    <string name="landing_download_content_title">체스 훈련 설정 중</string>
+    <string name="landing_download_subtitle">퍼즐 데이터베이스를 다운로드 중입니다. 인터넷 속도에 따라 몇 분이 걸릴 수 있습니다.</string>
+    <string name="landing_download_progress">퍼즐 다운로드 중</string>
+    <string name="landing_unpack_progress">데이터베이스 압축 해제 중</string>
+    <string name="landing_unpack_subtitle">퍼즐 데이터베이스 압축 해제 중입니다. 몇 분이 걸릴 수 있습니다.</string>
+    <string name="landing_write_to_db_progress">데이터베이스 구축 중</string>
+    <string name="landing_write_to_db_subtitle">퍼즐 데이터베이스 구축 중입니다. 몇 분이 걸릴 수 있습니다.</string>
+    <string name="database_download_dialog_title">데이터베이스 다운로드</string>
+    <string name="database_download_dialog_body">약 50MB의 퍼즐 데이터를 다운로드합니다. 안정적인 인터넷 연결이 있는지 확인하세요.</string>
+    <string name="enable_notifications_dialog_title">알림 활성화</string>
+    <string name="enable_notifications_dialog_body">진행 상황과 업적에 대한 알림을 받으세요.</string>
+    <string name="enable_notifications_dialog_accept">활성화</string>
+    <string name="enable_notifications_dialog_refuse">건너뛰기</string>
+    <string name="loading_error_download_failed">다운로드 실패. 인터넷 연결을 확인하고 다시 시도해 주세요.</string>
+    <string name="loading_error_decompression_failed">데이터베이스 압축 해제 실패. 다시 시도해 주세요.</string>
+    <string name="loading_error_database_write_failed">데이터베이스 구축 실패. 다시 시도해 주세요.</string>
+    <string name="loading_error_permission">권한이 거부되었습니다. 계속하려면 알림을 활성화해 주세요.</string>
+    <string name="loading_error_no_internet">인터넷 연결 없음. 연결을 확인하고 다시 시도해 주세요.</string>
+    <string name="loading_error_not_enough_disk_space">디스크 공간이 부족합니다. 공간을 확보하고 다시 시도해 주세요.</string>
+    <string name="loading_error_generic">오류가 발생했습니다. 다시 시도해 주세요.</string>
+    <string name="loading_error_consent_required">진행하려면 충돌 보고에 동의해야 합니다. 앱 안정성을 개선하기 위해 기술적인 충돌 데이터만 수집합니다.</string>
+    <string name="crash_consent_dialog_title">개선에 도움 주세요</string>
+    <string name="crash_consent_dialog_body">ChessGym은 앱 오류를 감지하고 수정하기 위해 충돌 보고를 사용합니다. 이 데이터는 모든 사용자를 위한 충돌 감지 및 앱 안정성 개선에만 사용됩니다.\n\n개인 정보, 게임 데이터 또는 사용 패턴은 수집되지 않으며, 문제가 발생했을 때만 기술적인 충돌 세부 정보(스택 트레이스 및 기기 모델 등)가 수집됩니다.\n\n이 설정은 나중에 앱에서 변경할 수 있습니다.</string>
+    <string name="loading_fact_eyebrow">알고 계셨나요?</string>
+    <string-array name="loading_fact_titles">
+        <item>무력한 퀸</item>
+        <item>체스의 책</item>
+        <item>사제의 발명</item>
+        <item>가능한 가장 긴 게임</item>
+        <item>거의 한 세기 동안 체크메이트 없음</item>
+        <item>단색 보드</item>
+        <item>우주에서의 체스</item>
+        <item>비밀의 규칙</item>
+        <item>왕이 쓰러지다</item>
+        <item>경찰의 급습</item>
+    </string-array>
+    <string-array name="loading_fact_bodies">
+        <item>원래 체스판에서 가장 강력한 기물은 실제로 가장 약했습니다. 퀸은 대각선으로 정확히 한 칸만 이동할 수 있었습니다. 주로 Queen Isabella를 기리기 위해 15세기 스페인에서 현대의 무제한 이동력이 부여되었습니다.</item>
+        <item>영어로 인쇄된 두 번째 책(1474년)은 체스에 관한 것이었습니다. William Caxton은 원래 The Game and Playe of the Chesse라는 제목의 원고를 번역했습니다.</item>
+        <item>접이식 체스판은 종교 단체로부터 게임을 금지당한 사제가 발명했습니다. 그는 보드를 반으로 접어 책장에 올려놓아 두 권의 책처럼 보이게 하는 영리한 방법을 고안했습니다.</item>
+        <item>기록상 가장 긴 그랜드마스터 게임은 269수 동안 진행되었지만, 수학적으로 자동 무승부 없이 전통 체스에서 이론적 최대 게임 길이는 5,949수입니다.</item>
+        <item>1929년 이후 세계 체스 챔피언십 경기에서 단 한 번의 체크메이트도 없었습니다. 마지막은 Alexander Alekhine과 Efim Bogoljubov 간의 8번 게임이었습니다. 그 이후 모든 챔피언십 결정 경기는 기권 또는 시간 초과로 결정되었습니다.</item>
+        <item>초기 유럽 체스판은 실제로 단색(같은 색) 칸으로 구성되어 있었으며, 교대로 밝고 어두운 칸 디자인이 도입된 것은 약 1090년경이었습니다.</item>
+        <item>우주에서 처음 진행된 체스 게임은 1970년 6월 9일 소련 Soyuz 9 승무원과 지구의 관제사 사이에서 이루어졌습니다. 승무원들은 무중력 상태에서 기물이 떠다니지 않도록 핀과 슬롯이 있는 특수 세트를 사용했습니다.</item>
+        <item>유명한 앙파상(프랑스어로 "지나가면서")은 1280년 스페인에서 도입되었습니다. 적 폰이 이동하는 바로 그 순간에 플레이하지 않으면 영구적으로 그 능력을 잃게 되므로 초보자들이 가장 자주 놓치는 규칙 중 하나입니다.</item>
+        <item>"체크메이트"라는 단어는 페르시아어 "샤 마트"(شاه مات)에서 왔습니다. 놀랍게도 "왕이 갇혔다"는 의미가 아니라 직접 번역하면 "왕이 죽었다"는 뜻입니다.</item>
+        <item>1973년 오하이오주 클리블랜드 경찰이 체스 토너먼트를 급습하여 토너먼트 관리자를 체포하고 체스 세트를 압수했습니다. 그들은 주최자들을 도박(현금 상금) 허용 및 도박 도구(체스판) 소지 혐의로 기소했습니다.</item>
+    </string-array>
+    <string name="loading_tier_complete">완전판</string>
+    <string name="loading_tier_compact">간편판</string>
+    <string name="loading_tier_lite">빠른 시작</string>
+    <string name="loading_tier_description_complete">모든 퍼즐, 완전한 경험</string>
+    <string name="loading_tier_description_compact">대부분의 플레이어에게 적합</string>
+    <string name="loading_tier_description_lite">즉시 설정, 최소 저장 공간</string>
+    <!-- endregion -->
+
+    <!-- region Rated Puzzle Screen -->
+    <string name="rated_puzzle_next_description">다음</string>
+    <string name="rated_puzzle_moves">수: %1$s</string>
+    <string name="rated_puzzle_title">퍼즐 레이팅: %1$d</string>
+    <string name="navigate_back">뒤로 이동</string>
+    <string name="puzzle_hint">힌트</string>
+    <string name="puzzle_abandon">퍼즐 포기</string>
+    <string name="rated_puzzle_find_best_move_white">백의 최선의 수를 찾으세요</string>
+    <string name="rated_puzzle_find_best_move_black">흑의 최선의 수를 찾으세요</string>
+    <string name="abandon_puzzle_title">퍼즐을 포기하시겠습니까?</string>
+    <string name="choose_promotion_title">승진할 기물 선택</string>
+    <string name="abandon_puzzle_message">현재 퍼즐을 포기하시겠습니까? 진행 상황이 사라집니다.</string>
+    <string name="abandon_puzzle_confirm">포기</string>
+    <string name="puzzle_solved">퍼즐 해결!</string>
+    <string name="puzzle_failed">퍼즐 실패</string>
+    <string name="puzzle_abandoned">퍼즐 포기됨</string>
+    <string name="rating_gained">레이팅 획득: +%1$d</string>
+    <string name="rating_lost">레이팅 손실: -%1$d</string>
+    <!-- endregion -->
+
+    <!-- region generic text resources which can be reused across screens -->
+    <string name="generic_continue">계속</string>
+    <string name="generic_current_score">현재 점수</string>
+    <string name="generic_done">완료</string>
+    <string name="generic_download">다운로드</string>
+    <string name="generic_error_title">문제가 발생했습니다</string>
+    <string name="generic_error_try_again">이런, 문제가 발생했습니다. 다시 시도해 주세요.</string>
+    <string name="generic_loading_message">보드 설정 중…</string>
+    <string name="generic_retry">다시 시도</string>
+    <string name="generic_today">오늘</string>
+    <string name="generic_yesterday">어제</string>
+    <string name="generic_this_week">이번 주</string>
+    <string name="generic_this_month">이번 달</string>
+    <string name="generic_this_year">올해</string>
+    <string name="generic_older">이전</string>
+    <string name="generic_success">성공</string>
+    <string name="generic_failed">실패</string>
+    <string name="generic_new_high_score">새 최고 점수</string>
+    <string name="generic_close">닫기</string>
+    <string name="generic_agree">동의합니다</string>
+    <string name="generic_not_now">나중에</string>
+    <string name="generic_thank_you">지원해 주셔서 감사합니다!</string>
+    <!-- endregion -->
+
+    <!-- region Puzzle Dashboard -->
+    <string name="puzzle_dashboard_eyebrow">퍼즐</string>
+    <string name="puzzle_dashboard_title">도전을 선택하세요</string>
+    <string name="puzzle_dashboard_subtitle">네 가지 집중 모드로 전술적 시야를 훈련하세요.</string>
+    <!-- endregion -->
+
+    <!-- Rated Puzzle Mode -->
+    <string name="puzzle_mode_rated_title">레이티드 퍼즐</string>
+    <string name="puzzle_mode_rated_description">실력에 맞는 퍼즐을 풀어보세요</string>
+    <string name="puzzle_mode_rated_rating">내 레이팅: %1$d</string>
+    <!-- endregion -->
+
+    <!-- Puzzle Rush Mode -->
+    <string name="puzzle_mode_rush_title">퍼즐 러시</string>
+    <string name="puzzle_mode_rush_description">3분 안에 최대한 많은 퍼즐을 풀어보세요</string>
+    <string name="puzzle_rush_play_to_start">시작하려면 수를 두세요</string>
+    <string name="puzzle_rush_summary_title">라운드 완료</string>
+    <string name="puzzle_rush_puzzle_failed">퍼즐 실패!</string>
+    <!-- endregion -->
+
+    <!-- Puzzle Streak Mode -->
+    <string name="puzzle_mode_streak_title">퍼즐 스트릭</string>
+    <string name="puzzle_mode_streak_description">최대한 많은 퍼즐을 연속으로 풀어보세요</string>
+    <string name="puzzle_mode_streak_new">새 스트릭 시작</string>
+    <string name="puzzle_mode_streak_continue">%1$d 퍼즐 스트릭 계속하기</string>
+    <string name="puzzle_streak_title">퍼즐 스트릭 - 레이팅: %1$d</string>
+    <string name="puzzle_streak_ended">스트릭 종료</string>
+    <string name="puzzle_streak_new">새 스트릭</string>
+    <string name="puzzle_streak_next_puzzle">다음 퍼즐</string>
+    <string name="puzzle_streak_summary_title">스트릭 완료</string>
+    <string name="puzzle_white_to_move">백의 차례</string>
+    <string name="puzzle_black_to_move">흑의 차례</string>
+    <!-- endregion -->
+
+    <!-- Failed Puzzles Mode -->
+    <string name="puzzle_mode_failed_title">실패한 퍼즐</string>
+    <string name="puzzle_mode_failed_description">틀린 퍼즐을 복습하고 다시 풀어보세요</string>
+    <string name="puzzle_mode_failed_none_available">실패한 퍼즐이 없습니다</string>
+    <plurals name="puzzle_mode_failed_count">
+        <item quantity="other">%1$d 퍼즐 재도전</item>
+    </plurals>
+    <string name="failed_puzzles_progress">%1$d / %2$d 해결</string>
+    <string name="failed_puzzles_empty_title">실패한 퍼즐 없음</string>
+    <string name="failed_puzzles_empty_description">잘하셨습니다! 재도전할 실패한 퍼즐이 없습니다.</string>
+    <string name="failed_puzzles_complete_title">모두 완료!</string>
+    <string name="failed_puzzles_complete_message">훌륭합니다! 실패한 퍼즐을 모두 복습했습니다.</string>
+    <!-- endregion -->
+
+    <!-- Common -->
+    <string name="puzzle_mode_start">퍼즐 모드 시작</string>
+    <!-- endregion -->
+
+    <!-- region Board Visualization Dashboard -->
+    <string name="boardvis_dashboard_eyebrow">시각화</string>
+    <string name="boardvis_dashboard_title">보드 인식</string>
+    <string name="boardvis_dashboard_subtitle">시각적 기억과 공간 직관을 훈련하세요.</string>
+    <string name="boardvis_mode_start">시각화 모드 시작</string>
+    <!-- endregion -->
+
+    <!-- region Find the Square -->
+    <string name="boardvis_find_square_title">칸 찾기</string>
+    <string name="boardvis_find_square_description">보드에 표시된 칸을 최대한 빠르게 클릭하세요</string>
+    <string name="boardvis_play_as_white">백으로 플레이</string>
+    <string name="boardvis_play_as_black">흑으로 플레이</string>
+    <string name="boardvis_play_random">랜덤 사이드</string>
+    <string name="boardvis_play">플레이</string>
+    <string name="boardvis_play_again">다시 플레이</string>
+    <string name="boardvis_game_over">시간 종료!</string>
+    <string name="boardvis_final_score">최종 점수: %1$d</string>
+    <string name="boardvis_high_score">최고 점수: %1$d</string>
+    <!-- endregion -->
+
+    <!-- region Move the Piece -->
+    <string name="boardvis_move_piece_title">기물 이동</string>
+    <string name="boardvis_move_piece_description">보드에서 올바른 수를 시각화하고 이동하세요</string>
+    <string name="boardvis_move_piece_training_mode">훈련 모드</string>
+    <string name="boardvis_move_piece_moves_remaining">남은 수: %1$d</string>
+    <string name="boardvis_move_piece_rules">상대방이 공격하는 칸에 착지하지 않고 기물을 이동하세요. 다음 레벨로 진행하려면 필요한 수를 완료하세요!</string>
+    <string name="boardvis_move_piece_captured">잡혔습니다!</string>
+    <!-- endregion -->
+
+    <!-- region Settings -->
+    <string name="settings_title">설정</string>
+    <string name="settings_section_general">일반</string>
+    <string name="settings_section_ui">외관</string>
+    <string name="settings_haptic_feedback">햅틱 피드백</string>
+    <string name="settings_haptic_feedback_description">상호작용 시 진동</string>
+    <string name="settings_auto_promote">자동 승진</string>
+    <string name="settings_auto_promote_description">폰을 자동으로 퀸으로 승진</string>
+    <string name="settings_auto_next_puzzle">퍼즐 자동 진행</string>
+    <string name="settings_auto_next_puzzle_description">퍼즐 스트릭에서 퍼즐을 풀면 자동으로 다음 퍼즐 불러오기</string>
+    <string name="settings_show_borders">테두리 표시</string>
+    <string name="settings_show_borders_description">보드 주위에 좌표 표시</string>
+    <string name="settings_highlight_legal_moves">합법적인 수 강조</string>
+    <string name="settings_highlight_legal_moves_description">기물 선택 시 이동 가능한 칸 표시</string>
+    <string name="settings_light_mode">테마</string>
+    <string name="settings_light_mode_light">라이트</string>
+    <string name="settings_light_mode_dark">다크</string>
+    <string name="settings_light_mode_system">시스템</string>
+    <string name="settings_enable_animations">애니메이션</string>
+    <string name="settings_enable_animations_description">UI 애니메이션 활성화</string>
+    <string name="settings_section_privacy">개인정보</string>
+    <string name="settings_crash_reporting">충돌 보고</string>
+    <string name="settings_crash_reporting_description">충돌 데이터를 공유하여 앱 안정성 개선에 기여하세요</string>
+    <string name="settings_build_version">버전 %1$s-%2$s</string>
+    <!-- endregion -->
+
+    <!-- region About -->
+    <string name="about_title">정보</string>
+    <string name="about_general_title">일반</string>
+    <string name="about_legal_title">법적 고지</string>
+    <string name="about_creator_title">개발자</string>
+    <string name="about_creator_description">ChessGym은 런던의 Android 엔지니어이자 체스 열정가인 Paul Mihai Craciunas가 개발했으며, 사람들의 실력 향상 여정을 돕고자 합니다.</string>
+    <string name="about_contact_title">연락처</string>
+    <string name="about_contact_description">법적 문제, 사업적 기회 또는 기타 문의는 이메일로 연락해 주세요.</string>
+    <string name="about_contact_email">contact@chessgym.app</string>
+    <string name="about_feedback_title">피드백</string>
+    <string name="about_feedback_description">버그를 발견하셨나요? 새로운 기능이나 개선 아이디어가 있으신가요? 의견을 보내주세요.</string>
+    <string name="about_feedback_email">feedback@chessgym.app</string>
+    <string name="about_support_title">지원</string>
+    <string name="about_donate_title">후원</string>
+    <string name="about_donate_description">ChessGym 개발을 지원하세요</string>
+    <string name="about_donate_dialog_title">ChessGym 지원하기</string>
+    <string name="about_donate_dialog_description">이 프로젝트의 지속적인 개발을 지원하기 위한 금액을 선택하세요. &lt;b>감사합니다!&lt;/b></string>
+    <string name="about_donate_small">커피</string>
+    <string name="about_donate_medium">샌드위치</string>
+    <string name="about_donate_large">피자</string>
+    <string name="about_rate_title">앱 평가</string>
+    <string name="about_rate_description">ChessGym이 마음에 드시나요? Play Store에서 평점을 남겨주세요</string>
+    <string name="about_libraries_title">오픈 소스 라이브러리</string>
+    <string name="about_libraries_description">ChessGym은 다음 오픈 소스 라이브러리로 구축되었습니다:</string>
+    <string name="about_privacy_policy_title">개인정보 처리방침</string>
+    <string name="about_privacy_policy_content">발효일: 2026년 5월\n\nChessGym(&quot;앱&quot;)은 Paul Mihai Craciunas가 개발했습니다. 이 개인정보 처리방침은 수집되는 데이터, 사용 방법 및 해당 데이터에 관한 귀하의 권리를 설명합니다.\n\n&lt;b>1. 수집하는 데이터&lt;/b>\n\n• &lt;b>계정 정보:&lt;/b> 로그인하면 Firebase Authentication을 통해 표시 이름, 이메일 주소 및 고유 사용자 식별자를 저장합니다.\n• &lt;b>게임 플레이 데이터:&lt;/b> 퍼즐 레이팅, 통계 및 업적 진행 상황이 개인화된 경험을 제공하기 위해 저장됩니다.\n• &lt;b>충돌 및 진단:&lt;/b> Firebase Crashlytics는 버그 수정을 위해 기기 모델, OS 버전 및 충돌 스택 추적을 자동으로 수집합니다.\n• &lt;b>결제:&lt;/b> 후원 거래는 Google Play에서 전적으로 처리됩니다. 결제 정보는 저장하지 않습니다.\n\n&lt;b>2. 데이터 사용 방법&lt;/b>\n\n• 앱 경험 제공 및 개인화(레이팅, 업적, 진행 상황 동기화).\n• 충돌 및 성능 문제 진단 및 수정.\n• 로그인 시 진행 상황의 클라우드 백업 활성화.\n\n&lt;b>3. 데이터 저장 및 보안&lt;/b>\n\n데이터는 전송 중(TLS) 및 저장 시 암호화된 Google Cloud Firestore에 저장됩니다. 접근은 인증된 요청으로만 제한됩니다.\n\n&lt;b>4. 제3자 서비스&lt;/b>\n\n• Firebase Authentication (Google)\n• Firebase Crashlytics (Google)\n• Google Play Billing\n\n귀하의 개인 데이터를 다른 제3자에게 판매, 공유 또는 이전하지 않습니다.\n\n&lt;b>5. 귀하의 권리&lt;/b>\n\nGDPR 및 유사 규정에 따라 귀하는 다음 권리를 갖습니다:\n• 개인 데이터 접근\n• 부정확한 데이터 수정 요청\n• 데이터 삭제 요청\n• 데이터 내보내기(데이터 이동성)\n• 언제든지 동의 철회\n\n이러한 권리 중 하나를 행사하려면 contact@chessgym.app으로 연락하세요. 30일 이내에 응답하겠습니다.\n\n&lt;b>6. 데이터 보존&lt;/b>\n\n귀하의 데이터는 계정이 존재하는 한 보존됩니다. 계정을 삭제하면 관련된 모든 데이터가 30일 이내에 영구적으로 삭제됩니다.\n\n&lt;b>7. 아동 개인정보 보호&lt;/b>\n\n앱은 13세 미만 아동으로부터 의도적으로 데이터를 수집하지 않습니다. 그러한 데이터를 수집했다고 생각되면 즉시 연락해 주세요.\n\n&lt;b>8. 이 방침의 변경&lt;/b>\n\n이 개인정보 처리방침을 수시로 업데이트할 수 있습니다. 변경 사항은 업데이트된 발효일과 함께 앱에 반영됩니다.\n\n&lt;b>9. 연락처&lt;/b>\n\n문의 또는 데이터 요청:\ncontact@chessgym.app</string>
+    <string name="about_terms_title">이용 약관</string>
+    <string name="about_terms_content">ChessGym은 자유 소프트웨어입니다: Free Software Foundation이 발행한 GNU General Public License 버전 3 또는 (선택에 따라) 이후 버전의 조건에 따라 재배포 및/또는 수정할 수 있습니다.\n\nChessGym은 유용하기를 바라는 마음으로 배포되지만, 어떠한 보증도 제공하지 않습니다. 상품성 또는 특정 목적에의 적합성에 대한 묵시적 보증도 포함되지 않습니다. 자세한 내용은 GNU General Public License를 참조하세요.\n\n이 프로그램과 함께 GNU General Public License 사본을 받으셨어야 합니다. 받지 못했다면 https://www.gnu.org/licenses/를 참조하세요.\n\nChessGym의 전체 소스 코드는 https://github.com/paulcraciunas/ChessGym에서 확인할 수 있습니다.\n\nChessGym은 GNU General Public License v3.0에 따라 라이선스가 부여된 무료 오픈 소스 체스 엔진 Stockfish를 통합합니다. Stockfish 소스 코드는 https://github.com/official-stockfish/Stockfish에서 확인할 수 있습니다.\n\n모든 체스 퍼즐 데이터는 공개적으로 이용 가능한 데이터베이스에서 가져왔습니다. ChessGym과 그 로고는 Paul Mihai Craciunas의 지적 재산입니다.\n\n© 2025–2026 Paul Mihai Craciunas.</string>
+    <string name="about_terms_and_conditions_title">이용 약관 및 조건</string>
+    <string name="about_terms_and_conditions_content">ChessGym(&quot;앱&quot;)을 다운로드, 설치 또는 사용함으로써 귀하는 다음 이용 약관에 동의합니다. 동의하지 않으시면 즉시 앱 사용을 중단해 주세요.\n\n앱은 &quot;있는 그대로&quot; 및 &quot;이용 가능한 그대로&quot; 제공되며, 상품성, 특정 목적에의 적합성 및 비침해에 대한 묵시적 보증을 포함하되 이에 한정되지 않는 어떠한 종류의 명시적 또는 묵시적 보증도 없습니다.\n\n어떠한 경우에도 개발자는 귀하의 앱 사용 또는 사용 불능으로 인해 발생하거나 이와 관련된 직접적, 간접적, 우발적, 특별, 결과적 또는 징벌적 손해에 대해 책임을 지지 않으며, 개발자가 그러한 손해의 가능성을 사전에 고지받은 경우에도 마찬가지입니다.\n\n앱에는 개발자가 소유하거나 통제하지 않는 제3자 웹사이트 또는 서비스 링크가 포함될 수 있습니다. 개발자는 제3자 웹사이트 또는 서비스의 콘텐츠, 개인정보 처리방침 또는 관행에 대해 통제권이 없으며 어떠한 책임도 지지 않습니다.\n\n개발자는 사전 통지 없이 언제든지 앱을 수정, 중단 또는 종료할 권리를 보유합니다. 개발자는 앱의 수정, 중단 또는 종료에 대해 귀하 또는 제3자에게 어떠한 책임도 지지 않습니다.\n\n앱 사용은 이용 약관 섹션에서 전문을 확인할 수 있는 GNU General Public License v3.0에도 의거합니다.\n\n이 이용 약관은 귀하의 앱 최초 사용일부터 효력이 발생합니다. 개발자는 언제든지 이 약관을 업데이트할 권리를 보유합니다. 앱을 계속 사용하면 변경 사항에 동의하는 것으로 간주됩니다.\n\n이 약관에 대한 질문이나 우려 사항이 있으시면 contact@chessgym.app으로 문의해 주세요.</string>
+    <!-- endregion -->
+
+    <!-- region Tools -->
+    <string name="navigation_tools_label">도구</string>
+    <string name="navigation_tools_content_description">체스 도구</string>
+    <string name="tools_dashboard_eyebrow">도구</string>
+    <string name="tools_dashboard_title">체스 도구</string>
+    <string name="tools_dashboard_subtitle">체스 게임에 유용한 유틸리티입니다.</string>
+    <string name="tools_mode_start">도구 시작</string>
+    <string name="tools_clock_description">설정 가능한 컨트롤로 게임 시간을 재세요</string>
+    <string name="tools_analysis_title">분석</string>
+    <string name="tools_analysis_description">엔진으로 포지션을 분석하세요</string>
+    <string name="tools_import_description">FEN 또는 PGN 표기법에서 게임 가져오기</string>
+    <!-- endregion -->
+
+    <!-- region Clock Screen -->
+    <string name="clock_title">체스 시계</string>
+    <string name="clock_white">백</string>
+    <string name="clock_black">흑</string>
+    <string name="clock_stop">정지</string>
+    <string name="clock_new_game">새 게임</string>
+    <string name="clock_time_up">시간 종료!</string>
+    <string name="clock_time_control">시간</string>
+    <string name="clock_increment">인크리먼트</string>
+    <string name="clock_minutes_format">%1$d분</string>
+    <string name="clock_seconds_format">%1$d초</string>
+    <string name="clock_tap_to_start">탭하여 시작</string>
+    <!-- endregion -->
+
+    <!-- region Import Game Screen -->
+    <string name="import_game_title">게임 가져오기</string>
+    <string name="import_fen">FEN</string>
+    <string name="import_pgn">PGN</string>
+    <string name="import_dialog_title_fen">FEN 가져오기</string>
+    <string name="import_dialog_title_pgn">PGN 가져오기</string>
+    <string name="import_dialog_hint_fen">FEN 문자열을 여기에 붙여넣기…</string>
+    <string name="import_dialog_hint_pgn">PGN 텍스트를 여기에 붙여넣기…</string>
+    <string name="import_dialog_confirm">가져오기</string>
+    <string name="import_error_invalid_fen">잘못된 FEN 표기법입니다. 확인 후 다시 시도해 주세요.</string>
+    <string name="import_error_invalid_pgn">잘못된 PGN 표기법입니다. 확인 후 다시 시도해 주세요.</string>
+    <string name="import_game_jump_to_start">시작으로 이동</string>
+    <string name="import_game_previous_move">이전 수</string>
+    <string name="import_game_next_move">다음 수</string>
+    <string name="import_game_jump_to_end">끝으로 이동</string>
+    <!-- endregion -->
+
+    <!-- region Blind Mode -->
+    <string name="blind_mode_title">블라인드 모드</string>
+    <string name="blind_mode_training_mode">훈련 모드</string>
+    <string name="blind_mode_training_description">게임이 레이팅에 영향을 주지 않습니다</string>
+    <string name="blind_mode_play">플레이</string>
+    <string name="blind_mode_resign">기권</string>
+    <string name="blind_mode_reveal">공개</string>
+    <string name="blind_mode_thinking">엔진이 생각 중…</string>
+    <string name="blind_mode_your_turn">귀하의 차례</string>
+    <string name="blind_mode_moves">수</string>
+    <string name="abandon_game_title">게임을 포기하시겠습니까?</string>
+    <string name="abandon_game_message">현재 게임을 포기하시겠습니까? 진행 상황이 사라집니다.</string>
+    <!-- endregion -->
+
+    <!-- region Achievements -->
+    <!-- Category display names -->
+    <string name="achievement_category_rated_puzzles_solved">레이티드 퍼즐 해결</string>
+    <string name="achievement_category_puzzle_rush_sessions">퍼즐 러시 세션</string>
+    <string name="achievement_category_streak_sessions">스트릭 세션</string>
+    <string name="achievement_category_failed_puzzles_redeemed">실패 퍼즐 만회</string>
+    <string name="achievement_category_find_square_sessions">칸 찾기 세션</string>
+    <string name="achievement_category_move_piece_sessions">기물 이동 세션</string>
+    <string name="achievement_category_blind_mode_wins">호머의 유산</string>
+    <string name="achievement_category_rated_win_streak">레이티드 연승</string>
+    <string name="achievement_category_rating_climber">레이팅 클라이머</string>
+    <string name="achievement_category_blind_strategist">블라인드 전략가</string>
+    <string name="achievement_category_rush_champion">러시 챔피언</string>
+    <string name="achievement_category_streak_legend">스트릭 레전드</string>
+    <string name="achievement_category_eagle_eye">매의 눈</string>
+    <string name="achievement_category_knights_path">나이트의 길</string>
+    <string name="achievement_category_puzzle_addict">퍼즐 중독자</string>
+    <string name="achievement_category_time_invested">투자 시간</string>
+    <string name="achievement_category_daily_grinder">일일 연습가</string>
+    <string name="achievement_category_consistency_king">꾸준함의 왕</string>
+    <string name="achievement_category_board_vision">보드 비전</string>
+    <string name="achievement_category_rush_solver">러시 해결사</string>
+
+    <!-- Tier names: RATED_PUZZLES_SOLVED -->
+    <string name="achievement_rated_puzzles_solved_one">퍼즐 애호가</string>
+    <string name="achievement_rated_puzzles_solved_two">퍼즐 아마추어</string>
+    <string name="achievement_rated_puzzles_solved_three">퍼즐 전문가</string>
+    <string name="achievement_rated_puzzles_solved_four">퍼즐 마스터</string>
+    <string name="achievement_rated_puzzles_solved_five">퍼즐 그랜드마스터</string>
+
+    <!-- Tier names: PUZZLE_RUSH_SESSIONS -->
+    <string name="achievement_puzzle_rush_sessions_one">러시 루키</string>
+    <string name="achievement_puzzle_rush_sessions_two">러시 레귤러</string>
+    <string name="achievement_puzzle_rush_sessions_three">러시 베테랑</string>
+    <string name="achievement_puzzle_rush_sessions_four">러시 캡틴</string>
+    <string name="achievement_puzzle_rush_sessions_five">러시 레전드</string>
+
+    <!-- Tier names: STREAK_SESSIONS -->
+    <string name="achievement_streak_sessions_one">스트릭 스타터</string>
+    <string name="achievement_streak_sessions_two">스트릭 시커</string>
+    <string name="achievement_streak_sessions_three">스트릭 헌터</string>
+    <string name="achievement_streak_sessions_four">스트릭 크러셔</string>
+    <string name="achievement_streak_sessions_five">스트릭 패너틱</string>
+
+    <!-- Tier names: FAILED_PUZZLES_REDEEMED -->
+    <string name="achievement_failed_puzzles_redeemed_one">두 번째 기회</string>
+    <string name="achievement_failed_puzzles_redeemed_two">컴백 키드</string>
+    <string name="achievement_failed_puzzles_redeemed_three">만회의 탐구자</string>
+    <string name="achievement_failed_puzzles_redeemed_four">만회 마스터</string>
+    <string name="achievement_failed_puzzles_redeemed_five">절대 포기하지 않아</string>
+
+    <!-- Tier names: FIND_SQUARE_SESSIONS -->
+    <string name="achievement_find_square_sessions_one">칸 찾기 초보</string>
+    <string name="achievement_find_square_sessions_two">칸 찾기 선수</string>
+    <string name="achievement_find_square_sessions_three">칸 찾기 전문가</string>
+    <string name="achievement_find_square_sessions_four">칸 찾기 마스터</string>
+    <string name="achievement_find_square_sessions_five">칸 찾기 그랜드마스터</string>
+
+    <!-- Tier names: MOVE_PIECE_SESSIONS -->
+    <string name="achievement_move_piece_sessions_one">기물 초보자</string>
+    <string name="achievement_move_piece_sessions_two">기물 이동자</string>
+    <string name="achievement_move_piece_sessions_three">기물 항법사</string>
+    <string name="achievement_move_piece_sessions_four">기물 마스터</string>
+    <string name="achievement_move_piece_sessions_five">기물 그랜드마스터</string>
+
+    <!-- Tier names: BLIND_MODE_WINS -->
+    <string name="achievement_blind_mode_wins_one">오딘의 제자</string>
+    <string name="achievement_blind_mode_wins_two">티레시아스의 학생</string>
+    <string name="achievement_blind_mode_wins_three">호머의 후계자</string>
+    <string name="achievement_blind_mode_wins_four">눈 먼 예언자</string>
+    <string name="achievement_blind_mode_wins_five">전지자</string>
+
+    <!-- Tier names: RATED_WIN_STREAK -->
+    <string name="achievement_rated_win_streak_one">행운의 연승</string>
+    <string name="achievement_rated_win_streak_two">날카로운 두뇌</string>
+    <string name="achievement_rated_win_streak_three">완벽한 전술가</string>
+    <string name="achievement_rated_win_streak_four">승리의 기계</string>
+    <string name="achievement_rated_win_streak_five">무적</string>
+
+    <!-- Tier names: RATING_CLIMBER -->
+    <string name="achievement_rating_climber_one">떠오르는 폰</string>
+    <string name="achievement_rating_climber_two">올라가는 나이트</string>
+    <string name="achievement_rating_climber_three">날아오르는 비숍</string>
+    <string name="achievement_rating_climber_four">우뚝 선 룩</string>
+    <string name="achievement_rating_climber_five">군림하는 퀸</string>
+
+    <!-- Tier names: BLIND_STRATEGIST -->
+    <string name="achievement_blind_strategist_one">블라인드 스카우트</string>
+    <string name="achievement_blind_strategist_two">블라인드 전술가</string>
+    <string name="achievement_blind_strategist_three">블라인드 전략가</string>
+    <string name="achievement_blind_strategist_four">블라인드 사령관</string>
+    <string name="achievement_blind_strategist_five">블라인드 마스터마인드</string>
+
+    <!-- Tier names: RUSH_CHAMPION -->
+    <string name="achievement_rush_champion_one">러시 비기너</string>
+    <string name="achievement_rush_champion_two">러시 컨텐더</string>
+    <string name="achievement_rush_champion_three">러시 챔피언</string>
+    <string name="achievement_rush_champion_four">러시 히어로</string>
+    <string name="achievement_rush_champion_five">러시 현상</string>
+
+    <!-- Tier names: STREAK_LEGEND -->
+    <string name="achievement_streak_legend_one">뜨거운 출발</string>
+    <string name="achievement_streak_legend_two">불타오르는</string>
+    <string name="achievement_streak_legend_three">멈출 수 없는</string>
+    <string name="achievement_streak_legend_four">전설적인 스트릭</string>
+    <string name="achievement_streak_legend_five">스트릭 불멸자</string>
+
+    <!-- Tier names: EAGLE_EYE -->
+    <string name="achievement_eagle_eye_one">예리한 눈</string>
+    <string name="achievement_eagle_eye_two">날카로운 눈</string>
+    <string name="achievement_eagle_eye_three">독수리 눈</string>
+    <string name="achievement_eagle_eye_four">매 비전</string>
+    <string name="achievement_eagle_eye_five">사우론의 눈</string>
+
+    <!-- Tier names: KNIGHTS_PATH -->
+    <string name="achievement_knights_path_one">첫 걸음</string>
+    <string name="achievement_knights_path_two">길 찾기</string>
+    <string name="achievement_knights_path_three">나이트의 여정</string>
+    <string name="achievement_knights_path_four">나이트의 오디세이</string>
+    <string name="achievement_knights_path_five">나이트의 정복</string>
+
+    <!-- Tier names: PUZZLE_ADDICT -->
+    <string name="achievement_puzzle_addict_one">시작하기</string>
+    <string name="achievement_puzzle_addict_two">습관 형성</string>
+    <string name="achievement_puzzle_addict_three">헌신적인 해결사</string>
+    <string name="achievement_puzzle_addict_four">퍼즐 중독자</string>
+    <string name="achievement_puzzle_addict_five">퍼즐 기계</string>
+
+    <!-- Tier names: TIME_INVESTED -->
+    <string name="achievement_time_invested_one">첫 한 시간</string>
+    <string name="achievement_time_invested_two">진지해지기</string>
+    <string name="achievement_time_invested_three">헌신적</string>
+    <string name="achievement_time_invested_four">전념</string>
+    <string name="achievement_time_invested_five">평생 학습자</string>
+
+    <!-- Tier names: DAILY_GRINDER -->
+    <string name="achievement_daily_grinder_one">첫 걸음</string>
+    <string name="achievement_daily_grinder_two">주간 습관</string>
+    <string name="achievement_daily_grinder_three">3주 스트릭</string>
+    <string name="achievement_daily_grinder_four">헌신적인 단골</string>
+    <string name="achievement_daily_grinder_five">영원한 플레이어</string>
+
+    <!-- Tier names: CONSISTENCY_KING -->
+    <string name="achievement_consistency_king_one">3일 스트릭</string>
+    <string name="achievement_consistency_king_two">주간 전사</string>
+    <string name="achievement_consistency_king_three">2주 강자</string>
+    <string name="achievement_consistency_king_four">월간 마블</string>
+    <string name="achievement_consistency_king_five">100일 영웅</string>
+
+    <!-- Tier names: BOARD_VISION -->
+    <string name="achievement_board_vision_one">비전 훈련생</string>
+    <string name="achievement_board_vision_two">비전 견습생</string>
+    <string name="achievement_board_vision_three">비전 전문가</string>
+    <string name="achievement_board_vision_four">비전 마스터</string>
+    <string name="achievement_board_vision_five">보드 현인</string>
+
+    <!-- Tier names: RUSH_SOLVER -->
+    <string name="achievement_rush_solver_one">러시 해결사</string>
+    <string name="achievement_rush_solver_two">러시 그라인더</string>
+    <string name="achievement_rush_solver_three">속도의 악마</string>
+    <string name="achievement_rush_solver_four">러시 기계</string>
+    <string name="achievement_rush_solver_five">러시 터미네이터</string>
+
+    <!-- Achievement descriptions -->
+    <string name="achievement_desc_rated_puzzles_solved">이 업적을 획득하려면 레이티드 퍼즐을 해결하세요</string>
+    <string name="achievement_desc_puzzle_rush_sessions">이 업적을 획득하려면 퍼즐 러시 세션을 완료하세요</string>
+    <string name="achievement_desc_streak_sessions">이 업적을 획득하려면 퍼즐 스트릭 세션을 완료하세요</string>
+    <string name="achievement_desc_failed_puzzles_redeemed">이전에 실패한 퍼즐을 재도전하여 해결하세요</string>
+    <string name="achievement_desc_find_square_sessions">이 업적을 획득하려면 칸 찾기 세션을 플레이하세요</string>
+    <string name="achievement_desc_move_piece_sessions">이 업적을 획득하려면 기물 이동 세션을 플레이하세요</string>
+    <string name="achievement_desc_blind_mode_wins">이 업적을 획득하려면 레이티드 블라인드 모드 게임을 이기세요</string>
+    <string name="achievement_desc_rated_win_streak">실패 없이 연속으로 레이티드 퍼즐을 이기세요</string>
+    <string name="achievement_desc_rating_climber">새로운 높이에 도달하기 위해 퍼즐 레이팅을 높이세요</string>
+    <string name="achievement_desc_blind_strategist">이 업적을 획득하려면 블라인드 모드 레이팅을 높이세요</string>
+    <string name="achievement_desc_rush_champion">퍼즐 러시에서 최고 점수를 세우세요</string>
+    <string name="achievement_desc_streak_legend">퍼즐 스트릭에서 최고 점수를 세우세요</string>
+    <string name="achievement_desc_eagle_eye">칸 찾기에서 최고 점수를 세우세요</string>
+    <string name="achievement_desc_knights_path">기물 이동에서 최고 점수를 세우세요</string>
+    <string name="achievement_desc_puzzle_addict">모든 게임 모드에서 퍼즐을 해결하세요</string>
+    <string name="achievement_desc_time_invested">모든 게임 모드에서 연습하며 시간을 보내세요</string>
+    <string name="achievement_desc_daily_grinder">스트릭을 쌓기 위해 연속된 날에 플레이하세요</string>
+    <string name="achievement_desc_consistency_king">역대 최고 연속 일일 스트릭을 달성하세요</string>
+    <string name="achievement_desc_board_vision">칸 찾기와 기물 이동 세션을 완료하세요</string>
+    <string name="achievement_desc_rush_solver">퍼즐 러시 세션에서 퍼즐을 해결하세요</string>
+
+    <!-- Achievement UI -->
+    <string name="achievement_screen_title">업적</string>
+    <string name="achievement_banner_unlocked">%1$s — 티어 %2$d 해제!</string>
+    <string name="achievement_trophy_case_title">트로피 케이스</string>
+    <string name="achievement_trophy_case_keep_going">계속하세요 — %1$d 남았습니다</string>
+    <string name="achievement_trophy_case_all_earned">모두 획득 — 잘하셨습니다!</string>
+    <string name="achievement_trophy_case_summary">%1$d 진행 중 · %2$d 잠김</string>
+    <string name="achievement_earned_label">획득</string>
+    <string name="achievement_earned_count">%1$d / %2$d 획득</string>
+    <string name="achievement_earned_total">%1$d 중</string>
+    <string name="achievement_detail_next_tier">다음 티어까지 %1$d / %2$d</string>
+    <string name="achievement_detail_progress">%1$d / %2$d</string>
+    <string name="achievement_see_all">전체 보기</string>
+    <string name="achievement_group_puzzles">퍼즐</string>
+    <string name="achievement_group_rush_and_streak">러시 &amp; 스트릭</string>
+    <string name="achievement_group_board_vision">보드 비전</string>
+    <string name="achievement_group_skill_and_mastery">실력 &amp; 숙련도</string>
+    <string name="achievement_group_dedication">헌신</string>
+    <!-- endregion -->
+
+    <!-- temporary values; these will be deleted as we build features -->
+    <string name="under_construction">공사 중</string>
+
+    <!-- region auth errors -->
+    <string name="auth_error_google_sign_in_failed">Google 로그인에 실패했습니다. 다시 시도해 주세요.</string>
+    <string name="auth_error_sign_in_failed">로그인에 실패했습니다. 다시 시도해 주세요.</string>
+    <string name="auth_error_sign_up_failed">회원가입에 실패했습니다. 다시 시도해 주세요.</string>
+    <string name="auth_error_invalid_credentials">잘못된 비밀번호입니다. 다시 시도해 주세요.</string>
+    <string name="auth_error_user_not_found">이 이메일로 등록된 계정이 없습니다.</string>
+    <string name="auth_error_account_already_exists">이 이메일로 이미 계정이 존재합니다.</string>
+    <string name="auth_error_weak_password">비밀번호가 너무 약합니다. 최소 6자 이상을 사용하세요.</string>
+    <string name="auth_error_network">네트워크 오류. 연결을 확인하고 다시 시도해 주세요.</string>
+    <string name="auth_error_empty_fields">이 필드는 필수입니다.</string>
+    <string name="auth_error_invalid_email">유효한 이메일 주소를 입력해 주세요.</string>
+    <string name="auth_error_password_too_short">비밀번호는 최소 6자 이상이어야 합니다.</string>
+    <string name="auth_error_display_name_too_short">표시 이름은 최소 4자 이상이어야 합니다.</string>
+    <string name="auth_error_display_name_too_long">표시 이름은 최대 15자를 초과할 수 없습니다.</string>
+    <string name="auth_error_password_reset_user_not_found">이 이메일 주소로 등록된 계정이 없습니다.</string>
+    <string name="auth_error_password_reset_sent">비밀번호 재설정 이메일이 전송되었습니다. 받은 편지함을 확인하세요.</string>
+    <string name="auth_error_no_google_accounts">이 기기에서 Google 계정을 찾을 수 없습니다. 먼저 기기 설정에서 Google 계정을 추가해 주세요.</string>
+    <string name="auth_error_session_expired">세션이 만료되었습니다. 다시 로그인해 주세요.</string>
+    <string name="auth_error_account_disabled">이 계정은 비활성화되었습니다.</string>
+    <string name="auth_error_server">서버 오류. 나중에 다시 시도해 주세요.</string>
+
+    <!-- Sign In Screen -->
+    <string name="sign_in_title">로그인</string>
+    <string name="sign_up_title">계정 만들기</string>
+    <string name="sign_in_eyebrow">다시 오신 것을 환영합니다</string>
+    <string name="sign_up_eyebrow">오늘 함께하세요</string>
+    <string name="sign_in_welcome">ChessGym에 오신 것을 환영합니다</string>
+    <string name="sign_in_subtitle">기기 간 진행 상황을 동기화하려면 로그인하세요</string>
+    <string name="sign_up_subtitle">진행 상황을 저장하고 데이터를 안전하게 백업하려면 회원가입하세요</string>
+    <string name="sign_in_google">Google로 로그인</string>
+    <string name="sign_up_google">Google로 회원가입</string>
+    <string name="sign_in_divider">또는 이메일로</string>
+    <string name="sign_in_display_name_label">표시 이름</string>
+    <string name="sign_in_email_label">이메일</string>
+    <string name="sign_in_password_label">비밀번호</string>
+    <string name="sign_in_password_show">표시</string>
+    <string name="sign_in_password_hide">숨기기</string>
+    <string name="sign_in_button">로그인</string>
+    <string name="sign_up_button">계정 만들기</string>
+    <string name="sign_in_switch_to_sign_up">계정이 없으신가요? &lt;b>&lt;u>만들기&lt;/u>&lt;/b></string>
+    <string name="sign_in_switch_to_sign_in">이미 계정이 있으신가요? &lt;b>&lt;u>로그인&lt;/u>&lt;/b></string>
+    <string name="sign_in_forgot_password">비밀번호를 잊으셨나요?</string>
+    <!-- endregion -->
+
+</resources>

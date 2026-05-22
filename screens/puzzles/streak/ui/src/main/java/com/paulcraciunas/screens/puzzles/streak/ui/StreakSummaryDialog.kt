@@ -35,7 +35,7 @@ fun StreakSummaryDialog(
         Column {
             Summary(
                 value = streakCount.toString(),
-                subtitle = stringResource(R.string.puzzle_streak_summary_puzzles_solved),
+                subtitle = stringResource(R.string.user_stat_puzzles_solved),
             )
             if (isNewHighScore) {
                 HighScoreBadge(text = stringResource(R.string.generic_new_high_score))

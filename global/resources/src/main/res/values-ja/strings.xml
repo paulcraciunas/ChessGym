@@ -1,0 +1,684 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ChessGym</string>
+
+    <!-- region pieces -->
+    <string name="pawn">ポーン</string>
+    <string name="rook">ルーク</string>
+    <string name="knight">ナイト</string>
+    <string name="bishop">ビショップ</string>
+    <string name="queen">クイーン</string>
+    <string name="king">キング</string>
+    <!-- endregion -->
+
+    <!-- region Common -->
+    <string name="content_description_loading">読み込み中</string>
+    <!-- endregion -->
+
+    <!-- region results -->
+    <string name="result_checkmate">チェックメイト！あなたの勝ちです</string>
+    <string name="result_draw">引き分け</string>
+    <string name="result_loss">敗北</string>
+    <!-- endregion -->
+
+    <!-- region Nav drawer -->
+    <string name="nav_drawer_menu">メニュー</string>
+    <string name="nav_drawer_back">戻る</string>
+    <string name="nav_drawer_sign_in">サインイン…</string>
+    <string name="nav_drawer_sign_out">サインアウト</string>
+    <string name="nav_drawer_delete_account">アカウント削除</string>
+    <string name="nav_drawer_general">一般</string>
+    <string name="nav_drawer_home">ホーム</string>
+    <string name="nav_drawer_application">アプリ</string>
+    <string name="nav_drawer_settings">設定</string>
+    <string name="nav_drawer_about">アプリについて</string>
+    <string name="sign_out_dialog_title">サインアウトしますか？</string>
+    <string name="sign_out_dialog_message">サインアウトしてもよろしいですか？進捗は保存されており、いつでも再サインインできます。</string>
+    <string name="sign_out_dialog_confirm">サインアウト</string>
+    <string name="delete_account_dialog_title">アカウントを削除しますか？</string>
+    <string name="delete_account_dialog_body">この操作はアカウントとすべての関連データを&lt;b>完全に削除&lt;/b>します。</string>
+    <string name="delete_account_dialog_message">アカウントを削除してもよろしいですか？</string>
+    <string name="delete_account_dialog_explanation">この操作は元に戻せません。選択すると、保存されたすべての進捗とハイスコアが失われます。</string>
+    <string name="delete_account_dialog_confirm">削除</string>
+    <string name="delete_account_dialog_consequences_title">失うもの</string>
+    <string name="delete_account_dialog_consequence_puzzles">解いたパズル &amp; レーティング</string>
+    <string name="delete_account_dialog_consequence_streaks">ストリーク &amp; 実績</string>
+    <string name="delete_account_dialog_consequence_games">保存済みゲーム &amp; 分析</string>
+    <string name="delete_account_error_no_network">ネットワーク接続なしではアカウントを削除できません。</string>
+    <string name="delete_account_error_failed">アカウントの削除に失敗しました。もう一度お試しください。</string>
+    <string name="sign_out_error_failed">アカウントのサインアウトに失敗しました。もう一度お試しください。</string>
+    <string name="dialog_ok">OK</string>
+    <string name="dialog_cancel">キャンセル</string>
+    <!-- endregion -->
+
+
+    <!-- region navigation -->
+    <string name="navigation_home_label">ホーム</string>
+    <string name="navigation_home_screen_description">ホーム画面</string>
+    <string name="navigation_puzzle_dashboard_label">パズル</string>
+    <string name="navigation_puzzle_dashboard_content_description">パズルダッシュボード</string>
+    <string name="navigation_rated_puzzle_label">レーティング</string>
+    <string name="navigation_rated_puzzle_content_description">レーティングパズル挑戦</string>
+    <string name="navigation_puzzle_rush_label">ラッシュ</string>
+    <string name="navigation_puzzle_rush_content_description">パズルラッシュモード</string>
+    <string name="navigation_board_viz_label">ボード</string>
+    <string name="navigation_board_viz_content_description">ボードビジュアライゼーション</string>
+    <string name="navigation_blind_mode_label">ブラインド</string>
+    <string name="navigation_blind_mode_content_description">ブラインドモード</string>
+    <!-- endregion -->
+
+    <!-- region Home screen -->
+    <string name="home_timeline_title">最近のアクティビティ</string>
+    <string name="home_label_profile">プロフィール</string>
+    <string name="home_label_rating">レーティング</string>
+    <string name="home_label_activities">アクティビティ</string>
+    <string name="home_label_member_since">参加日</string>
+    <string name="home_timeline_empty_title">最近のアクティビティなし</string>
+    <string name="home_timeline_empty_description">プレイを始めると、ここにアクティビティタイムラインが表示されます</string>
+
+    <!-- Activity titles -->
+    <string name="home_title_board_visualization">ボードビジュアライゼーション</string>
+    <string name="home_title_blind_mode_training">ブラインドモードトレーニング</string>
+
+    <!-- Timeline stat labels -->
+    <plurals name="home_timeline_stat_run">
+        <item quantity="other">%1$d ラン</item>
+    </plurals>
+    <plurals name="home_timeline_stat_game">
+        <item quantity="other">%1$d ゲーム</item>
+    </plurals>
+    <plurals name="home_timeline_stat_session">
+        <item quantity="other">%1$d セッション</item>
+    </plurals>
+    <plurals name="home_timeline_stat_puzzle">
+        <item quantity="other">%1$d パズル</item>
+    </plurals>
+    <string name="home_timeline_stat_score">%1$d ハイスコア</string>
+    <string name="home_timeline_stat_moves">手数</string>
+    <string name="home_timeline_stat_best_moves">%1$d ベストムーブ</string>
+    <string name="home_timeline_stat_streak">%1$d ストリーク</string>
+    <string name="home_timeline_stat_solved">%1$d 解答済み</string>
+    <!-- endregion -->
+
+    <!-- region User stats -->
+    <string name="user_stats_title">統計</string>
+    <string name="user_stats_high_score_title">ハイスコア</string>
+    <string name="expand_stats">統計を展開</string>
+    <string name="collapse_stats">統計を折りたたむ</string>
+    <string name="expand_high_scores">ハイスコアを展開</string>
+    <string name="collapse_high_scores">ハイスコアを折りたたむ</string>
+    <string name="user_stat_puzzles_played">プレイしたパズル</string>
+    <string name="user_stat_puzzles_solved">解いたパズル</string>
+    <string name="user_stat_puzzles_success">成功率</string>
+    <string name="user_stat_current_rating">現在のレーティング</string>
+    <string name="user_stat_high_score_rated_puzzle">ベストレーティングパズル</string>
+    <string name="user_stat_high_score_puzzles_rush">ベストパズルラッシュ</string>
+    <string name="user_stat_high_score_blind_mode">ベストブラインドモード</string>
+    <string name="user_stat_high_score_puzzle_streak">ベストパズルストリーク</string>
+    <string name="user_stat_high_score_find_the_square">ベストマス探し</string>
+    <string name="user_stat_high_score_move_the_piece">ベスト駒移動</string>
+    <!-- endregion -->
+
+    <!-- region Loading -->
+    <string name="landing_eyebrow">チェストレーニングスタジオ</string>
+    <string name="landing_download_eyebrow">初回セットアップ</string>
+    <string name="landing_download_title">&lt;i>ChessGym&lt;/i>へようこそ</string>
+    <string name="landing_download_explanation">開始するには、パズルデータベースをダウンロードする必要があります。トレーニングの準備をする一回限りのセットアップです。</string>
+    <string name="landing_feature_puzzles">数百万の戦術パズル</string>
+    <string name="landing_feature_offline">常にオフラインで動作</string>
+    <string name="landing_feature_rating">レーティングの進捗を追跡</string>
+    <string name="landing_tier_label">データベースサイズ</string>
+    <string name="landing_download_button">データベースをダウンロード</string>
+    <string name="landing_get_started_button">始める</string>
+    <string name="landing_size_hint_onetime">%s — 一回限り</string>
+    <string name="landing_size_hint_included">アプリに含まれています</string>
+    <string name="landing_download_content_title">チェストレーニングのセットアップ中</string>
+    <string name="landing_download_subtitle">パズルデータベースをダウンロード中です。インターネット接続速度によっては数分かかる場合があります。</string>
+    <string name="landing_download_progress">パズルをダウンロード中</string>
+    <string name="landing_unpack_progress">データベースを展開中</string>
+    <string name="landing_unpack_subtitle">パズルデータベースを展開中です。数分かかる場合があります。</string>
+    <string name="landing_write_to_db_progress">データベースを構築中</string>
+    <string name="landing_write_to_db_subtitle">パズルデータベースを構築中です。数分かかる場合があります。</string>
+    <string name="database_download_dialog_title">データベースをダウンロード</string>
+    <string name="database_download_dialog_body">約50MBのパズルデータをダウンロードします。安定したインターネット接続を確認してください。</string>
+    <string name="enable_notifications_dialog_title">通知を有効にする</string>
+    <string name="enable_notifications_dialog_body">進捗や実績について通知を受け取ります。</string>
+    <string name="enable_notifications_dialog_accept">有効にする</string>
+    <string name="enable_notifications_dialog_refuse">スキップ</string>
+    <string name="loading_error_download_failed">ダウンロードに失敗しました。インターネット接続を確認してもう一度お試しください。</string>
+    <string name="loading_error_decompression_failed">データベースの展開に失敗しました。もう一度お試しください。</string>
+    <string name="loading_error_database_write_failed">データベースの構築に失敗しました。もう一度お試しください。</string>
+    <string name="loading_error_permission">権限が拒否されました。続行するには通知を有効にしてください。</string>
+    <string name="loading_error_no_internet">インターネット接続がありません。接続を確認してもう一度お試しください。</string>
+    <string name="loading_error_not_enough_disk_space">ディスク容量が不足しています。空き容量を確保してもう一度お試しください。</string>
+    <string name="loading_error_generic">エラーが発生しました。もう一度お試しください。</string>
+    <string name="loading_error_consent_required">続行するにはクラッシュレポートへの同意が必要です。アプリの安定性向上のために技術的なクラッシュデータのみを収集します。</string>
+    <string name="crash_consent_dialog_title">改善にご協力ください</string>
+    <string name="crash_consent_dialog_body">ChessGymはクラッシュレポートを使用してアプリのエラーを検出・修正しています。このデータはクラッシュを特定し、すべてのユーザーのアプリ安定性を向上させるためだけに使用されます。\n\n個人情報、ゲームデータ、使用パターンは収集されません。問題が発生した場合にのみ、技術的なクラッシュの詳細（スタックトレースやデバイスモデルなど）が収集されます。\n\nこの設定は後でアプリ内で変更できます。</string>
+    <string name="loading_fact_eyebrow">ご存知ですか？</string>
+    <string-array name="loading_fact_titles">
+        <item>無力なクイーン</item>
+        <item>チェスの書</item>
+        <item>司祭の発明</item>
+        <item>最も長い対局</item>
+        <item>約1世紀チェックメイトなし</item>
+        <item>モノクロボード</item>
+        <item>宇宙での対局</item>
+        <item>違法な秘密ルール</item>
+        <item>王は倒された</item>
+        <item>警察の手入れ</item>
+    </string-array>
+    <string-array name="loading_fact_bodies">
+        <item>もともと、盤上で最も強力な駒は実際には最も弱い駒でした。クイーンは斜めに1マスしか動けませんでした。15世紀のスペインで、主にQueen Isabellaへの敬意を表して、現代の無制限の動きが与えられました。</item>
+        <item>英語で印刷された2番目の本（1474年）はチェスに関するものでした。William Caxtonは「チェスのゲームと遊び方」という題名の原稿を翻訳しました。</item>
+        <item>折りたたみ式チェスボードは、宗教的な命令でゲームをすることを禁じられた司祭によって発明されました。彼はボードを半分に折って本棚に置き、2冊の本に見せかけるという巧みな回避策を考え出しました。</item>
+        <item>記録上最長のグランドマスター対局は269手でしたが、数学的には自動引き分けが発動されることなく伝統的なチェスで5,949手という理論上の最大ゲーム長が存在します。</item>
+        <item>1929年以降、世界チェス選手権では一度もチェックメイトが発生していません。最後のチェックメイトは、Alexander AlekhineとEfim Bogoljubovの第8局でした。それ以降、すべての選手権決定戦は投了または時間切れで決着しています。</item>
+        <item>初期のヨーロッパのチェスボードは実際にはモノクロ（同色）のマスが特徴で、交互の明暗マスのデザインが導入されたのは約1090年頃のことでした。</item>
+        <item>宇宙空間で行われた最初のチェスの対局は1970年6月9日、ソビエトのソユーズ9号クルーと地上のコントローラーの間で行われました。クルーは無重力でコマが浮かないよう、ペグとスロットを備えた特別なセットを使用しました。</item>
+        <item>有名なアンパッサン（フランス語で「通り過ぎる際に」の意）のポーン取りは1280年にスペインで導入されました。相手のポーンが動いたその瞬間に実行しないと永遠にその機会を失うため、初心者が最もよく見落とすルールの1つです。</item>
+        <item>「チェックメイト」という言葉はペルシャ語の「シャー・マット」（شاه مات）に由来します。驚くことに、「王が捕まった」という意味ではなく、直訳すると「王は死んだ」となります。</item>
+        <item>1973年、オハイオ州クリーブランドの警察がチェストーナメントに手入れを行い、トーナメントディレクターを逮捕し、チェスセットを没収しました。主催者は賭博（現金賞品）の許可と賭博器具（チェスボード）の所持の罪で告発されました。</item>
+    </string-array>
+    <string name="loading_tier_complete">コンプリート</string>
+    <string name="loading_tier_compact">コンパクト</string>
+    <string name="loading_tier_lite">クイックスタート</string>
+    <string name="loading_tier_description_complete">全パズル、完全な体験</string>
+    <string name="loading_tier_description_compact">ほとんどのプレイヤーに最適</string>
+    <string name="loading_tier_description_lite">即時セットアップ、最小ストレージ</string>
+    <!-- endregion -->
+
+    <!-- region Rated Puzzle Screen -->
+    <string name="rated_puzzle_next_description">次へ</string>
+    <string name="rated_puzzle_moves">手数: %1$s</string>
+    <string name="rated_puzzle_title">パズルレーティング: %1$d</string>
+    <string name="navigate_back">戻る</string>
+    <string name="puzzle_hint">ヒント</string>
+    <string name="puzzle_abandon">パズルを放棄</string>
+    <string name="rated_puzzle_find_best_move_white">白の最善手を見つけてください</string>
+    <string name="rated_puzzle_find_best_move_black">黒の最善手を見つけてください</string>
+    <string name="abandon_puzzle_title">パズルを放棄しますか？</string>
+    <string name="choose_promotion_title">プロモーション先を選択</string>
+    <string name="abandon_puzzle_message">現在のパズルを放棄してもよろしいですか？進捗が失われます。</string>
+    <string name="abandon_puzzle_confirm">放棄</string>
+    <string name="puzzle_solved">パズル解答！</string>
+    <string name="puzzle_failed">パズル失敗</string>
+    <string name="puzzle_abandoned">パズル放棄済み</string>
+    <string name="rating_gained">レーティング獲得: +%1$d</string>
+    <string name="rating_lost">レーティング喪失: -%1$d</string>
+    <!-- endregion -->
+
+    <!-- region generic text resources which can be reused across screens -->
+    <string name="generic_continue">続ける</string>
+    <string name="generic_current_score">現在のスコア</string>
+    <string name="generic_done">完了</string>
+    <string name="generic_download">ダウンロード</string>
+    <string name="generic_error_title">エラーが発生しました</string>
+    <string name="generic_error_try_again">エラーが発生しました。もう一度お試しください。</string>
+    <string name="generic_loading_message">ボードをセットアップ中…</string>
+    <string name="generic_retry">再試行</string>
+    <string name="generic_today">今日</string>
+    <string name="generic_yesterday">昨日</string>
+    <string name="generic_this_week">今週</string>
+    <string name="generic_this_month">今月</string>
+    <string name="generic_this_year">今年</string>
+    <string name="generic_older">それ以前</string>
+    <string name="generic_success">成功</string>
+    <string name="generic_failed">失敗</string>
+    <string name="generic_new_high_score">新しいハイスコア</string>
+    <string name="generic_close">閉じる</string>
+    <string name="generic_agree">同意する</string>
+    <string name="generic_not_now">後で</string>
+    <string name="generic_thank_you">ご支援ありがとうございます！</string>
+    <!-- endregion -->
+
+    <!-- region Puzzle Dashboard -->
+    <string name="puzzle_dashboard_eyebrow">パズル</string>
+    <string name="puzzle_dashboard_title">チャレンジを選択</string>
+    <string name="puzzle_dashboard_subtitle">4つの集中モードで戦術的視野をトレーニングします。</string>
+    <!-- endregion -->
+
+    <!-- Rated Puzzle Mode -->
+    <string name="puzzle_mode_rated_title">レーティングパズル</string>
+    <string name="puzzle_mode_rated_description">自分のスキルレベルに合ったパズルを解く</string>
+    <string name="puzzle_mode_rated_rating">あなたのレーティング: %1$d</string>
+    <!-- endregion -->
+
+    <!-- Puzzle Rush Mode -->
+    <string name="puzzle_mode_rush_title">パズルラッシュ</string>
+    <string name="puzzle_mode_rush_description">3分間でできるだけ多くのパズルを解く</string>
+    <string name="puzzle_rush_play_to_start">手を指してスタート</string>
+    <string name="puzzle_rush_summary_title">ラン完了</string>
+    <string name="puzzle_rush_puzzle_failed">パズル失敗！</string>
+    <!-- endregion -->
+
+    <!-- Puzzle Streak Mode -->
+    <string name="puzzle_mode_streak_title">パズルストリーク</string>
+    <string name="puzzle_mode_streak_description">連続してできるだけ多くのパズルを解く</string>
+    <string name="puzzle_mode_streak_new">新しいストリークを開始</string>
+    <string name="puzzle_mode_streak_continue">%1$d パズルストリークを続ける</string>
+    <string name="puzzle_streak_title">パズルストリーク - レーティング: %1$d</string>
+    <string name="puzzle_streak_ended">ストリーク終了</string>
+    <string name="puzzle_streak_new">新しいストリーク</string>
+    <string name="puzzle_streak_next_puzzle">次のパズル</string>
+    <string name="puzzle_streak_summary_title">ストリーク完了</string>
+    <string name="puzzle_white_to_move">白の手番</string>
+    <string name="puzzle_black_to_move">黒の手番</string>
+    <!-- endregion -->
+
+    <!-- Failed Puzzles Mode -->
+    <string name="puzzle_mode_failed_title">失敗したパズル</string>
+    <string name="puzzle_mode_failed_description">間違えたパズルを見直して再挑戦</string>
+    <string name="puzzle_mode_failed_none_available">失敗したパズルはありません</string>
+    <plurals name="puzzle_mode_failed_count">
+        <item quantity="other">%1$d 個のパズルを再挑戦</item>
+    </plurals>
+    <string name="failed_puzzles_progress">%1$d / %2$d 解答済み</string>
+    <string name="failed_puzzles_empty_title">失敗したパズルなし</string>
+    <string name="failed_puzzles_empty_description">素晴らしい！再挑戦すべき失敗したパズルはありません。</string>
+    <string name="failed_puzzles_complete_title">全部完了！</string>
+    <string name="failed_puzzles_complete_message">素晴らしい！失敗したすべてのパズルの見直しが終わりました。</string>
+    <!-- endregion -->
+
+    <!-- Common -->
+    <string name="puzzle_mode_start">パズルモードを開始</string>
+    <!-- endregion -->
+
+    <!-- region Board Visualization Dashboard -->
+    <string name="boardvis_dashboard_eyebrow">ビジュアライゼーション</string>
+    <string name="boardvis_dashboard_title">ボード認識</string>
+    <string name="boardvis_dashboard_subtitle">視覚的な記憶と空間的直感をトレーニングします。</string>
+    <string name="boardvis_mode_start">ビジュアライゼーションモードを開始</string>
+    <!-- endregion -->
+
+    <!-- region Find the Square -->
+    <string name="boardvis_find_square_title">マスを探せ</string>
+    <string name="boardvis_find_square_description">できるだけ早くボード上に示されたマスをクリック</string>
+    <string name="boardvis_play_as_white">白としてプレイ</string>
+    <string name="boardvis_play_as_black">黒としてプレイ</string>
+    <string name="boardvis_play_random">ランダムサイド</string>
+    <string name="boardvis_play">プレイ</string>
+    <string name="boardvis_play_again">もう一度プレイ</string>
+    <string name="boardvis_game_over">時間切れ！</string>
+    <string name="boardvis_final_score">最終スコア: %1$d</string>
+    <string name="boardvis_high_score">ハイスコア: %1$d</string>
+    <!-- endregion -->
+
+    <!-- region Move the Piece -->
+    <string name="boardvis_move_piece_title">駒を動かせ</string>
+    <string name="boardvis_move_piece_description">ボード上で正しい手を可視化して実行</string>
+    <string name="boardvis_move_piece_training_mode">トレーニングモード</string>
+    <string name="boardvis_move_piece_moves_remaining">残り手数: %1$d</string>
+    <string name="boardvis_move_piece_rules">相手に攻撃されるマスに止まらずに駒を動かしてください。必要な手数を達成して次のレベルに進みましょう！</string>
+    <string name="boardvis_move_piece_captured">取られた！</string>
+    <!-- endregion -->
+
+    <!-- region Settings -->
+    <string name="settings_title">設定</string>
+    <string name="settings_section_general">一般</string>
+    <string name="settings_section_ui">外観</string>
+    <string name="settings_haptic_feedback">触覚フィードバック</string>
+    <string name="settings_haptic_feedback_description">操作時に振動</string>
+    <string name="settings_auto_promote">自動プロモーション</string>
+    <string name="settings_auto_promote_description">ポーンを自動的にクイーンに昇格</string>
+    <string name="settings_auto_next_puzzle">自動次パズル</string>
+    <string name="settings_auto_next_puzzle_description">パズルストリークでパズルを解くと自動的に次のパズルを読み込む</string>
+    <string name="settings_show_borders">枠を表示</string>
+    <string name="settings_show_borders_description">ボード周辺に座標を表示</string>
+    <string name="settings_highlight_legal_moves">合法手をハイライト</string>
+    <string name="settings_highlight_legal_moves_description">駒を選択したときに使用可能なマスを表示</string>
+    <string name="settings_light_mode">テーマ</string>
+    <string name="settings_light_mode_light">ライト</string>
+    <string name="settings_light_mode_dark">ダーク</string>
+    <string name="settings_light_mode_system">システム</string>
+    <string name="settings_enable_animations">アニメーション</string>
+    <string name="settings_enable_animations_description">UIアニメーションを有効にする</string>
+    <string name="settings_section_privacy">プライバシー</string>
+    <string name="settings_crash_reporting">クラッシュレポート</string>
+    <string name="settings_crash_reporting_description">クラッシュデータを共有してアプリの安定性向上に貢献</string>
+    <string name="settings_build_version">バージョン %1$s-%2$s</string>
+    <!-- endregion -->
+
+    <!-- region About -->
+    <string name="about_title">アプリについて</string>
+    <string name="about_general_title">一般</string>
+    <string name="about_legal_title">法的情報</string>
+    <string name="about_creator_title">制作者</string>
+    <string name="about_creator_description">ChessGymはPaul Mihai Craciunasによって制作されました。ロンドン出身のAndroidエンジニアで、チェスに情熱を持ち、人々が上達の旅を歩む手助けをしたいと願っています。</string>
+    <string name="about_contact_title">お問い合わせ</string>
+    <string name="about_contact_description">法的問題、ビジネス機会、その他のお問い合わせは、メールにてご連絡ください。</string>
+    <string name="about_contact_email">contact@chessgym.app</string>
+    <string name="about_feedback_title">フィードバック</string>
+    <string name="about_feedback_description">バグを発見しましたか？新機能や改善案がありますか？ぜひお聞かせください。</string>
+    <string name="about_feedback_email">feedback@chessgym.app</string>
+    <string name="about_support_title">サポート</string>
+    <string name="about_donate_title">寄付</string>
+    <string name="about_donate_description">ChessGymの開発を支援する</string>
+    <string name="about_donate_dialog_title">ChessGymを支援する</string>
+    <string name="about_donate_dialog_description">このプロジェクトの継続的な開発を支援するための金額を選択してください。&lt;b>ありがとうございます！&lt;/b></string>
+    <string name="about_donate_small">コーヒー</string>
+    <string name="about_donate_medium">サンドイッチ</string>
+    <string name="about_donate_large">ピザ</string>
+    <string name="about_rate_title">アプリを評価</string>
+    <string name="about_rate_description">ChessGymをお楽しみですか？Playストアで評価をお願いします</string>
+    <string name="about_libraries_title">オープンソースライブラリ</string>
+    <string name="about_libraries_description">ChessGymは以下のオープンソースライブラリを使用して構築されています：</string>
+    <string name="about_privacy_policy_title">プライバシーポリシー</string>
+    <string name="about_privacy_policy_content">発効日：2026年5月\n\nChessGym（&quot;本アプリ&quot;）はPaul Mihai Craciunasによって開発されました。このプライバシーポリシーでは、収集されるデータ、その使用方法、およびそのデータに関するお客様の権利について説明します。\n\n&lt;b>1. 収集するデータ&lt;/b>\n\n• &lt;b>アカウント情報：&lt;/b>サインインした場合、Firebase Authenticationを通じて表示名、メールアドレス、一意のユーザー識別子を保存します。\n• &lt;b>ゲームデータ：&lt;/b>パズルレーティング、統計、実績の進捗は、パーソナライズされた体験を提供するために保存されます。\n• &lt;b>クラッシュと診断：&lt;/b>Firebase Crashlyticsはデバイスモデル、OSバージョン、クラッシュのスタックトレースを自動的に収集して、バグの修正に役立てます。\n• &lt;b>課金：&lt;/b>寄付取引はGoogle Playによって完全に処理されます。支払い情報は保存しません。\n\n&lt;b>2. データの使用方法&lt;/b>\n\n• アプリ体験の提供とパーソナライズ（レーティング、実績、進捗の同期）。\n• クラッシュやパフォーマンスの問題の診断と修正。\n• サインイン時の進捗のクラウドバックアップを有効にする。\n\n&lt;b>3. データの保存とセキュリティ&lt;/b>\n\nデータはGoogle Cloud Firestoreに保存され、転送時（TLS）および保存時に暗号化されています。認証済みのリクエストのみがアクセスできます。\n\n&lt;b>4. サードパーティサービス&lt;/b>\n\n• Firebase Authentication（Google）\n• Firebase Crashlytics（Google）\n• Google Play Billing\n\n個人データを他のサードパーティに販売、共有、または転送することはありません。\n\n&lt;b>5. お客様の権利&lt;/b>\n\nGDPRおよび類似の規制に基づき、お客様は以下の権利を有します：\n• 個人データへのアクセス\n• 不正確なデータの修正を求める\n• データの削除を求める\n• データのエクスポート（データポータビリティ）\n• いつでも同意を撤回する\n\nこれらの権利を行使するには、contact@chessgym.appまでご連絡ください。30日以内に回答いたします。\n\n&lt;b>6. データの保持&lt;/b>\n\nデータはアカウントが存在する限り保持されます。アカウントを削除すると、関連するすべてのデータが30日以内に完全に削除されます。\n\n&lt;b>7. 子どものプライバシー&lt;/b>\n\n本アプリは13歳未満の子どものデータを意図的に収集しません。そのようなデータを収集したと思われる場合は、すぐにご連絡ください。\n\n&lt;b>8. このポリシーの変更&lt;/b>\n\nこのプライバシーポリシーを随時更新することがあります。変更は更新された発効日とともにアプリに反映されます。\n\n&lt;b>9. お問い合わせ&lt;/b>\n\nご質問やデータリクエストについては：\ncontact@chessgym.app</string>
+    <string name="about_terms_title">利用規約</string>
+    <string name="about_terms_content">ChessGymはフリーソフトウェアです。フリーソフトウェア財団が発行するGNU一般公衆ライセンス（バージョン3または以降のバージョン）の条件に基づいて、再配布および/または修正することができます。\n\nChessGymは有用であることを期待して配布されていますが、いかなる保証もありません。商品性または特定目的への適合性に関する黙示の保証さえも含みません。詳細はGNU一般公衆ライセンスをご覧ください。\n\nこのプログラムとともにGNU一般公衆ライセンスのコピーを受け取っているはずです。受け取っていない場合は、https://www.gnu.org/licenses/ をご参照ください。\n\nChessGymの完全なソースコードは次の場所で入手できます：https://github.com/paulcraciunas/ChessGym\n\nChessGymはStockfishを組み込んでいます。StockfishはGNU一般公衆ライセンスv3.0の下でライセンスされた無料のオープンソースチェスエンジンです。Stockfishのソースコードは次の場所で入手できます：https://github.com/official-stockfish/Stockfish\n\nすべてのチェスパズルデータは公開されているデータベースから取得しています。ChessGymおよびそのロゴはPaul Mihai Craciunasの知的財産です。\n\n© 2025–2026 Paul Mihai Craciunas。</string>
+    <string name="about_terms_and_conditions_title">利用条件</string>
+    <string name="about_terms_and_conditions_content">ChessGym（&quot;本アプリ&quot;）をダウンロード、インストール、または使用することにより、以下の利用条件に同意したものとみなされます。同意しない場合は、直ちに本アプリの使用を中止してください。\n\n本アプリは、明示的か黙示的かを問わず、商品性、特定目的への適合性、非侵害性の黙示の保証を含むがこれらに限定されない、いかなる種類の保証もなく「現状のまま」および「利用可能な状態で」提供されます。\n\nいかなる場合も、開発者はお客様の本アプリの使用または使用不能から生じる直接的、間接的、付随的、特別、派生的または懲罰的損害について、たとえ開発者がそのような損害の可能性について知らされていたとしても、責任を負いません。\n\n本アプリには、開発者が所有または管理していないサードパーティのウェブサイトやサービスへのリンクが含まれている場合があります。開発者は、サードパーティのウェブサイトやサービスのコンテンツ、プライバシーポリシー、または慣行についていかなる責任も負いません。\n\n開発者は予告なく本アプリをいつでも変更、停止、または中止する権利を留保します。開発者は本アプリの変更、停止、または中止によるいかなる損害についても責任を負いません。\n\n本アプリの使用はGNU一般公衆ライセンスv3.0にも準拠します。その全文は「利用規約」セクションで確認できます。\n\nこれらの利用条件は、お客様が初めて本アプリを使用した日から有効です。開発者はいつでもこれらの条件を更新する権利を留保します。本アプリの継続使用は変更への同意を意味します。\n\nこれらの条件についてご質問がある場合は、contact@chessgym.appまでお問い合わせください。</string>
+    <!-- endregion -->
+
+    <!-- region Tools -->
+    <string name="navigation_tools_label">ツール</string>
+    <string name="navigation_tools_content_description">チェスツール</string>
+    <string name="tools_dashboard_eyebrow">ツール</string>
+    <string name="tools_dashboard_title">チェスツール</string>
+    <string name="tools_dashboard_subtitle">チェスゲームに役立つユーティリティ。</string>
+    <string name="tools_mode_start">ツールを開始</string>
+    <string name="tools_clock_description">設定可能なコントロールでゲームを計時</string>
+    <string name="tools_analysis_title">分析</string>
+    <string name="tools_analysis_description">エンジンで局面を分析</string>
+    <string name="tools_import_description">FENまたはPGN表記からゲームをインポート</string>
+    <!-- endregion -->
+
+    <!-- region Clock Screen -->
+    <string name="clock_title">チェスクロック</string>
+    <string name="clock_white">白</string>
+    <string name="clock_black">黒</string>
+    <string name="clock_stop">停止</string>
+    <string name="clock_new_game">新しいゲーム</string>
+    <string name="clock_time_up">時間切れ！</string>
+    <string name="clock_time_control">時間</string>
+    <string name="clock_increment">インクリメント</string>
+    <string name="clock_minutes_format">%1$d 分</string>
+    <string name="clock_seconds_format">%1$d 秒</string>
+    <string name="clock_tap_to_start">タップして開始</string>
+    <!-- endregion -->
+
+    <!-- region Import Game Screen -->
+    <string name="import_game_title">ゲームをインポート</string>
+    <string name="import_fen">FEN</string>
+    <string name="import_pgn">PGN</string>
+    <string name="import_dialog_title_fen">FENをインポート</string>
+    <string name="import_dialog_title_pgn">PGNをインポート</string>
+    <string name="import_dialog_hint_fen">ここにFEN文字列を貼り付け…</string>
+    <string name="import_dialog_hint_pgn">ここにPGNテキストを貼り付け…</string>
+    <string name="import_dialog_confirm">インポート</string>
+    <string name="import_error_invalid_fen">無効なFEN表記です。確認してもう一度お試しください。</string>
+    <string name="import_error_invalid_pgn">無効なPGN表記です。確認してもう一度お試しください。</string>
+    <string name="import_game_jump_to_start">最初へ移動</string>
+    <string name="import_game_previous_move">前の手</string>
+    <string name="import_game_next_move">次の手</string>
+    <string name="import_game_jump_to_end">最後へ移動</string>
+    <!-- endregion -->
+
+    <!-- region Blind Mode -->
+    <string name="blind_mode_title">ブラインドモード</string>
+    <string name="blind_mode_training_mode">トレーニングモード</string>
+    <string name="blind_mode_training_description">ゲームはレーティングに影響しません</string>
+    <string name="blind_mode_play">プレイ</string>
+    <string name="blind_mode_resign">投了</string>
+    <string name="blind_mode_reveal">ボードを表示</string>
+    <string name="blind_mode_thinking">エンジンが考え中…</string>
+    <string name="blind_mode_your_turn">あなたの番</string>
+    <string name="blind_mode_moves">手数</string>
+    <string name="abandon_game_title">ゲームを放棄しますか？</string>
+    <string name="abandon_game_message">現在のゲームを放棄してもよろしいですか？進捗が失われます。</string>
+    <!-- endregion -->
+
+    <!-- region Achievements -->
+    <!-- Category display names -->
+    <string name="achievement_category_rated_puzzles_solved">レーティングパズル解答数</string>
+    <string name="achievement_category_puzzle_rush_sessions">パズルラッシュセッション</string>
+    <string name="achievement_category_streak_sessions">ストリークセッション</string>
+    <string name="achievement_category_failed_puzzles_redeemed">失敗パズル挽回</string>
+    <string name="achievement_category_find_square_sessions">マス探しセッション</string>
+    <string name="achievement_category_move_piece_sessions">駒移動セッション</string>
+    <string name="achievement_category_blind_mode_wins">ホメロスの遺産</string>
+    <string name="achievement_category_rated_win_streak">レーティング連勝</string>
+    <string name="achievement_category_rating_climber">レーティング上昇者</string>
+    <string name="achievement_category_blind_strategist">ブラインド戦略家</string>
+    <string name="achievement_category_rush_champion">ラッシュチャンピオン</string>
+    <string name="achievement_category_streak_legend">ストリーク伝説</string>
+    <string name="achievement_category_eagle_eye">鷹の目</string>
+    <string name="achievement_category_knights_path">ナイトの道</string>
+    <string name="achievement_category_puzzle_addict">パズル中毒</string>
+    <string name="achievement_category_time_invested">投資した時間</string>
+    <string name="achievement_category_daily_grinder">日課の鍛錬</string>
+    <string name="achievement_category_consistency_king">継続の王</string>
+    <string name="achievement_category_board_vision">ボードビジョン</string>
+    <string name="achievement_category_rush_solver">ラッシュソルバー</string>
+
+    <!-- Tier names: RATED_PUZZLES_SOLVED -->
+    <string name="achievement_rated_puzzles_solved_one">パズル愛好者</string>
+    <string name="achievement_rated_puzzles_solved_two">パズルアマチュア</string>
+    <string name="achievement_rated_puzzles_solved_three">パズルエキスパート</string>
+    <string name="achievement_rated_puzzles_solved_four">パズルマスター</string>
+    <string name="achievement_rated_puzzles_solved_five">パズルグランドマスター</string>
+
+    <!-- Tier names: PUZZLE_RUSH_SESSIONS -->
+    <string name="achievement_puzzle_rush_sessions_one">ラッシュ初心者</string>
+    <string name="achievement_puzzle_rush_sessions_two">ラッシュ常連</string>
+    <string name="achievement_puzzle_rush_sessions_three">ラッシュベテラン</string>
+    <string name="achievement_puzzle_rush_sessions_four">ラッシュキャプテン</string>
+    <string name="achievement_puzzle_rush_sessions_five">ラッシュレジェンド</string>
+
+    <!-- Tier names: STREAK_SESSIONS -->
+    <string name="achievement_streak_sessions_one">ストリーク始め</string>
+    <string name="achievement_streak_sessions_two">ストリーク探求者</string>
+    <string name="achievement_streak_sessions_three">ストリークハンター</string>
+    <string name="achievement_streak_sessions_four">ストリーク破壊者</string>
+    <string name="achievement_streak_sessions_five">ストリーク狂</string>
+
+    <!-- Tier names: FAILED_PUZZLES_REDEEMED -->
+    <string name="achievement_failed_puzzles_redeemed_one">セカンドチャンス</string>
+    <string name="achievement_failed_puzzles_redeemed_two">カムバックの達人</string>
+    <string name="achievement_failed_puzzles_redeemed_three">挽回の探求者</string>
+    <string name="achievement_failed_puzzles_redeemed_four">挽回の達人</string>
+    <string name="achievement_failed_puzzles_redeemed_five">諦めない心</string>
+
+    <!-- Tier names: FIND_SQUARE_SESSIONS -->
+    <string name="achievement_find_square_sessions_one">マス初心者</string>
+    <string name="achievement_find_square_sessions_two">マス発見者</string>
+    <string name="achievement_find_square_sessions_three">マスエキスパート</string>
+    <string name="achievement_find_square_sessions_four">マスマスター</string>
+    <string name="achievement_find_square_sessions_five">マスグランドマスター</string>
+
+    <!-- Tier names: MOVE_PIECE_SESSIONS -->
+    <string name="achievement_move_piece_sessions_one">駒初心者</string>
+    <string name="achievement_move_piece_sessions_two">駒を動かす人</string>
+    <string name="achievement_move_piece_sessions_three">駒ナビゲーター</string>
+    <string name="achievement_move_piece_sessions_four">駒マスター</string>
+    <string name="achievement_move_piece_sessions_five">駒グランドマスター</string>
+
+    <!-- Tier names: BLIND_MODE_WINS -->
+    <string name="achievement_blind_mode_wins_one">オーディンの弟子</string>
+    <string name="achievement_blind_mode_wins_two">テイレシアスの弟子</string>
+    <string name="achievement_blind_mode_wins_three">ホメロスの後継者</string>
+    <string name="achievement_blind_mode_wins_four">盲目の預言者</string>
+    <string name="achievement_blind_mode_wins_five">全知の眼</string>
+
+    <!-- Tier names: RATED_WIN_STREAK -->
+    <string name="achievement_rated_win_streak_one">ラッキーストリーク</string>
+    <string name="achievement_rated_win_streak_two">鋭い頭脳</string>
+    <string name="achievement_rated_win_streak_three">完璧な戦術家</string>
+    <string name="achievement_rated_win_streak_four">勝利マシン</string>
+    <string name="achievement_rated_win_streak_five">無敵者</string>
+
+    <!-- Tier names: RATING_CLIMBER -->
+    <string name="achievement_rating_climber_one">昇るポーン</string>
+    <string name="achievement_rating_climber_two">登るナイト</string>
+    <string name="achievement_rating_climber_three">翔けるビショップ</string>
+    <string name="achievement_rating_climber_four">聳えるルーク</string>
+    <string name="achievement_rating_climber_five">君臨するクイーン</string>
+
+    <!-- Tier names: BLIND_STRATEGIST -->
+    <string name="achievement_blind_strategist_one">ブラインド斥候</string>
+    <string name="achievement_blind_strategist_two">ブラインド戦術家</string>
+    <string name="achievement_blind_strategist_three">ブラインド戦略家</string>
+    <string name="achievement_blind_strategist_four">ブラインド指揮官</string>
+    <string name="achievement_blind_strategist_five">ブラインドの首謀者</string>
+
+    <!-- Tier names: RUSH_CHAMPION -->
+    <string name="achievement_rush_champion_one">ラッシュ初心者</string>
+    <string name="achievement_rush_champion_two">ラッシュ挑戦者</string>
+    <string name="achievement_rush_champion_three">ラッシュチャンピオン</string>
+    <string name="achievement_rush_champion_four">ラッシュヒーロー</string>
+    <string name="achievement_rush_champion_five">ラッシュの天才</string>
+
+    <!-- Tier names: STREAK_LEGEND -->
+    <string name="achievement_streak_legend_one">好調なスタート</string>
+    <string name="achievement_streak_legend_two">絶好調</string>
+    <string name="achievement_streak_legend_three">止まらない</string>
+    <string name="achievement_streak_legend_four">伝説のストリーク</string>
+    <string name="achievement_streak_legend_five">ストリーク不滅</string>
+
+    <!-- Tier names: EAGLE_EYE -->
+    <string name="achievement_eagle_eye_one">鋭い目</string>
+    <string name="achievement_eagle_eye_two">するどい目</string>
+    <string name="achievement_eagle_eye_three">鷹の目</string>
+    <string name="achievement_eagle_eye_four">タカの視力</string>
+    <string name="achievement_eagle_eye_five">サウロンの目</string>
+
+    <!-- Tier names: KNIGHTS_PATH -->
+    <string name="achievement_knights_path_one">第一歩</string>
+    <string name="achievement_knights_path_two">道を切り開く者</string>
+    <string name="achievement_knights_path_three">ナイトの旅</string>
+    <string name="achievement_knights_path_four">ナイトの遍歴</string>
+    <string name="achievement_knights_path_five">ナイトの征服</string>
+
+    <!-- Tier names: PUZZLE_ADDICT -->
+    <string name="achievement_puzzle_addict_one">はじめの一歩</string>
+    <string name="achievement_puzzle_addict_two">習慣を作る</string>
+    <string name="achievement_puzzle_addict_three">専念するソルバー</string>
+    <string name="achievement_puzzle_addict_four">パズル中毒</string>
+    <string name="achievement_puzzle_addict_five">パズルマシン</string>
+
+    <!-- Tier names: TIME_INVESTED -->
+    <string name="achievement_time_invested_one">最初の1時間</string>
+    <string name="achievement_time_invested_two">本気になる</string>
+    <string name="achievement_time_invested_three">専念</string>
+    <string name="achievement_time_invested_four">打ち込んでいる</string>
+    <string name="achievement_time_invested_five">生涯学習者</string>
+
+    <!-- Tier names: DAILY_GRINDER -->
+    <string name="achievement_daily_grinder_one">第一歩</string>
+    <string name="achievement_daily_grinder_two">週間習慣</string>
+    <string name="achievement_daily_grinder_three">3週間連続</string>
+    <string name="achievement_daily_grinder_four">熱心な常連</string>
+    <string name="achievement_daily_grinder_five">永遠のプレイヤー</string>
+
+    <!-- Tier names: CONSISTENCY_KING -->
+    <string name="achievement_consistency_king_one">3日連続</string>
+    <string name="achievement_consistency_king_two">週間戦士</string>
+    <string name="achievement_consistency_king_three">2週間の力</string>
+    <string name="achievement_consistency_king_four">月間の驚異</string>
+    <string name="achievement_consistency_king_five">百日の英雄</string>
+
+    <!-- Tier names: BOARD_VISION -->
+    <string name="achievement_board_vision_one">ビジョン研修生</string>
+    <string name="achievement_board_vision_two">ビジョン見習い</string>
+    <string name="achievement_board_vision_three">ビジョンエキスパート</string>
+    <string name="achievement_board_vision_four">ビジョンマスター</string>
+    <string name="achievement_board_vision_five">ボードの賢者</string>
+
+    <!-- Tier names: RUSH_SOLVER -->
+    <string name="achievement_rush_solver_one">ラッシュソルバー</string>
+    <string name="achievement_rush_solver_two">ラッシュ鍛錬者</string>
+    <string name="achievement_rush_solver_three">スピードデーモン</string>
+    <string name="achievement_rush_solver_four">ラッシュマシン</string>
+    <string name="achievement_rush_solver_five">ラッシュターミネーター</string>
+
+    <!-- Achievement descriptions -->
+    <string name="achievement_desc_rated_puzzles_solved">この実績を獲得するためにレーティングパズルを解く</string>
+    <string name="achievement_desc_puzzle_rush_sessions">この実績を獲得するためにパズルラッシュセッションを完了する</string>
+    <string name="achievement_desc_streak_sessions">この実績を獲得するためにパズルストリークセッションを完了する</string>
+    <string name="achievement_desc_failed_puzzles_redeemed">以前失敗したパズルを再挑戦して解く</string>
+    <string name="achievement_desc_find_square_sessions">この実績を獲得するためにマス探しセッションをプレイする</string>
+    <string name="achievement_desc_move_piece_sessions">この実績を獲得するために駒移動セッションをプレイする</string>
+    <string name="achievement_desc_blind_mode_wins">この実績を獲得するためにレーティングブラインドモードの試合に勝つ</string>
+    <string name="achievement_desc_rated_win_streak">失敗せずに連続してレーティングパズルに勝つ</string>
+    <string name="achievement_desc_rating_climber">新たな高みに到達するためにパズルレーティングを上げる</string>
+    <string name="achievement_desc_blind_strategist">この実績を獲得するためにブラインドモードレーティングを上げる</string>
+    <string name="achievement_desc_rush_champion">パズルラッシュでハイスコアを出す</string>
+    <string name="achievement_desc_streak_legend">パズルストリークでハイスコアを出す</string>
+    <string name="achievement_desc_eagle_eye">マス探しでハイスコアを出す</string>
+    <string name="achievement_desc_knights_path">駒移動でハイスコアを出す</string>
+    <string name="achievement_desc_puzzle_addict">すべてのゲームモードでパズルを解く</string>
+    <string name="achievement_desc_time_invested">すべてのゲームモードで練習に時間を費やす</string>
+    <string name="achievement_desc_daily_grinder">連続する日数プレイしてストリークを作る</string>
+    <string name="achievement_desc_consistency_king">最高の連続毎日ストリークを達成する</string>
+    <string name="achievement_desc_board_vision">マス探しと駒移動セッションを完了する</string>
+    <string name="achievement_desc_rush_solver">パズルラッシュセッション中にパズルを解く</string>
+
+    <!-- Achievement UI -->
+    <string name="achievement_screen_title">実績</string>
+    <string name="achievement_banner_unlocked">%1$s — ティア %2$d 解除！</string>
+    <string name="achievement_trophy_case_title">あなたのトロフィーケース</string>
+    <string name="achievement_trophy_case_keep_going">続けましょう — あと %1$d 個</string>
+    <string name="achievement_trophy_case_all_earned">すべて獲得 — よくできました！</string>
+    <string name="achievement_trophy_case_summary">%1$d 進行中 · %2$d ロック済み</string>
+    <string name="achievement_earned_label">獲得済み</string>
+    <string name="achievement_earned_count">%1$d / %2$d 獲得済み</string>
+    <string name="achievement_earned_total">%1$d のうち</string>
+    <string name="achievement_detail_next_tier">%1$d / %2$d 次のティアまで</string>
+    <string name="achievement_detail_progress">%1$d / %2$d</string>
+    <string name="achievement_see_all">すべて見る</string>
+    <string name="achievement_group_puzzles">パズル</string>
+    <string name="achievement_group_rush_and_streak">ラッシュ &amp; ストリーク</string>
+    <string name="achievement_group_board_vision">ボードビジョン</string>
+    <string name="achievement_group_skill_and_mastery">スキル &amp; 熟練</string>
+    <string name="achievement_group_dedication">献身</string>
+    <!-- endregion -->
+
+    <!-- temporary values; these will be deleted as we build features -->
+    <string name="under_construction">工事中</string>
+
+    <!-- region auth errors -->
+    <string name="auth_error_google_sign_in_failed">Googleサインインに失敗しました。もう一度お試しください。</string>
+    <string name="auth_error_sign_in_failed">サインインに失敗しました。もう一度お試しください。</string>
+    <string name="auth_error_sign_up_failed">サインアップに失敗しました。もう一度お試しください。</string>
+    <string name="auth_error_invalid_credentials">パスワードが正しくありません。もう一度お試しください。</string>
+    <string name="auth_error_user_not_found">このメールアドレスに関連するアカウントが見つかりません。</string>
+    <string name="auth_error_account_already_exists">このメールアドレスのアカウントはすでに存在します。</string>
+    <string name="auth_error_weak_password">パスワードが脆弱すぎます。6文字以上を使用してください。</string>
+    <string name="auth_error_network">ネットワークエラーです。接続を確認してもう一度お試しください。</string>
+    <string name="auth_error_empty_fields">このフィールドは必須です。</string>
+    <string name="auth_error_invalid_email">有効なメールアドレスを入力してください。</string>
+    <string name="auth_error_password_too_short">パスワードは6文字以上でなければなりません。</string>
+    <string name="auth_error_display_name_too_short">表示名は4文字以上でなければなりません。</string>
+    <string name="auth_error_display_name_too_long">表示名は15文字以下でなければなりません。</string>
+    <string name="auth_error_password_reset_user_not_found">このメールアドレスに関連するアカウントが見つかりません。</string>
+    <string name="auth_error_password_reset_sent">パスワードリセットメールを送信しました。受信トレイを確認してください。</string>
+    <string name="auth_error_no_google_accounts">このデバイスにGoogleアカウントが見つかりません。先にデバイス設定でGoogleアカウントを追加してください。</string>
+    <string name="auth_error_session_expired">セッションの有効期限が切れました。もう一度サインインしてください。</string>
+    <string name="auth_error_account_disabled">このアカウントは無効化されています。</string>
+    <string name="auth_error_server">サーバーエラーです。後でもう一度お試しください。</string>
+
+    <!-- Sign In Screen -->
+    <string name="sign_in_title">サインイン</string>
+    <string name="sign_up_title">アカウント作成</string>
+    <string name="sign_in_eyebrow">おかえりなさい</string>
+    <string name="sign_up_eyebrow">今日から始めましょう</string>
+    <string name="sign_in_welcome">ChessGymへようこそ</string>
+    <string name="sign_in_subtitle">サインインしてデバイス間で進捗を同期する</string>
+    <string name="sign_up_subtitle">サインアップして進捗を保存しデータを安全にバックアップ</string>
+    <string name="sign_in_google">Googleでサインイン</string>
+    <string name="sign_up_google">Googleでサインアップ</string>
+    <string name="sign_in_divider">またはメールで</string>
+    <string name="sign_in_display_name_label">表示名</string>
+    <string name="sign_in_email_label">メール</string>
+    <string name="sign_in_password_label">パスワード</string>
+    <string name="sign_in_password_show">表示</string>
+    <string name="sign_in_password_hide">非表示</string>
+    <string name="sign_in_button">サインイン</string>
+    <string name="sign_up_button">アカウント作成</string>
+    <string name="sign_in_switch_to_sign_up">アカウントをお持ちでないですか？&lt;b>&lt;u>作成する&lt;/u>&lt;/b></string>
+    <string name="sign_in_switch_to_sign_in">すでにアカウントをお持ちですか？&lt;b>&lt;u>サインイン&lt;/u>&lt;/b></string>
+    <string name="sign_in_forgot_password">パスワードをお忘れですか？</string>
+    <!-- endregion -->
+
+</resources>

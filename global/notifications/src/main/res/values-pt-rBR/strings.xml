@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- region download -->
+    <string name="download_channel_name">Download de quebra-cabeças</string>
+    <string name="download_channel_desc">Exibe o progresso do download de quebra-cabeças</string>
+    <string name="download_notification_title">Baixando quebra-cabeças</string>
+    <string name="download_notification_text">Preparando quebra-cabeças para uso…</string>
+    <!-- endregion -->
+</resources>

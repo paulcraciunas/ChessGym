@@ -50,12 +50,6 @@
     <string name="dialog_cancel">Cancel</string>
     <!-- endregion -->
 
-    <!-- region screens -->
-    <string name="screen_rated_puzzle">Rated Puzzle Challenge</string>
-    <string name="screen_puzzle_rush">Puzzle Rush</string>
-    <string name="screen_board_visualization">Board Visualization</string>
-    <string name="screen_blind_mode">Blind Mode</string>
-    <!-- endregion -->
 
     <!-- region navigation -->
     <string name="navigation_home_label">Home</string>
@@ -82,13 +76,8 @@
     <string name="home_timeline_empty_description">Start playing to see your activity timeline here</string>
 
     <!-- Activity titles -->
-    <string name="home_title_puzzle_rush">Puzzle Rush</string>
     <string name="home_title_board_visualization">Board Visualization</string>
-    <string name="home_title_blind_mode">Blind Mode</string>
     <string name="home_title_blind_mode_training">Blind Mode Training</string>
-    <string name="home_title_rated_puzzle">Rated Puzzles</string>
-    <string name="home_title_puzzle_streak">Puzzle Streak</string>
-    <string name="home_title_failed_puzzles">Failed Puzzles</string>
 
     <!-- Timeline stat labels -->
     <plurals name="home_timeline_stat_run">
@@ -203,10 +192,7 @@
     <!-- endregion -->
 
     <!-- region Rated Puzzle Screen -->
-    <string name="rated_puzzle_hint_description">Hint</string>
-    <string name="rated_puzzle_abandon_description">Abandon</string>
     <string name="rated_puzzle_next_description">Next</string>
-    <string name="rated_puzzle_rating_title">Puzzle rating %1$d</string>
     <string name="rated_puzzle_moves">Moves: %1$s</string>
     <string name="rated_puzzle_title">Puzzle rating: %1$d</string>
     <string name="navigate_back">Navigate back</string>
@@ -218,13 +204,11 @@
     <string name="choose_promotion_title">Promote to</string>
     <string name="abandon_puzzle_message">Are you sure you want to abandon the current puzzle? Your progress will be lost.</string>
     <string name="abandon_puzzle_confirm">Abandon</string>
-    <string name="abandon_puzzle_cancel">Continue</string>
     <string name="puzzle_solved">Puzzle Solved!</string>
     <string name="puzzle_failed">Puzzle Failed</string>
     <string name="puzzle_abandoned">Puzzle Abandoned</string>
     <string name="rating_gained">Rating gained: +%1$d</string>
     <string name="rating_lost">Rating lost: -%1$d</string>
-    <string name="next_puzzle">Next Puzzle</string>
     <!-- endregion -->
 
     <!-- region generic text resources which can be reused across screens -->
@@ -267,10 +251,7 @@
     <string name="puzzle_mode_rush_title">Puzzle Rush</string>
     <string name="puzzle_mode_rush_description">Solve as many puzzles as possible in 3 minutes</string>
     <string name="puzzle_rush_play_to_start">Play a move to start</string>
-    <string name="puzzle_rush_play_again">Play Again</string>
     <string name="puzzle_rush_summary_title">Run complete</string>
-    <string name="puzzle_rush_summary_puzzles_solved">Puzzles Solved</string>
-    <string name="puzzle_rush_time_up">Time\'s Up!</string>
     <string name="puzzle_rush_puzzle_failed">Puzzle Failed!</string>
     <!-- endregion -->
 
@@ -284,7 +265,6 @@
     <string name="puzzle_streak_new">New Streak</string>
     <string name="puzzle_streak_next_puzzle">Next Puzzle</string>
     <string name="puzzle_streak_summary_title">Streak Complete</string>
-    <string name="puzzle_streak_summary_puzzles_solved">Puzzles Solved</string>
     <string name="puzzle_white_to_move">White to move</string>
     <string name="puzzle_black_to_move">Black to move</string>
     <!-- endregion -->
@@ -302,7 +282,6 @@
     <string name="failed_puzzles_empty_description">Great job! You don\'t have any failed puzzles to retry.</string>
     <string name="failed_puzzles_complete_title">All Done!</string>
     <string name="failed_puzzles_complete_message">Great work! You\'ve finished reviewing all your failed puzzles.</string>
-    <string name="failed_puzzles_solved_count">Puzzles Solved</string>
     <!-- endregion -->
 
     <!-- Common -->
@@ -319,8 +298,6 @@
     <!-- region Find the Square -->
     <string name="boardvis_find_square_title">Find the Square</string>
     <string name="boardvis_find_square_description">Click the square shown on the board as fast as you can</string>
-    <string name="boardvis_find_square_high_score">High score: %1$d</string>
-    <string name="boardvis_find_square_score">Current Score: %1$d</string>
     <string name="boardvis_play_as_white">Play as white</string>
     <string name="boardvis_play_as_black">Play as black</string>
     <string name="boardvis_play_random">Random side</string>
@@ -336,10 +313,8 @@
     <string name="boardvis_move_piece_description">Visualize and make the correct moves on the board</string>
     <string name="boardvis_move_piece_training_mode">Training Mode</string>
     <string name="boardvis_move_piece_moves_remaining">Moves Remaining: %1$d</string>
-    <string name="boardvis_move_piece_current_score">Score: %1$d</string>
     <string name="boardvis_move_piece_rules">Move your piece without landing on a square attacked by the opponent. Complete the required moves to advance to the next level!</string>
     <string name="boardvis_move_piece_captured">Captured!</string>
-    <string name="boardvis_move_piece_high_score">High Score: %1$d</string>
     <!-- endregion -->
 
     <!-- region Settings -->
@@ -407,11 +382,9 @@
     <string name="tools_dashboard_title">Chess Tools</string>
     <string name="tools_dashboard_subtitle">Useful utilities for your chess games.</string>
     <string name="tools_mode_start">Start tool</string>
-    <string name="tools_clock_title">Chess Clock</string>
     <string name="tools_clock_description">Time your games with configurable controls</string>
     <string name="tools_analysis_title">Analysis</string>
     <string name="tools_analysis_description">Analyze positions with the engine</string>
-    <string name="tools_import_title">Import Game</string>
     <string name="tools_import_description">Import a game from FEN or PGN notation</string>
     <!-- endregion -->
 
@@ -438,7 +411,6 @@
     <string name="import_dialog_hint_fen">Paste FEN string here…</string>
     <string name="import_dialog_hint_pgn">Paste PGN text here…</string>
     <string name="import_dialog_confirm">Import</string>
-    <string name="import_dialog_cancel">Cancel</string>
     <string name="import_error_invalid_fen">Invalid FEN notation. Please check and try again.</string>
     <string name="import_error_invalid_pgn">Invalid PGN notation. Please check and try again.</string>
     <string name="import_game_jump_to_start">Jump to start</string>
@@ -454,7 +426,6 @@
     <string name="blind_mode_play">Play</string>
     <string name="blind_mode_resign">Resign</string>
     <string name="blind_mode_reveal">Reveal</string>
-    <string name="blind_mode_play_again">Play Again</string>
     <string name="blind_mode_thinking">Engine is thinking…</string>
     <string name="blind_mode_your_turn">Your turn</string>
     <string name="blind_mode_moves">Moves</string>

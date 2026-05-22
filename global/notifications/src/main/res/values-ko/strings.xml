@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- region download -->
+    <string name="download_channel_name">퍼즐 다운로드</string>
+    <string name="download_channel_desc">퍼즐 다운로드 진행 상황 표시</string>
+    <string name="download_notification_title">퍼즐 다운로드 중</string>
+    <string name="download_notification_text">퍼즐을 준비 중입니다…</string>
+    <!-- endregion -->
+</resources>

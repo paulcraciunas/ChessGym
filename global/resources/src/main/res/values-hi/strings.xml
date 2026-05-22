@@ -1,0 +1,689 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ChessGym</string>
+
+    <!-- region pieces -->
+    <string name="pawn">प्यादा</string>
+    <string name="rook">हाथी</string>
+    <string name="knight">घोड़ा</string>
+    <string name="bishop">ऊंट</string>
+    <string name="queen">रानी</string>
+    <string name="king">राजा</string>
+    <!-- endregion -->
+
+    <!-- region Common -->
+    <string name="content_description_loading">लोड हो रहा है</string>
+    <!-- endregion -->
+
+    <!-- region results -->
+    <string name="result_checkmate">शहमात! आप जीत गए</string>
+    <string name="result_draw">ड्रॉ</string>
+    <string name="result_loss">हार</string>
+    <!-- endregion -->
+
+    <!-- region Nav drawer -->
+    <string name="nav_drawer_menu">मेनू</string>
+    <string name="nav_drawer_back">वापस</string>
+    <string name="nav_drawer_sign_in">साइन इन करें…</string>
+    <string name="nav_drawer_sign_out">साइन आउट करें</string>
+    <string name="nav_drawer_delete_account">अकाउंट हटाएं</string>
+    <string name="nav_drawer_general">सामान्य</string>
+    <string name="nav_drawer_home">होम</string>
+    <string name="nav_drawer_application">एप्लिकेशन</string>
+    <string name="nav_drawer_settings">सेटिंग्स</string>
+    <string name="nav_drawer_about">के बारे में</string>
+    <string name="sign_out_dialog_title">साइन आउट करें?</string>
+    <string name="sign_out_dialog_message">क्या आप वाकई साइन आउट करना चाहते हैं? आपकी प्रगति सहेजी गई है — आप किसी भी समय वापस साइन इन कर सकते हैं।</string>
+    <string name="sign_out_dialog_confirm">साइन आउट</string>
+    <string name="delete_account_dialog_title">अकाउंट हटाएं?</string>
+    <string name="delete_account_dialog_body">यह आपके अकाउंट और सभी संबद्ध डेटा को &lt;b>स्थायी रूप से हटा देगा&lt;/b>।</string>
+    <string name="delete_account_dialog_message">क्या आप वाकई अपना अकाउंट हटाना चाहते हैं?</string>
+    <string name="delete_account_dialog_explanation">यह क्रिया अपरिवर्तनीय है। एक बार चुने जाने के बाद, आपकी सभी सहेजी गई प्रगति और उच्च स्कोर खो जाएंगे।</string>
+    <string name="delete_account_dialog_confirm">हटाएं</string>
+    <string name="delete_account_dialog_consequences_title">आप खो देंगे</string>
+    <string name="delete_account_dialog_consequence_puzzles">पहेलियाँ हल की &amp; रेटिंग</string>
+    <string name="delete_account_dialog_consequence_streaks">स्ट्रीक &amp; उपलब्धियाँ</string>
+    <string name="delete_account_dialog_consequence_games">सहेजे गए खेल &amp; विश्लेषण</string>
+    <string name="delete_account_error_no_network">नेटवर्क कनेक्शन के बिना अकाउंट हटाना संभव नहीं।</string>
+    <string name="delete_account_error_failed">अकाउंट हटाने में विफल। कृपया पुनः प्रयास करें।</string>
+    <string name="sign_out_error_failed">अकाउंट से साइन आउट करने में विफल। कृपया पुनः प्रयास करें।</string>
+    <string name="dialog_ok">ठीक है</string>
+    <string name="dialog_cancel">रद्द करें</string>
+    <!-- endregion -->
+
+
+    <!-- region navigation -->
+    <string name="navigation_home_label">होम</string>
+    <string name="navigation_home_screen_description">होम स्क्रीन</string>
+    <string name="navigation_puzzle_dashboard_label">पहेलियाँ</string>
+    <string name="navigation_puzzle_dashboard_content_description">पहेली डैशबोर्ड</string>
+    <string name="navigation_rated_puzzle_label">रेटेड</string>
+    <string name="navigation_rated_puzzle_content_description">रेटेड पहेली चुनौती</string>
+    <string name="navigation_puzzle_rush_label">रश</string>
+    <string name="navigation_puzzle_rush_content_description">पज़ल रश मोड</string>
+    <string name="navigation_board_viz_label">बोर्ड</string>
+    <string name="navigation_board_viz_content_description">बोर्ड विज़ुअलाइज़ेशन</string>
+    <string name="navigation_blind_mode_label">ब्लाइंड</string>
+    <string name="navigation_blind_mode_content_description">ब्लाइंड मोड</string>
+    <!-- endregion -->
+
+    <!-- region Home screen -->
+    <string name="home_timeline_title">हालिया गतिविधि</string>
+    <string name="home_label_profile">प्रोफ़ाइल</string>
+    <string name="home_label_rating">रेटिंग</string>
+    <string name="home_label_activities">गतिविधियाँ</string>
+    <string name="home_label_member_since">सदस्य बनने की तिथि</string>
+    <string name="home_timeline_empty_title">कोई हालिया गतिविधि नहीं</string>
+    <string name="home_timeline_empty_description">अपनी गतिविधि टाइमलाइन यहाँ देखने के लिए खेलना शुरू करें</string>
+
+    <!-- Activity titles -->
+    <string name="home_title_board_visualization">बोर्ड विज़ुअलाइज़ेशन</string>
+    <string name="home_title_blind_mode_training">ब्लाइंड मोड प्रशिक्षण</string>
+
+    <!-- Timeline stat labels -->
+    <plurals name="home_timeline_stat_run">
+        <item quantity="one">%1$d रन</item>
+        <item quantity="other">%1$d रन</item>
+    </plurals>
+    <plurals name="home_timeline_stat_game">
+        <item quantity="one">%1$d खेल</item>
+        <item quantity="other">%1$d खेल</item>
+    </plurals>
+    <plurals name="home_timeline_stat_session">
+        <item quantity="one">%1$d सत्र</item>
+        <item quantity="other">%1$d सत्र</item>
+    </plurals>
+    <plurals name="home_timeline_stat_puzzle">
+        <item quantity="one">%1$d पहेली</item>
+        <item quantity="other">%1$d पहेलियाँ</item>
+    </plurals>
+    <string name="home_timeline_stat_score">%1$d उच्च स्कोर</string>
+    <string name="home_timeline_stat_moves">चालें</string>
+    <string name="home_timeline_stat_best_moves">%1$d सर्वश्रेष्ठ चालें</string>
+    <string name="home_timeline_stat_streak">%1$d स्ट्रीक</string>
+    <string name="home_timeline_stat_solved">%1$d हल किए</string>
+    <!-- endregion -->
+
+    <!-- region User stats -->
+    <string name="user_stats_title">आँकड़े</string>
+    <string name="user_stats_high_score_title">उच्च स्कोर</string>
+    <string name="expand_stats">आँकड़े विस्तृत करें</string>
+    <string name="collapse_stats">आँकड़े संक्षिप्त करें</string>
+    <string name="expand_high_scores">उच्च स्कोर विस्तृत करें</string>
+    <string name="collapse_high_scores">उच्च स्कोर संक्षिप्त करें</string>
+    <string name="user_stat_puzzles_played">पहेलियाँ खेली गई</string>
+    <string name="user_stat_puzzles_solved">पहेलियाँ हल की गई</string>
+    <string name="user_stat_puzzles_success">सफलता दर</string>
+    <string name="user_stat_current_rating">वर्तमान रेटिंग</string>
+    <string name="user_stat_high_score_rated_puzzle">सर्वश्रेष्ठ रेटेड पहेली</string>
+    <string name="user_stat_high_score_puzzles_rush">सर्वश्रेष्ठ पज़ल रश</string>
+    <string name="user_stat_high_score_blind_mode">सर्वश्रेष्ठ ब्लाइंड मोड</string>
+    <string name="user_stat_high_score_puzzle_streak">सर्वश्रेष्ठ पहेली स्ट्रीक</string>
+    <string name="user_stat_high_score_find_the_square">सर्वश्रेष्ठ चौक ढूंढें</string>
+    <string name="user_stat_high_score_move_the_piece">सर्वश्रेष्ठ मोहरा चलाएं</string>
+    <!-- endregion -->
+
+    <!-- region Loading -->
+    <string name="landing_eyebrow">शतरंज प्रशिक्षण स्टूडियो</string>
+    <string name="landing_download_eyebrow">एकमुश्त सेटअप</string>
+    <string name="landing_download_title">&lt;i>ChessGym&lt;/i> में आपका स्वागत है</string>
+    <string name="landing_download_explanation">शुरुआत करने के लिए, हमें पहेली डेटाबेस डाउनलोड करना होगा। यह एक बार का सेटअप है जो आपके प्रशिक्षण के लिए सब कुछ तैयार करता है।</string>
+    <string name="landing_feature_puzzles">लाखों रणनीतिक पहेलियाँ</string>
+    <string name="landing_feature_offline">हमेशा ऑफलाइन काम करता है</string>
+    <string name="landing_feature_rating">आपकी रेटिंग प्रगति ट्रैक करता है</string>
+    <string name="landing_tier_label">डेटाबेस आकार</string>
+    <string name="landing_download_button">डेटाबेस डाउनलोड करें</string>
+    <string name="landing_get_started_button">शुरू करें</string>
+    <string name="landing_size_hint_onetime">%s — एकमुश्त</string>
+    <string name="landing_size_hint_included">ऐप के साथ शामिल</string>
+    <string name="landing_download_content_title">आपका शतरंज प्रशिक्षण सेट हो रहा है</string>
+    <string name="landing_download_subtitle">पहेली डेटाबेस डाउनलोड हो रहा है। आपके इंटरनेट कनेक्शन की गति के आधार पर इसमें कुछ मिनट लग सकते हैं।</string>
+    <string name="landing_download_progress">पहेलियाँ डाउनलोड हो रही हैं</string>
+    <string name="landing_unpack_progress">डेटाबेस अनपैक हो रहा है</string>
+    <string name="landing_unpack_subtitle">पहेली डेटाबेस अनपैक हो रहा है। इसमें कुछ मिनट लग सकते हैं।</string>
+    <string name="landing_write_to_db_progress">डेटाबेस बन रहा है</string>
+    <string name="landing_write_to_db_subtitle">पहेली डेटाबेस बन रहा है। इसमें कुछ मिनट लग सकते हैं।</string>
+    <string name="database_download_dialog_title">डेटाबेस डाउनलोड करें</string>
+    <string name="database_download_dialog_body">यह लगभग 50MB पहेली डेटा डाउनलोड करेगा। सुनिश्चित करें कि आपके पास एक स्थिर इंटरनेट कनेक्शन है।</string>
+    <string name="enable_notifications_dialog_title">सूचनाएं सक्षम करें</string>
+    <string name="enable_notifications_dialog_body">अपनी प्रगति और उपलब्धियों के बारे में सूचित रहें।</string>
+    <string name="enable_notifications_dialog_accept">सक्षम करें</string>
+    <string name="enable_notifications_dialog_refuse">छोड़ें</string>
+    <string name="loading_error_download_failed">डाउनलोड विफल। कृपया अपना इंटरनेट कनेक्शन जांचें और पुनः प्रयास करें।</string>
+    <string name="loading_error_decompression_failed">डेटाबेस अनपैक करने में विफल। कृपया पुनः प्रयास करें।</string>
+    <string name="loading_error_database_write_failed">डेटाबेस बनाने में विफल। कृपया पुनः प्रयास करें।</string>
+    <string name="loading_error_permission">अनुमति अस्वीकृत। जारी रखने के लिए कृपया सूचनाएं सक्षम करें।</string>
+    <string name="loading_error_no_internet">कोई इंटरनेट कनेक्शन नहीं। कृपया अपना कनेक्शन जांचें और पुनः प्रयास करें।</string>
+    <string name="loading_error_not_enough_disk_space">पर्याप्त डिस्क स्थान नहीं है। कृपया कुछ स्थान खाली करें और पुनः प्रयास करें।</string>
+    <string name="loading_error_generic">एक त्रुटि हुई। कृपया पुनः प्रयास करें।</string>
+    <string name="loading_error_consent_required">आगे बढ़ने के लिए क्रैश रिपोर्टिंग की सहमति आवश्यक है। हम केवल ऐप की स्थिरता बेहतर करने के लिए तकनीकी क्रैश डेटा एकत्र करते हैं।</string>
+    <string name="crash_consent_dialog_title">हमें बेहतर बनाने में मदद करें</string>
+    <string name="crash_consent_dialog_body">ChessGym एप्लिकेशन त्रुटियों को पहचानने और ठीक करने के लिए क्रैश रिपोर्टिंग का उपयोग करता है। यह डेटा केवल क्रैश पहचानने और सभी उपयोगकर्ताओं के लिए ऐप की स्थिरता बेहतर करने के लिए उपयोग किया जाता है।\n\nकोई भी व्यक्तिगत जानकारी, गेम डेटा, या उपयोग पैटर्न एकत्र नहीं किए जाते — केवल तकनीकी क्रैश विवरण (जैसे स्टैक ट्रेस और डिवाइस मॉडल) जब कुछ गलत हो जाता है।\n\nआप इस सेटिंग को बाद में ऐप में बदल सकते हैं।</string>
+    <string name="loading_fact_eyebrow">क्या आप जानते हैं?</string>
+    <string-array name="loading_fact_titles">
+        <item>शक्तिहीन रानी</item>
+        <item>शतरंज की किताब</item>
+        <item>एक पादरी का आविष्कार</item>
+        <item>सबसे लंबा संभव खेल</item>
+        <item>लगभग एक सदी में कोई शहमात नहीं</item>
+        <item>एकरंगे बोर्ड</item>
+        <item>अंतरिक्ष में शतरंज</item>
+        <item>एक गुप्त नियम</item>
+        <item>राजा मारा गया</item>
+        <item>पुलिस की छापेमारी</item>
+    </string-array>
+    <string-array name="loading_fact_bodies">
+        <item>मूलतः, बोर्ड पर सबसे शक्तिशाली मोहरा वास्तव में सबसे कमज़ोर था। रानी केवल एक वर्ग तिरछे चल सकती थी। 15वीं शताब्दी के स्पेन में, मुख्यतः Queen Isabella के सम्मान में, इसे आधुनिक असीमित शक्तियाँ दी गईं।</item>
+        <item>अंग्रेजी भाषा में कभी मुद्रित दूसरी किताब (1474 में) शतरंज के बारे में थी। William Caxton ने एक पांडुलिपि का अनुवाद किया जिसका मूल शीर्षक The Game and Playe of the Chesse था।</item>
+        <item>तह करने वाला शतरंज बोर्ड एक पादरी ने बनाया था जिसे उसके धार्मिक आदेश ने खेल खेलने से मना किया था। उसने बोर्ड को आधा मोड़कर और बुकशेल्फ पर रखकर एक चतुर समाधान निकाला, ताकि वह दो किताबों जैसा दिखे।</item>
+        <item>जबकि रिकॉर्ड पर सबसे लंबा ग्रैंडमास्टर खेल 269 चालों तक चला, गणित पारंपरिक शतरंज में स्वचालित ड्रॉ के बिना अधिकतम 5,949 चालों की सैद्धांतिक अधिकतम गेम लंबाई तय करता है।</item>
+        <item>1929 के बाद से विश्व शतरंज चैम्पियनशिप मैच में एक भी शहमात नहीं हुई। आखिरी बार Game 8 में Alexander Alekhine और Efim Bogoljubov के बीच हुई थी। तब से, सभी चैम्पियनशिप निर्णायक मैच इस्तीफे या समय के कारण जीते गए हैं।</item>
+        <item>प्रारंभिक यूरोपीय शतरंज बोर्ड वास्तव में एकरंगे (एक ही रंग के) वर्गों के साथ थे, और लगभग 1090 के आसपास ही बारी-बारी हल्के और गहरे रंग के वर्गों का डिज़ाइन पेश किया गया।</item>
+        <item>अंतरिक्ष में पहली बार शतरंज का खेल 9 जून, 1970 को सोवियत Soyuz 9 के दल और पृथ्वी पर नियंत्रकों के बीच खेला गया। दल ने एक विशेष सेट का उपयोग किया जिसमें खूंटे और स्लॉट थे ताकि शून्य गुरुत्वाकर्षण में मोहरे तैरें नहीं।</item>
+        <item>प्रसिद्ध एन पासां (फ्रेंच में "गुज़रते हुए") प्यादा कैप्चर 1280 में स्पेन में शुरू किया गया था। यह शुरुआती खिलाड़ियों द्वारा सबसे अधिक चूका जाने वाला नियम है, मुख्यतः क्योंकि यदि आप इसे ठीक उस चाल पर नहीं खेलते जब दुश्मन का प्यादा चलता है, तो आप इसे खेलने की क्षमता हमेशा के लिए खो देते हैं।</item>
+        <item>"शहमात" शब्द फ़ारसी वाक्यांश "शाह मात" (شاه مات) से आया है। आश्चर्यजनक रूप से, इसका अर्थ "राजा फंसा हुआ है" नहीं है, बल्कि यह सीधे "राजा मर गया" का अनुवाद करता है।</item>
+        <item>1973 में, Cleveland, Ohio में पुलिस ने एक शतरंज टूर्नामेंट पर छापा मारा, टूर्नामेंट निदेशक को गिरफ्तार किया, और शतरंज सेट ज़ब्त कर लिए। उन्होंने आयोजकों पर जुए की अनुमति देने (नकद पुरस्कार के लिए) और जुए के उपकरण (शतरंज बोर्ड) रखने का आरोप लगाया।</item>
+    </string-array>
+    <string name="loading_tier_complete">पूर्ण</string>
+    <string name="loading_tier_compact">संक्षिप्त</string>
+    <string name="loading_tier_lite">त्वरित शुरुआत</string>
+    <string name="loading_tier_description_complete">सभी पहेलियाँ, पूर्ण अनुभव</string>
+    <string name="loading_tier_description_compact">अधिकांश खिलाड़ियों के लिए बढ़िया</string>
+    <string name="loading_tier_description_lite">तुरंत सेटअप, न्यूनतम भंडारण</string>
+    <!-- endregion -->
+
+    <!-- region Rated Puzzle Screen -->
+    <string name="rated_puzzle_next_description">अगला</string>
+    <string name="rated_puzzle_moves">चालें: %1$s</string>
+    <string name="rated_puzzle_title">पहेली रेटिंग: %1$d</string>
+    <string name="navigate_back">वापस जाएं</string>
+    <string name="puzzle_hint">संकेत</string>
+    <string name="puzzle_abandon">पहेली छोड़ें</string>
+    <string name="rated_puzzle_find_best_move_white">सफेद के लिए सर्वश्रेष्ठ चाल खोजें</string>
+    <string name="rated_puzzle_find_best_move_black">काले के लिए सर्वश्रेष्ठ चाल खोजें</string>
+    <string name="abandon_puzzle_title">पहेली छोड़ें?</string>
+    <string name="choose_promotion_title">पदोन्नत करें</string>
+    <string name="abandon_puzzle_message">क्या आप वाकई वर्तमान पहेली छोड़ना चाहते हैं? आपकी प्रगति खो जाएगी।</string>
+    <string name="abandon_puzzle_confirm">छोड़ें</string>
+    <string name="puzzle_solved">पहेली हल!</string>
+    <string name="puzzle_failed">पहेली असफल</string>
+    <string name="puzzle_abandoned">पहेली छोड़ी गई</string>
+    <string name="rating_gained">रेटिंग प्राप्त: +%1$d</string>
+    <string name="rating_lost">रेटिंग खोई: -%1$d</string>
+    <!-- endregion -->
+
+    <!-- region generic text resources which can be reused across screens -->
+    <string name="generic_continue">जारी रखें</string>
+    <string name="generic_current_score">वर्तमान स्कोर</string>
+    <string name="generic_done">हो गया</string>
+    <string name="generic_download">डाउनलोड करें</string>
+    <string name="generic_error_title">कुछ गलत हो गया</string>
+    <string name="generic_error_try_again">उफ़, कुछ गलत हो गया। कृपया पुनः प्रयास करें।</string>
+    <string name="generic_loading_message">बोर्ड सेट हो रहा है…</string>
+    <string name="generic_retry">पुनः प्रयास करें</string>
+    <string name="generic_today">आज</string>
+    <string name="generic_yesterday">कल</string>
+    <string name="generic_this_week">इस सप्ताह</string>
+    <string name="generic_this_month">इस महीने</string>
+    <string name="generic_this_year">इस वर्ष</string>
+    <string name="generic_older">पुराने</string>
+    <string name="generic_success">सफलता</string>
+    <string name="generic_failed">असफल</string>
+    <string name="generic_new_high_score">नया उच्च स्कोर</string>
+    <string name="generic_close">बंद करें</string>
+    <string name="generic_agree">मैं सहमत हूं</string>
+    <string name="generic_not_now">अभी नहीं</string>
+    <string name="generic_thank_you">आपके समर्थन के लिए धन्यवाद!</string>
+    <!-- endregion -->
+
+    <!-- region Puzzle Dashboard -->
+    <string name="puzzle_dashboard_eyebrow">पहेलियाँ</string>
+    <string name="puzzle_dashboard_title">अपनी चुनौती चुनें</string>
+    <string name="puzzle_dashboard_subtitle">चार केंद्रित मोड के साथ रणनीतिक दृष्टि प्रशिक्षित करें।</string>
+    <!-- endregion -->
+
+    <!-- Rated Puzzle Mode -->
+    <string name="puzzle_mode_rated_title">रेटेड पहेलियाँ</string>
+    <string name="puzzle_mode_rated_description">अपने कौशल स्तर पर पहेलियाँ हल करें</string>
+    <string name="puzzle_mode_rated_rating">आपकी रेटिंग: %1$d</string>
+    <!-- endregion -->
+
+    <!-- Puzzle Rush Mode -->
+    <string name="puzzle_mode_rush_title">पज़ल रश</string>
+    <string name="puzzle_mode_rush_description">3 मिनट में जितनी हो सके उतनी पहेलियाँ हल करें</string>
+    <string name="puzzle_rush_play_to_start">शुरू करने के लिए एक चाल चलें</string>
+    <string name="puzzle_rush_summary_title">रन पूरा हुआ</string>
+    <string name="puzzle_rush_puzzle_failed">पहेली असफल!</string>
+    <!-- endregion -->
+
+    <!-- Puzzle Streak Mode -->
+    <string name="puzzle_mode_streak_title">पहेली स्ट्रीक</string>
+    <string name="puzzle_mode_streak_description">लगातार जितनी हो सके उतनी पहेलियाँ हल करें</string>
+    <string name="puzzle_mode_streak_new">नई स्ट्रीक शुरू करें</string>
+    <string name="puzzle_mode_streak_continue">अपनी %1$d पहेली स्ट्रीक जारी रखें</string>
+    <string name="puzzle_streak_title">पहेली स्ट्रीक - रेटिंग: %1$d</string>
+    <string name="puzzle_streak_ended">स्ट्रीक समाप्त</string>
+    <string name="puzzle_streak_new">नई स्ट्रीक</string>
+    <string name="puzzle_streak_next_puzzle">अगली पहेली</string>
+    <string name="puzzle_streak_summary_title">स्ट्रीक पूरी हुई</string>
+    <string name="puzzle_white_to_move">सफेद की बारी</string>
+    <string name="puzzle_black_to_move">काले की बारी</string>
+    <!-- endregion -->
+
+    <!-- Failed Puzzles Mode -->
+    <string name="puzzle_mode_failed_title">असफल पहेलियाँ</string>
+    <string name="puzzle_mode_failed_description">गलत हुई पहेलियों की समीक्षा करें और पुनः प्रयास करें</string>
+    <string name="puzzle_mode_failed_none_available">कोई असफल पहेलियाँ उपलब्ध नहीं</string>
+    <plurals name="puzzle_mode_failed_count">
+        <item quantity="one">%1$d पहेली पुनः प्रयास के लिए</item>
+        <item quantity="other">%1$d पहेलियाँ पुनः प्रयास के लिए</item>
+    </plurals>
+    <string name="failed_puzzles_progress">%1$d / %2$d हल किए</string>
+    <string name="failed_puzzles_empty_title">कोई असफल पहेलियाँ नहीं</string>
+    <string name="failed_puzzles_empty_description">बढ़िया काम! आपके पास पुनः प्रयास के लिए कोई असफल पहेलियाँ नहीं हैं।</string>
+    <string name="failed_puzzles_complete_title">सब हो गया!</string>
+    <string name="failed_puzzles_complete_message">बढ़िया काम! आपने अपनी सभी असफल पहेलियों की समीक्षा पूरी कर ली।</string>
+    <!-- endregion -->
+
+    <!-- Common -->
+    <string name="puzzle_mode_start">पहेली मोड शुरू करें</string>
+    <!-- endregion -->
+
+    <!-- region Board Visualization Dashboard -->
+    <string name="boardvis_dashboard_eyebrow">विज़ुअलाइज़ेशन</string>
+    <string name="boardvis_dashboard_title">बोर्ड जागरूकता</string>
+    <string name="boardvis_dashboard_subtitle">अपनी दृश्य स्मृति और स्थानिक अंतर्ज्ञान प्रशिक्षित करें।</string>
+    <string name="boardvis_mode_start">विज़ुअलाइज़ेशन मोड शुरू करें</string>
+    <!-- endregion -->
+
+    <!-- region Find the Square -->
+    <string name="boardvis_find_square_title">चौक ढूंढें</string>
+    <string name="boardvis_find_square_description">बोर्ड पर दिखाए गए चौक पर जितनी जल्दी हो सके क्लिक करें</string>
+    <string name="boardvis_play_as_white">सफेद के रूप में खेलें</string>
+    <string name="boardvis_play_as_black">काले के रूप में खेलें</string>
+    <string name="boardvis_play_random">यादृच्छिक पक्ष</string>
+    <string name="boardvis_play">खेलें</string>
+    <string name="boardvis_play_again">फिर खेलें</string>
+    <string name="boardvis_game_over">समय समाप्त!</string>
+    <string name="boardvis_final_score">अंतिम स्कोर: %1$d</string>
+    <string name="boardvis_high_score">उच्च स्कोर: %1$d</string>
+    <!-- endregion -->
+
+    <!-- region Move the Piece -->
+    <string name="boardvis_move_piece_title">मोहरा चलाएं</string>
+    <string name="boardvis_move_piece_description">बोर्ड पर सही चालें विज़ुअलाइज़ करें और चलाएं</string>
+    <string name="boardvis_move_piece_training_mode">प्रशिक्षण मोड</string>
+    <string name="boardvis_move_piece_moves_remaining">शेष चालें: %1$d</string>
+    <string name="boardvis_move_piece_rules">प्रतिद्वंद्वी द्वारा आक्रमण किए गए वर्ग पर उतरे बिना अपना मोहरा चलाएं। अगले स्तर पर जाने के लिए आवश्यक चालें पूरी करें!</string>
+    <string name="boardvis_move_piece_captured">पकड़ा गया!</string>
+    <!-- endregion -->
+
+    <!-- region Settings -->
+    <string name="settings_title">सेटिंग्स</string>
+    <string name="settings_section_general">सामान्य</string>
+    <string name="settings_section_ui">दिखावट</string>
+    <string name="settings_haptic_feedback">हैप्टिक फ़ीडबैक</string>
+    <string name="settings_haptic_feedback_description">इंटरैक्शन पर कंपन</string>
+    <string name="settings_auto_promote">स्वतः पदोन्नति</string>
+    <string name="settings_auto_promote_description">प्यादों को स्वतः रानी में पदोन्नत करें</string>
+    <string name="settings_auto_next_puzzle">स्वतः अगली पहेली</string>
+    <string name="settings_auto_next_puzzle_description">पहेली स्ट्रीक में एक पहेली हल करने पर स्वतः अगली पहेली लोड करें</string>
+    <string name="settings_show_borders">सीमाएं दिखाएं</string>
+    <string name="settings_show_borders_description">बोर्ड के चारों ओर निर्देशांक प्रदर्शित करें</string>
+    <string name="settings_highlight_legal_moves">वैध चालें हाइलाइट करें</string>
+    <string name="settings_highlight_legal_moves_description">मोहरा चुनने पर उपलब्ध वर्ग दिखाएं</string>
+    <string name="settings_light_mode">थीम</string>
+    <string name="settings_light_mode_light">हल्का</string>
+    <string name="settings_light_mode_dark">गहरा</string>
+    <string name="settings_light_mode_system">सिस्टम</string>
+    <string name="settings_enable_animations">एनिमेशन</string>
+    <string name="settings_enable_animations_description">UI एनिमेशन सक्षम करें</string>
+    <string name="settings_section_privacy">गोपनीयता</string>
+    <string name="settings_crash_reporting">क्रैश रिपोर्टिंग</string>
+    <string name="settings_crash_reporting_description">क्रैश डेटा साझा करके ऐप की स्थिरता बेहतर करने में मदद करें</string>
+    <string name="settings_build_version">संस्करण %1$s-%2$s</string>
+    <!-- endregion -->
+
+    <!-- region About -->
+    <string name="about_title">के बारे में</string>
+    <string name="about_general_title">सामान्य</string>
+    <string name="about_legal_title">कानूनी</string>
+    <string name="about_creator_title">निर्माता</string>
+    <string name="about_creator_description">ChessGym को Paul Mihai Craciunas ने बनाया है, जो लंदन से एक Android इंजीनियर हैं, शतरंज के प्रति जुनूनी हैं, और लोगों की सुधार की यात्रा में मदद करने की उम्मीद रखते हैं।</string>
+    <string name="about_contact_title">संपर्क</string>
+    <string name="about_contact_description">कानूनी चिंताओं, व्यावसायिक अवसरों, या किसी अन्य पूछताछ के लिए, कृपया ईमेल के माध्यम से संपर्क करें।</string>
+    <string name="about_contact_email">contact@chessgym.app</string>
+    <string name="about_feedback_title">फ़ीडबैक</string>
+    <string name="about_feedback_description">कोई बग मिला? किसी नई सुविधा या सुधार का विचार है? हम आपसे सुनना पसंद करेंगे।</string>
+    <string name="about_feedback_email">feedback@chessgym.app</string>
+    <string name="about_support_title">समर्थन</string>
+    <string name="about_donate_title">दान करें</string>
+    <string name="about_donate_description">ChessGym के विकास का समर्थन करें</string>
+    <string name="about_donate_dialog_title">ChessGym का समर्थन करें</string>
+    <string name="about_donate_dialog_description">इस परियोजना के निरंतर विकास का समर्थन करने के लिए एक राशि चुनें। &lt;b>धन्यवाद!&lt;/b></string>
+    <string name="about_donate_small">कॉफी</string>
+    <string name="about_donate_medium">सैंडविच</string>
+    <string name="about_donate_large">पिज़्ज़ा</string>
+    <string name="about_rate_title">ऐप को रेट करें</string>
+    <string name="about_rate_description">ChessGym का आनंद ले रहे हैं? Play Store पर रेटिंग दें</string>
+    <string name="about_libraries_title">ओपन सोर्स लाइब्रेरी</string>
+    <string name="about_libraries_description">ChessGym निम्नलिखित ओपन सोर्स लाइब्रेरी के साथ बना है:</string>
+    <string name="about_privacy_policy_title">गोपनीयता नीति</string>
+    <string name="about_privacy_policy_content">प्रभावी तिथि: मई 2026\n\nChessGym (&quot;ऐप&quot;) Paul Mihai Craciunas द्वारा विकसित है। यह गोपनीयता नीति बताती है कि कौन सा डेटा एकत्र किया जाता है, इसका उपयोग कैसे किया जाता है, और उस डेटा के संबंध में आपके अधिकार क्या हैं।\n\n&lt;b>1. हम जो डेटा एकत्र करते हैं&lt;/b>\n\n• &lt;b>अकाउंट जानकारी:&lt;/b> यदि आप साइन इन करते हैं, तो हम Firebase Authentication के माध्यम से आपका प्रदर्शन नाम, ईमेल पता, और एक अद्वितीय उपयोगकर्ता पहचानकर्ता संग्रहीत करते हैं।\n• &lt;b>गेमप्ले डेटा:&lt;/b> पहेली रेटिंग, आँकड़े, और उपलब्धि प्रगति आपके व्यक्तिगत अनुभव प्रदान करने के लिए संग्रहीत की जाती है।\n• &lt;b>क्रैश और निदान:&lt;/b> Firebase Crashlytics स्वचालित रूप से बग ठीक करने में हमारी मदद के लिए डिवाइस मॉडल, OS संस्करण, और क्रैश स्टैक ट्रेस एकत्र करता है।\n• &lt;b>बिलिंग:&lt;/b> दान लेनदेन पूरी तरह से Google Play द्वारा संसाधित किए जाते हैं। हम भुगतान विवरण संग्रहीत नहीं करते।\n\n&lt;b>2. हम आपके डेटा का उपयोग कैसे करते हैं&lt;/b>\n\n• ऐप अनुभव प्रदान करने और व्यक्तिगत बनाने के लिए (रेटिंग, उपलब्धियाँ, प्रगति सिंक)।\n• क्रैश और प्रदर्शन समस्याओं का निदान और समाधान करने के लिए।\n• साइन इन होने पर आपकी प्रगति का क्लाउड बैकअप सक्षम करने के लिए।\n\n&lt;b>3. डेटा संग्रहण और सुरक्षा&lt;/b>\n\nडेटा Google Cloud Firestore में ट्रांजिट (TLS) और विश्राम पर एन्क्रिप्शन के साथ संग्रहीत है। पहुँच केवल प्रमाणित अनुरोधों तक सीमित है।\n\n&lt;b>4. तृतीय-पक्ष सेवाएं&lt;/b>\n\n• Firebase Authentication (Google)\n• Firebase Crashlytics (Google)\n• Google Play Billing\n\nहम आपका व्यक्तिगत डेटा किसी अन्य तृतीय पक्ष को नहीं बेचते, साझा करते, या हस्तांतरित करते हैं।\n\n&lt;b>5. आपके अधिकार&lt;/b>\n\nGDPR और समान विनियमों के तहत, आपके पास अधिकार हैं:\n• अपना व्यक्तिगत डेटा एक्सेस करना\n• गलत डेटा को सुधारने का अनुरोध करना\n• अपने डेटा को हटाने का अनुरोध करना\n• अपना डेटा निर्यात करना (डेटा पोर्टेबिलिटी)\n• किसी भी समय सहमति वापस लेना\n\nइनमें से किसी भी अधिकार का उपयोग करने के लिए, contact@chessgym.app पर संपर्क करें। हम 30 दिनों के भीतर जवाब देंगे।\n\n&lt;b>6. डेटा प्रतिधारण&lt;/b>\n\nआपका डेटा तब तक रखा जाता है जब तक आपका अकाउंट मौजूद है। यदि आप अपना अकाउंट हटाते हैं, तो सभी संबद्ध डेटा 30 दिनों के भीतर स्थायी रूप से हटा दिया जाता है।\n\n&lt;b>7. बच्चों की गोपनीयता&lt;/b>\n\nऐप जानबूझकर 13 वर्ष से कम आयु के बच्चों से डेटा एकत्र नहीं करता। यदि आपको लगता है कि हमने ऐसा डेटा एकत्र किया है, तो कृपया तुरंत हमसे संपर्क करें।\n\n&lt;b>8. इस नीति में बदलाव&lt;/b>\n\nहम समय-समय पर इस गोपनीयता नीति को अपडेट कर सकते हैं। बदलाव ऐप में अपडेटेड प्रभावी तिथि के साथ परिलक्षित होंगे।\n\n&lt;b>9. संपर्क&lt;/b>\n\nप्रश्नों या डेटा अनुरोधों के लिए:\ncontact@chessgym.app</string>
+    <string name="about_terms_title">उपयोग की शर्तें</string>
+    <string name="about_terms_content">ChessGym मुफ्त सॉफ्टवेयर है: आप इसे GNU General Public License की शर्तों के तहत, जैसा कि Free Software Foundation द्वारा प्रकाशित किया गया है, लाइसेंस के संस्करण 3, या (आपके विकल्प पर) किसी भी बाद के संस्करण के तहत, पुनर्वितरित और/या संशोधित कर सकते हैं।\n\nChessGym उपयोगी होने की उम्मीद के साथ वितरित किया जाता है, लेकिन बिना किसी वारंटी के; व्यापारिकता या किसी विशेष उद्देश्य के लिए उपयुक्तता की निहित वारंटी भी नहीं। अधिक विवरण के लिए GNU General Public License देखें।\n\nआपको इस प्रोग्राम के साथ GNU General Public License की एक प्रति मिली होनी चाहिए। यदि नहीं, तो https://www.gnu.org/licenses/ देखें।\n\nChessGym का पूर्ण सोर्स कोड यहाँ उपलब्ध है: https://github.com/paulcraciunas/ChessGym\n\nChessGym में Stockfish शामिल है, जो GNU General Public License v3.0 के तहत लाइसेंस प्राप्त एक मुफ्त और ओपन-सोर्स शतरंज इंजन है। Stockfish सोर्स कोड यहाँ उपलब्ध है: https://github.com/official-stockfish/Stockfish\n\nसभी शतरंज पहेली डेटा सार्वजनिक रूप से उपलब्ध डेटाबेस से लिया गया है। ChessGym और इसका लोगो Paul Mihai Craciunas की बौद्धिक संपदा है।\n\n© 2025–2026 Paul Mihai Craciunas.</string>
+    <string name="about_terms_and_conditions_title">नियम और शर्तें</string>
+    <string name="about_terms_and_conditions_content">ChessGym (&quot;ऐप&quot;) को डाउनलोड करके, इंस्टॉल करके, या उपयोग करके, आप निम्नलिखित नियमों और शर्तों से सहमत होते हैं। यदि आप सहमत नहीं हैं, तो कृपया तुरंत ऐप का उपयोग बंद करें।\n\nऐप &quot;जैसा है&quot; और &quot;जैसा उपलब्ध है&quot; के आधार पर प्रदान किया जाता है, बिना किसी प्रकार की वारंटी के, चाहे व्यक्त हो या निहित, जिसमें व्यापारिकता, किसी विशेष उद्देश्य के लिए उपयुक्तता, और गैर-उल्लंघन की निहित वारंटी शामिल है, लेकिन इन्हीं तक सीमित नहीं है।\n\nकिसी भी स्थिति में डेवलपर किसी प्रत्यक्ष, अप्रत्यक्ष, आकस्मिक, विशेष, परिणामी, या दंडात्मक नुकसान के लिए उत्तरदायी नहीं होगा जो ऐप के आपके उपयोग या उपयोग करने में असमर्थता से उत्पन्न हो या संबंधित हो, भले ही डेवलपर को ऐसे नुकसान की संभावना के बारे में सूचित किया गया हो।\n\nऐप में तृतीय-पक्ष वेबसाइटों या सेवाओं के लिंक हो सकते हैं जो डेवलपर के स्वामित्व या नियंत्रण में नहीं हैं। डेवलपर का किसी भी तृतीय-पक्ष वेबसाइट या सेवाओं की सामग्री, गोपनीयता नीतियों, या प्रथाओं पर कोई नियंत्रण नहीं है और वह कोई जिम्मेदारी नहीं लेता।\n\nडेवलपर बिना किसी सूचना के किसी भी समय ऐप को संशोधित, निलंबित, या बंद करने का अधिकार सुरक्षित रखता है। डेवलपर आपके या किसी तृतीय पक्ष के प्रति ऐप के किसी भी संशोधन, निलंबन, या बंद होने के लिए उत्तरदायी नहीं होगा।\n\nऐप का आपका उपयोग GNU General Public License v3.0 द्वारा भी नियंत्रित है, जिसका पूर्ण पाठ उपयोग की शर्तें अनुभाग के अंतर्गत उपलब्ध है।\n\nये नियम और शर्तें ऐप के आपके पहले उपयोग की तिथि से प्रभावी हैं। डेवलपर किसी भी समय इन शर्तों को अपडेट करने का अधिकार सुरक्षित रखता है। ऐप का निरंतर उपयोग किसी भी बदलाव की स्वीकृति का गठन करता है।\n\nइन शर्तों के बारे में प्रश्नों या चिंताओं के लिए, कृपया contact@chessgym.app पर संपर्क करें।</string>
+    <!-- endregion -->
+
+    <!-- region Tools -->
+    <string name="navigation_tools_label">टूल्स</string>
+    <string name="navigation_tools_content_description">शतरंज टूल्स</string>
+    <string name="tools_dashboard_eyebrow">टूल्स</string>
+    <string name="tools_dashboard_title">शतरंज टूल्स</string>
+    <string name="tools_dashboard_subtitle">आपके शतरंज खेलों के लिए उपयोगी उपकरण।</string>
+    <string name="tools_mode_start">टूल शुरू करें</string>
+    <string name="tools_clock_description">कॉन्फ़िगर करने योग्य नियंत्रणों के साथ अपने खेलों को समय दें</string>
+    <string name="tools_analysis_title">विश्लेषण</string>
+    <string name="tools_analysis_description">इंजन के साथ स्थितियों का विश्लेषण करें</string>
+    <string name="tools_import_description">FEN या PGN नोटेशन से गेम आयात करें</string>
+    <!-- endregion -->
+
+    <!-- region Clock Screen -->
+    <string name="clock_title">शतरंज घड़ी</string>
+    <string name="clock_white">सफेद</string>
+    <string name="clock_black">काला</string>
+    <string name="clock_stop">रोकें</string>
+    <string name="clock_new_game">नया खेल</string>
+    <string name="clock_time_up">समय समाप्त!</string>
+    <string name="clock_time_control">समय</string>
+    <string name="clock_increment">वृद्धि</string>
+    <string name="clock_minutes_format">%1$d मिनट</string>
+    <string name="clock_seconds_format">%1$d सेकंड</string>
+    <string name="clock_tap_to_start">शुरू करने के लिए टैप करें</string>
+    <!-- endregion -->
+
+    <!-- region Import Game Screen -->
+    <string name="import_game_title">गेम आयात करें</string>
+    <string name="import_fen">FEN</string>
+    <string name="import_pgn">PGN</string>
+    <string name="import_dialog_title_fen">FEN आयात करें</string>
+    <string name="import_dialog_title_pgn">PGN आयात करें</string>
+    <string name="import_dialog_hint_fen">FEN स्ट्रिंग यहाँ पेस्ट करें…</string>
+    <string name="import_dialog_hint_pgn">PGN टेक्स्ट यहाँ पेस्ट करें…</string>
+    <string name="import_dialog_confirm">आयात करें</string>
+    <string name="import_error_invalid_fen">अमान्य FEN नोटेशन। कृपया जांचें और पुनः प्रयास करें।</string>
+    <string name="import_error_invalid_pgn">अमान्य PGN नोटेशन। कृपया जांचें और पुनः प्रयास करें।</string>
+    <string name="import_game_jump_to_start">शुरुआत पर जाएं</string>
+    <string name="import_game_previous_move">पिछली चाल</string>
+    <string name="import_game_next_move">अगली चाल</string>
+    <string name="import_game_jump_to_end">अंत पर जाएं</string>
+    <!-- endregion -->
+
+    <!-- region Blind Mode -->
+    <string name="blind_mode_title">ब्लाइंड मोड</string>
+    <string name="blind_mode_training_mode">प्रशिक्षण मोड</string>
+    <string name="blind_mode_training_description">खेल आपकी रेटिंग को प्रभावित नहीं करेंगे</string>
+    <string name="blind_mode_play">खेलें</string>
+    <string name="blind_mode_resign">हार मानें</string>
+    <string name="blind_mode_reveal">प्रकट करें</string>
+    <string name="blind_mode_thinking">इंजन सोच रहा है…</string>
+    <string name="blind_mode_your_turn">आपकी बारी</string>
+    <string name="blind_mode_moves">चालें</string>
+    <string name="abandon_game_title">खेल छोड़ें?</string>
+    <string name="abandon_game_message">क्या आप वाकई वर्तमान खेल छोड़ना चाहते हैं? आपकी प्रगति खो जाएगी।</string>
+    <!-- endregion -->
+
+    <!-- region Achievements -->
+    <!-- Category display names -->
+    <string name="achievement_category_rated_puzzles_solved">रेटेड पहेलियाँ हल की गईं</string>
+    <string name="achievement_category_puzzle_rush_sessions">पज़ल रश सत्र</string>
+    <string name="achievement_category_streak_sessions">स्ट्रीक सत्र</string>
+    <string name="achievement_category_failed_puzzles_redeemed">असफल पहेलियाँ सुधारी गईं</string>
+    <string name="achievement_category_find_square_sessions">चौक ढूंढें सत्र</string>
+    <string name="achievement_category_move_piece_sessions">मोहरा चलाएं सत्र</string>
+    <string name="achievement_category_blind_mode_wins">होमर की विरासत</string>
+    <string name="achievement_category_rated_win_streak">रेटेड जीत स्ट्रीक</string>
+    <string name="achievement_category_rating_climber">रेटिंग पर्वतारोही</string>
+    <string name="achievement_category_blind_strategist">ब्लाइंड रणनीतिकार</string>
+    <string name="achievement_category_rush_champion">रश चैम्पियन</string>
+    <string name="achievement_category_streak_legend">स्ट्रीक लीजेंड</string>
+    <string name="achievement_category_eagle_eye">बाज की नज़र</string>
+    <string name="achievement_category_knights_path">घोड़े का पथ</string>
+    <string name="achievement_category_puzzle_addict">पहेली प्रेमी</string>
+    <string name="achievement_category_time_invested">समय निवेश</string>
+    <string name="achievement_category_daily_grinder">दैनिक अभ्यासकर्ता</string>
+    <string name="achievement_category_consistency_king">निरंतरता का राजा</string>
+    <string name="achievement_category_board_vision">बोर्ड दृष्टि</string>
+    <string name="achievement_category_rush_solver">रश हल करने वाला</string>
+
+    <!-- Tier names: RATED_PUZZLES_SOLVED -->
+    <string name="achievement_rated_puzzles_solved_one">पहेली उत्साही</string>
+    <string name="achievement_rated_puzzles_solved_two">पहेली शौकीन</string>
+    <string name="achievement_rated_puzzles_solved_three">पहेली विशेषज्ञ</string>
+    <string name="achievement_rated_puzzles_solved_four">पहेली उस्ताद</string>
+    <string name="achievement_rated_puzzles_solved_five">पहेली ग्रैंडमास्टर</string>
+
+    <!-- Tier names: PUZZLE_RUSH_SESSIONS -->
+    <string name="achievement_puzzle_rush_sessions_one">रश नौसिखिया</string>
+    <string name="achievement_puzzle_rush_sessions_two">रश नियमित</string>
+    <string name="achievement_puzzle_rush_sessions_three">रश अनुभवी</string>
+    <string name="achievement_puzzle_rush_sessions_four">रश कप्तान</string>
+    <string name="achievement_puzzle_rush_sessions_five">रश लीजेंड</string>
+
+    <!-- Tier names: STREAK_SESSIONS -->
+    <string name="achievement_streak_sessions_one">स्ट्रीक शुरुआती</string>
+    <string name="achievement_streak_sessions_two">स्ट्रीक खोजकर्ता</string>
+    <string name="achievement_streak_sessions_three">स्ट्रीक शिकारी</string>
+    <string name="achievement_streak_sessions_four">स्ट्रीक क्रशर</string>
+    <string name="achievement_streak_sessions_five">स्ट्रीक दीवाना</string>
+
+    <!-- Tier names: FAILED_PUZZLES_REDEEMED -->
+    <string name="achievement_failed_puzzles_redeemed_one">दूसरा मौका</string>
+    <string name="achievement_failed_puzzles_redeemed_two">वापसी करने वाला</string>
+    <string name="achievement_failed_puzzles_redeemed_three">सुधार का खोजकर्ता</string>
+    <string name="achievement_failed_puzzles_redeemed_four">सुधार उस्ताद</string>
+    <string name="achievement_failed_puzzles_redeemed_five">कभी हार मत मानो</string>
+
+    <!-- Tier names: FIND_SQUARE_SESSIONS -->
+    <string name="achievement_find_square_sessions_one">चौक नौसिखिया</string>
+    <string name="achievement_find_square_sessions_two">चौक खोजकर्ता</string>
+    <string name="achievement_find_square_sessions_three">चौक विशेषज्ञ</string>
+    <string name="achievement_find_square_sessions_four">चौक उस्ताद</string>
+    <string name="achievement_find_square_sessions_five">चौक ग्रैंडमास्टर</string>
+
+    <!-- Tier names: MOVE_PIECE_SESSIONS -->
+    <string name="achievement_move_piece_sessions_one">मोहरा शुरुआती</string>
+    <string name="achievement_move_piece_sessions_two">मोहरा चलाने वाला</string>
+    <string name="achievement_move_piece_sessions_three">मोहरा नाविक</string>
+    <string name="achievement_move_piece_sessions_four">मोहरा उस्ताद</string>
+    <string name="achievement_move_piece_sessions_five">मोहरा ग्रैंडमास्टर</string>
+
+    <!-- Tier names: BLIND_MODE_WINS -->
+    <string name="achievement_blind_mode_wins_one">ओडिन का शिष्य</string>
+    <string name="achievement_blind_mode_wins_two">तिरेसियास का छात्र</string>
+    <string name="achievement_blind_mode_wins_three">होमर का उत्तराधिकारी</string>
+    <string name="achievement_blind_mode_wins_four">अंधा पैगंबर</string>
+    <string name="achievement_blind_mode_wins_five">सर्वद्रष्टा</string>
+
+    <!-- Tier names: RATED_WIN_STREAK -->
+    <string name="achievement_rated_win_streak_one">भाग्यशाली स्ट्रीक</string>
+    <string name="achievement_rated_win_streak_two">तीव्र दिमाग</string>
+    <string name="achievement_rated_win_streak_three">बेदाग रणनीतिकार</string>
+    <string name="achievement_rated_win_streak_four">जीतने की मशीन</string>
+    <string name="achievement_rated_win_streak_five">अजेय</string>
+
+    <!-- Tier names: RATING_CLIMBER -->
+    <string name="achievement_rating_climber_one">उठता प्यादा</string>
+    <string name="achievement_rating_climber_two">चढ़ता घोड़ा</string>
+    <string name="achievement_rating_climber_three">उड़ता ऊंट</string>
+    <string name="achievement_rating_climber_four">ऊंचा हाथी</string>
+    <string name="achievement_rating_climber_five">राज करने वाली रानी</string>
+
+    <!-- Tier names: BLIND_STRATEGIST -->
+    <string name="achievement_blind_strategist_one">ब्लाइंड स्काउट</string>
+    <string name="achievement_blind_strategist_two">ब्लाइंड रणनीतिकार</string>
+    <string name="achievement_blind_strategist_three">ब्लाइंड स्ट्रैटेजिस्ट</string>
+    <string name="achievement_blind_strategist_four">ब्लाइंड कमांडर</string>
+    <string name="achievement_blind_strategist_five">ब्लाइंड मास्टरमाइंड</string>
+
+    <!-- Tier names: RUSH_CHAMPION -->
+    <string name="achievement_rush_champion_one">रश शुरुआती</string>
+    <string name="achievement_rush_champion_two">रश दावेदार</string>
+    <string name="achievement_rush_champion_three">रश चैम्पियन</string>
+    <string name="achievement_rush_champion_four">रश हीरो</string>
+    <string name="achievement_rush_champion_five">रश फेनोमेनन</string>
+
+    <!-- Tier names: STREAK_LEGEND -->
+    <string name="achievement_streak_legend_one">गर्म शुरुआत</string>
+    <string name="achievement_streak_legend_two">आग पर</string>
+    <string name="achievement_streak_legend_three">अजेय</string>
+    <string name="achievement_streak_legend_four">महान स्ट्रीक</string>
+    <string name="achievement_streak_legend_five">स्ट्रीक अमर</string>
+
+    <!-- Tier names: EAGLE_EYE -->
+    <string name="achievement_eagle_eye_one">तीखी नज़र</string>
+    <string name="achievement_eagle_eye_two">तेज़ नज़र</string>
+    <string name="achievement_eagle_eye_three">बाज की नज़र</string>
+    <string name="achievement_eagle_eye_four">बाज़ की दृष्टि</string>
+    <string name="achievement_eagle_eye_five">सौरोन की आंख</string>
+
+    <!-- Tier names: KNIGHTS_PATH -->
+    <string name="achievement_knights_path_one">पहले कदम</string>
+    <string name="achievement_knights_path_two">पथ खोजकर्ता</string>
+    <string name="achievement_knights_path_three">घोड़े की यात्रा</string>
+    <string name="achievement_knights_path_four">घोड़े की ओडिसी</string>
+    <string name="achievement_knights_path_five">घोड़े की विजय</string>
+
+    <!-- Tier names: PUZZLE_ADDICT -->
+    <string name="achievement_puzzle_addict_one">शुरुआत हो रही है</string>
+    <string name="achievement_puzzle_addict_two">आदतें बन रही हैं</string>
+    <string name="achievement_puzzle_addict_three">समर्पित हल करने वाला</string>
+    <string name="achievement_puzzle_addict_four">पहेली प्रेमी</string>
+    <string name="achievement_puzzle_addict_five">पहेली मशीन</string>
+
+    <!-- Tier names: TIME_INVESTED -->
+    <string name="achievement_time_invested_one">पहला घंटा</string>
+    <string name="achievement_time_invested_two">गंभीर होना</string>
+    <string name="achievement_time_invested_three">समर्पित</string>
+    <string name="achievement_time_invested_four">प्रतिबद्ध</string>
+    <string name="achievement_time_invested_five">जीवन भर सीखने वाला</string>
+
+    <!-- Tier names: DAILY_GRINDER -->
+    <string name="achievement_daily_grinder_one">पहले कदम</string>
+    <string name="achievement_daily_grinder_two">साप्ताहिक आदत</string>
+    <string name="achievement_daily_grinder_three">तीन सप्ताह की स्ट्रीक</string>
+    <string name="achievement_daily_grinder_four">समर्पित नियमित</string>
+    <string name="achievement_daily_grinder_five">अनंत खिलाड़ी</string>
+
+    <!-- Tier names: CONSISTENCY_KING -->
+    <string name="achievement_consistency_king_one">तीन दिन की स्ट्रीक</string>
+    <string name="achievement_consistency_king_two">साप्ताहिक योद्धा</string>
+    <string name="achievement_consistency_king_three">पखवाड़े की शक्ति</string>
+    <string name="achievement_consistency_king_four">मासिक चमत्कार</string>
+    <string name="achievement_consistency_king_five">सौ दिन का हीरो</string>
+
+    <!-- Tier names: BOARD_VISION -->
+    <string name="achievement_board_vision_one">दृष्टि प्रशिक्षु</string>
+    <string name="achievement_board_vision_two">दृष्टि शिष्य</string>
+    <string name="achievement_board_vision_three">दृष्टि विशेषज्ञ</string>
+    <string name="achievement_board_vision_four">दृष्टि उस्ताद</string>
+    <string name="achievement_board_vision_five">बोर्ड ऋषि</string>
+
+    <!-- Tier names: RUSH_SOLVER -->
+    <string name="achievement_rush_solver_one">रश हल करने वाला</string>
+    <string name="achievement_rush_solver_two">रश ग्राइंडर</string>
+    <string name="achievement_rush_solver_three">स्पीड डेमन</string>
+    <string name="achievement_rush_solver_four">रश मशीन</string>
+    <string name="achievement_rush_solver_five">रश टर्मिनेटर</string>
+
+    <!-- Achievement descriptions -->
+    <string name="achievement_desc_rated_puzzles_solved">यह उपलब्धि अर्जित करने के लिए रेटेड पहेलियाँ हल करें</string>
+    <string name="achievement_desc_puzzle_rush_sessions">यह उपलब्धि अर्जित करने के लिए पज़ल रश सत्र पूरे करें</string>
+    <string name="achievement_desc_streak_sessions">यह उपलब्धि अर्जित करने के लिए पहेली स्ट्रीक सत्र पूरे करें</string>
+    <string name="achievement_desc_failed_puzzles_redeemed">पहले असफल पहेलियों को पुनः प्रयास करें और हल करें</string>
+    <string name="achievement_desc_find_square_sessions">यह उपलब्धि अर्जित करने के लिए चौक ढूंढें सत्र खेलें</string>
+    <string name="achievement_desc_move_piece_sessions">यह उपलब्धि अर्जित करने के लिए मोहरा चलाएं सत्र खेलें</string>
+    <string name="achievement_desc_blind_mode_wins">यह उपलब्धि अर्जित करने के लिए रेटेड ब्लाइंड मोड खेल जीतें</string>
+    <string name="achievement_desc_rated_win_streak">बिना हारे लगातार रेटेड पहेलियाँ जीतें</string>
+    <string name="achievement_desc_rating_climber">नई ऊंचाइयों तक पहुंचने के लिए अपनी पहेली रेटिंग बढ़ाएं</string>
+    <string name="achievement_desc_blind_strategist">यह उपलब्धि अर्जित करने के लिए अपनी ब्लाइंड मोड रेटिंग बढ़ाएं</string>
+    <string name="achievement_desc_rush_champion">पज़ल रश में उच्च स्कोर बनाएं</string>
+    <string name="achievement_desc_streak_legend">पहेली स्ट्रीक में उच्च स्कोर बनाएं</string>
+    <string name="achievement_desc_eagle_eye">चौक ढूंढें में उच्च स्कोर बनाएं</string>
+    <string name="achievement_desc_knights_path">मोहरा चलाएं में उच्च स्कोर बनाएं</string>
+    <string name="achievement_desc_puzzle_addict">सभी गेम मोड में पहेलियाँ हल करें</string>
+    <string name="achievement_desc_time_invested">सभी गेम मोड में अभ्यास करते हुए समय बिताएं</string>
+    <string name="achievement_desc_daily_grinder">अपनी स्ट्रीक बनाने के लिए लगातार दिन खेलें</string>
+    <string name="achievement_desc_consistency_king">अपनी सर्वश्रेष्ठ लगातार दैनिक स्ट्रीक हासिल करें</string>
+    <string name="achievement_desc_board_vision">चौक ढूंढें और मोहरा चलाएं सत्र पूरे करें</string>
+    <string name="achievement_desc_rush_solver">पज़ल रश सत्र में पहेलियाँ हल करें</string>
+
+    <!-- Achievement UI -->
+    <string name="achievement_screen_title">उपलब्धियाँ</string>
+    <string name="achievement_banner_unlocked">%1$s — टियर %2$d अनलॉक!</string>
+    <string name="achievement_trophy_case_title">आपका ट्रॉफी केस</string>
+    <string name="achievement_trophy_case_keep_going">जारी रखें — %1$d और बाकी</string>
+    <string name="achievement_trophy_case_all_earned">सब अर्जित — शाबाश!</string>
+    <string name="achievement_trophy_case_summary">%1$d प्रगति में · %2$d लॉक</string>
+    <string name="achievement_earned_label">अर्जित</string>
+    <string name="achievement_earned_count">%1$d / %2$d अर्जित</string>
+    <string name="achievement_earned_total">%1$d में से</string>
+    <string name="achievement_detail_next_tier">अगले टियर की ओर %1$d / %2$d</string>
+    <string name="achievement_detail_progress">%1$d / %2$d</string>
+    <string name="achievement_see_all">सब देखें</string>
+    <string name="achievement_group_puzzles">पहेलियाँ</string>
+    <string name="achievement_group_rush_and_streak">रश &amp; स्ट्रीक</string>
+    <string name="achievement_group_board_vision">बोर्ड दृष्टि</string>
+    <string name="achievement_group_skill_and_mastery">कौशल &amp; महारत</string>
+    <string name="achievement_group_dedication">समर्पण</string>
+    <!-- endregion -->
+
+    <!-- temporary values; these will be deleted as we build features -->
+    <string name="under_construction">निर्माणाधीन</string>
+
+    <!-- region auth errors -->
+    <string name="auth_error_google_sign_in_failed">Google साइन-इन विफल। कृपया पुनः प्रयास करें।</string>
+    <string name="auth_error_sign_in_failed">साइन-इन विफल। कृपया पुनः प्रयास करें।</string>
+    <string name="auth_error_sign_up_failed">साइन-अप विफल। कृपया पुनः प्रयास करें।</string>
+    <string name="auth_error_invalid_credentials">गलत पासवर्ड। कृपया पुनः प्रयास करें।</string>
+    <string name="auth_error_user_not_found">इस ईमेल से कोई अकाउंट नहीं मिला।</string>
+    <string name="auth_error_account_already_exists">इस ईमेल से पहले से एक अकाउंट मौजूद है।</string>
+    <string name="auth_error_weak_password">पासवर्ड बहुत कमज़ोर है। कम से कम 6 अक्षर उपयोग करें।</string>
+    <string name="auth_error_network">नेटवर्क त्रुटि। अपना कनेक्शन जांचें और पुनः प्रयास करें।</string>
+    <string name="auth_error_empty_fields">यह फ़ील्ड आवश्यक है।</string>
+    <string name="auth_error_invalid_email">कृपया एक वैध ईमेल पता दर्ज करें।</string>
+    <string name="auth_error_password_too_short">पासवर्ड कम से कम 6 अक्षर का होना चाहिए।</string>
+    <string name="auth_error_display_name_too_short">प्रदर्शन नाम कम से कम 4 अक्षर का होना चाहिए।</string>
+    <string name="auth_error_display_name_too_long">प्रदर्शन नाम अधिकतम 15 अक्षर का होना चाहिए।</string>
+    <string name="auth_error_password_reset_user_not_found">इस ईमेल पते से कोई अकाउंट नहीं मिला।</string>
+    <string name="auth_error_password_reset_sent">पासवर्ड रीसेट ईमेल भेजा गया। अपना इनबॉक्स जांचें।</string>
+    <string name="auth_error_no_google_accounts">इस डिवाइस पर कोई Google अकाउंट नहीं मिला। कृपया पहले अपनी डिवाइस सेटिंग्स में एक Google अकाउंट जोड़ें।</string>
+    <string name="auth_error_session_expired">आपका सत्र समाप्त हो गया है। कृपया फिर से साइन इन करें।</string>
+    <string name="auth_error_account_disabled">यह अकाउंट अक्षम कर दिया गया है।</string>
+    <string name="auth_error_server">सर्वर त्रुटि। कृपया बाद में पुनः प्रयास करें।</string>
+
+    <!-- Sign In Screen -->
+    <string name="sign_in_title">साइन इन</string>
+    <string name="sign_up_title">अकाउंट बनाएं</string>
+    <string name="sign_in_eyebrow">वापस स्वागत है</string>
+    <string name="sign_up_eyebrow">आज हमसे जुड़ें</string>
+    <string name="sign_in_welcome">ChessGym में आपका स्वागत है</string>
+    <string name="sign_in_subtitle">डिवाइस के पार अपनी प्रगति सिंक करने के लिए साइन इन करें</string>
+    <string name="sign_up_subtitle">अपनी प्रगति सहेजने और डेटा सुरक्षित रूप से बैकअप करने के लिए साइन अप करें</string>
+    <string name="sign_in_google">Google से साइन इन करें</string>
+    <string name="sign_up_google">Google से साइन अप करें</string>
+    <string name="sign_in_divider">या ईमेल से</string>
+    <string name="sign_in_display_name_label">प्रदर्शन नाम</string>
+    <string name="sign_in_email_label">ईमेल</string>
+    <string name="sign_in_password_label">पासवर्ड</string>
+    <string name="sign_in_password_show">दिखाएं</string>
+    <string name="sign_in_password_hide">छुपाएं</string>
+    <string name="sign_in_button">साइन इन करें</string>
+    <string name="sign_up_button">अकाउंट बनाएं</string>
+    <string name="sign_in_switch_to_sign_up">अकाउंट नहीं है? &lt;b>&lt;u>एक बनाएं&lt;/u>&lt;/b></string>
+    <string name="sign_in_switch_to_sign_in">पहले से अकाउंट है? &lt;b>&lt;u>साइन इन करें&lt;/u>&lt;/b></string>
+    <string name="sign_in_forgot_password">पासवर्ड भूल गए?</string>
+    <!-- endregion -->
+
+</resources>

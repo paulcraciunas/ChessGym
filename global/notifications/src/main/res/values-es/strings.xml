@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- region download -->
+    <string name="download_channel_name">Descarga de puzzles</string>
+    <string name="download_channel_desc">Muestra el progreso de descarga de puzzles</string>
+    <string name="download_notification_title">Descargando puzzles</string>
+    <string name="download_notification_text">Preparando puzzles para su uso…</string>
+    <!-- endregion -->
+</resources>
