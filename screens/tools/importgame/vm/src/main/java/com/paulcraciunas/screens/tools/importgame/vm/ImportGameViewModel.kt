@@ -2,9 +2,9 @@ package com.paulcraciunas.screens.tools.importgame.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.paulcraciunas.game.logic.api.GameInteractor
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
+import com.paulcraciunas.logic.builders.Builders
 import com.paulcraciunas.screens.common.model.GameData
 import com.paulcraciunas.screens.common.model.GameViewModelHelper
 import com.paulcraciunas.serializer.api.SerializeException
@@ -25,13 +25,12 @@ class ImportGameViewModel @Inject constructor(
     @param:SerializerFen private val fenSerializer: Serializer,
     @param:SerializerPgn private val pgnSerializer: Serializer,
     private val appSettingsRepository: AppSettingsRepository,
-    gameInteractor: GameInteractor,
 ) : ViewModel(), ImportGameScreenInteractor {
 
     private val _uiState = MutableStateFlow(ImportGameUiState())
     val uiState: StateFlow<ImportGameUiState> = _uiState.asStateFlow()
 
-    private val helper = GameViewModelHelper(gameInteractor)
+    private val helper = GameViewModelHelper(gameInteractor = Builders.gameInteractor())
 
     init {
         observeSettings()

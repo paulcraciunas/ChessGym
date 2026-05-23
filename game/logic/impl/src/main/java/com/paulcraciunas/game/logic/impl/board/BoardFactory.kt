@@ -3,12 +3,13 @@ package com.paulcraciunas.game.logic.impl.board
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.IBoard
+import com.paulcraciunas.game.logic.api.board.IBoardFactory
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank
 
-object BoardFactory {
-    fun defaultBoard(): Board = Board().from(defaultBoard)
+object BoardFactory: IBoardFactory {
+    override fun defaultBoard(): Board = Board().from(defaultBoard)
 
     private val defaultBoard: IBoard = Board()
         .addWhitePieces()

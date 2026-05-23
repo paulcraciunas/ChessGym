@@ -10,7 +10,6 @@ androidLibrary {
 dependencies {
     api(project(":game:puzzles:api"))
     implementation(project(":game:puzzles:impl"))
-    implementation(project(":game:logic:di"))
     implementation(project(":game:serializer:api"))
     implementation(project(":global:notifications"))
 

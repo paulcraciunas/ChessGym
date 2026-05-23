@@ -1,6 +1,6 @@
 package com.paulcraciunas.tools.dbbuilder
 
-import com.paulcraciunas.game.logic.impl.RealGameFactory
+import com.paulcraciunas.logic.builders.Builders
 import com.paulcraciunas.puzzles.api.PuzzleDatabaseContract
 import com.paulcraciunas.serializer.impl.FenSerializer
 import com.paulcraciunas.serializer.impl.binary.BinaryAdapter
@@ -54,7 +54,7 @@ fun main(args: Array<String>) {
     outputDir.mkdirs()
 
     val writer = BinaryPuzzleWriter(
-        FenSerializer(RealGameFactory()),
+        FenSerializer(Builders.gameFactory()),
         BinaryAdapter(),
     )
 

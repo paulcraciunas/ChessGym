@@ -1,6 +1,6 @@
 package com.paulcraciunas.serializer.di
 
-import com.paulcraciunas.game.logic.api.GameFactory
+import com.paulcraciunas.logic.builders.Builders
 import com.paulcraciunas.serializer.api.PuzzleReader
 import com.paulcraciunas.serializer.api.PuzzleWriter
 import com.paulcraciunas.serializer.api.Serializer
@@ -23,9 +23,8 @@ internal class IoModule {
     @Provides
     @Singleton
     fun provideReader(
-        gameFactory: GameFactory,
         adapter: BinaryAdapter
-    ): PuzzleReader = BinaryPuzzleReader(gameFactory, adapter)
+    ): PuzzleReader = BinaryPuzzleReader(gameFactory = Builders.gameFactory(), adapter = adapter)
 
     @Provides
     @Singleton

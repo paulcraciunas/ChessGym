@@ -66,7 +66,7 @@ android {
 
 dependencies {
     implementation(project(":game:puzzles:di"))
-    implementation(project(":game:logic:di"))
+    implementation(project(":game:logic:builders"))
     implementation(project(":game:engine:impl"))
     implementation(project(":game:serializer:di"))
     implementation(project(":domain:di"))

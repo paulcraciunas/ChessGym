@@ -53,7 +53,6 @@ internal class AnalysisViewModelTest {
             fenSerializer = fenSerializer,
             analyzePosition = fakeAnalyzePosition,
             appSettingsRepository = appSettingsRepository,
-            gameInteractor = gameFactory.gameInteractor(),
         ).also { it.disableThrottling() }
     }
 

@@ -2,9 +2,9 @@ package com.paulcraciunas.chessgym.debug
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.paulcraciunas.game.logic.api.PuzzleInteractor
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
+import com.paulcraciunas.logic.builders.Builders
 import com.paulcraciunas.puzzles.api.PuzzleRepository
 import com.paulcraciunas.screens.common.model.PuzzleData
 import com.paulcraciunas.screens.common.model.PuzzleViewModelHelper
@@ -19,9 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class DebugPuzzleViewModel @Inject constructor(
     private val puzzleRepository: PuzzleRepository,
-    puzzleInteractor: PuzzleInteractor,
 ) : ViewModel() {
-    private val helper = PuzzleViewModelHelper(puzzleInteractor = puzzleInteractor)
+    private val helper = PuzzleViewModelHelper(puzzleInteractor = Builders.puzzleInteractor())
 
     private val _uiState = MutableStateFlow<DebugPuzzleUiState>(DebugPuzzleUiState.Idle)
     val uiState: StateFlow<DebugPuzzleUiState> = _uiState.asStateFlow()

@@ -297,7 +297,6 @@ internal class FailedPuzzlesViewModelTest {
             getPuzzleFen = getPuzzleFen,
             appSettingsRepository = appSettingsRepository,
             timer = timer,
-            puzzleInteractor = RealGameFactory().puzzleInteractor(),
         )
         // Don't advance dispatcher - state is still loading
 
@@ -340,7 +339,6 @@ internal class FailedPuzzlesViewModelTest {
             getPuzzleFen = getPuzzleFen,
             appSettingsRepository = appSettingsRepository,
             timer = timer,
-            puzzleInteractor = RealGameFactory().puzzleInteractor(),
         )
         testDispatcher.scheduler.advanceUntilIdle()
         return underTest

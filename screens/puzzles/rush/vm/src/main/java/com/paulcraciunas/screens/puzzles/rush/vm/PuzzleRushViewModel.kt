@@ -9,9 +9,9 @@ import com.paulcraciunas.domain.api.puzzles.GetPuzzleFen
 import com.paulcraciunas.domain.api.puzzles.OnPuzzleRushComplete
 import com.paulcraciunas.domain.api.puzzles.PuzzleAnalysisData
 import com.paulcraciunas.domain.api.puzzles.PuzzleRushResult
-import com.paulcraciunas.game.logic.api.PuzzleInteractor
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
+import com.paulcraciunas.logic.builders.Builders
 import com.paulcraciunas.screens.common.board.PIECE_MOVE_ANIMATION_DURATION_MS
 import com.paulcraciunas.screens.common.model.PuzzleData
 import com.paulcraciunas.screens.common.model.PuzzleResult
@@ -45,9 +45,8 @@ class PuzzleRushViewModel @Inject constructor(
     private val appSettingsRepository: AppSettingsRepository,
     private val userRepository: UserRepository,
     private val getPuzzleFen: GetPuzzleFen,
-    puzzleInteractor: PuzzleInteractor,
 ) : ViewModel(), PuzzleRushScreenInteractor {
-    private val helper = PuzzleViewModelHelper(puzzleInteractor = puzzleInteractor)
+    private val helper = PuzzleViewModelHelper(puzzleInteractor = Builders.puzzleInteractor())
     private var enableAnimations: Boolean = true
 
     private val _navigateToAnalysis = Channel<PuzzleAnalysisData>(Channel.BUFFERED)

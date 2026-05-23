@@ -6,9 +6,9 @@ import com.paulcraciunas.domain.api.general.Timer
 import com.paulcraciunas.domain.api.puzzles.GetStreakPuzzle
 import com.paulcraciunas.domain.api.puzzles.OnStreakComplete
 import com.paulcraciunas.domain.api.puzzles.OnStreakPuzzleComplete
-import com.paulcraciunas.game.logic.api.PuzzleInteractor
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
+import com.paulcraciunas.logic.builders.Builders
 import com.paulcraciunas.screens.common.board.PIECE_MOVE_ANIMATION_DURATION_MS
 import com.paulcraciunas.screens.common.model.PuzzleViewModelHelper
 import com.paulcraciunas.screens.common.model.PuzzleViewModelHelper.OnSquareClick
@@ -30,9 +30,8 @@ class PuzzleStreakViewModel @Inject constructor(
     private val onStreakComplete: OnStreakComplete,
     private val appSettingsRepository: AppSettingsRepository,
     private val timer: Timer,
-    puzzleInteractor: PuzzleInteractor,
 ) : ViewModel(), PuzzleStreakScreenInteractor {
-    private val helper = PuzzleViewModelHelper(puzzleInteractor = puzzleInteractor)
+    private val helper = PuzzleViewModelHelper(puzzleInteractor = Builders.puzzleInteractor())
     private var enableAnimations: Boolean = true
 
     private val _uiState = MutableStateFlow<PuzzleStreakUiState>(PuzzleStreakUiState.Loading)

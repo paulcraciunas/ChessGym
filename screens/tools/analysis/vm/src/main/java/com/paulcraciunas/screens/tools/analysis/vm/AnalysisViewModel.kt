@@ -5,10 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.paulcraciunas.domain.api.analysis.AnalyzePosition
 import com.paulcraciunas.game.engine.api.EngineLine
 import com.paulcraciunas.game.engine.api.Evaluation
-import com.paulcraciunas.game.logic.api.GameInteractor
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
+import com.paulcraciunas.logic.builders.Builders
 import com.paulcraciunas.screens.common.model.GameData
 import com.paulcraciunas.screens.common.model.GameViewModelHelper
 import com.paulcraciunas.serializer.api.Serializer
@@ -40,13 +40,12 @@ class AnalysisViewModel @Inject constructor(
     @param:SerializerFen private val fenSerializer: Serializer,
     private val analyzePosition: AnalyzePosition,
     private val appSettingsRepository: AppSettingsRepository,
-    gameInteractor: GameInteractor,
 ) : ViewModel(), AnalysisScreenInteractor {
 
     private val _uiState = MutableStateFlow(AnalysisUiState())
     val uiState: StateFlow<AnalysisUiState> = _uiState.asStateFlow()
 
-    private val helper = GameViewModelHelper(gameInteractor)
+    private val helper = GameViewModelHelper(gameInteractor = Builders.gameInteractor())
     private var analysisJob: Job? = null
     private var navigationDebounceJob: Job? = null
     internal var enableThrottling: Boolean = true

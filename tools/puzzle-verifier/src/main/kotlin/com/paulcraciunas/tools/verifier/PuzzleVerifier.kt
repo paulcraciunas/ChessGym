@@ -5,7 +5,7 @@ import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.loc
-import com.paulcraciunas.game.logic.impl.RealGameFactory
+import com.paulcraciunas.logic.builders.Builders
 import com.paulcraciunas.serializer.impl.FenSerializer
 import com.paulcraciunas.serializer.impl.binary.BinaryAdapter
 import com.paulcraciunas.serializer.impl.binary.BinaryPuzzleReader
@@ -21,7 +21,7 @@ private const val PROGRESS_INTERVAL = 100_000
 private const val DUMMY_RATING = 1500
 
 fun main() {
-    val factory = RealGameFactory()
+    val factory = Builders.gameFactory()
     val adapter = BinaryAdapter()
     val writer = BinaryPuzzleWriter(FenSerializer(factory), adapter)
     val reader = BinaryPuzzleReader(factory, adapter)

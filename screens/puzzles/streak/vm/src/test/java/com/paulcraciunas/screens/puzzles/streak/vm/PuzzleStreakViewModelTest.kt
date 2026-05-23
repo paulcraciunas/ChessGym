@@ -358,7 +358,6 @@ internal class PuzzleStreakViewModelTest {
             onStreakComplete = onStreakComplete,
             appSettingsRepository = appSettingsRepository,
             timer = timer,
-            puzzleInteractor = RealGameFactory().puzzleInteractor()
         )
         testDispatcher.scheduler.advanceUntilIdle()
         return underTest

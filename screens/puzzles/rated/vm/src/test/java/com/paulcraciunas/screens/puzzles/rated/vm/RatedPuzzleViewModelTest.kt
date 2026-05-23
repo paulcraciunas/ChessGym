@@ -289,7 +289,6 @@ internal class RatedPuzzleViewModelTest {
             onPuzzleComplete = onPuzzleComplete,
             appSettingsRepository = appSettingsRepository,
             timer = timer,
-            puzzleInteractor = RealGameFactory().puzzleInteractor()
         )
         testDispatcher.scheduler.advanceUntilIdle()
         return underTest

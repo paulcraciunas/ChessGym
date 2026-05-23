@@ -16,6 +16,7 @@ android {
 dependencies {
     implementation(project(":global:resources"))
     implementation(project(":game:logic:api"))
+    implementation(project(":game:logic:builders"))
     implementation(project(":domain:api"))
     implementation(libs.kotlinx.collections.immutable)
 

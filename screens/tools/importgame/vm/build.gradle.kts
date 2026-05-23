@@ -9,6 +9,7 @@ androidLibrary {
 
 dependencies {
     implementation(project(":game:logic:api"))
+    implementation(project(":game:logic:builders"))
     implementation(project(":game:serializer:api"))
     implementation(project(":game:serializer:di"))
     implementation(project(":settings:application:api"))

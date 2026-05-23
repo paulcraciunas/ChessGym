@@ -5,6 +5,7 @@ plugins {
 dependencies {
     implementation(project(":domain:api"))
     implementation(project(":game:logic:api"))
+    implementation(project(":game:logic:builders"))
     implementation(project(":game:engine:api"))
     implementation(project(":game:puzzles:api"))
     implementation(project(":game:serializer:api"))

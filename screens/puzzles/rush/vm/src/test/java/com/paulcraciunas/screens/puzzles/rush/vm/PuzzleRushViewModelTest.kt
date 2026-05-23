@@ -287,7 +287,6 @@ internal class PuzzleRushViewModelTest {
             appSettingsRepository = appSettingsRepository,
             userRepository = userRepository,
             getPuzzleFen = getPuzzleFen,
-            puzzleInteractor = RealGameFactory().puzzleInteractor(),
         )
         testDispatcher.scheduler.advanceUntilIdle()
         return underTest

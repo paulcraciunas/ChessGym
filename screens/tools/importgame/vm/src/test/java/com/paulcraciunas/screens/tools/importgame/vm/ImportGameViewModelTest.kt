@@ -44,7 +44,6 @@ internal class ImportGameViewModelTest {
             fenSerializer = fenSerializer,
             pgnSerializer = pgnSerializer,
             appSettingsRepository = appSettingsRepository,
-            gameInteractor = gameFactory.gameInteractor(),
         )
     }
 

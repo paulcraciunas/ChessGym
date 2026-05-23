@@ -7,9 +7,9 @@ import com.paulcraciunas.domain.api.puzzles.GetRatedPuzzle
 import com.paulcraciunas.domain.api.puzzles.OnPuzzleComplete
 import com.paulcraciunas.domain.api.puzzles.PuzzleCompletionResult
 import com.paulcraciunas.domain.api.general.Timer
-import com.paulcraciunas.game.logic.api.PuzzleInteractor
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
+import com.paulcraciunas.logic.builders.Builders
 import com.paulcraciunas.screens.common.model.PuzzleViewModelHelper
 import com.paulcraciunas.screens.common.model.PuzzleViewModelHelper.OnSquareClick
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
@@ -27,9 +27,8 @@ class RatedPuzzleViewModel @Inject constructor(
     private val onPuzzleComplete: OnPuzzleComplete,
     private val appSettingsRepository: AppSettingsRepository,
     private val timer: Timer,
-    puzzleInteractor: PuzzleInteractor,
 ) : ViewModel(), RatedPuzzleScreenInteractor {
-    private val helper = PuzzleViewModelHelper(puzzleInteractor = puzzleInteractor)
+    private val helper = PuzzleViewModelHelper(puzzleInteractor = Builders.puzzleInteractor())
 
     private val _uiState = MutableStateFlow<RatedPuzzleUiState>(RatedPuzzleUiState.Loading)
     val uiState: StateFlow<RatedPuzzleUiState> = _uiState.asStateFlow()
