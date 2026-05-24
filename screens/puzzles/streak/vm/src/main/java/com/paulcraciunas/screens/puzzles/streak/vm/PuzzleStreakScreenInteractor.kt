@@ -1,8 +1,10 @@
 package com.paulcraciunas.screens.puzzles.streak.vm
 
+import androidx.compose.runtime.Stable
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 
+@Stable
 interface PuzzleStreakScreenInteractor {
     fun onSquareClicked(selection: Locus)
     fun onPromote(to: Piece)
