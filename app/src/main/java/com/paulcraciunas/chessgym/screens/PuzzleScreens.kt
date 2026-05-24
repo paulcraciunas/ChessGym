@@ -8,8 +8,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import com.paulcraciunas.chessgym.LocalAppSettings
 import com.paulcraciunas.chessgym.navigation.Screen
+import com.paulcraciunas.screens.common.LocalAppSettings
 import com.paulcraciunas.screens.puzzles.dashboard.ui.PuzzleDashboardScreen
 import com.paulcraciunas.screens.puzzles.dashboard.vm.PuzzleDashboardViewModel
 import com.paulcraciunas.screens.puzzles.dashboard.vm.PuzzleMode
@@ -20,7 +20,9 @@ import com.paulcraciunas.screens.puzzles.failed.vm.FailedPuzzlesViewModel
 import com.paulcraciunas.screens.puzzles.rush.ui.PuzzleRushScreen
 import com.paulcraciunas.screens.puzzles.rush.vm.PuzzleRushViewModel
 import com.paulcraciunas.screens.puzzles.streak.ui.PuzzleStreakScreen
+import com.paulcraciunas.screens.puzzles.streak.ui.PuzzleStreakScreen2
 import com.paulcraciunas.screens.puzzles.streak.vm.PuzzleStreakViewModel
+import com.paulcraciunas.screens.puzzles.streak.vm.PuzzleStreakViewModel2
 
 @Composable
 internal fun PuzzleDashboard(
@@ -145,6 +147,21 @@ internal fun PuzzleStreak(tabNavController: NavHostController) {
         onNavigateBack = {
             tabNavController.popBackStack(Screen.PuzzleDashboard, inclusive = false)
         },
+        interactions = vm,
+    )
+}
+
+@Composable
+internal fun PuzzleStreak2(tabNavController: NavHostController) {
+    val vm: PuzzleStreakViewModel2 = hiltViewModel()
+    val puzzleStreakState by vm.uiState.collectAsStateWithLifecycle()
+
+    LifecycleEventEffect(Lifecycle.Event.ON_STOP) { vm.onStop() }
+    LifecycleEventEffect(Lifecycle.Event.ON_START) { vm.onStart() }
+
+    PuzzleStreakScreen2(
+        uiState = puzzleStreakState,
+        onNavigateBack = { tabNavController.popBackStack(Screen.PuzzleDashboard, inclusive = false) },
         interactions = vm,
     )
 }

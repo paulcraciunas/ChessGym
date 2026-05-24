@@ -22,13 +22,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import com.paulcraciunas.chessgym.LocalAppSettings
 import com.paulcraciunas.chessgym.animations.enter
 import com.paulcraciunas.chessgym.animations.exit
 import com.paulcraciunas.domain.api.achievements.Achievement
 import com.paulcraciunas.domain.api.achievements.AchievementNotification
 import com.paulcraciunas.domain.api.achievements.AchievementNotificationManager
 import com.paulcraciunas.global.resources.R
+import com.paulcraciunas.screens.common.LocalAppSettings
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

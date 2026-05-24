@@ -6,8 +6,8 @@ import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import com.paulcraciunas.chessgym.LocalAppSettings
 import com.paulcraciunas.chessgym.navigation.Screen
+import com.paulcraciunas.screens.common.LocalAppSettings
 import com.paulcraciunas.screens.tools.analysis.ui.AnalysisScreen
 import com.paulcraciunas.screens.tools.analysis.vm.AnalysisViewModel
 import com.paulcraciunas.screens.tools.clock.ui.ClockScreen

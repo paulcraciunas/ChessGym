@@ -60,6 +60,7 @@ import com.paulcraciunas.chessgym.screens.MoveThePiece
 import com.paulcraciunas.chessgym.screens.PuzzleDashboard
 import com.paulcraciunas.chessgym.screens.PuzzleRush
 import com.paulcraciunas.chessgym.screens.PuzzleStreak
+import com.paulcraciunas.chessgym.screens.PuzzleStreak2
 import com.paulcraciunas.chessgym.screens.RatedPuzzle
 import com.paulcraciunas.chessgym.screens.Settings
 import com.paulcraciunas.chessgym.screens.SignIn
@@ -68,6 +69,7 @@ import com.paulcraciunas.screens.about.vm.AboutSection
 import com.paulcraciunas.screens.achievements.ui.AchievementBannerHost
 import com.paulcraciunas.screens.common.AppDrawer
 import com.paulcraciunas.screens.common.LoadingContent
+import com.paulcraciunas.screens.common.LocalAppSettings
 import com.paulcraciunas.screens.common.dialogs.DeleteAccountConfirmationDialog
 import com.paulcraciunas.screens.common.dialogs.SignOutConfirmationDialog
 import kotlinx.coroutines.launch
@@ -223,7 +225,7 @@ fun MainScreen(
                             animatedComposable<Screen.RatedPuzzle> { RatedPuzzle(tabNavController = navController) }
                             animatedComposable<Screen.PuzzleRush> { PuzzleRush(tabNavController = navController) }
                             animatedComposable<Screen.FailedPuzzles> { FailedPuzzles(tabNavController = navController) }
-                            animatedComposable<Screen.PuzzleStreak> { PuzzleStreak(tabNavController = navController) }
+                            animatedComposable<Screen.PuzzleStreak> { PuzzleStreak2(tabNavController = navController) }
                             animatedComposable<Screen.BoardVisualization> {
                                 BoardVisDashboard(tabNavController = navController, onDrawerToggle = onDrawerToggle)
                             }
