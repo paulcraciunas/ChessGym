@@ -5,6 +5,7 @@ plugins {
 androidLibrary {
     namespace = "com.paulcraciunas.screens.puzzles.streak.vm"
     di = true
+    compose = true
 }
 
 dependencies {

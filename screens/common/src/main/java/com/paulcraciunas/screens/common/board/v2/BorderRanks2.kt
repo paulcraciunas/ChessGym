@@ -1,0 +1,48 @@
+package com.paulcraciunas.screens.common.board.v2
+
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import com.paulcraciunas.screens.common.board.ChessBoardTags
+import com.paulcraciunas.screens.common.design.theme.Design
+import com.paulcraciunas.screens.common.testTag
+
+@Composable
+internal fun BorderRanks2(
+    orientation: BoardOrientation2,
+    modifier: Modifier = Modifier,
+    width: Dp = 15.dp
+) {
+    Column(
+        modifier = modifier
+            .requiredWidth(width)
+            .testTag { ChessBoardTags.BORDER }
+    ) {
+        Box(modifier = Modifier.requiredHeight(width)) // Empty corner
+        for (rank in orientation.ranks) {
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .requiredWidth(width),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = rank.name,
+                    color = Design.colors.boardText,
+                    style = MaterialTheme.typography.labelSmall,
+                    textAlign = TextAlign.Center,
+                )
+            }
+        }
+        Box(modifier = Modifier.requiredHeight(width)) // Empty corner
+    }
+}
