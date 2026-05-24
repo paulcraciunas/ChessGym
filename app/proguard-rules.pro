@@ -17,3 +17,6 @@
 
 # Hide the original source file name (Crashlytics uses mapping file to restore it)
 -renamesourcefileattribute SourceFile
+
+# Play Core / GMS compile-time annotations not shipped in runtime
+-dontwarn com.google.android.gms.common.annotation.NoNullnessRewrite

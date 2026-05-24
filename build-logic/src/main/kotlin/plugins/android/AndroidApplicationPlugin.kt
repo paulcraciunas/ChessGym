@@ -45,6 +45,7 @@ class AndroidApplicationPlugin : ConventionPlugin() {
             apply(libs.plugin("google-hilt"))
             apply(libs.plugin("google-ksp"))
         }
+        configureComposeCompilerReports()
     }
 
     internal fun Project.configureAndroid(extension: ApplicationExtension) {
@@ -73,6 +74,11 @@ class AndroidApplicationPlugin : ConventionPlugin() {
                     isMinifyEnabled = true
                     isShrinkResources = true
                     proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"))
+                }
+                create("benchmark") {
+                    initWith(getByName("release"))
+                    matchingFallbacks += listOf("release")
+                    isDebuggable = false
                 }
             }
             buildFeatures {

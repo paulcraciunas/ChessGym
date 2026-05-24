@@ -29,6 +29,7 @@ includeBuild("build-logic")
 
 rootProject.name = "ChessGym"
 include(":app")
+include(":benchmark")
 include(":previews")
 include(":domain:api")
 include(":domain:impl")

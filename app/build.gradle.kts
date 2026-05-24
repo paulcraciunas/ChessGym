@@ -50,7 +50,27 @@ android {
             buildConfigField("String", "BUILD_NUMBER", "\"$releaseBuildNumber\"")
             buildConfigField("String", "BACKEND_URL", "\"https://chessgym-backend.run.app\"")
         }
+        getByName("benchmark") {
+            signingConfig = signingConfigs.getByName("debug")
+            applicationIdSuffix = ".benchmark"
+            versionNameSuffix = "-benchmark"
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+                "proguard-benchmark.pro",
+            )
+            val benchmarkBuildNumber = "1"
+            buildConfigField("String", "BUILD_NUMBER", "\"$benchmarkBuildNumber\"")
+            buildConfigField("String", "BACKEND_URL", "\"https://chessgym-backend.run.app\"")
+            configure<CrashlyticsExtension> {
+                mappingFileUploadEnabled = false
+            }
+        }
     }
+
+    experimentalProperties["android.experimental.enableTestTagsAsResourceId"] = true
 
     sourceSets {
         named("uitest") {
@@ -60,6 +80,10 @@ android {
         named("androidTest") {
             java.directories.add("src/androidTest/java")
             kotlin.directories.add("src/androidTest/java")
+        }
+        named("benchmark") {
+            java.directories.add("src/release/java")
+            kotlin.directories.add("src/release/java")
         }
     }
 }
@@ -154,4 +178,22 @@ dependencies {
     androidTestImplementation(testFixtures(project(":user:api")))
     androidTestImplementation(testFixtures(project(":settings:application:api")))
     androidTestImplementation(testFixtures(project(":domain:api")))
+
+    add("benchmarkImplementation", project(":screens:puzzles:streak:ui"))
+    add("benchmarkImplementation", project(":screens:puzzles:streak:vm"))
+    add("benchmarkImplementation", project(":screens:common"))
+    add("benchmarkImplementation", project(":domain:api"))
+    add("benchmarkImplementation", project(":settings:application:api"))
+    add("benchmarkImplementation", project(":game:logic:api"))
+    add("benchmarkImplementation", project(":game:logic:builders"))
+    add("benchmarkImplementation", project(":game:logic:impl"))
+    add("benchmarkImplementation", libs.androidx.activity.compose)
+    add("benchmarkImplementation", libs.androidx.lifecycle.runtime.compose)
+    add("benchmarkImplementation", libs.androidx.hilt.viewmodel)
+    add("benchmarkImplementation", "androidx.compose.runtime:runtime-tracing:1.7.6")
+    add("benchmarkImplementation", "androidx.tracing:tracing-perfetto:1.0.0")
+    add("benchmarkImplementation", "androidx.tracing:tracing-perfetto-binary:1.0.0")
+    add("benchmarkImplementation", testFixtures(project(":domain:api")))
+    add("benchmarkImplementation", testFixtures(project(":settings:application:api")))
 }
+

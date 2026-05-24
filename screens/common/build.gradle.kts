@@ -11,6 +11,16 @@ android {
     buildFeatures {
         buildConfig = true
     }
+    defaultConfig {
+        buildConfigField("boolean", "ENABLE_TEST_TAGS", "false")
+    }
+    buildTypes {
+        create("benchmark") {
+            initWith(getByName("release"))
+            matchingFallbacks += listOf("release")
+            buildConfigField("boolean", "ENABLE_TEST_TAGS", "true")
+        }
+    }
 }
 
 dependencies {
@@ -18,7 +28,8 @@ dependencies {
     implementation(project(":game:logic:api"))
     implementation(project(":game:logic:builders"))
     implementation(project(":domain:api"))
-    implementation(libs.kotlinx.collections.immutable)
+    api(project(":settings:application:api"))
+    api(libs.kotlinx.collections.immutable)
 
     testImplementation(project(":game:logic:impl"))
 }

@@ -9,9 +9,11 @@ import common.debugImplementation
 import common.implementation
 import common.ksp
 import common.library
+import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.kotlin.dsl.invoke
 import org.gradle.kotlin.dsl.support.delegates.DependencyHandlerDelegate
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 internal fun DependencyHandlerDelegate.includeCoreAndroid(libs: VersionCatalog) {
     implementation(libs.library("androidx-core-ktx"))
@@ -59,6 +61,21 @@ internal fun LibraryExtension.configureManagedDevices() {
         managedDevices {
             localDevices {
                 create(CI_DEVICE_NAME) { configureCiDevice() }
+            }
+        }
+    }
+}
+
+internal fun Project.configureComposeCompilerReports() {
+    val reportsEnabled = findProperty("composeCompilerReports") == "true"
+    if (reportsEnabled) {
+        val outputDir = layout.buildDirectory.dir("compose_compiler").get().asFile.absolutePath
+        tasks.withType(KotlinCompile::class.java) {
+            compilerOptions {
+                freeCompilerArgs.addAll(
+                    "-P", "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=$outputDir",
+                    "-P", "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=$outputDir",
+                )
             }
         }
     }

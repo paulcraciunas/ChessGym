@@ -7,4 +7,8 @@ import androidx.compose.ui.semantics.testTag
 
 @Stable
 inline fun Modifier.testTag(crossinline tag: () -> String): Modifier =
-    if (BuildConfig.DEBUG) semantics(properties = { testTag = tag() }) else this
+    if (BuildConfig.DEBUG || BuildConfig.ENABLE_TEST_TAGS) {
+        semantics(properties = { testTag = tag() })
+    } else {
+        this
+    }

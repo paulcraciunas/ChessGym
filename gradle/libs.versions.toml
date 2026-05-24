@@ -35,6 +35,8 @@ googleid = "1.1.1"
 googlePlayReview = "2.0.2"
 billing = "9.0.0"
 kotlinxCollectionsImmutable = "0.4.0"
+androidx-benchmark = "1.4.0"
+uiautomator = "2.3.0"
 
 [libraries]
 ## Unit testing
@@ -49,6 +51,8 @@ junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "hilt" }
+androidx-benchmark-macro-junit4 = { group = "androidx.benchmark", name = "benchmark-macro-junit4", version.ref = "androidx-benchmark" }
+androidx-uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version.ref = "uiautomator" }
 
 ## Gradle plugins
 android-tools-build-gradle = { module = "com.android.tools.build:gradle", version.ref = "agp" }
