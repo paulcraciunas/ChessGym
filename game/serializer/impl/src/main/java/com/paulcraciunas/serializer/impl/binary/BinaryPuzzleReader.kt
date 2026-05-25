@@ -7,6 +7,7 @@ import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.game.logic.api.Builder
 import com.paulcraciunas.game.logic.api.GameFactory
+import com.paulcraciunas.game.logic.api.board.SidedPiece
 import com.paulcraciunas.serializer.api.PuzzleReader
 import com.paulcraciunas.serializer.impl.withEnPassent
 import java.util.ArrayDeque
@@ -68,7 +69,7 @@ class BinaryPuzzleReader(
             File.entries.forEach { file ->
                 if (bitBoard and long != 0L) {
                     val piece = pieces.poll()
-                    withPiece(piece!!.piece, piece.side, Locus(file, rank))
+                    withPiece(piece!!.piece, piece.side, Locus.from(file, rank))
                 }
                 long = long ushr 1
             }
@@ -89,8 +90,8 @@ class BinaryPuzzleReader(
             .withBlackCastling(black)
     }
 
-    private fun ByteArray.loadPieces(bitBoard: Long): ArrayDeque<BinaryAdapter.SidedPiece> {
-        val pieces = ArrayDeque<BinaryAdapter.SidedPiece>()
+    private fun ByteArray.loadPieces(bitBoard: Long): ArrayDeque<SidedPiece> {
+        val pieces = ArrayDeque<SidedPiece>()
         val pieceCount = bitBoard.countOneBits()
         assert(pieceCount >= 2) // we should have at least 2 pieces; otherwise, it's not a puzzle
         var piecesBinary: Int

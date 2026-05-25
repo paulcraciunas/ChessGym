@@ -20,9 +20,7 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
-import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.design.theme.Design
@@ -159,8 +157,8 @@ private fun MoveArrowWhitePreview() {
         Box(modifier = Modifier.size(300.dp)) {
             MoveArrowOverlay(
                 arrow = MoveArrow(
-                    from = Locus(File.e, Rank.`2`),
-                    to = Locus(File.e, Rank.`4`)
+                    from = Locus.e2,
+                    to = Locus.e4
                 ),
                 orientation = BoardOrientation.White
             )
@@ -175,8 +173,8 @@ private fun MoveArrowKnightPreview() {
         Box(modifier = Modifier.size(300.dp)) {
             MoveArrowOverlay(
                 arrow = MoveArrow(
-                    from = Locus(File.g, Rank.`1`),
-                    to = Locus(File.f, Rank.`3`)
+                    from = Locus.g1,
+                    to = Locus.f3
                 ),
                 orientation = BoardOrientation.White,
                 color = Color.Green

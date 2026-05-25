@@ -6,7 +6,6 @@ import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank
-import com.paulcraciunas.game.logic.api.board.loc
 import com.paulcraciunas.game.logic.impl.RealGameFactory
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -121,7 +120,7 @@ internal class GameViewModelHelperTest {
             underTest.load(buildDefaultGame(), Side.WHITE)
 
             // When
-            val result = underTest.handleSquareClick("e2".loc())
+            val result = underTest.handleSquareClick(Locus.e2)
 
             // Then
             val selectedSquare = result.data.boardData.at(Rank.`2`, File.e)
@@ -134,10 +133,10 @@ internal class GameViewModelHelperTest {
         fun `GIVEN piece selected WHEN clicking same square THEN selection is cleared`() {
             // Given
             underTest.load(buildDefaultGame(), Side.WHITE)
-            underTest.handleSquareClick("e2".loc())
+            underTest.handleSquareClick(Locus.e2)
 
             // When
-            val result = underTest.handleSquareClick("e2".loc())
+            val result = underTest.handleSquareClick(Locus.e2)
 
             // Then
             val selectedSquare = result.data.boardData.at(Rank.`2`, File.e)
@@ -149,10 +148,10 @@ internal class GameViewModelHelperTest {
         fun `GIVEN piece selected WHEN clicking invalid move THEN selection is cleared`() {
             // Given
             underTest.load(buildDefaultGame(), Side.WHITE)
-            underTest.handleSquareClick("e2".loc())
+            underTest.handleSquareClick(Locus.e2)
 
             // When - e2 to e5 is not a valid pawn move
-            val result = underTest.handleSquareClick("e5".loc())
+            val result = underTest.handleSquareClick(Locus.e5)
 
             // Then
             val selectedSquare = result.data.boardData.at(Rank.`2`, File.e)
@@ -164,10 +163,10 @@ internal class GameViewModelHelperTest {
         fun `GIVEN piece selected WHEN clicking valid move THEN move is played`() {
             // Given
             underTest.load(buildDefaultGame(), Side.WHITE)
-            underTest.handleSquareClick("e2".loc())
+            underTest.handleSquareClick(Locus.e2)
 
             // When
-            val result = underTest.handleSquareClick("e4".loc())
+            val result = underTest.handleSquareClick(Locus.e4)
 
             // Then
             val fromSquare = result.data.boardData.at(Rank.`2`, File.e)
@@ -181,24 +180,24 @@ internal class GameViewModelHelperTest {
         fun `GIVEN piece selected WHEN valid move played THEN movePlayed is true`() {
             // Given
             underTest.load(buildDefaultGame(), Side.WHITE)
-            underTest.handleSquareClick("e2".loc())
+            underTest.handleSquareClick(Locus.e2)
 
             // When
-            val result = underTest.handleSquareClick("e4".loc())
+            val result = underTest.handleSquareClick(Locus.e4)
 
             // Then
             assertTrue(result.movePlayed)
-            assertEquals("e2".loc(), result.moveFrom)
+            assertEquals(Locus.e2, result.moveFrom)
         }
 
         @Test
         fun `GIVEN piece selected WHEN same square clicked THEN movePlayed is false`() {
             // Given
             underTest.load(buildDefaultGame(), Side.WHITE)
-            underTest.handleSquareClick("e2".loc())
+            underTest.handleSquareClick(Locus.e2)
 
             // When
-            val result = underTest.handleSquareClick("e2".loc())
+            val result = underTest.handleSquareClick(Locus.e2)
 
             // Then
             assertFalse(result.movePlayed)
@@ -211,7 +210,7 @@ internal class GameViewModelHelperTest {
             underTest.load(buildDefaultGame(), Side.WHITE)
 
             // When
-            val result = underTest.handleSquareClick("e4".loc())
+            val result = underTest.handleSquareClick(Locus.e4)
 
             // Then
             val clickedSquare = result.data.boardData.at(Rank.`4`, File.e)
@@ -223,10 +222,10 @@ internal class GameViewModelHelperTest {
         fun `GIVEN game WHEN move played THEN last move is highlighted`() {
             // Given
             underTest.load(buildDefaultGame(), Side.WHITE)
-            underTest.handleSquareClick("e2".loc())
+            underTest.handleSquareClick(Locus.e2)
 
             // When
-            val result = underTest.handleSquareClick("e4".loc())
+            val result = underTest.handleSquareClick(Locus.e4)
 
             // Then
             val fromSquare = result.data.boardData.at(Rank.`2`, File.e)
@@ -239,34 +238,34 @@ internal class GameViewModelHelperTest {
         fun `GIVEN game WHEN move played THEN animating piece is set`() {
             // Given
             underTest.load(buildDefaultGame(), Side.WHITE)
-            underTest.handleSquareClick("e2".loc())
+            underTest.handleSquareClick(Locus.e2)
 
             // When
-            val result = underTest.handleSquareClick("e4".loc())
+            val result = underTest.handleSquareClick(Locus.e4)
 
             // Then
             val animating = result.data.boardData.animatingPiece
             assertNotNull(animating)
             assertEquals(Piece.Pawn, animating!!.piece)
             assertEquals(Side.WHITE, animating.side)
-            assertEquals(Locus(File.e, Rank.`2`), animating.from)
-            assertEquals(Locus(File.e, Rank.`4`), animating.to)
+            assertEquals(Locus.e2, animating.from)
+            assertEquals(Locus.e4, animating.to)
         }
 
         @Test
         fun `GIVEN pawn reaching back rank WHEN clicking target THEN returns promotion required`() {
             // Given
             underTest.load(buildPromotionGame(), Side.WHITE)
-            underTest.handleSquareClick("a7".loc())
+            underTest.handleSquareClick(Locus.a7)
 
             // When
-            val result = underTest.handleSquareClick("a8".loc())
+            val result = underTest.handleSquareClick(Locus.a8)
 
             // Then
             assertNotNull(result.promotion)
             assertTrue(result.promotion!!.showChooser)
-            assertEquals(Locus(File.a, Rank.`8`), result.promotion.at)
-            assertEquals("a7".loc(), result.moveFrom)
+            assertEquals(Locus.a8, result.promotion.at)
+            assertEquals(Locus.a7, result.moveFrom)
         }
 
         @Test
@@ -274,15 +273,15 @@ internal class GameViewModelHelperTest {
             // Given
             underTest.autoPromote = true
             underTest.load(buildPromotionGame(), Side.WHITE)
-            underTest.handleSquareClick("a7".loc())
+            underTest.handleSquareClick(Locus.a7)
 
             // When
-            val result = underTest.handleSquareClick("a8".loc())
+            val result = underTest.handleSquareClick(Locus.a8)
 
             // Then
             assertNull(result.promotion)
             assertTrue(result.movePlayed)
-            assertEquals("a7".loc(), result.moveFrom)
+            assertEquals(Locus.a7, result.moveFrom)
             assertEquals(Piece.Queen, result.autoPromotedTo)
             val queenSquare = result.data.boardData.at(Rank.`8`, File.a)
             assertNotNull(queenSquare.piece)
@@ -295,26 +294,26 @@ internal class GameViewModelHelperTest {
             // Given
             underTest.autoPromote = false
             underTest.load(buildPromotionGame(), Side.WHITE)
-            underTest.handleSquareClick("a7".loc())
+            underTest.handleSquareClick(Locus.a7)
 
             // When
-            val result = underTest.handleSquareClick("a8".loc())
+            val result = underTest.handleSquareClick(Locus.a8)
 
             // Then
             assertNotNull(result.promotion)
             assertTrue(result.promotion!!.showChooser)
             assertNull(result.autoPromotedTo)
-            assertEquals("a7".loc(), result.moveFrom)
+            assertEquals(Locus.a7, result.moveFrom)
         }
 
         @Test
         fun `GIVEN game not over WHEN move played THEN isOver is false`() {
             // Given
             underTest.load(buildDefaultGame(), Side.WHITE)
-            underTest.handleSquareClick("e2".loc())
+            underTest.handleSquareClick(Locus.e2)
 
             // When
-            val result = underTest.handleSquareClick("e4".loc())
+            val result = underTest.handleSquareClick(Locus.e4)
 
             // Then
             assertFalse(result.isOver)
@@ -325,16 +324,16 @@ internal class GameViewModelHelperTest {
             // Given - White Queen can deliver mate on f7, Rook covers 7th rank
             val game = gameFactory.builder()
                 .withTurn(Side.WHITE)
-                .withPiece(Piece.King, Side.WHITE, "g1".loc())
-                .withPiece(Piece.King, Side.BLACK, "h8".loc())
-                .withPiece(Piece.Rook, Side.WHITE, "g7".loc())
-                .withPiece(Piece.Queen, Side.WHITE, "f6".loc())
+                .withPiece(Piece.King, Side.WHITE, Locus.g1)
+                .withPiece(Piece.King, Side.BLACK, Locus.h8)
+                .withPiece(Piece.Rook, Side.WHITE, Locus.g7)
+                .withPiece(Piece.Queen, Side.WHITE, Locus.f6)
                 .buildGame()
             underTest.load(game, Side.WHITE)
-            underTest.handleSquareClick("f6".loc())
+            underTest.handleSquareClick(Locus.f6)
 
             // When - Queen goes to f8, mating (King on h8 can't escape: g7 blocked by Rook, g8/h7 covered by Queen)
-            val result = underTest.handleSquareClick("f8".loc())
+            val result = underTest.handleSquareClick(Locus.f8)
 
             // Then
             assertTrue(result.isOver)
@@ -349,7 +348,7 @@ internal class GameViewModelHelperTest {
             underTest.load(buildDefaultGame(), Side.WHITE)
 
             // When
-            val result = underTest.playMove("e2".loc(), "e4".loc())
+            val result = underTest.playMove(Locus.e2, Locus.e4)
 
             // Then
             val fromSquare = result.boardData.at(Rank.`2`, File.e)
@@ -365,7 +364,7 @@ internal class GameViewModelHelperTest {
             underTest.load(buildDefaultGame(), Side.WHITE)
 
             // When
-            val result = underTest.playMove("e2".loc(), "e4".loc())
+            val result = underTest.playMove(Locus.e2, Locus.e4)
 
             // Then
             assertTrue(result.boardData.at(Rank.`2`, File.e).lastMove)
@@ -378,15 +377,15 @@ internal class GameViewModelHelperTest {
             underTest.load(buildDefaultGame(), Side.WHITE)
 
             // When
-            val result = underTest.playMove("g1".loc(), "f3".loc())
+            val result = underTest.playMove(Locus.g1, Locus.f3)
 
             // Then
             val animating = result.boardData.animatingPiece
             assertNotNull(animating)
             assertEquals(Piece.Knight, animating!!.piece)
             assertEquals(Side.WHITE, animating.side)
-            assertEquals(Locus(File.g, Rank.`1`), animating.from)
-            assertEquals(Locus(File.f, Rank.`3`), animating.to)
+            assertEquals(Locus.g1, animating.from)
+            assertEquals(Locus.f3, animating.to)
         }
 
         @Test
@@ -395,7 +394,7 @@ internal class GameViewModelHelperTest {
             underTest.load(buildPromotionGame(), Side.WHITE)
 
             // When
-            val result = underTest.playMove("a7".loc(), "a8".loc(), Piece.Queen)
+            val result = underTest.playMove(Locus.a7, Locus.a8, Piece.Queen)
 
             // Then
             val promotedSquare = result.boardData.at(Rank.`8`, File.a)
@@ -408,11 +407,11 @@ internal class GameViewModelHelperTest {
         fun `GIVEN loaded game WHEN playMove captures THEN captured list is updated`() {
             // Given
             underTest.load(buildCaptureGame(), Side.WHITE)
-            underTest.playMove("e2".loc(), "e4".loc())
-            underTest.playMove("d7".loc(), "d5".loc())
+            underTest.playMove(Locus.e2, Locus.e4)
+            underTest.playMove(Locus.d7, Locus.d5)
 
             // When
-            val result = underTest.playMove("e4".loc(), "d5".loc())
+            val result = underTest.playMove(Locus.e4, Locus.d5)
 
             // Then
             val capturedByWhite = result.captured[Side.WHITE]!!
@@ -426,8 +425,8 @@ internal class GameViewModelHelperTest {
         fun `GIVEN promotion position WHEN promoting to queen THEN move is played`() {
             // Given
             underTest.load(buildPromotionGame(), Side.WHITE)
-            underTest.handleSquareClick("a7".loc())
-            val clickResult = underTest.handleSquareClick("a8".loc())
+            underTest.handleSquareClick(Locus.a7)
+            val clickResult = underTest.handleSquareClick(Locus.a8)
             val promotionAt = clickResult.promotion!!.at
 
             // When
@@ -444,8 +443,8 @@ internal class GameViewModelHelperTest {
         fun `GIVEN promotion WHEN played THEN promotion is null in result`() {
             // Given
             underTest.load(buildPromotionGame(), Side.WHITE)
-            underTest.handleSquareClick("a7".loc())
-            val clickResult = underTest.handleSquareClick("a8".loc())
+            underTest.handleSquareClick(Locus.a7)
+            val clickResult = underTest.handleSquareClick(Locus.a8)
             val promotionAt = clickResult.promotion!!.at
 
             // When
@@ -459,8 +458,8 @@ internal class GameViewModelHelperTest {
         fun `GIVEN promotion WHEN promoting to knight THEN knight appears on board`() {
             // Given
             underTest.load(buildPromotionGame(), Side.WHITE)
-            underTest.handleSquareClick("a7".loc())
-            val clickResult = underTest.handleSquareClick("a8".loc())
+            underTest.handleSquareClick(Locus.a7)
+            val clickResult = underTest.handleSquareClick(Locus.a8)
             val promotionAt = clickResult.promotion!!.at
 
             // When
@@ -484,7 +483,7 @@ internal class GameViewModelHelperTest {
             underTest.resign()
 
             // Then
-            val result = underTest.handleSquareClick("e2".loc())
+            val result = underTest.handleSquareClick(Locus.e2)
             assertTrue(result.isOver)
         }
     }
@@ -508,8 +507,8 @@ internal class GameViewModelHelperTest {
         fun `GIVEN move played WHEN buildPuzzleData THEN reflects updated board`() {
             // Given
             underTest.load(buildDefaultGame(), Side.WHITE)
-            underTest.handleSquareClick("e2".loc())
-            underTest.handleSquareClick("e4".loc())
+            underTest.handleSquareClick(Locus.e2)
+            underTest.handleSquareClick(Locus.e4)
 
             // When
             val data = underTest.buildPuzzleData()
@@ -540,8 +539,8 @@ internal class GameViewModelHelperTest {
         @Test
         fun `GIVEN game with moves WHEN undoLast THEN boardData reflects previous position`() {
             underTest.load(buildDefaultGame(), Side.WHITE)
-            underTest.handleSquareClick("e2".loc())
-            underTest.handleSquareClick("e4".loc())
+            underTest.handleSquareClick(Locus.e2)
+            underTest.handleSquareClick(Locus.e4)
             assertTrue(underTest.canUndo())
 
             val result = underTest.undoLast()
@@ -556,8 +555,8 @@ internal class GameViewModelHelperTest {
         @Test
         fun `GIVEN game with moves WHEN undoAll THEN boardData reflects starting position`() {
             underTest.load(buildDefaultGame(), Side.WHITE)
-            underTest.handleSquareClick("e2".loc())
-            underTest.handleSquareClick("e4".loc())
+            underTest.handleSquareClick(Locus.e2)
+            underTest.handleSquareClick(Locus.e4)
 
             val result = underTest.undoAll()
 
@@ -571,8 +570,8 @@ internal class GameViewModelHelperTest {
         @Test
         fun `GIVEN game undone WHEN replayNext THEN boardData shows next move`() {
             underTest.load(buildDefaultGame(), Side.WHITE)
-            underTest.handleSquareClick("e2".loc())
-            underTest.handleSquareClick("e4".loc())
+            underTest.handleSquareClick(Locus.e2)
+            underTest.handleSquareClick(Locus.e4)
             underTest.undoLast()
 
             val result = underTest.replayNext()
@@ -586,8 +585,8 @@ internal class GameViewModelHelperTest {
         @Test
         fun `GIVEN game undone WHEN replayNext THEN animating piece is not set`() {
             underTest.load(buildDefaultGame(), Side.WHITE)
-            underTest.handleSquareClick("e2".loc())
-            underTest.handleSquareClick("e4".loc())
+            underTest.handleSquareClick(Locus.e2)
+            underTest.handleSquareClick(Locus.e4)
             underTest.undoLast()
 
             val result = underTest.replayNext()
@@ -599,8 +598,8 @@ internal class GameViewModelHelperTest {
         @Test
         fun `GIVEN game fully undone WHEN replayAll THEN boardData shows final position`() {
             underTest.load(buildDefaultGame(), Side.WHITE)
-            underTest.handleSquareClick("e2".loc())
-            underTest.handleSquareClick("e4".loc())
+            underTest.handleSquareClick(Locus.e2)
+            underTest.handleSquareClick(Locus.e4)
             underTest.undoAll()
 
             val result = underTest.replayAll()
@@ -613,8 +612,8 @@ internal class GameViewModelHelperTest {
         @Test
         fun `GIVEN game undone WHEN undoLast THEN no last move highlights`() {
             underTest.load(buildDefaultGame(), Side.WHITE)
-            underTest.handleSquareClick("e2".loc())
-            underTest.handleSquareClick("e4".loc())
+            underTest.handleSquareClick(Locus.e2)
+            underTest.handleSquareClick(Locus.e4)
 
             val result = underTest.undoLast()
 
@@ -631,9 +630,9 @@ internal class GameViewModelHelperTest {
 
     private fun buildPromotionGame(): Game = gameFactory.builder()
         .withTurn(Side.WHITE)
-        .withPiece(Piece.King, Side.WHITE, "e1".loc())
-        .withPiece(Piece.King, Side.BLACK, "e8".loc())
-        .withPiece(Piece.Pawn, Side.WHITE, "a7".loc())
+        .withPiece(Piece.King, Side.WHITE, Locus.e1)
+        .withPiece(Piece.King, Side.BLACK, Locus.e8)
+        .withPiece(Piece.Pawn, Side.WHITE, Locus.a7)
         .buildGame()
 
     private fun buildCaptureGame(): Game = gameFactory.builder()

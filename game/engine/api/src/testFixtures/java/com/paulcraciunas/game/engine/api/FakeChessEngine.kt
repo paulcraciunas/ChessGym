@@ -1,6 +1,6 @@
 package com.paulcraciunas.game.engine.api
 
-import com.paulcraciunas.game.logic.api.board.loc
+import com.paulcraciunas.game.logic.api.board.Locus
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.util.LinkedList
@@ -81,9 +81,9 @@ class FakeChessEngine : ChessEngine {
 
     private fun loadItalianGameDefense() {
         enqueueMoves(
-            EngineMove(from = "e7".loc(), to = "e5".loc()),
-            EngineMove(from = "b8".loc(), to = "c6".loc()),
-            EngineMove(from = "f8".loc(), to = "c5".loc()),
+            EngineMove(from = Locus.e7, to = Locus.e5),
+            EngineMove(from = Locus.b8, to = Locus.c6),
+            EngineMove(from = Locus.f8, to = Locus.c5),
         )
     }
 
@@ -95,8 +95,8 @@ class FakeChessEngine : ChessEngine {
                 rank = 1,
                 evaluation = Evaluation.Centipawns(30),
                 moves = listOf(
-                    EngineMove(from = "e2".loc(), to = "e4".loc()),
-                    EngineMove(from = "e7".loc(), to = "e5".loc()),
+                    EngineMove(from = Locus.e2, to = Locus.e4),
+                    EngineMove(from = Locus.e7, to = Locus.e5),
                 ),
             ),
         ),

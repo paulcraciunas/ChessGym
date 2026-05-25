@@ -5,7 +5,6 @@ import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.loc
 import com.paulcraciunas.game.logic.impl.plies.PlyFactory
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -28,8 +27,8 @@ internal class RealPuzzleInteractorTest {
         underTest.load(puzzle)
 
         // Then
-        assertEquals(Piece.Pawn, puzzle.board.at("e4".loc()))
-        assertNull(puzzle.board.at("e2".loc()))
+        assertEquals(Piece.Pawn, puzzle.board.at(Locus.e4))
+        assertNull(puzzle.board.at(Locus.e2))
         assertTrue(underTest.captured[Side.WHITE].isNullOrEmpty())
         assertTrue(underTest.captured[Side.BLACK].isNullOrEmpty())
     }
@@ -51,13 +50,13 @@ internal class RealPuzzleInteractorTest {
     fun `GIVEN loaded puzzle WHEN requesting moves THEN available destinations are returned`() {
         // Given
         loadDefaultPuzzle(listOf("e2e4", "e7e5", "g1f3"))
-        val from: Locus = "e7".loc()
+        val from: Locus = Locus.e7
 
         // When
         val moves: List<Locus> = underTest.moves(from)
 
         // Then
-        assertEquals(setOf("e6".loc(), "e5".loc()), moves.toSet())
+        assertEquals(setOf(Locus.e6, Locus.e5), moves.toSet())
     }
 
     @Test
@@ -66,8 +65,8 @@ internal class RealPuzzleInteractorTest {
         loadDefaultPuzzle(listOf("e2e4", "e7e5", "g1f3"))
 
         // When
-        val canPlayValid: Boolean = underTest.canPlay("e7".loc(), "e5".loc())
-        val canPlayInvalid: Boolean = underTest.canPlay("e7".loc(), "e4".loc())
+        val canPlayValid: Boolean = underTest.canPlay(Locus.e7, Locus.e5)
+        val canPlayInvalid: Boolean = underTest.canPlay(Locus.e7, Locus.e4)
 
         // Then
         assertTrue(canPlayValid)
@@ -81,13 +80,13 @@ internal class RealPuzzleInteractorTest {
         val underTest = RealPuzzleInteractor().apply { load(puzzle) }
 
         // When
-        underTest.play("e7".loc(), "e5".loc())
+        underTest.play(Locus.e7, Locus.e5)
 
         // Then
-        assertEquals(Piece.Pawn, puzzle.board.at("e5".loc()))
-        assertEquals(Piece.Knight, puzzle.board.at("f3".loc()))
-        assertNull(puzzle.board.at("e7".loc()))
-        assertNull(puzzle.board.at("g1".loc()))
+        assertEquals(Piece.Pawn, puzzle.board.at(Locus.e5))
+        assertEquals(Piece.Knight, puzzle.board.at(Locus.f3))
+        assertNull(puzzle.board.at(Locus.e7))
+        assertNull(puzzle.board.at(Locus.g1))
     }
 
     @Test
@@ -97,7 +96,7 @@ internal class RealPuzzleInteractorTest {
 
         // When & Then
         assertThrows(AssertionError::class.java) {
-            underTest.play("e7".loc(), "e4".loc())
+            underTest.play(Locus.e7, Locus.e4)
         }
     }
 
@@ -110,7 +109,7 @@ internal class RealPuzzleInteractorTest {
         val hint: Locus = underTest.hint()
 
         // Then
-        assertEquals("e7".loc(), hint)
+        assertEquals(Locus.e7, hint)
     }
 
     @Test
@@ -131,7 +130,7 @@ internal class RealPuzzleInteractorTest {
         loadDefaultPuzzle(listOf("e2e4", "e7e5", "g1f3"))
 
         // When
-        val canPromote: Boolean = underTest.canPromote("e7".loc(), "e5".loc())
+        val canPromote: Boolean = underTest.canPromote(Locus.e7, Locus.e5)
 
         // Then
         assertFalse(canPromote)
@@ -144,11 +143,11 @@ internal class RealPuzzleInteractorTest {
         val underTest = RealPuzzleInteractor().apply { load(puzzle) }
 
         // When
-        underTest.promote("a7".loc(), "a8".loc(), Piece.Queen)
+        underTest.promote(Locus.a7, Locus.a8, Piece.Queen)
 
         // Then
-        assertEquals(Piece.Queen, puzzle.board.at("a8".loc()))
-        assertNull(puzzle.board.at("a7".loc()))
+        assertEquals(Piece.Queen, puzzle.board.at(Locus.a8))
+        assertNull(puzzle.board.at(Locus.a7))
         assertTrue(underTest.isSuccess())
     }
 
@@ -159,7 +158,7 @@ internal class RealPuzzleInteractorTest {
         val underTest = RealPuzzleInteractor().apply { load(puzzle) }
 
         // When
-        underTest.play("d7".loc(), "d5".loc())
+        underTest.play(Locus.d7, Locus.d5)
 
         // Then - WHITE captured BLACK's pawn, so it appears in WHITE's captured list
         val capturedByWhite = underTest.captured[Side.WHITE]!!
@@ -175,8 +174,8 @@ internal class RealPuzzleInteractorTest {
         val underTest = RealPuzzleInteractor().apply { load(puzzle) }
 
         // When
-        underTest.play("d7".loc(), "d5".loc())
-        underTest.play("d5".loc(), "e4".loc())
+        underTest.play(Locus.d7, Locus.d5)
+        underTest.play(Locus.d5, Locus.e4)
 
         // Then - BLACK captured WHITE's pawn, so it appears in BLACK's captured list
         val capturedByWhite = underTest.captured[Side.WHITE]!!
@@ -204,7 +203,7 @@ internal class RealPuzzleInteractorTest {
         loadDefaultPuzzle(listOf("e2e4", "e7e5", "g1f3"))
 
         // When - play a valid but incorrect move (e6 instead of expected e5)
-        underTest.play("e7".loc(), "e6".loc())
+        underTest.play(Locus.e7, Locus.e6)
 
         // Then - puzzle should be failed, no crash from attempting playNextMove
         assertTrue(underTest.isOver())
@@ -221,9 +220,9 @@ internal class RealPuzzleInteractorTest {
     private fun buildPromotionPuzzle(): Puzzle =
         builder
             .withTurn(Side.BLACK)
-            .withPiece(Piece.King, Side.WHITE, "e1".loc())
-            .withPiece(Piece.King, Side.BLACK, "e8".loc())
-            .withPiece(Piece.Pawn, Side.WHITE, "a7".loc())
+            .withPiece(Piece.King, Side.WHITE, Locus.e1)
+            .withPiece(Piece.King, Side.BLACK, Locus.e8)
+            .withPiece(Piece.Pawn, Side.WHITE, Locus.a7)
             .withMoves(listOf("e8e7", "a7a8q", "e7e6"))
             .buildPuzzle()
 

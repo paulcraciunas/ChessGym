@@ -18,25 +18,25 @@ object BoardFactory: IBoardFactory {
 
 private fun Board.addWhitePieces() = apply {
     File.entries.forEach { file ->
-        add(Piece.Pawn, Side.WHITE, Locus(file, Rank.`2`))
+        add(Piece.Pawn, Side.WHITE, Locus.from(file, Rank.`2`))
     }
     addStartingPieces(Side.WHITE, Rank.`1`)
 }
 
 private fun Board.addBlackPieces() = apply {
     File.entries.forEach { file ->
-        add(Piece.Pawn, Side.BLACK, Locus(file, Rank.`7`))
+        add(Piece.Pawn, Side.BLACK, Locus.from(file, Rank.`7`))
     }
     addStartingPieces(Side.BLACK, Rank.`8`)
 }
 
 private fun Board.addStartingPieces(side: Side, rank: Rank) {
-    add(Piece.Rook, side, Locus(File.a, rank))
-    add(Piece.Knight, side, Locus(File.b, rank))
-    add(Piece.Bishop, side, Locus(File.c, rank))
-    add(Piece.Queen, side, Locus(File.d, rank))
-    add(Piece.King, side, Locus(File.e, rank))
-    add(Piece.Bishop, side, Locus(File.f, rank))
-    add(Piece.Knight, side, Locus(File.g, rank))
-    add(Piece.Rook, side, Locus(File.h, rank))
+    add(Piece.Rook, side, Locus.from(File.a, rank))
+    add(Piece.Knight, side, Locus.from(File.b, rank))
+    add(Piece.Bishop, side, Locus.from(File.c, rank))
+    add(Piece.Queen, side, Locus.from(File.d, rank))
+    add(Piece.King, side, Locus.from(File.e, rank))
+    add(Piece.Bishop, side, Locus.from(File.f, rank))
+    add(Piece.Knight, side, Locus.from(File.g, rank))
+    add(Piece.Rook, side, Locus.from(File.h, rank))
 }

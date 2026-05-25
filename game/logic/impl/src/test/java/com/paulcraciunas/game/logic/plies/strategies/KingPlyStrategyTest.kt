@@ -3,10 +3,8 @@ package com.paulcraciunas.game.logic.plies.strategies
 import com.paulcraciunas.game.logic.E_4_NEIGHBOURS
 import com.paulcraciunas.game.logic.allLocationsExcept
 import com.paulcraciunas.game.logic.api.Side
-import com.paulcraciunas.game.logic.api.board.File.e
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.api.board.Rank.`4`
 import com.paulcraciunas.game.logic.assertMoves
 import com.paulcraciunas.game.logic.assertNoMoves
 import com.paulcraciunas.game.logic.impl.MutableGameInfo
@@ -19,7 +17,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 internal class KingPlyStrategyTest {
-    private val home = Locus(e, `4`)
+    private val home = Locus.e4
     private val on = Board().apply {
         add(piece = Piece.King, side = Side.BLACK, at = home)
     }

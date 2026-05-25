@@ -30,7 +30,6 @@ import com.paulcraciunas.screens.common.LoadingContent
 import com.paulcraciunas.screens.common.board.v2.BoardOrientation2
 import com.paulcraciunas.screens.common.board.v2.ChessBoard2
 import com.paulcraciunas.screens.common.controls.CapturedPieces
-import com.paulcraciunas.screens.common.controls.v2.CapturedPieces2
 import com.paulcraciunas.screens.common.controls.DefaultPuzzleControls
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.design.components.PrimaryButton
@@ -44,8 +43,6 @@ import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.puzzles.streak.vm.PuzzleStreakScreenInteractor
 import com.paulcraciunas.screens.puzzles.streak.vm.PuzzleStreakUiState2
 import com.paulcraciunas.screens.puzzles.streak.vm.StubPuzzleStreakScreenInteractor
-import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.persistentMapOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -102,14 +99,14 @@ private fun PuzzleStreakContent(
     Column(
         modifier = modifier.fillMaxSize()
     ) {
-        CapturedPieces2(
-            capturedPieces = data.captured[data.player.other()]!!,
+        CapturedPieces(
+            capturedPieces = data.otherCaptured(),
             side = data.player,
             modifier = Modifier.fillMaxWidth()
         )
         AnimatedBoard(
             targetState = data,
-            contentKey = { puzzleData -> puzzleData.id },
+            contentKey = { it.id },
         ) { puzzleData ->
             ChessBoard2(
                 board = puzzleData.boardData,
@@ -119,7 +116,7 @@ private fun PuzzleStreakContent(
             )
         }
         CapturedPieces(
-            capturedPieces = data.captured[data.player]!!,
+            capturedPieces = data.playerCaptured(),
             side = data.player.other(),
             modifier = Modifier.fillMaxWidth()
         )
@@ -254,9 +251,9 @@ private fun PlayingPreview() {
                     player = Side.WHITE,
                     id = 42,
                     boardData = BoardViewData2.default(),
-                    captured = persistentMapOf(
-                        Side.WHITE to persistentListOf(Piece.Pawn, Piece.Knight),
-                        Side.BLACK to persistentListOf(Piece.Bishop, Piece.Pawn)
+                    captured = mapOf(
+                        Side.WHITE to listOf(Piece.Pawn, Piece.Knight),
+                        Side.BLACK to listOf(Piece.Bishop, Piece.Pawn)
                     ),
                 ),
                 streakCount = 12,
@@ -280,9 +277,9 @@ private fun PuzzleEndedPreview() {
                     player = Side.WHITE,
                     id = 42,
                     boardData = BoardViewData2.default(),
-                    captured = persistentMapOf(
-                        Side.WHITE to persistentListOf(Piece.Pawn, Piece.Knight),
-                        Side.BLACK to persistentListOf(Piece.Bishop, Piece.Pawn)
+                    captured = mapOf(
+                        Side.WHITE to listOf(Piece.Pawn, Piece.Knight),
+                        Side.BLACK to listOf(Piece.Bishop, Piece.Pawn)
                     ),
                 ),
                 streakCount = 12,
@@ -308,9 +305,9 @@ private fun StreakEndedPreview() {
                     player = Side.BLACK,
                     id = 42,
                     boardData = BoardViewData2.default(),
-                    captured = persistentMapOf(
-                        Side.WHITE to persistentListOf(Piece.Queen),
-                        Side.BLACK to persistentListOf(Piece.Rook, Piece.Pawn, Piece.Pawn)
+                    captured = mapOf(
+                        Side.WHITE to listOf(Piece.Queen),
+                        Side.BLACK to listOf(Piece.Rook, Piece.Pawn, Piece.Pawn)
                     ),
                 ),
                 finalStreakCount = 15,

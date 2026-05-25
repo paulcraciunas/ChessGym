@@ -18,7 +18,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.paulcraciunas.game.logic.api.board.Locus
-import com.paulcraciunas.game.logic.api.board.loc
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
@@ -74,7 +73,7 @@ private fun SquareNameOverlayPreview() {
     ChessGymTheme {
         Box(modifier = Modifier.fillMaxSize()) {
             SquareNameOverlay(
-                currentSquare = "e4".loc(),
+                currentSquare = Locus.e4,
                 showError = false
             )
         }
@@ -87,7 +86,7 @@ private fun SquareNameOverlayErrorPreview() {
     ChessGymTheme {
         Box(modifier = Modifier.fillMaxSize()) {
             SquareNameOverlay(
-                currentSquare = "e4".loc(),
+                currentSquare = Locus.e4,
                 showError = true
             )
         }

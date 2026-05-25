@@ -2,10 +2,10 @@ package com.paulcraciunas.game.logic.plies
 
 import com.paulcraciunas.game.logic.api.CastleType
 import com.paulcraciunas.game.logic.api.Side
+import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.impl.board.Board
 import com.paulcraciunas.game.logic.impl.plies.CastlePly
-import com.paulcraciunas.game.logic.loc
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNull
@@ -21,22 +21,22 @@ internal class CastlePlyTest {
 
     @Test
     fun `GIVEN white moving WHEN castling kingSide for THEN the king and rook move correctly`() {
-        on.add(piece = Piece.King, side = Side.WHITE, at = "e1".loc())
-        on.add(piece = Piece.Rook, side = Side.WHITE, at = "h1".loc())
+        on.add(piece = Piece.King, side = Side.WHITE, at = Locus.e1)
+        on.add(piece = Piece.Rook, side = Side.WHITE, at = Locus.h1)
         val ply = CastlePly(turn = Side.WHITE, type = CastleType.KingSide)
 
         ply.exec(on)
 
-        assertTrue(on.has(Piece.King, Side.WHITE, "g1".loc()))
-        assertTrue(on.has(Piece.Rook, Side.WHITE, "f1".loc()))
+        assertTrue(on.has(Piece.King, Side.WHITE, Locus.g1))
+        assertTrue(on.has(Piece.Rook, Side.WHITE, Locus.f1))
         assertFalse(ply.isPawnMoveOrCapture())
     }
 
     @Test
     fun `GIVEN position occupied WHEN castling kingSide THEN throw`() {
-        on.add(piece = Piece.King, side = Side.WHITE, at = "e1".loc())
-        on.add(piece = Piece.Rook, side = Side.WHITE, at = "h1".loc())
-        on.add(piece = Piece.Knight, side = Side.WHITE, at = "g1".loc())
+        on.add(piece = Piece.King, side = Side.WHITE, at = Locus.e1)
+        on.add(piece = Piece.Rook, side = Side.WHITE, at = Locus.h1)
+        on.add(piece = Piece.Knight, side = Side.WHITE, at = Locus.g1)
         val ply = CastlePly(turn = Side.WHITE, type = CastleType.KingSide)
 
         assertThrows<AssertionError> { ply.exec(on) }
@@ -44,7 +44,7 @@ internal class CastlePlyTest {
 
     @Test
     fun `GIVEN king missing WHEN castling kingSide THEN throw`() {
-        on.add(piece = Piece.Rook, side = Side.WHITE, at = "h1".loc())
+        on.add(piece = Piece.Rook, side = Side.WHITE, at = Locus.h1)
         val ply = CastlePly(turn = Side.WHITE, type = CastleType.KingSide)
 
         assertThrows<AssertionError> { ply.exec(on) }
@@ -52,7 +52,7 @@ internal class CastlePlyTest {
 
     @Test
     fun `GIVEN rook missing WHEN castling kingSide THEN throw`() {
-        on.add(piece = Piece.Rook, side = Side.WHITE, at = "h1".loc())
+        on.add(piece = Piece.Rook, side = Side.WHITE, at = Locus.h1)
         val ply = CastlePly(turn = Side.WHITE, type = CastleType.KingSide)
 
         assertThrows<AssertionError> { ply.exec(on) }
@@ -60,33 +60,33 @@ internal class CastlePlyTest {
 
     @Test
     fun `GIVEN white moving WHEN undoing kingSide castle THEN the king and rook move back`() {
-        on.add(piece = Piece.King, side = Side.WHITE, at = "g1".loc())
-        on.add(piece = Piece.Rook, side = Side.WHITE, at = "f1".loc())
+        on.add(piece = Piece.King, side = Side.WHITE, at = Locus.g1)
+        on.add(piece = Piece.Rook, side = Side.WHITE, at = Locus.f1)
         val ply = CastlePly(turn = Side.WHITE, type = CastleType.KingSide)
 
         ply.undo(on)
 
-        assertTrue(on.has(Piece.King, Side.WHITE, "e1".loc()))
-        assertTrue(on.has(Piece.Rook, Side.WHITE, "h1".loc()))
+        assertTrue(on.has(Piece.King, Side.WHITE, Locus.e1))
+        assertTrue(on.has(Piece.Rook, Side.WHITE, Locus.h1))
     }
 
     @Test
     fun `GIVEN white moving WHEN castling queenSide THEN the king and rook move correctly`() {
-        on.add(piece = Piece.King, side = Side.WHITE, at = "e1".loc())
-        on.add(piece = Piece.Rook, side = Side.WHITE, at = "a1".loc())
+        on.add(piece = Piece.King, side = Side.WHITE, at = Locus.e1)
+        on.add(piece = Piece.Rook, side = Side.WHITE, at = Locus.a1)
         val ply = CastlePly(turn = Side.WHITE, type = CastleType.QueenSide)
 
         ply.exec(on)
 
-        assertTrue(on.has(Piece.King, Side.WHITE, "c1".loc()))
-        assertTrue(on.has(Piece.Rook, Side.WHITE, "d1".loc()))
+        assertTrue(on.has(Piece.King, Side.WHITE, Locus.c1))
+        assertTrue(on.has(Piece.Rook, Side.WHITE, Locus.d1))
     }
 
     @Test
     fun `GIVEN position occupied WHEN castling queenSide THEN throw`() {
-        on.add(piece = Piece.King, side = Side.WHITE, at = "e1".loc())
-        on.add(piece = Piece.Rook, side = Side.WHITE, at = "a1".loc())
-        on.add(piece = Piece.Bishop, side = Side.WHITE, at = "c1".loc())
+        on.add(piece = Piece.King, side = Side.WHITE, at = Locus.e1)
+        on.add(piece = Piece.Rook, side = Side.WHITE, at = Locus.a1)
+        on.add(piece = Piece.Bishop, side = Side.WHITE, at = Locus.c1)
         val ply = CastlePly(turn = Side.WHITE, type = CastleType.QueenSide)
 
         assertThrows<AssertionError> { ply.exec(on) }
@@ -94,7 +94,7 @@ internal class CastlePlyTest {
 
     @Test
     fun `GIVEN king missing WHEN castling queenSide THEN throw`() {
-        on.add(piece = Piece.Rook, side = Side.WHITE, at = "a1".loc())
+        on.add(piece = Piece.Rook, side = Side.WHITE, at = Locus.a1)
         val ply = CastlePly(turn = Side.WHITE, type = CastleType.QueenSide)
 
         assertThrows<AssertionError> { ply.exec(on) }
@@ -102,7 +102,7 @@ internal class CastlePlyTest {
 
     @Test
     fun `GIVEN rook missing WHEN castling queenSide THEN throw`() {
-        on.add(piece = Piece.Rook, side = Side.WHITE, at = "a1".loc())
+        on.add(piece = Piece.Rook, side = Side.WHITE, at = Locus.a1)
         val ply = CastlePly(turn = Side.WHITE, type = CastleType.QueenSide)
 
         assertThrows<AssertionError> { ply.exec(on) }
@@ -110,66 +110,66 @@ internal class CastlePlyTest {
 
     @Test
     fun `GIVEN white moving WHEN undoing queenSide castle THEN the king and rook move back`() {
-        on.add(piece = Piece.King, side = Side.WHITE, at = "c1".loc())
-        on.add(piece = Piece.Rook, side = Side.WHITE, at = "d1".loc())
+        on.add(piece = Piece.King, side = Side.WHITE, at = Locus.c1)
+        on.add(piece = Piece.Rook, side = Side.WHITE, at = Locus.d1)
         val ply = CastlePly(turn = Side.WHITE, type = CastleType.QueenSide)
 
         ply.undo(on)
 
-        assertTrue(on.has(Piece.King, Side.WHITE, "e1".loc()))
-        assertTrue(on.has(Piece.Rook, Side.WHITE, "a1".loc()))
+        assertTrue(on.has(Piece.King, Side.WHITE, Locus.e1))
+        assertTrue(on.has(Piece.Rook, Side.WHITE, Locus.a1))
         assertFalse(ply.isPawnMoveOrCapture())
     }
 
     @Test
     fun `GIVEN black moving WHEN castling kingSide THEN the king and rook move correctly`() {
-        on.add(piece = Piece.King, side = Side.BLACK, at = "e8".loc())
-        on.add(piece = Piece.Rook, side = Side.BLACK, at = "h8".loc())
+        on.add(piece = Piece.King, side = Side.BLACK, at = Locus.e8)
+        on.add(piece = Piece.Rook, side = Side.BLACK, at = Locus.h8)
         val ply = CastlePly(turn = Side.BLACK, type = CastleType.KingSide)
 
         ply.exec(on)
 
-        assertTrue(on.has(Piece.King, Side.BLACK, "g8".loc()))
-        assertTrue(on.has(Piece.Rook, Side.BLACK, "f8".loc()))
+        assertTrue(on.has(Piece.King, Side.BLACK, Locus.g8))
+        assertTrue(on.has(Piece.Rook, Side.BLACK, Locus.f8))
         assertFalse(ply.isPawnMoveOrCapture())
     }
 
     @Test
     fun `GIVEN black moving WHEN undoing kingSide castle THEN the king and rook move back`() {
-        on.add(piece = Piece.King, side = Side.BLACK, at = "g8".loc())
-        on.add(piece = Piece.Rook, side = Side.BLACK, at = "f8".loc())
+        on.add(piece = Piece.King, side = Side.BLACK, at = Locus.g8)
+        on.add(piece = Piece.Rook, side = Side.BLACK, at = Locus.f8)
         val ply = CastlePly(turn = Side.BLACK, type = CastleType.KingSide)
 
         ply.undo(on)
 
-        assertTrue(on.has(Piece.King, Side.BLACK, "e8".loc()))
-        assertTrue(on.has(Piece.Rook, Side.BLACK, "h8".loc()))
+        assertTrue(on.has(Piece.King, Side.BLACK, Locus.e8))
+        assertTrue(on.has(Piece.Rook, Side.BLACK, Locus.h8))
         assertFalse(ply.isPawnMoveOrCapture())
     }
 
     @Test
     fun `GIVEN black moving WHEN castling queenSide THEN the king and rook move correctly`() {
-        on.add(piece = Piece.King, side = Side.BLACK, at = "e8".loc())
-        on.add(piece = Piece.Rook, side = Side.BLACK, at = "a8".loc())
+        on.add(piece = Piece.King, side = Side.BLACK, at = Locus.e8)
+        on.add(piece = Piece.Rook, side = Side.BLACK, at = Locus.a8)
         val ply = CastlePly(turn = Side.BLACK, type = CastleType.QueenSide)
 
         ply.exec(on)
 
-        assertTrue(on.has(Piece.King, Side.BLACK, "c8".loc()))
-        assertTrue(on.has(Piece.Rook, Side.BLACK, "d8".loc()))
+        assertTrue(on.has(Piece.King, Side.BLACK, Locus.c8))
+        assertTrue(on.has(Piece.Rook, Side.BLACK, Locus.d8))
         assertFalse(ply.isPawnMoveOrCapture())
     }
 
     @Test
     fun `GIVEN black moving WHEN undoing queenSide castle THEN the king and rook move back`() {
-        on.add(piece = Piece.King, side = Side.BLACK, at = "c8".loc())
-        on.add(piece = Piece.Rook, side = Side.BLACK, at = "d8".loc())
+        on.add(piece = Piece.King, side = Side.BLACK, at = Locus.c8)
+        on.add(piece = Piece.Rook, side = Side.BLACK, at = Locus.d8)
         val ply = CastlePly(turn = Side.BLACK, type = CastleType.QueenSide)
 
         ply.undo(on)
 
-        assertTrue(on.has(Piece.King, Side.BLACK, "e8".loc()))
-        assertTrue(on.has(Piece.Rook, Side.BLACK, "a8".loc()))
+        assertTrue(on.has(Piece.King, Side.BLACK, Locus.e8))
+        assertTrue(on.has(Piece.Rook, Side.BLACK, Locus.a8))
         assertFalse(ply.isPawnMoveOrCapture())
     }
 
@@ -195,8 +195,8 @@ internal class CastlePlyTest {
 
     @Test
     fun `WHEN checking extraPass THEN return correct Locus`() {
-        assertEquals("b1".loc(), CastleType.QueenSide.extraPass(Side.WHITE))
-        assertEquals("b8".loc(), CastleType.QueenSide.extraPass(Side.BLACK))
+        assertEquals(Locus.b1, CastleType.QueenSide.extraPass(Side.WHITE))
+        assertEquals(Locus.b8, CastleType.QueenSide.extraPass(Side.BLACK))
         assertEquals(null, CastleType.KingSide.extraPass(Side.WHITE))
         assertEquals(null, CastleType.KingSide.extraPass(Side.BLACK))
     }

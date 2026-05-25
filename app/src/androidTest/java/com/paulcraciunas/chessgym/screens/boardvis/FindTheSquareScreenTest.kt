@@ -5,9 +5,7 @@ import com.paulcraciunas.chessgym.di.TestFindTheSquareModule
 import com.paulcraciunas.chessgym.dsl.Given
 import com.paulcraciunas.chessgym.dsl.Then
 import com.paulcraciunas.chessgym.dsl.When
-import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
-import com.paulcraciunas.game.logic.api.board.Rank
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
 import org.junit.Test
@@ -302,9 +300,9 @@ internal class FindTheSquareScreenTest : BaseUiTest() {
     }
 
     private companion object {
-        val DETERMINISTIC_SQUARE = Locus(File.a, Rank.`1`)
+        val DETERMINISTIC_SQUARE = Locus.a1
         const val DETERMINISTIC_SQUARE_NAME = "A1"
-        val WRONG_SQUARE = Locus(File.e, Rank.`4`)
+        val WRONG_SQUARE = Locus.e4
         const val GAME_TIMEOUT_MS = 10_000L
     }
 }

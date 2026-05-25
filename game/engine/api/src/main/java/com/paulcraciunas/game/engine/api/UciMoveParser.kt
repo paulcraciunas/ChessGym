@@ -28,7 +28,7 @@ object UciMoveParser {
     private fun parseLocus(fileChar: Char, rankChar: Char): Locus? {
         val file = File.entries.getOrNull(fileChar - 'a') ?: return null
         val rank = Rank.entries.getOrNull(rankChar - '1') ?: return null
-        return Locus(file, rank)
+        return Locus.from(file, rank)
     }
 
     private fun parsePromotionPiece(char: Char): Piece? = when (char) {

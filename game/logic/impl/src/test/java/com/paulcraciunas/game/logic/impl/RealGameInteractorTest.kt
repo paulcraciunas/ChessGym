@@ -5,7 +5,6 @@ import com.paulcraciunas.game.logic.api.Game
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.loc
 import com.paulcraciunas.game.logic.impl.plies.PlyFactory
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -74,26 +73,26 @@ internal class RealGameInteractorTest {
     fun `GIVEN loaded game WHEN requesting moves THEN available destinations are returned`() {
         // Given
         loadDefaultGame()
-        val from: Locus = "e2".loc()
+        val from: Locus = Locus.e2
 
         // When
         val moves: List<Locus> = underTest.moves(from)
 
         // Then
-        assertEquals(setOf("e3".loc(), "e4".loc()), moves.toSet())
+        assertEquals(setOf(Locus.e3, Locus.e4), moves.toSet())
     }
 
     @Test
     fun `GIVEN loaded game WHEN requesting moves from knight THEN valid knight moves returned`() {
         // Given
         loadDefaultGame()
-        val from: Locus = "g1".loc()
+        val from: Locus = Locus.g1
 
         // When
         val moves: List<Locus> = underTest.moves(from)
 
         // Then
-        assertEquals(setOf("f3".loc(), "h3".loc()), moves.toSet())
+        assertEquals(setOf(Locus.f3, Locus.h3), moves.toSet())
     }
 
     @Test
@@ -102,7 +101,7 @@ internal class RealGameInteractorTest {
         loadDefaultGame()
 
         // When
-        val moves: List<Locus> = underTest.moves("e4".loc())
+        val moves: List<Locus> = underTest.moves(Locus.e4)
 
         // Then
         assertTrue(moves.isEmpty())
@@ -114,8 +113,8 @@ internal class RealGameInteractorTest {
         loadDefaultGame()
 
         // When
-        val canPlayValid: Boolean = underTest.canPlay("e2".loc(), "e4".loc())
-        val canPlayInvalid: Boolean = underTest.canPlay("e2".loc(), "e5".loc())
+        val canPlayValid: Boolean = underTest.canPlay(Locus.e2, Locus.e4)
+        val canPlayInvalid: Boolean = underTest.canPlay(Locus.e2, Locus.e5)
 
         // Then
         assertTrue(canPlayValid)
@@ -129,11 +128,11 @@ internal class RealGameInteractorTest {
         underTest.load(game, Side.WHITE)
 
         // When
-        underTest.play("e2".loc(), "e4".loc())
+        underTest.play(Locus.e2, Locus.e4)
 
         // Then
-        assertEquals(Piece.Pawn, game.board.at("e4".loc()))
-        assertNull(game.board.at("e2".loc()))
+        assertEquals(Piece.Pawn, game.board.at(Locus.e4))
+        assertNull(game.board.at(Locus.e2))
     }
 
     @Test
@@ -143,7 +142,7 @@ internal class RealGameInteractorTest {
 
         // When & Then
         assertThrows(AssertionError::class.java) {
-            underTest.play("e2".loc(), "e5".loc())
+            underTest.play(Locus.e2, Locus.e5)
         }
     }
 
@@ -153,13 +152,13 @@ internal class RealGameInteractorTest {
         loadDefaultGame()
 
         // When
-        underTest.play("e2".loc(), "e4".loc())
+        underTest.play(Locus.e2, Locus.e4)
 
         // Then
         val lastPly = underTest.lastPly
         assertNotNull(lastPly)
-        assertEquals("e2".loc(), lastPly!!.from)
-        assertEquals("e4".loc(), lastPly.to)
+        assertEquals(Locus.e2, lastPly!!.from)
+        assertEquals(Locus.e4, lastPly.to)
     }
 
     @Test
@@ -168,7 +167,7 @@ internal class RealGameInteractorTest {
         loadDefaultGame()
 
         // When
-        val canPromote: Boolean = underTest.canPromote("e2".loc(), "e4".loc())
+        val canPromote: Boolean = underTest.canPromote(Locus.e2, Locus.e4)
 
         // Then
         assertFalse(canPromote)
@@ -181,7 +180,7 @@ internal class RealGameInteractorTest {
         underTest.load(game, Side.WHITE)
 
         // When
-        val canPromote: Boolean = underTest.canPromote("a7".loc(), "a8".loc())
+        val canPromote: Boolean = underTest.canPromote(Locus.a7, Locus.a8)
 
         // Then
         assertTrue(canPromote)
@@ -194,11 +193,11 @@ internal class RealGameInteractorTest {
         underTest.load(game, Side.WHITE)
 
         // When
-        underTest.promote("a7".loc(), "a8".loc(), Piece.Queen)
+        underTest.promote(Locus.a7, Locus.a8, Piece.Queen)
 
         // Then
-        assertEquals(Piece.Queen, game.board.at("a8".loc()))
-        assertNull(game.board.at("a7".loc()))
+        assertEquals(Piece.Queen, game.board.at(Locus.a8))
+        assertNull(game.board.at(Locus.a7))
     }
 
     @Test
@@ -206,11 +205,11 @@ internal class RealGameInteractorTest {
         // Given
         val game = buildDefaultGame()
         underTest.load(game, Side.WHITE)
-        underTest.play("e2".loc(), "e4".loc())
-        underTest.play("d7".loc(), "d5".loc())
+        underTest.play(Locus.e2, Locus.e4)
+        underTest.play(Locus.d7, Locus.d5)
 
         // When
-        underTest.play("e4".loc(), "d5".loc())
+        underTest.play(Locus.e4, Locus.d5)
 
         // Then - WHITE captured BLACK's pawn, so it appears in WHITE's captured list
         val capturedByWhite = underTest.captured[Side.WHITE]!!
@@ -224,12 +223,12 @@ internal class RealGameInteractorTest {
         // Given
         val game = buildDefaultGame()
         underTest.load(game, Side.WHITE)
-        underTest.play("e2".loc(), "e4".loc())
-        underTest.play("d7".loc(), "d5".loc())
-        underTest.play("g1".loc(), "f3".loc())
+        underTest.play(Locus.e2, Locus.e4)
+        underTest.play(Locus.d7, Locus.d5)
+        underTest.play(Locus.g1, Locus.f3)
 
         // When
-        underTest.play("d5".loc(), "e4".loc())
+        underTest.play(Locus.d5, Locus.e4)
 
         // Then - BLACK captured WHITE's pawn, so it appears in BLACK's captured list
         val capturedByWhite = underTest.captured[Side.WHITE]!!
@@ -264,12 +263,12 @@ internal class RealGameInteractorTest {
         // Given
         val game = buildDefaultGame()
         underTest.load(game, Side.WHITE)
-        underTest.play("e2".loc(), "e4".loc())
-        underTest.play("d7".loc(), "d5".loc())
-        underTest.play("e4".loc(), "d5".loc()) // White captures pawn
+        underTest.play(Locus.e2, Locus.e4)
+        underTest.play(Locus.d7, Locus.d5)
+        underTest.play(Locus.e4, Locus.d5) // White captures pawn
 
         // When - Black recaptures
-        underTest.play("d8".loc(), "d5".loc()) // Black captures pawn
+        underTest.play(Locus.d8, Locus.d5) // Black captures pawn
 
         // Then - Both sides have captured one pawn each
         val capturedByWhite = underTest.captured[Side.WHITE]!!
@@ -288,9 +287,9 @@ internal class RealGameInteractorTest {
     private fun buildPromotionGame(): Game =
         builder
             .withTurn(Side.WHITE)
-            .withPiece(Piece.King, Side.WHITE, "e1".loc())
-            .withPiece(Piece.King, Side.BLACK, "e8".loc())
-            .withPiece(Piece.Pawn, Side.WHITE, "a7".loc())
+            .withPiece(Piece.King, Side.WHITE, Locus.e1)
+            .withPiece(Piece.King, Side.BLACK, Locus.e8)
+            .withPiece(Piece.Pawn, Side.WHITE, Locus.a7)
             .buildGame()
 
     private companion object {

@@ -29,7 +29,6 @@ dependencies {
     implementation(project(":game:logic:builders"))
     implementation(project(":domain:api"))
     api(project(":settings:application:api"))
-    api(libs.kotlinx.collections.immutable)
 
     testImplementation(project(":game:logic:impl"))
 }

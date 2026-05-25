@@ -1,9 +1,7 @@
 package com.paulcraciunas.game.engine.impl.uci
 
-import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.api.board.Rank
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
@@ -102,8 +100,8 @@ internal class UciResponseTest {
 
             assertNotNull(result)
             val bestMove = result as UciResponse.BestMove
-            assertEquals(Locus(File.e, Rank.`2`), bestMove.engineMove.from)
-            assertEquals(Locus(File.e, Rank.`4`), bestMove.engineMove.to)
+            assertEquals(Locus.e2, bestMove.engineMove.from)
+            assertEquals(Locus.e4, bestMove.engineMove.to)
             assertNull(bestMove.engineMove.promotion)
         }
 
@@ -113,8 +111,8 @@ internal class UciResponseTest {
 
             assertNotNull(result)
             val bestMove = result as UciResponse.BestMove
-            assertEquals(Locus(File.a, Rank.`7`), bestMove.engineMove.from)
-            assertEquals(Locus(File.a, Rank.`8`), bestMove.engineMove.to)
+            assertEquals(Locus.a7, bestMove.engineMove.from)
+            assertEquals(Locus.a8, bestMove.engineMove.to)
             assertEquals(Piece.Queen, bestMove.engineMove.promotion)
         }
 
@@ -133,8 +131,8 @@ internal class UciResponseTest {
 
             assertNotNull(result)
             val bestMove = result as UciResponse.BestMove
-            assertEquals(Locus(File.e, Rank.`2`), bestMove.engineMove.from)
-            assertEquals(Locus(File.e, Rank.`4`), bestMove.engineMove.to)
+            assertEquals(Locus.e2, bestMove.engineMove.from)
+            assertEquals(Locus.e4, bestMove.engineMove.to)
         }
 
         @Test

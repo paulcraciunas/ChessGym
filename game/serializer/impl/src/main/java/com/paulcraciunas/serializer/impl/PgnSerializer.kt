@@ -197,7 +197,7 @@ private fun Game.findPly(token: String): Ply {
         ?: throw SerializeException("Invalid destination in: $token")
     val destRank = token[end - 1].toRank()
         ?: throw SerializeException("Invalid destination in: $token")
-    val to = Locus(destFile, destRank)
+    val to = Locus.from(destFile, destRank)
     end -= 2
 
     if (end > 0 && token[end - 1] == 'x') end--

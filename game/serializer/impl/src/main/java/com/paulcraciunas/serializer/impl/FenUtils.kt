@@ -18,15 +18,15 @@ internal fun Builder.withEnPassent(enPassent: String?): Builder = apply {
         Rank.`3` -> withLastPly(
             turn = Side.WHITE,
             piece = Piece.Pawn,
-            from = Locus(loc.file, Rank.`2`),
-            to = Locus(loc.file, Rank.`4`)
+            from = Locus.from(loc.file, Rank.`2`),
+            to = Locus.from(loc.file, Rank.`4`)
         )
 
         Rank.`6` -> withLastPly(
             turn = Side.BLACK,
             piece = Piece.Pawn,
-            from = Locus(loc.file, Rank.`7`),
-            to = Locus(loc.file, Rank.`5`)
+            from = Locus.from(loc.file, Rank.`7`),
+            to = Locus.from(loc.file, Rank.`5`)
         )
 
         else -> throw SerializeException("Invalid en-passent rank: ${loc.rank}")

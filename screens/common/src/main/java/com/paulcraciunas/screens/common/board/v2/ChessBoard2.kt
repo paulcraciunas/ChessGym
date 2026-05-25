@@ -45,16 +45,14 @@ import com.paulcraciunas.screens.common.model.v2.SquareViewData2
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.settings.application.api.AppSettings
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toImmutableList
 import kotlin.math.roundToInt
 
 private val borderSize = 14.dp
 
 // Most of the time, this will be the same as player's side
-enum class BoardOrientation2(val ranks: ImmutableList<Rank>, val files: ImmutableList<File>) {
-    White(ranks = Rank.entries.reversed().toImmutableList(), files = File.entries.toImmutableList()),
-    Black(ranks = Rank.entries.toImmutableList(), files = File.entries.reversed().toImmutableList());
+enum class BoardOrientation2(val ranks: Array<Rank>, val files: Array<File>) {
+    White(ranks = Rank.entries.reversed().toTypedArray(), files = File.entries.toTypedArray()),
+    Black(ranks = Rank.entries.toTypedArray(), files = File.entries.reversed().toTypedArray());
 
     companion object {
         fun fromSide(player: Side): BoardOrientation2 = if (player == Side.WHITE) White else Black
@@ -211,8 +209,8 @@ private fun AnimatedPieceOverlay2(
         contentAlignment = Alignment.Center,
     ) {
         ChessPiece(
-            piece = animatingPiece.piece,
-            side = animatingPiece.side,
+            piece = animatingPiece.piece.piece,
+            side = animatingPiece.piece.side,
         )
     }
 }
@@ -254,7 +252,7 @@ private fun ChessBoardContents2(
                         modifier = Modifier
                             .weight(1f)
                             .aspectRatio(1f)
-                            .clickable { onClick(Locus(file, rank)) }
+                            .clickable { onClick(Locus.from(file, rank)) }
                             .testTag { ChessBoardTags.square(file, rank) },
                     )
                 }
@@ -271,7 +269,6 @@ private fun SquareScope2.SquareContent2(
     if (square.piece != null) {
         Piece(
             piece = square.piece.piece,
-            side = square.piece.side,
             selected = square.piece.isSelected || square.canMoveTo, // important fix to add canMoveTo
             alpha = piecesAlpha,
         )

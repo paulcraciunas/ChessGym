@@ -16,9 +16,7 @@ import androidx.compose.ui.res.stringResource
 
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.game.logic.api.Side
-import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
-import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.boardvis.squares.vm.FindTheSquareScreenInteractor
 import com.paulcraciunas.screens.boardvis.squares.vm.FindTheSquareUiState
@@ -108,7 +106,7 @@ private fun FindTheSquareScreenPlayingPreview() {
         FindTheSquareScreen(
             uiState = FindTheSquareUiState.Playing(
                 orientation = Side.WHITE,
-                currentSquare = Locus(File.e, Rank.`4`),
+                currentSquare = Locus.e4,
                 score = 5,
                 timeRemainingSeconds = 22,
                 showError = false

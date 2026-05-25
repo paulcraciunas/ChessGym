@@ -2,7 +2,6 @@ package com.paulcraciunas.screens.common.design.theme.walnut
 
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.screens.common.design.theme.ChessGymDimensions
-import kotlin.Float
 
 internal val WalnutDimensions = ChessGymDimensions(
     /** Spacing scale (4-pt base, biased to 8-pt rhythm). */

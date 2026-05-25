@@ -14,7 +14,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.api.board.loc
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.boardvis.pieces.vm.MoveThePieceScreenInteractor
 import com.paulcraciunas.screens.boardvis.pieces.vm.MoveThePieceUiState
@@ -116,11 +115,11 @@ private fun MoveThePieceScreenPlayingPreview() {
             uiState = MoveThePieceUiState.Playing(
                 boardData = MoveThePieceUiState.Setup().boardData,
                 playerPiece = Piece.Rook,
-                playerPieceLocus = "d4".loc(),
+                playerPieceLocus = Locus.d4,
                 movesRemaining = 2,
                 currentScore = 5,
                 timeRemainingSeconds = 45,
-                visitedSquares = setOf("d4".loc()),
+                visitedSquares = setOf(Locus.d4),
                 isTrainingMode = true
             ),
             showBorders = true,

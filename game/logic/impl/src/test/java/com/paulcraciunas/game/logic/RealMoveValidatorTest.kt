@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test
 
 internal class RealMoveValidatorTest {
     private val side = Side.BLACK
-    private val home = "e4".loc()
+    private val home = Locus.e4
 
     private val underTest = RealMoveValidator()
 
@@ -35,14 +35,14 @@ internal class RealMoveValidatorTest {
         val piece = Piece.Bishop
         val on = Board().apply {
             add(piece = piece, side = side, at = home)
-            add(piece = Piece.Rook, side = side, at = "e1".loc())
-            add(piece = Piece.Queen, side = side, at = "e8".loc())
-            add(piece = Piece.Knight, side = side, at = "f6".loc())
-            add(piece = Piece.Bishop, side = side, at = "d5".loc())
+            add(piece = Piece.Rook, side = side, at = Locus.e1)
+            add(piece = Piece.Queen, side = side, at = Locus.e8)
+            add(piece = Piece.Knight, side = side, at = Locus.f6)
+            add(piece = Piece.Bishop, side = side, at = Locus.d5)
         }
 
         // When
-        val result = listOf("d3", "c2", "b1", "f5", "g6", "h7", "f3", "g2", "h1").map { it.loc() }.all {
+        val result = listOf(Locus.d3, Locus.c2, Locus.b1, Locus.f5, Locus.g6, Locus.h7, Locus.f3, Locus.g2, Locus.h1).all {
             underTest.canAttack(piece = piece, side = side, from = home, to = it, board = on)
         }
 
@@ -54,7 +54,7 @@ internal class RealMoveValidatorTest {
     fun `GIVEN a board with pieces WHEN destination is occupied THEN return true`() {
         // Given
         val piece = Piece.Bishop
-        val to = "c2".loc()
+        val to = Locus.c2
         val on = defaultBoardWith(piece, side, home).apply {
             add(piece = Piece.Bishop, side = side.other(), at = to)
         }
@@ -70,9 +70,9 @@ internal class RealMoveValidatorTest {
     fun `GIVEN a board with pieces WHEN destination is obstructed THEN return false`() {
         // Given
         val piece = Piece.Bishop
-        val to = "b1".loc() // We'll put a bishop on C2
+        val to = Locus.b1
         val on = defaultBoardWith(piece, side, home).apply {
-            add(piece = Piece.Bishop, side = side.other(), at = "c2".loc())
+            add(piece = Piece.Bishop, side = side.other(), at = Locus.c2)
         }
 
         // When
@@ -90,9 +90,9 @@ internal class RealMoveValidatorTest {
 
         // When
         val result = listOf(
-            "d3", "c2", "b1", "d4", "c4", "b4", "a4", "d5", "c6", "b7", "a8",
-            "e6", "e7", "e8", "f4", "g4", "h4", "g6", "h7", "f3", "f5"
-        ).map { it.loc() }.all {
+            Locus.d3, Locus.c2, Locus.b1, Locus.d4, Locus.c4, Locus.b4, Locus.a4, Locus.d5, Locus.c6, Locus.b7, Locus.a8,
+            Locus.e6, Locus.e7, Locus.e8, Locus.f4, Locus.g4, Locus.h4, Locus.g6, Locus.h7, Locus.f3, Locus.f5
+        ).all {
             underTest.canAttack(piece = piece, side = side, from = home, to = it, board = on)
         }
 
@@ -107,7 +107,7 @@ internal class RealMoveValidatorTest {
         val on = defaultBoardWith(piece, side, home)
 
         // When
-        val result = listOf("d2", "c1", "b2", "d6", "c3", "a3", "c7", "b8", "a7", "f6", "g7", "h8").map { it.loc() }.any {
+        val result = listOf(Locus.d2, Locus.c1, Locus.b2, Locus.d6, Locus.c3, Locus.a3, Locus.c7, Locus.b8, Locus.a7, Locus.f6, Locus.g7, Locus.h8).any {
             underTest.canAttack(piece = piece, side = side, from = home, to = it, board = on)
         }
 
@@ -123,8 +123,8 @@ internal class RealMoveValidatorTest {
 
         // When
         val result = listOf(
-            "d4", "c4", "b4", "a4", "e5", "e6", "e7", "e8", "e3", "e2", "e1", "f4", "g4", "h4",
-        ).map { it.loc() }.all {
+            Locus.d4, Locus.c4, Locus.b4, Locus.a4, Locus.e5, Locus.e6, Locus.e7, Locus.e8, Locus.e3, Locus.e2, Locus.e1, Locus.f4, Locus.g4, Locus.h4,
+        ).all {
             underTest.canAttack(piece = piece, side = side, from = home, to = it, board = on)
         }
 
@@ -140,8 +140,8 @@ internal class RealMoveValidatorTest {
 
         // When
         val result = listOf(
-            "d6", "c5", "c3", "d2", "f6", "g5", "g3", "f2",
-        ).map { it.loc() }.all {
+            Locus.d6, Locus.c5, Locus.c3, Locus.d2, Locus.f6, Locus.g5, Locus.g3, Locus.f2,
+        ).all {
             underTest.canAttack(piece = piece, side = side, from = home, to = it, board = on)
         }
 
@@ -157,8 +157,8 @@ internal class RealMoveValidatorTest {
 
         // When
         val result = listOf(
-            "d5", "c6", "b7", "a8", "d3", "c2", "b1", "f5", "g6", "h7", "f3", "g2", "h1"
-        ).map { it.loc() }.all {
+            Locus.d5, Locus.c6, Locus.b7, Locus.a8, Locus.d3, Locus.c2, Locus.b1, Locus.f5, Locus.g6, Locus.h7, Locus.f3, Locus.g2, Locus.h1
+        ).all {
             underTest.canAttack(piece = piece, side = side, from = home, to = it, board = on)
         }
 
@@ -173,10 +173,10 @@ internal class RealMoveValidatorTest {
 
         // When
         val result = listOf(
-            "a2", "a3", "a4", "a5", "a6", "a7", "a8", "b1", "c1", "d1", "e1", "f1", "g1", "h1",
-            "b2", "c2", "e2", "f2", "g2", "h2", "d3", "d4", "d5", "d6", "d7", "d8", "e3", "f4",
-            "g5", "h6", "e5", "h8",
-        ).map { it.loc() }.all {
+            Locus.a2, Locus.a3, Locus.a4, Locus.a5, Locus.a6, Locus.a7, Locus.a8, Locus.b1, Locus.c1, Locus.d1, Locus.e1, Locus.f1, Locus.g1, Locus.h1,
+            Locus.b2, Locus.c2, Locus.e2, Locus.f2, Locus.g2, Locus.h2, Locus.d3, Locus.d4, Locus.d5, Locus.d6, Locus.d7, Locus.d8, Locus.e3, Locus.f4,
+            Locus.g5, Locus.h6, Locus.e5, Locus.h8,
+        ).all {
             underTest.isSquareUnderAttack(square = it, attackingSide = side.other(), board = on)
         }
 
@@ -191,8 +191,8 @@ internal class RealMoveValidatorTest {
 
         // When
         val result = listOf(
-            "h5", "h7"
-        ).map { it.loc() }.any {
+            Locus.h5, Locus.h7
+        ).any {
             underTest.isSquareUnderAttack(square = it, attackingSide = side.other(), board = on)
         }
 
@@ -211,10 +211,10 @@ internal class RealMoveValidatorTest {
 
         // Then
         val expected = setOf(
-            "d4", "c4", "b4", "a4", "f4", "g4", "h4", "e5", "e6", "e7", "e8",
-            "e3", "e2", "e1", "d5", "c6", "b7", "a8", "f5", "g6", "h7", "d3",
-            "c2", "b1", "f3", "g2", "h1"
-        ).map { it.loc() }.toSet()
+            Locus.d4, Locus.c4, Locus.b4, Locus.a4, Locus.f4, Locus.g4, Locus.h4, Locus.e5, Locus.e6, Locus.e7, Locus.e8,
+            Locus.e3, Locus.e2, Locus.e1, Locus.d5, Locus.c6, Locus.b7, Locus.a8, Locus.f5, Locus.g6, Locus.h7, Locus.d3,
+            Locus.c2, Locus.b1, Locus.f3, Locus.g2, Locus.h1
+        ).toSet()
         assertEquals(expected, validMoves)
     }
 
@@ -228,7 +228,7 @@ internal class RealMoveValidatorTest {
         val validMoves = underTest.getValidMoves(piece = piece, side = side, from = home, board = on, blockers = setOf(home))
 
         // Then
-        val expected = setOf("d6", "f6", "c5", "c3", "d2", "f2", "g5", "g3").map { it.loc() }.toSet()
+        val expected = setOf(Locus.d6, Locus.f6, Locus.c5, Locus.c3, Locus.d2, Locus.f2, Locus.g5, Locus.g3).toSet()
         assertEquals(expected, validMoves)
     }
 
@@ -242,7 +242,7 @@ internal class RealMoveValidatorTest {
         val validMoves = underTest.getValidMoves(piece = piece, side = side, from = home, board = on, blockers = setOf(home))
 
         // Then
-        val expected = setOf("d4", "c4", "b4", "a4", "f4", "g4", "h4", "e5", "e6", "e7", "e8", "e3", "e2", "e1").map { it.loc() }.toSet()
+        val expected = setOf(Locus.d4, Locus.c4, Locus.b4, Locus.a4, Locus.f4, Locus.g4, Locus.h4, Locus.e5, Locus.e6, Locus.e7, Locus.e8, Locus.e3, Locus.e2, Locus.e1).toSet()
         assertEquals(expected, validMoves)
     }
 
@@ -256,7 +256,7 @@ internal class RealMoveValidatorTest {
         val validMoves = underTest.getValidMoves(piece = piece, side = side, from = home, board = on, blockers = setOf(home))
 
         // Then
-        val expected = setOf("d5", "c6", "b7", "a8", "f5", "g6", "h7", "d3", "c2", "b1", "f3", "g2", "h1").map { it.loc() }.toSet()
+        val expected = setOf(Locus.d5, Locus.c6, Locus.b7, Locus.a8, Locus.f5, Locus.g6, Locus.h7, Locus.d3, Locus.c2, Locus.b1, Locus.f3, Locus.g2, Locus.h1).toSet()
         assertEquals(expected, validMoves)
     }
 
@@ -264,12 +264,12 @@ internal class RealMoveValidatorTest {
     fun `GIVEN a board with pieces WHEN there are no valid moves THEN return empty set`() {
         // Given
         val piece = Piece.Rook
-        val at = "d1".loc()
+        val at = Locus.d1
         val on = Board().apply {
             add(piece = piece, side = side, at = home)
-            add(piece = Piece.Queen, side = side, at = "d2".loc())
-            add(piece = Piece.Bishop, side = side, at = "c1".loc())
-            add(piece = Piece.Knight, side = side, at = "e1".loc())
+            add(piece = Piece.Queen, side = side, at = Locus.d2)
+            add(piece = Piece.Bishop, side = side, at = Locus.c1)
+            add(piece = Piece.Knight, side = side, at = Locus.e1)
         }
 
         // When
@@ -284,9 +284,9 @@ internal class RealMoveValidatorTest {
     }
 
     private fun defaultBoard() = Board().apply {
-        add(piece = Piece.Rook, side = side.other(), at = "a1".loc())
-        add(piece = Piece.Queen, side = side.other(), at = "d2".loc())
-        add(piece = Piece.Knight, side = side.other(), at = "f7".loc())
-        add(piece = Piece.Bishop, side = side.other(), at = "h8".loc())
+        add(piece = Piece.Rook, side = side.other(), at = Locus.a1)
+        add(piece = Piece.Queen, side = side.other(), at = Locus.d2)
+        add(piece = Piece.Knight, side = side.other(), at = Locus.f7)
+        add(piece = Piece.Bishop, side = side.other(), at = Locus.h8)
     }
 }

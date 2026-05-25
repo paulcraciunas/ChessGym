@@ -6,11 +6,9 @@ import com.paulcraciunas.domain.api.boardvis.MoveResult
 import com.paulcraciunas.domain.api.boardvis.MoveThePieceGameEngine
 import com.paulcraciunas.domain.api.boardvis.MoveThePieceResult
 import com.paulcraciunas.domain.api.boardvis.OnMoveThePieceComplete
-import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.game.logic.impl.board.Board
 import com.paulcraciunas.user.api.FakeUserRepository
 import com.paulcraciunas.user.api.User
@@ -137,19 +135,19 @@ internal class MoveThePieceViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
 
         val newState = createGameState(
-            playerPieceLocus = Locus(File.e, Rank.`4`),
+            playerPieceLocus = Locus.e4,
             movesRemaining = 1
         )
         fakeGameEngine.moveResult = MoveResult.Success(newState)
 
         // When
-        underTest.onSquareClicked(Locus(File.e, Rank.`4`))
+        underTest.onSquareClicked(Locus.e4)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
         val uiState = underTest.uiState.value
         assertTrue(uiState is MoveThePieceUiState.Playing)
-        assertEquals(Locus(File.e, Rank.`4`), (uiState as MoveThePieceUiState.Playing).playerPieceLocus)
+        assertEquals(Locus.e4, (uiState as MoveThePieceUiState.Playing).playerPieceLocus)
         assertEquals(1, uiState.movesRemaining)
     }
 
@@ -164,14 +162,14 @@ internal class MoveThePieceViewModelTest {
         fakeGameEngine.moveResult = MoveResult.Invalid
 
         // When
-        underTest.onSquareClicked(Locus(File.a, Rank.`1`))
+        underTest.onSquareClicked(Locus.a1)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
         val uiState = underTest.uiState.value
         assertTrue(uiState is MoveThePieceUiState.Playing)
         // State should be unchanged
-        assertEquals(Locus(File.d, Rank.`4`), (uiState as MoveThePieceUiState.Playing).playerPieceLocus)
+        assertEquals(Locus.d4, (uiState as MoveThePieceUiState.Playing).playerPieceLocus)
     }
 
     @Test
@@ -185,7 +183,7 @@ internal class MoveThePieceViewModelTest {
         fakeGameEngine.moveResult = MoveResult.Captured
 
         // When
-        underTest.onSquareClicked(Locus(File.d, Rank.`2`))
+        underTest.onSquareClicked(Locus.d2)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
@@ -212,7 +210,7 @@ internal class MoveThePieceViewModelTest {
         fakeGameEngine.moveResult = MoveResult.LevelComplete(newState)
 
         // When
-        underTest.onSquareClicked(Locus(File.e, Rank.`4`))
+        underTest.onSquareClicked(Locus.e4)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
@@ -320,7 +318,7 @@ internal class MoveThePieceViewModelTest {
 
     private fun createGameState(
         playerPiece: Piece = Piece.Rook,
-        playerPieceLocus: Locus = Locus(File.d, Rank.`4`),
+        playerPieceLocus: Locus = Locus.d4,
         board: IBoard = Board(),
         opposingPieces: Map<Locus, Piece> = emptyMap(),
         visitedSquares: Set<Locus> = setOf(playerPieceLocus),

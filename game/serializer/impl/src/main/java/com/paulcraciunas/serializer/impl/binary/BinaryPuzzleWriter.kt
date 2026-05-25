@@ -6,6 +6,7 @@ import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank
+import com.paulcraciunas.game.logic.api.board.SidedPiece
 import com.paulcraciunas.game.logic.api.state.GameInfo
 import com.paulcraciunas.serializer.api.PuzzleWriter
 import com.paulcraciunas.serializer.api.Serializer
@@ -64,8 +65,8 @@ class BinaryPuzzleWriter(
         writeMetadata(game.info)
     }
 
-    private fun OutputStream.writeBoard(board: IBoard): ArrayDeque<BinaryAdapter.SidedPiece> {
-        val pieces = ArrayDeque<BinaryAdapter.SidedPiece>()
+    private fun OutputStream.writeBoard(board: IBoard): ArrayDeque<SidedPiece> {
+        val pieces = ArrayDeque<SidedPiece>()
         var bitBoard: Long = 0
         var pos = 1L
         // read the board, starting with bottom right (h1) -> top left (a8)
@@ -73,13 +74,13 @@ class BinaryPuzzleWriter(
             File.entries.reversed().forEach { file ->
                 board.at(file, rank)?.let {
                     bitBoard = bitBoard or pos
-                    val side = if (board.has(it, Side.WHITE, Locus(file, rank))) {
+                    val side = if (board.has(it, Side.WHITE, Locus.from(file, rank))) {
                         Side.WHITE
                     } else {
                         Side.BLACK
                     }
                     // We add first so that we process them in reverse order
-                    pieces.addFirst(BinaryAdapter.SidedPiece(piece = it, side = side))
+                    pieces.addFirst(SidedPiece.of(piece = it, side = side))
                 }
                 pos = pos shl 1
             }
@@ -98,10 +99,10 @@ class BinaryPuzzleWriter(
         return result
     }
 
-    private fun OutputStream.writePieces(pieces: ArrayDeque<BinaryAdapter.SidedPiece>) {
+    private fun OutputStream.writePieces(pieces: ArrayDeque<SidedPiece>) {
         int = 0
-        var first: BinaryAdapter.SidedPiece?
-        var second: BinaryAdapter.SidedPiece?
+        var first: SidedPiece?
+        var second: SidedPiece?
         while (pieces.isNotEmpty()) {
             first = pieces.poll()
             second = pieces.poll()
@@ -132,8 +133,8 @@ class BinaryPuzzleWriter(
             write(int)
             if (it.piece != Piece.Pawn) return
             int = when (it.to.rank) {
-                Rank.`5` -> adapter.toBinary(Locus(file = it.from.file, rank = Rank.`6`))
-                Rank.`4` -> adapter.toBinary(Locus(file = it.from.file, rank = Rank.`3`))
+                Rank.`5` -> adapter.toBinary(Locus.from(file = it.from.file, rank = Rank.`6`))
+                Rank.`4` -> adapter.toBinary(Locus.from(file = it.from.file, rank = Rank.`3`))
                 else -> return
             }
             write(int)

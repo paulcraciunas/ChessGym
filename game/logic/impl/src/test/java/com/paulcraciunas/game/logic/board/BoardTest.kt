@@ -3,25 +3,10 @@ package com.paulcraciunas.game.logic.board
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.Side.BLACK
 import com.paulcraciunas.game.logic.api.Side.WHITE
-import com.paulcraciunas.game.logic.api.board.File.a
-import com.paulcraciunas.game.logic.api.board.File.b
-import com.paulcraciunas.game.logic.api.board.File.c
 import com.paulcraciunas.game.logic.api.board.File.d
-import com.paulcraciunas.game.logic.api.board.File.e
-import com.paulcraciunas.game.logic.api.board.File.f
-import com.paulcraciunas.game.logic.api.board.File.g
-import com.paulcraciunas.game.logic.api.board.File.h
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.api.board.Rank.`1`
-import com.paulcraciunas.game.logic.api.board.Rank.`2`
-import com.paulcraciunas.game.logic.api.board.Rank.`3`
 import com.paulcraciunas.game.logic.api.board.Rank.`4`
-import com.paulcraciunas.game.logic.api.board.Rank.`5`
-import com.paulcraciunas.game.logic.api.board.Rank.`6`
-import com.paulcraciunas.game.logic.api.board.Rank.`7`
-import com.paulcraciunas.game.logic.api.board.Rank.`8`
-import com.paulcraciunas.game.logic.api.board.loc
 import com.paulcraciunas.game.logic.impl.board.Board
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -60,7 +45,7 @@ internal class BoardTest {
     @ParameterizedTest(name = "Adding {0} to the board works as expected")
     @EnumSource(value = Piece::class)
     fun `WHEN adding a new piece THEN that piece can be found`(expected: Piece) {
-        val at = Locus(e, `5`)
+        val at = Locus.e5
 
         underTest.add(piece = expected, side = WHITE, at = at)
 
@@ -87,7 +72,7 @@ internal class BoardTest {
     @ParameterizedTest(name = "Cannot add {0} to the board at an occupied square")
     @EnumSource(value = Piece::class)
     fun `GIVEN a piece at a location WHEN adding a piece of the same side THEN throw`(expected: Piece) {
-        val at = Locus(f, `4`)
+        val at = Locus.f4
         underTest.add(piece = Piece.Queen, side = WHITE, at = at)
 
         assertThrows<AssertionError> {
@@ -98,7 +83,7 @@ internal class BoardTest {
     @ParameterizedTest(name = "Cannot add {0} to the board at an occupied square")
     @EnumSource(value = Piece::class)
     fun `GIVEN a piece at a location WHEN adding a piece of opposite same side THEN throw`(expected: Piece) {
-        val at = Locus(c, `2`)
+        val at = Locus.c2
         underTest.add(piece = Piece.King, side = WHITE, at = at)
 
         assertThrows<AssertionError> {
@@ -158,7 +143,7 @@ internal class BoardTest {
 
         addSomePieces(other)
         addSomePieces(underTest)
-        underTest.remove("a2".loc())
+        underTest.remove(Locus.a2)
 
         assertNotEquals(other, underTest)
         assertFalse(other == underTest)
@@ -167,7 +152,7 @@ internal class BoardTest {
 
     @Test
     fun `WHEN removing an existing piece THEN that piece can no longer be found`() {
-        val at = Locus(d, `5`)
+        val at = Locus.d5
         underTest.add(Piece.King, WHITE, at)
 
         val removed = underTest.remove(at)
@@ -179,31 +164,31 @@ internal class BoardTest {
 
     @Test
     fun `WHEN removing a non-existing piece THEN return null`() {
-        assertNull(underTest.remove("a2".loc()))
+        assertNull(underTest.remove(Locus.a2))
     }
 
     @Test
     fun `WHEN removing a piece from a copied board THEN the original board is unaffected`() {
         val other = Board()
-        other.add(Piece.Pawn, WHITE, "a2".loc())
+        other.add(Piece.Pawn, WHITE, Locus.a2)
 
         underTest.from(other)
-        other.remove("a2".loc())
+        other.remove(Locus.a2)
 
-        assertTrue(underTest.has(Piece.Pawn, WHITE, "a2".loc()))
+        assertTrue(underTest.has(Piece.Pawn, WHITE, Locus.a2))
     }
 
     @Test
     fun `WHEN moving at an empty location THEN throw`() {
         assertThrows<AssertionError> {
-            underTest.move(from = Locus(a, `2`), to = Locus(a, `4`), WHITE)
+            underTest.move(from = Locus.a2, to = Locus.a4, WHITE)
         }
     }
 
     @Test
     fun `WHEN moving an existing piece THEN that piece is at the new location`() {
-        val from = Locus(a, `2`)
-        val to = Locus(a, `4`)
+        val from = Locus.a2
+        val to = Locus.a4
         underTest.add(Piece.Rook, WHITE, from)
 
         val captured = underTest.move(from = from, to = to, WHITE)
@@ -215,38 +200,38 @@ internal class BoardTest {
 
     @Test
     fun `WHEN capturing a piece THEN that piece is returned`() {
-        underTest.add(Piece.Bishop, WHITE, Locus(e, `5`))
-        underTest.add(Piece.Pawn, BLACK, Locus(d, `4`))
+        underTest.add(Piece.Bishop, WHITE, Locus.e5)
+        underTest.add(Piece.Pawn, BLACK, Locus.d4)
 
-        val captured = underTest.move(from = Locus(d, `4`), to = Locus(e, `5`), BLACK)
+        val captured = underTest.move(from = Locus.d4, to = Locus.e5, BLACK)
 
         assertEquals(Piece.Bishop, captured)
-        assertTrue(underTest.has(Piece.Pawn, BLACK, Locus(e, `5`)))
-        assertNull(underTest.at(Locus(d, `4`)))
+        assertTrue(underTest.has(Piece.Pawn, BLACK, Locus.e5))
+        assertNull(underTest.at(Locus.d4))
         assertNull(underTest.at(d, `4`))
     }
 
     @Test
     fun `WHEN capturing a piece from the same side THEN throw`() {
-        underTest.add(Piece.Bishop, WHITE, Locus(e, `5`))
-        underTest.add(Piece.Pawn, WHITE, Locus(d, `4`))
+        underTest.add(Piece.Bishop, WHITE, Locus.e5)
+        underTest.add(Piece.Pawn, WHITE, Locus.d4)
 
         assertThrows<AssertionError> {
-            underTest.move(from = Locus(d, `4`), to = Locus(e, `5`), WHITE)
+            underTest.move(from = Locus.d4, to = Locus.e5, WHITE)
         }
     }
 
     private fun addSomePieces(on: Board) {
-        on.add(Piece.Pawn, WHITE, Locus(a, `2`))
-        on.add(Piece.Rook, WHITE, Locus(a, `1`))
-        on.add(Piece.Knight, WHITE, Locus(b, `2`))
-        on.add(Piece.Bishop, WHITE, Locus(c, `3`))
-        on.add(Piece.Queen, WHITE, Locus(d, `4`))
-        on.add(Piece.King, WHITE, Locus(d, `5`))
-        on.add(Piece.King, BLACK, Locus(e, `5`))
-        on.add(Piece.Bishop, BLACK, Locus(f, `6`))
-        on.add(Piece.Knight, BLACK, Locus(g, `7`))
-        on.add(Piece.Rook, BLACK, Locus(h, `8`))
-        on.add(Piece.Pawn, BLACK, Locus(h, `6`))
+        on.add(Piece.Pawn, WHITE, Locus.a2)
+        on.add(Piece.Rook, WHITE, Locus.a1)
+        on.add(Piece.Knight, WHITE, Locus.b2)
+        on.add(Piece.Bishop, WHITE, Locus.c3)
+        on.add(Piece.Queen, WHITE, Locus.d4)
+        on.add(Piece.King, WHITE, Locus.d5)
+        on.add(Piece.King, BLACK, Locus.e5)
+        on.add(Piece.Bishop, BLACK, Locus.f6)
+        on.add(Piece.Knight, BLACK, Locus.g7)
+        on.add(Piece.Rook, BLACK, Locus.h8)
+        on.add(Piece.Pawn, BLACK, Locus.h6)
     }
 }

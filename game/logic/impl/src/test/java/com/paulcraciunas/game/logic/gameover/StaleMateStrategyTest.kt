@@ -3,10 +3,8 @@ package com.paulcraciunas.game.logic.gameover
 import com.paulcraciunas.game.logic.api.Game
 import com.paulcraciunas.game.logic.api.Result
 import com.paulcraciunas.game.logic.api.Side
-import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.game.logic.api.state.CheckCount
 import com.paulcraciunas.game.logic.impl.gameover.StaleMateStrategy
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -22,9 +20,9 @@ internal class StaleMateStrategyTest {
     fun `GIVEN player not in check with no legal moves WHEN strategy is applied THEN game state is stalemate`() {
         // Given - Classic stalemate position
         val pieces = listOf(
-            Triple(Piece.King, Side.WHITE, Locus(File.a, Rank.`1`)),
-            Triple(Piece.King, Side.BLACK, Locus(File.c, Rank.`3`)),
-            Triple(Piece.Queen, Side.BLACK, Locus(File.b, Rank.`3`))
+            Triple(Piece.King, Side.WHITE, Locus.a1),
+            Triple(Piece.King, Side.BLACK, Locus.c3),
+            Triple(Piece.Queen, Side.BLACK, Locus.b3)
         )
         val game = helper.createGameWithPieces(pieces, Side.WHITE)
         game.start()
@@ -63,10 +61,10 @@ internal class StaleMateStrategyTest {
     fun `GIVEN player not in check with legal moves available WHEN strategy is applied THEN game state unchanged`() {
         // Given - Position where white has moves available (not stalemate)
         val pieces = listOf(
-            Triple(Piece.King, Side.WHITE, Locus(File.a, Rank.`1`)),
-            Triple(Piece.King, Side.BLACK, Locus(File.c, Rank.`3`)),
-            Triple(Piece.Queen, Side.BLACK, Locus(File.b, Rank.`3`)),
-            Triple(Piece.Pawn, Side.WHITE, Locus(File.h, Rank.`2`)) // White pawn that can move
+            Triple(Piece.King, Side.WHITE, Locus.a1),
+            Triple(Piece.King, Side.BLACK, Locus.c3),
+            Triple(Piece.Queen, Side.BLACK, Locus.b3),
+            Triple(Piece.Pawn, Side.WHITE, Locus.h2) // White pawn that can move
         )
         val game = helper.createGameWithPieces(pieces, Side.WHITE)
         game.start()

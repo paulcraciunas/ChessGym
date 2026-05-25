@@ -1,11 +1,9 @@
 package com.paulcraciunas.game.logic.plies.strategies
 
 import com.paulcraciunas.game.logic.api.Side
-import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.game.logic.impl.MutableGameInfo
 import com.paulcraciunas.game.logic.impl.board.Board
 import com.paulcraciunas.game.logic.impl.plies.Playable
@@ -197,7 +195,7 @@ internal class PlyStrategyTest {
     private companion object {
         private val plyPiece = Piece.Rook
         private val side = Side.WHITE
-        private val rookHome = Locus(File.e, Rank.`4`)
+        private val rookHome = Locus.e4
         private val with = MutableGameInfo(turn = side)
     }
 }

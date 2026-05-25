@@ -6,6 +6,7 @@ import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank
+import com.paulcraciunas.game.logic.api.board.SidedPiece
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -19,7 +20,7 @@ internal class BinaryAdapterTest {
     @ParameterizedTest(name = "White {0} is serialized to binary and back")
     @MethodSource("pieces")
     fun `WHEN white piece is adapted to binary THEN binary can be adapted back`(piece: Piece) {
-        val binary = underTest.toBinary(BinaryAdapter.SidedPiece(piece, Side.WHITE))
+        val binary = underTest.toBinary(SidedPiece.of(piece = piece, side = Side.WHITE))
         val data = underTest.toPiece(binary)
 
         assertEquals(Side.WHITE, data.side)
@@ -29,7 +30,7 @@ internal class BinaryAdapterTest {
     @ParameterizedTest(name = "Black {0} is serialized to binary and back")
     @MethodSource("pieces")
     fun `WHEN black piece is adapted to binary THEN binary can be adapted back`(piece: Piece) {
-        val binary = underTest.toBinary(BinaryAdapter.SidedPiece(piece, Side.BLACK))
+        val binary = underTest.toBinary(SidedPiece.of(piece = piece, side = Side.BLACK))
         val data = underTest.toPiece(binary)
 
         assertEquals(Side.BLACK, data.side)

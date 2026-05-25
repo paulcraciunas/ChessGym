@@ -2,10 +2,8 @@ package com.paulcraciunas.game.engine.impl.uci
 
 import com.paulcraciunas.game.engine.api.EngineMove
 import com.paulcraciunas.game.engine.api.UciMoveParser
-import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.api.board.Rank
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
@@ -21,8 +19,8 @@ internal class UciMoveParserTest {
             val result = UciMoveParser.parse("e2e4")
 
             assertNotNull(result)
-            assertEquals(Locus(File.e, Rank.`2`), result!!.from)
-            assertEquals(Locus(File.e, Rank.`4`), result.to)
+            assertEquals(Locus.e2, result!!.from)
+            assertEquals(Locus.e4, result.to)
             assertNull(result.promotion)
         }
 
@@ -31,8 +29,8 @@ internal class UciMoveParserTest {
             val result = UciMoveParser.parse("a7a8q")
 
             assertNotNull(result)
-            assertEquals(Locus(File.a, Rank.`7`), result!!.from)
-            assertEquals(Locus(File.a, Rank.`8`), result.to)
+            assertEquals(Locus.a7, result!!.from)
+            assertEquals(Locus.a8, result.to)
             assertEquals(Piece.Queen, result.promotion)
         }
 
@@ -86,8 +84,8 @@ internal class UciMoveParserTest {
         @Test
         fun `GIVEN standard move WHEN format THEN returns UCI string`() {
             val move = EngineMove(
-                from = Locus(File.e, Rank.`2`),
-                to = Locus(File.e, Rank.`4`),
+                from = Locus.e2,
+                to = Locus.e4,
             )
 
             assertEquals("e2e4", UciMoveParser.format(move))
@@ -96,8 +94,8 @@ internal class UciMoveParserTest {
         @Test
         fun `GIVEN promotion move WHEN format THEN includes promotion piece`() {
             val move = EngineMove(
-                from = Locus(File.a, Rank.`7`),
-                to = Locus(File.a, Rank.`8`),
+                from = Locus.a7,
+                to = Locus.a8,
                 promotion = Piece.Queen,
             )
 
@@ -107,8 +105,8 @@ internal class UciMoveParserTest {
         @Test
         fun `GIVEN knight promotion WHEN format THEN appends n`() {
             val move = EngineMove(
-                from = Locus(File.b, Rank.`7`),
-                to = Locus(File.b, Rank.`8`),
+                from = Locus.b7,
+                to = Locus.b8,
                 promotion = Piece.Knight,
             )
 

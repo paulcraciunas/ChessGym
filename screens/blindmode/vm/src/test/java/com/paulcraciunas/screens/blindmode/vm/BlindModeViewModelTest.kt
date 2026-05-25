@@ -7,7 +7,7 @@ import com.paulcraciunas.domain.api.general.FixedRandomFactory
 import com.paulcraciunas.game.engine.api.ChessEngine
 import com.paulcraciunas.game.engine.api.EngineMove
 import com.paulcraciunas.game.logic.api.Side
-import com.paulcraciunas.game.logic.api.board.loc
+import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.screens.common.controls.SideSelection
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -90,7 +90,7 @@ internal class BlindModeViewModelTest {
         fun `GIVEN setup WHEN onPlayClicked THEN state becomes Playing with correct side`() =
             runTest {
                 fakeOrchestrator.enqueueEngineMove(
-                    EngineMove(from = "e2".loc(), to = "e4".loc())
+                    EngineMove(from = Locus.e2, to = Locus.e4)
                 )
                 underTest.onSideSelected(SideSelection.BLACK)
                 underTest.onPlayClicked()
@@ -115,7 +115,7 @@ internal class BlindModeViewModelTest {
         fun `GIVEN setup with Black WHEN onPlayClicked THEN engine move requested first`() =
             runTest {
                 fakeOrchestrator.enqueueEngineMove(
-                    EngineMove(from = "e2".loc(), to = "e4".loc())
+                    EngineMove(from = Locus.e2, to = Locus.e4)
                 )
                 underTest.onSideSelected(SideSelection.BLACK)
                 underTest.onPlayClicked()
@@ -134,10 +134,10 @@ internal class BlindModeViewModelTest {
             runTest {
                 startGame()
 
-                underTest.onSquareClicked("e2".loc())
+                underTest.onSquareClicked(Locus.e2)
 
                 val state = underTest.uiState.value as BlindModeUiState.Playing
-                assertEquals("e2".loc(), state.selectedSquare)
+                assertEquals(Locus.e2, state.selectedSquare)
                 assertTrue(state.legalMoves.isNotEmpty())
             }
 
@@ -146,7 +146,7 @@ internal class BlindModeViewModelTest {
             runTest {
                 startGame()
 
-                underTest.onSquareClicked("e4".loc())
+                underTest.onSquareClicked(Locus.e4)
 
                 val state = underTest.uiState.value as BlindModeUiState.Playing
                 assertNull(state.selectedSquare)
@@ -158,11 +158,11 @@ internal class BlindModeViewModelTest {
             runTest {
                 startGame()
                 fakeOrchestrator.enqueueEngineMove(
-                    EngineMove(from = "e7".loc(), to = "e5".loc())
+                    EngineMove(from = Locus.e7, to = Locus.e5)
                 )
 
-                underTest.onSquareClicked("e2".loc())
-                underTest.onSquareClicked("e4".loc())
+                underTest.onSquareClicked(Locus.e2)
+                underTest.onSquareClicked(Locus.e4)
                 advanceUntilIdle()
 
                 val state = underTest.uiState.value as BlindModeUiState.Playing
@@ -176,8 +176,8 @@ internal class BlindModeViewModelTest {
             runTest {
                 startGame()
 
-                underTest.onSquareClicked("e2".loc())
-                underTest.onSquareClicked("e5".loc())
+                underTest.onSquareClicked(Locus.e2)
+                underTest.onSquareClicked(Locus.e5)
 
                 val state = underTest.uiState.value as BlindModeUiState.Playing
                 assertNull(state.selectedSquare)
@@ -188,7 +188,7 @@ internal class BlindModeViewModelTest {
             runTest {
                 startGame()
 
-                underTest.onSquareClicked("e7".loc())
+                underTest.onSquareClicked(Locus.e7)
 
                 val state = underTest.uiState.value as BlindModeUiState.Playing
                 assertNull(state.selectedSquare)
@@ -198,16 +198,16 @@ internal class BlindModeViewModelTest {
         fun `GIVEN thinking state WHEN onSquareClicked THEN ignored`() = runTest {
             startGame()
             fakeOrchestrator.enqueueEngineMove(
-                EngineMove(from = "e7".loc(), to = "e5".loc())
+                EngineMove(from = Locus.e7, to = Locus.e5)
             )
 
-            underTest.onSquareClicked("e2".loc())
-            underTest.onSquareClicked("e4".loc())
+            underTest.onSquareClicked(Locus.e2)
+            underTest.onSquareClicked(Locus.e4)
 
             val thinkingState = underTest.uiState.value as BlindModeUiState.Playing
             assertTrue(thinkingState.isThinking)
 
-            underTest.onSquareClicked("d2".loc())
+            underTest.onSquareClicked(Locus.d2)
             val stateAfter = underTest.uiState.value as BlindModeUiState.Playing
             assertTrue(stateAfter.isThinking)
             assertNull(stateAfter.selectedSquare)
@@ -335,7 +335,7 @@ internal class BlindModeViewModelTest {
         fun `GIVEN rated mode with Black WHEN playing THEN state carries settings`() =
             runTest {
                 fakeOrchestrator.enqueueEngineMove(
-                    EngineMove(from = "e2".loc(), to = "e4".loc())
+                    EngineMove(from = Locus.e2, to = Locus.e4)
                 )
                 underTest.onTrainingModeToggled(false)
                 underTest.onSideSelected(SideSelection.BLACK)
@@ -353,7 +353,7 @@ internal class BlindModeViewModelTest {
                 underTest.onTrainingModeToggled(false)
                 underTest.onSideSelected(SideSelection.BLACK)
                 fakeOrchestrator.enqueueEngineMove(
-                    EngineMove(from = "e2".loc(), to = "e4".loc())
+                    EngineMove(from = Locus.e2, to = Locus.e4)
                 )
                 startGame()
 
@@ -385,7 +385,7 @@ internal class BlindModeViewModelTest {
                 underTest.onTrainingModeToggled(false)
                 underTest.onSideSelected(SideSelection.BLACK)
                 fakeOrchestrator.enqueueEngineMove(
-                    EngineMove(from = "e2".loc(), to = "e4".loc())
+                    EngineMove(from = Locus.e2, to = Locus.e4)
                 )
                 startGame()
 

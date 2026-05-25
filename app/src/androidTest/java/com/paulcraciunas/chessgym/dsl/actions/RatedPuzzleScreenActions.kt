@@ -5,10 +5,8 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import com.paulcraciunas.chessgym.di.TestPuzzleInterceptor
 import com.paulcraciunas.game.logic.api.Puzzle
-import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.screens.common.board.ChessBoardTags
 import com.paulcraciunas.screens.common.controls.DefaultPuzzleControlsTags
 import com.paulcraciunas.screens.common.design.components.ChessGymDialogTags
@@ -143,15 +141,12 @@ class RatedPuzzleScreenActions(private val rule: ComposeTestRule) {
         puzzle: Puzzle,
         expected: Pair<Locus, Locus>,
     ): Pair<Locus, Locus>? {
-        for (file in File.entries) {
-            for (rank in Rank.entries) {
-                val from = Locus(file, rank)
-                val plies = puzzle.plies(from)
-                for (ply in plies) {
-                    val move = from to ply.to
-                    if (move != expected && !ply.isPromotion()) {
-                        return move
-                    }
+        Locus.entries.forEach { loc ->
+            val plies = puzzle.plies(loc)
+            for (ply in plies) {
+                val move = loc to ply.to
+                if (move != expected && !ply.isPromotion()) {
+                    return move
                 }
             }
         }

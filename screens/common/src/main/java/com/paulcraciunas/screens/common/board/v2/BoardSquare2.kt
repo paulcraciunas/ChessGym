@@ -26,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Piece
+import com.paulcraciunas.game.logic.api.board.SidedPiece
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.board.ChessPiece
 import com.paulcraciunas.screens.common.design.theme.Design
@@ -53,8 +54,7 @@ fun BoardSquare2(
 object SquareScope2 {
     @Composable
     fun Piece(
-        piece: Piece,
-        side: Side,
+        piece: SidedPiece,
         selected: Boolean,
         modifier: Modifier = Modifier,
         alpha: Float = 1f,
@@ -69,8 +69,8 @@ object SquareScope2 {
             contentAlignment = Alignment.Center
         ) {
             ChessPiece(
-                piece = piece,
-                side = side,
+                piece = piece.piece,
+                side = piece.side,
                 modifier = Modifier.graphicsLayer(alpha = alpha)
             )
         }
@@ -139,13 +139,13 @@ private fun PieceSquarePreview() {
                     BoardSquare2(
                         side = side,
                         highlight = highlight,
-                        content = { Piece(piece = Piece.Queen, side = side, selected = false) },
+                        content = { Piece(piece = SidedPiece.of(side = side, piece = Piece.Queen), selected = false) },
                         modifier = Modifier.size(60.dp)
                     )
                     BoardSquare2(
                         side = side,
                         highlight = highlight,
-                        content = { Piece(piece = Piece.King, side = side, selected = true) },
+                        content = { Piece(piece = SidedPiece.of(side = side, piece = Piece.King), selected = true) },
                         modifier = Modifier.size(60.dp)
                     )
                 }

@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import com.paulcraciunas.screens.common.design.theme.Design
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,18 +20,15 @@ import com.paulcraciunas.game.engine.api.EngineMove
 import com.paulcraciunas.game.engine.api.Evaluation
 import com.paulcraciunas.game.engine.api.UciMoveParser
 import com.paulcraciunas.game.logic.api.Side
-import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.global.resources.R
-
 import com.paulcraciunas.screens.common.AppBar
-
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
 import com.paulcraciunas.screens.common.controls.CapturedPieces
 import com.paulcraciunas.screens.common.controls.MoveNavigationControls
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.dialogs.PromotionDialog
 import com.paulcraciunas.screens.common.previews.SampleBoardViewData
 import com.paulcraciunas.screens.common.testTag
@@ -152,14 +148,8 @@ private fun AnalysisScreenStartingPreview() {
                     EngineLine(3, Evaluation.Centipawns(12), sampleMoves("g1f3", "d7d5")),
                 ),
                 topMoveArrow = MoveArrow(
-                    from = Locus(
-                        File.e,
-                        Rank.`2`,
-                    ),
-                    to = Locus(
-                        File.e,
-                        Rank.`4`,
-                    ),
+                    from = Locus.e2,
+                    to = Locus.e4,
                 ),
                 captured = hashMapOf(
                     Side.WHITE to listOf(Piece.Pawn, Piece.Knight, Piece.Pawn),

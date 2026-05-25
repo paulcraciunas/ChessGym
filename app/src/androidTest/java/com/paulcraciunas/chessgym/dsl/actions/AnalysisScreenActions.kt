@@ -3,13 +3,14 @@ package com.paulcraciunas.chessgym.dsl.actions
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.screens.common.board.ChessBoardTags
 import com.paulcraciunas.screens.common.controls.MoveNavigationTags
 
 class AnalysisScreenActions(private val rule: ComposeTestRule) {
 
     fun clickSquare(square: String): AnalysisScreenActions = apply {
-        rule.onNodeWithTag(ChessBoardTags.square(square.toLocus())).performClick()
+        rule.onNodeWithTag(ChessBoardTags.square(Locus.from(square)!!)).performClick()
         rule.waitForIdle()
     }
 
@@ -32,7 +33,4 @@ class AnalysisScreenActions(private val rule: ComposeTestRule) {
         rule.onNodeWithTag(MoveNavigationTags.JUMP_TO_END).performClick()
         rule.waitForIdle()
     }
-
-    private fun String.toLocus(): com.paulcraciunas.game.logic.api.board.Locus =
-        com.paulcraciunas.game.logic.api.board.Locus.from(this)!!
 }

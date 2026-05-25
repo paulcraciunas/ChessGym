@@ -228,7 +228,7 @@ private fun ChessBoardContents(
                             .weight(1f)
                             .aspectRatio(1f)
                             .testTag { ChessBoardTags.square(file, rank) }
-                            .clickable { onClick(Locus(file, rank)) },
+                            .clickable { onClick(Locus.from(file, rank)) },
                     )
                 }
             }

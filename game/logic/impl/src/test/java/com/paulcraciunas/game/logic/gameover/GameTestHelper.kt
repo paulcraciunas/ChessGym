@@ -1,17 +1,15 @@
 package com.paulcraciunas.game.logic.gameover
 
 import com.paulcraciunas.game.logic.api.Side
-import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.game.logic.impl.MutableGame
 import com.paulcraciunas.game.logic.impl.board.Board
 
 internal class GameTestHelper {
     fun createGameWithKingsOnly(
-        whiteKingAt: Locus = Locus(File.e, Rank.`1`),
-        blackKingAt: Locus = Locus(File.e, Rank.`8`),
+        whiteKingAt: Locus = Locus.e1,
+        blackKingAt: Locus = Locus.e8,
         turn: Side = Side.WHITE
     ): MutableGame {
         val board = Board()

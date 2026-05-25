@@ -6,6 +6,7 @@ import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank
+import com.paulcraciunas.game.logic.api.board.SidedPiece
 
 /**
  * Adapter for writing and reading game information into/from binary.
@@ -70,13 +71,13 @@ class BinaryAdapter {
     fun toPiece(data: Int): SidedPiece {
         val typeBits = (data shr 1) and 0b111 // Extract type (3 bits)
         val sideBit = data and 0b1 // Extract side (1 bit)
-        return SidedPiece(Piece.fromCode(typeBits), Side.fromCode(sideBit))
+        return SidedPiece.of(piece = Piece.fromCode(typeBits), side = Side.fromCode(sideBit))
     }
 
     fun toLocation(data: Int): Locus {
         val rankBits = (data shr 3) and 0b111 // Extract rank (3 bits)
         val fileBits = data and 0b111 // Extract file (3 bits)
-        return Locus(File.fromDec(fileBits), Rank.fromDec(rankBits))
+        return Locus.from(File.fromDec(fileBits), Rank.fromDec(rankBits))
     }
 
     fun toCastling(data: Int): Pair<Set<CastleType>, Set<CastleType>> {
@@ -101,8 +102,6 @@ class BinaryAdapter {
 
         return "$from$to$piece"
     }
-
-    data class SidedPiece(val piece: Piece, val side: Side)
 
     companion object {
         private const val PROMOTION_MASK = 0b0100_0000

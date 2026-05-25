@@ -34,7 +34,6 @@ credentials = "1.6.0"
 googleid = "1.1.1"
 googlePlayReview = "2.0.2"
 billing = "9.0.0"
-kotlinxCollectionsImmutable = "0.4.0"
 androidx-benchmark = "1.4.0"
 uiautomator = "2.3.0"
 
@@ -74,7 +73,6 @@ javax-inject = { module = "javax.inject:javax.inject", version = "1" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
-kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinxCollectionsImmutable" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 androidx-datastore = { group = "androidx.datastore", name = "datastore", version.ref = "datastore" }

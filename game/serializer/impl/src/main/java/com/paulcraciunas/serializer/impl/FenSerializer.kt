@@ -123,7 +123,7 @@ private fun Builder.withPieces(rows: List<String>): Builder = apply {
                 withPiece(
                     pieces[char]!!.first,
                     pieces[char]!!.second,
-                    Locus(File.fromDec(file++), Rank.fromDec(rank))
+                    Locus.from(File.fromDec(file++), Rank.fromDec(rank))
                 )
             } else {
                 if (!char.isDigit()) {
@@ -154,7 +154,7 @@ private fun IBoard.toFen(): String {
     return StringBuilder().apply {
         Rank.entries.reversed().forEach { rank ->
             File.entries.forEach { file ->
-                at = Locus(file, rank)
+                at = Locus.from(file, rank)
                 at(at)?.let { piece ->
                     addSkips()
                     val symbol = piece.alg().takeIf { it.isNotBlank() } ?: "P"

@@ -6,7 +6,6 @@ import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank
-import com.paulcraciunas.game.logic.api.board.loc
 import com.paulcraciunas.game.logic.impl.RealGameFactory
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -94,7 +93,7 @@ internal class PuzzleViewModelHelperTest {
             underTest.load(buildStandardPuzzle())
 
             // When
-            val result = underTest.handleSquareClick("e7".loc())
+            val result = underTest.handleSquareClick(Locus.e7)
 
             // Then
             val selectedSquare = result.data.boardData.at(Rank.`7`, File.e)
@@ -107,10 +106,10 @@ internal class PuzzleViewModelHelperTest {
         fun `GIVEN piece selected WHEN clicking same square THEN selection is cleared`() {
             // Given
             underTest.load(buildStandardPuzzle())
-            underTest.handleSquareClick("e7".loc())
+            underTest.handleSquareClick(Locus.e7)
 
             // When
-            val result = underTest.handleSquareClick("e7".loc())
+            val result = underTest.handleSquareClick(Locus.e7)
 
             // Then
             val selectedSquare = result.data.boardData.at(Rank.`7`, File.e)
@@ -122,10 +121,10 @@ internal class PuzzleViewModelHelperTest {
         fun `GIVEN piece selected WHEN clicking invalid move THEN selection is cleared`() {
             // Given
             underTest.load(buildStandardPuzzle())
-            underTest.handleSquareClick("e7".loc())
+            underTest.handleSquareClick(Locus.e7)
 
             // When - e7 to e3 is not a valid move
-            val result = underTest.handleSquareClick("e3".loc())
+            val result = underTest.handleSquareClick(Locus.e3)
 
             // Then
             val selectedSquare = result.data.boardData.at(Rank.`7`, File.e)
@@ -137,10 +136,10 @@ internal class PuzzleViewModelHelperTest {
         fun `GIVEN piece selected WHEN clicking valid move THEN move is played`() {
             // Given
             underTest.load(buildStandardPuzzle())
-            underTest.handleSquareClick("e7".loc())
+            underTest.handleSquareClick(Locus.e7)
 
             // When
-            val result = underTest.handleSquareClick("e5".loc())
+            val result = underTest.handleSquareClick(Locus.e5)
 
             // Then - board state should show piece moved
             val fromSquare = result.data.boardData.at(Rank.`7`, File.e)
@@ -154,10 +153,10 @@ internal class PuzzleViewModelHelperTest {
         fun `GIVEN correct move played WHEN puzzle continues THEN isOver is false`() {
             // Given - Standard puzzle: e2e4, e7e5, g1f3, b8c6
             underTest.load(buildStandardPuzzle())
-            underTest.handleSquareClick("e7".loc())
+            underTest.handleSquareClick(Locus.e7)
 
             // When
-            val result = underTest.handleSquareClick("e5".loc())
+            val result = underTest.handleSquareClick(Locus.e5)
 
             // Then - puzzle should continue (opponent plays g1f3, then we play)
             assertFalse(result.isOver)
@@ -167,10 +166,10 @@ internal class PuzzleViewModelHelperTest {
         fun `GIVEN wrong move played WHEN puzzle fails THEN isOver is true and isSuccess is false`() {
             // Given
             underTest.load(buildStandardPuzzle())
-            underTest.handleSquareClick("d7".loc())
+            underTest.handleSquareClick(Locus.d7)
 
             // When - d7d5 is wrong (expected e7e5)
-            val result = underTest.handleSquareClick("d5".loc())
+            val result = underTest.handleSquareClick(Locus.d5)
 
             // Then
             assertTrue(result.isOver)
@@ -181,15 +180,15 @@ internal class PuzzleViewModelHelperTest {
         fun `GIVEN pawn reaching back rank WHEN clicking target THEN returns promotion required`() {
             // Given
             underTest.load(buildPromotionPuzzle())
-            underTest.handleSquareClick("a7".loc())
+            underTest.handleSquareClick(Locus.a7)
 
             // When
-            val result = underTest.handleSquareClick("a8".loc())
+            val result = underTest.handleSquareClick(Locus.a8)
 
             // Then
             assertNotNull(result.promotion)
             assertTrue(result.promotion!!.showChooser)
-            assertEquals(Locus(File.a, Rank.`8`), result.promotion.at)
+            assertEquals(Locus.a8, result.promotion.at)
         }
 
         @Test
@@ -197,10 +196,10 @@ internal class PuzzleViewModelHelperTest {
             // Given
             underTest.autoPromote = true
             underTest.load(buildPromotionPuzzle())
-            underTest.handleSquareClick("a7".loc())
+            underTest.handleSquareClick(Locus.a7)
 
             // When
-            val result = underTest.handleSquareClick("a8".loc())
+            val result = underTest.handleSquareClick(Locus.a8)
 
             // Then
             assertNull(result.promotion)
@@ -215,10 +214,10 @@ internal class PuzzleViewModelHelperTest {
             // Given
             underTest.autoPromote = false
             underTest.load(buildPromotionPuzzle())
-            underTest.handleSquareClick("a7".loc())
+            underTest.handleSquareClick(Locus.a7)
 
             // When
-            val result = underTest.handleSquareClick("a8".loc())
+            val result = underTest.handleSquareClick(Locus.a8)
 
             // Then
             assertNotNull(result.promotion)
@@ -231,7 +230,7 @@ internal class PuzzleViewModelHelperTest {
             underTest.load(buildStandardPuzzle())
 
             // When - d4 is empty on the board
-            val result = underTest.handleSquareClick("d4".loc())
+            val result = underTest.handleSquareClick(Locus.d4)
 
             // Then
             val clickedSquare = result.data.boardData.at(Rank.`4`, File.d)
@@ -246,7 +245,7 @@ internal class PuzzleViewModelHelperTest {
             val dataBefore = underTest.buildPuzzleData()
 
             // When - d4 is empty on the board
-            val result = underTest.handleSquareClick("d4".loc())
+            val result = underTest.handleSquareClick(Locus.d4)
 
             // Then
             assertEquals(dataBefore.rating, result.data.rating)
@@ -258,10 +257,10 @@ internal class PuzzleViewModelHelperTest {
         fun `GIVEN last move WHEN puzzle completed THEN isOver is true and isSuccess is true`() {
             // Given - One-move puzzle where we deliver checkmate
             underTest.load(buildOneMoveWinPuzzle())
-            underTest.handleSquareClick("e8".loc())
+            underTest.handleSquareClick(Locus.e8)
 
             // When
-            val result = underTest.handleSquareClick("e1".loc())
+            val result = underTest.handleSquareClick(Locus.e1)
 
             // Then
             assertTrue(result.isOver)
@@ -275,8 +274,8 @@ internal class PuzzleViewModelHelperTest {
         fun `GIVEN promotion position WHEN promoting to queen THEN move is played`() {
             // Given
             underTest.load(buildPromotionPuzzle())
-            underTest.handleSquareClick("a7".loc())
-            val clickResult = underTest.handleSquareClick("a8".loc())
+            underTest.handleSquareClick(Locus.a7)
+            val clickResult = underTest.handleSquareClick(Locus.a8)
             val promotionAt = clickResult.promotion!!.at
 
             // When
@@ -293,8 +292,8 @@ internal class PuzzleViewModelHelperTest {
         fun `GIVEN promotion WHEN played THEN promotion is null in result`() {
             // Given
             underTest.load(buildPromotionPuzzle())
-            underTest.handleSquareClick("a7".loc())
-            val clickResult = underTest.handleSquareClick("a8".loc())
+            underTest.handleSquareClick(Locus.a7)
+            val clickResult = underTest.handleSquareClick(Locus.a8)
             val promotionAt = clickResult.promotion!!.at
 
             // When
@@ -308,8 +307,8 @@ internal class PuzzleViewModelHelperTest {
         fun `GIVEN winning promotion WHEN promoted THEN isSuccess is true`() {
             // Given
             underTest.load(buildPromotionPuzzle())
-            underTest.handleSquareClick("a7".loc())
-            val clickResult = underTest.handleSquareClick("a8".loc())
+            underTest.handleSquareClick(Locus.a7)
+            val clickResult = underTest.handleSquareClick(Locus.a8)
 
             // When
             val result = underTest.promote(Piece.Queen, clickResult.promotion!!.at)
@@ -331,7 +330,7 @@ internal class PuzzleViewModelHelperTest {
             val hintSquare = underTest.hint()
 
             // Then - Expected first move is e7e5, so hint should be e7
-            assertEquals("e7".loc(), hintSquare)
+            assertEquals(Locus.e7, hintSquare)
         }
 
         @Test
@@ -344,10 +343,10 @@ internal class PuzzleViewModelHelperTest {
             val data = underTest.buildPuzzleData()
 
             // Then
-            val hintedSquare = data.boardData.at("e7".loc())
+            val hintedSquare = data.boardData.at(Locus.e7)
             assertEquals(true, hintedSquare.piece?.isSelected)
             // Should also show available moves
-            assertTrue(data.boardData.at("e5".loc()).canMoveTo)
+            assertTrue(data.boardData.at(Locus.e5).canMoveTo)
         }
     }
 
@@ -363,7 +362,7 @@ internal class PuzzleViewModelHelperTest {
 
             // Then - Need to click to get the result with isOver/isSuccess
             // Actually resign just marks it as failed, so let's check via handleSquareClick
-            val result = underTest.handleSquareClick("e7".loc())
+            val result = underTest.handleSquareClick(Locus.e7)
             // After resign, puzzle should be over
             assertTrue(result.isOver)
             assertFalse(result.isSuccess)
@@ -391,8 +390,8 @@ internal class PuzzleViewModelHelperTest {
         fun `GIVEN move played WHEN buildPuzzleData THEN reflects updated board`() {
             // Given
             underTest.load(buildStandardPuzzle())
-            underTest.handleSquareClick("e7".loc())
-            underTest.handleSquareClick("e5".loc())
+            underTest.handleSquareClick(Locus.e7)
+            underTest.handleSquareClick(Locus.e5)
 
             // When
             val data = underTest.buildPuzzleData()
@@ -508,9 +507,9 @@ internal class PuzzleViewModelHelperTest {
         .withId(PROMOTION_ID)
         .withRating(DEFAULT_RATING)
         .withTurn(Side.BLACK)
-        .withPiece(Piece.King, Side.WHITE, "e1".loc())
-        .withPiece(Piece.King, Side.BLACK, "e8".loc())
-        .withPiece(Piece.Pawn, Side.WHITE, "a7".loc())
+        .withPiece(Piece.King, Side.WHITE, Locus.e1)
+        .withPiece(Piece.King, Side.BLACK, Locus.e8)
+        .withPiece(Piece.Pawn, Side.WHITE, Locus.a7)
         .withMoves(listOf("e8e7", "a7a8q", "e7e6", "a8a6"))
         .buildPuzzle()
 
@@ -518,9 +517,9 @@ internal class PuzzleViewModelHelperTest {
         .withId(ONE_MOVE_WIN_ID)
         .withRating(DEFAULT_RATING)
         .withTurn(Side.BLACK)
-        .withPiece(Piece.King, Side.WHITE, "g3".loc())
-        .withPiece(Piece.King, Side.BLACK, "h1".loc())
-        .withPiece(Piece.Queen, Side.WHITE, "e8".loc())
+        .withPiece(Piece.King, Side.WHITE, Locus.g3)
+        .withPiece(Piece.King, Side.BLACK, Locus.h1)
+        .withPiece(Piece.Queen, Side.WHITE, Locus.e8)
         .withMoves(listOf("h1g1", "e8e1"))
         .buildPuzzle()
 

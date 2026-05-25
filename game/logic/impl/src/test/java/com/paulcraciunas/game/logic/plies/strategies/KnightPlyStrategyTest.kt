@@ -2,20 +2,13 @@ package com.paulcraciunas.game.logic.plies.strategies
 
 import com.paulcraciunas.game.logic.allLocationsExcept
 import com.paulcraciunas.game.logic.api.Side
-import com.paulcraciunas.game.logic.api.board.File.a
-import com.paulcraciunas.game.logic.api.board.File.e
-import com.paulcraciunas.game.logic.api.board.File.h
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.api.board.Rank.`1`
-import com.paulcraciunas.game.logic.api.board.Rank.`4`
-import com.paulcraciunas.game.logic.api.board.Rank.`8`
 import com.paulcraciunas.game.logic.assertMoves
 import com.paulcraciunas.game.logic.assertNoMoves
 import com.paulcraciunas.game.logic.impl.MutableGameInfo
 import com.paulcraciunas.game.logic.impl.board.Board
 import com.paulcraciunas.game.logic.impl.plies.strategies.KnightPlyStrategy
-import com.paulcraciunas.game.logic.loc
 import com.paulcraciunas.game.logic.surroundQueen
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -23,7 +16,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 internal class KnightPlyStrategyTest {
-    private val home = Locus(e, `4`)
+    private val home = Locus.e4
     private val on = Board().apply {
         add(piece = Piece.Knight, side = Side.BLACK, at = home)
     }
@@ -154,7 +147,7 @@ internal class KnightPlyStrategyTest {
     @Test
     fun `GIVEN knight on a1 WHEN getting plies THEN both valid plies are returned`() {
         on.remove(at = home)
-        val newHome = Locus(a, `1`)
+        val newHome = Locus.a1
         on.add(piece = Piece.Knight, side = Side.BLACK, at = newHome)
 
         underTest.plies(from = newHome, on = on, with = with)
@@ -162,14 +155,14 @@ internal class KnightPlyStrategyTest {
                 turn = Side.BLACK,
                 piece = Piece.Knight,
                 home = newHome,
-                locations = listOf("b3", "c2").map { it.loc() }
+                locations = listOf(Locus.b3, Locus.c2)
             )
     }
 
     @Test
     fun `GIVEN knight on h8 WHEN getting plies THEN both valid plies are returned`() {
         on.remove(at = home)
-        val newHome = Locus(h, `8`)
+        val newHome = Locus.h8
         on.add(piece = Piece.Knight, side = Side.BLACK, at = newHome)
 
         underTest.plies(from = newHome, on = on, with = with)
@@ -177,20 +170,20 @@ internal class KnightPlyStrategyTest {
                 turn = Side.BLACK,
                 piece = Piece.Knight,
                 home = newHome,
-                locations = listOf("g6", "f7").map { it.loc() }
+                locations = listOf(Locus.g6, Locus.f7)
             )
     }
 
     private companion object {
         private val validLocations = listOf(
-            "f6".loc(),
-            "d6".loc(),
-            "c5".loc(),
-            "c3".loc(),
-            "d2".loc(),
-            "f2".loc(),
-            "g3".loc(),
-            "g5".loc(),
+            Locus.f6,
+            Locus.d6,
+            Locus.c5,
+            Locus.c3,
+            Locus.d2,
+            Locus.f2,
+            Locus.g3,
+            Locus.g5,
         )
     }
 }

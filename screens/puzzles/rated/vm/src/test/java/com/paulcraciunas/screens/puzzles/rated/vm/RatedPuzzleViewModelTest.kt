@@ -11,7 +11,6 @@ import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank
-import com.paulcraciunas.game.logic.api.board.loc
 import com.paulcraciunas.game.logic.impl.RealGameFactory
 import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
 import kotlinx.coroutines.Dispatchers
@@ -87,7 +86,7 @@ internal class RatedPuzzleViewModelTest {
         val underTest = buildVm(buildStandardPuzzle())
 
         // When
-        underTest.onSquareClicked("e7".loc())
+        underTest.onSquareClicked(Locus.e7)
 
         // Then
         val playingState = underTest.uiState.value as RatedPuzzleUiState.Playing
@@ -100,10 +99,10 @@ internal class RatedPuzzleViewModelTest {
     fun `GIVEN selected square WHEN onSquareClicked invalid target THEN selection is cleared`() = runTest {
         // Given
         val underTest = buildVm(buildStandardPuzzle())
-        underTest.onSquareClicked("e7".loc())
+        underTest.onSquareClicked(Locus.e7)
 
         // When
-        underTest.onSquareClicked("e4".loc())
+        underTest.onSquareClicked(Locus.e4)
 
         // Then
         val playingState = underTest.uiState.value as RatedPuzzleUiState.Playing
@@ -117,17 +116,17 @@ internal class RatedPuzzleViewModelTest {
         // Given
         appSettingsRepository.updateAutoPromote(false)
         val underTest = buildVm(buildPromotionPuzzle())
-        underTest.onSquareClicked("a7".loc())
+        underTest.onSquareClicked(Locus.a7)
 
         // When
-        underTest.onSquareClicked("a8".loc())
+        underTest.onSquareClicked(Locus.a8)
 
         // Then
         val playingState = underTest.uiState.value as RatedPuzzleUiState.Playing
         assertNotNull(playingState.promotion)
         val promotion = playingState.promotion!!
         assertTrue(promotion.showChooser)
-        assertEquals(Locus(File.a, Rank.`8`), promotion.at)
+        assertEquals(Locus.a8, promotion.at)
     }
 
     @Test
@@ -135,15 +134,15 @@ internal class RatedPuzzleViewModelTest {
         // Given
         appSettingsRepository.updateAutoPromote(false)
         val underTest = buildVm(buildPromotionPuzzle())
-        underTest.onSquareClicked("a7".loc())
-        underTest.onSquareClicked("a8".loc())
+        underTest.onSquareClicked(Locus.a7)
+        underTest.onSquareClicked(Locus.a8)
 
         // When
         underTest.onPromote(Piece.Queen)
 
         // Then
         val playingState = underTest.uiState.value as RatedPuzzleUiState.Finished
-        val promotedSquare = playingState.data.boardData.at("a8".loc())
+        val promotedSquare = playingState.data.boardData.at(Locus.a8)
         assertEquals(Piece.Queen, promotedSquare.piece?.piece)
         assertEquals(Side.WHITE, promotedSquare.piece?.side)
     }
@@ -158,9 +157,9 @@ internal class RatedPuzzleViewModelTest {
 
         // Then
         val playingState = underTest.uiState.value as RatedPuzzleUiState.Playing
-        val selectedSquare = playingState.data.boardData.at("e7".loc())
+        val selectedSquare = playingState.data.boardData.at(Locus.e7)
         assertEquals(true, selectedSquare.piece?.isSelected)
-        assertTrue(playingState.data.boardData.at("e5".loc()).canMoveTo)
+        assertTrue(playingState.data.boardData.at(Locus.e5).canMoveTo)
     }
 
     @Test
@@ -306,9 +305,9 @@ internal class RatedPuzzleViewModelTest {
     private fun buildPromotionPuzzle(): Puzzle = RealGameFactory().builder()
         .withRating(DEFAULT_RATING)
         .withTurn(Side.BLACK)
-        .withPiece(Piece.King, Side.WHITE, "e1".loc())
-        .withPiece(Piece.King, Side.BLACK, "e8".loc())
-        .withPiece(Piece.Pawn, Side.WHITE, "a7".loc())
+        .withPiece(Piece.King, Side.WHITE, Locus.e1)
+        .withPiece(Piece.King, Side.BLACK, Locus.e8)
+        .withPiece(Piece.Pawn, Side.WHITE, Locus.a7)
         .withMoves(listOf("e8e7", "a7a8q", "e7e6"))
         .buildPuzzle()
 

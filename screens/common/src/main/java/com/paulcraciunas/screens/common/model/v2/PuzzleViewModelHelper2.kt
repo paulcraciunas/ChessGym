@@ -6,20 +6,17 @@ import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import kotlinx.collections.immutable.PersistentList
-import kotlinx.collections.immutable.PersistentMap
-import kotlinx.collections.immutable.mutate
-import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.persistentMapOf
+import com.paulcraciunas.game.logic.api.board.SidedPiece
 import kotlinx.coroutines.delay
 
 class PuzzleViewModelHelper2 {
     private lateinit var puzzleData: PuzzleData2
     private lateinit var puzzle: Puzzle
-    private val _captured = persistentMapOf(
-        Side.WHITE to persistentListOf<Piece>(),
-        Side.BLACK to persistentListOf(),
+    private val _captured = mutableMapOf(
+        Side.WHITE to ArrayList<Piece>(MAX_CAPTURE_COUNT),
+        Side.BLACK to ArrayList(MAX_CAPTURE_COUNT),
     )
+
     var autoPromote: Boolean = false
 
     fun load(puzzle: Puzzle): PuzzleData2 {
@@ -152,19 +149,17 @@ class PuzzleViewModelHelper2 {
         withAnimation = true
     )
 
-    private fun updateCaptured(): PersistentMap<Side, PersistentList<Piece>> =
-        _captured.mutate { updatedCaptured ->
-            updatedCaptured[Side.WHITE] = updatedCaptured[Side.WHITE]!!.clear()
-            updatedCaptured[Side.WHITE] = updatedCaptured[Side.BLACK]!!.clear()
-            for (side in Side.entries) {
-                for (piece in Piece.entries) {
-                    val missing = piece.startingCount() - puzzle.board.pieces(side, piece).size
-                    (0 until missing).forEach { _ ->
-                        updatedCaptured[side.other()] = updatedCaptured[side.other()]!!.add(piece)
-                    }
-                }
+    private fun updateCaptured(): Map<Side, List<Piece>> {
+        _captured[Side.WHITE]!!.clear()
+        _captured[Side.BLACK]!!.clear()
+        SidedPiece.entries.forEach {
+            val missing = it.piece.startingCount() - puzzle.board.pieces(it.side, it.piece).size
+            (0 until missing).forEach { _ ->
+                _captured[it.side.other()]!!.add(it.piece)
             }
         }
+        return _captured
+    }
 }
 
 private fun Ply?.asPair(): Pair<Locus, Locus>? = if (this != null) from to to else null
@@ -178,4 +173,5 @@ private fun Piece.startingCount(): Int = when (this) {
     Piece.King -> 0 // Don't care about the king, even if we have king-less puzzles
 }
 
+private const val MAX_CAPTURE_COUNT = 16 // can't capture more than all the pieces
 private const val SOLUTION_MOVE_DELAY_MS = 600L

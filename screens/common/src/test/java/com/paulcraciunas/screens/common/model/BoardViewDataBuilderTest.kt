@@ -3,8 +3,8 @@ package com.paulcraciunas.screens.common.model
 import com.paulcraciunas.game.logic.api.GameFactory
 import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.Side
+import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.api.board.loc
 import com.paulcraciunas.game.logic.impl.RealGameFactory
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -16,9 +16,9 @@ import org.junit.jupiter.api.Test
 internal class BoardViewDataBuilderTest {
     private val gameFactory: GameFactory = RealGameFactory()
     private val underTest: BoardViewDataBuilder = BoardViewDataBuilder()
-    private val lastMoveFrom = "e2".loc()
-    private val lastMoveTo = "e4".loc()
-    private val captureTarget = "e7".loc()
+    private val lastMoveFrom = Locus.e2
+    private val lastMoveTo = Locus.e4
+    private val captureTarget = Locus.e7
 
     @Test
     fun `GIVEN puzzle with last ply WHEN loading THEN pieces and last move are marked`() {
@@ -185,7 +185,7 @@ internal class BoardViewDataBuilderTest {
     fun `GIVEN loaded board WHEN selecting empty square THEN nothing is selected`() {
         // Given
         underTest.load(buildPuzzle())
-        val emptySquare = "e5".loc()
+        val emptySquare = Locus.e5
 
         // When
         underTest.withSelection(emptySquare, emptyList())
@@ -199,7 +199,7 @@ internal class BoardViewDataBuilderTest {
         // Given
         underTest.load(buildPuzzle())
         val dataBefore = underTest.build()
-        val emptySquare = "e5".loc()
+        val emptySquare = Locus.e5
 
         // When
         underTest.withSelection(emptySquare, emptyList())
@@ -216,7 +216,7 @@ internal class BoardViewDataBuilderTest {
         // Given
         underTest.load(buildPuzzle())
         underTest.withSelection(lastMoveFrom, listOf(lastMoveTo))
-        val emptySquare = "e5".loc()
+        val emptySquare = Locus.e5
 
         // When
         underTest.withSelection(emptySquare, emptyList())

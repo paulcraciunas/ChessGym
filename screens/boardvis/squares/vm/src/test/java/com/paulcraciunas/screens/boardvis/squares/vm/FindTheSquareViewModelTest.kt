@@ -77,7 +77,7 @@ internal class FindTheSquareViewModelTest {
     fun `GIVEN setup state with WHITE WHEN onPlayClicked THEN game starts with white orientation`() = runTest {
         // Given
         setupViewModel()
-        fakeGenerateRandomLoci.nextLocus = Locus(File.e, Rank.`4`)
+        fakeGenerateRandomLoci.nextLocus = Locus.e4
 
         // When
         underTest.onPlayClicked()
@@ -87,7 +87,7 @@ internal class FindTheSquareViewModelTest {
         val uiState = underTest.uiState.value
         assertTrue(uiState is FindTheSquareUiState.Playing)
         val playingState = uiState as FindTheSquareUiState.Playing
-        assertEquals(Locus(File.e, Rank.`4`), playingState.currentSquare)
+        assertEquals(Locus.e4, playingState.currentSquare)
         assertEquals(0, playingState.score)
         assertEquals(Side.WHITE,playingState.orientation)
         assertTrue(fakeCountdownTimer.isRunning)
@@ -99,7 +99,7 @@ internal class FindTheSquareViewModelTest {
         setupViewModel()
         underTest.onSideSelected(SideSelection.BLACK)
         testDispatcher.scheduler.advanceUntilIdle()
-        fakeGenerateRandomLoci.nextLocus = Locus(File.d, Rank.`5`)
+        fakeGenerateRandomLoci.nextLocus = Locus.d5
 
         // When
         underTest.onPlayClicked()
@@ -119,7 +119,7 @@ internal class FindTheSquareViewModelTest {
         underTest.onSideSelected(SideSelection.RANDOM)
         testDispatcher.scheduler.advanceUntilIdle()
         fakeRandomFactory.returnValue = 1 // Will result in black orientation
-        fakeGenerateRandomLoci.nextLocus = Locus(File.a, Rank.`1`)
+        fakeGenerateRandomLoci.nextLocus = Locus.a1
 
         // When
         underTest.onPlayClicked()
@@ -136,15 +136,15 @@ internal class FindTheSquareViewModelTest {
     fun `GIVEN playing state WHEN correct square clicked THEN score increments`() = runTest {
         // Given
         setupViewModel()
-        fakeGenerateRandomLoci.nextLocus = Locus(File.e, Rank.`4`)
+        fakeGenerateRandomLoci.nextLocus = Locus.e4
         underTest.onPlayClicked()
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Set next locus for after correct answer
-        fakeGenerateRandomLoci.nextLocus = Locus(File.b, Rank.`2`)
+        fakeGenerateRandomLoci.nextLocus = Locus.b2
 
         // When
-        underTest.onSquareClicked(Locus(File.e, Rank.`4`))
+        underTest.onSquareClicked(Locus.e4)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
@@ -152,19 +152,19 @@ internal class FindTheSquareViewModelTest {
         assertTrue(uiState is FindTheSquareUiState.Playing)
         val playingState = uiState as FindTheSquareUiState.Playing
         assertEquals(1, playingState.score)
-        assertEquals(Locus(File.b, Rank.`2`), playingState.currentSquare)
+        assertEquals(Locus.b2, playingState.currentSquare)
     }
 
     @Test
     fun `GIVEN playing state WHEN wrong square clicked THEN showError is true`() = runTest {
         // Given
         setupViewModel()
-        fakeGenerateRandomLoci.nextLocus = Locus(File.e, Rank.`4`)
+        fakeGenerateRandomLoci.nextLocus = Locus.e4
         underTest.onPlayClicked()
         testDispatcher.scheduler.advanceUntilIdle()
 
         // When
-        underTest.onSquareClicked(Locus(File.a, Rank.`1`)) // Wrong square
+        underTest.onSquareClicked(Locus.a1) // Wrong square
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
@@ -179,9 +179,9 @@ internal class FindTheSquareViewModelTest {
     fun `GIVEN error showing WHEN onErrorShown called THEN showError is false`() = runTest {
         // Given
         setupViewModel()
-        fakeGenerateRandomLoci.nextLocus = Locus(File.e, Rank.`4`)
+        fakeGenerateRandomLoci.nextLocus = Locus.e4
         underTest.onPlayClicked()
-        underTest.onSquareClicked(Locus(File.a, Rank.`1`)) // Wrong square
+        underTest.onSquareClicked(Locus.a1) // Wrong square
         testDispatcher.scheduler.advanceUntilIdle()
 
         // When
@@ -199,13 +199,13 @@ internal class FindTheSquareViewModelTest {
     fun `GIVEN playing state WHEN timer expires THEN game ends`() = runTest {
         // Given
         setupViewModel()
-        fakeGenerateRandomLoci.nextLocus = Locus(File.e, Rank.`4`)
+        fakeGenerateRandomLoci.nextLocus = Locus.e4
         underTest.onPlayClicked()
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Simulate clicking correct squares
-        fakeGenerateRandomLoci.nextLocus = Locus(File.b, Rank.`2`)
-        underTest.onSquareClicked(Locus(File.e, Rank.`4`))
+        fakeGenerateRandomLoci.nextLocus = Locus.b2
+        underTest.onSquareClicked(Locus.e4)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // When - simulate timer expiry
@@ -225,14 +225,14 @@ internal class FindTheSquareViewModelTest {
         // Given
         setupViewModel(user = User(highScores = User.HighScores(findTheSquare = 5)))
 
-        fakeGenerateRandomLoci.nextLocus = Locus(File.e, Rank.`4`)
+        fakeGenerateRandomLoci.nextLocus = Locus.e4
         underTest.onPlayClicked()
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Simulate getting score of 6
         repeat(6) {
             val currentSquare = (underTest.uiState.value as FindTheSquareUiState.Playing).currentSquare
-            fakeGenerateRandomLoci.nextLocus = Locus(File.entries[it], Rank.entries[it])
+            fakeGenerateRandomLoci.nextLocus = Locus.from(File.entries[it], Rank.entries[it])
             underTest.onSquareClicked(currentSquare)
             testDispatcher.scheduler.advanceUntilIdle()
         }
@@ -254,7 +254,7 @@ internal class FindTheSquareViewModelTest {
         // Given
         setupViewModel(User(highScores = User.HighScores(findTheSquare = 10)))
 
-        fakeGenerateRandomLoci.nextLocus = Locus(File.e, Rank.`4`)
+        fakeGenerateRandomLoci.nextLocus = Locus.e4
         underTest.onPlayClicked()
         testDispatcher.scheduler.advanceUntilIdle()
 
@@ -273,7 +273,7 @@ internal class FindTheSquareViewModelTest {
     fun `GIVEN game over WHEN onPlayAgain called THEN returns to setup state`() = runTest {
         // Given
         setupViewModel()
-        fakeGenerateRandomLoci.nextLocus = Locus(File.e, Rank.`4`)
+        fakeGenerateRandomLoci.nextLocus = Locus.e4
         underTest.onPlayClicked()
         testDispatcher.scheduler.advanceUntilIdle()
         fakeCountdownTimer.advanceUntilIdle()
@@ -292,13 +292,13 @@ internal class FindTheSquareViewModelTest {
     fun `GIVEN game ends WHEN invoke THEN onFindSquareComplete is called`() = runTest {
         // Given
         setupViewModel()
-        fakeGenerateRandomLoci.nextLocus = Locus(File.e, Rank.`4`)
+        fakeGenerateRandomLoci.nextLocus = Locus.e4
         underTest.onPlayClicked()
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Click one correct square
-        fakeGenerateRandomLoci.nextLocus = Locus(File.b, Rank.`2`)
-        underTest.onSquareClicked(Locus(File.e, Rank.`4`))
+        fakeGenerateRandomLoci.nextLocus = Locus.b2
+        underTest.onSquareClicked(Locus.e4)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // When - timer expires
@@ -325,7 +325,7 @@ internal class FindTheSquareViewModelTest {
 }
 
 private class FakeGenerateRandomLoci : GenerateRandomLoci {
-    var nextLocus: Locus = Locus(File.a, Rank.`1`)
+    var nextLocus: Locus = Locus.a1
     override fun invoke(): Locus = nextLocus
 }
 

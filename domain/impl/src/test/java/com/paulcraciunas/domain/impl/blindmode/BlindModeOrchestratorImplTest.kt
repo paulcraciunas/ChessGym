@@ -7,8 +7,8 @@ import com.paulcraciunas.game.engine.api.ChessEngine
 import com.paulcraciunas.game.engine.api.EngineMove
 import com.paulcraciunas.game.engine.api.FakeChessEngine
 import com.paulcraciunas.game.logic.api.Side
+import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.api.board.loc
 import com.paulcraciunas.game.logic.impl.RealGameFactory
 import com.paulcraciunas.serializer.impl.FenSerializer
 import kotlinx.coroutines.test.runTest
@@ -43,12 +43,12 @@ internal class BlindModeOrchestratorImplTest {
         underTest.startGame(elo = ChessEngine.DEFAULT_ELO)
 
         // When
-        val result = underTest.selectSquare("e2".loc())
+        val result = underTest.selectSquare(Locus.e2)
 
         // Then
         assertTrue(result is SelectionResult.PieceSelected)
         val selected = result as SelectionResult.PieceSelected
-        assertEquals("e2".loc(), selected.locus)
+        assertEquals(Locus.e2, selected.locus)
         assertTrue(selected.legalMoves.isNotEmpty())
     }
 
@@ -58,7 +58,7 @@ internal class BlindModeOrchestratorImplTest {
         underTest.startGame(elo = ChessEngine.DEFAULT_ELO)
 
         // When
-        val result = underTest.selectSquare("e4".loc())
+        val result = underTest.selectSquare(Locus.e4)
 
         // Then
         assertTrue(result is SelectionResult.NoPiece)
@@ -70,7 +70,7 @@ internal class BlindModeOrchestratorImplTest {
         underTest.startGame(elo = ChessEngine.DEFAULT_ELO)
 
         // When
-        val result = underTest.selectSquare("e7".loc())
+        val result = underTest.selectSquare(Locus.e7)
 
         // Then
         assertTrue(result is SelectionResult.WrongSide)
@@ -82,12 +82,12 @@ internal class BlindModeOrchestratorImplTest {
         underTest.startGame(elo = ChessEngine.DEFAULT_ELO)
 
         // When
-        val result = underTest.playMove("e2".loc(), "e4".loc())
+        val result = underTest.playMove(Locus.e2, Locus.e4)
 
         // Then
         assertTrue(result is PlayResult.Success)
         val success = result as PlayResult.Success
-        assertEquals("e4".loc(), success.ply.to)
+        assertEquals(Locus.e4, success.ply.to)
         assertEquals(Piece.Pawn, success.ply.piece)
     }
 
@@ -97,7 +97,7 @@ internal class BlindModeOrchestratorImplTest {
         underTest.startGame(elo = ChessEngine.DEFAULT_ELO)
 
         // When
-        val result = underTest.playMove("e2".loc(), "e5".loc())
+        val result = underTest.playMove(Locus.e2, Locus.e5)
 
         // Then
         assertTrue(result is PlayResult.Invalid)
@@ -107,8 +107,8 @@ internal class BlindModeOrchestratorImplTest {
     fun `GIVEN game after e2-e4 WHEN requestEngineMove THEN returns engine ply`() = runTest {
         // Given
         underTest.startGame(elo = ChessEngine.DEFAULT_ELO)
-        underTest.playMove("e2".loc(), "e4".loc())
-        fakeEngine.enqueueMoves(EngineMove(from = "e7".loc(), to = "e5".loc()))
+        underTest.playMove(Locus.e2, Locus.e4)
+        fakeEngine.enqueueMoves(EngineMove(from = Locus.e7, to = Locus.e5))
 
         // When
         val result = underTest.requestEngineMove()
@@ -116,7 +116,7 @@ internal class BlindModeOrchestratorImplTest {
         // Then
         assertTrue(result is EnginePlayResult.Success)
         val success = result as EnginePlayResult.Success
-        assertEquals("e5".loc(), success.ply.to)
+        assertEquals(Locus.e5, success.ply.to)
         assertNotNull(fakeEngine.lastReceivedFen)
     }
 
@@ -124,14 +124,14 @@ internal class BlindModeOrchestratorImplTest {
     fun `GIVEN started game WHEN playMove then check moveHistory THEN history has the ply`() = runTest {
         // Given
         underTest.startGame(elo = ChessEngine.DEFAULT_ELO)
-        underTest.playMove("e2".loc(), "e4".loc())
+        underTest.playMove(Locus.e2, Locus.e4)
 
         // When
         val history = underTest.moveHistory()
 
         // Then
         assertEquals(1, history.size)
-        assertEquals("e4".loc(), history[0].to)
+        assertEquals(Locus.e4, history[0].to)
     }
 
     @Test
@@ -186,10 +186,10 @@ internal class BlindModeOrchestratorImplTest {
         underTest.startGame(elo = ChessEngine.DEFAULT_ELO)
 
         // When
-        val moves = underTest.pliesFrom("e2".loc())
+        val moves = underTest.pliesFrom(Locus.e2)
 
         // Then
-        assertTrue(moves.contains("e3".loc()))
-        assertTrue(moves.contains("e4".loc()))
+        assertTrue(moves.contains(Locus.e3))
+        assertTrue(moves.contains(Locus.e4))
     }
 }

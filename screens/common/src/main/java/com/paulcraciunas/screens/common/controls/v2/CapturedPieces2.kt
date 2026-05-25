@@ -19,12 +19,10 @@ import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.screens.common.controls.CapturedPieces
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
-import kotlinx.collections.immutable.PersistentList
-import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun CapturedPieces2(
-    capturedPieces: PersistentList<Piece>,
+    capturedPieces: List<Piece>,
     side: Side,
     modifier: Modifier = Modifier
 ) {
@@ -72,7 +70,7 @@ private fun Side.normalize(): Side = if (!Design.colors.isDark) this else this.o
 private fun CapturedPiecesWhitePreview() {
     ChessGymTheme {
         CapturedPieces2(
-            capturedPieces = persistentListOf(
+            capturedPieces = listOf(
                 Piece.Queen,
                 Piece.Rook,
                 Piece.Bishop,
@@ -92,7 +90,7 @@ private fun CapturedPiecesWhitePreview() {
 private fun CapturedPiecesBlackPreview() {
     ChessGymTheme {
         CapturedPieces2(
-            capturedPieces = persistentListOf(
+            capturedPieces = listOf(
                 Piece.Rook,
                 Piece.Bishop,
                 Piece.Knight,
@@ -109,7 +107,7 @@ private fun CapturedPiecesBlackPreview() {
 private fun CapturedPiecesEmptyPreview() {
     ChessGymTheme {
         CapturedPieces(
-            capturedPieces = persistentListOf(),
+            capturedPieces = listOf(),
             side = Side.WHITE
         )
     }
@@ -120,7 +118,7 @@ private fun CapturedPiecesEmptyPreview() {
 private fun CapturedPiecesFullSetPreview() {
     ChessGymTheme {
         CapturedPieces(
-            capturedPieces = persistentListOf(
+            capturedPieces = listOf(
                 Piece.King,
                 Piece.Queen,
                 Piece.Rook,

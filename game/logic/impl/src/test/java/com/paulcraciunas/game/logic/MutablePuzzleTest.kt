@@ -2,6 +2,7 @@ package com.paulcraciunas.game.logic
 
 import com.paulcraciunas.game.logic.api.Builder
 import com.paulcraciunas.game.logic.api.Puzzle
+import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.impl.RealBuilder
 import com.paulcraciunas.game.logic.impl.plies.PlyFactory
@@ -34,7 +35,7 @@ internal class MutablePuzzleTest {
         underTest.start()
 
         // When
-        underTest.play("e2".loc(), "e4".loc())
+        underTest.play(Locus.e2, Locus.e4)
 
         // Then
         assertEquals(Puzzle.State.InProgress, underTest.state)
@@ -47,7 +48,7 @@ internal class MutablePuzzleTest {
         underTest.start()
 
         // When
-        underTest.play("e2".loc(), "e3".loc()) // Wrong move
+        underTest.play(Locus.e2, Locus.e3) // Wrong move
 
         // Then
         assertEquals(Puzzle.State.Failed, underTest.state)
@@ -60,7 +61,7 @@ internal class MutablePuzzleTest {
         underTest.start()
 
         // When
-        underTest.play("e2".loc(), "e4".loc())
+        underTest.play(Locus.e2, Locus.e4)
 
         // Then
         assertEquals(Puzzle.State.Success, underTest.state)
@@ -91,8 +92,8 @@ internal class MutablePuzzleTest {
         // Then
         assertEquals(Puzzle.State.InProgress, underTest.state)
         // Verify the move was actually made on the board
-        assertEquals(Piece.Pawn, underTest.board.at("e4".loc()))
-        assertNull(underTest.board.at("e2".loc()))
+        assertEquals(Piece.Pawn, underTest.board.at(Locus.e4))
+        assertNull(underTest.board.at(Locus.e2))
     }
 
     @Test
@@ -124,7 +125,7 @@ internal class MutablePuzzleTest {
         // Given
         underTest = builder.withMoves("e2e4").buildPuzzle()
         underTest.start()
-        underTest.play("e2".loc(), "e3".loc()) // This will fail the puzzle
+        underTest.play(Locus.e2, Locus.e3) // This will fail the puzzle
 
         // When & Then
         assertThrows(AssertionError::class.java) {
@@ -137,7 +138,7 @@ internal class MutablePuzzleTest {
         // Given
         underTest = builder.withMoves("e2e4").buildPuzzle()
         underTest.start()
-        underTest.play("e2".loc(), "e4".loc()) // This will complete the puzzle
+        underTest.play(Locus.e2, Locus.e4) // This will complete the puzzle
 
         // When & Then
         assertThrows(AssertionError::class.java) {
@@ -159,12 +160,12 @@ internal class MutablePuzzleTest {
         // Then
         assertEquals(Puzzle.State.Success, underTest.state)
         // Verify the move was actually made on the board
-        assertEquals(Piece.Pawn, underTest.board.at("e4".loc()))
-        assertEquals(Piece.Pawn, underTest.board.at("e5".loc()))
-        assertEquals(Piece.Pawn, underTest.board.at("d4".loc()))
-        assertNull(underTest.board.at("e2".loc()))
-        assertNull(underTest.board.at("e7".loc()))
-        assertNull(underTest.board.at("d2".loc()))
+        assertEquals(Piece.Pawn, underTest.board.at(Locus.e4))
+        assertEquals(Piece.Pawn, underTest.board.at(Locus.e5))
+        assertEquals(Piece.Pawn, underTest.board.at(Locus.d4))
+        assertNull(underTest.board.at(Locus.e2))
+        assertNull(underTest.board.at(Locus.e7))
+        assertNull(underTest.board.at(Locus.d2))
     }
 
     @Test
@@ -178,7 +179,7 @@ internal class MutablePuzzleTest {
         underTest.start()
         assertEquals(Puzzle.State.InProgress, underTest.state)
 
-        underTest.play("e2".loc(), "e4".loc())
+        underTest.play(Locus.e2, Locus.e4)
         assertEquals(Puzzle.State.Success, underTest.state)
     }
 
@@ -190,16 +191,16 @@ internal class MutablePuzzleTest {
         // Expected move is d8h4 (Queen to h4 checkmate), but d8f2 also delivers checkmate
         underTest = RealBuilder(PlyFactory())
             .withRating(1200)
-            .withPiece(Piece.King, com.paulcraciunas.game.logic.api.Side.WHITE, "g1".loc())
-            .withPiece(Piece.Queen, com.paulcraciunas.game.logic.api.Side.WHITE, "h5".loc())
-            .withPiece(Piece.King, com.paulcraciunas.game.logic.api.Side.BLACK, "h8".loc())
-            .withPiece(Piece.Rook, com.paulcraciunas.game.logic.api.Side.WHITE, "a8".loc())
+            .withPiece(Piece.King, com.paulcraciunas.game.logic.api.Side.WHITE, Locus.g1)
+            .withPiece(Piece.Queen, com.paulcraciunas.game.logic.api.Side.WHITE, Locus.h5)
+            .withPiece(Piece.King, com.paulcraciunas.game.logic.api.Side.BLACK, Locus.h8)
+            .withPiece(Piece.Rook, com.paulcraciunas.game.logic.api.Side.WHITE, Locus.a8)
             .withMoves("h5f7") // Expected move: Queen to f7 checkmate
             .buildPuzzle()
         underTest.start()
 
         // When - play alternate checkmate: Queen to h7 (also checkmate)
-        underTest.play("h5".loc(), "h7".loc())
+        underTest.play(Locus.h5, Locus.h7)
 
         // Then
         assertEquals(Puzzle.State.Success, underTest.state)
@@ -210,15 +211,15 @@ internal class MutablePuzzleTest {
         // Given
         underTest = RealBuilder(PlyFactory())
             .withRating(1200)
-            .withPiece(Piece.King, com.paulcraciunas.game.logic.api.Side.WHITE, "e1".loc())
-            .withPiece(Piece.Queen, com.paulcraciunas.game.logic.api.Side.WHITE, "d1".loc())
-            .withPiece(Piece.King, com.paulcraciunas.game.logic.api.Side.BLACK, "e8".loc())
+            .withPiece(Piece.King, com.paulcraciunas.game.logic.api.Side.WHITE, Locus.e1)
+            .withPiece(Piece.Queen, com.paulcraciunas.game.logic.api.Side.WHITE, Locus.d1)
+            .withPiece(Piece.King, com.paulcraciunas.game.logic.api.Side.BLACK, Locus.e8)
             .withMoves("d1d4") // Expected move
             .buildPuzzle()
         underTest.start()
 
         // When - play a different move that doesn't result in checkmate
-        underTest.play("d1".loc(), "d2".loc())
+        underTest.play(Locus.d1, Locus.d2)
 
         // Then
         assertEquals(Puzzle.State.Failed, underTest.state)

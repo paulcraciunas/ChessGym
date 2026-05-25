@@ -2,11 +2,11 @@ package com.paulcraciunas.serializer.impl
 
 import com.paulcraciunas.game.logic.api.Game
 import com.paulcraciunas.game.logic.api.Side
+import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.assertDefaultBoard
 import com.paulcraciunas.game.logic.impl.RealGameFactory
 import com.paulcraciunas.game.logic.impl.plies.StandardPly
-import com.paulcraciunas.game.logic.loc
 import com.paulcraciunas.game.logic.plies.ExpectedPly
 import com.paulcraciunas.serializer.api.SerializeException
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -124,11 +124,11 @@ internal class FenSerializerTest {
 
         val expectedPlies = mutableListOf<StandardPly>()
             .apply {
-                add(StandardPly(Side.WHITE, Piece.Pawn, "e2".loc(), "e3".loc()))
-                add(StandardPly(Side.WHITE, Piece.Pawn, "e2".loc(), "e4".loc()))
+                add(StandardPly(Side.WHITE, Piece.Pawn, Locus.e2, Locus.e3))
+                add(StandardPly(Side.WHITE, Piece.Pawn, Locus.e2, Locus.e4))
             }.map { ExpectedPly(it) }
 
-        val actualPlies = game.plies("e2".loc())
+        val actualPlies = game.plies(Locus.e2)
             .map { ExpectedPly(it) }
 
         assertDefaultBoard(board)
@@ -168,7 +168,7 @@ internal class FenSerializerTest {
     fun `WHEN serializing after pawn jump THEN fen string contains en-passent`() {
         val fen = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1"
         val game = gameFactory.builder().withDefaultBoard().buildGame().apply { start() }
-        game.play(game.plies("e2".loc()).first { it.to == "e4".loc() })
+        game.play(game.plies(Locus.e2).first { it.to == Locus.e4 })
 
         assertEquals(fen, underTest.of(game))
     }

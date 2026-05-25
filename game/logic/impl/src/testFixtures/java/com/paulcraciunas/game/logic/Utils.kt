@@ -3,17 +3,9 @@ package com.paulcraciunas.game.logic
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.Side.BLACK
 import com.paulcraciunas.game.logic.api.Side.WHITE
-import com.paulcraciunas.game.logic.api.board.File
-import com.paulcraciunas.game.logic.api.board.File.d
-import com.paulcraciunas.game.logic.api.board.File.e
-import com.paulcraciunas.game.logic.api.board.File.f
 import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.api.board.Rank
-import com.paulcraciunas.game.logic.api.board.Rank.`3`
-import com.paulcraciunas.game.logic.api.board.Rank.`4`
-import com.paulcraciunas.game.logic.api.board.Rank.`5`
 import com.paulcraciunas.game.logic.impl.board.Board
 import com.paulcraciunas.game.logic.impl.plies.Playable
 import com.paulcraciunas.game.logic.impl.plies.StandardPly
@@ -22,21 +14,7 @@ import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 
-fun Pair<File, Rank>.loc() = Locus(first, second)
-
-fun String.loc(): Locus = Locus.from(this)!!
-
-fun allLocationsExcept(home: Locus, except: List<Locus> = emptyList()) =
-    mutableListOf<Locus>().apply {
-        File.entries.forEach { file ->
-            Rank.entries.forEach { rank ->
-                val it = Locus(file, rank)
-                if (home != it && !except.contains(it)) {
-                    add(it)
-                }
-            }
-        }
-    }
+fun allLocationsExcept(home: Locus, except: List<Locus> = emptyList()) = Locus.entries.filter { home != it && !except.contains(it) }
 
 inline fun <reified T : Playable> Collection<Playable>.assertMovesOf(
     turn: Side,
@@ -117,41 +95,41 @@ fun Board.surroundQueen(at: Locus, side: Side) {
 }
 
 val E_4_NEIGHBOURS = listOf(
-    Locus(e, `3`), Locus(e, `5`), Locus(d, `4`), Locus(f, `4`),
-    Locus(d, `3`), Locus(d, `5`), Locus(f, `3`), Locus(f, `5`)
+    Locus.e3, Locus.e5, Locus.d4, Locus.f4,
+    Locus.d3, Locus.d5, Locus.f3, Locus.f5
 )
 
 fun assertDefaultBoard(board: IBoard) {
-    assertTrue(board.has(Piece.Rook, WHITE, "a1".loc()))
-    assertTrue(board.has(Piece.Knight, WHITE, "b1".loc()))
-    assertTrue(board.has(Piece.Bishop, WHITE, "c1".loc()))
-    assertTrue(board.has(Piece.Queen, WHITE, "d1".loc()))
-    assertTrue(board.has(Piece.King, WHITE, "e1".loc()))
-    assertTrue(board.has(Piece.Bishop, WHITE, "f1".loc()))
-    assertTrue(board.has(Piece.Knight, WHITE, "g1".loc()))
-    assertTrue(board.has(Piece.Rook, WHITE, "h1".loc()))
-    assertTrue(board.has(Piece.Pawn, WHITE, "a2".loc()))
-    assertTrue(board.has(Piece.Pawn, WHITE, "b2".loc()))
-    assertTrue(board.has(Piece.Pawn, WHITE, "c2".loc()))
-    assertTrue(board.has(Piece.Pawn, WHITE, "d2".loc()))
-    assertTrue(board.has(Piece.Pawn, WHITE, "e2".loc()))
-    assertTrue(board.has(Piece.Pawn, WHITE, "f2".loc()))
-    assertTrue(board.has(Piece.Pawn, WHITE, "g2".loc()))
-    assertTrue(board.has(Piece.Pawn, WHITE, "h2".loc()))
-    assertTrue(board.has(Piece.Rook, BLACK, "a8".loc()))
-    assertTrue(board.has(Piece.Knight, BLACK, "b8".loc()))
-    assertTrue(board.has(Piece.Bishop, BLACK, "c8".loc()))
-    assertTrue(board.has(Piece.Queen, BLACK, "d8".loc()))
-    assertTrue(board.has(Piece.King, BLACK, "e8".loc()))
-    assertTrue(board.has(Piece.Bishop, BLACK, "f8".loc()))
-    assertTrue(board.has(Piece.Knight, BLACK, "g8".loc()))
-    assertTrue(board.has(Piece.Rook, BLACK, "h8".loc()))
-    assertTrue(board.has(Piece.Pawn, BLACK, "a7".loc()))
-    assertTrue(board.has(Piece.Pawn, BLACK, "b7".loc()))
-    assertTrue(board.has(Piece.Pawn, BLACK, "c7".loc()))
-    assertTrue(board.has(Piece.Pawn, BLACK, "d7".loc()))
-    assertTrue(board.has(Piece.Pawn, BLACK, "e7".loc()))
-    assertTrue(board.has(Piece.Pawn, BLACK, "f7".loc()))
-    assertTrue(board.has(Piece.Pawn, BLACK, "g7".loc()))
-    assertTrue(board.has(Piece.Pawn, BLACK, "h7".loc()))
+    assertTrue(board.has(Piece.Rook, WHITE, Locus.a1))
+    assertTrue(board.has(Piece.Knight, WHITE, Locus.b1))
+    assertTrue(board.has(Piece.Bishop, WHITE, Locus.c1))
+    assertTrue(board.has(Piece.Queen, WHITE, Locus.d1))
+    assertTrue(board.has(Piece.King, WHITE, Locus.e1))
+    assertTrue(board.has(Piece.Bishop, WHITE, Locus.f1))
+    assertTrue(board.has(Piece.Knight, WHITE, Locus.g1))
+    assertTrue(board.has(Piece.Rook, WHITE, Locus.h1))
+    assertTrue(board.has(Piece.Pawn, WHITE, Locus.a2))
+    assertTrue(board.has(Piece.Pawn, WHITE, Locus.b2))
+    assertTrue(board.has(Piece.Pawn, WHITE, Locus.c2))
+    assertTrue(board.has(Piece.Pawn, WHITE, Locus.d2))
+    assertTrue(board.has(Piece.Pawn, WHITE, Locus.e2))
+    assertTrue(board.has(Piece.Pawn, WHITE, Locus.f2))
+    assertTrue(board.has(Piece.Pawn, WHITE, Locus.g2))
+    assertTrue(board.has(Piece.Pawn, WHITE, Locus.h2))
+    assertTrue(board.has(Piece.Rook, BLACK, Locus.a8))
+    assertTrue(board.has(Piece.Knight, BLACK, Locus.b8))
+    assertTrue(board.has(Piece.Bishop, BLACK, Locus.c8))
+    assertTrue(board.has(Piece.Queen, BLACK, Locus.d8))
+    assertTrue(board.has(Piece.King, BLACK, Locus.e8))
+    assertTrue(board.has(Piece.Bishop, BLACK, Locus.f8))
+    assertTrue(board.has(Piece.Knight, BLACK, Locus.g8))
+    assertTrue(board.has(Piece.Rook, BLACK, Locus.h8))
+    assertTrue(board.has(Piece.Pawn, BLACK, Locus.a7))
+    assertTrue(board.has(Piece.Pawn, BLACK, Locus.b7))
+    assertTrue(board.has(Piece.Pawn, BLACK, Locus.c7))
+    assertTrue(board.has(Piece.Pawn, BLACK, Locus.d7))
+    assertTrue(board.has(Piece.Pawn, BLACK, Locus.e7))
+    assertTrue(board.has(Piece.Pawn, BLACK, Locus.f7))
+    assertTrue(board.has(Piece.Pawn, BLACK, Locus.g7))
+    assertTrue(board.has(Piece.Pawn, BLACK, Locus.h7))
 }
