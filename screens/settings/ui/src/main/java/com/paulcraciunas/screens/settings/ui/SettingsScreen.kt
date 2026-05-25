@@ -6,12 +6,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -61,6 +59,7 @@ fun SettingsScreen(
                 uiState = uiState,
                 buildVersion = buildVersion,
                 interactions = interactions,
+                contentPadding = PaddingValues(bottom = innerPadding.calculateBottomPadding()),
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(top = innerPadding.calculateTopPadding()),
@@ -74,19 +73,27 @@ private fun SettingsContent(
     uiState: SettingsUiState,
     buildVersion: String,
     interactions: SettingsScreenInteractor,
+    contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
-    Column(
+    LazyColumn(
         modifier = modifier
             .background(Design.colors.primarySoft)
-            .verticalScroll(rememberScrollState())
             .padding(horizontal = Design.dimensions.spacing.xxl),
+        contentPadding = contentPadding,
     ) {
-        GeneralSection(uiState = uiState, interactions = interactions)
-        AppearanceSection(uiState = uiState, interactions = interactions)
-        PrivacySection(uiState = uiState, interactions = interactions)
-        Spacer(modifier = Modifier.weight(1f))
-        BuildVersionFooter(buildVersion = buildVersion)
+        item {
+            GeneralSection(uiState = uiState, interactions = interactions)
+        }
+        item {
+            AppearanceSection(uiState = uiState, interactions = interactions)
+        }
+        item {
+            PrivacySection(uiState = uiState, interactions = interactions)
+        }
+        item {
+            BuildVersionFooter(buildVersion = buildVersion)
+        }
     }
 }
 

@@ -59,7 +59,6 @@ import com.paulcraciunas.chessgym.screens.ImportGame
 import com.paulcraciunas.chessgym.screens.MoveThePiece
 import com.paulcraciunas.chessgym.screens.PuzzleDashboard
 import com.paulcraciunas.chessgym.screens.PuzzleRush
-import com.paulcraciunas.chessgym.screens.PuzzleStreak
 import com.paulcraciunas.chessgym.screens.PuzzleStreak2
 import com.paulcraciunas.chessgym.screens.RatedPuzzle
 import com.paulcraciunas.chessgym.screens.Settings
@@ -191,7 +190,6 @@ fun MainScreen(
                 ) {
                     Scaffold(
                         modifier = modifier,
-                        contentWindowInsets = WindowInsets(0, 0, 0, 0),
                         snackbarHost = { SnackbarHost(snackbarHostState) },
                         bottomBar = {
                             AnimatedVisibility(

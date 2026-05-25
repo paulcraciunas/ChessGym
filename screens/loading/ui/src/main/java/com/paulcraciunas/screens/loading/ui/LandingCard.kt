@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -55,7 +56,8 @@ internal fun LandingCard(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(Design.colors.bg),
+            .background(Design.colors.bg)
+            .navigationBarsPadding(),
     ) {
         Box(
             modifier = Modifier

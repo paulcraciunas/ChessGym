@@ -2,7 +2,6 @@ package com.paulcraciunas.chessgym.navigation
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -28,7 +27,6 @@ internal fun BottomNavigationBar(
     modifier: Modifier = Modifier,
 ) {
     NavigationBar(
-        windowInsets = WindowInsets(0,0,0,0),
         containerColor = Design.colors.bg,
         tonalElevation = Design.dimensions.elevation.md,
         modifier = modifier
