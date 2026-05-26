@@ -1,7 +1,7 @@
 package com.paulcraciunas.screens.common
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -22,12 +22,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.controls.TimerDisplay
-import com.paulcraciunas.screens.common.design.components.HairlineDivider
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
@@ -49,40 +51,54 @@ fun AppBar(
     titleAlign: AppBarAlignment = AppBarAlignment.Beginning,
     scrollBehavior: TopAppBarScrollBehavior? = null,
     navButton: (@Composable AppBarScope.() -> Unit) = {},
-    actions: (@Composable () -> Unit) = {},
+    actions: (@Composable RowScope.() -> Unit) = {},
 ) {
     val appBarScope = remember { AppBarScope() }
     val containerColor = Design.colors.surface
-
+    val titleColor = Design.colors.primary
+    val dividerColor = Design.colors.divider
     val colors = topAppBarColors(
         containerColor = containerColor,
-        titleContentColor = Design.colors.primary,
+        titleContentColor = titleColor,
         scrolledContainerColor = containerColor,
     )
 
-    Column(modifier = modifier) {
-        when (titleAlign) {
-            AppBarAlignment.Beginning -> TopAppBar(
-                colors = colors,
-                title = { AppBarTitle(title) },
-                navigationIcon = { navButton(appBarScope) },
-                actions = { actions() },
-                modifier = Modifier.fillMaxWidth(),
-                windowInsets = WindowInsets.statusBars,
-                scrollBehavior = scrollBehavior,
-            )
-
-            AppBarAlignment.Center -> CenterAlignedTopAppBar(
-                colors = colors,
-                title = { AppBarTitle(title) },
-                navigationIcon = { navButton(appBarScope) },
-                actions = { actions() },
-                modifier = Modifier.fillMaxWidth(),
-                windowInsets = WindowInsets.statusBars,
-                scrollBehavior = scrollBehavior,
+    val appBarModifier = modifier
+        .fillMaxWidth()
+        .drawBehind {
+            val strokeWidth = 1.dp.toPx()
+            val y = size.height - (strokeWidth / 2f)
+            drawLine(
+                color = dividerColor,
+                start = Offset(0f, y),
+                end = Offset(size.width, y),
+                strokeWidth = strokeWidth
             )
         }
-        HairlineDivider(modifier = Modifier.fillMaxWidth())
+    val titleContent = remember(title) { @Composable { AppBarTitle(title) } }
+    val navigationContent = remember(navButton) { @Composable { navButton(appBarScope) } }
+    val actionsContent = remember(actions) { @Composable { it: RowScope -> actions(it) } }
+
+    when (titleAlign) {
+        AppBarAlignment.Beginning -> TopAppBar(
+            colors = colors,
+            title = titleContent,
+            navigationIcon = navigationContent,
+            actions = actionsContent,
+            modifier = appBarModifier,
+            windowInsets = WindowInsets.statusBars,
+            scrollBehavior = scrollBehavior,
+        )
+
+        AppBarAlignment.Center -> CenterAlignedTopAppBar(
+            colors = colors,
+            title = titleContent,
+            navigationIcon = navigationContent,
+            actions = actionsContent,
+            modifier = appBarModifier,
+            windowInsets = WindowInsets.statusBars,
+            scrollBehavior = scrollBehavior,
+        )
     }
 }
 
@@ -110,7 +126,6 @@ class AppBarScope internal constructor() {
                 .testTag(AppBarTags.HOME_BUTTON)
         ) {
             Icon(
-                modifier = modifier,
                 imageVector = Icons.Default.Menu,
                 contentDescription = stringResource(R.string.nav_drawer_menu),
                 tint = Design.colors.ink,
