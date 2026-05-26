@@ -57,7 +57,7 @@ class PuzzleRushViewModel @Inject constructor(
     private val _gameState = MutableStateFlow<GameState>(GameState.Loading)
     val uiState: StateFlow<PuzzleRushUiState> = combine(
         _gameState,
-        countdownTimer.remaining.map { it.seconds }
+        countdownTimer.remaining.map { it.roundSeconds() }
     ) { gameState, remainingSeconds ->
         gameState.toUiState(remainingSeconds)
     }.stateIn(
