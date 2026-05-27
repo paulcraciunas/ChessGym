@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import com.paulcraciunas.screens.common.design.theme.Design
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -13,17 +12,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
-
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.boardvis.squares.vm.FindTheSquareScreenInteractor
 import com.paulcraciunas.screens.boardvis.squares.vm.FindTheSquareUiState
-import com.paulcraciunas.screens.common.AppBar
-
+import com.paulcraciunas.screens.common.ChildAppBar
 import com.paulcraciunas.screens.common.controls.SideSelection
 import com.paulcraciunas.screens.common.controls.TimerDisplay
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
@@ -53,17 +51,18 @@ fun FindTheSquareScreen(
     val bgColor = Design.colors.primarySoft
     Scaffold(
         topBar = {
-            AppBar(
+            ChildAppBar(
                 title = stringResource(R.string.boardvis_find_square_title),
-                navButton = { Back(onClick = onNavigateBack) },
-            ) {
-                if (uiState is FindTheSquareUiState.Playing) {
-                    TimerDisplay(
-                        seconds = uiState.timeRemainingSeconds,
-                        modifier = Modifier.padding(Design.dimensions.spacing.xxl)
-                    )
+                onBack = onNavigateBack,
+                actions = {
+                    if (uiState is FindTheSquareUiState.Playing) {
+                        TimerDisplay(
+                            seconds = uiState.timeRemainingSeconds,
+                            modifier = Modifier.padding(Design.dimensions.spacing.xxl)
+                        )
+                    }
                 }
-            }
+            )
         },
         modifier = modifier.testTag { FindTheSquareTags.SCREEN },
     ) { innerPadding ->

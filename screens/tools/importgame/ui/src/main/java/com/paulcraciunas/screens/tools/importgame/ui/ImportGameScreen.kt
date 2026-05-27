@@ -21,7 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.global.resources.R
-import com.paulcraciunas.screens.common.AppBar
+import com.paulcraciunas.screens.common.ChildAppBar
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
 import com.paulcraciunas.screens.common.controls.MoveNavigationControls
@@ -52,12 +52,7 @@ fun ImportGameScreen(
 ) {
     val bgColor = Design.colors.primarySoft
     Scaffold(
-        topBar = {
-            AppBar(
-                title = stringResource(R.string.import_game_title),
-                navButton = { Back(onClick = onNavigateBack) },
-            )
-        },
+        topBar = { ChildAppBar(onBack = onNavigateBack, title = stringResource(R.string.import_game_title)) },
         modifier = modifier.testTag { ImportGameScreenTags.SCREEN },
     ) { innerPadding ->
         Column(

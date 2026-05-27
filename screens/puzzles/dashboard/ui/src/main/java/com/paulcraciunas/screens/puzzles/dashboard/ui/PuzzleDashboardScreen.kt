@@ -11,16 +11,13 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.global.resources.R
-import com.paulcraciunas.screens.common.AppBar
-import com.paulcraciunas.screens.common.AppBarAlignment
 import com.paulcraciunas.screens.common.Footer
 import com.paulcraciunas.screens.common.LoadingContent
-
-import com.paulcraciunas.screens.common.controls.Header
+import com.paulcraciunas.screens.common.TopLevelAppBar
 import com.paulcraciunas.screens.common.controls.FailedPuzzlesCard
+import com.paulcraciunas.screens.common.controls.Header
 import com.paulcraciunas.screens.common.controls.PuzzleRushCard
 import com.paulcraciunas.screens.common.controls.PuzzleStreakCard
 import com.paulcraciunas.screens.common.controls.RatedPuzzleCard
@@ -39,12 +36,7 @@ fun PuzzleDashboardScreen(
     onDrawerToggle: () -> Unit = {},
 ) {
     Scaffold(
-        topBar = {
-            AppBar(
-                titleAlign = AppBarAlignment.Center,
-                navButton = { Home(onClick = onDrawerToggle) }
-            )
-        },
+        topBar = { TopLevelAppBar(onHome = onDrawerToggle) },
         modifier = modifier.testTag { PuzzleDashboardTags.SCREEN },
     ) { innerPadding ->
         when {

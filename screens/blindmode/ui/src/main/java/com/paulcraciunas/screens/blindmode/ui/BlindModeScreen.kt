@@ -27,7 +27,7 @@ import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.blindmode.vm.BlindModeScreenInteractor
 import com.paulcraciunas.screens.blindmode.vm.BlindModeUiState
 import com.paulcraciunas.screens.blindmode.vm.StubBlindModeScreenInteractor
-import com.paulcraciunas.screens.common.AppBar
+import com.paulcraciunas.screens.common.ChildAppBar
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
 import com.paulcraciunas.screens.common.controls.DefaultPuzzleControls
@@ -57,12 +57,7 @@ fun BlindModeScreen(
     }
 
     Scaffold(
-        topBar = {
-            AppBar(
-                title = stringResource(R.string.blind_mode_title),
-                navButton = { Home(onClick = onDrawerToggle) },
-            )
-        },
+        topBar = { ChildAppBar(onBack = onDrawerToggle, title = stringResource(R.string.blind_mode_title)) },
         modifier = modifier.testTag { BlindModeScreenTags.SCREEN },
     ) { innerPadding ->
         Column(

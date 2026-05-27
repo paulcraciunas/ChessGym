@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import com.paulcraciunas.screens.common.design.theme.Design
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -17,8 +16,9 @@ import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.boardvis.pieces.vm.MoveThePieceScreenInteractor
 import com.paulcraciunas.screens.boardvis.pieces.vm.MoveThePieceUiState
-import com.paulcraciunas.screens.common.AppBar
+import com.paulcraciunas.screens.common.ChildAppBar
 import com.paulcraciunas.screens.common.controls.TimerDisplay
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
@@ -35,10 +35,7 @@ fun MoveThePieceScreen(
 ) {
     Scaffold(
         topBar = {
-            AppBar(
-                title = stringResource(R.string.boardvis_move_piece_title),
-                navButton = { Back(onClick = onNavigateBack) },
-            ) {
+            ChildAppBar(title = stringResource(R.string.boardvis_move_piece_title), onBack = onNavigateBack) {
                 if (uiState is MoveThePieceUiState.Playing) {
                     TimerDisplay(
                         seconds = uiState.timeRemainingSeconds,

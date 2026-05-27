@@ -28,7 +28,7 @@ import com.paulcraciunas.screens.achievements.vm.AchievementsUiState
 import com.paulcraciunas.screens.achievements.vm.AchievementsUiState.AchievementState
 import com.paulcraciunas.screens.achievements.vm.AchievementsUiState.CategoryGroup
 import com.paulcraciunas.screens.achievements.vm.AchievementsUiState.TrophyCaseSummary
-import com.paulcraciunas.screens.common.AppBar
+import com.paulcraciunas.screens.common.ChildAppBar
 import com.paulcraciunas.screens.common.FailedContent
 import com.paulcraciunas.screens.common.LoadingContent
 import com.paulcraciunas.screens.common.design.theme.Design
@@ -47,9 +47,9 @@ fun AchievementsScreen(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(
         topBar = {
-            AppBar(
+            ChildAppBar(
+                onBack = onBack,
                 title = stringResource(R.string.achievement_screen_title),
-                navButton = { Back(onClick = onBack) },
                 scrollBehavior = scrollBehavior,
             )
         },

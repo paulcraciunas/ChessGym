@@ -41,7 +41,7 @@ import com.paulcraciunas.domain.api.billing.BillingUseCase
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.about.vm.AboutScreenInteractor
 import com.paulcraciunas.screens.about.vm.AboutSection
-import com.paulcraciunas.screens.common.AppBar
+import com.paulcraciunas.screens.common.ChildAppBar
 import com.paulcraciunas.screens.common.design.components.ChessGymColumnCard
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.design.components.HairlineDivider
@@ -61,12 +61,7 @@ fun AboutScreen(
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
-        topBar = {
-            AppBar(
-                title = stringResource(R.string.about_title),
-                navButton = { Back(onClick = onNavigateBack) },
-            )
-        },
+        topBar = { ChildAppBar(onBack = onNavigateBack, title = stringResource(R.string.about_title)) },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         modifier = modifier,
     ) { innerPadding ->

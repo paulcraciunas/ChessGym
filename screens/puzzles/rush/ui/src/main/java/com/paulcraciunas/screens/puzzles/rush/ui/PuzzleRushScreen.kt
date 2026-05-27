@@ -24,7 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.global.resources.R
-import com.paulcraciunas.screens.common.AppBar
+import com.paulcraciunas.screens.common.ChildAppBar
 import com.paulcraciunas.screens.common.FailedContent
 import com.paulcraciunas.screens.common.LoadingContent
 import com.paulcraciunas.screens.common.board.BoardOrientation
@@ -61,9 +61,9 @@ fun PuzzleRushScreen(
     }
     Scaffold(
         topBar = {
-            AppBar(
+            ChildAppBar(
                 title = stringResource(R.string.puzzle_mode_rush_title),
-                navButton = { Back(onClick = onNavigateBack) },
+                onBack = onNavigateBack,
                 actions = {
                     TimerDisplay(
                         seconds = timeRemainingSeconds,

@@ -23,7 +23,7 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.global.resources.R
-import com.paulcraciunas.screens.common.AppBar
+import com.paulcraciunas.screens.common.ChildAppBar
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
 import com.paulcraciunas.screens.common.controls.CapturedPieces
@@ -51,12 +51,7 @@ fun AnalysisScreen(
 ) {
     val bgColor = Design.colors.primarySoft
     Scaffold(
-        topBar = {
-            AppBar(
-                title = stringResource(R.string.tools_analysis_title),
-                navButton = { Back(onClick = onNavigateBack) },
-            )
-        },
+        topBar = { ChildAppBar(onBack = onNavigateBack, title = stringResource(R.string.tools_analysis_title)) },
         modifier = modifier.testTag { AnalysisScreenTags.SCREEN }
     ) { innerPadding ->
         Column(

@@ -16,7 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.global.resources.R
-import com.paulcraciunas.screens.common.AppBar
+import com.paulcraciunas.screens.common.ChildAppBar
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.design.components.SpacerSize
 import com.paulcraciunas.screens.common.design.theme.Design
@@ -31,12 +31,7 @@ internal fun EmptyFailedPuzzlesContent(
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
-        topBar = {
-            AppBar(
-                title = stringResource(R.string.puzzle_mode_failed_title),
-                navButton = { Back(onClick = onNavigateBack) },
-            )
-        },
+        topBar = { ChildAppBar(title = stringResource(R.string.puzzle_mode_failed_title), onBack = onNavigateBack) },
         modifier = modifier.testTag { FailedPuzzlesScreenTags.EMPTY },
     ) { innerPadding ->
         Column(

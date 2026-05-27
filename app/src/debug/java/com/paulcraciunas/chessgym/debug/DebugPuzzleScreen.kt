@@ -27,7 +27,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.screens.common.AppBar
+import com.paulcraciunas.screens.common.ChildAppBar
 import com.paulcraciunas.screens.common.LoadingContent
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
@@ -49,14 +49,7 @@ fun DebugPuzzleScreen(
 ) {
     var puzzleIdText by rememberSaveable { mutableStateOf("") }
 
-    Scaffold(
-        topBar = {
-            AppBar(
-                title = "Debug: Load Puzzle",
-                navButton = { Back(onClick = onNavigateBack) },
-            )
-        },
-    ) { innerPadding ->
+    Scaffold(topBar = { ChildAppBar(onBack = onNavigateBack, title = "Debug: Load Puzzle") }) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()

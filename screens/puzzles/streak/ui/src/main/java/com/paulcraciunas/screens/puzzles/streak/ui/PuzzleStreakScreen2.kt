@@ -26,7 +26,7 @@ import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.AnimatedBoard
 import com.paulcraciunas.screens.common.AnimatedControls
-import com.paulcraciunas.screens.common.AppBar
+import com.paulcraciunas.screens.common.ChildAppBar
 import com.paulcraciunas.screens.common.FailedContent
 import com.paulcraciunas.screens.common.LoadingContent
 import com.paulcraciunas.screens.common.LocalUiSettings
@@ -68,16 +68,15 @@ fun PuzzleStreakScreen2(
     }
     Scaffold(
         topBar = {
-            AppBar(
+            ChildAppBar(
                 title = stringResource(R.string.puzzle_mode_streak_title),
-                navButton = { Back(onClick = onNavigateBack) },
+                onBack = onNavigateBack,
                 actions = {
                     if (streakCount > 0) StreakCounter(
                         count = streakCount,
                         modifier = Modifier.padding(horizontal = Design.dimensions.spacing.lg, vertical = Design.dimensions.spacing.sm)
                     )
-                }
-            )
+                })
         },
         containerColor = Design.colors.primarySoft,
         modifier = modifier.testTag { PuzzleStreakScreenTags.SCREEN },

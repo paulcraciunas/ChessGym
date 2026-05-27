@@ -18,7 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.global.resources.R
-import com.paulcraciunas.screens.common.AppBar
+import com.paulcraciunas.screens.common.ChildAppBar
 import com.paulcraciunas.screens.common.LoadingContent
 import com.paulcraciunas.screens.common.design.components.ChessGymColumnCard
 import com.paulcraciunas.screens.common.design.components.HairlineDivider
@@ -41,12 +41,7 @@ fun SettingsScreen(
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
-        topBar = {
-            AppBar(
-                title = stringResource(R.string.settings_title),
-                navButton = { Back(onClick = onNavigateBack) },
-            )
-        },
+        topBar = { ChildAppBar(title = stringResource(R.string.settings_title), onBack = onNavigateBack) },
         modifier = modifier,
     ) { innerPadding ->
         when {

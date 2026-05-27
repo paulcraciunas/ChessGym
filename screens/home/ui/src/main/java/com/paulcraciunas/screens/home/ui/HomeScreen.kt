@@ -23,9 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.global.resources.R
-import com.paulcraciunas.screens.common.AppBar
-import com.paulcraciunas.screens.common.AppBarAlignment
 import com.paulcraciunas.screens.common.LoadingContent
+import com.paulcraciunas.screens.common.TopLevelAppBar
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
@@ -42,15 +41,9 @@ fun HomeScreen(
 ) {
     Scaffold(
         topBar = {
-            AppBar(
-                titleAlign = AppBarAlignment.Center,
-                navButton = { Home(onClick = onDrawerToggle) },
-                actions = {
-                    AchievementsBadge(
-                        unseenCount = state.unseenAchievementCount,
-                        onClick = onAchievements,
-                    )
-                }
+            TopLevelAppBar(
+                onHome = onDrawerToggle,
+                actions = { AchievementsBadge(unseenCount = state.unseenAchievementCount, onClick = onAchievements) }
             )
         },
         containerColor = Design.colors.bg,

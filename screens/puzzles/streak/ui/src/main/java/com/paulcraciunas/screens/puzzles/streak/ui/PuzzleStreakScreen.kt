@@ -30,7 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.global.resources.R
-import com.paulcraciunas.screens.common.AppBar
+import com.paulcraciunas.screens.common.ChildAppBar
 import com.paulcraciunas.screens.common.FailedContent
 import com.paulcraciunas.screens.common.LoadingContent
 import com.paulcraciunas.screens.common.board.BoardOrientation
@@ -68,9 +68,9 @@ fun PuzzleStreakScreen(
     }
     Scaffold(
         topBar = {
-            AppBar(
+            ChildAppBar(
                 title = stringResource(R.string.puzzle_mode_streak_title),
-                navButton = { Back(onClick = onNavigateBack) },
+                onBack = onNavigateBack,
                 actions = { if (streakCount > 0) StreakCounter(count = streakCount) }
             )
         },
