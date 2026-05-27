@@ -3,20 +3,13 @@ package com.paulcraciunas.screens.common.model.v2
 import androidx.compose.runtime.Immutable
 import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Puzzle
-import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.api.board.SidedPiece
 import kotlinx.coroutines.delay
 
 class PuzzleViewModelHelper2 {
     private lateinit var puzzleData: PuzzleData2
     private lateinit var puzzle: Puzzle
-    private val _captured = mutableMapOf(
-        Side.WHITE to ArrayList<Piece>(MAX_CAPTURE_COUNT),
-        Side.BLACK to ArrayList(MAX_CAPTURE_COUNT),
-    )
-
     var autoPromote: Boolean = false
 
     fun load(puzzle: Puzzle): PuzzleData2 {
@@ -149,29 +142,27 @@ class PuzzleViewModelHelper2 {
         withAnimation = true
     )
 
-    private fun updateCaptured(): Map<Side, List<Piece>> {
-        _captured[Side.WHITE]!!.clear()
-        _captured[Side.BLACK]!!.clear()
-        SidedPiece.entries.forEach {
-            val missing = it.piece.startingCount() - puzzle.board.pieces(it.side, it.piece).size
-            (0 until missing).forEach { _ ->
-                _captured[it.side.other()]!!.add(it.piece)
+    private fun updateCaptured(): PuzzleData2.Captured {
+        val playerCaptured = mutableListOf<Piece>()
+        val otherCaptured = mutableListOf<Piece>()
+        worthSortedPieces.forEach { piece ->
+            val otherCount = (piece.defaultCount - puzzle.board.pieces(puzzle.player.other(), piece).size).coerceAtLeast(0)
+            val playerCount = (piece.defaultCount - puzzle.board.pieces(puzzle.player, piece).size).coerceAtLeast(0)
+            repeat(otherCount) {
+                playerCaptured.add(piece)
+            }
+            repeat(playerCount) {
+                otherCaptured.add(piece)
             }
         }
-        return _captured
+        return PuzzleData2.Captured(
+            byPlayer = playerCaptured.joinToString(separator = "") { it.unicode },
+            byOpponent = otherCaptured.joinToString(separator = "") { it.unicode },
+        )
     }
 }
 
 private fun Ply?.asPair(): Pair<Locus, Locus>? = if (this != null) from to to else null
+private val worthSortedPieces = listOf(Piece.Queen, Piece.Rook, Piece.Bishop, Piece.Knight, Piece.Pawn)
 
-private fun Piece.startingCount(): Int = when (this) {
-    Piece.Pawn -> 8
-    Piece.Knight -> 2
-    Piece.Bishop -> 2
-    Piece.Rook -> 2
-    Piece.Queen -> 1
-    Piece.King -> 0 // Don't care about the king, even if we have king-less puzzles
-}
-
-private const val MAX_CAPTURE_COUNT = 16 // can't capture more than all the pieces
 private const val SOLUTION_MOVE_DELAY_MS = 600L

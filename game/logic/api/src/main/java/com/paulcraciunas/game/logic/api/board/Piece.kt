@@ -1,12 +1,17 @@
 package com.paulcraciunas.game.logic.api.board
 
-enum class Piece(private val algebraic: String, val code: Int) {
-    Pawn(algebraic = "", code = 0),
-    Rook(algebraic = "R", code = 1),
-    Knight(algebraic = "N", code = 2),
-    Bishop(algebraic = "B", code = 3),
-    Queen(algebraic = "Q", code = 4),
-    King(algebraic = "K", code = 5);
+enum class Piece(
+    private val algebraic: String,
+    val code: Int,
+    val unicode: String,
+    val defaultCount: Int
+) {
+    Pawn(algebraic = "", code = 0, unicode = "♟", defaultCount = 8),
+    Rook(algebraic = "R", code = 1, unicode = "♜", defaultCount = 2),
+    Knight(algebraic = "N", code = 2, unicode = "♞", defaultCount = 2),
+    Bishop(algebraic = "B", code = 3, unicode = "♝", defaultCount = 2),
+    Queen(algebraic = "Q", code = 4, unicode = "♛", defaultCount = 1),
+    King(algebraic = "K", code = 5, unicode = "♚", defaultCount = 1);
 
     fun alg(): String = algebraic
 
