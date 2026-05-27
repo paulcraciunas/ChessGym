@@ -1,4 +1,4 @@
-package com.paulcraciunas.chessgym
+package com.paulcraciunas.chessgym.main
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
@@ -42,6 +42,8 @@ import com.paulcraciunas.chessgym.animations.enter
 import com.paulcraciunas.chessgym.animations.exit
 import com.paulcraciunas.chessgym.debug.DebugMenuProvider
 import com.paulcraciunas.chessgym.error_reporting.NavigationLogger
+import com.paulcraciunas.chessgym.navigation.BottomNavItem
+import com.paulcraciunas.chessgym.navigation.BottomNavItemState
 import com.paulcraciunas.chessgym.navigation.BottomNavigationBar
 import com.paulcraciunas.chessgym.navigation.Screen
 import com.paulcraciunas.chessgym.navigation.navigateToTopLevel
@@ -68,9 +70,10 @@ import com.paulcraciunas.screens.about.vm.AboutSection
 import com.paulcraciunas.screens.achievements.ui.AchievementBannerHost
 import com.paulcraciunas.screens.common.AppDrawer
 import com.paulcraciunas.screens.common.LoadingContent
-import com.paulcraciunas.screens.common.LocalAppSettings
+import com.paulcraciunas.screens.common.LocalUiSettings
 import com.paulcraciunas.screens.common.dialogs.DeleteAccountConfirmationDialog
 import com.paulcraciunas.screens.common.dialogs.SignOutConfirmationDialog
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import com.paulcraciunas.global.resources.R as GlobalR
 
@@ -86,6 +89,14 @@ fun MainScreen(
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
+    val bottomBarItems = remember(currentDestination) {
+        BottomNavItem.entries.map { navItem ->
+            BottomNavItemState(
+                item = navItem,
+                isSelected = currentDestination?.hasRoute(navItem.screen::class) == true
+            )
+        }
+    }
     val isTopLevelScreen by remember(currentDestination) {
         derivedStateOf { currentDestination?.isTopLevelRoute() ?: true }
     }
@@ -102,48 +113,18 @@ fun MainScreen(
 
     val snackbarHostState = remember { SnackbarHostState() }
 
-    val deleteErrorNoNetwork = stringResource(GlobalR.string.delete_account_error_no_network)
-    val deleteErrorFailed = stringResource(GlobalR.string.delete_account_error_failed)
-    val signOutError = stringResource(GlobalR.string.sign_out_error_failed)
+    HandleAccountEvents(
+        events = { mainScreenViewModel.accountEvent },
+        snackbarHostState = snackbarHostState
+    )
+    HandleDialogs(
+        activeDialog = mainScreenState.activeDialog,
+        dismissDialog = mainScreenViewModel::dismissDialog,
+        signOut = mainScreenViewModel::signOut,
+        deleteAccount = mainScreenViewModel::deleteAccount,
+    )
 
-    LaunchedEffect(Unit) {
-        mainScreenViewModel.accountEvent.collect { event ->
-            when (event) {
-                is AccountEvent.DeleteAccountFailed -> snackbarHostState.showSnackbar(
-                    when (event.reason) {
-                        AccountEvent.DeleteAccountFailReason.NO_NETWORK -> deleteErrorNoNetwork
-                        AccountEvent.DeleteAccountFailReason.UNKNOWN -> deleteErrorFailed
-                    }
-                )
-                is AccountEvent.SignOutFailed -> snackbarHostState.showSnackbar(signOutError)
-                else -> {}
-            }
-        }
-    }
-
-    when (mainScreenState.activeDialog) {
-        MainScreenDialog.SignOutConfirmation -> {
-            SignOutConfirmationDialog(
-                onConfirm = {
-                    mainScreenViewModel.dismissDialog()
-                    mainScreenViewModel.signOut()
-                },
-                onDismiss = { mainScreenViewModel.dismissDialog() },
-            )
-        }
-        MainScreenDialog.DeleteAccountConfirmation -> {
-            DeleteAccountConfirmationDialog(
-                onConfirm = {
-                    mainScreenViewModel.dismissDialog()
-                    mainScreenViewModel.deleteAccount()
-                },
-                onDismiss = { mainScreenViewModel.dismissDialog() },
-            )
-        }
-        null -> {}
-    }
-
-    CompositionLocalProvider(LocalAppSettings provides mainScreenState.appSettings) {
+    CompositionLocalProvider(LocalUiSettings provides mainScreenState.appSettings) {
         if (mainScreenState.isLoading) {
             LoadingContent()
         } else {
@@ -198,7 +179,7 @@ fun MainScreen(
                                 exit = slideOutVertically { it },
                             ) {
                                 BottomNavigationBar(
-                                    currentDestination = currentDestination,
+                                    items = bottomBarItems,
                                     onItemSelected = { item -> navController.navigateToTopLevel(item.screen) }
                                 )
                             }
@@ -261,11 +242,66 @@ fun MainScreen(
                 }
 
                 AchievementBannerHost(
-                    notificationManager = notificationManager,
+                    notifications = { notificationManager.notifications },
                     modifier = Modifier
                         .align(Alignment.TopCenter)
                         .statusBarsPadding(),
                 )
+            }
+        }
+    }
+}
+
+@Composable
+private fun HandleDialogs(
+    activeDialog: MainScreenDialog? = null,
+    dismissDialog: () -> Unit,
+    signOut: () -> Unit,
+    deleteAccount: () -> Unit,
+) {
+    when (activeDialog) {
+        MainScreenDialog.SignOutConfirmation -> {
+            SignOutConfirmationDialog(
+                onConfirm = {
+                    dismissDialog()
+                    signOut()
+                },
+                onDismiss = { dismissDialog() },
+            )
+        }
+        MainScreenDialog.DeleteAccountConfirmation -> {
+            DeleteAccountConfirmationDialog(
+                onConfirm = {
+                    dismissDialog()
+                    deleteAccount()
+                },
+                onDismiss = { dismissDialog() },
+            )
+        }
+        null -> {}
+    }
+}
+
+@Composable
+private fun HandleAccountEvents(
+    events: () -> Flow<AccountEvent>,
+    snackbarHostState: SnackbarHostState,
+) {
+    val deleteErrorNoNetwork = stringResource(GlobalR.string.delete_account_error_no_network)
+    val deleteErrorFailed = stringResource(GlobalR.string.delete_account_error_failed)
+    val signOutError = stringResource(GlobalR.string.sign_out_error_failed)
+
+    LaunchedEffect(events) {
+        events().collect { event ->
+            when (event) {
+                is AccountEvent.DeleteAccountFailed -> snackbarHostState.showSnackbar(
+                    when (event.reason) {
+                        AccountEvent.DeleteAccountFailReason.NO_NETWORK -> deleteErrorNoNetwork
+                        AccountEvent.DeleteAccountFailReason.UNKNOWN -> deleteErrorFailed
+                    }
+                )
+                is AccountEvent.SignOutFailed -> snackbarHostState.showSnackbar(signOutError)
+                else -> {}
             }
         }
     }

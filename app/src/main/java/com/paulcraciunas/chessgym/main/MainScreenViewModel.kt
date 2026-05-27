@@ -1,5 +1,6 @@
-package com.paulcraciunas.chessgym
+package com.paulcraciunas.chessgym.main
 
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.paulcraciunas.chessgym.debug.DebugMenuProvider
@@ -7,6 +8,7 @@ import com.paulcraciunas.domain.api.achievements.AchievementNotificationManager
 import com.paulcraciunas.domain.api.auth.DeleteAccountResult
 import com.paulcraciunas.domain.api.auth.DeleteAccountUseCase
 import com.paulcraciunas.domain.api.auth.SignOutUseCase
+import com.paulcraciunas.screens.common.UiSettings
 import com.paulcraciunas.settings.application.api.AppSettings
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import com.paulcraciunas.user.api.UserRepository
@@ -23,13 +25,15 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
+@Immutable
 data class MainScreenUiState(
-    val appSettings: AppSettings = AppSettings.default(),
+    val appSettings: UiSettings = UiSettings.default(),
     val isSignedIn: Boolean = false,
     val isLoading: Boolean = true,
     val activeDialog: MainScreenDialog? = null,
 )
 
+@Immutable
 sealed class AccountEvent {
     data object SignedOut : AccountEvent()
     data object SignOutFailed : AccountEvent()
@@ -39,6 +43,7 @@ sealed class AccountEvent {
     enum class DeleteAccountFailReason { NO_NETWORK, UNKNOWN }
 }
 
+@Immutable
 sealed interface MainScreenDialog {
     data object SignOutConfirmation : MainScreenDialog
     data object DeleteAccountConfirmation : MainScreenDialog
@@ -62,7 +67,7 @@ class MainScreenViewModel @Inject constructor(
         _dialogState
     ) { appSettings, isSignedIn, activeDialog ->
         MainScreenUiState(
-            appSettings = appSettings,
+            appSettings = appSettings.uiSettings(),
             isSignedIn = isSignedIn,
             isLoading = false,
             activeDialog = activeDialog
@@ -112,3 +117,17 @@ class MainScreenViewModel @Inject constructor(
         _dialogState.value = null
     }
 }
+
+private fun AppSettings.uiSettings(): UiSettings = UiSettings(
+    lightMode = when (this.lightMode) {
+        AppSettings.LightMode.System -> UiSettings.Mode.System
+        AppSettings.LightMode.Light -> UiSettings.Mode.Light
+        AppSettings.LightMode.Dark -> UiSettings.Mode.Dark
+    },
+    autoPromote = this.autoPromote,
+    autoNextPuzzle = this.autoNextPuzzle,
+    showBorders = this.showBorders,
+    enableVibrations = this.enableVibrations,
+    highlightLegalMoves = this.highlightLegalMoves,
+    enableAnimations = this.enableAnimations,
+)
