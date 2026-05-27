@@ -1,7 +1,6 @@
 package com.paulcraciunas.screens.puzzles.streak.ui
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,12 +13,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.game.logic.api.Side
+import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.AnimatedBoard
@@ -27,11 +29,12 @@ import com.paulcraciunas.screens.common.AnimatedControls
 import com.paulcraciunas.screens.common.AppBar
 import com.paulcraciunas.screens.common.FailedContent
 import com.paulcraciunas.screens.common.LoadingContent
+import com.paulcraciunas.screens.common.LocalUiSettings
+import com.paulcraciunas.screens.common.UiSettings
 import com.paulcraciunas.screens.common.board.v2.BoardOrientation2
 import com.paulcraciunas.screens.common.board.v2.ChessBoard2
-import com.paulcraciunas.screens.common.controls.CapturedPieces
 import com.paulcraciunas.screens.common.controls.DefaultPuzzleControls
-import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
+import com.paulcraciunas.screens.common.controls.v2.CapturedPieces2
 import com.paulcraciunas.screens.common.design.components.PrimaryButton
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.dialogs.AbandonConfirmationDialog
@@ -40,9 +43,7 @@ import com.paulcraciunas.screens.common.model.v2.BoardViewData2
 import com.paulcraciunas.screens.common.model.v2.PuzzleData2
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
-import com.paulcraciunas.screens.puzzles.streak.vm.PuzzleStreakScreenInteractor
 import com.paulcraciunas.screens.puzzles.streak.vm.PuzzleStreakUiState2
-import com.paulcraciunas.screens.puzzles.streak.vm.StubPuzzleStreakScreenInteractor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,7 +51,15 @@ fun PuzzleStreakScreen2(
     uiState: PuzzleStreakUiState2,
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit = {},
-    interactions: PuzzleStreakScreenInteractor = StubPuzzleStreakScreenInteractor(),
+    onSquareClicked: (selection: Locus) -> Unit = {},
+    onPromote: (to: Piece) -> Unit = {},
+    onHintRequested: () -> Unit = {},
+    onAbandon: () -> Unit = {},
+    onAbandonConfirmed: () -> Unit = {},
+    onAbandonDismissed: () -> Unit = {},
+    onNewStreak: () -> Unit = {},
+    onNextPuzzle: () -> Unit = {},
+    onDismissSummary: () -> Unit = {},
 ) {
     val streakCount = when (uiState) {
         is PuzzleStreakUiState2.Playing -> uiState.streakCount
@@ -62,26 +71,37 @@ fun PuzzleStreakScreen2(
             AppBar(
                 title = stringResource(R.string.puzzle_mode_streak_title),
                 navButton = { Back(onClick = onNavigateBack) },
-                actions = { if (streakCount > 0) StreakCounter(count = streakCount) }
+                actions = {
+                    if (streakCount > 0) StreakCounter(
+                        count = streakCount,
+                        modifier = Modifier.padding(horizontal = Design.dimensions.spacing.lg, vertical = Design.dimensions.spacing.sm)
+                    )
+                }
             )
         },
+        containerColor = Design.colors.primarySoft,
         modifier = modifier.testTag { PuzzleStreakScreenTags.SCREEN },
     ) { innerPadding ->
+        val defaultModifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)
         when (uiState) {
-            is PuzzleStreakUiState2.Loading -> {
-                LoadingContent(modifier = Modifier.fillMaxSize().padding(innerPadding))
-            }
-            is PuzzleStreakUiState2.Failed -> {
-                FailedContent(modifier = Modifier.fillMaxSize().padding(innerPadding))
-            }
-            is PuzzleStreakUiState2.BoardState -> {
+            is PuzzleStreakUiState2.Loading -> LoadingContent(modifier = defaultModifier)
+            is PuzzleStreakUiState2.Failed -> FailedContent(modifier = defaultModifier)
+            is PuzzleStreakUiState2.BoardState ->
                 PuzzleStreakContent(
                     uiState = uiState,
-                    interactions = interactions,
-                    modifier = Modifier.background(Design.colors.primarySoft)
-                        .padding(innerPadding)
+                    onSquareClicked = onSquareClicked,
+                    onPromote = onPromote,
+                    onHintRequested = onHintRequested,
+                    onAbandon = onAbandon,
+                    onAbandonConfirmed = onAbandonConfirmed,
+                    onAbandonDismissed = onAbandonDismissed,
+                    onNewStreak = onNewStreak,
+                    onNextPuzzle = onNextPuzzle,
+                    onDismissSummary = onDismissSummary,
+                    modifier = defaultModifier
                 )
-            }
         }
     }
 }
@@ -89,21 +109,23 @@ fun PuzzleStreakScreen2(
 @Composable
 private fun PuzzleStreakContent(
     uiState: PuzzleStreakUiState2.BoardState,
-    interactions: PuzzleStreakScreenInteractor,
+    onSquareClicked: (selection: Locus) -> Unit,
+    onPromote: (to: Piece) -> Unit,
+    onHintRequested: () -> Unit,
+    onAbandon: () -> Unit,
+    onAbandonConfirmed: () -> Unit,
+    onAbandonDismissed: () -> Unit,
+    onNewStreak: () -> Unit,
+    onNextPuzzle: () -> Unit,
+    onDismissSummary: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val data = uiState.data
     val isShowingSolution = uiState is PuzzleStreakUiState2.Playing && uiState.isShowingSolution
     val isAwaitingNext = uiState is PuzzleStreakUiState2.Playing && uiState.isAwaitingNextPuzzle
     val isBoardInteractive = !isShowingSolution && !isAwaitingNext
-    Column(
-        modifier = modifier.fillMaxSize()
-    ) {
-        CapturedPieces(
-            capturedPieces = data.otherCaptured(),
-            side = data.player,
-            modifier = Modifier.fillMaxWidth()
-        )
+    Column(modifier = modifier) {
+        CapturedPieces2(capturedPieces = data.captured.byOpponent, side = data.player, modifier = Modifier.fillMaxWidth())
         AnimatedBoard(
             targetState = data,
             contentKey = { it.id },
@@ -111,37 +133,35 @@ private fun PuzzleStreakContent(
             ChessBoard2(
                 board = puzzleData.boardData,
                 orientation = BoardOrientation2.fromSide(puzzleData.player),
-                onClick = if (isBoardInteractive) interactions::onSquareClicked else { _ -> },
+                onClick = if (isBoardInteractive) onSquareClicked else { _ -> },
                 modifier = Modifier.fillMaxWidth()
             )
         }
-        CapturedPieces(
-            capturedPieces = data.playerCaptured(),
-            side = data.player.other(),
-            modifier = Modifier.fillMaxWidth()
-        )
-        ChessGymSpacer()
+        CapturedPieces2(capturedPieces = data.captured.byPlayer, side = data.player.other(), modifier = Modifier.fillMaxWidth())
         AnimatedControls(targetState = uiState is PuzzleStreakUiState2.StreakEnded) { isEnded ->
+            val controlsModifier = Modifier
+                .fillMaxWidth()
+                .padding(top = Design.dimensions.spacing.sm)
             if (isEnded && uiState is PuzzleStreakUiState2.StreakEnded) {
                 StreakEndedControls(
                     finalStreakCount = uiState.finalStreakCount,
-                    onNewStreak = interactions::onNewStreak,
-                    modifier = Modifier.fillMaxWidth(),
+                    onNewStreak = onNewStreak,
+                    modifier = controlsModifier,
                 )
             } else if (uiState is PuzzleStreakUiState2.Playing) {
                 if (isAwaitingNext) {
                     NextPuzzleControls(
                         streakCount = uiState.streakCount,
-                        onNextPuzzle = interactions::onNextPuzzle,
-                        modifier = Modifier.fillMaxWidth(),
+                        onNextPuzzle = onNextPuzzle,
+                        modifier = controlsModifier,
                     )
                 } else {
                     DefaultPuzzleControls(
                         hintEnabled = uiState.hintEnabled && !isShowingSolution,
                         toMove = data.player,
-                        onHintRequested = interactions::onHintRequested,
-                        onAbandonRequested = interactions::onAbandon,
-                        modifier = Modifier.fillMaxWidth(),
+                        onHintRequested = onHintRequested,
+                        onAbandonRequested = onAbandon,
+                        modifier = controlsModifier,
                         abandonEnabled = !isShowingSolution,
                     )
                 }
@@ -152,14 +172,14 @@ private fun PuzzleStreakContent(
         if (uiState is PuzzleStreakUiState2.Playing && !isShowingSolution) {
             if (uiState.showAbandonDialog) {
                 AbandonConfirmationDialog(
-                    onConfirm = interactions::onAbandonConfirmed,
-                    onDismiss = interactions::onAbandonDismissed
+                    onConfirm = onAbandonConfirmed,
+                    onDismiss = onAbandonDismissed
                 )
             }
             if (uiState.promotion != null) {
                 PromotionDialog(
                     side = data.player,
-                    onPieceChosen = interactions::onPromote
+                    onPieceChosen = onPromote
                 )
             }
         }
@@ -167,10 +187,9 @@ private fun PuzzleStreakContent(
             StreakSummaryDialog(
                 streakCount = uiState.finalStreakCount,
                 isNewHighScore = uiState.isNewHighScore,
-                onDismiss = interactions::onDismissSummary
+                onDismiss = onDismissSummary
             )
         }
-        ChessGymSpacer()
     }
 }
 
@@ -180,36 +199,22 @@ private fun NextPuzzleControls(
     onNextPuzzle: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(
+    Row(
         modifier = modifier
+            .fillMaxWidth()
             .padding(horizontal = Design.dimensions.spacing.xxl, vertical = Design.dimensions.spacing.sm),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    painter = painterResource(R.drawable.puzzle_streak_icon),
-                    contentDescription = null,
-                    tint = Design.colors.success,
-                    modifier = Modifier.size(Design.dimensions.sizes.icon)
-                )
-                ChessGymSpacer()
-                Text(
-                    text = streakCount.toString(),
-                    style = Design.typography.titleLarge,
-                    color = Design.colors.success,
-                )
-            }
-            PrimaryButton(
-                text = stringResource(R.string.puzzle_streak_next_puzzle),
-                onClick = onNextPuzzle,
-                modifier = Modifier.testTag { PuzzleStreakScreenTags.NEXT_PUZZLE },
-            )
-        }
+        StreakCounter(
+            count = streakCount,
+            tint = Design.colors.success
+        )
+        PrimaryButton(
+            text = stringResource(R.string.puzzle_streak_next_puzzle),
+            onClick = onNextPuzzle,
+            modifier = Modifier.testTag { PuzzleStreakScreenTags.NEXT_PUZZLE },
+        )
     }
 }
 
@@ -217,23 +222,23 @@ private fun NextPuzzleControls(
 private fun StreakCounter(
     count: Int,
     modifier: Modifier = Modifier,
+    tint: Color = Design.colors.primary,
 ) {
     Row(
-        modifier = modifier.padding(horizontal = Design.dimensions.spacing.lg, vertical = Design.dimensions.spacing.sm),
-        horizontalArrangement = Arrangement.Center,
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.sm),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             painter = painterResource(R.drawable.puzzle_streak_icon),
             contentDescription = null,
-            tint = Design.colors.primary,
+            tint = tint,
             modifier = Modifier.size(Design.dimensions.sizes.icon)
         )
-        ChessGymSpacer()
         Text(
             text = count.toString(),
             style = Design.typography.titleLarge,
-            color = Design.colors.primary,
+            color = tint,
             modifier = Modifier.testTag { PuzzleStreakScreenTags.STREAK_COUNTER }
         )
     }
@@ -244,24 +249,26 @@ private fun StreakCounter(
 @Composable
 private fun PlayingPreview() {
     ChessGymTheme {
-        PuzzleStreakScreen2(
-            uiState = PuzzleStreakUiState2.Playing(
-                data = PuzzleData2(
-                    rating = 650,
-                    player = Side.WHITE,
-                    id = 42,
-                    boardData = BoardViewData2.default(),
-                    captured = mapOf(
-                        Side.WHITE to listOf(Piece.Pawn, Piece.Knight),
-                        Side.BLACK to listOf(Piece.Bishop, Piece.Pawn)
+        CompositionLocalProvider(LocalUiSettings provides UiSettings.default()) {
+            PuzzleStreakScreen2(
+                uiState = PuzzleStreakUiState2.Playing(
+                    data = PuzzleData2(
+                        rating = 650,
+                        player = Side.WHITE,
+                        id = 42,
+                        boardData = BoardViewData2.default(),
+                        captured = PuzzleData2.Captured(
+                            byPlayer = listOf(Piece.Bishop, Piece.Pawn, Piece.Pawn, Piece.Pawn).joinToString("") { it.unicode },
+                            byOpponent = listOf(Piece.Knight, Piece.Pawn).joinToString("") { it.unicode },
+                        ),
                     ),
+                    streakCount = 12,
+                    hintEnabled = true,
+                    showAbandonDialog = false,
+                    promotion = null,
                 ),
-                streakCount = 12,
-                hintEnabled = true,
-                showAbandonDialog = false,
-                promotion = null,
-            ),
-        )
+            )
+        }
     }
 }
 
@@ -270,50 +277,53 @@ private fun PlayingPreview() {
 @Composable
 private fun PuzzleEndedPreview() {
     ChessGymTheme {
-        PuzzleStreakScreen2(
-            uiState = PuzzleStreakUiState2.Playing(
-                data = PuzzleData2(
-                    rating = 650,
-                    player = Side.WHITE,
-                    id = 42,
-                    boardData = BoardViewData2.default(),
-                    captured = mapOf(
-                        Side.WHITE to listOf(Piece.Pawn, Piece.Knight),
-                        Side.BLACK to listOf(Piece.Bishop, Piece.Pawn)
+        CompositionLocalProvider(LocalUiSettings provides UiSettings.default()) {
+            PuzzleStreakScreen2(
+                uiState = PuzzleStreakUiState2.Playing(
+                    data = PuzzleData2(
+                        rating = 650,
+                        player = Side.WHITE,
+                        id = 42,
+                        boardData = BoardViewData2.default(),
+                        captured = PuzzleData2.Captured(
+                            byPlayer = listOf(Piece.Knight, Piece.Pawn).joinToString("") { it.unicode },
+                            byOpponent = listOf(Piece.Rook, Piece.Bishop, Piece.Pawn).joinToString("") { it.unicode },
+                        ),
                     ),
+                    streakCount = 12,
+                    hintEnabled = true,
+                    isAwaitingNextPuzzle = true,
+                    showAbandonDialog = false,
+                    promotion = null,
                 ),
-                streakCount = 12,
-                hintEnabled = true,
-                isAwaitingNextPuzzle = true,
-                showAbandonDialog = false,
-                promotion = null,
-            ),
-        )
+            )
+        }
     }
 }
-
 
 @Preview
 @Preview("Dark mode", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 private fun StreakEndedPreview() {
     ChessGymTheme {
-        PuzzleStreakScreen2(
-            uiState = PuzzleStreakUiState2.StreakEnded(
-                data = PuzzleData2(
-                    rating = 850,
-                    player = Side.BLACK,
-                    id = 42,
-                    boardData = BoardViewData2.default(),
-                    captured = mapOf(
-                        Side.WHITE to listOf(Piece.Queen),
-                        Side.BLACK to listOf(Piece.Rook, Piece.Pawn, Piece.Pawn)
+        CompositionLocalProvider(LocalUiSettings provides UiSettings.default()) {
+            PuzzleStreakScreen2(
+                uiState = PuzzleStreakUiState2.StreakEnded(
+                    data = PuzzleData2(
+                        rating = 850,
+                        player = Side.BLACK,
+                        id = 42,
+                        boardData = BoardViewData2.default(),
+                        captured = PuzzleData2.Captured(
+                            byPlayer = listOf(Piece.Knight, Piece.Pawn).joinToString("") { it.unicode },
+                            byOpponent = listOf(Piece.Rook, Piece.Bishop, Piece.Pawn).joinToString("") { it.unicode },
+                        ),
                     ),
+                    finalStreakCount = 15,
+                    isNewHighScore = false,
+                    showSummary = false,
                 ),
-                finalStreakCount = 15,
-                isNewHighScore = false,
-                showSummary = false,
-            ),
-        )
+            )
+        }
     }
 }

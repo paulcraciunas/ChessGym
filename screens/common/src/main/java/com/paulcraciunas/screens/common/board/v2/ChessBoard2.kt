@@ -29,7 +29,6 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.dp
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
@@ -46,8 +45,6 @@ import com.paulcraciunas.screens.common.model.v2.SquareViewData2
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import kotlin.math.roundToInt
-
-private val borderSize = 14.dp
 
 // Most of the time, this will be the same as player's side
 enum class BoardOrientation2(val ranks: Array<Rank>, val files: Array<File>) {
@@ -68,6 +65,7 @@ fun ChessBoard2(
     piecesAlpha: Float = 1f,
     overlay: @Composable BoxScope.() -> Unit = {},
 ) {
+    val borderSize = Design.dimensions.sizes.chessBoardBorder
     if (LocalUiSettings.current.showBorders) {
         Box(
             modifier = modifier
