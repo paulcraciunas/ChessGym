@@ -68,7 +68,15 @@ private fun BenchmarkPuzzleStreakV2(modifier: Modifier = Modifier) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     PuzzleStreakScreen2(
         uiState = uiState,
-        interactions = viewModel,
+        onSquareClicked = { viewModel.onSquareClicked(it) },
+        onPromote = { viewModel.onPromote(it) },
+        onHintRequested = { viewModel.onHintRequested() },
+        onAbandon = { viewModel.onAbandon() },
+        onAbandonConfirmed = { viewModel.onAbandonConfirmed() },
+        onAbandonDismissed = { viewModel.onAbandonDismissed() },
+        onNewStreak = { viewModel.onNewStreak() },
+        onNextPuzzle = { viewModel.onNextPuzzle() },
+        onDismissSummary = { viewModel.onDismissSummary() },
         modifier = modifier,
     )
 }

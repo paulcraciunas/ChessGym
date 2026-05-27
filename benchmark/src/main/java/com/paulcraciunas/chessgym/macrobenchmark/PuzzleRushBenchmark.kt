@@ -81,7 +81,7 @@ class PuzzleRushBenchmark {
         /**
          * Correct Black moves for puzzles 1–9 (each puzzle has 2 player moves).
          * Puzzle 10 only gets its first correct move here; the second is [WRONG_FINAL_MOVE].
-         * Must be kept in sync with [BenchmarkGetBufferedPuzzleSeries.BLACK_PLAYER_MOVES].
+         * Must be kept in sync with BenchmarkGetBufferedPuzzleSeries.BLACK_PLAYER_MOVES.
          */
         private val CORRECT_MOVES: List<List<Pair<String, String>>> = listOf(
             listOf("e7" to "e5", "b8" to "c6"), // Puzzle 1
