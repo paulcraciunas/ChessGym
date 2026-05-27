@@ -6,10 +6,8 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -24,7 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
-import com.paulcraciunas.screens.common.design.components.ChessGymCard
+import com.paulcraciunas.screens.common.design.components.ChessGymRowCard
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.home.vm.HomeUiState
@@ -34,43 +32,38 @@ internal fun TimelineEventItem(
     event: HomeUiState.HistoryEvent,
     modifier: Modifier = Modifier,
 ) {
-    ChessGymCard(contentPadding = PaddingValues(Design.dimensions.spacing.lg)) {
-        Row(
-            modifier = modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.lg)
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(32.dp)
-                    .clip(Design.shapes.circle)
-                    .background(Design.colors.primarySoft)
-                    .border(
-                        width = 2.dp,
-                        color = Design.colors.primary,
-                        shape = Design.shapes.circle,
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    painter = painterResource(event.iconRes()),
-                    contentDescription = null,
-                    tint = Design.colors.primary,
-                    modifier = Modifier.size(16.dp)
+    ChessGymRowCard(
+        contentPadding = PaddingValues(Design.dimensions.spacing.lg),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.lg),
+        modifier = modifier.fillMaxWidth(),
+    ) {
+        Icon(
+            painter = painterResource(event.iconRes()),
+            contentDescription = null,
+            tint = Design.colors.primary,
+            modifier = Modifier
+                .size(Design.dimensions.sizes.iconLarge) // 1. Outer boundary
+                .clip(Design.shapes.circle)
+                .background(Design.colors.primarySoft)
+                .border(
+                    width = 2.dp,
+                    color = Design.colors.primary,
+                    shape = Design.shapes.circle,
                 )
-            }
+                .padding(Design.dimensions.spacing.s) // 2. Padding before vector graphic
+        )
 
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.xs)
-            ) {
-                Text(
-                    text = stringResource(event.titleRes()),
-                    style = Design.typography.titleSmall,
-                    color = Design.colors.ink,
-                )
-                EventStats(event = event)
-            }
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.xs)
+        ) {
+            Text(
+                text = stringResource(event.titleRes()),
+                style = Design.typography.titleSmall,
+                color = Design.colors.ink,
+            )
+            EventStats(event = event)
         }
     }
 }
