@@ -1,6 +1,5 @@
 package com.paulcraciunas.screens.common.design.components
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
@@ -12,18 +11,6 @@ import com.paulcraciunas.screens.common.design.theme.Design
 
 @Stable
 @Composable
-fun borderNone(): BorderStroke = BorderStroke(0.dp, Design.colors.borderSoft)
-
-@Stable
-@Composable
-fun borderSoft(): BorderStroke = BorderStroke(1.dp, Design.colors.borderSoft)
-
-@Stable
-@Composable
-fun borderPrimary(): BorderStroke = BorderStroke(1.dp, Design.colors.primary)
-
-@Stable
-@Composable
 fun Modifier.circleBorder(color: Color?): Modifier =
     color?.let {
         border(1.dp, SolidColor(color), Design.shapes.circle)
@@ -32,4 +19,4 @@ fun Modifier.circleBorder(color: Color?): Modifier =
 @Stable
 @Composable
 fun Modifier.surfaceBorder(): Modifier =
-    border(2.dp, Design.colors.surface, Design.shapes.circle)
+    border(Design.colors.surfaceBorderStroke, Design.shapes.circle)

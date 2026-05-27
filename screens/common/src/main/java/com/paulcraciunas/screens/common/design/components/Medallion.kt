@@ -57,7 +57,7 @@ fun TrophyShelfTile(
         modifier = modifier.width(Design.dimensions.sizes.trophyTile),
         shape = RoundedCornerShape(Design.radii.lg),
         color = Design.colors.surface,
-        border = borderSoft(),
+        border = Design.colors.softBorderStroke,
         shadowElevation = Design.dimensions.elevation.sm,
         tonalElevation = Design.dimensions.elevation.sm,
     ) {

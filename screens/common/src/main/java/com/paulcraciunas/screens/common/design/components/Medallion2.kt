@@ -63,7 +63,7 @@ fun TrophyShelfTile2(
             .shadow(Design.dimensions.elevation.sm, Design.shapes.card)
             .background(Design.colors.surface, Design.shapes.card)
             .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
-            .border(borderSoft())
+            .border(Design.colors.softBorderStroke)
             .padding(horizontal = Design.dimensions.spacing.lg, vertical = Design.dimensions.spacing.xl),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.xs),

@@ -17,7 +17,6 @@ import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.achievements.vm.AchievementsUiState
 import com.paulcraciunas.screens.common.design.components.ProgressRing
 import com.paulcraciunas.screens.common.design.components.Title
-import com.paulcraciunas.screens.common.design.components.borderSoft
 import com.paulcraciunas.screens.common.design.theme.Design
 
 @Composable
@@ -54,7 +53,7 @@ internal fun TrophyCaseHero(
         modifier = modifier
             .shadow(elevation = Design.dimensions.elevation.md, shape = Design.shapes.card)
             .background(Design.colors.bg, Design.shapes.card)
-            .border(borderSoft())
+            .border(Design.colors.softBorderStroke)
             .padding(Design.dimensions.spacing.xxxl),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.xxl),

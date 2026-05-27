@@ -39,7 +39,7 @@ internal fun IconBadgeLayout(
     modifier: Modifier = Modifier,
     size: Dp = Design.dimensions.sizes.avatar,
     style: IconStyle = IconStyle.Card,
-    border: BorderStroke = borderSoft(),
+    border: BorderStroke = Design.colors.softBorderStroke,
     enabled: Boolean = true,
     background: Color? = null,
     content: @Composable () -> Unit,
@@ -153,9 +153,9 @@ fun IconBadge(
 @Composable
 @Stable
 private fun IconBorderType.borderStroke(): BorderStroke = when (this) {
-    IconBorderType.None -> borderNone()
-    IconBorderType.Soft -> borderSoft()
-    IconBorderType.Hard -> borderPrimary()
+    IconBorderType.None -> Design.colors.borderNone
+    IconBorderType.Soft -> Design.colors.softBorderStroke
+    IconBorderType.Hard -> Design.colors.primaryBorderStroke
 }
 
 @Composable

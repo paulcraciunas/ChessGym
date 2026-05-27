@@ -47,7 +47,7 @@ fun ChessGymCard(
         contentColor = Design.colors.ink,
         tonalElevation = Design.dimensions.elevation.sm,
         shadowElevation = if (style == ChessGymCardStyle.HIGHLIGHT) Design.dimensions.elevation.sm else Design.dimensions.elevation.none,
-        border = borderSoft(),
+        border = Design.colors.softBorderStroke,
     ) {
         Box(modifier = Modifier.padding(contentPadding)) { content() }
     }
@@ -68,7 +68,7 @@ fun ChessGymHeroCard(
         color = Design.colors.bg,
         shadowElevation = Design.dimensions.elevation.md,
         tonalElevation = Design.dimensions.elevation.md,
-        border = borderSoft(),
+        border = Design.colors.softBorderStroke,
     ) {
         Box(modifier = Modifier.padding(contentPadding)) { content() }
     }
@@ -113,7 +113,7 @@ fun FactBlock(
             modifier = Modifier.fillMaxWidth(),
             shape = Design.shapes.buttonOutline,
             color = Design.colors.surfaceAlt,
-            border = borderSoft(),
+            border = Design.colors.softBorderStroke,
         ) {
             Row(
                 modifier = Modifier.height(IntrinsicSize.Min)

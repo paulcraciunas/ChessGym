@@ -38,7 +38,6 @@ import com.paulcraciunas.screens.common.design.components.PrimaryPillButton
 import com.paulcraciunas.screens.common.design.components.SpacerSize
 import com.paulcraciunas.screens.common.design.components.Title
 import com.paulcraciunas.screens.common.design.components.ToggleRow
-import com.paulcraciunas.screens.common.design.components.borderSoft
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.extensions.alpha
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
@@ -176,7 +175,7 @@ internal fun MoveThePieceGameOverControls(
         modifier = modifier
             .fillMaxWidth()
             .clip(Design.shapes.card)
-            .border(borderSoft(), Design.shapes.card)
+            .border(Design.colors.softBorderStroke, Design.shapes.card)
             .background(Design.colors.surface)
             .padding(Design.dimensions.spacing.xgut),
         horizontalAlignment = Alignment.CenterHorizontally,

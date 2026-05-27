@@ -40,7 +40,7 @@ fun PrimaryButton(
         modifier = modifier.height(Design.dimensions.sizes.primaryButton),
         enabled = enabled,
         shape = Design.shapes.button,
-        border = if (style == PrimaryButtonStyle.Clear) borderSoft() else null,
+        border = if (style == PrimaryButtonStyle.Clear) Design.colors.softBorderStroke else null,
         colors = ButtonDefaults.buttonColors(
             containerColor = style.containerColor(),
             contentColor = style.contentColor(),
@@ -125,7 +125,7 @@ fun OutlineSegmentButton(
         onClick = onClick,
         modifier = modifier.height(Design.dimensions.sizes.outlineButton),
         shape = Design.shapes.buttonOutline,
-        border = if (selected) borderPrimary() else borderSoft(),
+        border = if (selected) Design.colors.primaryBorderStroke else Design.colors.softBorderStroke,
         colors = ButtonDefaults.outlinedButtonColors(
             containerColor = if (selected) Design.colors.primarySoft else Design.colors.surface,
             contentColor = if (selected) Design.colors.primary else Design.colors.inkSoft,

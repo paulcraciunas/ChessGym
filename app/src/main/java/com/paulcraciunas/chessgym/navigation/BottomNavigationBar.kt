@@ -13,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.tooling.preview.Preview
-import com.paulcraciunas.screens.common.design.components.borderSoft
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
@@ -34,7 +33,7 @@ internal fun BottomNavigationBar(
                 shape = MaterialTheme.shapes.large,
                 clip = true
             )
-            .border(borderSoft())
+            .border(Design.colors.softBorderStroke)
     ) {
         items.forEach {
             ChessGymBottomNavItem(
