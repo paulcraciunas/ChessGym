@@ -12,7 +12,6 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -33,8 +32,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.global.resources.R
-import com.paulcraciunas.screens.common.design.components.ChessGymCard
 import com.paulcraciunas.screens.common.design.components.ChessGymCardStyle
+import com.paulcraciunas.screens.common.design.components.ChessGymColumnCard
 import com.paulcraciunas.screens.common.design.components.HairlineDivider
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag
@@ -55,85 +54,82 @@ internal fun UserStatsCard(
         label = "chevron_rotation"
     )
 
-    ChessGymCard(
+    ChessGymColumnCard(
+        style = ChessGymCardStyle.MUTED,
         modifier = modifier
             .fillMaxWidth()
             .animateContentSize(),
-        contentPadding = PaddingValues(),
-        style = ChessGymCardStyle.MUTED
     ) {
-        Column {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .testTag { HomeScreenTags.STATS_CARD }
-                    .clickable(
-                        role = Role.Button,
-                        onClick = { isExpanded = !isExpanded }
-                    )
-                    .padding(
-                        horizontal = Design.dimensions.spacing.xxl,
-                        vertical = Design.dimensions.spacing.md,
-                    ),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = title,
-                    style = Design.typography.titleMedium,
-                    color = Design.colors.ink,
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag { HomeScreenTags.STATS_CARD }
+                .clickable(
+                    role = Role.Button,
+                    onClick = { isExpanded = !isExpanded }
                 )
+                .padding(
+                    horizontal = Design.dimensions.spacing.xxl,
+                    vertical = Design.dimensions.spacing.md,
+                ),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = title,
+                style = Design.typography.titleMedium,
+                color = Design.colors.ink,
+            )
 
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowDown,
-                    contentDescription = if (isExpanded) {
-                        stringResource(R.string.collapse_stats)
-                    } else {
-                        stringResource(R.string.expand_stats)
-                    },
-                    modifier = Modifier
-                        .size(Design.dimensions.sizes.icon)
-                        .rotate(chevronRotation),
-                    tint = Design.colors.inkSoft,
-                )
-            }
-            HairlineDivider(modifier = Modifier.fillMaxWidth())
-            AnimatedVisibility(
-                visible = isExpanded,
-                enter = expandVertically(animationSpec = tween(300)) + fadeIn(animationSpec = tween(300)),
-                exit = shrinkVertically(animationSpec = tween(300)) + fadeOut(animationSpec = tween(300))
+            Icon(
+                imageVector = Icons.Default.KeyboardArrowDown,
+                contentDescription = if (isExpanded) {
+                    stringResource(R.string.collapse_stats)
+                } else {
+                    stringResource(R.string.expand_stats)
+                },
+                modifier = Modifier
+                    .size(Design.dimensions.sizes.icon)
+                    .rotate(chevronRotation),
+                tint = Design.colors.inkSoft,
+            )
+        }
+        HairlineDivider(modifier = Modifier.fillMaxWidth())
+        AnimatedVisibility(
+            visible = isExpanded,
+            enter = expandVertically(animationSpec = tween(300)) + fadeIn(animationSpec = tween(300)),
+            exit = shrinkVertically(animationSpec = tween(300)) + fadeOut(animationSpec = tween(300))
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(Design.dimensions.spacing.xl)
+                    .testTag { HomeScreenTags.STATS_EXPANDED_CONTENT },
+                verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.md)
             ) {
-                Column(
-                    modifier = Modifier
-                        .padding(Design.dimensions.spacing.xl)
-                        .testTag { HomeScreenTags.STATS_EXPANDED_CONTENT },
-                    verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.md)
-                ) {
-                    StatRow(
-                        label = stringResource(R.string.user_stat_puzzles_played),
-                        value = stats.puzzlesPlayed.toString()
-                    )
-                    StatRow(
-                        label = stringResource(R.string.user_stat_puzzles_solved),
-                        value = stats.puzzlesSolved.toString()
-                    )
-                    StatRow(
-                        label = stringResource(R.string.user_stat_puzzles_success),
-                        value = if (stats.puzzlesPlayed > 0) {
-                            "${(stats.puzzlesSolved * 100 / stats.puzzlesPlayed)}%"
-                        } else {
-                            "0%"
-                        }
-                    )
-                    StatRow(
-                        label = stringResource(R.string.user_stat_current_rating),
-                        value = stats.currentRating.toString()
-                    )
-                    StatRow(
-                        label = stringResource(R.string.user_stat_high_score_rated_puzzle),
-                        value = stats.bestRating.toString()
-                    )
-                }
+                StatRow(
+                    label = stringResource(R.string.user_stat_puzzles_played),
+                    value = stats.puzzlesPlayed.toString()
+                )
+                StatRow(
+                    label = stringResource(R.string.user_stat_puzzles_solved),
+                    value = stats.puzzlesSolved.toString()
+                )
+                StatRow(
+                    label = stringResource(R.string.user_stat_puzzles_success),
+                    value = if (stats.puzzlesPlayed > 0) {
+                        "${(stats.puzzlesSolved * 100 / stats.puzzlesPlayed)}%"
+                    } else {
+                        "0%"
+                    }
+                )
+                StatRow(
+                    label = stringResource(R.string.user_stat_current_rating),
+                    value = stats.currentRating.toString()
+                )
+                StatRow(
+                    label = stringResource(R.string.user_stat_high_score_rated_puzzle),
+                    value = stats.bestRating.toString()
+                )
             }
         }
     }
@@ -143,7 +139,7 @@ internal fun UserStatsCard(
 internal fun StatRow(
     label: String,
     value: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),

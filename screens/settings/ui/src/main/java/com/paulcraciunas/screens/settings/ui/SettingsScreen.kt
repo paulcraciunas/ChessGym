@@ -3,7 +3,6 @@ package com.paulcraciunas.screens.settings.ui
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,16 +17,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.AppBar
 import com.paulcraciunas.screens.common.LoadingContent
-import com.paulcraciunas.screens.common.design.components.ChessGymCard
-import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
+import com.paulcraciunas.screens.common.design.components.ChessGymColumnCard
 import com.paulcraciunas.screens.common.design.components.HairlineDivider
 import com.paulcraciunas.screens.common.design.components.OutlineSegmentButton
 import com.paulcraciunas.screens.common.design.components.SectionHeader
-import com.paulcraciunas.screens.common.design.components.SpacerSize
 import com.paulcraciunas.screens.common.design.components.ToggleRow
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
@@ -79,8 +75,12 @@ private fun SettingsContent(
     LazyColumn(
         modifier = modifier
             .background(Design.colors.primarySoft)
-            .padding(horizontal = Design.dimensions.spacing.xxl),
+            .padding(
+                horizontal = Design.dimensions.spacing.xxl,
+                vertical = Design.dimensions.spacing.sm,
+            ),
         contentPadding = contentPadding,
+        verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.sm),
     ) {
         item {
             GeneralSection(uiState = uiState, interactions = interactions)
@@ -92,7 +92,7 @@ private fun SettingsContent(
             PrivacySection(uiState = uiState, interactions = interactions)
         }
         item {
-            BuildVersionFooter(buildVersion = buildVersion)
+            VersionFooter(buildVersion = buildVersion)
         }
     }
 }
@@ -102,42 +102,39 @@ private fun GeneralSection(
     uiState: SettingsUiState,
     interactions: SettingsScreenInteractor,
 ) {
-    ChessGymSpacer(size = SpacerSize.DEFAULT)
     SectionHeader(title = stringResource(R.string.settings_section_general))
-    ChessGymCard(contentPadding = PaddingValues(0.dp)) {
-        Column {
-            ToggleRow(
-                title = stringResource(R.string.settings_haptic_feedback),
-                subtitle = stringResource(R.string.settings_haptic_feedback_description),
-                on = uiState.isHapticFeedbackEnabled,
-                onChange = interactions::onHapticFeedbackToggled,
-            )
-            ToggleRow(
-                title = stringResource(R.string.settings_auto_promote),
-                subtitle = stringResource(R.string.settings_auto_promote_description),
-                on = uiState.isAutoPromoteEnabled,
-                onChange = interactions::onAutoPromoteToggled,
-            )
-            ToggleRow(
-                title = stringResource(R.string.settings_auto_next_puzzle),
-                subtitle = stringResource(R.string.settings_auto_next_puzzle_description),
-                on = uiState.isAutoNextPuzzleEnabled,
-                onChange = interactions::onAutoNextPuzzleToggled,
-            )
-            ToggleRow(
-                title = stringResource(R.string.settings_show_borders),
-                subtitle = stringResource(R.string.settings_show_borders_description),
-                on = uiState.isShowBordersEnabled,
-                onChange = interactions::onShowBordersToggled,
-            )
-            ToggleRow(
-                title = stringResource(R.string.settings_highlight_legal_moves),
-                subtitle = stringResource(R.string.settings_highlight_legal_moves_description),
-                on = uiState.isHighlightLegalMovesEnabled,
-                onChange = interactions::onHighlightLegalMovesToggled,
-                last = true,
-            )
-        }
+    ChessGymColumnCard {
+        ToggleRow(
+            title = stringResource(R.string.settings_haptic_feedback),
+            subtitle = stringResource(R.string.settings_haptic_feedback_description),
+            on = uiState.isHapticFeedbackEnabled,
+            onChange = interactions::onHapticFeedbackToggled,
+        )
+        ToggleRow(
+            title = stringResource(R.string.settings_auto_promote),
+            subtitle = stringResource(R.string.settings_auto_promote_description),
+            on = uiState.isAutoPromoteEnabled,
+            onChange = interactions::onAutoPromoteToggled,
+        )
+        ToggleRow(
+            title = stringResource(R.string.settings_auto_next_puzzle),
+            subtitle = stringResource(R.string.settings_auto_next_puzzle_description),
+            on = uiState.isAutoNextPuzzleEnabled,
+            onChange = interactions::onAutoNextPuzzleToggled,
+        )
+        ToggleRow(
+            title = stringResource(R.string.settings_show_borders),
+            subtitle = stringResource(R.string.settings_show_borders_description),
+            on = uiState.isShowBordersEnabled,
+            onChange = interactions::onShowBordersToggled,
+        )
+        ToggleRow(
+            title = stringResource(R.string.settings_highlight_legal_moves),
+            subtitle = stringResource(R.string.settings_highlight_legal_moves_description),
+            on = uiState.isHighlightLegalMovesEnabled,
+            onChange = interactions::onHighlightLegalMovesToggled,
+            last = true,
+        )
     }
 }
 
@@ -146,56 +143,52 @@ private fun AppearanceSection(
     uiState: SettingsUiState,
     interactions: SettingsScreenInteractor,
 ) {
-    ChessGymSpacer(size = SpacerSize.DEFAULT)
     SectionHeader(title = stringResource(R.string.settings_section_ui))
-    ChessGymCard(contentPadding = PaddingValues(0.dp)) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    horizontal = Design.dimensions.spacing.xxl,
-                    vertical = Design.dimensions.spacing.xl,
-                ),
+    ChessGymColumnCard(
+        contentPadding = PaddingValues(
+            horizontal = Design.dimensions.spacing.xxl,
+            vertical = Design.dimensions.spacing.xl,
+        ),
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.sm),
+    ) {
+        Text(
+            text = stringResource(R.string.settings_light_mode),
+            style = Design.typography.titleSmall,
+            color = Design.colors.ink,
+        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.sm),
         ) {
-            Text(
-                text = stringResource(R.string.settings_light_mode),
-                style = Design.typography.titleSmall,
-                color = Design.colors.ink,
+            OutlineSegmentButton(
+                modifier = Modifier.weight(1f),
+                text = stringResource(R.string.settings_light_mode_light),
+                selected = uiState.lightMode == AppSettings.LightMode.Light,
+                onClick = { interactions.onLightModeSelected(AppSettings.LightMode.Light) },
             )
-            ChessGymSpacer(size = SpacerSize.DEFAULT)
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.sm),
-            ) {
-                OutlineSegmentButton(
-                    modifier = Modifier.weight(1f),
-                    text = stringResource(R.string.settings_light_mode_light),
-                    selected = uiState.lightMode == AppSettings.LightMode.Light,
-                    onClick = { interactions.onLightModeSelected(AppSettings.LightMode.Light) },
-                )
-                OutlineSegmentButton(
-                    modifier = Modifier.weight(1f),
-                    text = stringResource(R.string.settings_light_mode_dark),
-                    selected = uiState.lightMode == AppSettings.LightMode.Dark,
-                    onClick = { interactions.onLightModeSelected(AppSettings.LightMode.Dark) },
-                )
-                OutlineSegmentButton(
-                    modifier = Modifier.weight(1f),
-                    text = stringResource(R.string.settings_light_mode_system),
-                    selected = uiState.lightMode == AppSettings.LightMode.System,
-                    onClick = { interactions.onLightModeSelected(AppSettings.LightMode.System) },
-                )
-            }
-            ChessGymSpacer(size = SpacerSize.XXLARGE)
-            HairlineDivider(modifier = Modifier.fillMaxWidth())
-            ToggleRow(
-                title = stringResource(R.string.settings_enable_animations),
-                subtitle = stringResource(R.string.settings_enable_animations_description),
-                on = uiState.isAnimationsEnabled,
-                onChange = interactions::onAnimationsToggled,
-                last = true,
+            OutlineSegmentButton(
+                modifier = Modifier.weight(1f),
+                text = stringResource(R.string.settings_light_mode_dark),
+                selected = uiState.lightMode == AppSettings.LightMode.Dark,
+                onClick = { interactions.onLightModeSelected(AppSettings.LightMode.Dark) },
+            )
+            OutlineSegmentButton(
+                modifier = Modifier.weight(1f),
+                text = stringResource(R.string.settings_light_mode_system),
+                selected = uiState.lightMode == AppSettings.LightMode.System,
+                onClick = { interactions.onLightModeSelected(AppSettings.LightMode.System) },
             )
         }
+        HairlineDivider(modifier = Modifier.fillMaxWidth())
+        ToggleRow(
+            title = stringResource(R.string.settings_enable_animations),
+            subtitle = stringResource(R.string.settings_enable_animations_description),
+            on = uiState.isAnimationsEnabled,
+            onChange = interactions::onAnimationsToggled,
+            last = true,
+            contentPadding = PaddingValues.Zero,
+        )
     }
 }
 
@@ -204,9 +197,8 @@ private fun PrivacySection(
     uiState: SettingsUiState,
     interactions: SettingsScreenInteractor,
 ) {
-    ChessGymSpacer(size = SpacerSize.DEFAULT)
     SectionHeader(title = stringResource(R.string.settings_section_privacy))
-    ChessGymCard(contentPadding = PaddingValues(0.dp)) {
+    ChessGymColumnCard {
         ToggleRow(
             title = stringResource(R.string.settings_crash_reporting),
             subtitle = stringResource(R.string.settings_crash_reporting_description),
@@ -218,7 +210,7 @@ private fun PrivacySection(
 }
 
 @Composable
-private fun BuildVersionFooter(
+private fun VersionFooter(
     buildVersion: String,
     modifier: Modifier = Modifier,
 ) {

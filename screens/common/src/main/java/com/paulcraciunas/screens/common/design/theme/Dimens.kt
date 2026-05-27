@@ -49,6 +49,7 @@ data class ChessGymDimensions(
         val outlineButton: Dp,
         val hitTarget: Dp,
         val iconButton: Dp,
+        val iconLarge: Dp,
         val icon: Dp,
         val iconSmall: Dp,
         val avatar: Dp,

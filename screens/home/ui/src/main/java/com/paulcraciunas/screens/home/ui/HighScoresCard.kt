@@ -12,7 +12,6 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -33,8 +32,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.global.resources.R
-import com.paulcraciunas.screens.common.design.components.ChessGymCard
 import com.paulcraciunas.screens.common.design.components.ChessGymCardStyle
+import com.paulcraciunas.screens.common.design.components.ChessGymColumnCard
 import com.paulcraciunas.screens.common.design.components.HairlineDivider
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag
@@ -55,81 +54,78 @@ internal fun HighScoresCard(
         label = "chevron_rotation"
     )
 
-    ChessGymCard(
+    ChessGymColumnCard(
+        style = ChessGymCardStyle.MUTED,
         modifier = modifier
             .fillMaxWidth()
             .animateContentSize(),
-        contentPadding = PaddingValues(),
-        style = ChessGymCardStyle.MUTED
     ) {
-        Column {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .testTag { HomeScreenTags.HIGH_SCORES_CARD }
-                    .clickable(
-                        role = Role.Button,
-                        onClick = { isExpanded = !isExpanded }
-                    )
-                    .padding(
-                        horizontal = Design.dimensions.spacing.xxl,
-                        vertical = Design.dimensions.spacing.md,
-                    ),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = title,
-                    style = Design.typography.titleMedium,
-                    color = Design.colors.ink,
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag { HomeScreenTags.HIGH_SCORES_CARD }
+                .clickable(
+                    role = Role.Button,
+                    onClick = { isExpanded = !isExpanded }
                 )
+                .padding(
+                    horizontal = Design.dimensions.spacing.xxl,
+                    vertical = Design.dimensions.spacing.md,
+                ),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = title,
+                style = Design.typography.titleMedium,
+                color = Design.colors.ink,
+            )
 
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowDown,
-                    contentDescription = if (isExpanded) {
-                        stringResource(R.string.collapse_high_scores)
-                    } else {
-                        stringResource(R.string.expand_high_scores)
-                    },
-                    modifier = Modifier
-                        .size(Design.dimensions.sizes.icon)
-                        .rotate(chevronRotation),
-                    tint = Design.colors.inkSoft,
-                )
-            }
-            HairlineDivider(modifier = Modifier.fillMaxWidth())
-            AnimatedVisibility(
-                visible = isExpanded,
-                enter = expandVertically(animationSpec = tween(300)) + fadeIn(animationSpec = tween(300)),
-                exit = shrinkVertically(animationSpec = tween(300)) + fadeOut(animationSpec = tween(300))
+            Icon(
+                imageVector = Icons.Default.KeyboardArrowDown,
+                contentDescription = if (isExpanded) {
+                    stringResource(R.string.collapse_high_scores)
+                } else {
+                    stringResource(R.string.expand_high_scores)
+                },
+                modifier = Modifier
+                    .size(Design.dimensions.sizes.icon)
+                    .rotate(chevronRotation),
+                tint = Design.colors.inkSoft,
+            )
+        }
+        HairlineDivider(modifier = Modifier.fillMaxWidth())
+        AnimatedVisibility(
+            visible = isExpanded,
+            enter = expandVertically(animationSpec = tween(300)) + fadeIn(animationSpec = tween(300)),
+            exit = shrinkVertically(animationSpec = tween(300)) + fadeOut(animationSpec = tween(300))
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(Design.dimensions.spacing.xl)
+                    .testTag { HomeScreenTags.HIGH_SCORES_EXPANDED_CONTENT },
+                verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.sm)
             ) {
-                Column(
-                    modifier = Modifier
-                        .padding(Design.dimensions.spacing.xl)
-                        .testTag { HomeScreenTags.HIGH_SCORES_EXPANDED_CONTENT },
-                    verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.sm)
-                ) {
-                    StatRow(
-                        label = stringResource(R.string.user_stat_high_score_puzzles_rush),
-                        value = stats.bestPuzzleRushScore.toString()
-                    )
-                    StatRow(
-                        label = stringResource(R.string.user_stat_high_score_puzzle_streak),
-                        value = stats.bestPuzzleStreakScore.toString()
-                    )
-                    StatRow(
-                        label = stringResource(R.string.user_stat_high_score_blind_mode),
-                        value = stats.bestBlindModeScore.toString()
-                    )
-                    StatRow(
-                        label = stringResource(R.string.user_stat_high_score_find_the_square),
-                        value = stats.bestFindTheSquareScore.toString()
-                    )
-                    StatRow(
-                        label = stringResource(R.string.user_stat_high_score_move_the_piece),
-                        value = stats.bestMoveThePieceScore.toString()
-                    )
-                }
+                StatRow(
+                    label = stringResource(R.string.user_stat_high_score_puzzles_rush),
+                    value = stats.bestPuzzleRushScore.toString()
+                )
+                StatRow(
+                    label = stringResource(R.string.user_stat_high_score_puzzle_streak),
+                    value = stats.bestPuzzleStreakScore.toString()
+                )
+                StatRow(
+                    label = stringResource(R.string.user_stat_high_score_blind_mode),
+                    value = stats.bestBlindModeScore.toString()
+                )
+                StatRow(
+                    label = stringResource(R.string.user_stat_high_score_find_the_square),
+                    value = stats.bestFindTheSquareScore.toString()
+                )
+                StatRow(
+                    label = stringResource(R.string.user_stat_high_score_move_the_piece),
+                    value = stats.bestMoveThePieceScore.toString()
+                )
             }
         }
     }

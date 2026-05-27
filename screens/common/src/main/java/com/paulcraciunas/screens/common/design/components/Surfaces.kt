@@ -1,11 +1,14 @@
 package com.paulcraciunas.screens.common.design.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,6 +25,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.screens.common.design.theme.Design
@@ -30,15 +36,14 @@ import com.paulcraciunas.screens.common.theme.ChessGymTheme
 enum class ChessGymCardStyle { HIGHLIGHT, MUTED }
 
 /**
- * The standard ChessGym card surface — soft cream/walnut background, hairline
- * border, sm shadow.
+ * Shared layout-agnostic styling base.
+ * Marked inline to prevent any lambda overhead.
  */
 @Composable
-fun ChessGymCard(
-    modifier: Modifier = Modifier,
-    style: ChessGymCardStyle = ChessGymCardStyle.HIGHLIGHT,
-    contentPadding: PaddingValues = PaddingValues(Design.dimensions.spacing.xxl),
-    content: @Composable () -> Unit,
+private inline fun BaseCardChessGymCard(
+    modifier: Modifier,
+    style: ChessGymCardStyle,
+    crossinline content: @Composable () -> Unit,
 ) {
     Surface(
         modifier = modifier,
@@ -49,7 +54,53 @@ fun ChessGymCard(
         shadowElevation = if (style == ChessGymCardStyle.HIGHLIGHT) Design.dimensions.elevation.sm else Design.dimensions.elevation.none,
         border = Design.colors.softBorderStroke,
     ) {
-        Box(modifier = Modifier.padding(contentPadding)) { content() }
+        content()
+    }
+}
+
+/**
+ * The standard ChessGym card surface — soft cream/walnut background, hairline
+ * border, sm shadow.
+ */
+@Composable
+fun ChessGymColumnCard(
+    modifier: Modifier = Modifier,
+    style: ChessGymCardStyle = ChessGymCardStyle.HIGHLIGHT,
+    contentPadding: PaddingValues = PaddingValues.Zero,
+    verticalArrangement: Arrangement.Vertical = Arrangement.Top,
+    horizontalAlignment: Alignment.Horizontal = Alignment.Start,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    BaseCardChessGymCard(modifier = modifier, style = style) {
+        Column(
+            modifier = Modifier.padding(contentPadding),
+            verticalArrangement = verticalArrangement,
+            horizontalAlignment = horizontalAlignment,
+            content = content
+        )
+    }
+}
+
+/**
+ * The standard ChessGym card surface — soft cream/walnut background, hairline
+ * border, sm shadow.
+ */
+@Composable
+fun ChessGymRowCard(
+    modifier: Modifier = Modifier,
+    style: ChessGymCardStyle = ChessGymCardStyle.HIGHLIGHT,
+    contentPadding: PaddingValues = PaddingValues.Zero,
+    horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
+    verticalAlignment: Alignment.Vertical = Alignment.Top,
+    content: @Composable RowScope.() -> Unit,
+) {
+    BaseCardChessGymCard(modifier = modifier, style = style) {
+        Row(
+            modifier = Modifier.padding(contentPadding),
+            horizontalArrangement = horizontalArrangement,
+            verticalAlignment = verticalAlignment,
+            content = content
+        )
     }
 }
 
@@ -57,10 +108,12 @@ fun ChessGymCard(
  * Full-bleed elevated card — for hero rows like the Home profile block.
  */
 @Composable
-fun ChessGymHeroCard(
+fun ChessGymElevatedCard(
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(Design.dimensions.spacing.xxxl),
-    content: @Composable () -> Unit,
+    contentPadding: PaddingValues = PaddingValues.Zero,
+    verticalArrangement: Arrangement.Vertical = Arrangement.Top,
+    horizontalAlignment: Alignment.Horizontal = Alignment.Start,
+    content: @Composable ColumnScope.() -> Unit,
 ) {
     Surface(
         modifier = modifier,
@@ -70,17 +123,23 @@ fun ChessGymHeroCard(
         tonalElevation = Design.dimensions.elevation.md,
         border = Design.colors.softBorderStroke,
     ) {
-        Box(modifier = Modifier.padding(contentPadding)) { content() }
+        Column(
+            modifier = Modifier.padding(contentPadding),
+            verticalArrangement = verticalArrangement,
+            horizontalAlignment = horizontalAlignment,
+            content = content
+        )
     }
 }
 
-/** Brass-tipped section header — uppercase title + hairline rule + optional trailing slot. */
+/** Brass-tipped section header — uppercase title + hairline rule. */
 @Composable
 fun SectionHeader(
     title: String,
     modifier: Modifier = Modifier,
-    trailing: (@Composable () -> Unit)? = null,
 ) {
+    val lineColor = Design.colors.divider
+    val strokeWidthPx = with(LocalDensity.current) { 1.dp.toPx() }
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -88,14 +147,19 @@ fun SectionHeader(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         SectionHeaderTitle(text = title)
-        HairlineDivider(
+        Spacer(
             modifier = Modifier
                 .padding(horizontal = Design.dimensions.spacing.sm)
                 .weight(1f)
+                .drawBehind {
+                    drawLine(
+                        color = lineColor,
+                        start = Offset(0f, size.height / 2f),
+                        end = Offset(size.width, size.height / 2f),
+                        strokeWidth = strokeWidthPx
+                    )
+                }
         )
-        if (trailing != null) {
-            Box(Modifier.padding(start = Design.dimensions.spacing.sm)) { trailing() }
-        }
     }
 }
 
@@ -188,15 +252,15 @@ fun FactBlock(
 private fun ChessGymCardPreview() {
     ChessGymTheme {
         Column(modifier = Modifier.padding(16.dp)) {
-            ChessGymCard {
+            ChessGymRowCard {
                 Text(text = "This is a highlight card", color = Design.colors.ink)
             }
             Spacer(modifier = Modifier.size(16.dp))
-            ChessGymCard(style = ChessGymCardStyle.MUTED) {
+            ChessGymColumnCard(style = ChessGymCardStyle.MUTED) {
                 Text(text = "This is a muted card", color = Design.colors.ink)
             }
             Spacer(modifier = Modifier.size(16.dp))
-            ChessGymHeroCard {
+            ChessGymElevatedCard {
                 Text(text = "This is a hero card", color = Design.colors.ink)
             }
         }
@@ -209,10 +273,6 @@ private fun SectionHeaderPreview() {
     ChessGymTheme {
         Column(modifier = Modifier.padding(16.dp)) {
             SectionHeader(title = "Puzzles")
-            SectionHeader(
-                title = "Analysis",
-                trailing = { Text("View All", color = Design.colors.primary) }
-            )
         }
     }
 }

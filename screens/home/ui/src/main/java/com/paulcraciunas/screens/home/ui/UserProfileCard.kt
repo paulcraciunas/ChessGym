@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -25,7 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.domain.api.achievements.Achievement
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.achievements.tierName
-import com.paulcraciunas.screens.common.design.components.ChessGymHeroCard
+import com.paulcraciunas.screens.common.design.components.ChessGymElevatedCard
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.design.components.Eyebrow
 import com.paulcraciunas.screens.common.design.components.HairlineDivider
@@ -43,34 +44,32 @@ internal fun UserProfileCard(
     ribbons: List<HomeUiState.Ribbon>,
     modifier: Modifier = Modifier,
 ) {
-    ChessGymHeroCard(
+    ChessGymElevatedCard(
         modifier = modifier
             .fillMaxWidth()
-            .testTag { HomeScreenTags.Profile.CARD }
+            .testTag { HomeScreenTags.Profile.CARD },
+        contentPadding = PaddingValues(Design.dimensions.spacing.xxxl),
+        verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.lg),
     ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.lg)
+        NameAndRating(userProfile = userProfile)
+        HairlineDivider(modifier = Modifier.fillMaxWidth())
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            NameAndRating(userProfile = userProfile)
-            HairlineDivider(modifier = Modifier.fillMaxWidth())
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Property(
-                    label = stringResource(R.string.home_label_activities),
-                    value = userProfile.totalActivities.toString(),
-                    modifier = Modifier.testTag { HomeScreenTags.Profile.ACTIVITIES }
-                )
-                Property(
-                    label = stringResource(R.string.home_label_member_since),
-                    value = userProfile.joinDate.format(formatter)
-                )
-            }
+            Property(
+                label = stringResource(R.string.home_label_activities),
+                value = userProfile.totalActivities.toString(),
+                modifier = Modifier.testTag { HomeScreenTags.Profile.ACTIVITIES }
+            )
+            Property(
+                label = stringResource(R.string.home_label_member_since),
+                value = userProfile.joinDate.format(formatter)
+            )
+        }
 
-            if (ribbons.isNotEmpty()) {
-                RibbonRow(ribbons = ribbons)
-            }
+        if (ribbons.isNotEmpty()) {
+            RibbonRow(ribbons = ribbons)
         }
     }
 }
@@ -140,7 +139,7 @@ private fun NameAndRating(
 internal fun Property(
     label: String,
     value: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier,

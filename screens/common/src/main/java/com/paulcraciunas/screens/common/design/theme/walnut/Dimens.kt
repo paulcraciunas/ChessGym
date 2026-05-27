@@ -37,6 +37,7 @@ internal val WalnutDimensions = ChessGymDimensions(
         outlineButton = 40.dp,
         hitTarget = 48.dp,
         iconButton = 38.dp,
+        iconLarge = 32.dp,
         icon = 20.dp,
         iconSmall = 12.dp,
         avatar = 56.dp,

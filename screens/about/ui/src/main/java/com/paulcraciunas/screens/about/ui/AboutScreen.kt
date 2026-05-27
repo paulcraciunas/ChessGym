@@ -3,8 +3,8 @@ package com.paulcraciunas.screens.about.ui
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -37,13 +37,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.paulcraciunas.domain.api.billing.BillingUseCase
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.about.vm.AboutScreenInteractor
 import com.paulcraciunas.screens.about.vm.AboutSection
 import com.paulcraciunas.screens.common.AppBar
-import com.paulcraciunas.screens.common.design.components.ChessGymCard
+import com.paulcraciunas.screens.common.design.components.ChessGymColumnCard
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.design.components.HairlineDivider
 import com.paulcraciunas.screens.common.design.components.SectionHeader
@@ -99,84 +98,72 @@ private fun AboutContent(
             .background(Design.colors.primarySoft)
             .verticalScroll(rememberScrollState())
             .padding(Design.dimensions.spacing.xxl),
+        verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.xs),
     ) {
         SectionHeader(title = stringResource(R.string.about_general_title))
-        ChessGymSpacer(size = SpacerSize.SMALL)
-        ChessGymCard(contentPadding = PaddingValues(0.dp)) {
-            Column {
-                NavigationRow(
-                    icon = Icons.Outlined.Person,
-                    title = stringResource(R.string.about_creator_title),
-                    onClick = { onSectionClicked(AboutSection.CREATOR) },
-                )
-                HairlineDivider(modifier = Modifier.fillMaxWidth())
-                NavigationRow(
-                    icon = Icons.Outlined.Email,
-                    title = stringResource(R.string.about_contact_title),
-                    onClick = { onSectionClicked(AboutSection.CONTACT) },
-                )
-                HairlineDivider(modifier = Modifier.fillMaxWidth())
-                NavigationRow(
-                    icon = Icons.Outlined.Edit,
-                    title = stringResource(R.string.about_feedback_title),
-                    onClick = { onSectionClicked(AboutSection.FEEDBACK) },
-                )
-            }
+        ChessGymColumnCard {
+            NavigationRow(
+                icon = Icons.Outlined.Person,
+                title = stringResource(R.string.about_creator_title),
+                onClick = { onSectionClicked(AboutSection.CREATOR) },
+            )
+            HairlineDivider(modifier = Modifier.fillMaxWidth())
+            NavigationRow(
+                icon = Icons.Outlined.Email,
+                title = stringResource(R.string.about_contact_title),
+                onClick = { onSectionClicked(AboutSection.CONTACT) },
+            )
+            HairlineDivider(modifier = Modifier.fillMaxWidth())
+            NavigationRow(
+                icon = Icons.Outlined.Edit,
+                title = stringResource(R.string.about_feedback_title),
+                onClick = { onSectionClicked(AboutSection.FEEDBACK) },
+            )
         }
-        ChessGymSpacer(size = SpacerSize.LARGE)
         SectionHeader(title = stringResource(R.string.about_support_title))
-        ChessGymSpacer(size = SpacerSize.SMALL)
-        ChessGymCard(contentPadding = PaddingValues(0.dp)) {
-            Column {
-                ActionRow(
-                    icon = Icons.Outlined.Favorite,
-                    iconTint = Design.colors.donate,
-                    title = stringResource(R.string.about_donate_title),
-                    description = stringResource(R.string.about_donate_description),
-                    onClick = interactions::onDonateClicked,
-                )
-                HairlineDivider(modifier = Modifier.fillMaxWidth())
-                ActionRow(
-                    icon = Icons.Outlined.Star,
-                    iconTint = Design.colors.rate,
-                    title = stringResource(R.string.about_rate_title),
-                    description = stringResource(R.string.about_rate_description),
-                    onClick = interactions::onRateAppClicked,
-                )
-            }
+        ChessGymColumnCard {
+            ActionRow(
+                icon = Icons.Outlined.Favorite,
+                iconTint = Design.colors.donate,
+                title = stringResource(R.string.about_donate_title),
+                description = stringResource(R.string.about_donate_description),
+                onClick = interactions::onDonateClicked,
+            )
+            HairlineDivider(modifier = Modifier.fillMaxWidth())
+            ActionRow(
+                icon = Icons.Outlined.Star,
+                iconTint = Design.colors.rate,
+                title = stringResource(R.string.about_rate_title),
+                description = stringResource(R.string.about_rate_description),
+                onClick = interactions::onRateAppClicked,
+            )
         }
-        ChessGymSpacer(size = SpacerSize.LARGE)
         SectionHeader(title = stringResource(R.string.about_legal_title))
-        ChessGymSpacer(size = SpacerSize.SMALL)
-        ChessGymCard(contentPadding = PaddingValues(0.dp)) {
-            Column {
-                NavigationRow(
-                    icon = ImageVector.vectorResource(id = R.drawable.icon_shield),
-                    title = stringResource(R.string.about_privacy_policy_title),
-                    onClick = { onSectionClicked(AboutSection.PRIVACY_POLICY) },
-                )
-                HairlineDivider(modifier = Modifier.fillMaxWidth())
-                NavigationRow(
-                    icon = Icons.Outlined.CheckCircle,
-                    title = stringResource(R.string.about_terms_and_conditions_title),
-                    onClick = { onSectionClicked(AboutSection.TERMS_AND_CONDITIONS) },
-                )
-                HairlineDivider(modifier = Modifier.fillMaxWidth())
-                NavigationRow(
-                    icon = Icons.Outlined.Lock,
-                    title = stringResource(R.string.about_terms_title),
-                    onClick = { onSectionClicked(AboutSection.TERMS_OF_USE) },
-                )
-                HairlineDivider(modifier = Modifier.fillMaxWidth())
-                NavigationRow(
-                    icon = Icons.Outlined.Info,
-                    title = stringResource(R.string.about_libraries_title),
-                    onClick = { onSectionClicked(AboutSection.LIBRARIES) },
-                )
-            }
+        ChessGymColumnCard {
+            NavigationRow(
+                icon = ImageVector.vectorResource(id = R.drawable.icon_shield),
+                title = stringResource(R.string.about_privacy_policy_title),
+                onClick = { onSectionClicked(AboutSection.PRIVACY_POLICY) },
+            )
+            HairlineDivider(modifier = Modifier.fillMaxWidth())
+            NavigationRow(
+                icon = Icons.Outlined.CheckCircle,
+                title = stringResource(R.string.about_terms_and_conditions_title),
+                onClick = { onSectionClicked(AboutSection.TERMS_AND_CONDITIONS) },
+            )
+            HairlineDivider(modifier = Modifier.fillMaxWidth())
+            NavigationRow(
+                icon = Icons.Outlined.Lock,
+                title = stringResource(R.string.about_terms_title),
+                onClick = { onSectionClicked(AboutSection.TERMS_OF_USE) },
+            )
+            HairlineDivider(modifier = Modifier.fillMaxWidth())
+            NavigationRow(
+                icon = Icons.Outlined.Info,
+                title = stringResource(R.string.about_libraries_title),
+                onClick = { onSectionClicked(AboutSection.LIBRARIES) },
+            )
         }
-
-        ChessGymSpacer(size = SpacerSize.XXLARGE)
     }
 }
 
