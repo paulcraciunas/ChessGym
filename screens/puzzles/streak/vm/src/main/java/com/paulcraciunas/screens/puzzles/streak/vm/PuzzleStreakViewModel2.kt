@@ -28,7 +28,7 @@ class PuzzleStreakViewModel2 @Inject constructor(
     private val onStreakComplete: OnStreakComplete,
     private val appSettingsRepository: AppSettingsRepository,
     private val timer: Timer,
-) : ViewModel(), PuzzleStreakScreenInteractor {
+) : ViewModel() {
     private val helper = PuzzleViewModelHelper2()
     private var enableAnimations: Boolean = true
 
@@ -68,17 +68,17 @@ class PuzzleStreakViewModel2 @Inject constructor(
         }
     }
 
-    override fun onSquareClicked(selection: Locus) = whilePlayingInteractive {
+    fun onSquareClicked(selection: Locus) = whilePlayingInteractive {
         handleMoveResult(helper.handleSquareClick(selection))
     }
 
-    override fun onPromote(to: Piece) = whilePlayingInteractive { state ->
+    fun onPromote(to: Piece) = whilePlayingInteractive { state ->
         state.promotion?.let {
             handleMoveResult(helper.promote(to, state.promotion.at))
         }
     }
 
-    override fun onHintRequested() = whilePlayingInteractive { state ->
+    fun onHintRequested() = whilePlayingInteractive { state ->
         if (!state.hintEnabled) return@whilePlayingInteractive
 
         _uiState.value = state.copy(
@@ -87,11 +87,11 @@ class PuzzleStreakViewModel2 @Inject constructor(
         )
     }
 
-    override fun onAbandon() = whilePlayingInteractive { state ->
+    fun onAbandon() = whilePlayingInteractive { state ->
         _uiState.value = state.copy(showAbandonDialog = true)
     }
 
-    override fun onAbandonConfirmed() = whilePlaying { state ->
+    fun onAbandonConfirmed() = whilePlaying { state ->
         // Start showing solution animation
         _uiState.value = state.copy(
             showAbandonDialog = false,
@@ -110,16 +110,16 @@ class PuzzleStreakViewModel2 @Inject constructor(
         }
     }
 
-    override fun onAbandonDismissed() = whilePlaying { state ->
+    fun onAbandonDismissed() = whilePlaying { state ->
         _uiState.value = state.copy(showAbandonDialog = false)
     }
 
-    override fun onNewStreak() {
+    fun onNewStreak() {
         _uiState.value = PuzzleStreakUiState2.Loading
         loadPuzzle()
     }
 
-    override fun onDismissSummary() {
+    fun onDismissSummary() {
         val state = _uiState.value
         if (state is PuzzleStreakUiState2.StreakEnded) {
             _uiState.value = state.copy(showSummary = false)
@@ -134,7 +134,7 @@ class PuzzleStreakViewModel2 @Inject constructor(
         }
     }
 
-    override fun onNextPuzzle() = whilePlaying { state ->
+    fun onNextPuzzle() = whilePlaying { state ->
         if (!state.isAwaitingNextPuzzle) return@whilePlaying
 
         viewModelScope.launch {
