@@ -1,15 +1,16 @@
 package com.paulcraciunas.screens.common.design.components
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -60,18 +61,29 @@ fun LinearProgress(
     modifier: Modifier = Modifier,
     color: Color = Design.colors.primary,
 ) {
-    val height: Dp = Design.dimensions.sizes.progressBar
-    Box(
+    val height = Design.dimensions.sizes.progressBar
+    val trackColor = Design.colors.bgTint
+    val cornerRadius = Design.radii.xs
+    Spacer(
         modifier = modifier
             .fillMaxWidth()
             .height(height)
-            .background(Design.colors.bgTint, MaterialTheme.shapes.small)
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth(fraction = progress.coerceIn(0f, 1f))
-                .height(height)
-                .background(color, MaterialTheme.shapes.small)
-        )
-    }
+            .drawBehind {
+                val width = size.width
+                val barHeight = size.height
+                val radiusPx = cornerRadius.toPx()
+                val cornerRadiusObj = CornerRadius(radiusPx, radiusPx)
+                drawRoundRect( // background track (Full Width)
+                    color = trackColor,
+                    size = size,
+                    cornerRadius = cornerRadiusObj
+                )
+                val progressWidth = width * progress.coerceIn(0f, 1f)
+                drawRoundRect( // active progress bar (Fractional Width)
+                    color = color,
+                    size = Size(width = progressWidth, height = barHeight),
+                    cornerRadius = cornerRadiusObj
+                )
+            }
+    )
 }
