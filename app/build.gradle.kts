@@ -70,6 +70,7 @@ android {
         }
     }
 
+    @Suppress("UnstableApiUsage")
     experimentalProperties["android.experimental.enableTestTagsAsResourceId"] = true
 
     sourceSets {
@@ -179,21 +180,11 @@ dependencies {
     androidTestImplementation(testFixtures(project(":settings:application:api")))
     androidTestImplementation(testFixtures(project(":domain:api")))
 
-    add("benchmarkImplementation", project(":screens:puzzles:streak:ui"))
-    add("benchmarkImplementation", project(":screens:puzzles:streak:vm"))
-    add("benchmarkImplementation", project(":screens:common"))
-    add("benchmarkImplementation", project(":domain:api"))
-    add("benchmarkImplementation", project(":settings:application:api"))
-    add("benchmarkImplementation", project(":game:logic:api"))
-    add("benchmarkImplementation", project(":game:logic:builders"))
-    add("benchmarkImplementation", project(":game:logic:impl"))
-    add("benchmarkImplementation", libs.androidx.activity.compose)
-    add("benchmarkImplementation", libs.androidx.lifecycle.runtime.compose)
-    add("benchmarkImplementation", libs.androidx.hilt.viewmodel)
-    add("benchmarkImplementation", "androidx.compose.runtime:runtime-tracing:1.7.6")
-    add("benchmarkImplementation", "androidx.tracing:tracing-perfetto:1.0.0")
-    add("benchmarkImplementation", "androidx.tracing:tracing-perfetto-binary:1.0.0")
-    add("benchmarkImplementation", testFixtures(project(":domain:api")))
-    add("benchmarkImplementation", testFixtures(project(":settings:application:api")))
+    "benchmarkImplementation"(project(":game:logic:impl"))
+    "benchmarkImplementation"(project(":domain:impl"))
+    "benchmarkImplementation"(testFixtures(project(":domain:api")))
+    "benchmarkImplementation"(testFixtures(project(":settings:application:api")))
+    "benchmarkImplementation"(libs.androidx.tracing)
+    "benchmarkImplementation"(libs.androidx.tracing.binary)
 }
 

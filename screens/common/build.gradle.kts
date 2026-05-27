@@ -30,5 +30,7 @@ dependencies {
     implementation(project(":domain:api"))
     api(project(":settings:application:api"))
 
+    "benchmarkApi"(libs.androidx.compose.runtime.tracing)
+
     testImplementation(project(":game:logic:impl"))
 }
