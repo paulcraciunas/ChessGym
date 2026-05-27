@@ -1,20 +1,18 @@
 package com.paulcraciunas.screens.achievements.ui
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -22,21 +20,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.paulcraciunas.domain.api.achievements.Achievement
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.achievements.vm.AchievementCategory
-import com.paulcraciunas.screens.achievements.vm.AchievementsInteractor
 import com.paulcraciunas.screens.achievements.vm.AchievementsUiState
 import com.paulcraciunas.screens.achievements.vm.AchievementsUiState.AchievementState
 import com.paulcraciunas.screens.achievements.vm.AchievementsUiState.CategoryGroup
 import com.paulcraciunas.screens.achievements.vm.AchievementsUiState.TrophyCaseSummary
-import com.paulcraciunas.screens.achievements.vm.StubAchievementsInteractor
 import com.paulcraciunas.screens.common.AppBar
 import com.paulcraciunas.screens.common.FailedContent
 import com.paulcraciunas.screens.common.LoadingContent
-import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
-import com.paulcraciunas.screens.common.design.components.SectionHeader
-import com.paulcraciunas.screens.common.design.components.SpacerSize
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
@@ -44,8 +38,10 @@ import com.paulcraciunas.screens.common.theme.ChessGymTheme
 @Composable
 fun AchievementsScreen(
     state: AchievementsUiState,
-    interactions: AchievementsInteractor,
     modifier: Modifier = Modifier,
+    onScreenVisible: () -> Unit = {},
+    onAchievementClicked: (AchievementState) -> Unit = {},
+    onDismissDetail: () -> Unit = {},
     onBack: () -> Unit = {},
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -71,7 +67,8 @@ fun AchievementsScreen(
                 AchievementsContent(
                     summary = state.summary,
                     categories = state.categories,
-                    interactions = interactions,
+                    onScreenVisible = onScreenVisible,
+                    onAchievementClicked = onAchievementClicked,
                     modifier = contentsModifier,
                 )
             }
@@ -81,7 +78,7 @@ fun AchievementsScreen(
     state.selectedAchievement?.let { achievement ->
         AchievementDetailDialog(
             achievementState = achievement,
-            onDismiss = interactions::onDismissDetail,
+            onDismiss = onDismissDetail,
         )
     }
 }
@@ -90,70 +87,51 @@ fun AchievementsScreen(
 private fun AchievementsContent(
     summary: TrophyCaseSummary,
     categories: List<CategoryGroup>,
-    interactions: AchievementsInteractor,
+    onScreenVisible: () -> Unit,
+    onAchievementClicked: (AchievementState) -> Unit,
     modifier: Modifier = Modifier,
+    totalColumns: Int = 3,
 ) {
     LaunchedEffect(Unit) {
-        interactions.onScreenVisible()
+        onScreenVisible()
     }
-    LazyColumn(
-        modifier = modifier,
-        contentPadding = PaddingValues(vertical = Design.dimensions.spacing.lg),
+
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(totalColumns),
+        contentPadding = PaddingValues(
+            horizontal = Design.dimensions.spacing.xxl,
+            vertical = Design.dimensions.spacing.lg
+        ),
         verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.sm),
+        horizontalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.lg),
+        modifier = modifier,
     ) {
-        item(key = "trophy_case") {
-            TrophyCaseHero(
-                summary = summary,
-                modifier = Modifier.padding(horizontal = Design.dimensions.spacing.xxl),
-            )
+        // Header
+        item(span = { GridItemSpan(totalColumns) }) {
+            TrophyCaseHero(summary = summary)
         }
 
         categories.forEach { group ->
-            item(key = "header_${group.category.name}") {
-                Column(
-                    modifier = Modifier.padding(horizontal = Design.dimensions.spacing.xxl),
-                ) {
-                    SectionHeader(title = stringResource(group.category.labelRes()))
-                    Text(
-                        text = stringResource(
-                            R.string.achievement_earned_count,
-                            group.earnedCount,
-                            group.totalCount,
-                        ),
-                        style = Design.typography.bodySmall,
-                        color = Design.colors.inkSoft,
-                    )
-                    ChessGymSpacer(size = SpacerSize.DEFAULT)
-                }
+            item(span = { GridItemSpan(totalColumns) }) {
+                CategoryHeading(
+                    category = group.category,
+                    earnedCount = group.earnedCount,
+                    totalCount = group.totalCount,
+                )
             }
-
-            item(key = "row_${group.category.name}") {
-                LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.lg),
-                    contentPadding = PaddingValues(horizontal = Design.dimensions.spacing.xxl),
-                ) {
-                    items(group.achievements, key = { it.achievement.name }) { achievement ->
-                        AchievementTile(
-                            item = achievement,
-                            onClick = { interactions.onAchievementClicked(achievement) },
-                        )
-                    }
-                }
+            items(
+                count = group.achievements.count(),
+                span = { GridItemSpan(1) }
+            ) { index ->
+                val achievement = group.achievements[index]
+                AchievementTile(
+                    item = achievement,
+                    onClick = { onAchievementClicked(achievement) },
+                    modifier = Modifier.height(210.dp),
+                )
             }
-        }
-        item(key = "bottom_spacer") {
-            ChessGymSpacer(size = SpacerSize.SECTION)
         }
     }
-}
-
-@StringRes
-private fun AchievementCategory.labelRes(): Int = when (this) {
-    AchievementCategory.PUZZLES -> R.string.achievement_group_puzzles
-    AchievementCategory.RUSH_AND_STREAK -> R.string.achievement_group_rush_and_streak
-    AchievementCategory.BOARD_VISION -> R.string.achievement_group_board_vision
-    AchievementCategory.SKILL_AND_MASTERY -> R.string.achievement_group_skill_and_mastery
-    AchievementCategory.DEDICATION -> R.string.achievement_group_dedication
 }
 
 @Preview("Achievements")
@@ -215,7 +193,6 @@ private fun AchievementsScreenPreview() {
                     ),
                 ),
             ),
-            interactions = StubAchievementsInteractor(),
         )
     }
 }
