@@ -3,28 +3,30 @@ package com.paulcraciunas.screens.common.design.components
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Fill
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,12 +36,8 @@ import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
-/**
- * Vertical "trophy shelf" tile used in horizontally-scrolling category rows.
- * Width is fixed at 138dp by default to match the design exploration's snap.
- */
 @Composable
-fun TrophyShelfTile(
+fun TrophyShelfTile2(
     title: String,
     description: String,
     hue: Color,
@@ -47,101 +45,89 @@ fun TrophyShelfTile(
     valueMax: Int,
     modifier: Modifier = Modifier,
     earned: Boolean = false,
-    locked: Boolean = false,
     onClick: (() -> Unit)? = null,
     icon: @Composable (() -> Unit),
 ) {
-    Surface(
-        onClick = onClick ?: {},
-        enabled = onClick != null,
-        modifier = modifier.width(Design.dimensions.sizes.trophyTile),
-        shape = RoundedCornerShape(Design.radii.lg),
-        color = Design.colors.surface,
-        border = borderSoft(),
-        shadowElevation = Design.dimensions.elevation.sm,
-        tonalElevation = Design.dimensions.elevation.sm,
+    val progressFraction = remember(valueNow, valueMax) {
+        (valueNow.toFloat() / valueMax.coerceAtLeast(1)).coerceIn(0f, 1f)
+    }
+    val progressColor = if (earned) Design.colors.accent else hue
+    val earnedLabel = stringResource(R.string.achievement_earned_label)
+    val progressText = remember(earned, valueNow, valueMax, earnedLabel) {
+        if (earned) earnedLabel else "$valueNow / $valueMax"
+    }
+    val progressTextColor = if (earned) Design.colors.accent else Design.colors.inkMuted
+
+    Column(
+        modifier = modifier
+            .shadow(Design.dimensions.elevation.sm, Design.shapes.card)
+            .background(Design.colors.surface, Design.shapes.card)
+            .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
+            .border(borderSoft())
+            .padding(horizontal = Design.dimensions.spacing.lg, vertical = Design.dimensions.spacing.xl),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.xs),
     ) {
-        Column(
-            modifier = Modifier
-                .padding(horizontal = Design.dimensions.spacing.lg, vertical = Design.dimensions.spacing.xl)
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.xs),
-        ) {
-            AchievementMedallion(
-                hue = hue,
-                size = Design.dimensions.sizes.medallionLg,
-                earned = earned,
-                locked = locked,
-                icon = icon,
-            )
-            Text(
-                text = title,
-                color = Design.colors.ink,
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.titleSmall,
-                minLines = 2,
-            )
-            Text(
-                text = description,
-                color = Design.colors.inkMuted,
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.height(Design.dimensions.sizes.medallionText),
-            )
-            LinearProgress(
-                progress = (valueNow.toFloat() / valueMax.coerceAtLeast(1)),
-                color = if (earned) Design.colors.accent else hue,
-            )
-            Text(
-                text = if (earned) stringResource(R.string.achievement_earned_label) else "$valueNow / $valueMax",
-                color = if (earned) Design.colors.accent else Design.colors.inkMuted,
-                style = Design.textStyles.monoSmall,
-            )
-        }
+        AchievementMedallion2(
+            size = Design.dimensions.sizes.medallionLg,
+            earned = earned,
+            icon = icon,
+        )
+        Text(
+            text = title,
+            color = Design.colors.ink,
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.titleSmall,
+            minLines = 2,
+        )
+        Text(
+            text = description,
+            color = Design.colors.inkMuted,
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.bodySmall,
+            modifier = Modifier.height(Design.dimensions.sizes.medallionText),
+        )
+        LinearProgress(
+            progress = progressFraction,
+            color = progressColor,
+        )
+        Text(
+            text = progressText,
+            color = progressTextColor,
+            style = Design.textStyles.monoSmall,
+        )
     }
 }
 
-/**
- * The circular metallic medallion used for achievements. A radial gradient on
- * the category [hue] gives it depth; an inner stroke catches a highlight.
- *
- * Provide [icon] as a small composable (Icon, Image, or your custom vector).
- */
 @Composable
-fun AchievementMedallion(
-    hue: Color,
+fun AchievementMedallion2(
     modifier: Modifier = Modifier,
     size: Dp = Design.dimensions.sizes.medallionLg,
     earned: Boolean = false,
-    locked: Boolean = false,
     icon: @Composable (() -> Unit),
 ) {
+    val bg = Design.colors.primaryDeep
+    val outerBorderColor = if (earned) Design.colors.accent else Design.colors.border
+    val outerBorderWidth = if (earned) 2.dp else 1.dp
+
     Box(
-        modifier = modifier.size(size),
+        modifier = modifier
+            .size(size)
+            .drawBehind {
+                drawCircle(
+                    color = bg,
+                    style = Fill
+                )
+                val outerWidthPx = outerBorderWidth.toPx()
+                drawCircle( // outer border
+                    color = outerBorderColor,
+                    radius = (size.toPx() - outerWidthPx) / 2f,
+                    style = Stroke(width = outerWidthPx)
+                )
+            },
         contentAlignment = Alignment.Center,
     ) {
-        Box(
-            modifier = Modifier
-                .size(size)
-                .background(
-                    brush = Brush.radialGradient(
-                        colors = listOf(hue.copy(alpha = if (earned) 1f else 0.7f), hue, Design.colors.medallionDepth),
-                    ),
-                    shape = Design.shapes.circle,
-                )
-                .border(
-                    width = if (earned) 2.dp else 1.dp,
-                    color = if (earned) Design.colors.accent else Design.colors.border,
-                    shape = Design.shapes.circle,
-                )
-        )
-        Box(
-            Modifier
-                .size(size * 0.7f)
-                .border(1.dp, Color.White.copy(alpha = if (locked) 0.06f else 0.18f), Design.shapes.circle)
-        )
-        Box(contentAlignment = Alignment.Center) { icon() }
+        icon()
         if (earned) {
             Box(
                 modifier = Modifier
@@ -160,7 +146,7 @@ fun AchievementMedallion(
 @Preview(name = "TrophyShelfTile")
 @Preview(name = "TrophyShelfTile (Dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
-private fun TrophyShelfTilePreview() {
+private fun TrophyShelfTile2Preview() {
     ChessGymTheme {
         Row(
             modifier = Modifier
@@ -168,7 +154,7 @@ private fun TrophyShelfTilePreview() {
                 .padding(Design.dimensions.spacing.md),
             horizontalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.md)
         ) {
-            TrophyShelfTile(
+            TrophyShelfTile2(
                 title = "Grandmaster",
                 description = "Reach a rating of 2500",
                 hue = Color(0xFFFFD700),
@@ -181,15 +167,15 @@ private fun TrophyShelfTilePreview() {
                         tint = Color.White,
                         modifier = Modifier.size(Design.dimensions.sizes.icon)
                     )
-                }
+                },
+                modifier = Modifier.width(Design.dimensions.sizes.trophyTile),
             )
-            TrophyShelfTile(
+            TrophyShelfTile2(
                 title = "Blindfold Master",
                 description = "Win a blindfold game",
                 hue = Color(0xFF2196F3),
                 valueNow = 1,
                 valueMax = 1,
-                locked = true,
                 icon = {
                     Icon(
                         imageVector = Icons.Default.Star,
@@ -199,6 +185,7 @@ private fun TrophyShelfTilePreview() {
                     )
                 },
                 earned = true,
+                modifier = Modifier.width(Design.dimensions.sizes.trophyTile),
             )
         }
     }
