@@ -13,8 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavDestination
-import androidx.navigation.NavDestination.Companion.hasRoute
 import com.paulcraciunas.screens.common.design.components.borderSoft
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag
@@ -22,7 +20,7 @@ import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
 internal fun BottomNavigationBar(
-    currentDestination: NavDestination?,
+    items: List<BottomNavItemState>,
     onItemSelected: (BottomNavItem) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -38,12 +36,12 @@ internal fun BottomNavigationBar(
             )
             .border(borderSoft())
     ) {
-        BottomNavItem.entries.forEach { item ->
+        items.forEach {
             ChessGymBottomNavItem(
-                item = item,
-                selected = currentDestination?.hasRoute(item.screen::class) == true,
-                onClick = { onItemSelected(item) },
-                modifier = Modifier.testTag { BottomNavigationTags.tagFor(item) }
+                item = it.item,
+                selected = it.isSelected,
+                onClick = { onItemSelected(it.item) },
+                modifier = Modifier.testTag { BottomNavigationTags.tagFor(it.item) }
             )
         }
     }
@@ -85,21 +83,10 @@ private fun RowScope.ChessGymBottomNavItem(
 
 @Preview(showBackground = true)
 @Composable
-private fun BottomNavigationBarPreview() {
-    ChessGymTheme {
-        BottomNavigationBar(
-            currentDestination = null,
-            onItemSelected = {}
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
 private fun BottomNavigationBarHomeSelectedPreview() {
     ChessGymTheme {
         BottomNavigationBar(
-            currentDestination = NavDestination("home").apply { route = "com.paulcraciunas.chessgym.navigation.Screen.BoardVisualization" },
+            items = BottomNavItemState.default(),
             onItemSelected = {}
         )
     }

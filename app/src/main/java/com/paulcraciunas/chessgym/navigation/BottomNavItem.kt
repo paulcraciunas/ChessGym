@@ -3,6 +3,7 @@ package com.paulcraciunas.chessgym.navigation
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -14,6 +15,22 @@ enum class BottomNavItem(val screen: Screen) {
     BoardVisualization(Screen.BoardVisualization),
     BlindMode(Screen.BlindMode),
     ToolsDashboard(Screen.ToolsDashboard)
+}
+
+@Immutable
+data class BottomNavItemState(
+    val item: BottomNavItem,
+    val isSelected: Boolean,
+) {
+    companion object {
+        fun default(): List<BottomNavItemState> = listOf(
+            BottomNavItemState(item = BottomNavItem.Home, isSelected = true),
+            BottomNavItemState(item = BottomNavItem.PuzzleDashboard, isSelected = false),
+            BottomNavItemState(item = BottomNavItem.BoardVisualization, isSelected = false),
+            BottomNavItemState(item = BottomNavItem.BlindMode, isSelected = false),
+            BottomNavItemState(item = BottomNavItem.ToolsDashboard, isSelected = false),
+        )
+    }
 }
 
 @Composable
