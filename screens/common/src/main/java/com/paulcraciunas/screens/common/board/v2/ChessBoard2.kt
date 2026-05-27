@@ -34,7 +34,8 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Rank
-import com.paulcraciunas.screens.common.LocalAppSettings
+import com.paulcraciunas.screens.common.LocalUiSettings
+import com.paulcraciunas.screens.common.UiSettings
 import com.paulcraciunas.screens.common.board.ChessBoardTags
 import com.paulcraciunas.screens.common.board.ChessPiece
 import com.paulcraciunas.screens.common.board.PIECE_MOVE_ANIMATION_DURATION_MS
@@ -44,7 +45,6 @@ import com.paulcraciunas.screens.common.model.v2.BoardViewData2
 import com.paulcraciunas.screens.common.model.v2.SquareViewData2
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
-import com.paulcraciunas.settings.application.api.AppSettings
 import kotlin.math.roundToInt
 
 private val borderSize = 14.dp
@@ -68,7 +68,7 @@ fun ChessBoard2(
     piecesAlpha: Float = 1f,
     overlay: @Composable BoxScope.() -> Unit = {},
 ) {
-    if (LocalAppSettings.current.showBorders) {
+    if (LocalUiSettings.current.showBorders) {
         Box(
             modifier = modifier
                 .fillMaxWidth()
@@ -113,7 +113,7 @@ private fun ChessBoardWithAnimation2(
     overlay: @Composable BoxScope.() -> Unit = {},
 ) {
     var boardWidthPx by remember { mutableIntStateOf(0) }
-    val activeAnimatingPiece = if (LocalAppSettings.current.enableAnimations) board.animatingPiece else null
+    val activeAnimatingPiece = if (LocalUiSettings.current.enableAnimations) board.animatingPiece else null
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -272,10 +272,10 @@ private fun SquareScope2.SquareContent2(
             selected = square.piece.isSelected || square.canMoveTo, // important fix to add canMoveTo
             alpha = piecesAlpha,
         )
-    } else if (square.canMoveTo && LocalAppSettings.current.highlightLegalMoves) {
+    } else if (square.canMoveTo && LocalUiSettings.current.highlightLegalMoves) {
         MoveIndicator()
     }
-    if (square.piece != null && square.canMoveTo && LocalAppSettings.current.highlightLegalMoves && piecesAlpha < 1f) {
+    if (square.piece != null && square.canMoveTo && LocalUiSettings.current.highlightLegalMoves && piecesAlpha < 1f) {
         MoveIndicator()
     }
 }
@@ -288,7 +288,7 @@ private fun squareSide(file: File, rank: Rank): Side =
 @Composable
 private fun WhitePerspectivePreview() {
     ChessGymTheme {
-        CompositionLocalProvider(LocalAppSettings provides AppSettings.default().copy(showBorders = false)) {
+        CompositionLocalProvider(LocalUiSettings provides UiSettings.default().copy(showBorders = false)) {
             ChessBoard2(
                 board = BoardViewData2.default(),
                 orientation = BoardOrientation2.White,
@@ -302,7 +302,7 @@ private fun WhitePerspectivePreview() {
 @Composable
 private fun BlackPerspectivePreview() {
     ChessGymTheme {
-        CompositionLocalProvider(LocalAppSettings provides AppSettings.default().copy(showBorders = false)) {
+        CompositionLocalProvider(LocalUiSettings provides UiSettings.default().copy(showBorders = false)) {
             ChessBoard2(
                 board = BoardViewData2.default(),
                 orientation = BoardOrientation2.Black,
@@ -316,10 +316,12 @@ private fun BlackPerspectivePreview() {
 @Composable
 private fun WhitePerspectiveBordersPreview() {
     ChessGymTheme {
-        ChessBoard2(
-            board = BoardViewData2.default(),
-            orientation = BoardOrientation2.White,
-            onClick = { _ -> },
-        )
+        CompositionLocalProvider(LocalUiSettings provides UiSettings.default()) {
+            ChessBoard2(
+                board = BoardViewData2.default(),
+                orientation = BoardOrientation2.White,
+                onClick = { _ -> },
+            )
+        }
     }
 }

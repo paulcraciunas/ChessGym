@@ -9,7 +9,7 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.paulcraciunas.chessgym.navigation.Screen
-import com.paulcraciunas.screens.common.LocalAppSettings
+import com.paulcraciunas.screens.common.LocalUiSettings
 import com.paulcraciunas.screens.puzzles.dashboard.ui.PuzzleDashboardScreen
 import com.paulcraciunas.screens.puzzles.dashboard.vm.PuzzleDashboardViewModel
 import com.paulcraciunas.screens.puzzles.dashboard.vm.PuzzleMode
@@ -58,7 +58,7 @@ internal fun PuzzleDashboard(
 
 @Composable
 internal fun RatedPuzzle(tabNavController: NavHostController) {
-    val settings = LocalAppSettings.current
+    val settings = LocalUiSettings.current
     val vm: RatedPuzzleViewModel = hiltViewModel()
     val ratedPuzzleState by vm.uiState.collectAsStateWithLifecycle()
 
@@ -81,7 +81,7 @@ internal fun RatedPuzzle(tabNavController: NavHostController) {
 
 @Composable
 internal fun PuzzleRush(tabNavController: NavHostController) {
-    val settings = LocalAppSettings.current
+    val settings = LocalUiSettings.current
     val vm: PuzzleRushViewModel = hiltViewModel()
     val puzzleRushState by vm.uiState.collectAsStateWithLifecycle()
 
@@ -105,7 +105,7 @@ internal fun PuzzleRush(tabNavController: NavHostController) {
 
 @Composable
 internal fun FailedPuzzles(tabNavController: NavHostController) {
-    val settings = LocalAppSettings.current
+    val settings = LocalUiSettings.current
     val vm: FailedPuzzlesViewModel = hiltViewModel()
     val failedPuzzlesState by vm.uiState.collectAsStateWithLifecycle()
 
@@ -132,7 +132,7 @@ internal fun FailedPuzzles(tabNavController: NavHostController) {
 
 @Composable
 internal fun PuzzleStreak(tabNavController: NavHostController) {
-    val settings = LocalAppSettings.current
+    val settings = LocalUiSettings.current
     val vm: PuzzleStreakViewModel = hiltViewModel()
     val puzzleStreakState by vm.uiState.collectAsStateWithLifecycle()
 
@@ -162,6 +162,14 @@ internal fun PuzzleStreak2(tabNavController: NavHostController) {
     PuzzleStreakScreen2(
         uiState = puzzleStreakState,
         onNavigateBack = { tabNavController.popBackStack(Screen.PuzzleDashboard, inclusive = false) },
-        interactions = vm,
+        onSquareClicked = vm::onSquareClicked,
+        onPromote = vm::onPromote,
+        onHintRequested = vm::onHintRequested,
+        onAbandon = vm::onAbandon,
+        onAbandonConfirmed = vm::onAbandonConfirmed,
+        onAbandonDismissed = vm::onAbandonDismissed,
+        onNewStreak = vm::onNewStreak,
+        onNextPuzzle = vm::onNextPuzzle,
+        onDismissSummary = vm::onDismissSummary,
     )
 }

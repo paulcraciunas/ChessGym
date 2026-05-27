@@ -7,7 +7,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.paulcraciunas.chessgym.navigation.Screen
-import com.paulcraciunas.screens.common.LocalAppSettings
+import com.paulcraciunas.screens.common.LocalUiSettings
 import com.paulcraciunas.screens.tools.analysis.ui.AnalysisScreen
 import com.paulcraciunas.screens.tools.analysis.vm.AnalysisViewModel
 import com.paulcraciunas.screens.tools.clock.ui.ClockScreen
@@ -68,7 +68,7 @@ internal fun AnalysisBoard(
     fen: String?,
     firstMove: String? = null,
 ) {
-    val settings = LocalAppSettings.current
+    val settings = LocalUiSettings.current
     val vm: AnalysisViewModel = hiltViewModel()
     val analysisState by vm.uiState.collectAsStateWithLifecycle()
 
@@ -90,7 +90,7 @@ internal fun AnalysisBoard(
 
 @Composable
 internal fun ImportGame(tabNavController: NavHostController) {
-    val settings = LocalAppSettings.current
+    val settings = LocalUiSettings.current
     val vm: ImportGameViewModel = hiltViewModel()
     val importState by vm.uiState.collectAsStateWithLifecycle()
 

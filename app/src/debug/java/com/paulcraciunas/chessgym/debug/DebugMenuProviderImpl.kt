@@ -28,7 +28,7 @@ import com.paulcraciunas.domain.api.achievements.Achievement
 import com.paulcraciunas.domain.api.achievements.AchievementNotification
 import com.paulcraciunas.domain.api.achievements.AchievementNotificationManager
 import com.paulcraciunas.global.resources.R
-import com.paulcraciunas.screens.common.LocalAppSettings
+import com.paulcraciunas.screens.common.LocalUiSettings
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -103,7 +103,7 @@ class DebugMenuProviderImpl @Inject constructor(
             enterTransition = { enter() },
             exitTransition = { exit() },
         ) {
-            val settings = LocalAppSettings.current
+            val settings = LocalUiSettings.current
             val vm: DebugPuzzleViewModel = hiltViewModel()
             val uiState by vm.uiState.collectAsStateWithLifecycle()
             DebugPuzzleScreen(

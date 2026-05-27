@@ -1,6 +1,37 @@
 package com.paulcraciunas.screens.common
 
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
-import com.paulcraciunas.settings.application.api.AppSettings
 
-val LocalAppSettings = staticCompositionLocalOf { AppSettings.default() }
+@Immutable
+data class UiSettings(
+    val lightMode: Mode,
+    val autoPromote: Boolean,
+    val autoNextPuzzle: Boolean,
+    val showBorders: Boolean,
+    val enableVibrations: Boolean,
+    val highlightLegalMoves: Boolean,
+    val enableAnimations: Boolean,
+) {
+    enum class Mode {
+        Light,
+        Dark,
+        System
+    }
+
+    companion object {
+        fun default() = UiSettings(
+            lightMode = Mode.System,
+            autoPromote = true,
+            autoNextPuzzle = true,
+            showBorders = true,
+            enableVibrations = true,
+            highlightLegalMoves = true,
+            enableAnimations = true,
+        )
+    }
+}
+
+val LocalUiSettings = staticCompositionLocalOf<UiSettings> {
+    error("ChessGymTheme not provided. Wrap your content in ChessGymTheme { ... }.")
+}

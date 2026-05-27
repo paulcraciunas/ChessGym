@@ -13,7 +13,7 @@ import com.paulcraciunas.screens.boardvis.pieces.ui.MoveThePieceScreen
 import com.paulcraciunas.screens.boardvis.pieces.vm.MoveThePieceViewModel
 import com.paulcraciunas.screens.boardvis.squares.ui.FindTheSquareScreen
 import com.paulcraciunas.screens.boardvis.squares.vm.FindTheSquareViewModel
-import com.paulcraciunas.screens.common.LocalAppSettings
+import com.paulcraciunas.screens.common.LocalUiSettings
 
 @Composable
 internal fun BoardVisDashboard(
@@ -42,7 +42,7 @@ internal fun BoardVisDashboard(
 
 @Composable
 internal fun FindTheSquare(tabNavController: NavHostController) {
-    val settings = LocalAppSettings.current
+    val settings = LocalUiSettings.current
     val vm: FindTheSquareViewModel = hiltViewModel()
     val findSquareState by vm.uiState.collectAsStateWithLifecycle()
 
@@ -60,7 +60,7 @@ internal fun FindTheSquare(tabNavController: NavHostController) {
 
 @Composable
 internal fun MoveThePiece(tabNavController: NavHostController) {
-    val settings = LocalAppSettings.current
+    val settings = LocalUiSettings.current
     val vm: MoveThePieceViewModel = hiltViewModel()
     val moveThePieceState by vm.uiState.collectAsStateWithLifecycle()
 
