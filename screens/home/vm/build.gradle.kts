@@ -5,6 +5,7 @@ plugins {
 androidLibrary {
     namespace = "com.paulcraciunas.screens.home.vm"
     di = true
+    compose = true
 }
 
 dependencies {

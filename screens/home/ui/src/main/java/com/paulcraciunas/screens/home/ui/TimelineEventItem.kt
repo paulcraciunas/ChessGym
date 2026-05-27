@@ -51,7 +51,7 @@ internal fun TimelineEventItem(
                     color = Design.colors.primary,
                     shape = Design.shapes.circle,
                 )
-                .padding(Design.dimensions.spacing.s) // 2. Padding before vector graphic
+                .padding(Design.dimensions.spacing.sm) // 2. Padding before vector graphic
         )
 
         Column(

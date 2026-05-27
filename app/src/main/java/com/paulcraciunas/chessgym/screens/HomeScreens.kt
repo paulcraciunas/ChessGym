@@ -33,7 +33,9 @@ internal fun Achievements(tabNavController: NavHostController) {
     val achievementsState by vm.uiState.collectAsStateWithLifecycle()
     AchievementsScreen(
         state = achievementsState,
-        interactions = vm,
+        onScreenVisible = { vm.onScreenVisible() },
+        onAchievementClicked = { vm.onAchievementClicked(it) },
+        onDismissDetail = { vm.onDismissDetail() },
         onBack = { tabNavController.popBackStack() },
     )
 }
