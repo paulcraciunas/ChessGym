@@ -10,12 +10,11 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.MaterialTheme
@@ -24,11 +23,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
@@ -172,77 +171,73 @@ fun FactBlock(
     modifier: Modifier = Modifier,
     style: FactBlockStyle = FactBlockStyle.Info,
 ) {
-    Box(modifier = modifier.fillMaxWidth()) {
-        Surface(
-            modifier = Modifier.fillMaxWidth(),
-            shape = Design.shapes.buttonOutline,
-            color = Design.colors.surfaceAlt,
-            border = Design.colors.softBorderStroke,
+    val shape = Design.shapes.buttonOutline
+    val stripeColor = when (style) {
+        FactBlockStyle.Info -> Design.colors.accent
+        FactBlockStyle.Danger -> Design.colors.danger
+    }
+    val offsetValue = Design.dimensions.elevation.md
+
+    Surface(
+        modifier = modifier
+            .background(color = stripeColor, shape = shape)
+            .offset { IntOffset(x = offsetValue.roundToPx(), y = 0) },
+        shape = shape,
+        color = Design.colors.surfaceAlt,
+        border = Design.colors.softBorderStroke,
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(IntrinsicSize.Min)
+                .padding(
+                    vertical = Design.dimensions.spacing.xl,
+                ),
+            verticalAlignment = Alignment.Top,
         ) {
-            Row(
-                modifier = Modifier.height(IntrinsicSize.Min)
-                    .padding(
-                        vertical = Design.dimensions.spacing.xl,
-                        horizontal = Design.dimensions.spacing.md
-                    ),
+            if (style == FactBlockStyle.Info) {
+                IconBadge(
+                    imageVector = Icons.Default.Info,
+                    style = IconStyle.Circle,
+                    borderType = IconBorderType.None,
+                    tint = IconTintType.Accent,
+                    size = IconSize.Small,
+                    modifier = Modifier.padding(start = Design.dimensions.spacing.sm)
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = Design.dimensions.spacing.lg)
             ) {
-                ChessGymSpacer(size = SpacerSize.SMALL)
-                Spacer(modifier = Modifier.width(Design.dimensions.spacing.xs))
-                if (style == FactBlockStyle.Info) {
-                    IconBadge(
-                        imageVector = Icons.Default.Info,
-                        style = IconStyle.Circle,
-                        borderType = IconBorderType.None,
-                        tint = IconTintType.Accent,
-                        size = IconSize.Small
-                    )
-                }
-                Column(
-                    modifier = Modifier.padding(
-                        horizontal = Design.dimensions.spacing.lg,
-                    )
-                ) {
-                    Eyebrow(text = title, type = when (style) {
+                Eyebrow(
+                    text = title,
+                    type = when (style) {
                         FactBlockStyle.Info -> EyebrowType.Muted
                         FactBlockStyle.Danger -> EyebrowType.Danger
-                    })
-                    items.forEach { line ->
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(top = Design.dimensions.spacing.xs),
-                        ) {
-                            if (style != FactBlockStyle.Info) {
-                                Box(
-                                    modifier = Modifier
-                                        .size(Design.dimensions.sizes.bulletPoint)
-                                        .background(Design.colors.danger, Design.shapes.circle)
-                                )
-                                ChessGymSpacer()
-                            }
-                            Text(
-                                text = line,
-                                color = Design.colors.inkSoft,
-                                style = MaterialTheme.typography.bodySmall
+                    }
+                )
+                items.forEach { line ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(top = Design.dimensions.spacing.xs),
+                    ) {
+                        if (style != FactBlockStyle.Info) {
+                            Box(
+                                modifier = Modifier
+                                    .padding(end = Design.dimensions.spacing.sm)
+                                    .size(Design.dimensions.sizes.bulletPoint)
+                                    .background(Design.colors.danger, Design.shapes.circle)
                             )
                         }
+                        Text(
+                            text = line,
+                            color = Design.colors.inkSoft,
+                            style = MaterialTheme.typography.bodySmall
+                        )
                     }
                 }
             }
-        }
-        Box(
-            modifier = Modifier
-                .matchParentSize()
-                .clip(Design.shapes.buttonOutline)
-        ) {
-            Box(
-                modifier = Modifier
-                    .width(Design.dimensions.spacing.xs)
-                    .fillMaxHeight()
-                    .background(when (style) {
-                        FactBlockStyle.Info -> Design.colors.accent
-                        FactBlockStyle.Danger -> Design.colors.danger
-                    })
-            )
         }
     }
 }
@@ -297,7 +292,6 @@ private fun DangerBlockPreview() {
         FactBlock(
             title = "Danger Zone",
             items = listOf("Delete Account", "Clear History"),
-            modifier = Modifier.padding(16.dp),
             style = FactBlockStyle.Danger,
         )
     }
