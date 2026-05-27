@@ -19,7 +19,7 @@ fun <S> AnimatedBoard(
     contentKey: (targetState: S) -> Any? = { it },
     board: @Composable AnimatedContentScope.(targetState: S) -> Unit,
 ) {
-    val enableAnimations = LocalAppSettings.current.enableAnimations
+    val enableAnimations = LocalUiSettings.current.enableAnimations
     AnimatedContent(
         targetState = targetState,
         contentKey = contentKey,
@@ -43,7 +43,7 @@ fun <S> AnimatedControls(
     contentKey: (targetState: S) -> Any? = { it },
     controls: @Composable AnimatedContentScope.(targetState: S) -> Unit,
 ) {
-    val enableAnimations = LocalAppSettings.current.enableAnimations
+    val enableAnimations = LocalUiSettings.current.enableAnimations
     AnimatedContent(
         targetState = targetState,
         contentKey = contentKey,
