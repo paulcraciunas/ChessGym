@@ -148,7 +148,7 @@ fun AchievementMedallion(
                     .align(Alignment.TopEnd)
                     .size(Design.dimensions.spacing.gut)
                     .background(Design.colors.accent, CircleShape)
-                    .surfaceBorder(),
+                    .border(Design.colors.surfaceBorderStroke, Design.shapes.circle),
                 contentAlignment = Alignment.Center,
             ) {
                 Text("✓", color = Design.colors.onPrimary, style = MaterialTheme.typography.labelSmall)
