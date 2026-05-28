@@ -69,7 +69,7 @@ class FailedPuzzlesViewModel @Inject constructor(
     private fun loadPuzzles() {
         viewModelScope.launch {
             try {
-                getFailedPuzzles.load()
+                getFailedPuzzles.load(viewModelScope)
                 val puzzle = getFailedPuzzles.next()
                 _uiState.update {
                     if (puzzle == null) FailedPuzzlesUiState.Empty

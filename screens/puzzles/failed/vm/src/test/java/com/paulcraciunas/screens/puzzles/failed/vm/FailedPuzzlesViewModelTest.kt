@@ -9,6 +9,7 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.impl.RealGameFactory
 import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -375,7 +376,7 @@ private class FakeGetFailedPuzzles : GetFailedPuzzles {
         this.exception = exception
     }
 
-    override suspend fun load(batchSize: Int) {
+    override suspend fun load(scope: CoroutineScope, bufferSize: Int) {
         exception?.let { throw it }
     }
 
@@ -385,8 +386,6 @@ private class FakeGetFailedPuzzles : GetFailedPuzzles {
     }
 
     override fun totalCount(): Int = _totalCount
-
-    override fun remainingCount(): Int = puzzles.size
 }
 
 private class FakeOnFailedPuzzleComplete : OnFailedPuzzleComplete {
