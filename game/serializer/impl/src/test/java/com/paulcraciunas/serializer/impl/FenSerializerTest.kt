@@ -9,6 +9,7 @@ import com.paulcraciunas.game.logic.impl.RealGameFactory
 import com.paulcraciunas.game.logic.impl.plies.StandardPly
 import com.paulcraciunas.game.logic.plies.ExpectedPly
 import com.paulcraciunas.serializer.api.SerializeException
+import com.paulcraciunas.serializer.api.Serializer
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -117,9 +118,7 @@ internal class FenSerializerTest {
 
     @Test
     fun `WHEN loading default starting position THEN board is correct`() {
-        val fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-
-        val game = underTest.from(fen).apply { start() }
+        val game = underTest.from(Serializer.STARTING_FEN).apply { start() }
         val board = game.board
 
         val expectedPlies = mutableListOf<StandardPly>()
@@ -159,9 +158,7 @@ internal class FenSerializerTest {
 
     @Test
     fun `WHEN serializing default starting position THEN fen string is correct`() {
-        val fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-
-        assertEquals(fen, underTest.of(gameFactory.builder().withDefaultBoard().buildGame()))
+        assertEquals(Serializer.STARTING_FEN, underTest.of(gameFactory.builder().withDefaultBoard().buildGame()))
     }
 
     @Test

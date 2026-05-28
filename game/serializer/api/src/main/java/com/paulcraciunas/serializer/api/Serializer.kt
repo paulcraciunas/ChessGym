@@ -8,6 +8,10 @@ interface Serializer {
     fun from(gameString: String): Game
     fun of(game: Game): String
     fun of(puzzle: Puzzle): String
+
+    companion object {
+        const val STARTING_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+    }
 }
 
 class SerializeException(reason: String) : RuntimeException(reason)
