@@ -20,7 +20,7 @@ import javax.inject.Inject
 class ClockViewModel @Inject constructor(
     @param:WhiteTimer private val whiteTimer: CountdownTimer,
     @param:BlackTimer private val blackTimer: CountdownTimer,
-) : ViewModel(), ClockScreenInteractor {
+) : ViewModel() {
     private val _uiState = MutableStateFlow<ClockUiState>(ClockUiState.Setup())
     val uiState: StateFlow<ClockUiState> = _uiState.asStateFlow()
 
@@ -36,8 +36,8 @@ class ClockViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    override fun onWhiteTapped() = onPlayerTapped(Side.WHITE)
-    override fun onBlackTapped() = onPlayerTapped(Side.BLACK)
+    fun onWhiteTapped() = onPlayerTapped(Side.WHITE)
+    fun onBlackTapped() = onPlayerTapped(Side.BLACK)
 
     private fun onPlayerTapped(side: Side) {
         _uiState.update { state ->
@@ -49,17 +49,17 @@ class ClockViewModel @Inject constructor(
         }
     }
 
-    override fun onStop() = resetToSetup()
-    override fun onNewGame() = resetToSetup()
+    fun onStop() = resetToSetup()
+    fun onNewGame() = resetToSetup()
 
-    override fun onTimeSelected(minutes: Int) {
+    fun onTimeSelected(minutes: Int) {
         selectedMinutes = minutes
         _uiState.update { state ->
             if (state is ClockUiState.Setup) state.copy(selectedMinutes = minutes) else state
         }
     }
 
-    override fun onIncrementSelected(increment: Int) {
+    fun onIncrementSelected(increment: Int) {
         selectedIncrement = increment
         _uiState.update { state ->
             if (state is ClockUiState.Setup) state.copy(selectedIncrement = increment) else state

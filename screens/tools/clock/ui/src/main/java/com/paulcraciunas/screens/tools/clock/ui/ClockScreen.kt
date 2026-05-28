@@ -2,7 +2,6 @@ package com.paulcraciunas.screens.tools.clock.ui
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.media.AudioManager
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -22,22 +21,24 @@ import com.paulcraciunas.domain.api.general.CountdownTimer
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.ChildAppBar
-import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
-import com.paulcraciunas.screens.tools.clock.vm.ClockScreenInteractor
 import com.paulcraciunas.screens.tools.clock.vm.ClockUiState
-import com.paulcraciunas.screens.tools.clock.vm.StubClockScreenInteractor
 import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ClockScreen(
     uiState: ClockUiState,
-    interactions: ClockScreenInteractor,
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier,
+    onWhiteTapped: () -> Unit = {},
+    onBlackTapped: () -> Unit = {},
+    onStop: () -> Unit = {},
+    onNewGame: () -> Unit = {},
+    onTimeSelected: (minutes: Int) -> Unit = {},
+    onIncrementSelected: (increment: Int) -> Unit = {},
 ) {
     val haptic = LocalHapticFeedback.current
     val isInspectionMode = LocalInspectionMode.current
@@ -49,44 +50,57 @@ fun ClockScreen(
         TonePlayer.PlayFinishedSound(triggerFeedback)
     }
 
-    val bgColor = Design.colors.bg
     Scaffold(
         topBar = { ChildAppBar(onBack = onNavigateBack, title = stringResource(R.string.clock_title)) },
-        modifier = modifier.testTag { ClockScreenTags.SCREEN }
+        containerColor = Design.colors.bg,
+        modifier = modifier.testTag { ClockScreenTags.SCREEN },
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
-                .background(bgColor),
+                .padding(innerPadding),
         ) {
-            ChessGymSpacer()
-
-            val players = listOf(Side.BLACK, Side.WHITE)
-            players.forEachIndexed { index, side ->
-                val isActive = uiState is ClockUiState.Playing && uiState.activePlayer == side
-                val isLoser = uiState is ClockUiState.Finished && uiState.loser == side
-                val isSetup = uiState is ClockUiState.Setup
-
-                ClockButton(
-                    remainder = if (side == Side.BLACK) uiState.blackTime else uiState.whiteTime,
-                    label = stringResource(if (side == Side.BLACK) R.string.clock_black else R.string.clock_white),
-                    isEnabled = isSetup || isActive,
-                    isLoser = isLoser,
-                    isSetup = isSetup,
-                    rotation = if (side == Side.BLACK) 180f else 0f,
-                    onClick = {
-                        triggerFeedback()
-                        if (side == Side.BLACK) interactions.onBlackTapped() else interactions.onWhiteTapped()
-                    },
-                    modifier = Modifier
-                        .weight(1f)
-                        .testTag { if (side == Side.BLACK) ClockScreenTags.BLACK_BUTTON else ClockScreenTags.WHITE_BUTTON },
-                )
-
-                if (index == 0) ChessGymSpacer()
-            }
-            ClockControls(uiState = uiState, interactions = interactions)
+            val isSetup = uiState is ClockUiState.Setup
+            val isFinished = uiState is ClockUiState.Finished
+            val blackEnabled = uiState is ClockUiState.Playing && uiState.activePlayer == Side.BLACK
+            val whiteEnabled = isSetup || (uiState is ClockUiState.Playing && uiState.activePlayer == Side.WHITE)
+            ClockButton(
+                remainder = uiState.blackTime,
+                label = stringResource(R.string.clock_black),
+                isEnabled = blackEnabled,
+                isLoser = isFinished && uiState.loser == Side.BLACK,
+                isSetup = isSetup,
+                rotation = 180f,
+                onClick = {
+                    triggerFeedback()
+                    onBlackTapped()
+                },
+                modifier = Modifier
+                    .weight(1f)
+                    .testTag { ClockScreenTags.BLACK_BUTTON },
+            )
+            ClockButton(
+                remainder = uiState.whiteTime,
+                label = stringResource(R.string.clock_white),
+                isEnabled = whiteEnabled,
+                isLoser = isFinished && uiState.loser == Side.WHITE,
+                isSetup = isSetup,
+                rotation = 0f,
+                onClick = {
+                    triggerFeedback()
+                    onWhiteTapped()
+                },
+                modifier = Modifier
+                    .weight(1f)
+                    .testTag { ClockScreenTags.WHITE_BUTTON },
+            )
+            ClockControls(
+                uiState = uiState,
+                onStop = onStop,
+                onNewGame = onNewGame,
+                onTimeSelected = onTimeSelected,
+                onIncrementSelected = onIncrementSelected,
+            )
         }
     }
 }
@@ -126,7 +140,6 @@ private fun ClockSetupPreview() {
     ChessGymTheme {
         ClockScreen(
             uiState = ClockUiState.Setup(),
-            interactions = StubClockScreenInteractor(),
             onNavigateBack = {},
         )
     }
@@ -142,7 +155,6 @@ private fun ClockPlayingPreview() {
                 blackTime = CountdownTimer.Remainder(280, millis = 0),
                 activePlayer = Side.WHITE,
             ),
-            interactions = StubClockScreenInteractor(),
             onNavigateBack = {},
         )
     }
@@ -158,7 +170,6 @@ private fun ClockFinishedPreview() {
                 blackTime = CountdownTimer.Remainder(180, millis = 0),
                 loser = Side.WHITE,
             ),
-            interactions = StubClockScreenInteractor(),
             onNavigateBack = {},
         )
     }

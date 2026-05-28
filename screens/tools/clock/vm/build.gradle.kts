@@ -5,6 +5,7 @@ plugins {
 androidLibrary {
     namespace = "com.paulcraciunas.screens.tools.clock.vm"
     di = true
+    compose = true
 }
 
 dependencies {

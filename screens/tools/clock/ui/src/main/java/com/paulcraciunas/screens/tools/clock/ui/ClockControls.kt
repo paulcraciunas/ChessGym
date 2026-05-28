@@ -29,16 +29,17 @@ import com.paulcraciunas.screens.common.design.components.PrimaryButton
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
-import com.paulcraciunas.screens.tools.clock.vm.ClockScreenInteractor
 import com.paulcraciunas.screens.tools.clock.vm.ClockUiState
-import com.paulcraciunas.screens.tools.clock.vm.StubClockScreenInteractor
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun ClockControls(
     uiState: ClockUiState,
-    interactions: ClockScreenInteractor,
     modifier: Modifier = Modifier,
+    onStop: () -> Unit = {},
+    onNewGame: () -> Unit = {},
+    onTimeSelected: (minutes: Int) -> Unit = {},
+    onIncrementSelected: (increment: Int) -> Unit = {},
 ) {
     Column(
         modifier = modifier
@@ -74,7 +75,7 @@ internal fun ClockControls(
                         OutlineSegmentButton(
                             text = stringResource(R.string.clock_minutes_format, minutes),
                             selected = setup?.selectedMinutes == minutes,
-                            onClick = { interactions.onTimeSelected(minutes) },
+                            onClick = { onTimeSelected(minutes) },
                             modifier = Modifier.width(Design.dimensions.sizes.timeControl),
                         )
                     }
@@ -93,7 +94,7 @@ internal fun ClockControls(
                         OutlineSegmentButton(
                             text = stringResource(R.string.clock_seconds_format, seconds),
                             selected = setup?.selectedIncrement == seconds,
-                            onClick = { interactions.onIncrementSelected(seconds) },
+                            onClick = { onIncrementSelected(seconds) },
                             modifier = Modifier.width(Design.dimensions.sizes.timeControl),
                         )
                     }
@@ -107,7 +108,7 @@ internal fun ClockControls(
             exit = shrinkVertically(),
         ) {
             Button(
-                onClick = interactions::onStop,
+                onClick = onStop,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Design.colors.danger,
                     contentColor = Design.colors.onPrimary,
@@ -131,7 +132,7 @@ internal fun ClockControls(
         ) {
             PrimaryButton(
                 text = stringResource(R.string.clock_new_game),
-                onClick = interactions::onNewGame,
+                onClick = onNewGame,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = Design.dimensions.spacing.sm)
@@ -148,7 +149,6 @@ private fun ClockControlsSetupPreview() {
     ChessGymTheme {
         ClockControls(
             uiState = ClockUiState.Setup(),
-            interactions = StubClockScreenInteractor(),
         )
     }
 }
@@ -163,7 +163,6 @@ private fun ClockControlsPlayingPreview() {
                 blackTime = CountdownTimer.Remainder(150, 0),
                 activePlayer = Side.WHITE,
             ),
-            interactions = StubClockScreenInteractor(),
         )
     }
 }
@@ -178,7 +177,6 @@ private fun ClockControlsFinishedPreview() {
                 blackTime = CountdownTimer.Remainder(120, 0),
                 loser = Side.WHITE,
             ),
-            interactions = StubClockScreenInteractor(),
         )
     }
 }
