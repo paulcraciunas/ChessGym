@@ -32,7 +32,6 @@ import org.junit.jupiter.api.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class AnalysisViewModelTest {
-
     private val gameFactory = RealGameFactory()
     private val fenSerializer = FenSerializer(gameFactory)
     private val fakeEngine = FakeChessEngine()
@@ -63,9 +62,7 @@ internal class AnalysisViewModelTest {
         @Test
         fun `WHEN viewModel created THEN initial state has no analysis`() {
             val state = underTest.uiState.value
-            assertNull(state.evaluation)
-            assertTrue(state.engineLines.isEmpty())
-            assertNull(state.topMoveArrow)
+            assertNull(state.engineData)
         }
 
         @Test
@@ -83,7 +80,7 @@ internal class AnalysisViewModelTest {
             advanceUntilIdle()
 
             val state = underTest.uiState.value
-            assertEquals(Side.WHITE, state.playerSide)
+            assertEquals(Side.WHITE, state.data.player)
         }
 
         @Test
@@ -93,60 +90,64 @@ internal class AnalysisViewModelTest {
             advanceUntilIdle()
 
             val state = underTest.uiState.value
-            assertEquals(Side.BLACK, state.playerSide)
+            assertEquals(Side.BLACK, state.data.player)
         }
 
         @Test
         fun `GIVEN position loaded WHEN analysis result emitted THEN state updated`() = runTest {
-            fakeEngine.enqueueAnalysisResults(listOf(
-                AnalysisResult(
-                    depth = 10,
-                    evaluation = Evaluation.Centipawns(30),
-                    lines = listOf(
-                        EngineLine(
-                            1,
-                            Evaluation.Centipawns(30),
-                            listOf(
-                                EngineMove(from = Locus.e2, to = Locus.e4),
-                                EngineMove(from = Locus.e7, to = Locus.e5),
+            fakeEngine.enqueueAnalysisResults(
+                listOf(
+                    AnalysisResult(
+                        depth = 10,
+                        evaluation = Evaluation.Centipawns(30),
+                        lines = listOf(
+                            EngineLine(
+                                1,
+                                Evaluation.Centipawns(30),
+                                listOf(
+                                    EngineMove(from = Locus.e2, to = Locus.e4),
+                                    EngineMove(from = Locus.e7, to = Locus.e5),
+                                ),
                             ),
                         ),
-                    ),
+                    )
                 )
-            ))
+            )
 
             underTest.loadPosition()
             advanceUntilIdle()
 
-            val state = underTest.uiState.value
-            assertEquals(Evaluation.Centipawns(30), state.evaluation)
-            assertEquals(1, state.engineLines.size)
-            assertEquals(10, state.analysisDepth)
+            val data = underTest.uiState.value.engineData
+            assertEquals(0.515f, data?.evaluation?.normalised)
+            assertEquals(1, data?.engineLines?.size)
+            assertEquals(10, data?.analysisDepth)
         }
 
         @Test
         fun `GIVEN analysis with top move WHEN result emitted THEN arrow is set`() = runTest {
-            fakeEngine.enqueueAnalysisResults(listOf(
-                AnalysisResult(
-                    depth = 5,
-                    evaluation = Evaluation.Centipawns(18),
-                    lines = listOf(
-                        EngineLine(
-                            1,
-                            Evaluation.Centipawns(18),
-                            listOf(EngineMove(from = Locus.e2, to = Locus.e4)),
+            fakeEngine.enqueueAnalysisResults(
+                listOf(
+                    AnalysisResult(
+                        depth = 5,
+                        evaluation = Evaluation.Centipawns(18),
+                        lines = listOf(
+                            EngineLine(
+                                1,
+                                Evaluation.Centipawns(18),
+                                listOf(EngineMove(from = Locus.e2, to = Locus.e4)),
+                            ),
                         ),
-                    ),
+                    )
                 )
-            ))
+            )
 
             underTest.loadPosition()
             advanceUntilIdle()
 
-            val arrow = underTest.uiState.value.topMoveArrow
-            assertNotNull(arrow)
-            assertEquals(Locus.e2, arrow!!.from)
-            assertEquals(Locus.e4, arrow.to)
+            val topMove = underTest.uiState.value.engineData?.topMove
+            assertNotNull(topMove)
+            assertEquals(Locus.e2, topMove!!.from)
+            assertEquals(Locus.e4, topMove.to)
         }
 
         @Test
@@ -169,7 +170,7 @@ internal class AnalysisViewModelTest {
             val state = underTest.uiState.value
             state.assertCanNavigateBack()
             // After e4, it's black's turn
-            assertEquals(Side.BLACK, state.playerSide)
+            assertEquals(Side.BLACK, state.data.player)
         }
     }
 
@@ -177,86 +178,103 @@ internal class AnalysisViewModelTest {
     internal inner class EvaluationNormalization {
         @Test
         fun `GIVEN white to move WHEN analysis returns positive score THEN displayed as positive`() = runTest {
-            fakeEngine.enqueueAnalysisResults(listOf(
-                AnalysisResult(
-                    depth = 10,
-                    evaluation = Evaluation.Centipawns(150),
-                    lines = listOf(
-                        EngineLine(1, Evaluation.Centipawns(150), listOf(
-                            EngineMove(from = Locus.e2, to = Locus.e4),
-                        )),
-                    ),
+            fakeEngine.enqueueAnalysisResults(
+                listOf(
+                    AnalysisResult(
+                        depth = 10,
+                        evaluation = Evaluation.Centipawns(150),
+                        lines = listOf(
+                            EngineLine(
+                                1, Evaluation.Centipawns(150), listOf(
+                                    EngineMove(from = Locus.e2, to = Locus.e4),
+                                )
+                            ),
+                        ),
+                    )
                 )
-            ))
+            )
 
             underTest.loadPosition()
             advanceUntilIdle()
 
-            assertEquals(Evaluation.Centipawns(150), underTest.uiState.value.evaluation)
+            assertEquals(0.575f, underTest.uiState.value.engineData?.evaluation?.normalised)
         }
 
         @Test
         fun `GIVEN black to move WHEN analysis returns negative score THEN negated to white perspective`() = runTest {
             val fen = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1"
-            fakeEngine.enqueueAnalysisResults(listOf(
-                AnalysisResult(
-                    depth = 10,
-                    evaluation = Evaluation.Centipawns(-350),
-                    lines = listOf(
-                        EngineLine(1, Evaluation.Centipawns(-350), listOf(
-                            EngineMove(from = Locus.e7, to = Locus.e5),
-                        )),
-                    ),
+            fakeEngine.enqueueAnalysisResults(
+                listOf(
+                    AnalysisResult(
+                        depth = 10,
+                        evaluation = Evaluation.Centipawns(-350),
+                        lines = listOf(
+                            EngineLine(
+                                1, Evaluation.Centipawns(-350), listOf(
+                                    EngineMove(from = Locus.e7, to = Locus.e5),
+                                )
+                            ),
+                        ),
+                    )
                 )
-            ))
+            )
 
             underTest.loadPosition(fen)
             advanceUntilIdle()
 
-            assertEquals(Evaluation.Centipawns(350), underTest.uiState.value.evaluation)
-            assertEquals(Evaluation.Centipawns(350), underTest.uiState.value.engineLines[0].evaluation)
+            assertEquals(0.675f, underTest.uiState.value.engineData?.evaluation?.normalised)
+            assertEquals(0.675f, underTest.uiState.value.engineData?.engineLines[0]?.evaluation?.normalised)
         }
 
         @Test
         fun `GIVEN black to move WHEN analysis returns positive score THEN negated to show black winning`() = runTest {
             val fen = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1"
-            fakeEngine.enqueueAnalysisResults(listOf(
-                AnalysisResult(
-                    depth = 10,
-                    evaluation = Evaluation.Centipawns(200),
-                    lines = listOf(
-                        EngineLine(1, Evaluation.Centipawns(200), listOf(
-                            EngineMove(from = Locus.e7, to = Locus.e5),
-                        )),
-                    ),
+            fakeEngine.enqueueAnalysisResults(
+                listOf(
+                    AnalysisResult(
+                        depth = 10,
+                        evaluation = Evaluation.Centipawns(200),
+                        lines = listOf(
+                            EngineLine(
+                                1, Evaluation.Centipawns(200), listOf(
+                                    EngineMove(from = Locus.e7, to = Locus.e5),
+                                )
+                            ),
+                        ),
+                    )
                 )
-            ))
+            )
 
             underTest.loadPosition(fen)
             advanceUntilIdle()
 
-            assertEquals(Evaluation.Centipawns(-200), underTest.uiState.value.evaluation)
+            assertEquals(0.40f, underTest.uiState.value.engineData?.evaluation?.normalised)
         }
 
         @Test
         fun `GIVEN black to move WHEN mate score THEN negated`() = runTest {
             val fen = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1"
-            fakeEngine.enqueueAnalysisResults(listOf(
-                AnalysisResult(
-                    depth = 20,
-                    evaluation = Evaluation.Mate(3),
-                    lines = listOf(
-                        EngineLine(1, Evaluation.Mate(3), listOf(
-                            EngineMove(from = Locus.e7, to = Locus.e5),
-                        )),
-                    ),
+            fakeEngine.enqueueAnalysisResults(
+                listOf(
+                    AnalysisResult(
+                        depth = 20,
+                        evaluation = Evaluation.Mate(3),
+                        lines = listOf(
+                            EngineLine(
+                                1, Evaluation.Mate(3), listOf(
+                                    EngineMove(from = Locus.e7, to = Locus.e5),
+                                )
+                            ),
+                        ),
+                    )
                 )
-            ))
+            )
 
             underTest.loadPosition(fen)
             advanceUntilIdle()
 
-            assertEquals(Evaluation.Mate(-3), underTest.uiState.value.evaluation)
+            assertEquals(0.03f, underTest.uiState.value.engineData?.evaluation?.normalised)
+            assertEquals("M-3", underTest.uiState.value.engineData?.evaluation?.display)
         }
     }
 
@@ -270,7 +288,7 @@ internal class AnalysisViewModelTest {
             underTest.onSquareClicked(Locus.e2)
 
             val state = underTest.uiState.value
-            assertNotNull(state.boardData)
+            assertTrue(state.data.boardData.at(Locus.e2).piece?.isSelected == true)
         }
 
         @Test
@@ -287,45 +305,49 @@ internal class AnalysisViewModelTest {
 
         @Test
         fun `GIVEN position loaded WHEN move made THEN analysis restarts with new position`() = runTest {
-            fakeEngine.enqueueAnalysisResults(listOf(
-                AnalysisResult(
-                    depth = 10,
-                    evaluation = Evaluation.Centipawns(30),
-                    lines = listOf(
-                        EngineLine(
-                            1,
-                            Evaluation.Centipawns(30),
-                            listOf(EngineMove(from = Locus.e2, to = Locus.e4)),
+            fakeEngine.enqueueAnalysisResults(
+                listOf(
+                    AnalysisResult(
+                        depth = 10,
+                        evaluation = Evaluation.Centipawns(30),
+                        lines = listOf(
+                            EngineLine(
+                                1,
+                                Evaluation.Centipawns(30),
+                                listOf(EngineMove(from = Locus.e2, to = Locus.e4)),
+                            ),
                         ),
-                    ),
+                    )
                 )
-            ))
-            fakeEngine.enqueueAnalysisResults(listOf(
-                AnalysisResult(
-                    depth = 12,
-                    evaluation = Evaluation.Centipawns(-15),
-                    lines = listOf(
-                        EngineLine(
-                            1,
-                            Evaluation.Centipawns(-15),
-                            listOf(EngineMove(from = Locus.e7, to = Locus.e5)),
+            )
+            fakeEngine.enqueueAnalysisResults(
+                listOf(
+                    AnalysisResult(
+                        depth = 12,
+                        evaluation = Evaluation.Centipawns(-15),
+                        lines = listOf(
+                            EngineLine(
+                                1,
+                                Evaluation.Centipawns(-15),
+                                listOf(EngineMove(from = Locus.e7, to = Locus.e5)),
+                            ),
                         ),
-                    ),
+                    )
                 )
-            ))
+            )
 
             underTest.loadPosition()
             advanceUntilIdle()
-            assertEquals(Evaluation.Centipawns(30), underTest.uiState.value.evaluation)
+            assertEquals(0.515f, underTest.uiState.value.engineData?.evaluation?.normalised)
 
             playMove(Locus.e2, Locus.e4)
             advanceUntilIdle()
 
-            val state = underTest.uiState.value
+            val data = underTest.uiState.value.engineData
             // After e4, it's Black's turn. Engine reports -15 from Black's perspective.
             // Normalized to White's perspective: +15
-            assertEquals(Evaluation.Centipawns(15), state.evaluation)
-            assertEquals(12, state.analysisDepth)
+            assertEquals(0.5075f, data?.evaluation?.normalised)
+            assertEquals(12, data?.analysisDepth)
         }
 
         @Test
@@ -349,10 +371,8 @@ internal class AnalysisViewModelTest {
             playMove(Locus.e7, Locus.e8)
 
             val state = underTest.uiState.value
-            val pending = state.pendingPromotion
-            assertNotNull(pending)
-            assertEquals(Locus.e7, pending!!.from)
-            assertEquals(Locus.e8, pending.to)
+            assertNotNull(state.promotion)
+            assertEquals(Locus.e8, state.promotion?.at)
         }
 
         @Test
@@ -365,13 +385,13 @@ internal class AnalysisViewModelTest {
             advanceUntilIdle()
 
             playMove(Locus.e7, Locus.e8)
-            assertNotNull(underTest.uiState.value.pendingPromotion)
+            assertNotNull(underTest.uiState.value.promotion)
 
             underTest.onPromote(Piece.Queen)
             advanceUntilIdle()
 
             val state = underTest.uiState.value
-            assertNull(state.pendingPromotion)
+            assertNull(state.promotion)
             state.assertCanNavigateBack()
         }
 
@@ -411,7 +431,7 @@ internal class AnalysisViewModelTest {
             advanceUntilIdle()
 
             val state = underTest.uiState.value
-            assertNull(state.pendingPromotion)
+            assertNull(state.promotion)
             underTest.uiState.value.assertCanNavigateBack()
         }
 
@@ -530,7 +550,7 @@ internal class AnalysisViewModelTest {
         fun `GIVEN moves played WHEN navigating back and forth THEN playerSide stays consistent`() = runTest {
             underTest.loadPosition()
             advanceUntilIdle()
-            val originalSide = underTest.uiState.value.playerSide
+            val originalSide = underTest.uiState.value.data.player
 
             playMove(Locus.e2, Locus.e4)
             advanceUntilIdle()
@@ -539,19 +559,19 @@ internal class AnalysisViewModelTest {
 
             underTest.onPreviousMove()
             advanceUntilIdle()
-            assertEquals(originalSide, underTest.uiState.value.playerSide)
+            assertEquals(originalSide, underTest.uiState.value.data.player)
 
             underTest.onNextMove()
             advanceUntilIdle()
-            assertEquals(originalSide, underTest.uiState.value.playerSide)
+            assertEquals(originalSide, underTest.uiState.value.data.player)
 
             underTest.onJumpToStart()
             advanceUntilIdle()
-            assertEquals(originalSide, underTest.uiState.value.playerSide)
+            assertEquals(originalSide, underTest.uiState.value.data.player)
 
             underTest.onJumpToEnd()
             advanceUntilIdle()
-            assertEquals(originalSide, underTest.uiState.value.playerSide)
+            assertEquals(originalSide, underTest.uiState.value.data.player)
         }
 
         @Test
@@ -565,7 +585,7 @@ internal class AnalysisViewModelTest {
             underTest.onJumpToStart()
             advanceUntilIdle()
 
-            val boardData = underTest.uiState.value.boardData
+            val boardData = underTest.uiState.value.data.boardData
             val e2 = boardData.at(Locus.e2)
             val e4 = boardData.at(Locus.e4)
             assertFalse(e2.lastMove)
@@ -585,7 +605,7 @@ internal class AnalysisViewModelTest {
             underTest.onPreviousMove()
             advanceUntilIdle()
 
-            val boardData = underTest.uiState.value.boardData
+            val boardData = underTest.uiState.value.data.boardData
             val e2 = boardData.at(Locus.e2)
             val e4 = boardData.at(Locus.e4)
             assertTrue(e2.lastMove)

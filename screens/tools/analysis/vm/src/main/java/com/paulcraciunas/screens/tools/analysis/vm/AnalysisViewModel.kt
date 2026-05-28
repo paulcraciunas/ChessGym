@@ -3,14 +3,11 @@ package com.paulcraciunas.screens.tools.analysis.vm
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.paulcraciunas.domain.api.analysis.AnalyzePosition
-import com.paulcraciunas.game.engine.api.EngineLine
-import com.paulcraciunas.game.engine.api.Evaluation
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.logic.builders.Builders
-import com.paulcraciunas.screens.common.model.GameData
 import com.paulcraciunas.screens.common.model.GameViewModelHelper
+import com.paulcraciunas.screens.common.model.GameViewModelHelper.GamePromotion
 import com.paulcraciunas.serializer.api.Serializer
 import com.paulcraciunas.serializer.di.SerializerFen
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
@@ -26,7 +23,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.sample
 import kotlinx.coroutines.flow.update
@@ -40,21 +36,18 @@ class AnalysisViewModel @Inject constructor(
     @param:SerializerFen private val fenSerializer: Serializer,
     private val analyzePosition: AnalyzePosition,
     private val appSettingsRepository: AppSettingsRepository,
-) : ViewModel(), AnalysisScreenInteractor {
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AnalysisUiState())
     val uiState: StateFlow<AnalysisUiState> = _uiState.asStateFlow()
 
-    private val helper = GameViewModelHelper(gameInteractor = Builders.gameInteractor())
+    private val helper = GameViewModelHelper()
+    private val adapter = EngineDataAdapter()
     private var analysisJob: Job? = null
     private var navigationDebounceJob: Job? = null
-    internal var enableThrottling: Boolean = true
+    private var enableThrottling: Boolean = true
 
     init {
-        observeSettings()
-    }
-
-    private fun observeSettings() {
         viewModelScope.launch {
             appSettingsRepository.appSettings.collect { settings ->
                 helper.autoPromote = settings.autoPromote
@@ -67,65 +60,37 @@ class AnalysisViewModel @Inject constructor(
     }
 
     fun loadPosition(fen: String? = null, firstMove: String? = null) {
-        val targetFen = fen ?: STARTING_FEN
+        val targetFen = fen ?: Serializer.STARTING_FEN
         if (firstMove != null) {
             try {
                 val game = fenSerializer.from(targetFen)
                 helper.load(game = game, player = game.info.turn.other())
-                val gameData = helper.playMove(firstMove)
-                beginGame(gameData)
+                beginGame(gameData = helper.playMove(firstMove))
                 return
             } catch (e: Exception) {
                 Timber.w(e, "Failed to load FEN position: $fen")
             }
         }
-
+        // The try should return; if there's an exception, as a fallback, we load the default board
         val game = fenSerializer.from(targetFen)
-        beginGame(helper.load(game = game, player = game.info.turn))
+        beginGame(gameData = helper.load(game = game, player = game.info.turn))
     }
 
-    override fun onSquareClicked(locus: Locus) {
-        if (!helper.isReady()) {
+    fun onSquareClicked(locus: Locus) {
+        if (!helper.isLoaded()) {
             loadPosition()
         }
-
-        val result = helper.handleSquareClick(locus)
-        applyGameData(result.data)
-
-        if (result.promotion != null && result.moveFrom != null) {
-            _uiState.update {
-                it.copy(
-                    pendingPromotion = PendingPromotion(
-                        from = result.moveFrom!!,
-                        to = result.promotion!!.at,
-                    )
-                )
-            }
-            return
-        }
-
-        if (result.movePlayed) {
-            updateNavigationState()
-            navigationDebounceJob?.cancel()
-            analyze(fen = currentFen(), sideToMove = helper.game.info.turn)
-        }
+        applyMoveResult(helper.handleSquareClick(locus))
     }
 
-    override fun onPromote(to: Piece) {
-        val pending = _uiState.value.pendingPromotion ?: return
-        val result = helper.promote(to, pending.to)
-        applyGameData(result.data)
-        _uiState.update { it.copy(pendingPromotion = null) }
-
-        updateNavigationState()
-        navigationDebounceJob?.cancel()
-        analyze(fen = currentFen(), sideToMove = helper.game.info.turn)
+    fun onPromote(to: Piece) = uiState.value.promotion?.let { promotion ->
+        applyMoveResult(helper.promote(to, promotion.at))
     }
 
-    override fun onJumpToStart() = navigate { helper.undoAll() }
-    override fun onPreviousMove() = navigate { helper.undoLast() }
-    override fun onNextMove() = navigate { helper.replayNext() }
-    override fun onJumpToEnd() = navigate { helper.replayAll() }
+    fun onJumpToStart() = navigate { helper.undoAll() }
+    fun onPreviousMove() = navigate { helper.undoLast() }
+    fun onNextMove() = navigate { helper.replayNext() }
+    fun onJumpToEnd() = navigate { helper.replayAll() }
 
     override fun onCleared() {
         analysisJob?.cancel()
@@ -140,47 +105,42 @@ class AnalysisViewModel @Inject constructor(
         }
     }
 
-    private fun beginGame(gameData: GameData) {
-        applyGameData(gameData)
-        updateNavigationState()
-        analyze(fen = currentFen(), sideToMove = helper.game.info.turn, start = true)
+    private fun beginGame(gameData: GameViewModelHelper.GameData2) {
+        updateState(data = gameData, promotion = null)
+        analyze(fen = currentFen(), sideToMove = helper.toMove(), start = true)
     }
 
-    private fun currentFen(): String = fenSerializer.of(helper.game)
+    private fun applyMoveResult(result: GameViewModelHelper.GameOnSquareClick) {
+        updateState(data = result.data, promotion = result.promotion)
 
-    private fun applyGameData(data: GameData) {
-        _uiState.update {
-            it.copy(
-                boardData = data.boardData,
-                playerSide = data.player,
-                captured = data.captured,
-            )
+        if (result.movePlayed) {
+            navigationDebounceJob?.cancel()
+            analyze(fen = currentFen(), sideToMove = helper.toMove())
         }
     }
 
-    private fun updateNavigationState() {
+    private fun navigate(gameDataSource: () -> GameViewModelHelper.GameData2) {
+        updateState(data = gameDataSource(), promotion = null)
+
+        navigationDebounceJob?.cancel()
+        navigationDebounceJob = viewModelScope.launch {
+            delay(NAVIGATION_DEBOUNCE_MS)
+            analyze(fen = currentFen(), sideToMove = helper.toMove())
+        }
+    }
+
+    private fun updateState(data: GameViewModelHelper.GameData2, promotion: GamePromotion?) {
         _uiState.update {
             it.copy(
+                data = data,
+                promotion = promotion,
                 canNavigateForward = helper.canReplay(),
                 canNavigateBack = helper.canUndo(),
             )
         }
     }
 
-    private fun navigate(gameDataSource: () -> GameData) {
-        val gameData = gameDataSource()
-        applyGameData(gameData)
-        updateNavigationState()
-
-        val fen = currentFen()
-        val sideToMove = helper.game.info.turn
-        navigationDebounceJob?.cancel()
-        navigationDebounceJob = viewModelScope.launch {
-            delay(NAVIGATION_DEBOUNCE_MS)
-            analyze(fen = fen, sideToMove = sideToMove)
-        }
-    }
-
+    private fun currentFen(): String = fenSerializer.of(helper.loadedGame())
     private fun analyze(fen: String, sideToMove: Side = Side.WHITE, start: Boolean = false) {
         val previousJob = analysisJob
         analysisJob = viewModelScope.launch {
@@ -193,51 +153,10 @@ class AnalysisViewModel @Inject constructor(
                 analyzePosition.prepare()
             }
             analyzePosition(fen)
-                .onStart {
-                    _uiState.update {
-                        it.copy(
-                            isAnalyzing = true,
-                            evaluation = null,
-                            engineLines = emptyList(),
-                            topMoveArrow = null,
-                            analysisDepth = 0,
-                        )
-                    }
-                }
+                .onStart { _uiState.update { it.copy(engineData = null) } }
                 .throttle()
-                .catch { e ->
-                    Timber.e(e, "Analysis error")
-                    _uiState.update { it.copy(isAnalyzing = false) }
-                }
-                .onCompletion {
-                    _uiState.update { it.copy(isAnalyzing = false) }
-                }
-                .collect { result ->
-                    _uiState.update {
-                        it.copy(
-                            evaluation = normalizeEvaluation(
-                                result.evaluation, sideToMove
-                            ),
-                            engineLines = result.lines.map { line ->
-                                line.copy(
-                                    evaluation = normalizeEvaluation(
-                                        line.evaluation, sideToMove
-                                    )
-                                )
-                            },
-                            analysisDepth = result.depth,
-                            topMoveArrow = extractTopMoveArrow(result.lines),
-                        )
-                    }
-                }
-        }
-    }
-
-    private fun normalizeEvaluation(evaluation: Evaluation, sideToMove: Side): Evaluation {
-        if (sideToMove == Side.WHITE) return evaluation
-        return when (evaluation) {
-            is Evaluation.Centipawns -> Evaluation.Centipawns(-evaluation.value)
-            is Evaluation.Mate -> Evaluation.Mate(-evaluation.movesToMate)
+                .catch { Timber.e(it, "Analysis error") }
+                .collect { result -> _uiState.update { it.copy(engineData = adapter.from(result, sideToMove)) } }
         }
     }
 
@@ -245,15 +164,8 @@ class AnalysisViewModel @Inject constructor(
     private fun <T> Flow<T>.throttle(): Flow<T> =
         if (enableThrottling) sample(ANALYSIS_SAMPLE_PERIOD_MS) else this
 
-    private fun extractTopMoveArrow(lines: List<EngineLine>): MoveArrow? {
-        val topMove = lines.firstOrNull()?.moves?.firstOrNull() ?: return null
-        return MoveArrow(from = topMove.from, to = topMove.to)
-    }
-
     companion object {
         private const val ANALYSIS_SAMPLE_PERIOD_MS = 200L
         private const val NAVIGATION_DEBOUNCE_MS = 300L
-        internal const val STARTING_FEN =
-            "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
     }
 }
