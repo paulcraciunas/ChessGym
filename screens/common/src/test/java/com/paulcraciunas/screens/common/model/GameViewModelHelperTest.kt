@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test
 
 internal class GameViewModelHelperTest {
     private val gameFactory = RealGameFactory()
-    private val underTest = GameViewModelHelper(gameFactory.gameInteractor())
+    private val underTest = GameViewModelHelper()
 
     @Nested
     internal inner class Load {
@@ -46,7 +46,7 @@ internal class GameViewModelHelperTest {
         }
 
         @Test
-        fun `GIVEN game WHEN load THEN returns GameData with captured pieces`() {
+        fun `GIVEN game WHEN load THEN returns GameData with no captured pieces`() {
             // Given
             val game = buildDefaultGame()
 
@@ -55,8 +55,8 @@ internal class GameViewModelHelperTest {
 
             // Then
             assertNotNull(result.captured)
-            assertTrue(result.captured.containsKey(Side.WHITE))
-            assertTrue(result.captured.containsKey(Side.BLACK))
+            assertEquals(result.captured.byPlayer, "")
+            assertEquals(result.captured.byOpponent, "")
         }
 
         @Test
@@ -80,7 +80,7 @@ internal class GameViewModelHelperTest {
             underTest.load(game, Side.WHITE)
 
             // Then
-            assertEquals(Side.WHITE, underTest.player)
+            assertEquals(Side.WHITE, underTest.current().player)
         }
 
         @Test
@@ -95,20 +95,7 @@ internal class GameViewModelHelperTest {
             underTest.load(game, Side.WHITE)
 
             // Then
-            assertEquals(1600, underTest.rating)
-        }
-
-        @Test
-        fun `GIVEN new game WHEN load THEN captured lists are empty`() {
-            // Given
-            val game = buildDefaultGame()
-
-            // When
-            val result = underTest.load(game, Side.WHITE)
-
-            // Then
-            assertTrue(result.captured[Side.WHITE]!!.isEmpty())
-            assertTrue(result.captured[Side.BLACK]!!.isEmpty())
+            assertEquals(1600, underTest.current().rating)
         }
     }
 
@@ -173,7 +160,7 @@ internal class GameViewModelHelperTest {
             val toSquare = result.data.boardData.at(Rank.`4`, File.e)
             assertNull(fromSquare.piece)
             assertNotNull(toSquare.piece)
-            assertEquals(Piece.Pawn, toSquare.piece?.piece)
+            assertEquals(Piece.Pawn, toSquare.piece?.piece?.piece)
         }
 
         @Test
@@ -187,7 +174,6 @@ internal class GameViewModelHelperTest {
 
             // Then
             assertTrue(result.movePlayed)
-            assertEquals(Locus.e2, result.moveFrom)
         }
 
         @Test
@@ -201,7 +187,6 @@ internal class GameViewModelHelperTest {
 
             // Then
             assertFalse(result.movePlayed)
-            assertNull(result.moveFrom)
         }
 
         @Test
@@ -246,8 +231,8 @@ internal class GameViewModelHelperTest {
             // Then
             val animating = result.data.boardData.animatingPiece
             assertNotNull(animating)
-            assertEquals(Piece.Pawn, animating!!.piece)
-            assertEquals(Side.WHITE, animating.side)
+            assertEquals(Piece.Pawn, animating!!.piece.piece)
+            assertEquals(Side.WHITE, animating.piece.side)
             assertEquals(Locus.e2, animating.from)
             assertEquals(Locus.e4, animating.to)
         }
@@ -265,7 +250,6 @@ internal class GameViewModelHelperTest {
             assertNotNull(result.promotion)
             assertTrue(result.promotion!!.showChooser)
             assertEquals(Locus.a8, result.promotion.at)
-            assertEquals(Locus.a7, result.moveFrom)
         }
 
         @Test
@@ -281,12 +265,10 @@ internal class GameViewModelHelperTest {
             // Then
             assertNull(result.promotion)
             assertTrue(result.movePlayed)
-            assertEquals(Locus.a7, result.moveFrom)
-            assertEquals(Piece.Queen, result.autoPromotedTo)
             val queenSquare = result.data.boardData.at(Rank.`8`, File.a)
             assertNotNull(queenSquare.piece)
-            assertEquals(Piece.Queen, queenSquare.piece?.piece)
-            assertEquals(Side.WHITE, queenSquare.piece?.side)
+            assertEquals(Piece.Queen, queenSquare.piece?.piece?.piece)
+            assertEquals(Side.WHITE, queenSquare.piece?.piece?.side)
         }
 
         @Test
@@ -302,8 +284,6 @@ internal class GameViewModelHelperTest {
             // Then
             assertNotNull(result.promotion)
             assertTrue(result.promotion!!.showChooser)
-            assertNull(result.autoPromotedTo)
-            assertEquals(Locus.a7, result.moveFrom)
         }
 
         @Test
@@ -355,7 +335,7 @@ internal class GameViewModelHelperTest {
             val toSquare = result.boardData.at(Rank.`4`, File.e)
             assertNull(fromSquare.piece)
             assertNotNull(toSquare.piece)
-            assertEquals(Piece.Pawn, toSquare.piece?.piece)
+            assertEquals(Piece.Pawn, toSquare.piece?.piece?.piece)
         }
 
         @Test
@@ -382,8 +362,8 @@ internal class GameViewModelHelperTest {
             // Then
             val animating = result.boardData.animatingPiece
             assertNotNull(animating)
-            assertEquals(Piece.Knight, animating!!.piece)
-            assertEquals(Side.WHITE, animating.side)
+            assertEquals(Piece.Knight, animating!!.piece.piece)
+            assertEquals(Side.WHITE, animating.piece.side)
             assertEquals(Locus.g1, animating.from)
             assertEquals(Locus.f3, animating.to)
         }
@@ -399,8 +379,8 @@ internal class GameViewModelHelperTest {
             // Then
             val promotedSquare = result.boardData.at(Rank.`8`, File.a)
             assertNotNull(promotedSquare.piece)
-            assertEquals(Piece.Queen, promotedSquare.piece?.piece)
-            assertEquals(Side.WHITE, promotedSquare.piece?.side)
+            assertEquals(Piece.Queen, promotedSquare.piece?.piece?.piece)
+            assertEquals(Side.WHITE, promotedSquare.piece?.piece?.side)
         }
 
         @Test
@@ -411,11 +391,10 @@ internal class GameViewModelHelperTest {
             underTest.playMove(Locus.d7, Locus.d5)
 
             // When
-            val result = underTest.playMove(Locus.e4, Locus.d5)
+            underTest.playMove(Locus.e4, Locus.d5)
 
             // Then
-            val capturedByWhite = result.captured[Side.WHITE]!!
-            assertTrue(capturedByWhite.contains(Piece.Pawn))
+            assertEquals(Piece.Pawn.unicode, underTest.current().captured.byPlayer)
         }
     }
 
@@ -435,8 +414,8 @@ internal class GameViewModelHelperTest {
             // Then
             val queenSquare = result.data.boardData.at(Rank.`8`, File.a)
             assertNotNull(queenSquare.piece)
-            assertEquals(Piece.Queen, queenSquare.piece?.piece)
-            assertEquals(Side.WHITE, queenSquare.piece?.side)
+            assertEquals(Piece.Queen, queenSquare.piece?.piece?.piece)
+            assertEquals(Side.WHITE, queenSquare.piece?.piece?.side)
         }
 
         @Test
@@ -468,7 +447,7 @@ internal class GameViewModelHelperTest {
             // Then
             val knightSquare = result.data.boardData.at(Rank.`8`, File.a)
             assertNotNull(knightSquare.piece)
-            assertEquals(Piece.Knight, knightSquare.piece?.piece)
+            assertEquals(Piece.Knight, knightSquare.piece?.piece?.piece)
         }
     }
 
@@ -496,7 +475,7 @@ internal class GameViewModelHelperTest {
             underTest.load(buildDefaultGame(), Side.WHITE)
 
             // When
-            val data = underTest.buildPuzzleData()
+            val data = underTest.current()
 
             // Then
             assertEquals(Side.WHITE, data.player)
@@ -511,12 +490,12 @@ internal class GameViewModelHelperTest {
             underTest.handleSquareClick(Locus.e4)
 
             // When
-            val data = underTest.buildPuzzleData()
+            val data = underTest.current()
 
             // Then
             val e4Square = data.boardData.at(Rank.`4`, File.e)
             assertNotNull(e4Square.piece)
-            assertEquals(Piece.Pawn, e4Square.piece?.piece)
+            assertEquals(Piece.Pawn, e4Square.piece?.piece?.piece)
         }
     }
 
@@ -548,7 +527,7 @@ internal class GameViewModelHelperTest {
             val e2Square = result.boardData.at(Rank.`2`, File.e)
             val e4Square = result.boardData.at(Rank.`4`, File.e)
             assertNotNull(e2Square.piece)
-            assertEquals(Piece.Pawn, e2Square.piece?.piece)
+            assertEquals(Piece.Pawn, e2Square.piece?.piece?.piece)
             assertNull(e4Square.piece)
         }
 
@@ -562,7 +541,7 @@ internal class GameViewModelHelperTest {
 
             val e2Square = result.boardData.at(Rank.`2`, File.e)
             assertNotNull(e2Square.piece)
-            assertEquals(Piece.Pawn, e2Square.piece?.piece)
+            assertEquals(Piece.Pawn, e2Square.piece?.piece?.piece)
             assertFalse(underTest.canUndo())
             assertTrue(underTest.canReplay())
         }
@@ -578,7 +557,7 @@ internal class GameViewModelHelperTest {
 
             val e4Square = result.boardData.at(Rank.`4`, File.e)
             assertNotNull(e4Square.piece)
-            assertEquals(Piece.Pawn, e4Square.piece?.piece)
+            assertEquals(Piece.Pawn, e4Square.piece?.piece?.piece)
             assertTrue(e4Square.lastMove)
         }
 
