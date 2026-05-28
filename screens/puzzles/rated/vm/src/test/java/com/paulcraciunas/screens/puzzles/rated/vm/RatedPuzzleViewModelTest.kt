@@ -143,8 +143,8 @@ internal class RatedPuzzleViewModelTest {
         // Then
         val playingState = underTest.uiState.value as RatedPuzzleUiState.Finished
         val promotedSquare = playingState.data.boardData.at(Locus.a8)
-        assertEquals(Piece.Queen, promotedSquare.piece?.piece)
-        assertEquals(Side.WHITE, promotedSquare.piece?.side)
+        assertEquals(Piece.Queen, promotedSquare.piece?.piece?.piece)
+        assertEquals(Side.WHITE, promotedSquare.piece?.piece?.side)
     }
 
     @Test

@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test
 
 internal class PuzzleViewModelHelperTest {
     private val gameFactory = RealGameFactory()
-    private val underTest = PuzzleViewModelHelper(gameFactory.puzzleInteractor())
+    private val underTest = PuzzleViewModelHelper()
 
     @Nested
     internal inner class Load {
@@ -49,14 +49,18 @@ internal class PuzzleViewModelHelperTest {
         fun `GIVEN puzzle WHEN load THEN returns PuzzleData with captured pieces`() {
             // Given
             val puzzle = buildPuzzleWithCaptures()
+            underTest.load(puzzle)
+            underTest.playNextSolutionMove() // d7d5
+            underTest.playNextSolutionMove() // e4d5
+            underTest.playNextSolutionMove() // d8d5
 
             // When
-            val result = underTest.load(puzzle)
+            val result = underTest.current()
 
             // Then
             assertNotNull(result.captured)
-            assertTrue(result.captured.containsKey(Side.WHITE))
-            assertTrue(result.captured.containsKey(Side.BLACK))
+            assertEquals(Piece.Pawn.unicode, result.captured.byPlayer)
+            assertEquals(Piece.Pawn.unicode, result.captured.byOpponent)
         }
 
         @Test
@@ -80,8 +84,8 @@ internal class PuzzleViewModelHelperTest {
             underTest.load(puzzle)
 
             // Then
-            assertEquals(1200, underTest.rating)
-            assertEquals(Side.BLACK, underTest.player)
+            assertEquals(1200, underTest.current().rating)
+            assertEquals(Side.BLACK, underTest.current().player)
         }
     }
 
@@ -146,7 +150,7 @@ internal class PuzzleViewModelHelperTest {
             val toSquare = result.data.boardData.at(Rank.`5`, File.e)
             assertNull(fromSquare.piece)
             assertNotNull(toSquare.piece)
-            assertEquals(Piece.Pawn, toSquare.piece?.piece)
+            assertEquals(Piece.Pawn, toSquare.piece?.piece?.piece)
         }
 
         @Test
@@ -205,8 +209,8 @@ internal class PuzzleViewModelHelperTest {
             assertNull(result.promotion)
             val queenSquare = result.data.boardData.at(Rank.`8`, File.a)
             assertNotNull(queenSquare.piece)
-            assertEquals(Piece.Queen, queenSquare.piece?.piece)
-            assertEquals(Side.WHITE, queenSquare.piece?.side)
+            assertEquals(Piece.Queen, queenSquare.piece?.piece?.piece)
+            assertEquals(Side.WHITE, queenSquare.piece?.piece?.side)
         }
 
         @Test
@@ -242,7 +246,7 @@ internal class PuzzleViewModelHelperTest {
         fun `GIVEN no selection WHEN clicking empty square THEN board state is unchanged`() {
             // Given
             underTest.load(buildStandardPuzzle())
-            val dataBefore = underTest.buildPuzzleData()
+            val dataBefore = underTest.current()
 
             // When - d4 is empty on the board
             val result = underTest.handleSquareClick(Locus.d4)
@@ -284,8 +288,8 @@ internal class PuzzleViewModelHelperTest {
             // Then
             val queenSquare = result.data.boardData.at(Rank.`8`, File.a)
             assertNotNull(queenSquare.piece)
-            assertEquals(Piece.Queen, queenSquare.piece?.piece)
-            assertEquals(Side.WHITE, queenSquare.piece?.side)
+            assertEquals(Piece.Queen, queenSquare.piece?.piece?.piece)
+            assertEquals(Side.WHITE, queenSquare.piece?.piece?.side)
         }
 
         @Test
@@ -327,20 +331,19 @@ internal class PuzzleViewModelHelperTest {
             underTest.load(buildStandardPuzzle())
 
             // When
-            val hintSquare = underTest.hint()
+            val data = underTest.hint()
 
             // Then - Expected first move is e7e5, so hint should be e7
-            assertEquals(Locus.e7, hintSquare)
+            assertEquals(Locus.e7, data.boardData.selection)
         }
 
         @Test
         fun `GIVEN hint requested WHEN buildPuzzleData THEN selection shows hint square`() {
             // Given
             underTest.load(buildStandardPuzzle())
-            underTest.hint()
 
             // When
-            val data = underTest.buildPuzzleData()
+            val data = underTest.hint()
 
             // Then
             val hintedSquare = data.boardData.at(Locus.e7)
@@ -375,10 +378,9 @@ internal class PuzzleViewModelHelperTest {
         fun `GIVEN puzzle loaded WHEN buildPuzzleData THEN returns current state`() {
             // Given
             val puzzle = buildStandardPuzzle(rating = 1800)
-            underTest.load(puzzle)
 
             // When
-            val data = underTest.buildPuzzleData()
+            val data = underTest.load(puzzle)
 
             // Then
             assertEquals(1800, data.rating)
@@ -391,13 +393,12 @@ internal class PuzzleViewModelHelperTest {
             // Given
             underTest.load(buildStandardPuzzle())
             underTest.handleSquareClick(Locus.e7)
-            underTest.handleSquareClick(Locus.e5)
 
             // When
-            val data = underTest.buildPuzzleData()
+            val onClick = underTest.handleSquareClick(Locus.e5)
 
             // Then
-            val e5Square = data.boardData.at(Rank.`5`, File.e)
+            val e5Square = onClick.data.boardData.at(Rank.`5`, File.e)
             assertNotNull(e5Square.piece)
         }
     }
@@ -417,7 +418,7 @@ internal class PuzzleViewModelHelperTest {
             assertNotNull(result)
             val e5Square = result!!.boardData.at(Rank.`5`, File.e)
             assertNotNull(e5Square.piece)
-            assertEquals(Piece.Pawn, e5Square.piece?.piece)
+            assertEquals(Piece.Pawn, e5Square.piece?.piece?.piece)
         }
 
         @Test
@@ -447,7 +448,7 @@ internal class PuzzleViewModelHelperTest {
             assertNotNull(result)
             val c6Square = result!!.boardData.at(Rank.`6`, File.c)
             assertNotNull(c6Square.piece)
-            assertEquals(Piece.Knight, c6Square.piece?.piece)
+            assertEquals(Piece.Knight, c6Square.piece?.piece?.piece)
         }
     }
 

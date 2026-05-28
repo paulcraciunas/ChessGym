@@ -3,20 +3,20 @@ package com.paulcraciunas.screens.puzzles.rated.vm
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.paulcraciunas.domain.api.general.EloResult
+import com.paulcraciunas.domain.api.general.Timer
 import com.paulcraciunas.domain.api.puzzles.GetRatedPuzzle
 import com.paulcraciunas.domain.api.puzzles.OnPuzzleComplete
 import com.paulcraciunas.domain.api.puzzles.PuzzleCompletionResult
-import com.paulcraciunas.domain.api.general.Timer
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.logic.builders.Builders
+import com.paulcraciunas.screens.common.model.PuzzleData
 import com.paulcraciunas.screens.common.model.PuzzleViewModelHelper
-import com.paulcraciunas.screens.common.model.PuzzleViewModelHelper.OnSquareClick
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -27,12 +27,12 @@ class RatedPuzzleViewModel @Inject constructor(
     private val onPuzzleComplete: OnPuzzleComplete,
     private val appSettingsRepository: AppSettingsRepository,
     private val timer: Timer,
-) : ViewModel(), RatedPuzzleScreenInteractor {
-    private val helper = PuzzleViewModelHelper(puzzleInteractor = Builders.puzzleInteractor())
+) : ViewModel() {
+    private val helper = PuzzleViewModelHelper()
 
     private val _uiState = MutableStateFlow<RatedPuzzleUiState>(RatedPuzzleUiState.Loading)
     val uiState: StateFlow<RatedPuzzleUiState> = _uiState.asStateFlow()
-    private var puzzleData: GetRatedPuzzle.Data? = null
+    private lateinit var puzzleData: GetRatedPuzzle.Data
 
     init {
         observeSettings()
@@ -51,7 +51,7 @@ class RatedPuzzleViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 puzzleData = getRatedPuzzle()
-                val data = helper.load(puzzleData!!.puzzle)
+                val data = helper.load(puzzleData.puzzle)
                 timer.start()
                 _uiState.value = RatedPuzzleUiState.Playing(
                     data = data,
@@ -66,48 +66,44 @@ class RatedPuzzleViewModel @Inject constructor(
         }
     }
 
-    override fun onSquareClicked(selection: Locus) = whilePlayingInteractive {
+    fun onSquareClicked(selection: Locus) = whilePlayingInteractive {
         handleMoveResult(helper.handleSquareClick(selection))
     }
 
-    override fun onPromote(to: Piece) = whilePlayingInteractive { state ->
-        if (state.promotion == null) return@whilePlayingInteractive
-        handleMoveResult(helper.promote(to, state.promotion.at))
-    }
-
-    override fun onHintRequested() = whilePlayingInteractive { state ->
-        helper.hint()
-        _uiState.value = state.copy(data = helper.buildPuzzleData(), hintEnabled = false)
-    }
-
-    override fun onAbandon() = whilePlayingInteractive { state ->
-        _uiState.value = state.copy(showAbandonDialog = true)
-    }
-
-    override fun onAbandonConfirmed() = whilePlaying { state ->
-        // Start showing solution animation
-        _uiState.value = state.copy(
-            showAbandonDialog = false,
-            isShowingSolution = true,
-        )
-
-        viewModelScope.launch {
-            helper.playSolution { data ->
-                val currentState = _uiState.value
-                val canUpdate = currentState is RatedPuzzleUiState.Playing && currentState.isShowingSolution
-                canUpdate.also { if (canUpdate) _uiState.value = currentState.copy(data = data) }
-            }
-
-            // After solution shown, finish the puzzle as failed
-            finishPuzzle(isSuccess = false)
+    fun onPromote(to: Piece) = whilePlayingInteractive { state ->
+        state.promotion?.let {
+            handleMoveResult(helper.promote(to, state.promotion.at))
         }
     }
 
-    override fun onAbandonDismissed() = whilePlayingInteractive { state ->
-        _uiState.value = state.copy(showAbandonDialog = false)
+    fun onHintRequested() = _uiState.updateInteractive { state ->
+        if (!state.hintEnabled) state
+        else state.copy(data = helper.hint(), hintEnabled = false)
     }
 
-    override fun onNextPuzzle() {
+    fun onAbandon() = _uiState.updateInteractive { it.copy(showAbandonDialog = true) }
+    fun onAbandonDismissed() = _uiState.updateInteractive { it.copy(showAbandonDialog = false) }
+    fun onAbandonConfirmed() {
+        _uiState.updateInteractive {
+            it.copy(
+                showAbandonDialog = false,
+                isShowingSolution = true,
+            )
+        }
+
+        whilePlaying { state ->
+            viewModelScope.launch {
+                helper.playSolution { data ->
+                    _uiState.updatePlaying { it.copy(data = data) }
+                    return@playSolution _uiState.value is RatedPuzzleUiState.Playing
+                }
+                // After solution shown, finish the puzzle as failed
+                finishPuzzle(state.data, isSuccess = false)
+            }
+        }
+    }
+
+    fun onNextPuzzle() {
         loadPuzzle()
     }
 
@@ -128,29 +124,27 @@ class RatedPuzzleViewModel @Inject constructor(
         timer.resume()
     }
 
-    private fun handleMoveResult(result: OnSquareClick) = whilePlaying { state ->
-        when {
-            result.promotion != null -> _uiState.value = state.copy(promotion = result.promotion)
-            !result.isOver -> _uiState.value = state.copy(data = result.data, promotion = null)
-            else -> finishPuzzle(result.isSuccess)
+    private fun handleMoveResult(result: PuzzleViewModelHelper.OnSquareClick2) =
+        if (!result.isOver) _uiState.updatePlaying { it.copy(data = result.data, promotion = result.promotion) }
+        else finishPuzzle(result.data, result.isSuccess)
+
+    private fun finishPuzzle(data: PuzzleData, isSuccess: Boolean) {
+        _uiState.updatePlaying {
+            RatedPuzzleUiState.Finished(
+                data = data,
+                success = isSuccess,
+                ratingChange = puzzleData.ratingChange.get(success = isSuccess),
+            )
         }
+        logResult(data, isSuccess, puzzleData.ratingChange)
     }
 
-    private fun finishPuzzle(isSuccess: Boolean) {
-        _uiState.value = RatedPuzzleUiState.Finished(
-            data = helper.buildPuzzleData(),
-            success = isSuccess,
-            ratingChange = puzzleData!!.ratingChange.get(success = isSuccess),
-        )
-        logResult(isSuccess, puzzleData!!.ratingChange)
-    }
-
-    private fun logResult(success: Boolean, eloResult: EloResult) {
+    private fun logResult(data: PuzzleData, success: Boolean, eloResult: EloResult) {
         viewModelScope.launch {
             onPuzzleComplete(
                 PuzzleCompletionResult(
-                    puzzleId = helper.id,
-                    puzzleRating = helper.rating,
+                    puzzleId = data.id,
+                    puzzleRating = data.rating,
                     wasSuccessful = success,
                     ratingChange = eloResult.get(success = success),
                     timeSpentMillis = timer.elapsed(),
@@ -172,5 +166,18 @@ class RatedPuzzleViewModel @Inject constructor(
         if (state !is RatedPuzzleUiState.Playing || state.isShowingSolution) return
 
         block(state)
+    }
+
+    private inline fun MutableStateFlow<RatedPuzzleUiState>.updatePlaying(
+        crossinline function: (RatedPuzzleUiState.Playing) -> RatedPuzzleUiState,
+    ) = update { state ->
+        if (state !is RatedPuzzleUiState.Playing) state else function(state)
+    }
+
+    private inline fun MutableStateFlow<RatedPuzzleUiState>.updateInteractive(
+        crossinline function: (RatedPuzzleUiState.Playing) -> RatedPuzzleUiState,
+    ) = update { state ->
+        if (state !is RatedPuzzleUiState.Playing || state.isShowingSolution) state
+        else function(state)
     }
 }

@@ -39,9 +39,9 @@ import com.paulcraciunas.screens.common.board.ChessBoardTags
 import com.paulcraciunas.screens.common.board.ChessPiece
 import com.paulcraciunas.screens.common.board.PIECE_MOVE_ANIMATION_DURATION_MS
 import com.paulcraciunas.screens.common.design.theme.Design
-import com.paulcraciunas.screens.common.model.v2.AnimatingPiece2
-import com.paulcraciunas.screens.common.model.v2.BoardViewData2
-import com.paulcraciunas.screens.common.model.v2.SquareViewData2
+import com.paulcraciunas.screens.common.model.AnimatingPiece2
+import com.paulcraciunas.screens.common.model.BoardViewData2
+import com.paulcraciunas.screens.common.model.SquareViewData2
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import kotlin.math.roundToInt

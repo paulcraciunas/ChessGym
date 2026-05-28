@@ -61,7 +61,7 @@ import com.paulcraciunas.chessgym.screens.ImportGame
 import com.paulcraciunas.chessgym.screens.MoveThePiece
 import com.paulcraciunas.chessgym.screens.PuzzleDashboard
 import com.paulcraciunas.chessgym.screens.PuzzleRush
-import com.paulcraciunas.chessgym.screens.PuzzleStreak2
+import com.paulcraciunas.chessgym.screens.PuzzleStreak
 import com.paulcraciunas.chessgym.screens.RatedPuzzle
 import com.paulcraciunas.chessgym.screens.Settings
 import com.paulcraciunas.chessgym.screens.SignIn
@@ -204,7 +204,7 @@ fun MainScreen(
                             animatedComposable<Screen.RatedPuzzle> { RatedPuzzle(tabNavController = navController) }
                             animatedComposable<Screen.PuzzleRush> { PuzzleRush(tabNavController = navController) }
                             animatedComposable<Screen.FailedPuzzles> { FailedPuzzles(tabNavController = navController) }
-                            animatedComposable<Screen.PuzzleStreak> { PuzzleStreak2(tabNavController = navController) }
+                            animatedComposable<Screen.PuzzleStreak> { PuzzleStreak(tabNavController = navController) }
                             animatedComposable<Screen.BoardVisualization> {
                                 BoardVisDashboard(tabNavController = navController, onDrawerToggle = onDrawerToggle)
                             }

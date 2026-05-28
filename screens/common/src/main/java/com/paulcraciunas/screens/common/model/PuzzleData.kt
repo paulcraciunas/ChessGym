@@ -1,11 +1,19 @@
 package com.paulcraciunas.screens.common.model
 
+import androidx.compose.runtime.Immutable
 import com.paulcraciunas.game.logic.api.Side
-import com.paulcraciunas.game.logic.api.board.Piece
 
+@Immutable
 data class PuzzleData(
     val rating: Int,
     val player: Side,
-    val boardData: BoardViewData,
-    val captured: Map<Side, List<Piece>>,
-)
+    val id: Int?,
+    val boardData: BoardViewData2,
+    val captured: Captured,
+) {
+    @Immutable
+    data class Captured(
+        val byPlayer: String,
+        val byOpponent: String,
+    )
+}

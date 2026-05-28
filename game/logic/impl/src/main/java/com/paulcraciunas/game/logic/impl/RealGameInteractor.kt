@@ -76,7 +76,7 @@ class RealGameInteractor : GameInteractor {
         _captured[Side.BLACK]!!.clear()
         for (side in Side.entries) {
             for (piece in Piece.entries) {
-                val missing = piece.startingCount() - game.board.pieces(side, piece).size
+                val missing = piece.defaultCount - game.board.pieces(side, piece).size
                 (0 until missing).forEach { _ ->
                     _captured[side.other()]!!.add(piece)
                 }

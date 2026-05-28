@@ -3,7 +3,6 @@ package com.paulcraciunas.logic.builders
 import com.paulcraciunas.game.logic.api.GameFactory
 import com.paulcraciunas.game.logic.api.GameInteractor
 import com.paulcraciunas.game.logic.api.MoveValidator
-import com.paulcraciunas.game.logic.api.PuzzleInteractor
 import com.paulcraciunas.game.logic.api.board.IBoardFactory
 import com.paulcraciunas.game.logic.impl.RealGameFactory
 import com.paulcraciunas.game.logic.impl.board.BoardFactory
@@ -13,7 +12,6 @@ object Builders {
 
     fun gameFactory(): GameFactory = gameFactory
     fun boardFactory(): IBoardFactory = BoardFactory
-    fun puzzleInteractor(): PuzzleInteractor = gameFactory.puzzleInteractor()
     fun gameInteractor(): GameInteractor = gameFactory.gameInteractor()
     fun moveValidator(): MoveValidator = gameFactory.moveValidator()
 }

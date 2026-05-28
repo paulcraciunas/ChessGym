@@ -2,15 +2,6 @@ package com.paulcraciunas.screens.puzzles.failed.ui
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,51 +10,43 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.paulcraciunas.game.logic.api.Side
+import com.paulcraciunas.game.logic.api.board.Locus
+import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.global.resources.R
+import com.paulcraciunas.screens.common.AnimatedBoard
 import com.paulcraciunas.screens.common.ChildAppBar
 import com.paulcraciunas.screens.common.FailedContent
 import com.paulcraciunas.screens.common.LoadingContent
-import com.paulcraciunas.screens.common.board.BoardOrientation
-import com.paulcraciunas.screens.common.board.ChessBoard
-import com.paulcraciunas.screens.common.controls.CapturedPieces
+import com.paulcraciunas.screens.common.LocalUiSettings
+import com.paulcraciunas.screens.common.UiSettings
+import com.paulcraciunas.screens.common.board.v2.BoardOrientation2
+import com.paulcraciunas.screens.common.board.v2.ChessBoard2
 import com.paulcraciunas.screens.common.controls.PuzzleResultsGrid
+import com.paulcraciunas.screens.common.controls.v2.CapturedPieces2
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.design.components.SpacerSize
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.dialogs.PromotionDialog
-import com.paulcraciunas.screens.common.model.PuzzleData
-import com.paulcraciunas.screens.common.model.PuzzleResult
-import com.paulcraciunas.screens.common.previews.SampleBoardViewData
+import com.paulcraciunas.screens.common.previews.PreviewData
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
-import com.paulcraciunas.screens.puzzles.failed.vm.FailedPuzzlesScreenInteractor
 import com.paulcraciunas.screens.puzzles.failed.vm.FailedPuzzlesUiState
-import com.paulcraciunas.screens.puzzles.failed.vm.StubFailedPuzzlesScreenInteractor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FailedPuzzlesScreen(
     uiState: FailedPuzzlesUiState,
-    showBorders: Boolean,
-    highlightLegalMoves: Boolean,
-    enableAnimations: Boolean,
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit = {},
-    interactions: FailedPuzzlesScreenInteractor = StubFailedPuzzlesScreenInteractor(),
+    onSquareClicked: (selection: Locus) -> Unit = {},
+    onPromote: (to: Piece) -> Unit = {},
+    onDismissCompletion: () -> Unit = {},
+    onAnalyzeFailedPuzzle: (puzzleId: Int) -> Unit = {},
 ) {
-    // Handle Empty state separately as it has its own Scaffold
-    if (uiState is FailedPuzzlesUiState.Empty) {
-        EmptyFailedPuzzlesContent(
-            onNavigateBack = onNavigateBack,
-            modifier = Modifier.fillMaxSize()
-        )
-        return
-    }
-
     val progress = when (uiState) {
         is FailedPuzzlesUiState.BoardState -> uiState.progress
         else -> null
@@ -84,31 +67,26 @@ fun FailedPuzzlesScreen(
                 }
             )
         },
+        containerColor = Design.colors.primarySoft,
         modifier = modifier.testTag { FailedPuzzlesScreenTags.SCREEN },
     ) { innerPadding ->
+        val screenModifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)
         when (uiState) {
-            is FailedPuzzlesUiState.Loading -> {
-                LoadingContent(modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding))
-            }
-            is FailedPuzzlesUiState.Failed -> {
-                FailedContent(modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding))
-            }
+            is FailedPuzzlesUiState.Empty -> EmptyFailedPuzzlesContent(modifier = screenModifier)
+            is FailedPuzzlesUiState.Loading -> LoadingContent(modifier = screenModifier)
+            is FailedPuzzlesUiState.Failed -> FailedContent(modifier = screenModifier)
             is FailedPuzzlesUiState.BoardState -> {
                 FailedPuzzlesContent(
                     uiState = uiState,
-                    showBorders = showBorders,
-                    highlightLegalMoves = highlightLegalMoves,
-                    enableAnimations = enableAnimations,
-                    interactions = interactions,
-                    modifier = Modifier.background(Design.colors.primarySoft)
-                        .padding(innerPadding)
+                    onSquareClicked = onSquareClicked,
+                    onPromote = onPromote,
+                    onDismissCompletion = onDismissCompletion,
+                    onAnalyzeFailedPuzzle = onAnalyzeFailedPuzzle,
+                    modifier = screenModifier,
                 )
             }
-            else -> {}
         }
     }
 }
@@ -117,78 +95,50 @@ fun FailedPuzzlesScreen(
 @Composable
 private fun FailedPuzzlesContent(
     uiState: FailedPuzzlesUiState.BoardState,
-    showBorders: Boolean,
-    highlightLegalMoves: Boolean,
-    enableAnimations: Boolean,
-    interactions: FailedPuzzlesScreenInteractor,
+    onSquareClicked: (selection: Locus) -> Unit,
+    onPromote: (to: Piece) -> Unit,
+    onDismissCompletion: () -> Unit,
+    onAnalyzeFailedPuzzle: (puzzleId: Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val data = uiState.data
     Column(
         modifier = modifier.fillMaxSize()
     ) {
-        // Animate board transition when puzzle count changes
-        AnimatedContent(
-            targetState = uiState.results.size,
-            transitionSpec = {
-                if (enableAnimations) {
-                    (slideInHorizontally { width -> width } + fadeIn())
-                        .togetherWith(slideOutHorizontally { width -> -width } + fadeOut())
-                } else {
-                    EnterTransition.None togetherWith ExitTransition.None
-                }
-            },
-            label = "BoardTransition"
-        ) { _ ->
-            Column {
-                CapturedPieces(
-                    capturedPieces = data.captured[data.player.other()] ?: emptyList(),
-                    side = data.player,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                ChessBoard(
-                    board = data.boardData,
-                    orientation = BoardOrientation.fromSide(data.player),
-                    onClick = interactions::onSquareClicked,
-                    showBorders = showBorders,
-                    highlightLegalMoves = highlightLegalMoves,
-                    enableAnimations = enableAnimations,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                CapturedPieces(
-                    capturedPieces = data.captured[data.player] ?: emptyList(),
-                    side = data.player.other(),
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
+        val isBoardInteractive = uiState !is FailedPuzzlesUiState.Playing || !uiState.isAnimating
+        CapturedPieces2(capturedPieces = data.captured.byOpponent, side = data.player, modifier = Modifier.fillMaxWidth())
+        AnimatedBoard(
+            targetState = data,
+            contentKey = { it.id },
+        ) { puzzleData ->
+            ChessBoard2(
+                board = puzzleData.boardData,
+                orientation = BoardOrientation2.fromSide(puzzleData.player),
+                onClick = if (isBoardInteractive) onSquareClicked else { _ -> },
+                modifier = Modifier.fillMaxWidth()
+            )
         }
-
+        CapturedPieces2(capturedPieces = data.captured.byPlayer, side = data.player.other(), modifier = Modifier.fillMaxWidth())
         ChessGymSpacer(size = SpacerSize.XXLARGE)
-
-        // Results grid
         if (uiState.results.isNotEmpty()) {
             PuzzleResultsGrid(
                 results = uiState.results,
-                onFailedPuzzleClicked = interactions::onAnalyzeFailedPuzzle,
+                onFailedPuzzleClicked = onAnalyzeFailedPuzzle,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = Design.dimensions.spacing.xxl)
             )
         }
-
-        // Promotion dialog
         if (uiState is FailedPuzzlesUiState.Playing && uiState.promotion != null) {
             PromotionDialog(
                 side = data.player,
-                onPieceChosen = interactions::onPromote
+                onPieceChosen = onPromote
             )
         }
-
-        // Completion dialog when finished
         if (uiState is FailedPuzzlesUiState.Finished && uiState.showCompletionDialog) {
             FailedPuzzlesCompletionDialog(
                 puzzlesSolved = uiState.progress.solved,
-                onDismiss = interactions::onDismissCompletion,
+                onDismiss = onDismissCompletion,
             )
         }
     }
@@ -212,26 +162,16 @@ private fun ProgressIndicator(
 @Composable
 private fun PlayingPreview() {
     ChessGymTheme {
-        FailedPuzzlesScreen(
-            uiState = FailedPuzzlesUiState.Playing(
-                data = PuzzleData(
-                    rating = 1350,
-                    player = Side.BLACK,
-                    boardData = SampleBoardViewData.startingBoard(),
-                    captured = emptyMap(),
+        CompositionLocalProvider(LocalUiSettings provides UiSettings.default()) {
+            FailedPuzzlesScreen(
+                uiState = FailedPuzzlesUiState.Playing(
+                    data = PreviewData().blackPuzzleData(),
+                    progress = FailedPuzzlesUiState.Progress(solved = 3, total = 10),
+                    results = PreviewData().fewResults(),
+                    promotion = null,
                 ),
-                progress = FailedPuzzlesUiState.Progress(solved = 3, total = 10),
-                results = listOf(
-                    PuzzleResult(id = 1, rating = 1200, success = true),
-                    PuzzleResult(id = 2, rating = 1250, success = true),
-                    PuzzleResult(id = 3, rating = 1300, success = false),
-                ),
-                promotion = null,
-            ),
-            showBorders = true,
-            highlightLegalMoves = true,
-            enableAnimations = true
-        )
+            )
+        }
     }
 }
 
@@ -240,27 +180,15 @@ private fun PlayingPreview() {
 @Composable
 private fun FinishedPreview() {
     ChessGymTheme {
-        FailedPuzzlesScreen(
-            uiState = FailedPuzzlesUiState.Finished(
-                data = PuzzleData(
-                    rating = 1400,
-                    player = Side.WHITE,
-                    boardData = SampleBoardViewData.startingBoard(),
-                    captured = emptyMap(),
+        CompositionLocalProvider(LocalUiSettings provides UiSettings.default()) {
+            FailedPuzzlesScreen(
+                uiState = FailedPuzzlesUiState.Finished(
+                    data = PreviewData().whitePuzzleData(),
+                    progress = FailedPuzzlesUiState.Progress(solved = 4, total = 5),
+                    results = PreviewData().manyResults(),
+                    showCompletionDialog = false,
                 ),
-                progress = FailedPuzzlesUiState.Progress(solved = 4, total = 5),
-                results = listOf(
-                    PuzzleResult(id = 1, rating = 1200, success = true),
-                    PuzzleResult(id = 2, rating = 1250, success = true),
-                    PuzzleResult(id = 3, rating = 1300, success = true),
-                    PuzzleResult(id = 4, rating = 1320, success = true),
-                    PuzzleResult(id = 5, rating = 1350, success = false),
-                ),
-                showCompletionDialog = false,
-            ),
-            showBorders = true,
-            highlightLegalMoves = true,
-            enableAnimations = true
-        )
+            )
+        }
     }
 }

@@ -9,20 +9,17 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.paulcraciunas.chessgym.navigation.Screen
-import com.paulcraciunas.screens.common.LocalUiSettings
 import com.paulcraciunas.screens.puzzles.dashboard.ui.PuzzleDashboardScreen
 import com.paulcraciunas.screens.puzzles.dashboard.vm.PuzzleDashboardViewModel
 import com.paulcraciunas.screens.puzzles.dashboard.vm.PuzzleMode
-import com.paulcraciunas.screens.puzzles.rated.ui.RatedPuzzleScreen
-import com.paulcraciunas.screens.puzzles.rated.vm.RatedPuzzleViewModel
 import com.paulcraciunas.screens.puzzles.failed.ui.FailedPuzzlesScreen
 import com.paulcraciunas.screens.puzzles.failed.vm.FailedPuzzlesViewModel
+import com.paulcraciunas.screens.puzzles.rated.ui.RatedPuzzleScreen
+import com.paulcraciunas.screens.puzzles.rated.vm.RatedPuzzleViewModel
 import com.paulcraciunas.screens.puzzles.rush.ui.PuzzleRushScreen
 import com.paulcraciunas.screens.puzzles.rush.vm.PuzzleRushViewModel
 import com.paulcraciunas.screens.puzzles.streak.ui.PuzzleStreakScreen
-import com.paulcraciunas.screens.puzzles.streak.ui.PuzzleStreakScreen2
 import com.paulcraciunas.screens.puzzles.streak.vm.PuzzleStreakViewModel
-import com.paulcraciunas.screens.puzzles.streak.vm.PuzzleStreakViewModel2
 
 @Composable
 internal fun PuzzleDashboard(
@@ -58,7 +55,6 @@ internal fun PuzzleDashboard(
 
 @Composable
 internal fun RatedPuzzle(tabNavController: NavHostController) {
-    val settings = LocalUiSettings.current
     val vm: RatedPuzzleViewModel = hiltViewModel()
     val ratedPuzzleState by vm.uiState.collectAsStateWithLifecycle()
 
@@ -67,21 +63,23 @@ internal fun RatedPuzzle(tabNavController: NavHostController) {
 
     RatedPuzzleScreen(
         uiState = ratedPuzzleState,
-        showBorders = settings.showBorders,
-        highlightLegalMoves = settings.highlightLegalMoves,
-        enableAnimations = settings.enableAnimations,
         onNavigateBack = {
             if (!vm.onNavigateBackPressed()) {
                 tabNavController.popBackStack(Screen.PuzzleDashboard, inclusive = false)
             }
         },
-        interactions = vm,
+        onSquareClicked = vm::onSquareClicked,
+        onPromote = vm::onPromote,
+        onHintRequested = vm::onHintRequested,
+        onAbandon = vm::onAbandon,
+        onAbandonConfirmed = vm::onAbandonConfirmed,
+        onAbandonDismissed = vm::onAbandonDismissed,
+        onNextPuzzle = vm::onNextPuzzle,
     )
 }
 
 @Composable
 internal fun PuzzleRush(tabNavController: NavHostController) {
-    val settings = LocalUiSettings.current
     val vm: PuzzleRushViewModel = hiltViewModel()
     val puzzleRushState by vm.uiState.collectAsStateWithLifecycle()
 
@@ -93,19 +91,17 @@ internal fun PuzzleRush(tabNavController: NavHostController) {
 
     PuzzleRushScreen(
         uiState = puzzleRushState,
-        showBorders = settings.showBorders,
-        highlightLegalMoves = settings.highlightLegalMoves,
-        enableAnimations = settings.enableAnimations,
-        onNavigateBack = {
-            tabNavController.popBackStack(Screen.PuzzleDashboard, inclusive = false)
-        },
-        interactions = vm,
+        onSquareClicked = vm::onSquareClicked,
+        onPromote = vm::onPromote,
+        onPlayAgain = vm::onPlayAgain,
+        onDismissSummary = vm::onDismissSummary,
+        onAnalyzeFailedPuzzle = vm::onAnalyzeFailedPuzzle,
+        onNavigateBack = { tabNavController.popBackStack(Screen.PuzzleDashboard, inclusive = false) },
     )
 }
 
 @Composable
 internal fun FailedPuzzles(tabNavController: NavHostController) {
-    val settings = LocalUiSettings.current
     val vm: FailedPuzzlesViewModel = hiltViewModel()
     val failedPuzzlesState by vm.uiState.collectAsStateWithLifecycle()
 
@@ -120,19 +116,16 @@ internal fun FailedPuzzles(tabNavController: NavHostController) {
 
     FailedPuzzlesScreen(
         uiState = failedPuzzlesState,
-        showBorders = settings.showBorders,
-        highlightLegalMoves = settings.highlightLegalMoves,
-        enableAnimations = settings.enableAnimations,
-        onNavigateBack = {
-            tabNavController.popBackStack(Screen.PuzzleDashboard, inclusive = false)
-        },
-        interactions = vm,
+        onNavigateBack = { tabNavController.popBackStack(Screen.PuzzleDashboard, inclusive = false) },
+        onSquareClicked = vm::onSquareClicked,
+        onPromote = vm::onPromote,
+        onDismissCompletion = vm::onDismissCompletion,
+        onAnalyzeFailedPuzzle = vm::onAnalyzeFailedPuzzle,
     )
 }
 
 @Composable
 internal fun PuzzleStreak(tabNavController: NavHostController) {
-    val settings = LocalUiSettings.current
     val vm: PuzzleStreakViewModel = hiltViewModel()
     val puzzleStreakState by vm.uiState.collectAsStateWithLifecycle()
 
@@ -140,26 +133,6 @@ internal fun PuzzleStreak(tabNavController: NavHostController) {
     LifecycleEventEffect(Lifecycle.Event.ON_START) { vm.onStart() }
 
     PuzzleStreakScreen(
-        uiState = puzzleStreakState,
-        showBorders = settings.showBorders,
-        highlightLegalMoves = settings.highlightLegalMoves,
-        enableAnimations = settings.enableAnimations,
-        onNavigateBack = {
-            tabNavController.popBackStack(Screen.PuzzleDashboard, inclusive = false)
-        },
-        interactions = vm,
-    )
-}
-
-@Composable
-internal fun PuzzleStreak2(tabNavController: NavHostController) {
-    val vm: PuzzleStreakViewModel2 = hiltViewModel()
-    val puzzleStreakState by vm.uiState.collectAsStateWithLifecycle()
-
-    LifecycleEventEffect(Lifecycle.Event.ON_STOP) { vm.onStop() }
-    LifecycleEventEffect(Lifecycle.Event.ON_START) { vm.onStart() }
-
-    PuzzleStreakScreen2(
         uiState = puzzleStreakState,
         onNavigateBack = { tabNavController.popBackStack(Screen.PuzzleDashboard, inclusive = false) },
         onSquareClicked = vm::onSquareClicked,

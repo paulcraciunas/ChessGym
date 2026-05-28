@@ -5,6 +5,7 @@ plugins {
 androidLibrary {
     namespace = "com.paulcraciunas.screens.puzzles.rush.vm"
     di = true
+    compose = true
 }
 
 dependencies {

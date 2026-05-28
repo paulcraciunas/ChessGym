@@ -1,13 +1,6 @@
 package com.paulcraciunas.screens.puzzles.rated.ui
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,77 +8,71 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.paulcraciunas.game.logic.api.Side
+import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.global.resources.R
+import com.paulcraciunas.screens.common.AnimatedControls
 import com.paulcraciunas.screens.common.ChildAppBar
 import com.paulcraciunas.screens.common.FailedContent
 import com.paulcraciunas.screens.common.LoadingContent
-import com.paulcraciunas.screens.common.board.BoardOrientation
-import com.paulcraciunas.screens.common.board.ChessBoard
-import com.paulcraciunas.screens.common.controls.CapturedPieces
+import com.paulcraciunas.screens.common.LocalUiSettings
+import com.paulcraciunas.screens.common.UiSettings
+import com.paulcraciunas.screens.common.board.v2.BoardOrientation2
+import com.paulcraciunas.screens.common.board.v2.ChessBoard2
 import com.paulcraciunas.screens.common.controls.DefaultPuzzleControls
-import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
+import com.paulcraciunas.screens.common.controls.v2.CapturedPieces2
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.dialogs.AbandonConfirmationDialog
 import com.paulcraciunas.screens.common.dialogs.PromotionDialog
-import com.paulcraciunas.screens.common.model.PuzzleData
-import com.paulcraciunas.screens.common.previews.SampleBoardViewData
+import com.paulcraciunas.screens.common.previews.PreviewData
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
-import com.paulcraciunas.screens.puzzles.rated.vm.RatedPuzzleScreenInteractor
 import com.paulcraciunas.screens.puzzles.rated.vm.RatedPuzzleUiState
-import com.paulcraciunas.screens.puzzles.rated.vm.StubRatedPuzzleScreenInteractor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RatedPuzzleScreen(
     uiState: RatedPuzzleUiState,
-    showBorders: Boolean,
-    highlightLegalMoves: Boolean,
-    enableAnimations: Boolean,
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit = {},
-    interactions: RatedPuzzleScreenInteractor = StubRatedPuzzleScreenInteractor(),
+    onSquareClicked: (selection: Locus) -> Unit = {},
+    onPromote: (to: Piece) -> Unit = {},
+    onHintRequested: () -> Unit = {},
+    onAbandon: () -> Unit = {},
+    onAbandonConfirmed: () -> Unit = {},
+    onAbandonDismissed: () -> Unit = {},
+    onNextPuzzle: () -> Unit = {},
 ) {
     val title = when (uiState) {
         is RatedPuzzleUiState.BoardState -> stringResource(R.string.rated_puzzle_title, uiState.data.rating)
         else -> stringResource(R.string.puzzle_mode_rated_title)
     }
-    val backgroundColor = Design.colors.primarySoft
     Scaffold(
         topBar = { ChildAppBar(title = title, onBack = onNavigateBack) },
+        containerColor = Design.colors.primarySoft,
         modifier = modifier.testTag { RatedPuzzleScreenTags.SCREEN },
     ) { innerPadding ->
+        val defaultModifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)
         when (uiState) {
-            is RatedPuzzleUiState.Loading -> {
-                LoadingContent(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding)
-                        .testTag { RatedPuzzleScreenTags.LOADING }
-                )
-            }
-            is RatedPuzzleUiState.Failed -> {
-                FailedContent(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding)
-                        .testTag { RatedPuzzleScreenTags.FAILED }
-                )
-            }
+            is RatedPuzzleUiState.Loading -> LoadingContent(modifier = defaultModifier.testTag { RatedPuzzleScreenTags.LOADING })
+            is RatedPuzzleUiState.Failed -> FailedContent(modifier = defaultModifier.testTag { RatedPuzzleScreenTags.FAILED })
             is RatedPuzzleUiState.BoardState -> {
                 RatedPuzzleContent(
                     uiState = uiState,
-                    showBorders = showBorders,
-                    highlightLegalMoves = highlightLegalMoves,
-                    enableAnimations = enableAnimations,
-                    interactions = interactions,
-                    modifier = Modifier.background(backgroundColor)
-                        .padding(innerPadding)
+                    onSquareClicked = onSquareClicked,
+                    onPromote = onPromote,
+                    onHintRequested = onHintRequested,
+                    onAbandon = onAbandon,
+                    onAbandonConfirmed = onAbandonConfirmed,
+                    onAbandonDismissed = onAbandonDismissed,
+                    onNextPuzzle = onNextPuzzle,
+                    modifier = defaultModifier,
                 )
             }
         }
@@ -95,10 +82,13 @@ fun RatedPuzzleScreen(
 @Composable
 private fun RatedPuzzleContent(
     uiState: RatedPuzzleUiState.BoardState,
-    showBorders: Boolean,
-    highlightLegalMoves: Boolean,
-    enableAnimations: Boolean,
-    interactions: RatedPuzzleScreenInteractor,
+    onSquareClicked: (selection: Locus) -> Unit,
+    onPromote: (to: Piece) -> Unit,
+    onHintRequested: () -> Unit,
+    onAbandon: () -> Unit,
+    onAbandonConfirmed: () -> Unit,
+    onAbandonDismissed: () -> Unit,
+    onNextPuzzle: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val data = uiState.data
@@ -106,70 +96,49 @@ private fun RatedPuzzleContent(
     Column(
         modifier = modifier.fillMaxSize()
     ) {
-        CapturedPieces(
-            capturedPieces = data.captured[data.player.other()]!!,
-            side = data.player,
-            modifier = Modifier.fillMaxWidth()
-        )
-        ChessBoard(
+        CapturedPieces2(capturedPieces = data.captured.byOpponent, side = data.player, modifier = Modifier.fillMaxWidth())
+        ChessBoard2(
             board = data.boardData,
-            orientation = BoardOrientation.fromSide(data.player),
-            onClick = if (isShowingSolution) { _ -> } else interactions::onSquareClicked,
-            showBorders = showBorders,
-            highlightLegalMoves = highlightLegalMoves,
-            enableAnimations = enableAnimations,
+            orientation = BoardOrientation2.fromSide(data.player),
+            onClick = if (!isShowingSolution) onSquareClicked else { _ -> },
             modifier = Modifier.fillMaxWidth()
         )
-        CapturedPieces(
-            capturedPieces = data.captured[data.player]!!,
-            side = data.player.other(),
-            modifier = Modifier.fillMaxWidth()
-        )
-        ChessGymSpacer()
-        AnimatedContent(
-            targetState = uiState is RatedPuzzleUiState.Finished,
-            transitionSpec = {
-                (slideInVertically { height -> height } + fadeIn())
-                    .togetherWith(slideOutVertically { height -> -height } + fadeOut())
-            },
-            label = "ControlsAnimation"
-        ) { isFinished ->
-            if (isFinished && uiState is RatedPuzzleUiState.Finished) {
+        CapturedPieces2(capturedPieces = data.captured.byPlayer, side = data.player.other(), modifier = Modifier.fillMaxWidth())
+        AnimatedControls(targetState = uiState is RatedPuzzleUiState.Finished) { isEnded ->
+            if (isEnded && uiState is RatedPuzzleUiState.Finished) {
                 FinishedPuzzleControls(
                     success = uiState.success,
                     ratingChange = uiState.ratingChange,
                     modifier = Modifier
                         .fillMaxWidth()
                         .testTag { RatedPuzzleScreenTags.Finished.CONTROLS },
-                    onPlayNext = interactions::onNextPuzzle,
+                    onPlayNext = onNextPuzzle,
                 )
             } else if (uiState is RatedPuzzleUiState.Playing) {
                 DefaultPuzzleControls(
                     hintEnabled = uiState.hintEnabled && !isShowingSolution,
                     toMove = data.player,
-                    onHintRequested = interactions::onHintRequested,
-                    onAbandonRequested = interactions::onAbandon,
+                    onHintRequested = onHintRequested,
+                    onAbandonRequested = onAbandon,
                     modifier = Modifier.fillMaxWidth(),
                     abandonEnabled = !isShowingSolution,
                 )
             }
         }
-        // Dialogs for playing state
         if (uiState is RatedPuzzleUiState.Playing && !isShowingSolution) {
             if (uiState.showAbandonDialog) {
                 AbandonConfirmationDialog(
-                    onConfirm = interactions::onAbandonConfirmed,
-                    onDismiss = interactions::onAbandonDismissed
+                    onConfirm = onAbandonConfirmed,
+                    onDismiss = onAbandonDismissed
                 )
             }
             if (uiState.promotion != null) {
                 PromotionDialog(
                     side = data.player,
-                    onPieceChosen = interactions::onPromote
+                    onPieceChosen = onPromote
                 )
             }
         }
-        ChessGymSpacer()
     }
 }
 
@@ -178,25 +147,16 @@ private fun RatedPuzzleContent(
 @Composable
 private fun WhitePlayingPreview() {
     ChessGymTheme {
-        RatedPuzzleScreen(
-            uiState = RatedPuzzleUiState.Playing(
-                data = PuzzleData(
-                    rating = 1450,
-                    player = Side.WHITE,
-                    boardData = SampleBoardViewData.startingBoard(),
-                    captured = hashMapOf(
-                        Side.WHITE to listOf(Piece.Pawn, Piece.Knight, Piece.Pawn),
-                        Side.BLACK to listOf(Piece.Bishop, Piece.Pawn, Piece.Pawn, Piece.Rook)
-                    ),
+        CompositionLocalProvider(LocalUiSettings provides UiSettings.default()) {
+            RatedPuzzleScreen(
+                uiState = RatedPuzzleUiState.Playing(
+                    data = PreviewData().whitePuzzleData(),
+                    hintEnabled = true,
+                    showAbandonDialog = false,
+                    promotion = null,
                 ),
-                hintEnabled = true,
-                showAbandonDialog = false,
-                promotion = null,
-            ),
-            showBorders = true,
-            highlightLegalMoves = true,
-            enableAnimations = true
-        )
+            )
+        }
     }
 }
 
@@ -205,24 +165,15 @@ private fun WhitePlayingPreview() {
 @Composable
 private fun BlackPlayingPreview() {
     ChessGymTheme {
-        RatedPuzzleScreen(
-            uiState = RatedPuzzleUiState.Playing(
-                data = PuzzleData(
-                    rating = 1450,
-                    player = Side.BLACK,
-                    boardData = SampleBoardViewData.startingBoard(),
-                    captured = hashMapOf(
-                        Side.WHITE to listOf(Piece.Pawn, Piece.Knight, Piece.Pawn),
-                        Side.BLACK to listOf(Piece.Bishop, Piece.Pawn, Piece.Pawn, Piece.Rook)
-                    ),
+        CompositionLocalProvider(LocalUiSettings provides UiSettings.default()) {
+            RatedPuzzleScreen(
+                uiState = RatedPuzzleUiState.Playing(
+                    data = PreviewData().blackPuzzleData(),
+                    hintEnabled = true,
+                    showAbandonDialog = false,
+                    promotion = null,
                 ),
-                hintEnabled = true,
-                showAbandonDialog = false,
-                promotion = null,
-            ),
-            showBorders = true,
-            highlightLegalMoves = true,
-            enableAnimations = true
-        )
+            )
+        }
     }
 }

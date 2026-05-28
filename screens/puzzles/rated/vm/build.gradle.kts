@@ -5,6 +5,7 @@ plugins {
 androidLibrary {
     namespace = "com.paulcraciunas.screens.puzzles.rated.vm"
     di = true
+    compose = true
 }
 
 dependencies {

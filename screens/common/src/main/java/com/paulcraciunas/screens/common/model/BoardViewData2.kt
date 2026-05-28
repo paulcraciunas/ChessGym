@@ -1,4 +1,4 @@
-package com.paulcraciunas.screens.common.model.v2
+package com.paulcraciunas.screens.common.model
 
 import androidx.compose.runtime.Immutable
 import com.paulcraciunas.game.logic.api.Side
