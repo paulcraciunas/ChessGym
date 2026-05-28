@@ -23,6 +23,7 @@ interface Game {
 
     fun play(ply: Ply)
     fun play(from: Locus, to: Locus)
+    fun play(ply: String)
     fun resign()
     fun draw()
 
