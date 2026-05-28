@@ -3,6 +3,7 @@ package com.paulcraciunas.screens.tools.importgame.vm
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.impl.RealGameFactory
+import com.paulcraciunas.serializer.api.Serializer
 import com.paulcraciunas.serializer.impl.FenSerializer
 import com.paulcraciunas.serializer.impl.PgnSerializer
 import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
@@ -24,7 +25,6 @@ import org.junit.jupiter.api.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class ImportGameViewModelTest {
-
     private val gameFactory = RealGameFactory()
     private val fenSerializer = FenSerializer(gameFactory)
     private val pgnSerializer = PgnSerializer(gameFactory)
@@ -54,9 +54,8 @@ internal class ImportGameViewModelTest {
         @Test
         fun `WHEN viewModel initialized THEN game is not loaded`() = runTest {
             assertFalse(underTest.uiState.value.isGameLoaded)
-            assertNull(underTest.uiState.value.importDialogType)
-            assertEquals(0, underTest.uiState.value.currentMoveIndex)
-            assertEquals(0, underTest.uiState.value.totalMoves)
+            assertNull(underTest.uiState.value.importType)
+            assertNavigation(back = false, forward = false)
         }
     }
 
@@ -65,20 +64,20 @@ internal class ImportGameViewModelTest {
         @Test
         fun `GIVEN no dialog WHEN onFenClicked THEN FEN dialog shown`() = runTest {
             underTest.onFenClicked()
-            assertEquals(ImportType.FEN, underTest.uiState.value.importDialogType)
+            assertEquals(ImportType.FEN, underTest.uiState.value.showImportDialog)
         }
 
         @Test
         fun `GIVEN no dialog WHEN onPgnClicked THEN PGN dialog shown`() = runTest {
             underTest.onPgnClicked()
-            assertEquals(ImportType.PGN, underTest.uiState.value.importDialogType)
+            assertEquals(ImportType.PGN, underTest.uiState.value.showImportDialog)
         }
 
         @Test
         fun `GIVEN FEN dialog shown WHEN onDismissDialog THEN dialog hidden`() = runTest {
             underTest.onFenClicked()
             underTest.onDismissDialog()
-            assertNull(underTest.uiState.value.importDialogType)
+            assertNull(underTest.uiState.value.showImportDialog)
         }
 
         @Test
@@ -101,11 +100,10 @@ internal class ImportGameViewModelTest {
 
             val state = underTest.uiState.value
             assertTrue(state.isGameLoaded)
-            assertNull(state.importDialogType)
+            assertNull(state.showImportDialog)
             assertNull(state.importError)
-            assertEquals(ImportType.FEN, state.importSource)
-            assertEquals(0, state.currentMoveIndex)
-            assertEquals(0, state.totalMoves)
+            assertEquals(ImportType.FEN, state.importType)
+            assertNavigation(back = false, forward = false)
         }
 
         @Test
@@ -116,7 +114,7 @@ internal class ImportGameViewModelTest {
             val state = underTest.uiState.value
             assertFalse(state.isGameLoaded)
             assertNotNull(state.importError)
-            assertEquals(ImportType.FEN, state.importDialogType)
+            assertEquals(ImportType.FEN, state.showImportDialog)
         }
     }
 
@@ -128,10 +126,9 @@ internal class ImportGameViewModelTest {
 
             val state = underTest.uiState.value
             assertTrue(state.isGameLoaded)
-            assertNull(state.importDialogType)
-            assertEquals(ImportType.PGN, state.importSource)
-            assertEquals(4, state.totalMoves)
-            assertEquals(4, state.currentMoveIndex)
+            assertNull(state.showImportDialog)
+            assertEquals(ImportType.PGN, state.importType)
+            assertNavigation(back = true, forward = false)
         }
 
         @Test
@@ -140,8 +137,7 @@ internal class ImportGameViewModelTest {
 
             val state = underTest.uiState.value
             assertTrue(state.isGameLoaded)
-            assertEquals(4, state.totalMoves)
-            assertEquals(4, state.currentMoveIndex)
+            assertNavigation(back = true, forward = false)
         }
 
         @Test
@@ -150,7 +146,7 @@ internal class ImportGameViewModelTest {
 
             underTest.onSquareClicked(Locus.e2)
 
-            assertNull(underTest.uiState.value.boardData.at(Locus.e2).piece?.isSelected)
+            assertNull(underTest.uiState.value.data.boardData.at(Locus.e2).piece?.isSelected)
         }
     }
 
@@ -159,12 +155,11 @@ internal class ImportGameViewModelTest {
         @Test
         fun `GIVEN PGN at last move WHEN jump to start THEN shows initial position`() = runTest {
             importPgn("1.e4 e5 2.Nf3 Nc6")
-            assertEquals(4, underTest.uiState.value.currentMoveIndex)
+            assertNavigation(back = true, forward = false)
 
             underTest.onJumpToStart()
 
-            assertEquals(0, underTest.uiState.value.currentMoveIndex)
-            assertEquals(4, underTest.uiState.value.totalMoves)
+            assertNavigation(back = false, forward = true)
         }
 
         @Test
@@ -173,7 +168,7 @@ internal class ImportGameViewModelTest {
 
             underTest.onPreviousMove()
 
-            assertEquals(3, underTest.uiState.value.currentMoveIndex)
+            assertNavigation(back = true, forward = true)
         }
 
         @Test
@@ -183,7 +178,7 @@ internal class ImportGameViewModelTest {
 
             underTest.onNextMove()
 
-            assertEquals(1, underTest.uiState.value.currentMoveIndex)
+            assertNavigation(back = true, forward = true)
         }
 
         @Test
@@ -193,7 +188,7 @@ internal class ImportGameViewModelTest {
 
             underTest.onJumpToEnd()
 
-            assertEquals(4, underTest.uiState.value.currentMoveIndex)
+            assertNavigation(back = true, forward = false)
         }
 
         @Test
@@ -203,7 +198,7 @@ internal class ImportGameViewModelTest {
 
             underTest.onPreviousMove()
 
-            assertEquals(0, underTest.uiState.value.currentMoveIndex)
+            assertNavigation(back = false, forward = true)
         }
 
         @Test
@@ -212,7 +207,7 @@ internal class ImportGameViewModelTest {
 
             underTest.onNextMove()
 
-            assertEquals(4, underTest.uiState.value.currentMoveIndex)
+            assertNavigation(back = true, forward = false)
         }
 
         @Test
@@ -220,10 +215,10 @@ internal class ImportGameViewModelTest {
             importPgn("1.e4 e5 2.Nf3 Nc6")
             underTest.onJumpToStart()
 
-            val boards = mutableListOf(underTest.uiState.value.boardData)
+            val boards = mutableListOf(underTest.uiState.value.data.boardData)
             repeat(4) {
                 underTest.onNextMove()
-                boards.add(underTest.uiState.value.boardData)
+                boards.add(underTest.uiState.value.data.boardData)
             }
 
             assertEquals(5, boards.toSet().size)
@@ -235,7 +230,7 @@ internal class ImportGameViewModelTest {
 
             underTest.onPreviousMove()
 
-            assertNull(underTest.uiState.value.boardData.at(Locus.e2).piece?.isSelected)
+            assertNull(underTest.uiState.value.data.boardData.at(Locus.e2).piece?.isSelected)
         }
     }
 
@@ -247,7 +242,7 @@ internal class ImportGameViewModelTest {
 
             underTest.onSquareClicked(Locus.e2)
 
-            assertEquals(true, underTest.uiState.value.boardData.at(Locus.e2).piece?.isSelected)
+            assertEquals(true, underTest.uiState.value.data.boardData.at(Locus.e2).piece?.isSelected)
         }
 
         @Test
@@ -257,11 +252,10 @@ internal class ImportGameViewModelTest {
             underTest.onSquareClicked(Locus.e2)
             underTest.onSquareClicked(Locus.e4)
 
-            val state = underTest.uiState.value
-            assertNull(underTest.uiState.value.boardData.at(Locus.e2).piece?.isSelected)
-            assertEquals(false, underTest.uiState.value.boardData.at(Locus.e4).piece?.isSelected)
-            assertEquals(1, state.currentMoveIndex)
-            assertEquals(1, state.totalMoves)
+            val data = underTest.uiState.value.data.boardData
+            assertNull(data.at(Locus.e2).piece?.isSelected)
+            assertEquals(false, data.at(Locus.e4).piece?.isSelected)
+            assertNavigation(back = true, forward = false)
         }
 
         @Test
@@ -269,12 +263,10 @@ internal class ImportGameViewModelTest {
             importStartingPosition()
             playMove(Locus.e2, Locus.e4)
             playMove(Locus.e7, Locus.e5)
-            assertEquals(2, underTest.uiState.value.totalMoves)
 
             underTest.onPreviousMove()
 
-            assertEquals(1, underTest.uiState.value.currentMoveIndex)
-            assertEquals(2, underTest.uiState.value.totalMoves)
+            assertNavigation(back = true, forward = true)
         }
 
         @Test
@@ -286,9 +278,7 @@ internal class ImportGameViewModelTest {
             underTest.onJumpToStart()
             playMove(Locus.d2, Locus.d4)
 
-            val state = underTest.uiState.value
-            assertEquals(1, state.currentMoveIndex)
-            assertEquals(1, state.totalMoves)
+            assertNavigation(back = true, forward = false)
         }
 
         @Test
@@ -296,10 +286,10 @@ internal class ImportGameViewModelTest {
             importStartingPosition()
 
             underTest.onPreviousMove()
-            assertEquals(0, underTest.uiState.value.currentMoveIndex)
+            assertNavigation(back = false, forward = false)
 
             underTest.onJumpToStart()
-            assertEquals(0, underTest.uiState.value.currentMoveIndex)
+            assertNavigation(back = false, forward = false)
         }
 
         @Test
@@ -310,16 +300,16 @@ internal class ImportGameViewModelTest {
             underTest.onJumpToStart()
 
             underTest.onNextMove()
-            assertEquals(1, underTest.uiState.value.currentMoveIndex)
+            assertNavigation(back = true, forward = true)
 
             underTest.onJumpToEnd()
-            assertEquals(2, underTest.uiState.value.currentMoveIndex)
+            assertNavigation(back = true, forward = false)
         }
 
         @Test
         fun `GIVEN no game loaded WHEN square clicked THEN nothing happens`() = runTest {
             underTest.onSquareClicked(Locus.e4)
-            assertNull(underTest.uiState.value.boardData.at(Locus.e4).piece?.isSelected)
+            assertNull(underTest.uiState.value.data.boardData.at(Locus.e4).piece?.isSelected)
         }
 
         @Test
@@ -331,20 +321,18 @@ internal class ImportGameViewModelTest {
 
             underTest.onPreviousMove()
             underTest.onPreviousMove()
-            assertEquals(1, underTest.uiState.value.currentMoveIndex)
+            assertNavigation(back = true, forward = true)
 
             playMove(Locus.d7, Locus.d5)
 
-            val state = underTest.uiState.value
-            assertEquals(2, state.currentMoveIndex)
-            assertEquals(2, state.totalMoves)
-            assertEquals(Side.WHITE, state.playerSide)
+            assertNavigation(back = true, forward = false)
+            assertEquals(Side.WHITE, underTest.uiState.value.data.player)
         }
     }
 
     private fun importStartingPosition() {
         underTest.onFenClicked()
-        underTest.onImport(STARTING_FEN)
+        underTest.onImport(Serializer.STARTING_FEN)
     }
 
     private fun importPgn(pgn: String) {
@@ -357,7 +345,8 @@ internal class ImportGameViewModelTest {
         underTest.onSquareClicked(to)
     }
 
-    companion object {
-        private const val STARTING_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+    private fun assertNavigation(back: Boolean, forward: Boolean) {
+        assertEquals(back, underTest.uiState.value.canNavigateBack)
+        assertEquals(forward, underTest.uiState.value.canNavigateForward)
     }
 }

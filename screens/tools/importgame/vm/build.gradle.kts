@@ -5,6 +5,7 @@ plugins {
 androidLibrary {
     namespace = "com.paulcraciunas.screens.tools.importgame.vm"
     di = true
+    compose = true
 }
 
 dependencies {
