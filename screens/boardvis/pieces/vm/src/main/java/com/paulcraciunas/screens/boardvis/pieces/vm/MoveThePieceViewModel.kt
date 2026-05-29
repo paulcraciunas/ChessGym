@@ -13,7 +13,7 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.logic.builders.Builders
-import com.paulcraciunas.screens.common.model.BoardViewData2
+import com.paulcraciunas.screens.common.model.BoardViewData
 import com.paulcraciunas.user.api.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -233,12 +233,12 @@ private data class MoveThePieceBoardState(
     val opposingPieces: Map<Locus, Piece>,
     val visitedSquares: Set<Locus>,
 ) {
-    fun toBoardViewData(): BoardViewData2 {
+    fun toBoardViewData(): BoardViewData {
         val board = Builders.boardFactory().defaultBoard()
         board.add(playerPiece, Side.WHITE, playerPieceLocus)
         opposingPieces.forEach { (locus, piece) ->
             board.add(piece, Side.BLACK, locus)
         }
-        return BoardViewData2.from(board = board)
+        return BoardViewData.from(board = board)
     }
 }

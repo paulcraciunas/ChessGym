@@ -36,9 +36,9 @@ import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.screens.common.LocalUiSettings
 import com.paulcraciunas.screens.common.UiSettings
 import com.paulcraciunas.screens.common.design.theme.Design
-import com.paulcraciunas.screens.common.model.AnimatingPiece2
-import com.paulcraciunas.screens.common.model.BoardViewData2
-import com.paulcraciunas.screens.common.model.SquareViewData2
+import com.paulcraciunas.screens.common.model.AnimatingPiece
+import com.paulcraciunas.screens.common.model.BoardViewData
+import com.paulcraciunas.screens.common.model.SquareViewData
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import kotlin.math.roundToInt
@@ -57,7 +57,7 @@ const val PIECE_MOVE_ANIMATION_DURATION_MS = 200
 
 @Composable
 fun ChessBoard(
-    board: BoardViewData2,
+    board: BoardViewData,
     orientation: BoardOrientation,
     onClick: (Locus) -> Unit,
     modifier: Modifier = Modifier,
@@ -102,7 +102,7 @@ fun ChessBoard(
 
 @Composable
 private fun ChessBoardWithAnimation(
-    board: BoardViewData2,
+    board: BoardViewData,
     orientation: BoardOrientation,
     onClick: (Locus) -> Unit,
     piecesAlpha: Float,
@@ -144,7 +144,7 @@ private fun ChessBoardWithAnimation(
 
 @Composable
 private fun AnimatedPieceOverlay(
-    animatingPiece: AnimatingPiece2,
+    animatingPiece: AnimatingPiece,
     orientation: BoardOrientation,
     boardWidthPx: Int,
 ) {
@@ -180,7 +180,7 @@ private fun AnimatedPieceOverlay(
 
     // Using Offset.VectorConverter permits true diagnostic sub-pixel smooth sliding
     val animatedOffset = remember { Animatable(fromOffset, Offset.VectorConverter) }
-    var currentAnimationKey by remember { mutableStateOf<AnimatingPiece2?>(null) }
+    var currentAnimationKey by remember { mutableStateOf<AnimatingPiece?>(null) }
 
     LaunchedEffect(animatingPiece) {
         if (currentAnimationKey != animatingPiece) {
@@ -213,10 +213,10 @@ private fun AnimatedPieceOverlay(
 
 @Composable
 private fun ChessBoardContents(
-    board: BoardViewData2,
+    board: BoardViewData,
     orientation: BoardOrientation,
     onClick: (Locus) -> Unit,
-    animatingPiece: AnimatingPiece2?,
+    animatingPiece: AnimatingPiece?,
     piecesAlpha: Float,
     modifier: Modifier = Modifier,
 ) {
@@ -260,7 +260,7 @@ private fun ChessBoardContents(
 
 @Composable
 private fun SquareScope.SquareContent(
-    square: SquareViewData2,
+    square: SquareViewData,
     piecesAlpha: Float,
 ) {
     if (square.piece != null) {
@@ -279,7 +279,7 @@ private fun WhitePerspectivePreview() {
     ChessGymTheme {
         CompositionLocalProvider(LocalUiSettings provides UiSettings.default().copy(showBorders = false)) {
             ChessBoard(
-                board = BoardViewData2.default(),
+                board = BoardViewData.default(),
                 orientation = BoardOrientation.White,
                 onClick = { _ -> },
             )
@@ -293,7 +293,7 @@ private fun BlackPerspectivePreview() {
     ChessGymTheme {
         CompositionLocalProvider(LocalUiSettings provides UiSettings.default().copy(showBorders = false)) {
             ChessBoard(
-                board = BoardViewData2.default(),
+                board = BoardViewData.default(),
                 orientation = BoardOrientation.Black,
                 onClick = { _ -> },
             )
@@ -307,7 +307,7 @@ private fun WhitePerspectiveBordersPreview() {
     ChessGymTheme {
         CompositionLocalProvider(LocalUiSettings provides UiSettings.default()) {
             ChessBoard(
-                board = BoardViewData2.default(),
+                board = BoardViewData.default(),
                 orientation = BoardOrientation.White,
                 onClick = { _ -> },
             )

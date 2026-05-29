@@ -4,11 +4,11 @@ import androidx.compose.runtime.Immutable
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.screens.common.controls.SideSelection
-import com.paulcraciunas.screens.common.model.BoardViewData2
+import com.paulcraciunas.screens.common.model.BoardViewData
 
 @Immutable
 sealed class FindTheSquareUiState {
-    val boardData: BoardViewData2 = BoardViewData2.default()
+    val boardData: BoardViewData = BoardViewData.default()
     abstract val orientation: Side
 
     @Immutable

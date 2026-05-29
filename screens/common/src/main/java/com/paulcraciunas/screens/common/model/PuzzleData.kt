@@ -8,7 +8,7 @@ data class PuzzleData(
     val rating: Int,
     val player: Side,
     val id: Int?,
-    val boardData: BoardViewData2,
+    val boardData: BoardViewData,
     val captured: Captured,
 ) {
     @Immutable

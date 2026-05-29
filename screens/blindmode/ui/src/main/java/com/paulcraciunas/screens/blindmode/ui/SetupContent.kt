@@ -13,7 +13,7 @@ import com.paulcraciunas.screens.common.controls.SideSelectionControls
 import com.paulcraciunas.screens.common.design.components.PlayButton
 import com.paulcraciunas.screens.common.design.components.ToggleRow
 import com.paulcraciunas.screens.common.design.theme.Design
-import com.paulcraciunas.screens.common.model.BoardViewData2
+import com.paulcraciunas.screens.common.model.BoardViewData
 
 @Composable
 internal fun SetupContent(
@@ -23,7 +23,7 @@ internal fun SetupContent(
     onPlayClicked: () -> Unit = {},
 ) {
     ChessBoard(
-        board = BoardViewData2.empty(),
+        board = BoardViewData.empty(),
         orientation = BoardOrientation.White,
         onClick = {},
     )

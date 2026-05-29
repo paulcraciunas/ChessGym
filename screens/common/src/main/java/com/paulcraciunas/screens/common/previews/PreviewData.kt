@@ -2,7 +2,7 @@ package com.paulcraciunas.screens.common.previews
 
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.screens.common.model.BoardViewData2
+import com.paulcraciunas.screens.common.model.BoardViewData
 import com.paulcraciunas.screens.common.model.GameViewModelHelper.GameData2
 import com.paulcraciunas.screens.common.model.PuzzleData
 import com.paulcraciunas.screens.common.model.PuzzleResult
@@ -12,7 +12,7 @@ class PreviewData {
         rating = 1400,
         player = Side.WHITE,
         id = 42,
-        boardData = BoardViewData2.default(),
+        boardData = BoardViewData.default(),
         captured = PuzzleData.Captured(
             byPlayer = listOf(Piece.Knight, Piece.Pawn).joinToString("") { it.unicode },
             byOpponent = listOf(Piece.Rook, Piece.Bishop, Piece.Pawn).joinToString("") { it.unicode },
@@ -23,7 +23,7 @@ class PreviewData {
         rating = 1350,
         player = Side.BLACK,
         id = 84,
-        boardData = BoardViewData2.default(),
+        boardData = BoardViewData.default(),
         captured = PuzzleData.Captured(
             byPlayer = listOf(Piece.Queen, Piece.Rook, Piece.Pawn, Piece.Pawn, Piece.Pawn).joinToString("") { it.unicode },
             byOpponent = listOf(Piece.Rook, Piece.Bishop, Piece.Pawn).joinToString("") { it.unicode },
@@ -33,7 +33,7 @@ class PreviewData {
     fun whiteGameData() = GameData2(
         rating = 1442,
         player = Side.WHITE,
-        boardData = BoardViewData2.default(),
+        boardData = BoardViewData.default(),
         captured = GameData2.GameCaptured(
             byPlayer = listOf(Piece.Knight, Piece.Pawn).joinToString("") { it.unicode },
             byOpponent = listOf(Piece.Rook, Piece.Bishop, Piece.Pawn).joinToString("") { it.unicode },
@@ -43,7 +43,7 @@ class PreviewData {
     fun blackGameData() = GameData2(
         rating = 1350,
         player = Side.BLACK,
-        boardData = BoardViewData2.default(),
+        boardData = BoardViewData.default(),
         captured = GameData2.GameCaptured(
             byPlayer = listOf(Piece.Queen, Piece.Rook, Piece.Pawn, Piece.Pawn, Piece.Pawn).joinToString("") { it.unicode },
             byOpponent = listOf(Piece.Rook, Piece.Bishop, Piece.Pawn).joinToString("") { it.unicode },

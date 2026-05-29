@@ -22,7 +22,7 @@ class GameViewModelHelper {
         gameData = GameData2(
             rating = game.rating,
             player = this.player,
-            boardData = BoardViewData2.from(
+            boardData = BoardViewData.from(
                 board = game.board,
                 lastMove = game.info.lastPly.asPair()
             ),
@@ -111,7 +111,7 @@ class GameViewModelHelper {
         if (guard) {
             action()
             gameData = gameData.copy(
-                boardData = BoardViewData2.from(
+                boardData = BoardViewData.from(
                     board = game.board,
                     lastMove = game.info.lastPly.asPair()
                 ),
@@ -139,7 +139,7 @@ class GameViewModelHelper {
     data class GameData2(
         val rating: Int?,
         val player: Side,
-        val boardData: BoardViewData2,
+        val boardData: BoardViewData,
         val captured: GameCaptured,
     ) {
         @Immutable
@@ -160,20 +160,20 @@ class GameViewModelHelper {
     private fun moves(from: Locus): List<Locus> = game.plies(from).map { it.to }
     private fun canPlay(from: Locus, to: Locus): Boolean = game.ply(from, to) != null
     private fun canPromote(from: Locus, to: Locus): Boolean = game.ply(from, to)?.isPromotion() ?: false
-    private fun promote(from: Locus, to: Locus, result: Piece): BoardViewData2 {
+    private fun promote(from: Locus, to: Locus, result: Piece): BoardViewData {
         assert(canPromote(from, to))
 
         game.ply(from, to)!!.promote(result)
         return play(from, to)
     }
 
-    private fun play(from: Locus, to: Locus): BoardViewData2 {
+    private fun play(from: Locus, to: Locus): BoardViewData {
         assert(canPlay(from, to))
         game.play(from, to)
         return reloadBoard()
     }
 
-    private fun reloadBoard(): BoardViewData2 = BoardViewData2.from(
+    private fun reloadBoard(): BoardViewData = BoardViewData.from(
         board = game.board,
         lastMove = game.info.lastPly.asPair(),
         withAnimation = true

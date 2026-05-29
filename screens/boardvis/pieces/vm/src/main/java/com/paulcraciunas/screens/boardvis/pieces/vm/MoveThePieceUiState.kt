@@ -3,11 +3,11 @@ package com.paulcraciunas.screens.boardvis.pieces.vm
 import androidx.compose.runtime.Immutable
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.screens.common.model.BoardViewData2
+import com.paulcraciunas.screens.common.model.BoardViewData
 
 @Immutable
 sealed class MoveThePieceUiState {
-    abstract val boardData: BoardViewData2
+    abstract val boardData: BoardViewData
 
     @Immutable
     data class Setup(
@@ -15,12 +15,12 @@ sealed class MoveThePieceUiState {
         val selectedPiece: Piece = Piece.Rook,
         val timeRemainingSeconds: Int = DEFAULT_DURATION_SECONDS,
     ) : MoveThePieceUiState() {
-        override val boardData: BoardViewData2 = BoardViewData2.empty()
+        override val boardData: BoardViewData = BoardViewData.empty()
     }
 
     @Immutable
     data class Playing(
-        override val boardData: BoardViewData2,
+        override val boardData: BoardViewData,
         val playerPiece: Piece,
         val playerPieceLocus: Locus,
         val movesRemaining: Int,
@@ -32,7 +32,7 @@ sealed class MoveThePieceUiState {
 
     @Immutable
     data class GameOver(
-        override val boardData: BoardViewData2,
+        override val boardData: BoardViewData,
         val finalScore: Int,
         val isNewHighScore: Boolean,
         val wasCaptured: Boolean,

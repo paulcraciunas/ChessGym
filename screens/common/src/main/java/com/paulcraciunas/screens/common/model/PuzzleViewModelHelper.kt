@@ -10,7 +10,7 @@ import kotlinx.coroutines.delay
 /**
  * Helper class that encapsulates common ViewModel logic.
  *
- * This class manages the interaction between [BoardViewData2] and ViewModels,
+ * This class manages the interaction between [BoardViewData] and ViewModels,
  * providing a unified API for handling gameplay across different modes.
  *
  * Usage:
@@ -42,7 +42,7 @@ class PuzzleViewModelHelper {
             rating = puzzle.rating,
             player = puzzle.player,
             id = puzzle.id,
-            boardData = BoardViewData2.from(
+            boardData = BoardViewData.from(
                 board = puzzle.board,
                 lastMove = puzzle.info.lastPly.asPair()
             ),
@@ -149,14 +149,14 @@ class PuzzleViewModelHelper {
     private fun moves(from: Locus): List<Locus> = puzzle.plies(from).map { it.to }
     private fun canPlay(from: Locus, to: Locus): Boolean = puzzle.ply(from, to) != null
     private fun canPromote(from: Locus, to: Locus): Boolean = puzzle.ply(from, to)?.isPromotion() ?: false
-    private fun promote(from: Locus, to: Locus, result: Piece): BoardViewData2 {
+    private fun promote(from: Locus, to: Locus, result: Piece): BoardViewData {
         assert(canPromote(from, to))
 
         puzzle.ply(from, to)!!.promote(result)
         return play(from, to)
     }
 
-    private fun play(from: Locus, to: Locus): BoardViewData2 {
+    private fun play(from: Locus, to: Locus): BoardViewData {
         assert(canPlay(from, to))
         puzzle.play(from, to)
         if (!isOver()) {
@@ -165,7 +165,7 @@ class PuzzleViewModelHelper {
         return reloadBoard()
     }
 
-    private fun reloadBoard(): BoardViewData2 = BoardViewData2.from(
+    private fun reloadBoard(): BoardViewData = BoardViewData.from(
         board = puzzle.board,
         lastMove = puzzle.info.lastPly.asPair(),
         withAnimation = true

@@ -4,7 +4,7 @@ import androidx.compose.runtime.Immutable
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.screens.common.model.BoardViewData2
+import com.paulcraciunas.screens.common.model.BoardViewData
 import com.paulcraciunas.screens.common.model.GameViewModelHelper
 import com.paulcraciunas.screens.common.model.GameViewModelHelper.GameData2
 
@@ -13,7 +13,7 @@ data class AnalysisUiState(
     val data: GameData2 = GameData2(
         rating = null,
         player = Side.WHITE,
-        boardData = BoardViewData2.empty(),
+        boardData = BoardViewData.empty(),
         captured = GameData2.GameCaptured(byOpponent = "", byPlayer = "")
     ),
     val promotion: GameViewModelHelper.GamePromotion? = null,
