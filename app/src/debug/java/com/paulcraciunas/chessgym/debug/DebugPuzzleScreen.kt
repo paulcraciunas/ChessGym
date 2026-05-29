@@ -34,7 +34,7 @@ import com.paulcraciunas.screens.common.board.ChessBoard
 import com.paulcraciunas.screens.common.controls.CapturedPieces
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.dialogs.PromotionDialog
-import com.paulcraciunas.screens.common.model.PuzzleData
+import com.paulcraciunas.screens.common.model.PlayableData
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -88,7 +88,7 @@ private fun BoardContent(
     onPromote: (Piece) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val data: PuzzleData = uiState.data
+    val data: PlayableData = uiState.data
     val isFinished = uiState is DebugPuzzleUiState.Finished
 
     Column(modifier = modifier) {

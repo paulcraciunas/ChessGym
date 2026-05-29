@@ -5,8 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.puzzles.api.PuzzleRepository
-import com.paulcraciunas.screens.common.model.PuzzleData
-import com.paulcraciunas.screens.common.model.PuzzleViewModelHelper
+import com.paulcraciunas.screens.common.model.BoardInteractionHelper
+import com.paulcraciunas.screens.common.model.PlayableData
+import com.paulcraciunas.screens.common.model.Promotion
+import com.paulcraciunas.screens.common.model.PuzzlePlayableBoard
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,7 +22,7 @@ import javax.inject.Inject
 class DebugPuzzleViewModel @Inject constructor(
     private val puzzleRepository: PuzzleRepository,
 ) : ViewModel() {
-    private val helper = PuzzleViewModelHelper()
+    private val helper = BoardInteractionHelper()
 
     private val _uiState = MutableStateFlow<DebugPuzzleUiState>(DebugPuzzleUiState.Idle)
     val uiState: StateFlow<DebugPuzzleUiState> = _uiState.asStateFlow()
@@ -32,7 +34,7 @@ class DebugPuzzleViewModel @Inject constructor(
                 val puzzle = puzzleRepository.getById(id)
                 _uiState.update {
                     if (puzzle == null) DebugPuzzleUiState.Error("Puzzle #$id not found")
-                    else DebugPuzzleUiState.Playing(data = helper.load(puzzle), promotion = null)
+                    else DebugPuzzleUiState.Playing(data = helper.load(PuzzlePlayableBoard(puzzle)), promotion = null)
                 }
             } catch (e: Exception) {
                 Timber.w(e, "Failed to load debug puzzle #%d", id)
@@ -44,8 +46,8 @@ class DebugPuzzleViewModel @Inject constructor(
     fun onSquareClicked(selection: Locus) {
         _uiState.updatePlaying {
             val result = helper.handleSquareClick(selection)
-            if (!result.isOver) it.copy(data = result.data, promotion = result.promotion)
-            else DebugPuzzleUiState.Finished(data = result.data, isSuccess = result.isSuccess)
+            if (!result.data.isOver) it.copy(data = result.data, promotion = result.promotion)
+            else DebugPuzzleUiState.Finished(data = result.data, isSuccess = result.data.won)
         }
     }
 
@@ -54,8 +56,8 @@ class DebugPuzzleViewModel @Inject constructor(
             if (it.promotion == null) it
             else {
                 val result = helper.promote(to, it.promotion.at)
-                if (!result.isOver) it.copy(data = result.data, promotion = null)
-                else DebugPuzzleUiState.Finished(data = result.data, isSuccess = result.isSuccess)
+                if (!result.data.isOver) it.copy(data = result.data, promotion = null)
+                else DebugPuzzleUiState.Finished(data = result.data, isSuccess = result.data.won)
             }
         }
     }
@@ -73,16 +75,16 @@ sealed class DebugPuzzleUiState {
     data class Error(val message: String) : DebugPuzzleUiState()
 
     abstract class BoardState : DebugPuzzleUiState() {
-        abstract val data: PuzzleData
+        abstract val data: PlayableData
     }
 
     data class Playing(
-        override val data: PuzzleData,
-        val promotion: PuzzleViewModelHelper.Promotion2?,
+        override val data: PlayableData,
+        val promotion: Promotion?,
     ) : BoardState()
 
     data class Finished(
-        override val data: PuzzleData,
+        override val data: PlayableData,
         val isSuccess: Boolean,
     ) : BoardState()
 }

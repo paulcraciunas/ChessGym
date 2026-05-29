@@ -2,8 +2,8 @@ package com.paulcraciunas.screens.puzzles.rush.vm
 
 import androidx.compose.runtime.Immutable
 import com.paulcraciunas.screens.common.model.PuzzleResult
-import com.paulcraciunas.screens.common.model.PuzzleData
-import com.paulcraciunas.screens.common.model.PuzzleViewModelHelper
+import com.paulcraciunas.screens.common.model.PlayableData
+import com.paulcraciunas.screens.common.model.Promotion
 
 @Immutable
 sealed class PuzzleRushUiState {
@@ -12,29 +12,29 @@ sealed class PuzzleRushUiState {
 
     @Immutable
     abstract class BoardState : PuzzleRushUiState() {
-        abstract val data: PuzzleData
+        abstract val data: PlayableData
         abstract val timeRemainingSeconds: Int
         abstract val results: List<PuzzleResult>
     }
 
     @Immutable
     data class Ready(
-        override val data: PuzzleData,
+        override val data: PlayableData,
         override val timeRemainingSeconds: Int,
         override val results: List<PuzzleResult> = emptyList(),
     ) : BoardState()
 
     @Immutable
     data class Playing(
-        override val data: PuzzleData,
+        override val data: PlayableData,
         override val timeRemainingSeconds: Int,
         override val results: List<PuzzleResult>,
-        val promotion: PuzzleViewModelHelper.Promotion2?,
+        val promotion: Promotion?,
     ) : BoardState()
 
     @Immutable
     data class Finished(
-        override val data: PuzzleData,
+        override val data: PlayableData,
         override val timeRemainingSeconds: Int,
         override val results: List<PuzzleResult>,
         val showSummaryDialog: Boolean,

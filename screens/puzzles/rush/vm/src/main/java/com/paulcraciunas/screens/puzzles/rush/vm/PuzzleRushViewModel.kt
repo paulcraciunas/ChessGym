@@ -12,9 +12,12 @@ import com.paulcraciunas.domain.api.puzzles.PuzzleRushResult
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.screens.common.board.PIECE_MOVE_ANIMATION_DURATION_MS
+import com.paulcraciunas.screens.common.model.BoardInteractionHelper
+import com.paulcraciunas.screens.common.model.ClickResult
+import com.paulcraciunas.screens.common.model.PlayableData
+import com.paulcraciunas.screens.common.model.Promotion
+import com.paulcraciunas.screens.common.model.PuzzlePlayableBoard
 import com.paulcraciunas.screens.common.model.PuzzleResult
-import com.paulcraciunas.screens.common.model.PuzzleData
-import com.paulcraciunas.screens.common.model.PuzzleViewModelHelper
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import com.paulcraciunas.user.api.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -44,7 +47,7 @@ class PuzzleRushViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val getPuzzleFen: GetPuzzleFen,
 ) : ViewModel() {
-    private val helper = PuzzleViewModelHelper()
+    private val helper = BoardInteractionHelper()
     private var enableAnimations: Boolean = true
 
     private val _navigateToAnalysis = Channel<PuzzleAnalysisData>(Channel.BUFFERED)
@@ -96,7 +99,7 @@ class PuzzleRushViewModel @Inject constructor(
                 currentHighScore = userRepository.get().highScores.puzzleRush
                 val puzzle = puzzleSeries.next()
                 countdownTimer.set(durationSeconds = DURATION_SECONDS)
-                _gameState.update { GameState.Ready(puzzleData = helper.load(puzzle)) }
+                _gameState.update { GameState.Ready(puzzleData = helper.load(PuzzlePlayableBoard(puzzle))) }
             } catch (e: Exception) {
                 Timber.w(e, "Failed to load puzzle rush series")
                 _gameState.update { GameState.Failed }
@@ -148,8 +151,8 @@ class PuzzleRushViewModel @Inject constructor(
         }
     }
 
-    private fun handleMoveResult(result: PuzzleViewModelHelper.OnSquareClick2) {
-        if (result.isOver) {
+    private fun handleMoveResult(result: ClickResult) {
+        if (result.data.isOver) {
             onPuzzleCompleted(result)
         } else _gameState.update { state ->
             if (state !is GameState.Playing) state
@@ -157,7 +160,7 @@ class PuzzleRushViewModel @Inject constructor(
         }
     }
 
-    private fun onPuzzleCompleted(result: PuzzleViewModelHelper.OnSquareClick2) {
+    private fun onPuzzleCompleted(result: ClickResult) {
         _gameState.update { state ->
             if (state !is GameState.Playing) state
             else state.copy(
@@ -166,8 +169,8 @@ class PuzzleRushViewModel @Inject constructor(
                 isAnimating = true,
                 results = state.results + PuzzleResult(
                     id = result.data.id,
-                    rating = result.data.rating,
-                    success = result.isSuccess,
+                    rating = result.data.rating!!,
+                    success = result.data.won,
                 ),
             )
         }
@@ -179,12 +182,12 @@ class PuzzleRushViewModel @Inject constructor(
 
             val currentState = _gameState.value as? GameState.Playing ?: return@launch
 
-            if (!result.isSuccess) {
+            if (!result.data.won) {
                 finishRush(currentState.results)
                 return@launch
             }
             try {
-                val nextData = helper.load(puzzleSeries.next())
+                val nextData = helper.load(PuzzlePlayableBoard(puzzleSeries.next()))
                 _gameState.update { state ->
                     if (state is GameState.Playing) {
                         state.copy(puzzleData = nextData, isAnimating = false)
@@ -234,7 +237,7 @@ class PuzzleRushViewModel @Inject constructor(
             override fun toUiState(remainingSeconds: Int) = PuzzleRushUiState.Failed
         }
 
-        data class Ready(val puzzleData: PuzzleData) : GameState() {
+        data class Ready(val puzzleData: PlayableData) : GameState() {
             override fun toUiState(remainingSeconds: Int) = PuzzleRushUiState.Ready(
                 data = puzzleData,
                 timeRemainingSeconds = DURATION_SECONDS,
@@ -242,9 +245,9 @@ class PuzzleRushViewModel @Inject constructor(
         }
 
         data class Playing(
-            val puzzleData: PuzzleData,
+            val puzzleData: PlayableData,
             val results: List<PuzzleResult>,
-            val promotion: PuzzleViewModelHelper.Promotion2?,
+            val promotion: Promotion?,
             val isAnimating: Boolean,
         ) : GameState() {
             override fun toUiState(remainingSeconds: Int) = PuzzleRushUiState.Playing(
@@ -256,7 +259,7 @@ class PuzzleRushViewModel @Inject constructor(
         }
 
         data class Finished(
-            val puzzleData: PuzzleData,
+            val puzzleData: PlayableData,
             val results: List<PuzzleResult>,
             val showSummaryDialog: Boolean,
             val isNewHighScore: Boolean,

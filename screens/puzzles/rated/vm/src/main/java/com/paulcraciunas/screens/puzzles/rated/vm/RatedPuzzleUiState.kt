@@ -1,8 +1,8 @@
 package com.paulcraciunas.screens.puzzles.rated.vm
 
 import androidx.compose.runtime.Immutable
-import com.paulcraciunas.screens.common.model.PuzzleData
-import com.paulcraciunas.screens.common.model.PuzzleViewModelHelper
+import com.paulcraciunas.screens.common.model.PlayableData
+import com.paulcraciunas.screens.common.model.Promotion
 
 @Immutable
 sealed class RatedPuzzleUiState {
@@ -10,21 +10,21 @@ sealed class RatedPuzzleUiState {
     data object Failed : RatedPuzzleUiState()
     @Immutable
     abstract class BoardState : RatedPuzzleUiState() {
-        abstract val data: PuzzleData
+        abstract val data: PlayableData
     }
 
     @Immutable
     data class Playing(
-        override val data: PuzzleData,
+        override val data: PlayableData,
         val hintEnabled: Boolean,
         val showAbandonDialog: Boolean,
         val isShowingSolution: Boolean = false,
-        val promotion: PuzzleViewModelHelper.Promotion2?,
+        val promotion: Promotion?,
     ) : BoardState()
 
     @Immutable
     data class Finished(
-        override val data: PuzzleData,
+        override val data: PlayableData,
         val success: Boolean,
         val ratingChange: Int
     ) : BoardState()

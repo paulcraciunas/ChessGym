@@ -9,7 +9,10 @@ import com.paulcraciunas.domain.api.puzzles.OnStreakPuzzleComplete
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.screens.common.board.PIECE_MOVE_ANIMATION_DURATION_MS
-import com.paulcraciunas.screens.common.model.PuzzleViewModelHelper
+import com.paulcraciunas.screens.common.model.BoardInteractionHelper
+import com.paulcraciunas.screens.common.model.ClickResult
+import com.paulcraciunas.screens.common.model.PuzzlePlayableBoard
+import com.paulcraciunas.screens.common.model.PuzzleSolution
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -30,7 +33,7 @@ class PuzzleStreakViewModel @Inject constructor(
     private val appSettingsRepository: AppSettingsRepository,
     private val timer: Timer,
 ) : ViewModel() {
-    private val helper = PuzzleViewModelHelper()
+    private val helper = BoardInteractionHelper(solution = PuzzleSolution())
     private var enableAnimations: Boolean = true
 
     private val _uiState = MutableStateFlow<PuzzleStreakUiState>(PuzzleStreakUiState.Loading)
@@ -116,9 +119,9 @@ class PuzzleStreakViewModel @Inject constructor(
         }
     }
 
-    private fun handleMoveResult(result: PuzzleViewModelHelper.OnSquareClick2) {
-        _uiState.updatePlaying { it.copy(data = result.data, promotion = result.promotion, isAnimating = result.isOver) }
-        if (result.isOver) {
+    private fun handleMoveResult(result: ClickResult) {
+        _uiState.updatePlaying { it.copy(data = result.data, promotion = result.promotion, isAnimating = result.data.isOver) }
+        if (result.data.isOver) {
             onPuzzleCompleted(result)
         }
     }
@@ -131,13 +134,13 @@ class PuzzleStreakViewModel @Inject constructor(
         }
     }
 
-    private fun onPuzzleCompleted(result: PuzzleViewModelHelper.OnSquareClick2) = whilePlaying {
+    private fun onPuzzleCompleted(result: ClickResult) = whilePlaying {
         viewModelScope.launch {
             if (enableAnimations) {
                 delay(ANIMATION_WAIT_MS)
             }
 
-            if (result.isSuccess) {
+            if (result.data.won) {
                 val timeSpent = timer.elapsed()
                 onStreakPuzzleComplete(timeSpent)
 
@@ -163,7 +166,7 @@ class PuzzleStreakViewModel @Inject constructor(
         val data = getStreakPuzzle()
         _uiState.update {
             PuzzleStreakUiState.Playing(
-                data = helper.load(data.puzzle),
+                data = helper.load(PuzzlePlayableBoard(data.puzzle)),
                 streakCount = data.currentStreakCount,
                 isAwaitingNextPuzzle = false,
                 hintEnabled = true,

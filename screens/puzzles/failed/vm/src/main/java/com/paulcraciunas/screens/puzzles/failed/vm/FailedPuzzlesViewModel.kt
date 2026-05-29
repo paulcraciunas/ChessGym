@@ -10,9 +10,11 @@ import com.paulcraciunas.domain.api.puzzles.PuzzleAnalysisData
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.screens.common.board.PIECE_MOVE_ANIMATION_DURATION_MS
+import com.paulcraciunas.screens.common.model.BoardInteractionHelper
+import com.paulcraciunas.screens.common.model.ClickResult
+import com.paulcraciunas.screens.common.model.PlayableData
+import com.paulcraciunas.screens.common.model.PuzzlePlayableBoard
 import com.paulcraciunas.screens.common.model.PuzzleResult
-import com.paulcraciunas.screens.common.model.PuzzleData
-import com.paulcraciunas.screens.common.model.PuzzleViewModelHelper
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -35,7 +37,7 @@ class FailedPuzzlesViewModel @Inject constructor(
     private val appSettingsRepository: AppSettingsRepository,
     private val timer: Timer,
 ) : ViewModel() {
-    private val helper = PuzzleViewModelHelper()
+    private val helper = BoardInteractionHelper()
     private var enableAnimations: Boolean = true
 
     private val _navigateToAnalysis = Channel<PuzzleAnalysisData>(Channel.BUFFERED)
@@ -74,7 +76,7 @@ class FailedPuzzlesViewModel @Inject constructor(
                 _uiState.update {
                     if (puzzle == null) FailedPuzzlesUiState.Empty
                     else FailedPuzzlesUiState.Playing(
-                        data = helper.load(puzzle),
+                        data = helper.load(PuzzlePlayableBoard(puzzle)),
                         progress = FailedPuzzlesUiState.Progress(solved = 0, total = getFailedPuzzles.totalCount()),
                         results = emptyList(),
                         promotion = null,
@@ -114,14 +116,14 @@ class FailedPuzzlesViewModel @Inject constructor(
         }
     }
 
-    private fun handleMoveResult(result: PuzzleViewModelHelper.OnSquareClick2) {
-        _uiState.updatePlaying { it.copy(data = result.data, promotion = result.promotion, isAnimating = result.isOver) }
-        if (result.isOver) {
-            onPuzzleCompleted(result.data, result.isSuccess)
+    private fun handleMoveResult(result: ClickResult) {
+        _uiState.updatePlaying { it.copy(data = result.data, promotion = result.promotion, isAnimating = result.data.isOver) }
+        if (result.data.isOver) {
+            onPuzzleCompleted(result.data, result.data.won)
         }
     }
 
-    private fun onPuzzleCompleted(data: PuzzleData, isSuccess: Boolean) = whilePlaying { state ->
+    private fun onPuzzleCompleted(data: PlayableData, isSuccess: Boolean) = whilePlaying { state ->
         viewModelScope.launch {
             if (isSuccess) {
                 data.id?.let { onFailedPuzzleComplete(it, timer.elapsed()) }
@@ -129,13 +131,13 @@ class FailedPuzzlesViewModel @Inject constructor(
             if (enableAnimations) {
                 delay(ANIMATION_WAIT_MS)
             }
-            val updatedResults = state.results + PuzzleResult(id = data.id, rating = data.rating, success = isSuccess)
+            val updatedResults = state.results + PuzzleResult(id = data.id, rating = data.rating!!, success = isSuccess)
             val progress = state.progress.copy(solved = updatedResults.count { it.success })
             val nextPuzzle = getFailedPuzzles.next()
             _uiState.update {
                 if (nextPuzzle != null) {
                     FailedPuzzlesUiState.Playing(
-                        data = helper.load(nextPuzzle),
+                        data = helper.load(PuzzlePlayableBoard(nextPuzzle)),
                         progress = progress,
                         results = updatedResults,
                         promotion = null,

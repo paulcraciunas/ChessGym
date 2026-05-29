@@ -9,8 +9,11 @@ import com.paulcraciunas.domain.api.puzzles.OnPuzzleComplete
 import com.paulcraciunas.domain.api.puzzles.PuzzleCompletionResult
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.screens.common.model.PuzzleData
-import com.paulcraciunas.screens.common.model.PuzzleViewModelHelper
+import com.paulcraciunas.screens.common.model.BoardInteractionHelper
+import com.paulcraciunas.screens.common.model.ClickResult
+import com.paulcraciunas.screens.common.model.PlayableData
+import com.paulcraciunas.screens.common.model.PuzzlePlayableBoard
+import com.paulcraciunas.screens.common.model.PuzzleSolution
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +31,7 @@ class RatedPuzzleViewModel @Inject constructor(
     private val appSettingsRepository: AppSettingsRepository,
     private val timer: Timer,
 ) : ViewModel() {
-    private val helper = PuzzleViewModelHelper()
+    private val helper = BoardInteractionHelper(solution = PuzzleSolution())
 
     private val _uiState = MutableStateFlow<RatedPuzzleUiState>(RatedPuzzleUiState.Loading)
     val uiState: StateFlow<RatedPuzzleUiState> = _uiState.asStateFlow()
@@ -51,7 +54,7 @@ class RatedPuzzleViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 puzzleData = getRatedPuzzle()
-                val data = helper.load(puzzleData.puzzle)
+                val data = helper.load(PuzzlePlayableBoard(puzzleData.puzzle))
                 timer.start()
                 _uiState.value = RatedPuzzleUiState.Playing(
                     data = data,
@@ -97,7 +100,6 @@ class RatedPuzzleViewModel @Inject constructor(
                     _uiState.updatePlaying { it.copy(data = data) }
                     return@playSolution _uiState.value is RatedPuzzleUiState.Playing
                 }
-                // After solution shown, finish the puzzle as failed
                 finishPuzzle(state.data, isSuccess = false)
             }
         }
@@ -107,7 +109,6 @@ class RatedPuzzleViewModel @Inject constructor(
         loadPuzzle()
     }
 
-    // Returns true if back press was handled, false otherwise
     fun onNavigateBackPressed(): Boolean {
         if (_uiState.value is RatedPuzzleUiState.Playing) {
             onAbandon()
@@ -124,11 +125,11 @@ class RatedPuzzleViewModel @Inject constructor(
         timer.resume()
     }
 
-    private fun handleMoveResult(result: PuzzleViewModelHelper.OnSquareClick2) =
-        if (!result.isOver) _uiState.updatePlaying { it.copy(data = result.data, promotion = result.promotion) }
-        else finishPuzzle(result.data, result.isSuccess)
+    private fun handleMoveResult(result: ClickResult) =
+        if (!result.data.isOver) _uiState.updatePlaying { it.copy(data = result.data, promotion = result.promotion) }
+        else finishPuzzle(result.data, result.data.won)
 
-    private fun finishPuzzle(data: PuzzleData, isSuccess: Boolean) {
+    private fun finishPuzzle(data: PlayableData, isSuccess: Boolean) {
         _uiState.updatePlaying {
             RatedPuzzleUiState.Finished(
                 data = data,
@@ -139,12 +140,12 @@ class RatedPuzzleViewModel @Inject constructor(
         logResult(data, isSuccess, puzzleData.ratingChange)
     }
 
-    private fun logResult(data: PuzzleData, success: Boolean, eloResult: EloResult) {
+    private fun logResult(data: PlayableData, success: Boolean, eloResult: EloResult) {
         viewModelScope.launch {
             onPuzzleComplete(
                 PuzzleCompletionResult(
                     puzzleId = data.id,
-                    puzzleRating = data.rating,
+                    puzzleRating = data.rating!!,
                     wasSuccessful = success,
                     ratingChange = eloResult.get(success = success),
                     timeSpentMillis = timer.elapsed(),

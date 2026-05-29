@@ -48,7 +48,7 @@ fun RatedPuzzleScreen(
     onNextPuzzle: () -> Unit = {},
 ) {
     val title = when (uiState) {
-        is RatedPuzzleUiState.BoardState -> stringResource(R.string.rated_puzzle_title, uiState.data.rating)
+        is RatedPuzzleUiState.BoardState -> stringResource(R.string.rated_puzzle_title, uiState.data.rating!!)
         else -> stringResource(R.string.puzzle_mode_rated_title)
     }
     Scaffold(
