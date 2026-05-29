@@ -9,9 +9,9 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.paulcraciunas.chessgym.navigation.Screen
+import com.paulcraciunas.chessgym.navigation.navigateToDashChild
 import com.paulcraciunas.screens.puzzles.dashboard.ui.PuzzleDashboardScreen
 import com.paulcraciunas.screens.puzzles.dashboard.vm.PuzzleDashboardViewModel
-import com.paulcraciunas.screens.puzzles.dashboard.vm.PuzzleMode
 import com.paulcraciunas.screens.puzzles.failed.ui.FailedPuzzlesScreen
 import com.paulcraciunas.screens.puzzles.failed.vm.FailedPuzzlesViewModel
 import com.paulcraciunas.screens.puzzles.rated.ui.RatedPuzzleScreen
@@ -31,25 +31,7 @@ internal fun PuzzleDashboard(
     PuzzleDashboardScreen(
         state = puzzleDashboardState,
         onDrawerToggle = onDrawerToggle,
-        onPuzzleModeSelected = { mode ->
-            vm.onPuzzleModeSelected(mode) { puzzleMode ->
-                // Navigate to specific puzzle screens based on mode
-                when (puzzleMode) {
-                    PuzzleMode.RatedPuzzle -> {
-                        tabNavController.navigate(Screen.RatedPuzzle)
-                    }
-                    PuzzleMode.PuzzleRush -> {
-                        tabNavController.navigate(Screen.PuzzleRush)
-                    }
-                    PuzzleMode.FailedPuzzles -> {
-                        tabNavController.navigate(Screen.FailedPuzzles)
-                    }
-                    PuzzleMode.PuzzleStreak -> {
-                        tabNavController.navigate(Screen.PuzzleStreak)
-                    }
-                }
-            }
-        },
+        onPuzzleModeSelected = { tabNavController.navigateToDashChild(it) },
     )
 }
 

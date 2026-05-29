@@ -27,8 +27,4 @@ class BoardVisDashboardViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = BoardVisDashboardUiState()
         )
-
-    fun onModeSelected(mode: BoardVisMode, onNavigate: (BoardVisMode) -> Unit) {
-        onNavigate(mode)
-    }
 }

@@ -62,41 +62,6 @@ internal class BoardVisDashboardViewModelTest {
         assertEquals(0, uiState.findSquareHighScore)
     }
 
-    @Test
-    fun `GIVEN mode selected WHEN onModeSelected called THEN navigation callback invoked`() = runTest {
-        // Given
-        setupViewModel()
-        val mode = BoardVisMode.FindTheSquare
-        var callbackInvoked = false
-        var receivedMode: BoardVisMode? = null
-
-        // When
-        underTest.onModeSelected(mode) { selectedMode ->
-            callbackInvoked = true
-            receivedMode = selectedMode
-        }
-
-        // Then
-        assertEquals(true, callbackInvoked)
-        assertEquals(mode, receivedMode)
-    }
-
-    @Test
-    fun `GIVEN MoveThePiece mode WHEN onModeSelected called THEN navigation callback invoked with MoveThePiece`() = runTest {
-        // Given
-        setupViewModel()
-        val mode = BoardVisMode.MoveThePiece
-        var receivedMode: BoardVisMode? = null
-
-        // When
-        underTest.onModeSelected(mode) { selectedMode ->
-            receivedMode = selectedMode
-        }
-
-        // Then
-        assertEquals(BoardVisMode.MoveThePiece, receivedMode)
-    }
-
     private fun setupViewModel(user: User = User()) = runTest {
         userRepository.local.saveUser(user)
         underTest = BoardVisDashboardViewModel(userRepository)

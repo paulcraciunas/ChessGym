@@ -28,10 +28,4 @@ class PuzzleDashboardViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = PuzzleDashboardUiState()
         )
-
-    fun onPuzzleModeSelected(mode: PuzzleMode, onNavigate: (PuzzleMode) -> Unit) {
-        // For now, just trigger navigation
-        // In the future, this might trigger analytics, state updates, etc.
-        onNavigate(mode)
-    }
 }

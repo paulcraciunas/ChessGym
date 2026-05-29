@@ -1,19 +1,25 @@
 package com.paulcraciunas.screens.tools.dashboard.vm
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
+/**
+ * This is actually pointless. I'm keeping it because I sometimes like to go against YAGNI.
+ * Keeps the mind sharp.
+ */
 @HiltViewModel
 class ToolsDashboardViewModel @Inject constructor() : ViewModel() {
-
-    private val _uiState = MutableStateFlow(ToolsDashboardUiState())
-    val uiState: StateFlow<ToolsDashboardUiState> = _uiState.asStateFlow()
-
-    fun onModeSelected(mode: ToolsMode, onNavigate: (ToolsMode) -> Unit) {
-        onNavigate(mode)
-    }
+    val uiState: StateFlow<ToolsDashboardUiState> = flow {
+        emit(ToolsDashboardUiState(isLoading = false))
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = ToolsDashboardUiState(isLoading = true)
+    )
 }

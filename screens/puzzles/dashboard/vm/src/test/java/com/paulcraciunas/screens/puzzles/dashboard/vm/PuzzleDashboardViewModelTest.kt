@@ -58,25 +58,6 @@ internal class PuzzleDashboardViewModelTest {
     }
 
     @Test
-    fun `GIVEN puzzle mode selected WHEN onPuzzleModeSelected called THEN navigation callback invoked`() = runTest {
-        // Given
-        setupViewModel()
-        val puzzleMode = PuzzleMode.RatedPuzzle
-        var callbackInvoked = false
-        var receivedMode: PuzzleMode? = null
-
-        // When
-        underTest.onPuzzleModeSelected(puzzleMode) { mode ->
-            callbackInvoked = true
-            receivedMode = mode
-        }
-
-        // Then
-        assertEquals(true, callbackInvoked)
-        assertEquals(puzzleMode, receivedMode)
-    }
-
-    @Test
     fun `GIVEN user with no failed puzzles WHEN viewModel initialized THEN failedPuzzlesCount is zero`() = runTest {
         // Given
         val user = User(
@@ -134,14 +115,6 @@ internal class PuzzleDashboardViewModelTest {
         // Then
         val uiState = underTest.uiState.value
         assertEquals(0, uiState.currentStreakCount)
-    }
-
-    private fun setupViewModel() = runTest {
-        val user = User()
-        userRepository.local.saveUser(user)
-        underTest = PuzzleDashboardViewModel(userRepository)
-        observeUiState()
-        advanceUntilIdle()
     }
 
     private fun TestScope.observeUiState() {

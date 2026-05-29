@@ -7,13 +7,13 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.paulcraciunas.chessgym.navigation.Screen
+import com.paulcraciunas.chessgym.navigation.navigateToDashChild
 import com.paulcraciunas.screens.tools.analysis.ui.AnalysisScreen
 import com.paulcraciunas.screens.tools.analysis.vm.AnalysisViewModel
 import com.paulcraciunas.screens.tools.clock.ui.ClockScreen
 import com.paulcraciunas.screens.tools.clock.vm.ClockViewModel
 import com.paulcraciunas.screens.tools.dashboard.ui.ToolsDashboardScreen
 import com.paulcraciunas.screens.tools.dashboard.vm.ToolsDashboardViewModel
-import com.paulcraciunas.screens.tools.dashboard.vm.ToolsMode
 import com.paulcraciunas.screens.tools.importgame.ui.ImportGameScreen
 import com.paulcraciunas.screens.tools.importgame.vm.ImportGameViewModel
 
@@ -27,21 +27,7 @@ internal fun ToolsDashboard(
     ToolsDashboardScreen(
         state = dashboardState,
         onDrawerToggle = onDrawerToggle,
-        onModeSelected = { mode ->
-            vm.onModeSelected(mode) { toolsMode ->
-                when (toolsMode) {
-                    ToolsMode.Clock -> {
-                        tabNavController.navigate(Screen.Clock)
-                    }
-                    ToolsMode.Analysis -> {
-                        tabNavController.navigate(Screen.Analysis())
-                    }
-                    ToolsMode.ImportGame -> {
-                        tabNavController.navigate(Screen.ImportGame)
-                    }
-                }
-            }
-        },
+        onModeSelected = { tabNavController.navigateToDashChild(it) },
     )
 }
 

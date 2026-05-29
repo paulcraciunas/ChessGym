@@ -8,11 +8,9 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.paulcraciunas.screens.blindmode.ui.BlindModeScreen
 import com.paulcraciunas.screens.blindmode.vm.BlindModeViewModel
-import com.paulcraciunas.screens.common.LocalUiSettings
 
 @Composable
 internal fun BlindMode(onDrawerToggle: () -> Unit) {
-    val settings = LocalUiSettings.current
     val vm: BlindModeViewModel = hiltViewModel()
     val blindModeState by vm.uiState.collectAsStateWithLifecycle()
 
@@ -21,10 +19,17 @@ internal fun BlindMode(onDrawerToggle: () -> Unit) {
 
     BlindModeScreen(
         uiState = blindModeState,
-        showBorders = settings.showBorders,
-        highlightLegalMoves = settings.highlightLegalMoves,
-        enableAnimations = settings.enableAnimations,
         onDrawerToggle = onDrawerToggle,
-        interactions = vm,
+        onTrainingModeToggled = vm::onTrainingModeToggled,
+        onSideSelected = vm::onSideSelected,
+        onPlayClicked = vm::onPlayClicked,
+        onSquareClicked = vm::onSquareClicked,
+        onPromote = vm::onPromote,
+        onResign = vm::onResign,
+        onReveal = vm::onReveal,
+        onPlayAgain = vm::onPlayAgain,
+        onBackPressed = vm::onBackPressed,
+        onAbandonConfirmed = vm::onAbandonConfirmed,
+        onAbandonDismissed = vm::onAbandonDismissed,
     )
 }

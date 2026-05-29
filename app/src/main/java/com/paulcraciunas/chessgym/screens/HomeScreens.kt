@@ -21,9 +21,7 @@ internal fun Home(
     HomeScreen(
         state = homeState,
         onDrawerToggle = onDrawerToggle,
-        onAchievements = {
-            tabNavController.navigate(Screen.Achievements)
-        },
+        onAchievements = { tabNavController.navigate(Screen.Achievements) },
     )
 }
 
