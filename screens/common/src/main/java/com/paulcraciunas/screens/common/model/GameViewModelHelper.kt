@@ -67,8 +67,10 @@ class GameViewModelHelper {
                     gameData.copy(boardData = play(current, selection), captured = updateCaptured())
                 }
             }
-        } else {
+        } else if (game.board.has(toMove(), selection)) {
             gameData.copy(boardData = gameData.boardData.select(at = selection, moves = moves(from = selection)))
+        } else {
+            gameData
         }
         return GameOnSquareClick(
             data = gameData,
@@ -85,25 +87,16 @@ class GameViewModelHelper {
         movePlayed = true,
     )
 
-    fun playMove(move: String): GameData2 {
-        game.play(move)
-        gameData = gameData.copy(boardData = reloadBoard(), captured = updateCaptured())
-        return gameData
-    }
-
+    fun resign(): GameData2 = updateAndReturn { game.resign() }
+    fun playMove(move: String): GameData2 = updateAndReturn { game.play(move) }
+    fun playMove(ply: Ply): GameData2 = updateAndReturn { game.play(ply) }
     fun playMove(from: Locus, to: Locus, promotion: Piece? = null): GameData2 {
-        if (promotion != null) {
+        val boardData = if (promotion != null) {
             promote(from, to, promotion)
         } else {
             play(from, to)
         }
-        gameData = gameData.copy(boardData = reloadBoard(), captured = updateCaptured())
-        return gameData
-    }
-
-    fun resign(): GameData2 {
-        game.resign()
-        gameData = gameData.copy(boardData = reloadBoard(), captured = updateCaptured())
+        gameData = gameData.copy(boardData = boardData, captured = updateCaptured())
         return gameData
     }
 
@@ -154,6 +147,12 @@ class GameViewModelHelper {
             val byPlayer: String,
             val byOpponent: String,
         )
+    }
+
+    private fun updateAndReturn(update: () -> Unit): GameData2 {
+        update()
+        gameData = gameData.copy(boardData = reloadBoard(), captured = updateCaptured())
+        return gameData
     }
 
     private fun isOver(): Boolean = game.state is Game.GameState.Finished

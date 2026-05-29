@@ -74,8 +74,10 @@ class PuzzleViewModelHelper {
                 }
                 else -> puzzleData.copy(boardData = play(current, selection), captured = updateCaptured())
             }
-        } else {
+        } else if (puzzle.board.has(puzzle.player, selection)) {
             puzzleData.copy(boardData = puzzleData.boardData.select(at = selection, moves = moves(from = selection)))
+        } else {
+            puzzleData
         }
         return OnSquareClick2(
             data = puzzleData,

@@ -2,10 +2,8 @@ package com.paulcraciunas.screens.common.model
 
 import com.paulcraciunas.game.logic.api.Game
 import com.paulcraciunas.game.logic.api.Side
-import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.game.logic.impl.RealGameFactory
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -110,10 +108,10 @@ internal class GameViewModelHelperTest {
             val result = underTest.handleSquareClick(Locus.e2)
 
             // Then
-            val selectedSquare = result.data.boardData.at(Rank.`2`, File.e)
+            val selectedSquare = result.data.boardData.at(Locus.e2)
             assertEquals(true, selectedSquare.piece?.isSelected)
-            assertTrue(result.data.boardData.at(Rank.`4`, File.e).canMoveTo)
-            assertTrue(result.data.boardData.at(Rank.`3`, File.e).canMoveTo)
+            assertTrue(result.data.boardData.at(Locus.e4).canMoveTo)
+            assertTrue(result.data.boardData.at(Locus.e3).canMoveTo)
         }
 
         @Test
@@ -126,9 +124,9 @@ internal class GameViewModelHelperTest {
             val result = underTest.handleSquareClick(Locus.e2)
 
             // Then
-            val selectedSquare = result.data.boardData.at(Rank.`2`, File.e)
+            val selectedSquare = result.data.boardData.at(Locus.e2)
             assertEquals(false, selectedSquare.piece?.isSelected)
-            assertFalse(result.data.boardData.at(Rank.`4`, File.e).canMoveTo)
+            assertFalse(result.data.boardData.at(Locus.e4).canMoveTo)
         }
 
         @Test
@@ -141,9 +139,9 @@ internal class GameViewModelHelperTest {
             val result = underTest.handleSquareClick(Locus.e5)
 
             // Then
-            val selectedSquare = result.data.boardData.at(Rank.`2`, File.e)
+            val selectedSquare = result.data.boardData.at(Locus.e2)
             assertEquals(false, selectedSquare.piece?.isSelected)
-            assertFalse(result.data.boardData.at(Rank.`4`, File.e).canMoveTo)
+            assertFalse(result.data.boardData.at(Locus.e4).canMoveTo)
         }
 
         @Test
@@ -156,8 +154,8 @@ internal class GameViewModelHelperTest {
             val result = underTest.handleSquareClick(Locus.e4)
 
             // Then
-            val fromSquare = result.data.boardData.at(Rank.`2`, File.e)
-            val toSquare = result.data.boardData.at(Rank.`4`, File.e)
+            val fromSquare = result.data.boardData.at(Locus.e2)
+            val toSquare = result.data.boardData.at(Locus.e4)
             assertNull(fromSquare.piece)
             assertNotNull(toSquare.piece)
             assertEquals(Piece.Pawn, toSquare.piece?.piece?.piece)
@@ -190,6 +188,36 @@ internal class GameViewModelHelperTest {
         }
 
         @Test
+        fun `GIVEN no selection WHEN clicking opponent piece THEN piece is not selected`() {
+            // Given
+            underTest.load(buildDefaultGame(), Side.WHITE)
+
+            // When
+            val result = underTest.handleSquareClick(Locus.e7)
+
+            // Then
+            assertNull(result.data.boardData.selection)
+            assertTrue(result.data.boardData.availableMoves.isEmpty())
+            assertFalse(result.movePlayed)
+        }
+
+        @Test
+        fun `GIVEN playing as black WHEN clicking white piece THEN piece is not selected`() {
+            // Given
+            underTest.load(buildDefaultGame(), Side.BLACK)
+
+            // When
+            underTest.handleSquareClick(Locus.e2)
+            underTest.handleSquareClick(Locus.e4)
+            val result = underTest.handleSquareClick(Locus.e4)
+
+            // Then
+            assertNull(result.data.boardData.selection)
+            assertTrue(result.data.boardData.availableMoves.isEmpty())
+            assertFalse(result.movePlayed)
+        }
+
+        @Test
         fun `GIVEN no selection WHEN clicking empty square THEN nothing is selected`() {
             // Given
             underTest.load(buildDefaultGame(), Side.WHITE)
@@ -198,7 +226,7 @@ internal class GameViewModelHelperTest {
             val result = underTest.handleSquareClick(Locus.e4)
 
             // Then
-            val clickedSquare = result.data.boardData.at(Rank.`4`, File.e)
+            val clickedSquare = result.data.boardData.at(Locus.e4)
             assertNull(clickedSquare.piece)
             assertFalse(result.movePlayed)
         }
@@ -213,8 +241,8 @@ internal class GameViewModelHelperTest {
             val result = underTest.handleSquareClick(Locus.e4)
 
             // Then
-            val fromSquare = result.data.boardData.at(Rank.`2`, File.e)
-            val toSquare = result.data.boardData.at(Rank.`4`, File.e)
+            val fromSquare = result.data.boardData.at(Locus.e2)
+            val toSquare = result.data.boardData.at(Locus.e4)
             assertTrue(fromSquare.lastMove)
             assertTrue(toSquare.lastMove)
         }
@@ -265,7 +293,7 @@ internal class GameViewModelHelperTest {
             // Then
             assertNull(result.promotion)
             assertTrue(result.movePlayed)
-            val queenSquare = result.data.boardData.at(Rank.`8`, File.a)
+            val queenSquare = result.data.boardData.at(Locus.a8)
             assertNotNull(queenSquare.piece)
             assertEquals(Piece.Queen, queenSquare.piece?.piece?.piece)
             assertEquals(Side.WHITE, queenSquare.piece?.piece?.side)
@@ -331,8 +359,8 @@ internal class GameViewModelHelperTest {
             val result = underTest.playMove(Locus.e2, Locus.e4)
 
             // Then
-            val fromSquare = result.boardData.at(Rank.`2`, File.e)
-            val toSquare = result.boardData.at(Rank.`4`, File.e)
+            val fromSquare = result.boardData.at(Locus.e2)
+            val toSquare = result.boardData.at(Locus.e4)
             assertNull(fromSquare.piece)
             assertNotNull(toSquare.piece)
             assertEquals(Piece.Pawn, toSquare.piece?.piece?.piece)
@@ -347,8 +375,8 @@ internal class GameViewModelHelperTest {
             val result = underTest.playMove(Locus.e2, Locus.e4)
 
             // Then
-            assertTrue(result.boardData.at(Rank.`2`, File.e).lastMove)
-            assertTrue(result.boardData.at(Rank.`4`, File.e).lastMove)
+            assertTrue(result.boardData.at(Locus.e2).lastMove)
+            assertTrue(result.boardData.at(Locus.e4).lastMove)
         }
 
         @Test
@@ -377,7 +405,7 @@ internal class GameViewModelHelperTest {
             val result = underTest.playMove(Locus.a7, Locus.a8, Piece.Queen)
 
             // Then
-            val promotedSquare = result.boardData.at(Rank.`8`, File.a)
+            val promotedSquare = result.boardData.at(Locus.a8)
             assertNotNull(promotedSquare.piece)
             assertEquals(Piece.Queen, promotedSquare.piece?.piece?.piece)
             assertEquals(Side.WHITE, promotedSquare.piece?.piece?.side)
@@ -412,7 +440,7 @@ internal class GameViewModelHelperTest {
             val result = underTest.promote(Piece.Queen, promotionAt)
 
             // Then
-            val queenSquare = result.data.boardData.at(Rank.`8`, File.a)
+            val queenSquare = result.data.boardData.at(Locus.a8)
             assertNotNull(queenSquare.piece)
             assertEquals(Piece.Queen, queenSquare.piece?.piece?.piece)
             assertEquals(Side.WHITE, queenSquare.piece?.piece?.side)
@@ -445,7 +473,7 @@ internal class GameViewModelHelperTest {
             val result = underTest.promote(Piece.Knight, promotionAt)
 
             // Then
-            val knightSquare = result.data.boardData.at(Rank.`8`, File.a)
+            val knightSquare = result.data.boardData.at(Locus.a8)
             assertNotNull(knightSquare.piece)
             assertEquals(Piece.Knight, knightSquare.piece?.piece?.piece)
         }
@@ -493,7 +521,7 @@ internal class GameViewModelHelperTest {
             val data = underTest.current()
 
             // Then
-            val e4Square = data.boardData.at(Rank.`4`, File.e)
+            val e4Square = data.boardData.at(Locus.e4)
             assertNotNull(e4Square.piece)
             assertEquals(Piece.Pawn, e4Square.piece?.piece?.piece)
         }
@@ -524,8 +552,8 @@ internal class GameViewModelHelperTest {
 
             val result = underTest.undoLast()
 
-            val e2Square = result.boardData.at(Rank.`2`, File.e)
-            val e4Square = result.boardData.at(Rank.`4`, File.e)
+            val e2Square = result.boardData.at(Locus.e2)
+            val e4Square = result.boardData.at(Locus.e4)
             assertNotNull(e2Square.piece)
             assertEquals(Piece.Pawn, e2Square.piece?.piece?.piece)
             assertNull(e4Square.piece)
@@ -539,7 +567,7 @@ internal class GameViewModelHelperTest {
 
             val result = underTest.undoAll()
 
-            val e2Square = result.boardData.at(Rank.`2`, File.e)
+            val e2Square = result.boardData.at(Locus.e2)
             assertNotNull(e2Square.piece)
             assertEquals(Piece.Pawn, e2Square.piece?.piece?.piece)
             assertFalse(underTest.canUndo())
@@ -555,7 +583,7 @@ internal class GameViewModelHelperTest {
 
             val result = underTest.replayNext()
 
-            val e4Square = result.boardData.at(Rank.`4`, File.e)
+            val e4Square = result.boardData.at(Locus.e4)
             assertNotNull(e4Square.piece)
             assertEquals(Piece.Pawn, e4Square.piece?.piece?.piece)
             assertTrue(e4Square.lastMove)
@@ -583,7 +611,7 @@ internal class GameViewModelHelperTest {
 
             val result = underTest.replayAll()
 
-            val e4Square = result.boardData.at(Rank.`4`, File.e)
+            val e4Square = result.boardData.at(Locus.e4)
             assertNotNull(e4Square.piece)
             assertFalse(underTest.canReplay())
         }
@@ -596,8 +624,8 @@ internal class GameViewModelHelperTest {
 
             val result = underTest.undoLast()
 
-            val e2Square = result.boardData.at(Rank.`2`, File.e)
-            val e4Square = result.boardData.at(Rank.`4`, File.e)
+            val e2Square = result.boardData.at(Locus.e2)
+            val e4Square = result.boardData.at(Locus.e4)
             assertFalse(e2Square.lastMove)
             assertFalse(e4Square.lastMove)
         }

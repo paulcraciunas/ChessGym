@@ -2,10 +2,8 @@ package com.paulcraciunas.screens.common.model
 
 import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.Side
-import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.game.logic.impl.RealGameFactory
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -100,10 +98,10 @@ internal class PuzzleViewModelHelperTest {
             val result = underTest.handleSquareClick(Locus.e7)
 
             // Then
-            val selectedSquare = result.data.boardData.at(Rank.`7`, File.e)
+            val selectedSquare = result.data.boardData.at(Locus.e7)
             assertEquals(true, selectedSquare.piece?.isSelected)
-            assertTrue(result.data.boardData.at(Rank.`5`, File.e).canMoveTo)
-            assertTrue(result.data.boardData.at(Rank.`6`, File.e).canMoveTo)
+            assertTrue(result.data.boardData.at(Locus.e5).canMoveTo)
+            assertTrue(result.data.boardData.at(Locus.e6).canMoveTo)
         }
 
         @Test
@@ -116,9 +114,9 @@ internal class PuzzleViewModelHelperTest {
             val result = underTest.handleSquareClick(Locus.e7)
 
             // Then
-            val selectedSquare = result.data.boardData.at(Rank.`7`, File.e)
+            val selectedSquare = result.data.boardData.at(Locus.e7)
             assertEquals(false, selectedSquare.piece?.isSelected)
-            assertFalse(result.data.boardData.at(Rank.`5`, File.e).canMoveTo)
+            assertFalse(result.data.boardData.at(Locus.e5).canMoveTo)
         }
 
         @Test
@@ -131,9 +129,9 @@ internal class PuzzleViewModelHelperTest {
             val result = underTest.handleSquareClick(Locus.e3)
 
             // Then
-            val selectedSquare = result.data.boardData.at(Rank.`7`, File.e)
+            val selectedSquare = result.data.boardData.at(Locus.e7)
             assertEquals(false, selectedSquare.piece?.isSelected)
-            assertFalse(result.data.boardData.at(Rank.`5`, File.e).canMoveTo)
+            assertFalse(result.data.boardData.at(Locus.e5).canMoveTo)
         }
 
         @Test
@@ -146,8 +144,8 @@ internal class PuzzleViewModelHelperTest {
             val result = underTest.handleSquareClick(Locus.e5)
 
             // Then - board state should show piece moved
-            val fromSquare = result.data.boardData.at(Rank.`7`, File.e)
-            val toSquare = result.data.boardData.at(Rank.`5`, File.e)
+            val fromSquare = result.data.boardData.at(Locus.e7)
+            val toSquare = result.data.boardData.at(Locus.e5)
             assertNull(fromSquare.piece)
             assertNotNull(toSquare.piece)
             assertEquals(Piece.Pawn, toSquare.piece?.piece?.piece)
@@ -207,7 +205,7 @@ internal class PuzzleViewModelHelperTest {
 
             // Then
             assertNull(result.promotion)
-            val queenSquare = result.data.boardData.at(Rank.`8`, File.a)
+            val queenSquare = result.data.boardData.at(Locus.a8)
             assertNotNull(queenSquare.piece)
             assertEquals(Piece.Queen, queenSquare.piece?.piece?.piece)
             assertEquals(Side.WHITE, queenSquare.piece?.piece?.side)
@@ -229,6 +227,20 @@ internal class PuzzleViewModelHelperTest {
         }
 
         @Test
+        fun `GIVEN no selection WHEN clicking opponent piece THEN piece is not selected`() {
+            // Given - Player is Black, so White pieces are the opponent
+            underTest.load(buildStandardPuzzle())
+
+            // When - e2 has a White pawn (opponent)
+            val result = underTest.handleSquareClick(Locus.e4)
+
+            // Then
+            assertNull(result.data.boardData.selection)
+            assertTrue(result.data.boardData.availableMoves.isEmpty())
+            assertFalse(result.isOver)
+        }
+
+        @Test
         fun `GIVEN no selection WHEN clicking empty square THEN nothing is selected`() {
             // Given
             underTest.load(buildStandardPuzzle())
@@ -237,7 +249,7 @@ internal class PuzzleViewModelHelperTest {
             val result = underTest.handleSquareClick(Locus.d4)
 
             // Then
-            val clickedSquare = result.data.boardData.at(Rank.`4`, File.d)
+            val clickedSquare = result.data.boardData.at(Locus.d4)
             assertNull(clickedSquare.piece)
             assertFalse(result.isOver)
         }
@@ -286,7 +298,7 @@ internal class PuzzleViewModelHelperTest {
             val result = underTest.promote(Piece.Queen, promotionAt)
 
             // Then
-            val queenSquare = result.data.boardData.at(Rank.`8`, File.a)
+            val queenSquare = result.data.boardData.at(Locus.a8)
             assertNotNull(queenSquare.piece)
             assertEquals(Piece.Queen, queenSquare.piece?.piece?.piece)
             assertEquals(Side.WHITE, queenSquare.piece?.piece?.side)
@@ -398,7 +410,7 @@ internal class PuzzleViewModelHelperTest {
             val onClick = underTest.handleSquareClick(Locus.e5)
 
             // Then
-            val e5Square = onClick.data.boardData.at(Rank.`5`, File.e)
+            val e5Square = onClick.data.boardData.at(Locus.e5)
             assertNotNull(e5Square.piece)
         }
     }
@@ -416,7 +428,7 @@ internal class PuzzleViewModelHelperTest {
 
             // Then - e7 pawn should move to e5
             assertNotNull(result)
-            val e5Square = result!!.boardData.at(Rank.`5`, File.e)
+            val e5Square = result!!.boardData.at(Locus.e5)
             assertNotNull(e5Square.piece)
             assertEquals(Piece.Pawn, e5Square.piece?.piece?.piece)
         }
@@ -446,7 +458,7 @@ internal class PuzzleViewModelHelperTest {
 
             // Then - knight should be on c6
             assertNotNull(result)
-            val c6Square = result!!.boardData.at(Rank.`6`, File.c)
+            val c6Square = result!!.boardData.at(Locus.c6)
             assertNotNull(c6Square.piece)
             assertEquals(Piece.Knight, c6Square.piece?.piece?.piece)
         }

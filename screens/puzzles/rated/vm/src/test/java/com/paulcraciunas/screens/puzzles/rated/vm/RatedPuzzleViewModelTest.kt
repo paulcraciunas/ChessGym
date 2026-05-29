@@ -7,10 +7,8 @@ import com.paulcraciunas.domain.api.puzzles.OnPuzzleComplete
 import com.paulcraciunas.domain.api.puzzles.PuzzleCompletionResult
 import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.Side
-import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.game.logic.impl.RealGameFactory
 import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
 import kotlinx.coroutines.Dispatchers
@@ -90,9 +88,9 @@ internal class RatedPuzzleViewModelTest {
 
         // Then
         val playingState = underTest.uiState.value as RatedPuzzleUiState.Playing
-        val selectedSquare = playingState.data.boardData.at(Rank.`7`, File.e)
+        val selectedSquare = playingState.data.boardData.at(Locus.e7)
         assertEquals(true, selectedSquare.piece?.isSelected)
-        assertTrue(playingState.data.boardData.at(Rank.`5`, File.e).canMoveTo)
+        assertTrue(playingState.data.boardData.at(Locus.e5).canMoveTo)
     }
 
     @Test
@@ -106,9 +104,9 @@ internal class RatedPuzzleViewModelTest {
 
         // Then
         val playingState = underTest.uiState.value as RatedPuzzleUiState.Playing
-        val selectedSquare = playingState.data.boardData.at(Rank.`7`, File.e)
+        val selectedSquare = playingState.data.boardData.at(Locus.e7)
         assertEquals(false, selectedSquare.piece?.isSelected)
-        assertFalse(playingState.data.boardData.at(Rank.`5`, File.e).canMoveTo)
+        assertFalse(playingState.data.boardData.at(Locus.e5).canMoveTo)
     }
 
     @Test
