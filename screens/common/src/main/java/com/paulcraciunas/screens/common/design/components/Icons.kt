@@ -20,6 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import com.paulcraciunas.screens.common.design.theme.Design
@@ -29,7 +30,7 @@ enum class IconStyle { Card, Circle }
 enum class IconBorderType { None, Soft, Hard }
 enum class IconTintType { Normal, Accent, Danger, Success }
 enum class IconTintMode { Normal, Reversed }
-enum class IconSize { Small, Normal, Large }
+enum class IconSize { Small, Normal, Large, XLarge }
 
 @Composable
 fun TextBadge(
@@ -39,17 +40,20 @@ fun TextBadge(
     borderType: IconBorderType = IconBorderType.None,
     tint: IconTintType = IconTintType.Accent,
     size: IconSize = IconSize.Normal,
+    textStyle: TextStyle = Design.typography.headlineSmall,
+    textColor: Color = Design.colors.onPrimary,
 ) {
     Text(
         text = text,
-        color = tint.color(),
+        style = textStyle,
+        color = textColor,
         modifier = modifier
             .badgeLayout(
                 size = size.dp() * 2,
                 style = style,
                 border = borderType.borderStroke(),
                 enabled = true,
-                background = null
+                background = if (tint == IconTintType.Accent) Design.colors.primary else null,
             )
             .wrapContentSize(Alignment.Center)
     )
@@ -187,6 +191,7 @@ private fun IconSize.dp(): Dp = when (this) {
     IconSize.Small -> Design.dimensions.sizes.iconSmall
     IconSize.Normal -> Design.dimensions.sizes.icon
     IconSize.Large -> Design.dimensions.sizes.navBarIconHeight
+    IconSize.XLarge -> Design.dimensions.sizes.avatar / 2
 }
 
 @Preview("IconBadge")

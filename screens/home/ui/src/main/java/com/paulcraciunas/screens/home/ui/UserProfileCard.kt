@@ -1,9 +1,7 @@
 package com.paulcraciunas.screens.home.ui
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -19,7 +17,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,7 +27,9 @@ import com.paulcraciunas.screens.common.design.components.ChessGymElevatedCard
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.design.components.Eyebrow
 import com.paulcraciunas.screens.common.design.components.HairlineDivider
+import com.paulcraciunas.screens.common.design.components.IconSize
 import com.paulcraciunas.screens.common.design.components.SpacerSize
+import com.paulcraciunas.screens.common.design.components.TextBadge
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
@@ -83,20 +82,12 @@ private fun NameAndRating(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.Top
     ) {
-        Box(
-            modifier = Modifier
-                .size(Design.dimensions.sizes.avatar)
-                .clip(Design.shapes.circle)
-                .background(Design.colors.primary),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = userProfile.initial(),
-                style = Design.typography.headlineSmall,
-                color = Design.colors.onPrimary,
-                modifier = Modifier.testTag { HomeScreenTags.Profile.INITIALS }
-            )
-        }
+        TextBadge(
+            text = userProfile.initial(),
+            size = IconSize.XLarge,
+            textStyle = Design.typography.displaySmall,
+            modifier = Modifier.testTag { HomeScreenTags.Profile.INITIALS }
+        )
         ChessGymSpacer(size = SpacerSize.LARGE)
         Column(modifier = Modifier.weight(1f)) {
             ChessGymSpacer(size = SpacerSize.SMALL)

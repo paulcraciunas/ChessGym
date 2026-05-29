@@ -123,7 +123,8 @@ private fun ProgressStep(
             } else {
                 TextBadge(
                     text = "$stepNumber",
-                    size = IconSize.Small
+                    size = IconSize.Small,
+                    textStyle = Design.typography.labelLarge,
                 )
             }
             Text(
