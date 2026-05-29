@@ -12,8 +12,8 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.screens.boardvis.pieces.vm.MoveThePieceUiState
-import com.paulcraciunas.screens.common.board.v2.BoardOrientation2
-import com.paulcraciunas.screens.common.board.v2.ChessBoard2
+import com.paulcraciunas.screens.common.board.BoardOrientation
+import com.paulcraciunas.screens.common.board.ChessBoard
 
 @Composable
 internal fun MoveThePieceScreenContents(
@@ -29,9 +29,9 @@ internal fun MoveThePieceScreenContents(
         modifier = modifier.fillMaxWidth(),
     ) {
         // Always show white's perspective since player is always white
-        ChessBoard2(
+        ChessBoard(
             board = state.boardData,
-            orientation = BoardOrientation2.fromSide(Side.WHITE),
+            orientation = BoardOrientation.fromSide(Side.WHITE),
             onClick = onSquareClicked,
             modifier = Modifier.fillMaxWidth()
         )

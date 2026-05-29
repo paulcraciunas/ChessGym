@@ -2,11 +2,9 @@ package com.paulcraciunas.screens.common.model
 
 import androidx.compose.runtime.Immutable
 import com.paulcraciunas.game.logic.api.Side
-import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.game.logic.api.board.SidedPiece
 import com.paulcraciunas.logic.builders.Builders
 
@@ -17,21 +15,21 @@ data class BoardViewData2(
     val selection: Locus? = null,
     val animatingPiece: AnimatingPiece2? = null,
 ) {
-    fun at(rank: Rank, file: File): SquareViewData2 = squares[indexFrom(rank, file)]
     fun at(loc: Locus): SquareViewData2 = squares[indexFrom(loc)]
 
     fun select(at: Locus, moves: List<Locus>): BoardViewData2 {
         val fromIdx = indexFrom(loc = at)
-        if (squares[fromIdx].piece == null) return this
+        val targetPiece = squares[fromIdx].piece ?: return this
 
         val updatedSquares = squares.toMutableList()
         // 1. Set selected square
-        updatedSquares[fromIdx] = squares[fromIdx].copy(
-            piece = squares[fromIdx].piece!!.copy(isSelected = true)
+        updatedSquares[fromIdx] = updatedSquares[fromIdx].copy(
+            piece = targetPiece.copy(isSelected = true)
         )
         // 2. Set legal move indicators
-        moves.map { indexFrom(it) }.forEach {
-            updatedSquares[it] = squares[it].copy(canMoveTo = true)
+        for (i in moves.indices) {
+            val idx = indexFrom(moves[i])
+            updatedSquares[idx] = updatedSquares[idx].copy(canMoveTo = true)
         }
 
         return copy(
@@ -47,12 +45,13 @@ data class BoardViewData2(
         val updatedSquares = squares.toMutableList()
         // 1. Clear selected square
         val index = indexFrom(selection)
-        updatedSquares[index] = squares[index].copy(
-            piece = squares[index].piece!!.copy(isSelected = false)
+        updatedSquares[index] = updatedSquares[index].copy(
+            piece = updatedSquares[index].piece!!.copy(isSelected = false)
         )
         // 2. Clear legal move indicators
-        availableMoves.map { indexFrom(it) }.forEach {
-            updatedSquares[it] = squares[it].copy(canMoveTo = false)
+        for (i in availableMoves.indices) {
+            val idx = indexFrom(availableMoves[i])
+            updatedSquares[idx] = updatedSquares[idx].copy(canMoveTo = false)
         }
 
         return copy(
@@ -98,6 +97,8 @@ data class SquareViewData2(
     val canMoveTo: Boolean = false,
     val lastMove: Boolean = false,
 ) {
+    val highlightable: Boolean = (piece?.piece != null) && (piece.isSelected || canMoveTo)
+
     companion object {
         fun simple(piece: Piece, side: Side) = SquareViewData2(
             piece = PieceViewData2(piece = SidedPiece.of(side = side, piece = piece))
@@ -111,7 +112,6 @@ data class PieceViewData2(
     val isSelected: Boolean = false,
 )
 
-private fun indexFrom(rank: Rank, file: File): Int = rank.dec() * 8 + file.dec()
 private fun indexFrom(loc: Locus): Int = loc.rank.dec() * 8 + loc.file.dec()
 
 // Created once as a fixed-size flat ArrayList

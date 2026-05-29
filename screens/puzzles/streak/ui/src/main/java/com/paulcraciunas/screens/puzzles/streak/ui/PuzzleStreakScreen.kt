@@ -30,10 +30,10 @@ import com.paulcraciunas.screens.common.FailedContent
 import com.paulcraciunas.screens.common.LoadingContent
 import com.paulcraciunas.screens.common.LocalUiSettings
 import com.paulcraciunas.screens.common.UiSettings
-import com.paulcraciunas.screens.common.board.v2.BoardOrientation2
-import com.paulcraciunas.screens.common.board.v2.ChessBoard2
+import com.paulcraciunas.screens.common.board.BoardOrientation
+import com.paulcraciunas.screens.common.board.ChessBoard
+import com.paulcraciunas.screens.common.controls.CapturedPieces
 import com.paulcraciunas.screens.common.controls.DefaultPuzzleControls
-import com.paulcraciunas.screens.common.controls.v2.CapturedPieces2
 import com.paulcraciunas.screens.common.design.components.PrimaryButton
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.dialogs.AbandonConfirmationDialog
@@ -121,19 +121,19 @@ private fun PuzzleStreakContent(
     val isAwaitingNext = uiState is PuzzleStreakUiState.Playing && uiState.isAwaitingNextPuzzle
     val isBoardInteractive = !isShowingSolution && !isAwaitingNext
     Column(modifier = modifier) {
-        CapturedPieces2(capturedPieces = data.captured.byOpponent, side = data.player, modifier = Modifier.fillMaxWidth())
+        CapturedPieces(capturedPieces = data.captured.byOpponent, side = data.player, modifier = Modifier.fillMaxWidth())
         AnimatedBoard(
             targetState = data,
             contentKey = { it.id },
         ) { puzzleData ->
-            ChessBoard2(
+            ChessBoard(
                 board = puzzleData.boardData,
-                orientation = BoardOrientation2.fromSide(puzzleData.player),
+                orientation = BoardOrientation.fromSide(puzzleData.player),
                 onClick = if (isBoardInteractive) onSquareClicked else { _ -> },
                 modifier = Modifier.fillMaxWidth()
             )
         }
-        CapturedPieces2(capturedPieces = data.captured.byPlayer, side = data.player.other(), modifier = Modifier.fillMaxWidth())
+        CapturedPieces(capturedPieces = data.captured.byPlayer, side = data.player.other(), modifier = Modifier.fillMaxWidth())
         AnimatedControls(targetState = uiState is PuzzleStreakUiState.StreakEnded) { isEnded ->
             val controlsModifier = Modifier
                 .fillMaxWidth()

@@ -21,10 +21,10 @@ import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.ChildAppBar
 import com.paulcraciunas.screens.common.LocalUiSettings
 import com.paulcraciunas.screens.common.UiSettings
-import com.paulcraciunas.screens.common.board.v2.BoardOrientation2
-import com.paulcraciunas.screens.common.board.v2.ChessBoard2
+import com.paulcraciunas.screens.common.board.BoardOrientation
+import com.paulcraciunas.screens.common.board.ChessBoard
+import com.paulcraciunas.screens.common.controls.CapturedPieces
 import com.paulcraciunas.screens.common.controls.MoveNavigationControls
-import com.paulcraciunas.screens.common.controls.v2.CapturedPieces2
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.dialogs.PromotionDialog
 import com.paulcraciunas.screens.common.previews.PreviewData
@@ -57,9 +57,9 @@ fun AnalysisScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             val data = uiState.data
-            val orientation = BoardOrientation2.fromSide(data.player)
-            CapturedPieces2(capturedPieces = data.captured.byOpponent, side = uiState.data.player, modifier = Modifier.fillMaxWidth())
-            ChessBoard2(
+            val orientation = BoardOrientation.fromSide(data.player)
+            CapturedPieces(capturedPieces = data.captured.byOpponent, side = uiState.data.player, modifier = Modifier.fillMaxWidth())
+            ChessBoard(
                 board = data.boardData,
                 orientation = orientation,
                 onClick = onSquareClicked,
@@ -75,7 +75,7 @@ fun AnalysisScreen(
                         },
                 )
             }
-            CapturedPieces2(
+            CapturedPieces(
                 capturedPieces = uiState.data.captured.byPlayer,
                 side = uiState.data.player.other(),
                 modifier = Modifier.fillMaxWidth()

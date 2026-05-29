@@ -6,8 +6,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.blindmode.vm.BlindModeUiState
-import com.paulcraciunas.screens.common.board.v2.BoardOrientation2
-import com.paulcraciunas.screens.common.board.v2.ChessBoard2
+import com.paulcraciunas.screens.common.board.BoardOrientation
+import com.paulcraciunas.screens.common.board.ChessBoard
 import com.paulcraciunas.screens.common.controls.SideSelection
 import com.paulcraciunas.screens.common.controls.SideSelectionControls
 import com.paulcraciunas.screens.common.design.components.PlayButton
@@ -22,9 +22,9 @@ internal fun SetupContent(
     onSideSelected: (side: SideSelection) -> Unit = {},
     onPlayClicked: () -> Unit = {},
 ) {
-    ChessBoard2(
+    ChessBoard(
         board = BoardViewData2.empty(),
-        orientation = BoardOrientation2.White,
+        orientation = BoardOrientation.White,
         onClick = {},
     )
     ToggleRow(

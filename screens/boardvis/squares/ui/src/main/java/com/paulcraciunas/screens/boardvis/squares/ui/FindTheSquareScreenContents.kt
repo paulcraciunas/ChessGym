@@ -14,8 +14,8 @@ import androidx.compose.ui.unit.dp
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.boardvis.squares.vm.FindTheSquareUiState
-import com.paulcraciunas.screens.common.board.v2.BoardOrientation2
-import com.paulcraciunas.screens.common.board.v2.ChessBoard2
+import com.paulcraciunas.screens.common.board.BoardOrientation
+import com.paulcraciunas.screens.common.board.ChessBoard
 import com.paulcraciunas.screens.common.controls.SideSelection
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.design.components.SpacerSize
@@ -35,9 +35,9 @@ internal fun FindTheSquareScreenContents(
     Column(
         modifier = modifier.fillMaxWidth(),
     ) {
-        ChessBoard2(
+        ChessBoard(
             board = state.boardData,
-            orientation = BoardOrientation2.fromSide(state.orientation),
+            orientation = BoardOrientation.fromSide(state.orientation),
             onClick = onSquareClicked,
         ) {
             if (state is FindTheSquareUiState.Playing) {

@@ -26,10 +26,10 @@ import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.ChildAppBar
 import com.paulcraciunas.screens.common.LocalUiSettings
 import com.paulcraciunas.screens.common.UiSettings
-import com.paulcraciunas.screens.common.board.v2.BoardOrientation2
-import com.paulcraciunas.screens.common.board.v2.ChessBoard2
+import com.paulcraciunas.screens.common.board.BoardOrientation
+import com.paulcraciunas.screens.common.board.ChessBoard
 import com.paulcraciunas.screens.common.controls.MoveNavigationControls
-import com.paulcraciunas.screens.common.controls.v2.CapturedPieces2
+import com.paulcraciunas.screens.common.controls.CapturedPieces
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.design.components.PrimaryButton
 import com.paulcraciunas.screens.common.design.components.PrimaryButtonStyle
@@ -72,14 +72,14 @@ fun ImportGameScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             val data = uiState.data
-            CapturedPieces2(capturedPieces = data.captured.byOpponent, side = uiState.data.player, modifier = Modifier.fillMaxWidth())
-            ChessBoard2(
+            CapturedPieces(capturedPieces = data.captured.byOpponent, side = uiState.data.player, modifier = Modifier.fillMaxWidth())
+            ChessBoard(
                 board = data.boardData,
-                orientation = BoardOrientation2.fromSide(data.player),
+                orientation = BoardOrientation.fromSide(data.player),
                 onClick = if (uiState.isGameLoaded) onSquareClicked else { _ -> },
                 modifier = Modifier.fillMaxWidth()
             )
-            CapturedPieces2(
+            CapturedPieces(
                 capturedPieces = uiState.data.captured.byPlayer,
                 side = uiState.data.player.other(),
                 modifier = Modifier.fillMaxWidth()

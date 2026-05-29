@@ -29,8 +29,8 @@ import com.paulcraciunas.screens.blindmode.vm.BlindModeUiState
 import com.paulcraciunas.screens.common.ChildAppBar
 import com.paulcraciunas.screens.common.LocalUiSettings
 import com.paulcraciunas.screens.common.UiSettings
-import com.paulcraciunas.screens.common.board.v2.BoardOrientation2
-import com.paulcraciunas.screens.common.board.v2.ChessBoard2
+import com.paulcraciunas.screens.common.board.BoardOrientation
+import com.paulcraciunas.screens.common.board.ChessBoard
 import com.paulcraciunas.screens.common.controls.DefaultPuzzleControls
 import com.paulcraciunas.screens.common.controls.InfiniteProgressIndicator
 import com.paulcraciunas.screens.common.controls.SideSelection
@@ -127,9 +127,9 @@ private fun PlayingContent(
         animationSpec = tween(durationMillis = 200), // Adjust speed here
         label = "controlsAlpha"
     )
-    ChessBoard2(
+    ChessBoard(
         board = state.data.boardData,
-        orientation = BoardOrientation2.fromSide(state.data.player),
+        orientation = BoardOrientation.fromSide(state.data.player),
         onClick = onSquareClicked,
         piecesAlpha = piecesAlpha,
         modifier = Modifier.fillMaxWidth(),

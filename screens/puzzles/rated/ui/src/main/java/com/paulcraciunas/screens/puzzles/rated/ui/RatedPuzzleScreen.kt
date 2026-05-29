@@ -21,10 +21,10 @@ import com.paulcraciunas.screens.common.FailedContent
 import com.paulcraciunas.screens.common.LoadingContent
 import com.paulcraciunas.screens.common.LocalUiSettings
 import com.paulcraciunas.screens.common.UiSettings
-import com.paulcraciunas.screens.common.board.v2.BoardOrientation2
-import com.paulcraciunas.screens.common.board.v2.ChessBoard2
+import com.paulcraciunas.screens.common.board.BoardOrientation
+import com.paulcraciunas.screens.common.board.ChessBoard
+import com.paulcraciunas.screens.common.controls.CapturedPieces
 import com.paulcraciunas.screens.common.controls.DefaultPuzzleControls
-import com.paulcraciunas.screens.common.controls.v2.CapturedPieces2
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.dialogs.AbandonConfirmationDialog
 import com.paulcraciunas.screens.common.dialogs.PromotionDialog
@@ -96,14 +96,14 @@ private fun RatedPuzzleContent(
     Column(
         modifier = modifier.fillMaxSize()
     ) {
-        CapturedPieces2(capturedPieces = data.captured.byOpponent, side = data.player, modifier = Modifier.fillMaxWidth())
-        ChessBoard2(
+        CapturedPieces(capturedPieces = data.captured.byOpponent, side = data.player, modifier = Modifier.fillMaxWidth())
+        ChessBoard(
             board = data.boardData,
-            orientation = BoardOrientation2.fromSide(data.player),
+            orientation = BoardOrientation.fromSide(data.player),
             onClick = if (!isShowingSolution) onSquareClicked else { _ -> },
             modifier = Modifier.fillMaxWidth()
         )
-        CapturedPieces2(capturedPieces = data.captured.byPlayer, side = data.player.other(), modifier = Modifier.fillMaxWidth())
+        CapturedPieces(capturedPieces = data.captured.byPlayer, side = data.player.other(), modifier = Modifier.fillMaxWidth())
         AnimatedControls(targetState = uiState is RatedPuzzleUiState.Finished) { isEnded ->
             if (isEnded && uiState is RatedPuzzleUiState.Finished) {
                 FinishedPuzzleControls(

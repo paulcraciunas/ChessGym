@@ -9,8 +9,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.blindmode.vm.BlindModeUiState
-import com.paulcraciunas.screens.common.board.v2.BoardOrientation2
-import com.paulcraciunas.screens.common.board.v2.ChessBoard2
+import com.paulcraciunas.screens.common.board.BoardOrientation
+import com.paulcraciunas.screens.common.board.ChessBoard
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.design.components.RefreshButton
 import com.paulcraciunas.screens.common.design.components.SpacerSize
@@ -21,9 +21,9 @@ internal fun GameOverContent(
     state: BlindModeUiState.GameOver,
     onPlayAgain: () -> Unit = {},
 ) {
-    ChessBoard2(
+    ChessBoard(
         board = state.data.boardData,
-        orientation = BoardOrientation2.fromSide(state.data.player),
+        orientation = BoardOrientation.fromSide(state.data.player),
         onClick = {},
         modifier = Modifier.fillMaxWidth()
     )

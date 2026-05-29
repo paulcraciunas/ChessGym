@@ -22,7 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.global.resources.R
-import com.paulcraciunas.screens.common.board.v2.BoardOrientation2
+import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.tools.analysis.vm.AnalysisUiState
@@ -32,7 +32,7 @@ import kotlin.math.hypot
 @Composable
 internal fun MoveArrowOverlay(
     move: AnalysisUiState.EngineData.SuggestedMove?,
-    orientation: BoardOrientation2,
+    orientation: BoardOrientation,
     modifier: Modifier = Modifier,
     color: Color = Design.colors.ink,
 ) {
@@ -76,16 +76,16 @@ internal fun MoveArrowOverlay(
     }
 }
 
-private fun fileIndex(fileOrdinal: Int, orientation: BoardOrientation2): Int =
+private fun fileIndex(fileOrdinal: Int, orientation: BoardOrientation): Int =
     when (orientation) {
-        BoardOrientation2.White -> fileOrdinal
-        BoardOrientation2.Black -> 7 - fileOrdinal
+        BoardOrientation.White -> fileOrdinal
+        BoardOrientation.Black -> 7 - fileOrdinal
     }
 
-private fun rankIndex(rankOrdinal: Int, orientation: BoardOrientation2): Int =
+private fun rankIndex(rankOrdinal: Int, orientation: BoardOrientation): Int =
     when (orientation) {
-        BoardOrientation2.White -> 7 - rankOrdinal
-        BoardOrientation2.Black -> rankOrdinal
+        BoardOrientation.White -> 7 - rankOrdinal
+        BoardOrientation.Black -> rankOrdinal
     }
 
 private fun DrawScope.drawMoveArrow(
@@ -157,7 +157,7 @@ private fun MoveArrowWhitePreview() {
         Box(modifier = Modifier.size(300.dp)) {
             MoveArrowOverlay(
                 move = AnalysisUiState.EngineData.SuggestedMove(from = Locus.e2, to = Locus.e4),
-                orientation = BoardOrientation2.White
+                orientation = BoardOrientation.White
             )
         }
     }
@@ -170,7 +170,7 @@ private fun MoveArrowKnightPreview() {
         Box(modifier = Modifier.size(300.dp)) {
             MoveArrowOverlay(
                 move = AnalysisUiState.EngineData.SuggestedMove(from = Locus.g1, to = Locus.f3),
-                orientation = BoardOrientation2.White,
+                orientation = BoardOrientation.White,
                 color = Color.Green
             )
         }
