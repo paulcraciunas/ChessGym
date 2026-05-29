@@ -1,21 +1,24 @@
 package com.paulcraciunas.screens.boardvis.squares.vm
 
+import androidx.compose.runtime.Immutable
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.screens.common.controls.SideSelection
-import com.paulcraciunas.screens.common.model.BoardViewData
-import com.paulcraciunas.screens.common.previews.SampleBoardViewData
+import com.paulcraciunas.screens.common.model.BoardViewData2
 
+@Immutable
 sealed class FindTheSquareUiState {
-    val boardData: BoardViewData = SampleBoardViewData.startingBoard()
+    val boardData: BoardViewData2 = BoardViewData2.default()
     abstract val orientation: Side
 
+    @Immutable
     data class Setup(
         val selectedSide: SideSelection = SideSelection.WHITE,
         val timeRemainingSeconds: Int = DEFAULT_DURATION_SECONDS,
         override val orientation: Side = selectedSide.toSetupSide(),
     ) : FindTheSquareUiState()
 
+    @Immutable
     data class Playing(
         override val orientation: Side,
         val currentSquare: Locus,
@@ -24,6 +27,7 @@ sealed class FindTheSquareUiState {
         val showError: Boolean = false,
     ) : FindTheSquareUiState()
 
+    @Immutable
     data class GameOver(
         override val orientation: Side,
         val score: Int,
@@ -34,14 +38,6 @@ sealed class FindTheSquareUiState {
     companion object {
         const val DEFAULT_DURATION_SECONDS = 30
     }
-}
-
-interface FindTheSquareScreenInteractor {
-    fun onSideSelected(side: SideSelection)
-    fun onPlayClicked()
-    fun onSquareClicked(locus: Locus)
-    fun onPlayAgain()
-    fun onErrorShown()
 }
 
 private fun SideSelection.toSetupSide(): Side = when (this) {

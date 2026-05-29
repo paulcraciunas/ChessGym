@@ -5,6 +5,7 @@ plugins {
 androidLibrary {
     namespace = "com.paulcraciunas.screens.boardvis.squares.vm"
     di = true
+    compose = true
 }
 
 dependencies {

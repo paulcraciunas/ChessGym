@@ -30,13 +30,13 @@ class FindTheSquareViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val randomFactory: RandomFactory,
     gameDuration: GameDuration,
-) : ViewModel(), FindTheSquareScreenInteractor {
+) : ViewModel() {
 
     private val durationSeconds: Int = gameDuration.seconds
     private val _gameState = MutableStateFlow<GameState>(GameState.Setup())
     val uiState: StateFlow<FindTheSquareUiState> = combine(
         _gameState,
-        countdownTimer.remaining.map { it.seconds }
+        countdownTimer.remaining.map { it.roundSeconds() }
     ) { gameState, remainingSeconds ->
         // Handle time expiry during playing
         val state = if (gameState is GameState.Playing && remainingSeconds <= 0) {
@@ -59,14 +59,14 @@ class FindTheSquareViewModel @Inject constructor(
         countdownTimer.set(durationSeconds)
     }
 
-    override fun onSideSelected(side: SideSelection) {
+    fun onSideSelected(side: SideSelection) {
         val currentState = _gameState.value
         if (currentState is GameState.Setup) {
             _gameState.value = currentState.copy(selectedSide = side)
         }
     }
 
-    override fun onPlayClicked() {
+    fun onPlayClicked() {
         val currentState = _gameState.value
         if (currentState !is GameState.Setup) return
 
@@ -85,7 +85,7 @@ class FindTheSquareViewModel @Inject constructor(
         )
     }
 
-    override fun onSquareClicked(locus: Locus) {
+    fun onSquareClicked(locus: Locus) {
         val currentState = _gameState.value
         if (currentState !is GameState.Playing) return
 
@@ -102,12 +102,12 @@ class FindTheSquareViewModel @Inject constructor(
         }
     }
 
-    override fun onPlayAgain() {
+    fun onPlayAgain() {
         countdownTimer.set(durationSeconds)
         _gameState.value = GameState.Setup()
     }
 
-    override fun onErrorShown() {
+    fun onErrorShown() {
         val currentState = _gameState.value
         if (currentState is GameState.Playing) {
             _gameState.value = currentState.copy(showError = false)
