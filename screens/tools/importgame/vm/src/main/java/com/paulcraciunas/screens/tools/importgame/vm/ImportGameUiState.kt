@@ -3,18 +3,22 @@ package com.paulcraciunas.screens.tools.importgame.vm
 import androidx.compose.runtime.Immutable
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.screens.common.model.BoardViewData
-import com.paulcraciunas.screens.common.model.GameViewModelHelper
-import com.paulcraciunas.screens.common.model.GameViewModelHelper.GameData2
+import com.paulcraciunas.screens.common.model.CapturedPieces
+import com.paulcraciunas.screens.common.model.PlayableData
+import com.paulcraciunas.screens.common.model.Promotion
 
 @Immutable
 data class ImportGameUiState(
-    val data: GameData2 = GameData2(
+    val data: PlayableData = PlayableData(
         rating = null,
         player = Side.WHITE,
+        id = null,
         boardData = BoardViewData.empty(),
-        captured = GameData2.GameCaptured(byOpponent = "", byPlayer = "")
+        captured = CapturedPieces(byOpponent = "", byPlayer = ""),
+        isOver = false,
+        outcome = null,
     ),
-    val promotion: GameViewModelHelper.GamePromotion? = null,
+    val promotion: Promotion? = null,
     val showImportDialog: ImportType? = null,
     val importType: ImportType? = null, // Keeps track of already imported game
     val importError: String? = null,

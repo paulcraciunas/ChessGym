@@ -4,7 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.screens.common.model.GameViewModelHelper
+import com.paulcraciunas.screens.common.model.BoardInteractionHelper
+import com.paulcraciunas.screens.common.model.ClickResult
+import com.paulcraciunas.screens.common.model.GameNavigation
+import com.paulcraciunas.screens.common.model.GamePlayableBoard
+import com.paulcraciunas.screens.common.model.PlayableData
 import com.paulcraciunas.serializer.api.SerializeException
 import com.paulcraciunas.serializer.api.Serializer
 import com.paulcraciunas.serializer.di.SerializerFen
@@ -29,7 +33,7 @@ class ImportGameViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ImportGameUiState())
     val uiState: StateFlow<ImportGameUiState> = _uiState.asStateFlow()
 
-    private val helper = GameViewModelHelper()
+    private val helper = BoardInteractionHelper(navigation = GameNavigation())
 
     init {
         viewModelScope.launch {
@@ -49,7 +53,7 @@ class ImportGameViewModel @Inject constructor(
                 try {
                     val importedGame = serializer(it.showImportDialog).from(text)
                     it.copy(
-                        data = helper.load(importedGame, importedGame.info.turn),
+                        data = helper.load(GamePlayableBoard(importedGame, importedGame.info.turn)),
                         promotion = null,
                         showImportDialog = null,
                         importType = it.showImportDialog,
@@ -85,7 +89,7 @@ class ImportGameViewModel @Inject constructor(
     fun onNextMove() = navigate { helper.replayNext() }
     fun onJumpToEnd() = navigate { helper.replayAll() }
 
-    private fun applyResult(result: GameViewModelHelper.GameOnSquareClick) = _uiState.update {
+    private fun applyResult(result: ClickResult) = _uiState.update {
         it.copy(
             data = result.data,
             promotion = result.promotion,
@@ -94,7 +98,7 @@ class ImportGameViewModel @Inject constructor(
         )
     }
 
-    private fun navigate(gameDataSource: () -> GameViewModelHelper.GameData2) = _uiState.update {
+    private fun navigate(gameDataSource: () -> PlayableData) = _uiState.update {
         it.copy(
             data = gameDataSource(),
             promotion = null,

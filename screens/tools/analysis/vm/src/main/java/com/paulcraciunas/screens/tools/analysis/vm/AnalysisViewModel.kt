@@ -6,8 +6,12 @@ import com.paulcraciunas.domain.api.analysis.AnalyzePosition
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.screens.common.model.GameViewModelHelper
-import com.paulcraciunas.screens.common.model.GameViewModelHelper.GamePromotion
+import com.paulcraciunas.screens.common.model.BoardInteractionHelper
+import com.paulcraciunas.screens.common.model.ClickResult
+import com.paulcraciunas.screens.common.model.GameNavigation
+import com.paulcraciunas.screens.common.model.GamePlayableBoard
+import com.paulcraciunas.screens.common.model.PlayableData
+import com.paulcraciunas.screens.common.model.Promotion
 import com.paulcraciunas.serializer.api.Serializer
 import com.paulcraciunas.serializer.di.SerializerFen
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
@@ -41,8 +45,9 @@ class AnalysisViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(AnalysisUiState())
     val uiState: StateFlow<AnalysisUiState> = _uiState.asStateFlow()
 
-    private val helper = GameViewModelHelper()
+    private val helper = BoardInteractionHelper(navigation = GameNavigation())
     private val adapter = EngineDataAdapter()
+    private lateinit var currentGame: GamePlayableBoard
     private var analysisJob: Job? = null
     private var navigationDebounceJob: Job? = null
     private var enableThrottling: Boolean = true
@@ -64,8 +69,10 @@ class AnalysisViewModel @Inject constructor(
         if (firstMove != null) {
             try {
                 val game = fenSerializer.from(targetFen)
-                helper.load(game = game, player = game.info.turn.other())
-                beginGame(gameData = helper.playMove(firstMove))
+                currentGame = GamePlayableBoard(game, game.info.turn.other())
+                helper.load(currentGame)
+                game.play(firstMove)
+                beginGame(gameData = helper.refresh())
                 return
             } catch (e: Exception) {
                 Timber.w(e, "Failed to load FEN position: $fen")
@@ -73,7 +80,8 @@ class AnalysisViewModel @Inject constructor(
         }
         // The try should return; if there's an exception, as a fallback, we load the default board
         val game = fenSerializer.from(targetFen)
-        beginGame(gameData = helper.load(game = game, player = game.info.turn))
+        currentGame = GamePlayableBoard(game, game.info.turn)
+        beginGame(gameData = helper.load(currentGame))
     }
 
     fun onSquareClicked(locus: Locus) {
@@ -105,12 +113,12 @@ class AnalysisViewModel @Inject constructor(
         }
     }
 
-    private fun beginGame(gameData: GameViewModelHelper.GameData2) {
+    private fun beginGame(gameData: PlayableData) {
         updateState(data = gameData, promotion = null)
         analyze(fen = currentFen(), sideToMove = helper.toMove(), start = true)
     }
 
-    private fun applyMoveResult(result: GameViewModelHelper.GameOnSquareClick) {
+    private fun applyMoveResult(result: ClickResult) {
         updateState(data = result.data, promotion = result.promotion)
 
         if (result.movePlayed) {
@@ -119,7 +127,7 @@ class AnalysisViewModel @Inject constructor(
         }
     }
 
-    private fun navigate(gameDataSource: () -> GameViewModelHelper.GameData2) {
+    private fun navigate(gameDataSource: () -> PlayableData) {
         updateState(data = gameDataSource(), promotion = null)
 
         navigationDebounceJob?.cancel()
@@ -129,7 +137,7 @@ class AnalysisViewModel @Inject constructor(
         }
     }
 
-    private fun updateState(data: GameViewModelHelper.GameData2, promotion: GamePromotion?) {
+    private fun updateState(data: PlayableData, promotion: Promotion?) {
         _uiState.update {
             it.copy(
                 data = data,
@@ -140,7 +148,7 @@ class AnalysisViewModel @Inject constructor(
         }
     }
 
-    private fun currentFen(): String = fenSerializer.of(helper.loadedGame())
+    private fun currentFen(): String = fenSerializer.of(currentGame.game)
     private fun analyze(fen: String, sideToMove: Side = Side.WHITE, start: Boolean = false) {
         val previousJob = analysisJob
         analysisJob = viewModelScope.launch {

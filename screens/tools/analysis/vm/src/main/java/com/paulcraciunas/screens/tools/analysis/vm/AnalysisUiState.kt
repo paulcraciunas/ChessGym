@@ -5,18 +5,22 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.screens.common.model.BoardViewData
-import com.paulcraciunas.screens.common.model.GameViewModelHelper
-import com.paulcraciunas.screens.common.model.GameViewModelHelper.GameData2
+import com.paulcraciunas.screens.common.model.CapturedPieces
+import com.paulcraciunas.screens.common.model.PlayableData
+import com.paulcraciunas.screens.common.model.Promotion
 
 @Immutable
 data class AnalysisUiState(
-    val data: GameData2 = GameData2(
+    val data: PlayableData = PlayableData(
         rating = null,
         player = Side.WHITE,
+        id = null,
         boardData = BoardViewData.empty(),
-        captured = GameData2.GameCaptured(byOpponent = "", byPlayer = "")
+        captured = CapturedPieces(byOpponent = "", byPlayer = ""),
+        isOver = false,
+        outcome = null,
     ),
-    val promotion: GameViewModelHelper.GamePromotion? = null,
+    val promotion: Promotion? = null,
     val engineData: EngineData? = null,
     val canNavigateBack: Boolean = false,
     val canNavigateForward: Boolean = false,
