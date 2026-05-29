@@ -15,7 +15,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.global.resources.R
@@ -28,8 +27,7 @@ import com.paulcraciunas.screens.common.controls.MoveNavigationControls
 import com.paulcraciunas.screens.common.controls.v2.CapturedPieces2
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.dialogs.PromotionDialog
-import com.paulcraciunas.screens.common.model.BoardViewData2
-import com.paulcraciunas.screens.common.model.GameViewModelHelper.GameData2
+import com.paulcraciunas.screens.common.previews.PreviewData
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.tools.analysis.vm.AnalysisUiState
@@ -129,31 +127,10 @@ private fun AnalysisScreenStartingPreview() {
         CompositionLocalProvider(LocalUiSettings provides UiSettings.default()) {
             AnalysisScreen(
                 uiState = AnalysisUiState(
-                    data = GameData2(
-                        rating = 1442,
-                        player = Side.WHITE,
-                        boardData = BoardViewData2.default(),
-                        captured = GameData2.GameCaptured(byOpponent = "", byPlayer = "")
-                    ),
+                    data = PreviewData().whiteGameData(),
                     engineData = AnalysisUiState.EngineData(
                         evaluation = AnalysisUiState.EngineData.CurrentEvaluation(normalised = 0.6f, display = "+0.3"),
-                        engineLines = listOf(
-                            AnalysisUiState.EngineData.SuggestedLine(
-                                rank = 1,
-                                evaluation = AnalysisUiState.EngineData.CurrentEvaluation(normalised = 0.6f, display = "+0.3"),
-                                moves = "e2e4 e7e5 Nf3",
-                            ),
-                            AnalysisUiState.EngineData.SuggestedLine(
-                                rank = 2,
-                                evaluation = AnalysisUiState.EngineData.CurrentEvaluation(normalised = 0.55f, display = "+0.2"),
-                                moves = "d2d4 d7d5",
-                            ),
-                            AnalysisUiState.EngineData.SuggestedLine(
-                                rank = 3,
-                                evaluation = AnalysisUiState.EngineData.CurrentEvaluation(normalised = 0.51f, display = "+0.1"),
-                                moves = "g1f3 d7d5",
-                            ),
-                        ),
+                        engineLines = Previews().engineLines(),
                         topMove = AnalysisUiState.EngineData.SuggestedMove(from = Locus.e2, to = Locus.e4),
                         analysisDepth = 15,
                     ),
@@ -173,12 +150,7 @@ private fun AnalysisScreenEmptyPreview() {
         CompositionLocalProvider(LocalUiSettings provides UiSettings.default()) {
             AnalysisScreen(
                 uiState = AnalysisUiState(
-                    data = GameData2(
-                        rating = 1442,
-                        player = Side.WHITE,
-                        boardData = BoardViewData2.default(),
-                        captured = GameData2.GameCaptured(byOpponent = "", byPlayer = "")
-                    ),
+                    data = PreviewData().whiteGameData(),
                     canNavigateBack = true,
                     canNavigateForward = false,
                 ),

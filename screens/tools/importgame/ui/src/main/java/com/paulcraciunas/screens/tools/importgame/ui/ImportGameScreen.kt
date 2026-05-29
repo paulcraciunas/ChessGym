@@ -20,7 +20,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.global.resources.R
@@ -37,8 +36,7 @@ import com.paulcraciunas.screens.common.design.components.PrimaryButtonStyle
 import com.paulcraciunas.screens.common.design.components.SpacerSize
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.dialogs.PromotionDialog
-import com.paulcraciunas.screens.common.model.BoardViewData2
-import com.paulcraciunas.screens.common.model.GameViewModelHelper.GameData2
+import com.paulcraciunas.screens.common.previews.PreviewData
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.tools.importgame.vm.ImportGameUiState
@@ -74,14 +72,18 @@ fun ImportGameScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             val data = uiState.data
-            CapturedPieces2(capturedPieces =data.captured.byOpponent, side = uiState.data.player, modifier = Modifier.fillMaxWidth())
+            CapturedPieces2(capturedPieces = data.captured.byOpponent, side = uiState.data.player, modifier = Modifier.fillMaxWidth())
             ChessBoard2(
                 board = data.boardData,
                 orientation = BoardOrientation2.fromSide(data.player),
                 onClick = if (uiState.isGameLoaded) onSquareClicked else { _ -> },
                 modifier = Modifier.fillMaxWidth()
             )
-            CapturedPieces2(capturedPieces = uiState.data.captured.byPlayer, side = uiState.data.player.other(), modifier = Modifier.fillMaxWidth())
+            CapturedPieces2(
+                capturedPieces = uiState.data.captured.byPlayer,
+                side = uiState.data.player.other(),
+                modifier = Modifier.fillMaxWidth()
+            )
             ChessGymSpacer(size = SpacerSize.XXLARGE)
             AnimatedVisibility(
                 visible = uiState.isGameLoaded,
@@ -171,12 +173,7 @@ private fun ImportGameLoadedPreview() {
         CompositionLocalProvider(LocalUiSettings provides UiSettings.default()) {
             ImportGameScreen(
                 uiState = ImportGameUiState(
-                    data = GameData2(
-                        rating = 1442,
-                        player = Side.WHITE,
-                        boardData = BoardViewData2.default(),
-                        captured = GameData2.GameCaptured(byOpponent = "", byPlayer = "")
-                    ),
+                    data = PreviewData().whiteGameData(),
                     isGameLoaded = true,
                     importType = ImportType.FEN,
                 ),
@@ -193,12 +190,7 @@ private fun ImportGamePgnNavigationPreview() {
         CompositionLocalProvider(LocalUiSettings provides UiSettings.default()) {
             ImportGameScreen(
                 uiState = ImportGameUiState(
-                    data = GameData2(
-                        rating = 1442,
-                        player = Side.WHITE,
-                        boardData = BoardViewData2.default(),
-                        captured = GameData2.GameCaptured(byOpponent = "", byPlayer = "")
-                    ),
+                    data = PreviewData().blackGameData(),
                     isGameLoaded = true,
                     importType = ImportType.PGN,
                     canNavigateBack = false,
