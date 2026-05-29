@@ -11,6 +11,7 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.impl.RealGameFactory
 import com.paulcraciunas.screens.common.controls.SideSelection
+import com.paulcraciunas.screens.common.model.PlayableData
 import com.paulcraciunas.serializer.impl.FenSerializer
 import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
 import com.paulcraciunas.user.api.FakeUserRepository
@@ -226,7 +227,7 @@ internal class BlindModeViewModelTest {
             advanceUntilIdle()
 
             val state = underTest.uiState.value as BlindModeUiState.GameOver
-            assertEquals(BlindModeUiState.GameResult.Loss, state.result)
+            assertEquals(PlayableData.Outcome.Lost, state.data.outcome)
             assertNotNull(fakeOnComplete.lastResult)
         }
 
@@ -429,7 +430,7 @@ internal class BlindModeViewModelTest {
                 advanceUntilIdle()
 
                 val state = underTest.uiState.value as BlindModeUiState.GameOver
-                assertEquals(BlindModeUiState.GameResult.Loss, state.result)
+                assertEquals(PlayableData.Outcome.Lost, state.data.outcome)
             }
     }
 

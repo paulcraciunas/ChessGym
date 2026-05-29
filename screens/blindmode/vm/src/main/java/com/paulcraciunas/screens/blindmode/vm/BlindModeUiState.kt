@@ -2,7 +2,8 @@ package com.paulcraciunas.screens.blindmode.vm
 
 import androidx.compose.runtime.Immutable
 import com.paulcraciunas.screens.common.controls.SideSelection
-import com.paulcraciunas.screens.common.model.GameViewModelHelper
+import com.paulcraciunas.screens.common.model.PlayableData
+import com.paulcraciunas.screens.common.model.Promotion
 
 @Immutable
 sealed class BlindModeUiState {
@@ -17,8 +18,8 @@ sealed class BlindModeUiState {
     @Immutable
     data class Playing(
         override val isTrainingMode: Boolean,
-        val data: GameViewModelHelper.GameData2,
-        val pendingPromotion: GameViewModelHelper.GamePromotion? = null,
+        val data: PlayableData,
+        val pendingPromotion: Promotion? = null,
         val moveHistory: String = "",
         val isRevealAvailable: Boolean = true,
         val isThinking: Boolean = false,
@@ -29,14 +30,7 @@ sealed class BlindModeUiState {
     @Immutable
     data class GameOver(
         override val isTrainingMode: Boolean,
-        val data: GameViewModelHelper.GameData2,
+        val data: PlayableData,
         val moveHistory: String,
-        val result: GameResult,
     ) : BlindModeUiState()
-
-    enum class GameResult {
-        Win,
-        Draw,
-        Loss
-    }
 }

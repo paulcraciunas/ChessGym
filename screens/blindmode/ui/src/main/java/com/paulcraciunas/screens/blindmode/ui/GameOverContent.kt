@@ -15,6 +15,7 @@ import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.design.components.RefreshButton
 import com.paulcraciunas.screens.common.design.components.SpacerSize
 import com.paulcraciunas.screens.common.design.theme.Design
+import com.paulcraciunas.screens.common.model.PlayableData
 
 @Composable
 internal fun GameOverContent(
@@ -29,7 +30,7 @@ internal fun GameOverContent(
     )
     ChessGymSpacer(size = SpacerSize.LARGE)
     Text(
-        text = stringResource(state.result.stringRes()),
+        text = stringResource(state.data.outcome.stringRes()),
         style = Design.typography.headlineLarge,
         color = Design.colors.ink,
         textAlign = TextAlign.Center,
@@ -43,8 +44,9 @@ internal fun GameOverContent(
 }
 
 @StringRes
-private fun BlindModeUiState.GameResult.stringRes(): Int = when (this) {
-    BlindModeUiState.GameResult.Win -> R.string.result_checkmate
-    BlindModeUiState.GameResult.Draw -> R.string.result_draw
-    BlindModeUiState.GameResult.Loss -> R.string.result_loss
+private fun PlayableData.Outcome?.stringRes(): Int = when (this) {
+    PlayableData.Outcome.Won -> R.string.result_checkmate
+    PlayableData.Outcome.Drew -> R.string.result_draw
+    PlayableData.Outcome.Lost -> R.string.result_loss
+    null -> throw IllegalArgumentException("Can't show a result if the game has no outcome")
 }

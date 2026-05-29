@@ -37,25 +37,14 @@ class OnBlindModeGameCompleteImpl @Inject constructor(
         userRepository.logHistory(listOf(buildHistoryItem(result, eloResult)))
     }
 
-    private fun buildTrainingUpdate(
-        currentUser: User,
-        newTimeSpent: Long,
-    ): User = currentUser.copy(
-        statistics = currentUser.statistics.copy(totalTimeSpent = newTimeSpent),
-    )
+    private fun buildTrainingUpdate(currentUser: User, newTimeSpent: Long): User =
+        currentUser.copy(statistics = currentUser.statistics.copy(totalTimeSpent = newTimeSpent))
 
-    private fun buildRatedUpdate(
-        currentUser: User,
-        result: BlindModeGameResult,
-        newTimeSpent: Long,
-        eloResult: EloResult,
-    ): User {
+    private fun buildRatedUpdate(currentUser: User, result: BlindModeGameResult, newTimeSpent: Long, eloResult: EloResult): User {
         val ratingChange = eloResult.getNormalized(result.isPlayerWin)
 
         return currentUser.copy(
-            ratings = currentUser.ratings.copy(
-                blindMode = currentUser.ratings.blindMode + ratingChange
-            ),
+            ratings = currentUser.ratings.copy(blindMode = currentUser.ratings.blindMode + ratingChange),
             statistics = currentUser.statistics.copy(
                 totalTimeSpent = newTimeSpent,
                 blindModeWins = currentUser.statistics.blindModeWins + if (result.isPlayerWin) 1 else 0,
@@ -63,10 +52,7 @@ class OnBlindModeGameCompleteImpl @Inject constructor(
         )
     }
 
-    private fun buildHistoryItem(
-        result: BlindModeGameResult,
-        eloResult: EloResult,
-    ): User.HistoryItem {
+    private fun buildHistoryItem(result: BlindModeGameResult, eloResult: EloResult): User.HistoryItem {
         val today = LocalDate.now()
         val data = if (result.isTrainingMode) {
             User.HistoryItem.HistoryItemData.BlindModeTrainingData(

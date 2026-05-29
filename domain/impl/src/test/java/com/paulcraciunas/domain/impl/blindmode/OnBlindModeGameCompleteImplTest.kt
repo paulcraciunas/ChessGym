@@ -5,7 +5,6 @@ import com.paulcraciunas.domain.api.achievements.FakeAchievementNotificationMana
 import com.paulcraciunas.domain.api.blindmode.BlindModeGameResult
 import com.paulcraciunas.domain.impl.achievements.UpdateAchievementProgressImpl
 import com.paulcraciunas.domain.impl.general.CalculateEloImpl
-import com.paulcraciunas.game.logic.api.Result
 import com.paulcraciunas.user.api.FakeUserRepository
 import com.paulcraciunas.user.api.User
 import com.paulcraciunas.user.api.UserDefaults
@@ -169,7 +168,6 @@ internal class OnBlindModeGameCompleteImplTest {
     }
 
     private fun trainingResult(isPlayerWin: Boolean): BlindModeGameResult = BlindModeGameResult(
-        result = if (isPlayerWin) Result.CheckMate else Result.Resigned,
         isPlayerWin = isPlayerWin,
         movesPlayed = 20,
         timeSpentMillis = 5_000L,
@@ -178,7 +176,6 @@ internal class OnBlindModeGameCompleteImplTest {
     )
 
     private fun ratedResult(isPlayerWin: Boolean): BlindModeGameResult = BlindModeGameResult(
-        result = if (isPlayerWin) Result.CheckMate else Result.Resigned,
         isPlayerWin = isPlayerWin,
         movesPlayed = 30,
         timeSpentMillis = 10_000L,

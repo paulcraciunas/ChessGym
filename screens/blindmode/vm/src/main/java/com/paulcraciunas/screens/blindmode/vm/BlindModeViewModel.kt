@@ -8,14 +8,15 @@ import com.paulcraciunas.domain.api.blindmode.OnBlindModeGameComplete
 import com.paulcraciunas.domain.api.general.RandomFactory
 import com.paulcraciunas.domain.api.general.Timer
 import com.paulcraciunas.game.engine.api.ChessEngine
-import com.paulcraciunas.game.logic.api.Game
-import com.paulcraciunas.game.logic.api.Result
 import com.paulcraciunas.game.logic.api.Side
-import com.paulcraciunas.game.logic.api.algebraic
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.screens.common.controls.SideSelection
-import com.paulcraciunas.screens.common.model.GameViewModelHelper
+import com.paulcraciunas.screens.common.model.BoardInteractionHelper
+import com.paulcraciunas.screens.common.model.ClickResult
+import com.paulcraciunas.screens.common.model.GameNavigation
+import com.paulcraciunas.screens.common.model.GamePlayableBoard
+import com.paulcraciunas.screens.common.model.PlayableData
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import com.paulcraciunas.user.api.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,7 +37,7 @@ class BlindModeViewModel @Inject constructor(
     private val appSettingsRepository: AppSettingsRepository,
     private val userRepository: UserRepository,
 ) : ViewModel() {
-    private val helper = GameViewModelHelper()
+    private val helper = BoardInteractionHelper(navigation = GameNavigation())
 
     private val _uiState = MutableStateFlow<BlindModeUiState>(BlindModeUiState.Setup())
     val uiState: StateFlow<BlindModeUiState> = _uiState.asStateFlow()
@@ -71,7 +72,7 @@ class BlindModeViewModel @Inject constructor(
             val elo = userRepository.get().ratings.blindMode.coerceAtLeast(ChessEngine.DEFAULT_ELO)
             val game = orchestrator.startGame(elo = elo, side = side)
 
-            _uiState.update { BlindModeUiState.Playing(isTrainingMode = isTrainingMode, data = helper.load(game, side)) }
+            _uiState.update { BlindModeUiState.Playing(isTrainingMode = isTrainingMode, data = helper.load(GamePlayableBoard(game, side))) }
             if (side == Side.BLACK) {
                 requestEngineMove()
             }
@@ -88,20 +89,19 @@ class BlindModeViewModel @Inject constructor(
         }
     }
 
-    private fun handleMoveResult(result: GameViewModelHelper.GameOnSquareClick) {
+    private fun handleMoveResult(result: ClickResult) {
         _uiState.updateAs<BlindModeUiState.Playing> {
-            it.copy(data = result.data, pendingPromotion = result.promotion, moveHistory = currentMoveHistory())
+            it.copy(data = result.data, pendingPromotion = result.promotion, moveHistory = helper.algebraicHistory())
         }
-        if (result.isOver) {
-            val gameState = helper.loadedGame().state as Game.GameState.Finished
-            finishGame(data = result.data, result = gameState.result)
+        if (result.data.isOver) {
+            finishGame(data = result.data)
         } else if (result.movePlayed) {
             requestEngineMove()
         }
     }
 
     fun onResign() = runAs<BlindModeUiState.Playing> {
-        finishGame(data = helper.resign(), result = Result.Resigned)
+        finishGame(data = helper.resign())
     }
 
     fun onReveal(): Unit = runAs<BlindModeUiState.Playing> { state ->
@@ -128,7 +128,7 @@ class BlindModeViewModel @Inject constructor(
     }
 
     fun onAbandonConfirmed() = runAs<BlindModeUiState.Playing> {
-        finishGame(data = helper.resign(), result = Result.Resigned)
+        finishGame(data = helper.resign())
     }
 
     fun onAbandonDismissed() = _uiState.updateAs<BlindModeUiState.Playing> { it.copy(isAbandonDialogShown = false) }
@@ -138,23 +138,20 @@ class BlindModeViewModel @Inject constructor(
         viewModelScope.launch {
             val engineMove = orchestrator.requestEngineMove()
             val data = helper.playMove(engineMove)
-            val gameState = helper.loadedGame().state as? Game.GameState.Finished
-            if (gameState != null) {
-                finishGame(data = data, result = gameState.result)
+            if (data.isOver) {
+                finishGame(data = data)
             } else {
-                _uiState.updateAs<BlindModeUiState.Playing> { it.copy(data = data, isThinking = false, moveHistory = currentMoveHistory()) }
+                _uiState.updateAs<BlindModeUiState.Playing> { it.copy(data = data, isThinking = false, moveHistory = helper.algebraicHistory()) }
             }
         }
     }
 
-    private fun finishGame(data: GameViewModelHelper.GameData2, result: Result) {
-        val uiResult = uiResult(data.player, result)
+    private fun finishGame(data: PlayableData) {
         viewModelScope.launch {
             onComplete(
                 BlindModeGameResult(
-                    result = result,
-                    isPlayerWin = uiResult == BlindModeUiState.GameResult.Win,
-                    movesPlayed = helper.loadedGame().historySize / 2,
+                    isPlayerWin = data.outcome == PlayableData.Outcome.Won,
+                    movesPlayed = helper.completedMoves(),
                     timeSpentMillis = timer.elapsed(),
                     isTrainingMode = _uiState.value.isTrainingMode,
                     opponentElo = data.rating ?: ChessEngine.DEFAULT_ELO,
@@ -165,21 +162,8 @@ class BlindModeViewModel @Inject constructor(
             BlindModeUiState.GameOver(
                 isTrainingMode = it.isTrainingMode,
                 data = data,
-                moveHistory = currentMoveHistory(),
-                result = uiResult,
+                moveHistory = helper.algebraicHistory(),
             )
-        }
-    }
-
-    private fun currentMoveHistory(): String = helper.loadedGame().history.algebraic()
-
-    private fun uiResult(player: Side, result: Result): BlindModeUiState.GameResult {
-        val lastPly = helper.loadedGame().info.lastPly ?: return BlindModeUiState.GameResult.Loss
-        return when {
-            result == Result.Resigned -> BlindModeUiState.GameResult.Loss
-            result.isDraw() -> BlindModeUiState.GameResult.Draw
-            lastPly.turn == player -> BlindModeUiState.GameResult.Win
-            else -> BlindModeUiState.GameResult.Loss
         }
     }
 
