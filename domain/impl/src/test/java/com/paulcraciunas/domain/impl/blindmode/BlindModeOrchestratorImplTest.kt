@@ -1,7 +1,6 @@
 package com.paulcraciunas.domain.impl.blindmode
 
 import com.paulcraciunas.game.engine.api.ChessEngine
-import com.paulcraciunas.game.engine.api.EngineMove
 import com.paulcraciunas.game.engine.api.FakeChessEngine
 import com.paulcraciunas.game.logic.api.Game
 import com.paulcraciunas.game.logic.api.Side
