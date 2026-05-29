@@ -2,7 +2,6 @@ package com.paulcraciunas.screens.common.controls
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -25,8 +24,7 @@ fun CapturedPieces(
         fontSize = 18.sp,
         color = color,
         modifier = modifier
-            .height(Design.dimensions.sizes.navBarIconHeight)
-            .padding(horizontal = Design.dimensions.spacing.xxl),
+            .height(Design.dimensions.sizes.navBarIconHeight),
     )
 }
 

@@ -41,7 +41,6 @@ fun SideSelectionControls(
         ) {
             SideSelectionButton(
                 iconRes = R.drawable.king_white,
-                side = Side.WHITE,
                 contentDescription = stringResource(R.string.boardvis_play_as_white),
                 isSelected = selectedSide == SideSelection.WHITE,
                 onClick = { onSideSelected(SideSelection.WHITE) },
@@ -49,7 +48,6 @@ fun SideSelectionControls(
             )
             SideSelectionButton(
                 iconRes = R.drawable.king_black,
-                side = Side.BLACK,
                 contentDescription = stringResource(R.string.boardvis_play_as_black),
                 isSelected = selectedSide == SideSelection.BLACK,
                 onClick = { onSideSelected(SideSelection.BLACK) },
@@ -57,7 +55,6 @@ fun SideSelectionControls(
             )
             SideSelectionButton(
                 iconRes = R.drawable.side_select,
-                side = Side.WHITE,
                 contentDescription = stringResource(R.string.boardvis_play_random),
                 isSelected = selectedSide == SideSelection.RANDOM,
                 onClick = { onSideSelected(SideSelection.RANDOM) },
