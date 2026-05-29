@@ -1,22 +1,23 @@
 package com.paulcraciunas.screens.boardvis.pieces.ui
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.global.resources.R
-import com.paulcraciunas.screens.boardvis.pieces.vm.MoveThePieceScreenInteractor
 import com.paulcraciunas.screens.boardvis.pieces.vm.MoveThePieceUiState
 import com.paulcraciunas.screens.common.ChildAppBar
+import com.paulcraciunas.screens.common.LocalUiSettings
+import com.paulcraciunas.screens.common.UiSettings
 import com.paulcraciunas.screens.common.controls.TimerDisplay
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag
@@ -26,12 +27,13 @@ import com.paulcraciunas.screens.common.theme.ChessGymTheme
 @Composable
 fun MoveThePieceScreen(
     uiState: MoveThePieceUiState,
-    showBorders: Boolean,
-    highlightLegalMoves: Boolean,
-    enableAnimations: Boolean,
-    onNavigateBack: () -> Unit,
-    interactions: MoveThePieceScreenInteractor,
     modifier: Modifier = Modifier,
+    onNavigateBack: () -> Unit = {},
+    onTrainingModeToggled: (enabled: Boolean) -> Unit = {},
+    onPieceSelected: (piece: Piece) -> Unit = {},
+    onPlayClicked: () -> Unit = {},
+    onSquareClicked: (locus: Locus) -> Unit = {},
+    onPlayAgain: () -> Unit = {},
 ) {
     Scaffold(
         topBar = {
@@ -44,20 +46,21 @@ fun MoveThePieceScreen(
                 }
             }
         },
-        modifier = modifier.testTag { MoveThePieceTags.SCREEN }
+        containerColor = Design.colors.primarySoft,
+        modifier = modifier.testTag { MoveThePieceTags.SCREEN },
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Design.colors.primarySoft)
                 .padding(innerPadding),
         ) {
             MoveThePieceScreenContents(
                 state = uiState,
-                showBorders = showBorders,
-                highlightLegalMoves = highlightLegalMoves,
-                enableAnimations = enableAnimations,
-                interactions = interactions,
+                onTrainingModeToggled = onTrainingModeToggled,
+                onPieceSelected = onPieceSelected,
+                onPlayClicked = onPlayClicked,
+                onSquareClicked = onSquareClicked,
+                onPlayAgain = onPlayAgain,
                 modifier = Modifier.fillMaxSize()
             )
         }
@@ -69,18 +72,15 @@ fun MoveThePieceScreen(
 @Composable
 private fun MoveThePieceScreenSetupPreview() {
     ChessGymTheme {
-        MoveThePieceScreen(
-            uiState = MoveThePieceUiState.Setup(
-                isTrainingMode = true,
-                selectedPiece = Piece.Rook,
-                timeRemainingSeconds = 60
-            ),
-            showBorders = true,
-            highlightLegalMoves = true,
-            enableAnimations = true,
-            onNavigateBack = {},
-            interactions = PreviewInteractions
-        )
+        CompositionLocalProvider(LocalUiSettings provides UiSettings.default()) {
+            MoveThePieceScreen(
+                uiState = MoveThePieceUiState.Setup(
+                    isTrainingMode = true,
+                    selectedPiece = Piece.Rook,
+                    timeRemainingSeconds = 60
+                ),
+            )
+        }
     }
 }
 
@@ -89,18 +89,15 @@ private fun MoveThePieceScreenSetupPreview() {
 @Composable
 private fun MoveThePieceScreenSetupNoTrainingPreview() {
     ChessGymTheme {
-        MoveThePieceScreen(
-            uiState = MoveThePieceUiState.Setup(
-                isTrainingMode = false,
-                selectedPiece = Piece.Rook,
-                timeRemainingSeconds = 60
-            ),
-            showBorders = true,
-            highlightLegalMoves = true,
-            enableAnimations = true,
-            onNavigateBack = {},
-            interactions = PreviewInteractions
-        )
+        CompositionLocalProvider(LocalUiSettings provides UiSettings.default()) {
+            MoveThePieceScreen(
+                uiState = MoveThePieceUiState.Setup(
+                    isTrainingMode = false,
+                    selectedPiece = Piece.Rook,
+                    timeRemainingSeconds = 60
+                ),
+            )
+        }
     }
 }
 
@@ -108,23 +105,20 @@ private fun MoveThePieceScreenSetupNoTrainingPreview() {
 @Composable
 private fun MoveThePieceScreenPlayingPreview() {
     ChessGymTheme {
-        MoveThePieceScreen(
-            uiState = MoveThePieceUiState.Playing(
-                boardData = MoveThePieceUiState.Setup().boardData,
-                playerPiece = Piece.Rook,
-                playerPieceLocus = Locus.d4,
-                movesRemaining = 2,
-                currentScore = 5,
-                timeRemainingSeconds = 45,
-                visitedSquares = setOf(Locus.d4),
-                isTrainingMode = true
-            ),
-            showBorders = true,
-            highlightLegalMoves = true,
-            enableAnimations = true,
-            onNavigateBack = {},
-            interactions = PreviewInteractions
-        )
+        CompositionLocalProvider(LocalUiSettings provides UiSettings.default()) {
+            MoveThePieceScreen(
+                uiState = MoveThePieceUiState.Playing(
+                    boardData = MoveThePieceUiState.Setup().boardData,
+                    playerPiece = Piece.Rook,
+                    playerPieceLocus = Locus.d4,
+                    movesRemaining = 2,
+                    currentScore = 5,
+                    timeRemainingSeconds = 45,
+                    visitedSquares = setOf(Locus.d4),
+                    isTrainingMode = true
+                ),
+            )
+        }
     }
 }
 
@@ -132,26 +126,16 @@ private fun MoveThePieceScreenPlayingPreview() {
 @Composable
 private fun MoveThePieceScreenGameOverPreview() {
     ChessGymTheme {
-        MoveThePieceScreen(
-            uiState = MoveThePieceUiState.GameOver(
-                boardData = MoveThePieceUiState.Setup().boardData,
-                finalScore = 12,
-                isNewHighScore = true,
-                wasCaptured = false
-            ),
-            showBorders = true,
-            highlightLegalMoves = true,
-            enableAnimations = true,
-            onNavigateBack = {},
-            interactions = PreviewInteractions
-        )
+        CompositionLocalProvider(LocalUiSettings provides UiSettings.default()) {
+            MoveThePieceScreen(
+                uiState = MoveThePieceUiState.GameOver(
+                    boardData = MoveThePieceUiState.Setup().boardData,
+                    finalScore = 12,
+                    isNewHighScore = true,
+                    wasCaptured = false
+                ),
+            )
+        }
     }
 }
 
-private object PreviewInteractions : MoveThePieceScreenInteractor {
-    override fun onTrainingModeToggled(enabled: Boolean) {}
-    override fun onPieceSelected(piece: Piece) {}
-    override fun onPlayClicked() {}
-    override fun onSquareClicked(locus: Locus) {}
-    override fun onPlayAgain() {}
-}

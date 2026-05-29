@@ -5,11 +5,13 @@ plugins {
 androidLibrary {
     namespace = "com.paulcraciunas.screens.boardvis.pieces.vm"
     di = true
+    compose = true
 }
 
 dependencies {
     implementation(project(":domain:api"))
     implementation(project(":game:logic:api"))
+    implementation(project(":game:logic:builders"))
     implementation(project(":user:api"))
     implementation(project(":screens:common"))
 

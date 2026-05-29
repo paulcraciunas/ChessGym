@@ -2,15 +2,18 @@ package com.paulcraciunas.screens.boardvis.pieces.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.paulcraciunas.domain.api.general.CountdownTimer
 import com.paulcraciunas.domain.api.boardvis.GameEngineState
 import com.paulcraciunas.domain.api.boardvis.MoveResult
 import com.paulcraciunas.domain.api.boardvis.MoveThePieceGameEngine
 import com.paulcraciunas.domain.api.boardvis.MoveThePieceResult
 import com.paulcraciunas.domain.api.boardvis.OnMoveThePieceComplete
+import com.paulcraciunas.domain.api.general.CountdownTimer
 import com.paulcraciunas.domain.api.general.DefaultTimer
+import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
+import com.paulcraciunas.logic.builders.Builders
+import com.paulcraciunas.screens.common.model.BoardViewData2
 import com.paulcraciunas.user.api.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,14 +31,14 @@ class MoveThePieceViewModel @Inject constructor(
     private val onComplete: OnMoveThePieceComplete,
     @param:DefaultTimer private val countdownTimer: CountdownTimer,
     private val userRepository: UserRepository,
-) : ViewModel(), MoveThePieceScreenInteractor {
+) : ViewModel() {
 
     private var currentHighScore: Int = 0
     private val _viewState = MutableStateFlow<ViewState>(ViewState.Setup())
 
     val uiState: StateFlow<MoveThePieceUiState> = combine(
         _viewState,
-        countdownTimer.remaining.map { it.seconds }
+        countdownTimer.remaining.map { it.roundSeconds() }
     ) { viewState, remainingSeconds ->
         if (viewState is ViewState.Playing && remainingSeconds <= 0) {
             finishGame(wasCaptured = false)
@@ -58,21 +61,21 @@ class MoveThePieceViewModel @Inject constructor(
         countdownTimer.set(MoveThePieceUiState.DEFAULT_DURATION_SECONDS)
     }
 
-    override fun onTrainingModeToggled(enabled: Boolean) {
+    fun onTrainingModeToggled(enabled: Boolean) {
         val currentState = _viewState.value
         if (currentState is ViewState.Setup) {
             _viewState.value = currentState.copy(isTrainingMode = enabled)
         }
     }
 
-    override fun onPieceSelected(piece: Piece) {
+    fun onPieceSelected(piece: Piece) {
         val currentState = _viewState.value
         if (currentState is ViewState.Setup) {
             _viewState.value = currentState.copy(selectedPiece = piece)
         }
     }
 
-    override fun onPlayClicked() {
+    fun onPlayClicked() {
         val currentState = _viewState.value
         if (currentState !is ViewState.Setup) return
 
@@ -105,7 +108,7 @@ class MoveThePieceViewModel @Inject constructor(
         )
     }
 
-    override fun onSquareClicked(locus: Locus) {
+    fun onSquareClicked(locus: Locus) {
         val currentState = _viewState.value
         if (currentState !is ViewState.Playing) return
 
@@ -133,7 +136,7 @@ class MoveThePieceViewModel @Inject constructor(
         }
     }
 
-    override fun onPlayAgain() {
+    fun onPlayAgain() {
         gameEngine.reset()
         countdownTimer.set(MoveThePieceUiState.DEFAULT_DURATION_SECONDS)
         _viewState.value = ViewState.Setup()
@@ -223,3 +226,19 @@ private fun GameEngineState.toBoardState() = MoveThePieceBoardState(
     opposingPieces = opposingPieces,
     visitedSquares = visitedSquares
 )
+
+private data class MoveThePieceBoardState(
+    val playerPieceLocus: Locus,
+    val playerPiece: Piece,
+    val opposingPieces: Map<Locus, Piece>,
+    val visitedSquares: Set<Locus>,
+) {
+    fun toBoardViewData(): BoardViewData2 {
+        val board = Builders.boardFactory().defaultBoard()
+        board.add(playerPiece, Side.WHITE, playerPieceLocus)
+        opposingPieces.forEach { (locus, piece) ->
+            board.add(piece, Side.BLACK, locus)
+        }
+        return BoardViewData2.from(board = board)
+    }
+}
