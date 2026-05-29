@@ -8,7 +8,7 @@ import com.paulcraciunas.chessgym.di.TestClockTimersModule
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.screens.boardvis.squares.ui.FindTheSquareTags
 import com.paulcraciunas.screens.common.board.ChessBoardTags
-import com.paulcraciunas.screens.common.controls.SideSelectionTags
+import com.paulcraciunas.screens.data.SideSelectionTags
 
 class FindTheSquareScreenActions(private val rule: ComposeTestRule) {
 

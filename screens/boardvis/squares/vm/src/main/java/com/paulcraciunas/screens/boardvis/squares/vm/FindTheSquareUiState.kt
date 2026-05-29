@@ -3,7 +3,7 @@ package com.paulcraciunas.screens.boardvis.squares.vm
 import androidx.compose.runtime.Immutable
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
-import com.paulcraciunas.screens.common.controls.SideSelection
+import com.paulcraciunas.screens.data.SideSelection
 import com.paulcraciunas.screens.data.BoardViewData
 
 @Immutable

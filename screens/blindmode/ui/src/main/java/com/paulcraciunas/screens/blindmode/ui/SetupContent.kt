@@ -8,7 +8,7 @@ import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.blindmode.vm.BlindModeUiState
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
-import com.paulcraciunas.screens.common.controls.SideSelection
+import com.paulcraciunas.screens.data.SideSelection
 import com.paulcraciunas.screens.common.controls.SideSelectionControls
 import com.paulcraciunas.screens.common.design.components.PlayButton
 import com.paulcraciunas.screens.common.design.components.ToggleRow

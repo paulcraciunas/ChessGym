@@ -11,7 +11,7 @@ import com.paulcraciunas.game.engine.api.ChessEngine
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.screens.common.controls.SideSelection
+import com.paulcraciunas.screens.data.SideSelection
 import com.paulcraciunas.screens.data.BoardInteractionHelper
 import com.paulcraciunas.screens.data.ClickResult
 import com.paulcraciunas.screens.data.GameNavigation

@@ -1,7 +1,7 @@
 package com.paulcraciunas.screens.blindmode.vm
 
 import androidx.compose.runtime.Immutable
-import com.paulcraciunas.screens.common.controls.SideSelection
+import com.paulcraciunas.screens.data.SideSelection
 import com.paulcraciunas.screens.data.PlayableData
 import com.paulcraciunas.screens.data.Promotion
 

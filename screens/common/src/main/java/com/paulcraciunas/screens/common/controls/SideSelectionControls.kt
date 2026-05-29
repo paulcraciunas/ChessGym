@@ -16,12 +16,8 @@ import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
+import com.paulcraciunas.screens.data.SideSelection
 
-enum class SideSelection {
-    WHITE,
-    BLACK,
-    RANDOM;
-}
 
 @Composable
 fun SideSelectionControls(

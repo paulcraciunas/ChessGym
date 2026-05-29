@@ -33,7 +33,7 @@ import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
 import com.paulcraciunas.screens.common.controls.DefaultPuzzleControls
 import com.paulcraciunas.screens.common.controls.InfiniteProgressIndicator
-import com.paulcraciunas.screens.common.controls.SideSelection
+import com.paulcraciunas.screens.data.SideSelection
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.dialogs.AbandonConfirmationDialog

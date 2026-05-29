@@ -41,6 +41,7 @@ import com.paulcraciunas.screens.data.BoardViewData
 import com.paulcraciunas.screens.data.SquareViewData
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
+import com.paulcraciunas.screens.data.PIECE_MOVE_ANIMATION_DURATION_MS
 import kotlin.math.roundToInt
 
 // Most of the time, this will be the same as player's side
@@ -52,8 +53,6 @@ enum class BoardOrientation(val ranks: Array<Rank>, val files: Array<File>) {
         fun fromSide(player: Side): BoardOrientation = if (player == Side.WHITE) White else Black
     }
 }
-
-const val PIECE_MOVE_ANIMATION_DURATION_MS = 200
 
 @Composable
 fun ChessBoard(

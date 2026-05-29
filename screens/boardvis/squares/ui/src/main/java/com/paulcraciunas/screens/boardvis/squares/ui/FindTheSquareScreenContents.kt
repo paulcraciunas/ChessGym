@@ -16,7 +16,7 @@ import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.boardvis.squares.vm.FindTheSquareUiState
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
-import com.paulcraciunas.screens.common.controls.SideSelection
+import com.paulcraciunas.screens.data.SideSelection
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.design.components.SpacerSize
 import com.paulcraciunas.screens.common.design.components.Title

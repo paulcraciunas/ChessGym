@@ -20,7 +20,7 @@ import com.paulcraciunas.screens.boardvis.squares.vm.FindTheSquareUiState
 import com.paulcraciunas.screens.common.ChildAppBar
 import com.paulcraciunas.screens.common.LocalUiSettings
 import com.paulcraciunas.screens.common.UiSettings
-import com.paulcraciunas.screens.common.controls.SideSelection
+import com.paulcraciunas.screens.data.SideSelection
 import com.paulcraciunas.screens.common.controls.TimerDisplay
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag

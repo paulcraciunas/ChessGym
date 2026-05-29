@@ -8,7 +8,7 @@ import com.paulcraciunas.domain.api.puzzles.OnStreakComplete
 import com.paulcraciunas.domain.api.puzzles.OnStreakPuzzleComplete
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.screens.common.board.PIECE_MOVE_ANIMATION_DURATION_MS
+import com.paulcraciunas.screens.data.PIECE_MOVE_ANIMATION_DURATION_MS
 import com.paulcraciunas.screens.data.BoardInteractionHelper
 import com.paulcraciunas.screens.data.ClickResult
 import com.paulcraciunas.screens.data.PuzzlePlayableBoard
