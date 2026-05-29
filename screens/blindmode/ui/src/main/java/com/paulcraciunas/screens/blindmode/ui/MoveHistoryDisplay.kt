@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.design.components.SpacerSize
@@ -36,6 +37,8 @@ internal fun MoveHistoryDisplay(
         ChessGymSpacer(size = SpacerSize.SMALL)
         Text(
             text = moveHistory,
+            maxLines = 6,
+            overflow = TextOverflow.Ellipsis,
             style = Design.typography.bodyMedium,
             color = Design.colors.inkSoft,
             textAlign = TextAlign.Start,

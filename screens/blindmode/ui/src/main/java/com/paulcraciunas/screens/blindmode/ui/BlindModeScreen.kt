@@ -4,7 +4,6 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,28 +15,31 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.paulcraciunas.game.logic.api.Side
+import com.paulcraciunas.game.logic.api.board.Locus
+import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.global.resources.R
-import com.paulcraciunas.screens.blindmode.vm.BlindModeScreenInteractor
 import com.paulcraciunas.screens.blindmode.vm.BlindModeUiState
-import com.paulcraciunas.screens.blindmode.vm.StubBlindModeScreenInteractor
 import com.paulcraciunas.screens.common.ChildAppBar
-import com.paulcraciunas.screens.common.board.BoardOrientation
-import com.paulcraciunas.screens.common.board.ChessBoard
+import com.paulcraciunas.screens.common.LocalUiSettings
+import com.paulcraciunas.screens.common.UiSettings
+import com.paulcraciunas.screens.common.board.v2.BoardOrientation2
+import com.paulcraciunas.screens.common.board.v2.ChessBoard2
 import com.paulcraciunas.screens.common.controls.DefaultPuzzleControls
 import com.paulcraciunas.screens.common.controls.InfiniteProgressIndicator
+import com.paulcraciunas.screens.common.controls.SideSelection
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.dialogs.AbandonConfirmationDialog
 import com.paulcraciunas.screens.common.dialogs.AbandonConfirmationType
 import com.paulcraciunas.screens.common.dialogs.PromotionDialog
-import com.paulcraciunas.screens.common.previews.SampleBoardViewData
+import com.paulcraciunas.screens.common.previews.PreviewData
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
@@ -45,25 +47,32 @@ import com.paulcraciunas.screens.common.theme.ChessGymTheme
 @Composable
 fun BlindModeScreen(
     uiState: BlindModeUiState,
-    showBorders: Boolean,
-    highlightLegalMoves: Boolean,
-    enableAnimations: Boolean,
-    onDrawerToggle: () -> Unit,
-    interactions: BlindModeScreenInteractor,
     modifier: Modifier = Modifier,
+    onDrawerToggle: () -> Unit,
+    onTrainingModeToggled: (enabled: Boolean) -> Unit = {},
+    onSideSelected: (side: SideSelection) -> Unit = {},
+    onPlayClicked: () -> Unit = {},
+    onSquareClicked: (locus: Locus) -> Unit = {},
+    onPromote: (to: Piece) -> Unit = {},
+    onResign: () -> Unit = {},
+    onReveal: () -> Unit = {},
+    onPlayAgain: () -> Unit = {},
+    onBackPressed: () -> Boolean = { false },
+    onAbandonConfirmed: () -> Unit = {},
+    onAbandonDismissed: () -> Unit = {},
 ) {
     BackHandler(enabled = uiState is BlindModeUiState.Playing) {
-        interactions.onBackPressed()
+        onBackPressed()
     }
 
     Scaffold(
         topBar = { ChildAppBar(onBack = onDrawerToggle, title = stringResource(R.string.blind_mode_title)) },
+        containerColor = Design.colors.primarySoft,
         modifier = modifier.testTag { BlindModeScreenTags.SCREEN },
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Design.colors.primarySoft)
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -71,20 +80,22 @@ fun BlindModeScreen(
             when (uiState) {
                 is BlindModeUiState.Setup -> SetupContent(
                     state = uiState,
-                    showBorders = showBorders,
-                    interactions = interactions,
+                    onTrainingModeToggled = onTrainingModeToggled,
+                    onSideSelected = onSideSelected,
+                    onPlayClicked = onPlayClicked,
                 )
                 is BlindModeUiState.Playing -> PlayingContent(
                     state = uiState,
-                    showBorders = showBorders,
-                    highlightLegalMoves = highlightLegalMoves,
-                    enableAnimations = enableAnimations,
-                    interactions = interactions,
+                    onSquareClicked = onSquareClicked,
+                    onPromote = onPromote,
+                    onResign = onResign,
+                    onReveal = onReveal,
+                    onAbandonConfirmed = onAbandonConfirmed,
+                    onAbandonDismissed = onAbandonDismissed,
                 )
                 is BlindModeUiState.GameOver -> GameOverContent(
                     state = uiState,
-                    showBorders = showBorders,
-                    interactions = interactions,
+                    onPlayAgain = onPlayAgain,
                 )
             }
         }
@@ -94,15 +105,14 @@ fun BlindModeScreen(
 @Composable
 private fun PlayingContent(
     state: BlindModeUiState.Playing,
-    showBorders: Boolean,
-    highlightLegalMoves: Boolean,
-    enableAnimations: Boolean,
-    interactions: BlindModeScreenInteractor,
+    onSquareClicked: (locus: Locus) -> Unit = {},
+    onPromote: (to: Piece) -> Unit = {},
+    onResign: () -> Unit = {},
+    onReveal: () -> Unit = {},
+    onAbandonConfirmed: () -> Unit = {},
+    onAbandonDismissed: () -> Unit = {},
 ) {
-    val displayBoard = remember(state.boardData, state.selectedSquare, state.legalMoves) {
-        state.boardData.withMoveIndicators(state.selectedSquare, state.legalMoves)
-    }
-
+    val enableAnimations = LocalUiSettings.current.enableAnimations
     val piecesAlpha by animateFloatAsState(
         targetValue = if (state.isRevealing) 1f else 0f,
         animationSpec = if (enableAnimations) {
@@ -112,48 +122,45 @@ private fun PlayingContent(
         },
         label = "revealAlpha",
     )
-
-    ChessBoard(
-        board = displayBoard,
-        orientation = BoardOrientation.fromSide(state.playerSide),
-        onClick = interactions::onSquareClicked,
-        showBorders = showBorders,
-        highlightLegalMoves = highlightLegalMoves,
-        enableAnimations = enableAnimations,
+    val controlsAlpha by animateFloatAsState(
+        targetValue = if (state.isThinking) 0f else 1f,
+        animationSpec = tween(durationMillis = 200), // Adjust speed here
+        label = "controlsAlpha"
+    )
+    ChessBoard2(
+        board = state.data.boardData,
+        orientation = BoardOrientation2.fromSide(state.data.player),
+        onClick = onSquareClicked,
         piecesAlpha = piecesAlpha,
         modifier = Modifier.fillMaxWidth(),
     )
-
     ChessGymSpacer()
-
     DefaultPuzzleControls(
         hintEnabled = !state.isThinking && !state.isRevealing && state.isRevealAvailable,
-        toMove = state.playerSide,
-        onHintRequested = interactions::onReveal,
-        onAbandonRequested = interactions::onResign,
+        toMove = state.data.player,
+        onHintRequested = onReveal,
+        onAbandonRequested = onResign,
         abandonEnabled = !state.isThinking && !state.isRevealing,
         moveIndicatorTextRes = R.string.blind_mode_your_turn,
+        modifier = Modifier.alpha(controlsAlpha),
     )
 
     if (state.moveHistory.isNotEmpty()) {
         MoveHistoryDisplay(moveHistory = state.moveHistory)
     }
-
     if (state.isThinking) {
         ThinkingIndicator()
     }
-
     if (state.pendingPromotion != null) {
         PromotionDialog(
-            side = state.playerSide,
-            onPieceChosen = interactions::onPromote,
+            side = state.data.player,
+            onPieceChosen = onPromote,
         )
     }
-
     if (state.isAbandonDialogShown) {
         AbandonConfirmationDialog(
-            onConfirm = interactions::onAbandonConfirmed,
-            onDismiss = interactions::onAbandonDismissed,
+            onConfirm = onAbandonConfirmed,
+            onDismiss = onAbandonDismissed,
             type = AbandonConfirmationType.Game
         )
     }
@@ -182,14 +189,12 @@ private fun ThinkingIndicator() {
 @Composable
 private fun BlindModeSetupPreview() {
     ChessGymTheme {
-        BlindModeScreen(
-            uiState = BlindModeUiState.Setup(),
-            showBorders = true,
-            highlightLegalMoves = true,
-            enableAnimations = false,
-            onDrawerToggle = {},
-            interactions = StubBlindModeScreenInteractor(),
-        )
+        CompositionLocalProvider(LocalUiSettings provides UiSettings.default()) {
+            BlindModeScreen(
+                uiState = BlindModeUiState.Setup(),
+                onDrawerToggle = {},
+            )
+        }
     }
 }
 
@@ -197,19 +202,18 @@ private fun BlindModeSetupPreview() {
 @Composable
 private fun BlindModePlayingPreview() {
     ChessGymTheme {
-        BlindModeScreen(
-            uiState = BlindModeUiState.Playing(
-                moveHistory = "1. e4 e5 2. Nf3 Nc6",
-                playerSide = Side.WHITE,
-                isRevealAvailable = true,
-                isThinking = false,
-            ),
-            showBorders = true,
-            highlightLegalMoves = true,
-            enableAnimations = false,
-            onDrawerToggle = {},
-            interactions = StubBlindModeScreenInteractor(),
-        )
+        CompositionLocalProvider(LocalUiSettings provides UiSettings.default()) {
+            BlindModeScreen(
+                uiState = BlindModeUiState.Playing(
+                    isTrainingMode = true,
+                    data = PreviewData().whiteGameData(),
+                    moveHistory = "1. e4 e5 2. Nf3 Nc6",
+                    isRevealAvailable = true,
+                    isThinking = false,
+                ),
+                onDrawerToggle = {},
+            )
+        }
     }
 }
 
@@ -217,19 +221,18 @@ private fun BlindModePlayingPreview() {
 @Composable
 private fun BlindModeThinkingPreview() {
     ChessGymTheme {
-        BlindModeScreen(
-            uiState = BlindModeUiState.Playing(
-                moveHistory = "1. e4 e5 2. Nf3 Nc6",
-                playerSide = Side.WHITE,
-                isRevealAvailable = true,
-                isThinking = true,
-            ),
-            showBorders = true,
-            highlightLegalMoves = true,
-            enableAnimations = false,
-            onDrawerToggle = {},
-            interactions = StubBlindModeScreenInteractor(),
-        )
+        CompositionLocalProvider(LocalUiSettings provides UiSettings.default()) {
+            BlindModeScreen(
+                uiState = BlindModeUiState.Playing(
+                    isTrainingMode = true,
+                    data = PreviewData().whiteGameData(),
+                    moveHistory = "1. e4 e5 2. Nf3 Nc6",
+                    isRevealAvailable = true,
+                    isThinking = true,
+                ),
+                onDrawerToggle = {},
+            )
+        }
     }
 }
 
@@ -237,21 +240,19 @@ private fun BlindModeThinkingPreview() {
 @Composable
 private fun BlindModeRevealingPreview() {
     ChessGymTheme {
-        BlindModeScreen(
-            uiState = BlindModeUiState.Playing(
-                boardData = SampleBoardViewData.startingBoard(),
-                moveHistory = "1. e4 e5 2. Nf3 Nc6",
-                playerSide = Side.WHITE,
-                isRevealAvailable = true,
-                isThinking = false,
-                isRevealing = true,
-            ),
-            showBorders = true,
-            highlightLegalMoves = true,
-            enableAnimations = false,
-            onDrawerToggle = {},
-            interactions = StubBlindModeScreenInteractor(),
-        )
+        CompositionLocalProvider(LocalUiSettings provides UiSettings.default()) {
+            BlindModeScreen(
+                uiState = BlindModeUiState.Playing(
+                    isTrainingMode = true,
+                    data = PreviewData().whiteGameData(),
+                    moveHistory = "1. e4 e5 2. Nf3 Nc6",
+                    isRevealAvailable = true,
+                    isThinking = false,
+                    isRevealing = true,
+                ),
+                onDrawerToggle = {},
+            )
+        }
     }
 }
 
@@ -259,17 +260,16 @@ private fun BlindModeRevealingPreview() {
 @Composable
 private fun BlindModeGameOverPreview() {
     ChessGymTheme {
-        BlindModeScreen(
-            uiState = BlindModeUiState.GameOver(
-                boardData = SampleBoardViewData.emptyBoard(),
-                moveHistory = "1. e4 e5 2. Nf3 Nc6 3. Bb5",
-                result = BlindModeUiState.GameResult.Win,
-            ),
-            showBorders = true,
-            highlightLegalMoves = true,
-            enableAnimations = false,
-            onDrawerToggle = {},
-            interactions = StubBlindModeScreenInteractor(),
-        )
+        CompositionLocalProvider(LocalUiSettings provides UiSettings.default()) {
+            BlindModeScreen(
+                uiState = BlindModeUiState.GameOver(
+                    isTrainingMode = true,
+                    data = PreviewData().whiteGameData(),
+                    moveHistory = "1. e4 e5 2. Nf3 Nc6 3. Bb5",
+                    result = BlindModeUiState.GameResult.Win,
+                ),
+                onDrawerToggle = {},
+            )
+        }
     }
 }

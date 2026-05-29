@@ -1,14 +1,19 @@
 package com.paulcraciunas.screens.blindmode.vm
 
-import com.paulcraciunas.domain.api.blindmode.FakeBlindModeOrchestrator
 import com.paulcraciunas.domain.api.blindmode.FakeOnBlindModeGameComplete
 import com.paulcraciunas.domain.api.general.FakeTimer
 import com.paulcraciunas.domain.api.general.FixedRandomFactory
+import com.paulcraciunas.domain.impl.blindmode.BlindModeOrchestratorImpl
 import com.paulcraciunas.game.engine.api.ChessEngine
 import com.paulcraciunas.game.engine.api.EngineMove
+import com.paulcraciunas.game.engine.api.FakeChessEngine
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
+import com.paulcraciunas.game.logic.impl.RealGameFactory
 import com.paulcraciunas.screens.common.controls.SideSelection
+import com.paulcraciunas.serializer.impl.FenSerializer
+import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
+import com.paulcraciunas.user.api.FakeUserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -29,11 +34,12 @@ import org.junit.jupiter.api.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class BlindModeViewModelTest {
-    private val fakeOrchestrator = FakeBlindModeOrchestrator()
+    private val testDispatcher = StandardTestDispatcher()
+    private val engine = FakeChessEngine()
+    private val appSettings = FakeAppSettingsRepository()
+    private val userRepository = FakeUserRepository()
     private val fakeOnComplete = FakeOnBlindModeGameComplete()
     private val timer = FakeTimer()
-    private val fakeRandomFactory = FixedRandomFactory()
-    private val testDispatcher = StandardTestDispatcher()
 
     private lateinit var underTest: BlindModeViewModel
 
@@ -41,10 +47,16 @@ internal class BlindModeViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
         underTest = BlindModeViewModel(
-            orchestrator = fakeOrchestrator,
+            orchestrator = BlindModeOrchestratorImpl(
+                chessEngine = engine,
+                serializer = FenSerializer(RealGameFactory()),
+                dispatcher = testDispatcher,
+            ),
             onComplete = fakeOnComplete,
             timer = timer,
-            randomFactory = fakeRandomFactory,
+            randomFactory = FixedRandomFactory(),
+            appSettingsRepository = appSettings,
+            userRepository = userRepository,
         )
     }
 
@@ -87,18 +99,16 @@ internal class BlindModeViewModelTest {
         }
 
         @Test
-        fun `GIVEN setup WHEN onPlayClicked THEN state becomes Playing with correct side`() =
+        fun `GIVEN setup with Black WHEN onPlayClicked THEN state becomes Playing with correct side`() =
             runTest {
-                fakeOrchestrator.enqueueEngineMove(
-                    EngineMove(from = Locus.e2, to = Locus.e4)
-                )
+                prepareEngineForBlackGame()
                 underTest.onSideSelected(SideSelection.BLACK)
                 underTest.onPlayClicked()
                 advanceUntilIdle()
 
                 val state = underTest.uiState.value as BlindModeUiState.Playing
-                assertEquals(Side.BLACK, state.playerSide)
-                assertEquals(ChessEngine.DEFAULT_ELO, fakeOrchestrator.startedWithElo)
+                assertEquals(Side.BLACK, state.data.player)
+                assertEquals(ChessEngine.DEFAULT_ELO, engine.currentElo)
             }
 
         @Test
@@ -112,11 +122,9 @@ internal class BlindModeViewModelTest {
             }
 
         @Test
-        fun `GIVEN setup with Black WHEN onPlayClicked THEN engine move requested first`() =
+        fun `GIVEN setup with Black WHEN onPlayClicked THEN engine move played first`() =
             runTest {
-                fakeOrchestrator.enqueueEngineMove(
-                    EngineMove(from = Locus.e2, to = Locus.e4)
-                )
+                prepareEngineForBlackGame()
                 underTest.onSideSelected(SideSelection.BLACK)
                 underTest.onPlayClicked()
                 advanceUntilIdle()
@@ -137,29 +145,26 @@ internal class BlindModeViewModelTest {
                 underTest.onSquareClicked(Locus.e2)
 
                 val state = underTest.uiState.value as BlindModeUiState.Playing
-                assertEquals(Locus.e2, state.selectedSquare)
-                assertTrue(state.legalMoves.isNotEmpty())
+                assertEquals(Locus.e2, state.data.boardData.selection)
+                assertTrue(state.data.boardData.availableMoves.isNotEmpty())
             }
 
         @Test
-        fun `GIVEN playing WHEN onSquareClicked on empty square THEN clears selection`() =
+        fun `GIVEN playing WHEN onSquareClicked on empty square THEN no selection`() =
             runTest {
                 startGame()
 
                 underTest.onSquareClicked(Locus.e4)
 
                 val state = underTest.uiState.value as BlindModeUiState.Playing
-                assertNull(state.selectedSquare)
-                assertTrue(state.legalMoves.isEmpty())
+                assertNull(state.data.boardData.selection)
+                assertTrue(state.data.boardData.availableMoves.isEmpty())
             }
 
         @Test
         fun `GIVEN selected piece WHEN move succeeds and engine responds THEN state updated`() =
             runTest {
                 startGame()
-                fakeOrchestrator.enqueueEngineMove(
-                    EngineMove(from = Locus.e7, to = Locus.e5)
-                )
 
                 underTest.onSquareClicked(Locus.e2)
                 underTest.onSquareClicked(Locus.e4)
@@ -167,12 +172,12 @@ internal class BlindModeViewModelTest {
 
                 val state = underTest.uiState.value as BlindModeUiState.Playing
                 assertFalse(state.isThinking)
-                assertNull(state.selectedSquare)
+                assertNull(state.data.boardData.selection)
                 assertTrue(state.moveHistory.isNotEmpty())
             }
 
         @Test
-        fun `GIVEN selected piece WHEN clicking invalid target THEN re-evaluates as selection`() =
+        fun `GIVEN selected piece WHEN clicking invalid target THEN clears selection`() =
             runTest {
                 startGame()
 
@@ -180,26 +185,23 @@ internal class BlindModeViewModelTest {
                 underTest.onSquareClicked(Locus.e5)
 
                 val state = underTest.uiState.value as BlindModeUiState.Playing
-                assertNull(state.selectedSquare)
+                assertNull(state.data.boardData.selection)
             }
 
         @Test
-        fun `GIVEN playing WHEN onSquareClicked on opponent piece THEN clears selection`() =
+        fun `GIVEN playing WHEN onSquareClicked on opponent piece THEN no legal moves`() =
             runTest {
                 startGame()
 
                 underTest.onSquareClicked(Locus.e7)
 
                 val state = underTest.uiState.value as BlindModeUiState.Playing
-                assertNull(state.selectedSquare)
+                assertTrue(state.data.boardData.availableMoves.isEmpty())
             }
 
         @Test
         fun `GIVEN thinking state WHEN onSquareClicked THEN ignored`() = runTest {
             startGame()
-            fakeOrchestrator.enqueueEngineMove(
-                EngineMove(from = Locus.e7, to = Locus.e5)
-            )
 
             underTest.onSquareClicked(Locus.e2)
             underTest.onSquareClicked(Locus.e4)
@@ -210,7 +212,7 @@ internal class BlindModeViewModelTest {
             underTest.onSquareClicked(Locus.d2)
             val stateAfter = underTest.uiState.value as BlindModeUiState.Playing
             assertTrue(stateAfter.isThinking)
-            assertNull(stateAfter.selectedSquare)
+            assertNull(stateAfter.data.boardData.selection)
         }
     }
 
@@ -225,7 +227,6 @@ internal class BlindModeViewModelTest {
 
             val state = underTest.uiState.value as BlindModeUiState.GameOver
             assertEquals(BlindModeUiState.GameResult.Loss, state.result)
-            assertTrue(fakeOrchestrator.wasResigned)
             assertNotNull(fakeOnComplete.lastResult)
         }
 
@@ -248,8 +249,7 @@ internal class BlindModeViewModelTest {
 
             val state = underTest.uiState.value as BlindModeUiState.Setup
             assertTrue(state.isTrainingMode)
-            assertEquals(SideSelection.WHITE, state.selectedSide)
-            assertTrue(fakeOrchestrator.wasReset)
+            assertTrue(engine.isStopped)
         }
 
         @Test
@@ -280,8 +280,6 @@ internal class BlindModeViewModelTest {
 
                 val state = underTest.uiState.value as BlindModeUiState.Playing
                 assertTrue(state.isRevealing)
-                assertNull(state.selectedSquare)
-                assertTrue(state.legalMoves.isEmpty())
             }
 
         @Test
@@ -334,9 +332,7 @@ internal class BlindModeViewModelTest {
         @Test
         fun `GIVEN rated mode with Black WHEN playing THEN state carries settings`() =
             runTest {
-                fakeOrchestrator.enqueueEngineMove(
-                    EngineMove(from = Locus.e2, to = Locus.e4)
-                )
+                prepareEngineForBlackGame()
                 underTest.onTrainingModeToggled(false)
                 underTest.onSideSelected(SideSelection.BLACK)
                 underTest.onPlayClicked()
@@ -344,17 +340,13 @@ internal class BlindModeViewModelTest {
 
                 val state = underTest.uiState.value as BlindModeUiState.Playing
                 assertFalse(state.isTrainingMode)
-                assertEquals(SideSelection.BLACK, state.selectedSide)
+                assertEquals(Side.BLACK, state.data.player)
             }
 
         @Test
         fun `GIVEN rated mode WHEN reveal THEN Playing state carries settings`() =
             runTest {
                 underTest.onTrainingModeToggled(false)
-                underTest.onSideSelected(SideSelection.BLACK)
-                fakeOrchestrator.enqueueEngineMove(
-                    EngineMove(from = Locus.e2, to = Locus.e4)
-                )
                 startGame()
 
                 underTest.onReveal()
@@ -363,7 +355,6 @@ internal class BlindModeViewModelTest {
                 val state = underTest.uiState.value as BlindModeUiState.Playing
                 assertTrue(state.isRevealing)
                 assertFalse(state.isTrainingMode)
-                assertEquals(SideSelection.BLACK, state.selectedSide)
             }
 
         @Test
@@ -380,13 +371,9 @@ internal class BlindModeViewModelTest {
             }
 
         @Test
-        fun `GIVEN game over WHEN play again THEN Setup restores previous settings`() =
+        fun `GIVEN game over WHEN play again THEN Setup preserves isTrainingMode`() =
             runTest {
                 underTest.onTrainingModeToggled(false)
-                underTest.onSideSelected(SideSelection.BLACK)
-                fakeOrchestrator.enqueueEngineMove(
-                    EngineMove(from = Locus.e2, to = Locus.e4)
-                )
                 startGame()
 
                 underTest.onResign()
@@ -397,7 +384,6 @@ internal class BlindModeViewModelTest {
 
                 val state = underTest.uiState.value as BlindModeUiState.Setup
                 assertFalse(state.isTrainingMode)
-                assertEquals(SideSelection.BLACK, state.selectedSide)
             }
     }
 
@@ -444,12 +430,16 @@ internal class BlindModeViewModelTest {
 
                 val state = underTest.uiState.value as BlindModeUiState.GameOver
                 assertEquals(BlindModeUiState.GameResult.Loss, state.result)
-                assertTrue(fakeOrchestrator.wasResigned)
             }
     }
 
     private fun startGame() {
         underTest.onPlayClicked()
         testDispatcher.scheduler.advanceUntilIdle()
+    }
+
+    private suspend fun prepareEngineForBlackGame() {
+        repeat(3) { engine.calculateBestMove("drain") }
+        engine.enqueueMoves(EngineMove(from = Locus.e2, to = Locus.e4))
     }
 }

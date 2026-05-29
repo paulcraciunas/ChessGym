@@ -8,10 +8,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.paulcraciunas.global.resources.R
-import com.paulcraciunas.screens.blindmode.vm.BlindModeScreenInteractor
 import com.paulcraciunas.screens.blindmode.vm.BlindModeUiState
-import com.paulcraciunas.screens.common.board.BoardOrientation
-import com.paulcraciunas.screens.common.board.ChessBoard
+import com.paulcraciunas.screens.common.board.v2.BoardOrientation2
+import com.paulcraciunas.screens.common.board.v2.ChessBoard2
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.design.components.RefreshButton
 import com.paulcraciunas.screens.common.design.components.SpacerSize
@@ -20,15 +19,12 @@ import com.paulcraciunas.screens.common.design.theme.Design
 @Composable
 internal fun GameOverContent(
     state: BlindModeUiState.GameOver,
-    showBorders: Boolean,
-    interactions: BlindModeScreenInteractor,
+    onPlayAgain: () -> Unit = {},
 ) {
-    ChessBoard(
-        board = state.boardData,
-        orientation = BoardOrientation.fromSide(state.playerSide),
+    ChessBoard2(
+        board = state.data.boardData,
+        orientation = BoardOrientation2.fromSide(state.data.player),
         onClick = {},
-        showBorders = showBorders,
-        enableAnimations = false,
         modifier = Modifier.fillMaxWidth()
     )
     ChessGymSpacer(size = SpacerSize.LARGE)
@@ -39,7 +35,7 @@ internal fun GameOverContent(
         textAlign = TextAlign.Center,
     )
     ChessGymSpacer(size = SpacerSize.LARGE)
-    RefreshButton(onClick = interactions::onPlayAgain)
+    RefreshButton(onClick = onPlayAgain)
 
     if (state.moveHistory.isNotEmpty()) {
         MoveHistoryDisplay(moveHistory = state.moveHistory)

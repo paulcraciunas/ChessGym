@@ -13,4 +13,6 @@ enum class Result {
         CheckMate, Resigned -> if (turn == Side.WHITE) "0-1" else "1-0"
         else -> "1/2-1/2"
     }
+
+    fun isDraw(): Boolean = this != CheckMate && this != Resigned
 }

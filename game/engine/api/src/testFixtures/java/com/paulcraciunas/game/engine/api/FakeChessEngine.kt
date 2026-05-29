@@ -52,8 +52,7 @@ class FakeChessEngine : ChessEngine {
 
     override suspend fun calculateBestMove(fen: String): EngineMove {
         lastReceivedFen = fen
-        return moveQueue.poll()
-            ?: throw IllegalStateException("FakeChessEngine: no moves enqueued")
+        return moveQueue.poll() ?: throw IllegalStateException("FakeChessEngine: no moves enqueued")
     }
 
     override suspend fun prepareForAnalysis() {

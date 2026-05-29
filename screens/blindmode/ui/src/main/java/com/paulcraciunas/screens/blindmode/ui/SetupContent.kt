@@ -1,48 +1,43 @@
 package com.paulcraciunas.screens.blindmode.ui
 
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.paulcraciunas.global.resources.R
-import com.paulcraciunas.screens.blindmode.vm.BlindModeScreenInteractor
 import com.paulcraciunas.screens.blindmode.vm.BlindModeUiState
-import com.paulcraciunas.screens.common.board.BoardOrientation
-import com.paulcraciunas.screens.common.board.ChessBoard
+import com.paulcraciunas.screens.common.board.v2.BoardOrientation2
+import com.paulcraciunas.screens.common.board.v2.ChessBoard2
+import com.paulcraciunas.screens.common.controls.SideSelection
 import com.paulcraciunas.screens.common.controls.SideSelectionControls
-import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.design.components.PlayButton
-import com.paulcraciunas.screens.common.design.components.SpacerSize
 import com.paulcraciunas.screens.common.design.components.ToggleRow
-import com.paulcraciunas.screens.common.previews.SampleBoardViewData
+import com.paulcraciunas.screens.common.design.theme.Design
+import com.paulcraciunas.screens.common.model.BoardViewData2
 
 @Composable
 internal fun SetupContent(
     state: BlindModeUiState.Setup,
-    showBorders: Boolean,
-    interactions: BlindModeScreenInteractor,
+    onTrainingModeToggled: (enabled: Boolean) -> Unit = {},
+    onSideSelected: (side: SideSelection) -> Unit = {},
+    onPlayClicked: () -> Unit = {},
 ) {
-    ChessBoard(
-        board = SampleBoardViewData.emptyBoard(),
-        orientation = BoardOrientation.White,
+    ChessBoard2(
+        board = BoardViewData2.empty(),
+        orientation = BoardOrientation2.White,
         onClick = {},
-        showBorders = showBorders,
-        enableAnimations = false,
-        modifier = Modifier.fillMaxWidth()
     )
-    ChessGymSpacer(size = SpacerSize.XXLARGE)
-    SideSelectionControls(
-        selectedSide = state.selectedSide,
-        onSideSelected = interactions::onSideSelected,
-    )
-    ChessGymSpacer(size = SpacerSize.XXLARGE)
     ToggleRow(
         title = stringResource(R.string.blind_mode_training_mode),
         on = state.isTrainingMode,
-        onChange = interactions::onTrainingModeToggled,
+        onChange = onTrainingModeToggled,
         subtitle = if (state.isTrainingMode) stringResource(R.string.blind_mode_training_description) else null,
         last = true,
     )
-    ChessGymSpacer(size = SpacerSize.XXLARGE)
-    PlayButton(onClick = interactions::onPlayClicked)
+    SideSelectionControls(
+        selectedSide = state.selectedSide,
+        onSideSelected = onSideSelected,
+        modifier = Modifier.padding(bottom = Design.dimensions.spacing.xxl)
+    )
+    PlayButton(onClick = onPlayClicked)
 }
