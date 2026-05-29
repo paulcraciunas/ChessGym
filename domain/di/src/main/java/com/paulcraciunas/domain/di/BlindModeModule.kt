@@ -3,13 +3,14 @@ package com.paulcraciunas.domain.di
 import com.paulcraciunas.domain.api.blindmode.BlindModeOrchestrator
 import com.paulcraciunas.domain.impl.blindmode.BlindModeOrchestratorImpl
 import com.paulcraciunas.game.engine.api.ChessEngine
-import com.paulcraciunas.logic.builders.Builders
+import com.paulcraciunas.global.qualifiers.DefaultDispatcher
 import com.paulcraciunas.serializer.api.Serializer
 import com.paulcraciunas.serializer.di.SerializerFen
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
 
 @Suppress("unused")
 @Module
@@ -19,9 +20,10 @@ internal class BlindModeModule {
     fun provideBlindModeOrchestrator(
         chessEngine: ChessEngine,
         @SerializerFen serializer: Serializer,
+        @DefaultDispatcher dispatcher: CoroutineDispatcher,
     ): BlindModeOrchestrator = BlindModeOrchestratorImpl(
-        gameFactory = Builders.gameFactory(),
         chessEngine = chessEngine,
         serializer = serializer,
+        dispatcher = dispatcher,
     )
 }

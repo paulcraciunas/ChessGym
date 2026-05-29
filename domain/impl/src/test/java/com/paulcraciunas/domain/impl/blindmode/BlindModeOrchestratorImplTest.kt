@@ -1,16 +1,15 @@
 package com.paulcraciunas.domain.impl.blindmode
 
-import com.paulcraciunas.domain.api.blindmode.EnginePlayResult
-import com.paulcraciunas.domain.api.blindmode.PlayResult
-import com.paulcraciunas.domain.api.blindmode.SelectionResult
 import com.paulcraciunas.game.engine.api.ChessEngine
 import com.paulcraciunas.game.engine.api.EngineMove
 import com.paulcraciunas.game.engine.api.FakeChessEngine
+import com.paulcraciunas.game.logic.api.Game
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.impl.RealGameFactory
 import com.paulcraciunas.serializer.impl.FenSerializer
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -18,178 +17,98 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 internal class BlindModeOrchestratorImplTest {
-    private val gameFactory = RealGameFactory()
-    private val fakeEngine = FakeChessEngine()
-    private val serializer = FenSerializer(gameFactory)
+    private val testDispatcher = StandardTestDispatcher()
+    private val engine = FakeChessEngine()
+    private val serializer = FenSerializer(RealGameFactory())
 
     private val underTest = BlindModeOrchestratorImpl(
-        gameFactory = gameFactory,
-        chessEngine = fakeEngine,
+        chessEngine = engine,
         serializer = serializer,
+        dispatcher = testDispatcher,
     )
 
     @Test
-    fun `GIVEN new orchestrator WHEN startGame THEN engine receives elo`() = runTest {
+    fun `GIVEN new orchestrator WHEN initialize THEN engine is initialized`() = runTest(testDispatcher) {
+        // When
+        underTest.initialize()
+
+        // Then
+        assertTrue(engine.isInitialized)
+    }
+
+    @Test
+    fun `GIVEN new orchestrator WHEN startGame THEN engine receives elo`() = runTest(testDispatcher) {
         // When
         underTest.startGame(elo = 1400)
 
         // Then
-        assertEquals(1400, fakeEngine.currentElo)
+        assertEquals(1400, engine.currentElo)
     }
 
     @Test
-    fun `GIVEN started game WHEN selectSquare on e2 THEN PieceSelected with legal moves`() = runTest {
-        // Given
-        underTest.startGame(elo = ChessEngine.DEFAULT_ELO)
-
+    fun `GIVEN new orchestrator WHEN startGame THEN returns started game`() = runTest(testDispatcher) {
         // When
-        val result = underTest.selectSquare(Locus.e2)
+        val game = underTest.startGame(elo = ChessEngine.DEFAULT_ELO)
 
         // Then
-        assertTrue(result is SelectionResult.PieceSelected)
-        val selected = result as SelectionResult.PieceSelected
-        assertEquals(Locus.e2, selected.locus)
-        assertTrue(selected.legalMoves.isNotEmpty())
+        assertEquals(Game.GameState.InProgress, game.state)
     }
 
     @Test
-    fun `GIVEN started game WHEN selectSquare on empty square THEN NoPiece`() = runTest {
-        // Given
-        underTest.startGame(elo = ChessEngine.DEFAULT_ELO)
-
+    fun `GIVEN new orchestrator WHEN startGame with side THEN game has white to move`() = runTest(testDispatcher) {
         // When
-        val result = underTest.selectSquare(Locus.e4)
+        val game = underTest.startGame(elo = ChessEngine.DEFAULT_ELO, side = Side.BLACK)
 
         // Then
-        assertTrue(result is SelectionResult.NoPiece)
+        assertEquals(Side.WHITE, game.info.turn)
     }
 
     @Test
-    fun `GIVEN started game WHEN selectSquare on opponent piece THEN WrongSide`() = runTest {
-        // Given
-        underTest.startGame(elo = ChessEngine.DEFAULT_ELO)
-
+    fun `GIVEN new orchestrator WHEN startGame THEN game has correct rating`() = runTest(testDispatcher) {
         // When
-        val result = underTest.selectSquare(Locus.e7)
+        val game = underTest.startGame(elo = 1500)
 
         // Then
-        assertTrue(result is SelectionResult.WrongSide)
+        assertEquals(1500, game.rating)
     }
 
     @Test
-    fun `GIVEN started game WHEN playMove e2 to e4 THEN Success with ply`() = runTest {
+    fun `GIVEN started game with e2-e4 played WHEN requestEngineMove THEN returns valid ply`() = runTest(testDispatcher) {
         // Given
-        underTest.startGame(elo = ChessEngine.DEFAULT_ELO)
+        val game = underTest.startGame(elo = ChessEngine.DEFAULT_ELO)
+        game.play(Locus.e2, Locus.e4)
 
         // When
-        val result = underTest.playMove(Locus.e2, Locus.e4)
+        val ply = underTest.requestEngineMove()
 
         // Then
-        assertTrue(result is PlayResult.Success)
-        val success = result as PlayResult.Success
-        assertEquals(Locus.e4, success.ply.to)
-        assertEquals(Piece.Pawn, success.ply.piece)
+        assertEquals(Locus.e7, ply.from)
+        assertEquals(Locus.e5, ply.to)
+        assertEquals(Piece.Pawn, ply.piece)
     }
 
     @Test
-    fun `GIVEN started game WHEN playMove invalid THEN returns Invalid`() = runTest {
+    fun `GIVEN started game WHEN requestEngineMove THEN engine receives FEN`() = runTest(testDispatcher) {
         // Given
-        underTest.startGame(elo = ChessEngine.DEFAULT_ELO)
+        val game = underTest.startGame(elo = ChessEngine.DEFAULT_ELO)
+        game.play(Locus.e2, Locus.e4)
 
         // When
-        val result = underTest.playMove(Locus.e2, Locus.e5)
+        underTest.requestEngineMove()
 
         // Then
-        assertTrue(result is PlayResult.Invalid)
+        assertNotNull(engine.lastReceivedFen)
     }
 
     @Test
-    fun `GIVEN game after e2-e4 WHEN requestEngineMove THEN returns engine ply`() = runTest {
+    fun `GIVEN started game WHEN stop THEN engine is stopped`() = runTest(testDispatcher) {
         // Given
         underTest.startGame(elo = ChessEngine.DEFAULT_ELO)
-        underTest.playMove(Locus.e2, Locus.e4)
-        fakeEngine.enqueueMoves(EngineMove(from = Locus.e7, to = Locus.e5))
 
         // When
-        val result = underTest.requestEngineMove()
+        underTest.stop()
 
         // Then
-        assertTrue(result is EnginePlayResult.Success)
-        val success = result as EnginePlayResult.Success
-        assertEquals(Locus.e5, success.ply.to)
-        assertNotNull(fakeEngine.lastReceivedFen)
-    }
-
-    @Test
-    fun `GIVEN started game WHEN playMove then check moveHistory THEN history has the ply`() = runTest {
-        // Given
-        underTest.startGame(elo = ChessEngine.DEFAULT_ELO)
-        underTest.playMove(Locus.e2, Locus.e4)
-
-        // When
-        val history = underTest.moveHistory()
-
-        // Then
-        assertEquals(1, history.size)
-        assertEquals(Locus.e4, history[0].to)
-    }
-
-    @Test
-    fun `GIVEN started game WHEN currentFen THEN returns valid FEN string`() = runTest {
-        // Given
-        underTest.startGame(elo = ChessEngine.DEFAULT_ELO)
-
-        // When
-        val fen = underTest.currentFen()
-
-        // Then
-        assertTrue(fen.contains("rnbqkbnr"))
-        assertTrue(fen.contains("RNBQKBNR"))
-    }
-
-    @Test
-    fun `GIVEN started game WHEN playerSide THEN returns WHITE`() = runTest {
-        // Given
-        underTest.startGame(elo = ChessEngine.DEFAULT_ELO)
-
-        // When/Then
-        assertEquals(Side.WHITE, underTest.playerSide())
-    }
-
-    @Test
-    fun `GIVEN started game WHEN resign THEN game state is finished`() = runTest {
-        // Given
-        underTest.startGame(elo = ChessEngine.DEFAULT_ELO)
-
-        // When
-        underTest.resign()
-
-        // Then
-        val fen = underTest.currentFen()
-        assertNotNull(fen)
-    }
-
-    @Test
-    fun `GIVEN started game WHEN reset THEN engine stop is called`() = runTest {
-        // Given
-        underTest.startGame(elo = ChessEngine.DEFAULT_ELO)
-
-        // When
-        underTest.reset()
-
-        // Then - no crash, stop was called
-    }
-
-    @Test
-    fun `GIVEN started game WHEN pliesFrom e2 THEN returns valid target loci`() = runTest {
-        // Given
-        underTest.startGame(elo = ChessEngine.DEFAULT_ELO)
-
-        // When
-        val moves = underTest.pliesFrom(Locus.e2)
-
-        // Then
-        assertTrue(moves.contains(Locus.e3))
-        assertTrue(moves.contains(Locus.e4))
+        assertTrue(engine.isStopped)
     }
 }

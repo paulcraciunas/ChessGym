@@ -1,68 +1,41 @@
 package com.paulcraciunas.domain.impl.blindmode
 
 import com.paulcraciunas.domain.api.blindmode.BlindModeOrchestrator
-import com.paulcraciunas.domain.api.blindmode.EnginePlayResult
-import com.paulcraciunas.domain.api.blindmode.PlayResult
-import com.paulcraciunas.domain.api.blindmode.SelectionResult
 import com.paulcraciunas.game.engine.api.ChessEngine
 import com.paulcraciunas.game.logic.api.Game
-import com.paulcraciunas.game.logic.api.Game.GameState
 import com.paulcraciunas.game.logic.api.GameFactory
 import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Side
-import com.paulcraciunas.game.logic.api.board.IBoard
-import com.paulcraciunas.game.logic.api.board.Locus
-import com.paulcraciunas.game.logic.api.board.Piece
+import com.paulcraciunas.logic.builders.Builders
 import com.paulcraciunas.serializer.api.Serializer
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 
 class BlindModeOrchestratorImpl(
-    private val gameFactory: GameFactory,
     private val chessEngine: ChessEngine,
     private val serializer: Serializer,
+    private val dispatcher: CoroutineDispatcher,
 ) : BlindModeOrchestrator {
-
-    private lateinit var game: Game
+    private val gameFactory: GameFactory = Builders.gameFactory()
     private var playerSide: Side = Side.WHITE
+    private lateinit var game: Game
 
-    override suspend fun initialize() {
+    override suspend fun initialize() = withContext(dispatcher) {
         chessEngine.initialize()
     }
 
-    override suspend fun startGame(elo: Int, side: Side) {
-        game = gameFactory.builder().withDefaultBoard().buildGame()
+    override suspend fun startGame(elo: Int, side: Side): Game = withContext(dispatcher) {
+        game = gameFactory.builder()
+            .withDefaultBoard()
+            .withRating(elo)
+            .buildGame()
         game.start()
         playerSide = side
         chessEngine.startNewGame(elo)
+        return@withContext game
     }
 
-    override fun selectSquare(locus: Locus): SelectionResult {
-        game.board.at(locus) ?: return SelectionResult.NoPiece
-        if (!game.board.has(playerSide, locus)) return SelectionResult.WrongSide
-
-        val legalMoves = game.plies(locus).map { it.to }
-        return SelectionResult.PieceSelected(locus = locus, legalMoves = legalMoves)
-    }
-
-    override fun playMove(from: Locus, to: Locus): PlayResult {
-        val validPlies = game.plies(from)
-        val ply = validPlies.find { it.to == to } ?: return PlayResult.Invalid
-
-        if (ply.isPromotion()) return PlayResult.PromotionRequired
-
-        game.play(ply)
-        return ply.toPlayResult(with = game.state)
-    }
-
-    override fun playMove(from: Locus, to: Locus, promotion: Piece): PlayResult {
-        val validPlies = game.plies(from)
-        val ply = validPlies.find { it.to == to } ?: return PlayResult.Invalid
-
-        ply.promote(promotion)
-        game.play(ply)
-        return ply.toPlayResult(with = game.state)
-    }
-
-    override suspend fun requestEngineMove(): EnginePlayResult {
+    override suspend fun requestEngineMove(): Ply = withContext(dispatcher) {
         val fen = serializer.of(game)
         val engineMove = chessEngine.calculateBestMove(fen)
 
@@ -71,37 +44,10 @@ class BlindModeOrchestratorImpl(
 
         engineMove.promotion?.let { ply.promote(it) }
 
-        game.play(ply)
-        return ply.toEngineResult(with = game.state)
+        return@withContext ply
     }
 
-    override fun resign() {
-        game.resign()
-    }
-
-    override fun board(): IBoard = game.board
-    override fun currentFen(): String = serializer.of(game)
-    override fun moveHistory(): List<Ply> = game.history
-    override fun pliesFrom(locus: Locus): List<Locus> = game.plies(locus).map { it.to }
-    override fun playerSide(): Side = playerSide
-
-    override suspend fun reset() {
+    override suspend fun stop() = withContext(dispatcher) {
         chessEngine.stop()
-    }
-}
-
-private fun Ply.toPlayResult(with: GameState): PlayResult {
-    return if (with is GameState.Finished) {
-        PlayResult.GameOver(ply = this, result = with.result)
-    } else {
-        PlayResult.Success(ply = this)
-    }
-}
-
-private fun Ply.toEngineResult(with: GameState): EnginePlayResult {
-    return if (with is GameState.Finished) {
-        EnginePlayResult.GameOver(ply = this, result = with.result)
-    } else {
-        EnginePlayResult.Success(ply = this)
     }
 }

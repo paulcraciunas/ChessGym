@@ -16,4 +16,5 @@ dependencies {
     implementation(project(":game:puzzles:api"))
     implementation(project(":game:serializer:api"))
     implementation(project(":game:serializer:di"))
+    implementation(project(":global:qualifiers"))
 }
