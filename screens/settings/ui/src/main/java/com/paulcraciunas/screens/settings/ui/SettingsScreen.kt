@@ -50,10 +50,8 @@ fun SettingsScreen(
                 uiState = uiState,
                 buildVersion = buildVersion,
                 interactions = interactions,
-                contentPadding = PaddingValues(bottom = innerPadding.calculateBottomPadding()),
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = innerPadding.calculateTopPadding()),
+                contentPadding = PaddingValues(top = innerPadding.calculateTopPadding(), bottom = innerPadding.calculateBottomPadding()),
+                modifier = Modifier.fillMaxSize(),
             )
         }
     }
