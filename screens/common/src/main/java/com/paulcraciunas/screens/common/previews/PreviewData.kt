@@ -2,10 +2,10 @@ package com.paulcraciunas.screens.common.previews
 
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.screens.common.model.BoardViewData
-import com.paulcraciunas.screens.common.model.CapturedPieces
-import com.paulcraciunas.screens.common.model.PlayableData
-import com.paulcraciunas.screens.common.model.PuzzleResult
+import com.paulcraciunas.screens.data.BoardViewData
+import com.paulcraciunas.screens.data.CapturedPieces
+import com.paulcraciunas.screens.data.PlayableData
+import com.paulcraciunas.screens.data.PuzzleResult
 
 class PreviewData {
     fun whitePuzzleData() = PlayableData(

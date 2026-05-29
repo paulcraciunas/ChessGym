@@ -2,10 +2,10 @@ package com.paulcraciunas.screens.tools.importgame.vm
 
 import androidx.compose.runtime.Immutable
 import com.paulcraciunas.game.logic.api.Side
-import com.paulcraciunas.screens.common.model.BoardViewData
-import com.paulcraciunas.screens.common.model.CapturedPieces
-import com.paulcraciunas.screens.common.model.PlayableData
-import com.paulcraciunas.screens.common.model.Promotion
+import com.paulcraciunas.screens.data.BoardViewData
+import com.paulcraciunas.screens.data.CapturedPieces
+import com.paulcraciunas.screens.data.PlayableData
+import com.paulcraciunas.screens.data.Promotion
 
 @Immutable
 data class ImportGameUiState(

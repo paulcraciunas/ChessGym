@@ -1,9 +1,9 @@
 package com.paulcraciunas.screens.puzzles.rush.vm
 
 import androidx.compose.runtime.Immutable
-import com.paulcraciunas.screens.common.model.PuzzleResult
-import com.paulcraciunas.screens.common.model.PlayableData
-import com.paulcraciunas.screens.common.model.Promotion
+import com.paulcraciunas.screens.data.PuzzleResult
+import com.paulcraciunas.screens.data.PlayableData
+import com.paulcraciunas.screens.data.Promotion
 
 @Immutable
 sealed class PuzzleRushUiState {

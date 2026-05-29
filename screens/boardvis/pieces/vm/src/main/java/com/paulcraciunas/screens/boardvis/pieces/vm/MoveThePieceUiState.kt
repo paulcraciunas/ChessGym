@@ -3,7 +3,7 @@ package com.paulcraciunas.screens.boardvis.pieces.vm
 import androidx.compose.runtime.Immutable
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.screens.common.model.BoardViewData
+import com.paulcraciunas.screens.data.BoardViewData
 
 @Immutable
 sealed class MoveThePieceUiState {

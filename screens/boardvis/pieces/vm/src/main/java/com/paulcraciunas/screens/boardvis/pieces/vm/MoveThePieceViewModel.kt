@@ -13,7 +13,7 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.logic.builders.Builders
-import com.paulcraciunas.screens.common.model.BoardViewData
+import com.paulcraciunas.screens.data.BoardViewData
 import com.paulcraciunas.user.api.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

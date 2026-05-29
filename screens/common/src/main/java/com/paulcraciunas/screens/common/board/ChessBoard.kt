@@ -36,9 +36,9 @@ import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.screens.common.LocalUiSettings
 import com.paulcraciunas.screens.common.UiSettings
 import com.paulcraciunas.screens.common.design.theme.Design
-import com.paulcraciunas.screens.common.model.AnimatingPiece
-import com.paulcraciunas.screens.common.model.BoardViewData
-import com.paulcraciunas.screens.common.model.SquareViewData
+import com.paulcraciunas.screens.data.AnimatingPiece
+import com.paulcraciunas.screens.data.BoardViewData
+import com.paulcraciunas.screens.data.SquareViewData
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import kotlin.math.roundToInt
@@ -263,9 +263,10 @@ private fun SquareScope.SquareContent(
     square: SquareViewData,
     piecesAlpha: Float,
 ) {
-    if (square.piece != null) {
+    val pieceData = square.piece
+    if (pieceData != null) {
         Piece(
-            piece = square.piece.piece,
+            piece = pieceData.piece,
             alpha = piecesAlpha,
         )
     } else if (square.canMoveTo && LocalUiSettings.current.highlightLegalMoves) {

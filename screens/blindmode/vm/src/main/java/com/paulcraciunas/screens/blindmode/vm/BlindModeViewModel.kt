@@ -12,11 +12,11 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.screens.common.controls.SideSelection
-import com.paulcraciunas.screens.common.model.BoardInteractionHelper
-import com.paulcraciunas.screens.common.model.ClickResult
-import com.paulcraciunas.screens.common.model.GameNavigation
-import com.paulcraciunas.screens.common.model.GamePlayableBoard
-import com.paulcraciunas.screens.common.model.PlayableData
+import com.paulcraciunas.screens.data.BoardInteractionHelper
+import com.paulcraciunas.screens.data.ClickResult
+import com.paulcraciunas.screens.data.GameNavigation
+import com.paulcraciunas.screens.data.GamePlayableBoard
+import com.paulcraciunas.screens.data.PlayableData
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import com.paulcraciunas.user.api.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel

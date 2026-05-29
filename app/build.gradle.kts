@@ -104,6 +104,7 @@ dependencies {
     implementation(project(":global:qualifiers"))
     implementation(project(":settings:application:impl"))
     implementation(project(":screens:common"))
+    implementation(project(":screens:data"))
     implementation(project(":screens:loading:ui"))
     implementation(project(":screens:home:ui"))
     implementation(project(":screens:puzzles:dashboard:ui"))

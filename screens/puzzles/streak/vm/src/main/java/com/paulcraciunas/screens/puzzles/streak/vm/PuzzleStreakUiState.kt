@@ -1,8 +1,8 @@
 package com.paulcraciunas.screens.puzzles.streak.vm
 
 import androidx.compose.runtime.Immutable
-import com.paulcraciunas.screens.common.model.PlayableData
-import com.paulcraciunas.screens.common.model.Promotion
+import com.paulcraciunas.screens.data.PlayableData
+import com.paulcraciunas.screens.data.Promotion
 
 @Immutable
 sealed class PuzzleStreakUiState {

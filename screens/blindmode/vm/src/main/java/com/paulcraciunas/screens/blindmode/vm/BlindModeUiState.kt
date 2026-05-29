@@ -2,8 +2,8 @@ package com.paulcraciunas.screens.blindmode.vm
 
 import androidx.compose.runtime.Immutable
 import com.paulcraciunas.screens.common.controls.SideSelection
-import com.paulcraciunas.screens.common.model.PlayableData
-import com.paulcraciunas.screens.common.model.Promotion
+import com.paulcraciunas.screens.data.PlayableData
+import com.paulcraciunas.screens.data.Promotion
 
 @Immutable
 sealed class BlindModeUiState {

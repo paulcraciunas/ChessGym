@@ -13,7 +13,7 @@ import com.paulcraciunas.screens.common.controls.SideSelectionControls
 import com.paulcraciunas.screens.common.design.components.PlayButton
 import com.paulcraciunas.screens.common.design.components.ToggleRow
 import com.paulcraciunas.screens.common.design.theme.Design
-import com.paulcraciunas.screens.common.model.BoardViewData
+import com.paulcraciunas.screens.data.BoardViewData
 
 @Composable
 internal fun SetupContent(

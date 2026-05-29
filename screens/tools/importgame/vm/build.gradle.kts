@@ -15,6 +15,7 @@ dependencies {
     implementation(project(":game:serializer:di"))
     implementation(project(":settings:application:api"))
     implementation(project(":screens:common"))
+    implementation(project(":screens:data"))
 
     implementation(libs.public.timber)
     implementation(libs.androidx.lifecycle.runtime.ktx)

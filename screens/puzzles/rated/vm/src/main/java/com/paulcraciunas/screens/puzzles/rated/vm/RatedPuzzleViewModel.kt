@@ -9,11 +9,11 @@ import com.paulcraciunas.domain.api.puzzles.OnPuzzleComplete
 import com.paulcraciunas.domain.api.puzzles.PuzzleCompletionResult
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.screens.common.model.BoardInteractionHelper
-import com.paulcraciunas.screens.common.model.ClickResult
-import com.paulcraciunas.screens.common.model.PlayableData
-import com.paulcraciunas.screens.common.model.PuzzlePlayableBoard
-import com.paulcraciunas.screens.common.model.PuzzleSolution
+import com.paulcraciunas.screens.data.BoardInteractionHelper
+import com.paulcraciunas.screens.data.ClickResult
+import com.paulcraciunas.screens.data.PlayableData
+import com.paulcraciunas.screens.data.PuzzlePlayableBoard
+import com.paulcraciunas.screens.data.PuzzleSolution
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

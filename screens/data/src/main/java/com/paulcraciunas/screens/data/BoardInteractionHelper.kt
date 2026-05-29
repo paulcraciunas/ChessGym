@@ -1,4 +1,4 @@
-package com.paulcraciunas.screens.common.model
+package com.paulcraciunas.screens.data
 
 import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Side

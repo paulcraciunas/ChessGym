@@ -15,7 +15,7 @@ import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.design.components.RefreshButton
 import com.paulcraciunas.screens.common.design.components.SpacerSize
 import com.paulcraciunas.screens.common.design.theme.Design
-import com.paulcraciunas.screens.common.model.PlayableData
+import com.paulcraciunas.screens.data.PlayableData
 
 @Composable
 internal fun GameOverContent(

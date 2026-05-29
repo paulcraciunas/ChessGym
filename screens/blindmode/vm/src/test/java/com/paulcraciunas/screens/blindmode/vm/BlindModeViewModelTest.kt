@@ -11,7 +11,7 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.impl.RealGameFactory
 import com.paulcraciunas.screens.common.controls.SideSelection
-import com.paulcraciunas.screens.common.model.PlayableData
+import com.paulcraciunas.screens.data.PlayableData
 import com.paulcraciunas.serializer.impl.FenSerializer
 import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
 import com.paulcraciunas.user.api.FakeUserRepository

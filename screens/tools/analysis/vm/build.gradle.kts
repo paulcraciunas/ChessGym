@@ -16,6 +16,7 @@ dependencies {
     implementation(project(":game:serializer:api"))
     implementation(project(":game:serializer:di"))
     implementation(project(":screens:common"))
+    implementation(project(":screens:data"))
     implementation(project(":settings:application:api"))
 
     implementation(libs.public.timber)

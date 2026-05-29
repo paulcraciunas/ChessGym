@@ -5,10 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.puzzles.api.PuzzleRepository
-import com.paulcraciunas.screens.common.model.BoardInteractionHelper
-import com.paulcraciunas.screens.common.model.PlayableData
-import com.paulcraciunas.screens.common.model.Promotion
-import com.paulcraciunas.screens.common.model.PuzzlePlayableBoard
+import com.paulcraciunas.screens.data.BoardInteractionHelper
+import com.paulcraciunas.screens.data.PlayableData
+import com.paulcraciunas.screens.data.Promotion
+import com.paulcraciunas.screens.data.PuzzlePlayableBoard
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
