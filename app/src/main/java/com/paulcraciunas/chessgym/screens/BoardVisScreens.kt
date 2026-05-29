@@ -6,14 +6,13 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.paulcraciunas.chessgym.navigation.Screen
+import com.paulcraciunas.chessgym.navigation.navigateToDashChild
 import com.paulcraciunas.screens.boardvis.dashboard.ui.BoardVisDashboardScreen
 import com.paulcraciunas.screens.boardvis.dashboard.vm.BoardVisDashboardViewModel
-import com.paulcraciunas.screens.boardvis.dashboard.vm.BoardVisMode
 import com.paulcraciunas.screens.boardvis.pieces.ui.MoveThePieceScreen
 import com.paulcraciunas.screens.boardvis.pieces.vm.MoveThePieceViewModel
 import com.paulcraciunas.screens.boardvis.squares.ui.FindTheSquareScreen
 import com.paulcraciunas.screens.boardvis.squares.vm.FindTheSquareViewModel
-import com.paulcraciunas.screens.common.LocalUiSettings
 
 @Composable
 internal fun BoardVisDashboard(
@@ -25,53 +24,38 @@ internal fun BoardVisDashboard(
     BoardVisDashboardScreen(
         state = dashboardState,
         onDrawerToggle = onDrawerToggle,
-        onModeSelected = { mode ->
-            vm.onModeSelected(mode) { visMode ->
-                when (visMode) {
-                    BoardVisMode.FindTheSquare -> {
-                        tabNavController.navigate(Screen.FindTheSquare)
-                    }
-                    BoardVisMode.MoveThePiece -> {
-                        tabNavController.navigate(Screen.MoveThePiece)
-                    }
-                }
-            }
-        },
+        onModeSelected = { tabNavController.navigateToDashChild(it) },
     )
 }
 
 @Composable
 internal fun FindTheSquare(tabNavController: NavHostController) {
-    val settings = LocalUiSettings.current
     val vm: FindTheSquareViewModel = hiltViewModel()
     val findSquareState by vm.uiState.collectAsStateWithLifecycle()
 
     FindTheSquareScreen(
         uiState = findSquareState,
-        showBorders = settings.showBorders,
-        enableVibrations = settings.enableVibrations,
-        enableAnimations = settings.enableAnimations,
-        onNavigateBack = {
-            tabNavController.popBackStack(Screen.BoardVisualization, inclusive = false)
-        },
-        interactions = vm,
+        onNavigateBack = { tabNavController.popBackStack(Screen.BoardVisualization, inclusive = false) },
+        onSideSelected = vm::onSideSelected,
+        onPlayClicked = vm::onPlayClicked,
+        onSquareClicked = vm::onSquareClicked,
+        onPlayAgain = vm::onPlayAgain,
+        onErrorShown = vm::onErrorShown,
     )
 }
 
 @Composable
 internal fun MoveThePiece(tabNavController: NavHostController) {
-    val settings = LocalUiSettings.current
     val vm: MoveThePieceViewModel = hiltViewModel()
     val moveThePieceState by vm.uiState.collectAsStateWithLifecycle()
 
     MoveThePieceScreen(
         uiState = moveThePieceState,
-        showBorders = settings.showBorders,
-        highlightLegalMoves = settings.highlightLegalMoves,
-        enableAnimations = settings.enableAnimations,
-        onNavigateBack = {
-            tabNavController.popBackStack(Screen.BoardVisualization, inclusive = false)
-        },
-        interactions = vm,
+        onNavigateBack = { tabNavController.popBackStack(Screen.BoardVisualization, inclusive = false) },
+        onTrainingModeToggled = vm::onTrainingModeToggled,
+        onPieceSelected = vm::onPieceSelected,
+        onPlayClicked = vm::onPlayClicked,
+        onSquareClicked = vm::onSquareClicked,
+        onPlayAgain = vm::onPlayAgain,
     )
 }
