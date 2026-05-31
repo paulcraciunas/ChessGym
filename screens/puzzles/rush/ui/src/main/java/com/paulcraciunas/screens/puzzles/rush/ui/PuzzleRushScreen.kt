@@ -51,7 +51,7 @@ fun PuzzleRushScreen(
     onAnalyzeFailedPuzzle: (puzzleId: Int) -> Unit = {},
 ) {
     val timeRemainingSeconds = when (uiState) {
-        is PuzzleRushUiState.BoardState -> uiState.timeRemainingSeconds
+        is PuzzleRushUiState.WithBoard -> uiState.timeRemainingSeconds
         else -> 180 // Default 3 minutes
     }
     Scaffold(
@@ -74,9 +74,9 @@ fun PuzzleRushScreen(
             .fillMaxSize()
             .padding(innerPadding)
         when (uiState) {
-            is PuzzleRushUiState.Loading -> LoadingContent(modifier =defaultModifier)
+            is PuzzleRushUiState.Loading -> LoadingContent(modifier = defaultModifier)
             is PuzzleRushUiState.Failed -> FailedContent(modifier = defaultModifier)
-            is PuzzleRushUiState.BoardState -> {
+            is PuzzleRushUiState.WithBoard -> {
                 PuzzleRushContent(
                     uiState = uiState,
                     onSquareClicked = onSquareClicked,
@@ -94,7 +94,7 @@ fun PuzzleRushScreen(
 @SuppressLint("UnusedContentLambdaTargetStateParameter")
 @Composable
 private fun PuzzleRushContent(
-    uiState: PuzzleRushUiState.BoardState,
+    uiState: PuzzleRushUiState.WithBoard,
     onSquareClicked: (selection: Locus) -> Unit,
     onPromote: (to: Piece) -> Unit,
     onPlayAgain: () -> Unit,
@@ -106,7 +106,6 @@ private fun PuzzleRushContent(
     Column(
         modifier = modifier.blur(Design.dimensions.blur.of(uiState is PuzzleRushUiState.Finished && uiState.showSummaryDialog))
     ) {
-        val isBoardInteractive = uiState !is PuzzleRushUiState.Finished
         // Animate board transition when puzzle count changes
         CapturedPieces(capturedPieces = data.captured.byOpponent, side = data.player, modifier = Modifier.fillMaxWidth())
         AnimatedBoard(
@@ -116,7 +115,7 @@ private fun PuzzleRushContent(
             ChessBoard(
                 board = puzzleData.boardData,
                 orientation = BoardOrientation.fromSide(puzzleData.player),
-                onClick = if (isBoardInteractive) onSquareClicked else { _ -> },
+                onClick = onSquareClicked,
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -149,7 +148,7 @@ private fun PuzzleRushContent(
                     .padding(horizontal = Design.dimensions.spacing.xxl)
             )
         }
-        if (uiState is PuzzleRushUiState.Playing && uiState.promotion != null) {
+        if (uiState is PuzzleRushUiState.Playing && uiState.data.promotion != null) {
             PromotionDialog(
                 side = data.player,
                 onPieceChosen = onPromote
@@ -192,7 +191,6 @@ private fun PlayingPreview() {
                     data = PreviewData().blackPuzzleData(),
                     timeRemainingSeconds = 142,
                     results = PreviewData().fewResults(),
-                    promotion = null,
                 ),
             )
         }
@@ -229,7 +227,6 @@ private fun ManyResultsPreview() {
                     data = PreviewData().whitePuzzleData(),
                     timeRemainingSeconds = 45,
                     results = PreviewData().manyResults(),
-                    promotion = null,
                 ),
             )
         }
