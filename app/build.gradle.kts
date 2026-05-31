@@ -50,7 +50,28 @@ android {
             buildConfigField("String", "BUILD_NUMBER", "\"$releaseBuildNumber\"")
             buildConfigField("String", "BACKEND_URL", "\"https://chessgym-backend.run.app\"")
         }
+        getByName("benchmark") {
+            signingConfig = signingConfigs.getByName("debug")
+            applicationIdSuffix = ".benchmark"
+            versionNameSuffix = "-benchmark"
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+                "proguard-benchmark.pro",
+            )
+            val benchmarkBuildNumber = "1"
+            buildConfigField("String", "BUILD_NUMBER", "\"$benchmarkBuildNumber\"")
+            buildConfigField("String", "BACKEND_URL", "\"https://chessgym-backend.run.app\"")
+            configure<CrashlyticsExtension> {
+                mappingFileUploadEnabled = false
+            }
+        }
     }
+
+    @Suppress("UnstableApiUsage")
+    experimentalProperties["android.experimental.enableTestTagsAsResourceId"] = true
 
     sourceSets {
         named("uitest") {
@@ -61,12 +82,16 @@ android {
             java.directories.add("src/androidTest/java")
             kotlin.directories.add("src/androidTest/java")
         }
+        named("benchmark") {
+            java.directories.add("src/release/java")
+            kotlin.directories.add("src/release/java")
+        }
     }
 }
 
 dependencies {
     implementation(project(":game:puzzles:di"))
-    implementation(project(":game:logic:di"))
+    implementation(project(":game:logic:builders"))
     implementation(project(":game:engine:impl"))
     implementation(project(":game:serializer:di"))
     implementation(project(":domain:di"))
@@ -79,6 +104,7 @@ dependencies {
     implementation(project(":global:qualifiers"))
     implementation(project(":settings:application:impl"))
     implementation(project(":screens:common"))
+    implementation(project(":screens:data"))
     implementation(project(":screens:loading:ui"))
     implementation(project(":screens:home:ui"))
     implementation(project(":screens:puzzles:dashboard:ui"))
@@ -154,4 +180,12 @@ dependencies {
     androidTestImplementation(testFixtures(project(":user:api")))
     androidTestImplementation(testFixtures(project(":settings:application:api")))
     androidTestImplementation(testFixtures(project(":domain:api")))
+
+    "benchmarkImplementation"(project(":game:logic:impl"))
+    "benchmarkImplementation"(project(":domain:impl"))
+    "benchmarkImplementation"(testFixtures(project(":domain:api")))
+    "benchmarkImplementation"(testFixtures(project(":settings:application:api")))
+    "benchmarkImplementation"(libs.androidx.tracing)
+    "benchmarkImplementation"(libs.androidx.tracing.binary)
 }
+

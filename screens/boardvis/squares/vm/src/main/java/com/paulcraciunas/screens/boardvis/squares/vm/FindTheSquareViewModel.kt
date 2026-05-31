@@ -2,23 +2,29 @@ package com.paulcraciunas.screens.boardvis.squares.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.paulcraciunas.domain.api.general.CountdownTimer
-import com.paulcraciunas.domain.api.boardvis.FindSquareResult
 import com.paulcraciunas.domain.api.GenerateRandomLoci
+import com.paulcraciunas.domain.api.boardvis.FindSquareResult
 import com.paulcraciunas.domain.api.boardvis.OnFindSquareComplete
+import com.paulcraciunas.domain.api.general.CountdownTimer
 import com.paulcraciunas.domain.api.general.DefaultTimer
 import com.paulcraciunas.domain.api.general.RandomFactory
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
-import com.paulcraciunas.screens.common.controls.SideSelection
+import com.paulcraciunas.screens.data.SideSelection
+import com.paulcraciunas.screens.data.runAs
+import com.paulcraciunas.screens.data.toSide
+import com.paulcraciunas.screens.data.updateAs
 import com.paulcraciunas.user.api.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -30,26 +36,21 @@ class FindTheSquareViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val randomFactory: RandomFactory,
     gameDuration: GameDuration,
-) : ViewModel(), FindTheSquareScreenInteractor {
-
+) : ViewModel() {
     private val durationSeconds: Int = gameDuration.seconds
     private val _gameState = MutableStateFlow<GameState>(GameState.Setup())
     val uiState: StateFlow<FindTheSquareUiState> = combine(
         _gameState,
-        countdownTimer.remaining.map { it.seconds }
+        countdownTimer.remaining.map { it.roundSeconds() }
     ) { gameState, remainingSeconds ->
-        // Handle time expiry during playing
-        val state = if (gameState is GameState.Playing && remainingSeconds <= 0) {
-            _gameState.value = finishGame(gameState)
-            _gameState.value
-        } else gameState
-        state.toUiState(remainingSeconds)
+        gameState.toUiState(remainingSeconds)
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.Eagerly,
+        started = SharingStarted.WhileSubscribed(5_000),
         initialValue = FindTheSquareUiState.Setup()
     )
 
+    private var timerObserverJob: Job? = null
     private var currentHighScore: Int = 0
 
     init {
@@ -59,83 +60,58 @@ class FindTheSquareViewModel @Inject constructor(
         countdownTimer.set(durationSeconds)
     }
 
-    override fun onSideSelected(side: SideSelection) {
-        val currentState = _gameState.value
-        if (currentState is GameState.Setup) {
-            _gameState.value = currentState.copy(selectedSide = side)
+    private fun observeTimer() {
+        timerObserverJob?.cancel()
+        timerObserverJob = viewModelScope.launch {
+            countdownTimer.remaining.first { it.roundSeconds() <= 0 }
+            _gameState.runAs<GameState.Playing> { finishGame(it) }
         }
     }
 
-    override fun onPlayClicked() {
-        val currentState = _gameState.value
-        if (currentState !is GameState.Setup) return
-
-        val side = when (currentState.selectedSide) {
-            SideSelection.WHITE -> Side.WHITE
-            SideSelection.BLACK -> Side.BLACK
-            SideSelection.RANDOM -> Side.fromCode(randomFactory.nextInt(0, 2))
-        }
-
+    fun onSideSelected(side: SideSelection) = _gameState.updateAs { it: GameState.Setup -> it.copy(selectedSide = side) }
+    fun onPlayClicked() = _gameState.runAs<GameState.Setup> { state ->
         countdownTimer.start(scope = viewModelScope)
-        _gameState.value = GameState.Playing(
-            side = side,
-            currentSquare = generateRandomLoci(),
-            score = 0,
-            showError = false
-        )
-    }
-
-    override fun onSquareClicked(locus: Locus) {
-        val currentState = _gameState.value
-        if (currentState !is GameState.Playing) return
-
-        if (locus == currentState.currentSquare) {
-            // Correct answer
-            _gameState.value = currentState.copy(
+        observeTimer()
+        _gameState.update {
+            GameState.Playing(
+                side = state.selectedSide.toSide { randomFactory.nextInt(0, 2) },
                 currentSquare = generateRandomLoci(),
-                score = currentState.score + 1,
+                score = 0,
                 showError = false
             )
-        } else {
-            // Wrong answer - show error
-            _gameState.value = currentState.copy(showError = true)
         }
     }
 
-    override fun onPlayAgain() {
+    fun onSquareClicked(locus: Locus) = _gameState.updateAs { it: GameState.Playing ->
+        if (locus == it.currentSquare) { // Correct answer
+            it.copy(currentSquare = generateRandomLoci(), score = it.score + 1, showError = false)
+        } else { // Wrong answer - show error
+            it.copy(showError = true)
+        }
+    }
+
+    fun onPlayAgain() {
         countdownTimer.set(durationSeconds)
-        _gameState.value = GameState.Setup()
+        _gameState.update { GameState.Setup() }
     }
 
-    override fun onErrorShown() {
-        val currentState = _gameState.value
-        if (currentState is GameState.Playing) {
-            _gameState.value = currentState.copy(showError = false)
-        }
-    }
+    fun onErrorShown() = _gameState.updateAs { it: GameState.Playing -> it.copy(showError = false) }
 
-    private fun finishGame(playingState: GameState.Playing): GameState {
+    private fun finishGame(playingState: GameState.Playing) {
         countdownTimer.stop()
 
         val score = playingState.score
-        val isNewHighScore = score > currentHighScore
-
-        // Log the result
-        viewModelScope.launch {
-            onFindSquareComplete(
-                FindSquareResult(
-                    score = score,
-                    timeSpentMillis = countdownTimer.elapsedMillis()
-                )
+        _gameState.update {
+            GameState.GameOver(
+                side = playingState.side,
+                score = score,
+                isNewHighScore = score > currentHighScore,
+                previousHighScore = currentHighScore,
             )
         }
-
-        return GameState.GameOver(
-            side = playingState.side,
-            score = score,
-            isNewHighScore = isNewHighScore,
-            previousHighScore = currentHighScore,
-        )
+        viewModelScope.launch { // Log the result
+            onFindSquareComplete(FindSquareResult(score = score, timeSpentMillis = countdownTimer.elapsedMillis()))
+        }
     }
 
     // Internal state representation
@@ -143,7 +119,7 @@ class FindTheSquareViewModel @Inject constructor(
         abstract fun toUiState(remainingSeconds: Int): FindTheSquareUiState
 
         data class Setup(
-            val selectedSide: SideSelection = SideSelection.WHITE
+            val selectedSide: SideSelection = SideSelection.WHITE,
         ) : GameState() {
             override fun toUiState(remainingSeconds: Int) = FindTheSquareUiState.Setup(
                 selectedSide = selectedSide,
@@ -155,7 +131,7 @@ class FindTheSquareViewModel @Inject constructor(
             val side: Side,
             val currentSquare: Locus,
             val score: Int,
-            val showError: Boolean
+            val showError: Boolean,
         ) : GameState() {
             override fun toUiState(remainingSeconds: Int) = FindTheSquareUiState.Playing(
                 orientation = side,

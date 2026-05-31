@@ -21,7 +21,7 @@ class AchievementsViewModel @Inject constructor(
     private val getAchievementState: GetAchievementState,
     private val markAchievementsSeen: MarkAchievementsSeen,
     private val stateAdapter: AchievementsUiStateAdapter,
-) : ViewModel(), AchievementsInteractor {
+) : ViewModel() {
 
     private val _selectedAchievement = MutableStateFlow<AchievementsUiState.AchievementState?>(null)
 
@@ -35,11 +35,11 @@ class AchievementsViewModel @Inject constructor(
         state.copy(selectedAchievement = selected)
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
+        started = SharingStarted.WhileSubscribed(5_000),
         initialValue = AchievementsUiState(isLoading = true)
     )
 
-    override fun onScreenVisible() {
+    fun onScreenVisible() {
         viewModelScope.launch {
             try {
                 markAchievementsSeen()
@@ -49,11 +49,11 @@ class AchievementsViewModel @Inject constructor(
         }
     }
 
-    override fun onAchievementClicked(achievement: AchievementsUiState.AchievementState) {
+    fun onAchievementClicked(achievement: AchievementsUiState.AchievementState) {
         _selectedAchievement.value = achievement
     }
 
-    override fun onDismissDetail() {
+    fun onDismissDetail() {
         _selectedAchievement.value = null
     }
 }

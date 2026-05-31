@@ -29,6 +29,7 @@ internal class MutableGame(
     private val fullHistory: MutableList<MutableGameInfo> = mutableListOf(),
 ) : Game, Executable() {
     constructor(board: Board, turn: Side) : this(board = board, info = MutableGameInfo(turn = turn))
+    private val moveAdapter = MoveAdapter()
 
     override val history: List<Ply>
         get() = fullHistory.drop(1).take(historyIndex).mapNotNull { it.lastPly }
@@ -66,6 +67,17 @@ internal class MutableGame(
     }
 
     override fun play(from: Locus, to: Locus) = play(plies(from).first { it.to == to })
+    override fun play(ply: String) {
+        assert(state == Game.GameState.InProgress)
+        val move = moveAdapter.from(ply)
+        plies(move.from).first { it.to == move.to }.apply {
+            if (move.promotion != null) {
+                promote(move.promotion)
+            } else {
+                play(from, to)
+            }
+        }
+    }
     override fun resign() = finish(Result.Resigned)
     override fun draw() = finish(Result.DrawByAgreement)
     override fun isRunning(): Boolean = state == Game.GameState.InProgress

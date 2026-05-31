@@ -28,7 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.about.vm.AboutSection
 import com.paulcraciunas.screens.about.vm.LibraryInfo
-import com.paulcraciunas.screens.common.AppBar
+import com.paulcraciunas.screens.common.ChildAppBar
 import com.paulcraciunas.screens.common.Footer
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.design.components.SpacerSize
@@ -45,12 +45,7 @@ fun AboutDetailScreen(
     onEmailClicked: (() -> Unit)? = null,
 ) {
     Scaffold(
-        topBar = {
-            AppBar(
-                title = resolveTitle(section),
-                navButton = { Back(onClick = onNavigateBack) },
-            )
-        },
+        topBar = { ChildAppBar(onBack = onNavigateBack, title = resolveTitle(section)) },
         modifier = modifier,
     ) { innerPadding ->
         DetailContent(

@@ -5,8 +5,9 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
@@ -19,6 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import com.paulcraciunas.screens.common.design.theme.Design
@@ -28,43 +30,7 @@ enum class IconStyle { Card, Circle }
 enum class IconBorderType { None, Soft, Hard }
 enum class IconTintType { Normal, Accent, Danger, Success }
 enum class IconTintMode { Normal, Reversed }
-enum class IconSize { Small, Normal, Large }
-
-/**
- * Bordered, rounded-square icon container used in dashboard cards
- * and other contexts requiring a framed icon.
- */
-@Composable
-internal fun IconBadgeLayout(
-    modifier: Modifier = Modifier,
-    size: Dp = Design.dimensions.sizes.avatar,
-    style: IconStyle = IconStyle.Card,
-    border: BorderStroke = borderSoft(),
-    enabled: Boolean = true,
-    background: Color? = null,
-    content: @Composable () -> Unit,
-) {
-    val shape = when (style) {
-        IconStyle.Card -> Design.shapes.card
-        IconStyle.Circle -> Design.shapes.circle
-    }
-    Box(
-        modifier = modifier
-            .size(size)
-            .clip(shape)
-            .border(border, shape)
-            .background(
-                when {
-                    background != null -> background
-                    enabled -> Design.colors.primarySoft
-                    else -> Design.colors.primarySoftDisabled
-                }
-            ),
-        contentAlignment = Alignment.Center,
-    ) {
-        content()
-    }
-}
+enum class IconSize { Small, Normal, Large, XLarge }
 
 @Composable
 fun TextBadge(
@@ -74,18 +40,23 @@ fun TextBadge(
     borderType: IconBorderType = IconBorderType.None,
     tint: IconTintType = IconTintType.Accent,
     size: IconSize = IconSize.Normal,
+    textStyle: TextStyle = Design.typography.headlineSmall,
+    textColor: Color = Design.colors.onPrimary,
 ) {
-    IconBadgeLayout(
-        modifier = modifier,
-        size = size.dp() * 2,
-        style = style,
-        border = borderType.borderStroke(),
-    ) {
-        Text(
-            text = text,
-            color = tint.color(),
-        )
-    }
+    Text(
+        text = text,
+        style = textStyle,
+        color = textColor,
+        modifier = modifier
+            .badgeLayout(
+                size = size.dp() * 2,
+                style = style,
+                border = borderType.borderStroke(),
+                enabled = true,
+                background = if (tint == IconTintType.Accent) Design.colors.primary else null,
+            )
+            .wrapContentSize(Alignment.Center)
+    )
 }
 
 @Composable
@@ -100,20 +71,21 @@ fun IconBadge(
 ) {
     val tintColor = tint.color()
     val sizeDp = size.dp()
-    IconBadgeLayout(
-        modifier = modifier,
-        size = sizeDp * 2,
-        style = style,
-        border = borderType.borderStroke(),
-        background = if (tintMode == IconTintMode.Reversed) tintColor else null
-    ) {
-        Icon(
-            imageVector = imageVector,
-            contentDescription = null,
-            tint = if (tintMode == IconTintMode.Reversed) Color.White else tintColor,
-            modifier = Modifier.size(sizeDp),
-        )
-    }
+
+    Icon(
+        imageVector = imageVector,
+        contentDescription = null,
+        tint = if (tintMode == IconTintMode.Reversed) Color.White else tintColor,
+        modifier = modifier
+            .badgeLayout(
+                size = sizeDp * 2,
+                style = style,
+                border = borderType.borderStroke(),
+                enabled = true,
+                background = if (tintMode == IconTintMode.Reversed) tintColor else null
+            )
+            .padding(sizeDp / 2)
+    )
 }
 
 @Composable
@@ -123,14 +95,22 @@ fun IconBadge(
     enabled: Boolean = true,
     tint: Color = if (enabled) Design.colors.primary else Design.colors.primaryDisabled,
 ) {
-    IconBadgeLayout(modifier = modifier, enabled = enabled) {
-        Icon(
-            painter = painterResource(iconRes),
-            contentDescription = null,
-            tint = tint,
-            modifier = Modifier.size(Design.dimensions.sizes.navBarIconHeight),
-        )
-    }
+    val totalSize = Design.dimensions.sizes.avatar
+    val iconSize = Design.dimensions.sizes.navBarIconHeight
+    Icon(
+        painter = painterResource(iconRes),
+        contentDescription = null,
+        tint = tint,
+        modifier = modifier
+            .badgeLayout(
+                size = totalSize,
+                style = IconStyle.Card,
+                border = Design.colors.softBorderStroke,
+                enabled = enabled,
+                background = null
+            )
+            .padding((totalSize - iconSize) / 2)
+    )
 }
 
 @Composable
@@ -140,22 +120,60 @@ fun IconBadge(
     enabled: Boolean = true,
     tint: Color = if (enabled) Design.colors.primary else Design.colors.primaryDisabled,
 ) {
-    IconBadgeLayout(modifier = modifier, enabled = enabled) {
-        Icon(
-            imageVector = imageVector,
-            contentDescription = null,
-            tint = tint,
-            modifier = Modifier.size(Design.dimensions.sizes.navBarIconHeight),
-        )
-    }
+    val totalSize = Design.dimensions.sizes.avatar
+    val iconSize = Design.dimensions.sizes.navBarIconHeight
+    Icon(
+        imageVector = imageVector,
+        contentDescription = null,
+        tint = tint,
+        modifier = modifier
+            .badgeLayout(
+                size = totalSize,
+                style = IconStyle.Card,
+                border = Design.colors.softBorderStroke,
+                enabled = enabled,
+                background = null
+            )
+            .padding((totalSize - iconSize) / 2)
+    )
 }
+
+@Composable
+private fun Modifier.badgeLayout(
+    size: Dp,
+    style: IconStyle,
+    border: BorderStroke,
+    enabled: Boolean,
+    background: Color?,
+): Modifier = this
+    .size(size)
+    .clip(
+        when (style) {
+            IconStyle.Card -> Design.shapes.card
+            IconStyle.Circle -> Design.shapes.circle
+        }
+    )
+    .border(
+        border,
+        when (style) {
+            IconStyle.Card -> Design.shapes.card
+            IconStyle.Circle -> Design.shapes.circle
+        }
+    )
+    .background(
+        when {
+            background != null -> background
+            enabled -> Design.colors.primarySoft
+            else -> Design.colors.primarySoftDisabled
+        }
+    )
 
 @Composable
 @Stable
 private fun IconBorderType.borderStroke(): BorderStroke = when (this) {
-    IconBorderType.None -> borderNone()
-    IconBorderType.Soft -> borderSoft()
-    IconBorderType.Hard -> borderPrimary()
+    IconBorderType.None -> Design.colors.borderNone
+    IconBorderType.Soft -> Design.colors.softBorderStroke
+    IconBorderType.Hard -> Design.colors.primaryBorderStroke
 }
 
 @Composable
@@ -173,6 +191,7 @@ private fun IconSize.dp(): Dp = when (this) {
     IconSize.Small -> Design.dimensions.sizes.iconSmall
     IconSize.Normal -> Design.dimensions.sizes.icon
     IconSize.Large -> Design.dimensions.sizes.navBarIconHeight
+    IconSize.XLarge -> Design.dimensions.sizes.avatar / 2
 }
 
 @Preview("IconBadge")

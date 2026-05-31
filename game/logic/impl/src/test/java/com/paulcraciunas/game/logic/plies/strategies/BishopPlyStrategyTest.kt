@@ -2,20 +2,13 @@ package com.paulcraciunas.game.logic.plies.strategies
 
 import com.paulcraciunas.game.logic.allLocationsExcept
 import com.paulcraciunas.game.logic.api.Side
-import com.paulcraciunas.game.logic.api.board.File.d
-import com.paulcraciunas.game.logic.api.board.File.e
-import com.paulcraciunas.game.logic.api.board.File.f
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.api.board.Rank.`3`
-import com.paulcraciunas.game.logic.api.board.Rank.`4`
-import com.paulcraciunas.game.logic.api.board.Rank.`5`
 import com.paulcraciunas.game.logic.assertMoves
 import com.paulcraciunas.game.logic.assertNoMoves
 import com.paulcraciunas.game.logic.impl.MutableGameInfo
 import com.paulcraciunas.game.logic.impl.board.Board
 import com.paulcraciunas.game.logic.impl.plies.strategies.BishopPlyStrategy
-import com.paulcraciunas.game.logic.loc
 import com.paulcraciunas.game.logic.surroundBishop
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -23,7 +16,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 internal class BishopPlyStrategyTest {
-    private val home = Locus(e, `4`)
+    private val home = Locus.e4
     private val on = Board().apply {
         add(piece = Piece.Bishop, side = Side.BLACK, at = home)
     }
@@ -67,7 +60,7 @@ internal class BishopPlyStrategyTest {
             turn = Side.BLACK,
             piece = Piece.Bishop,
             home = home,
-            listOf(Locus(d, `5`), Locus(d, `3`), Locus(f, `5`), Locus(f, `3`)),
+            listOf(Locus.d5, Locus.d3, Locus.f5, Locus.f3),
         )
     }
 
@@ -95,11 +88,11 @@ internal class BishopPlyStrategyTest {
     fun `WHEN bishop is surrounded by enemies THEN it can attack them`() {
         on.surroundBishop(at = home, side = Side.WHITE)
 
-        validAttacks.map { it.loc() }
+        validAttacks
             .forEach {
                 assertTrue(underTest.canAttack(from = home, to = it, on = on, turn = with.turn))
             }
-        allLocationsExcept(home, validAttacks.map { it.loc() }).forEach {
+        allLocationsExcept(home, validAttacks).forEach {
             assertFalse(underTest.canAttack(from = home, to = it, on = on, turn = with.turn))
         }
     }
@@ -107,21 +100,21 @@ internal class BishopPlyStrategyTest {
     companion object {
         val validLocations = listOf(
             // First diagonal
-            "a8".loc(),
-            "b7".loc(),
-            "c6".loc(),
-            "d5".loc(),
-            "f3".loc(),
-            "g2".loc(),
-            "h1".loc(),
+            Locus.a8,
+            Locus.b7,
+            Locus.c6,
+            Locus.d5,
+            Locus.f3,
+            Locus.g2,
+            Locus.h1,
             // Second diagonal
-            "b1".loc(),
-            "c2".loc(),
-            "d3".loc(),
-            "f5".loc(),
-            "g6".loc(),
-            "h7".loc(),
+            Locus.b1,
+            Locus.c2,
+            Locus.d3,
+            Locus.f5,
+            Locus.g6,
+            Locus.h7,
         )
-        val validAttacks = listOf("d5", "d3", "f5", "f3")
+        val validAttacks = listOf(Locus.d5, Locus.d3, Locus.f5, Locus.f3)
     }
 }

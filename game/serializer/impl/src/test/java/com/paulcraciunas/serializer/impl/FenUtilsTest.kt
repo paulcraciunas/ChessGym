@@ -1,9 +1,9 @@
 package com.paulcraciunas.serializer.impl
 
 import com.paulcraciunas.game.logic.api.Side
+import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.impl.RealGameFactory
-import com.paulcraciunas.game.logic.loc
 import com.paulcraciunas.serializer.api.SerializeException
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
@@ -40,8 +40,8 @@ internal class FenUtilsTest {
         underTest.withEnPassent("a3").buildGame().info.lastPly?.let {
             assertEquals(Side.WHITE, it.turn)
             assertEquals(Piece.Pawn, it.piece)
-            assertEquals("a2".loc(), it.from)
-            assertEquals("a4".loc(), it.to)
+            assertEquals(Locus.a2, it.from)
+            assertEquals(Locus.a4, it.to)
         } ?: fail()
     }
 
@@ -50,8 +50,8 @@ internal class FenUtilsTest {
         underTest.withEnPassent("g6").buildGame().info.lastPly?.let {
             assertEquals(Side.BLACK, it.turn)
             assertEquals(Piece.Pawn, it.piece)
-            assertEquals("g7".loc(), it.from)
-            assertEquals("g5".loc(), it.to)
+            assertEquals(Locus.g7, it.from)
+            assertEquals(Locus.g5, it.to)
         } ?: fail()
     }
 }

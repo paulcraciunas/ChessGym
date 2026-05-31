@@ -6,7 +6,7 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -22,7 +22,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.global.resources.R
-import com.paulcraciunas.screens.common.design.components.ChessGymCard
+import com.paulcraciunas.screens.common.design.components.ChessGymRowCard
 import com.paulcraciunas.screens.common.design.components.IconBadge
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.extensions.alpha
@@ -42,46 +42,45 @@ internal fun DashboardCard(
     val iconScope = remember { DashboardCardIconScope(isEnabled) }
     val alpha = isEnabled.alpha
 
-    ChessGymCard(
+    ChessGymRowCard(
+        contentPadding = PaddingValues(Design.dimensions.spacing.xxl),
+        horizontalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.xxl),
+        verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .clickable(isEnabled) { onClick() }) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.xxl),
-            verticalAlignment = Alignment.CenterVertically
+            .clickable(isEnabled) { onClick() },
+    ) {
+        icon(iconScope)
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.xs)
         ) {
-            icon(iconScope)
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.xs)
-            ) {
+            Text(
+                text = stringResource(title),
+                style = Design.typography.titleLarge,
+                color = Design.colors.ink.copy(alpha = alpha)
+            )
+            Text(
+                text = stringResource(description),
+                style = Design.typography.bodyMedium,
+                color = Design.colors.inkSoft.copy(alpha = alpha)
+            )
+            highlight?.let {
                 Text(
-                    text = stringResource(title),
-                    style = Design.typography.titleLarge,
-                    color = Design.colors.ink.copy(alpha = alpha)
+                    text = it,
+                    style = Design.typography.labelLarge,
+                    color = Design.colors.primary.copy(alpha = alpha)
                 )
-                Text(
-                    text = stringResource(description),
-                    style = Design.typography.bodyMedium,
-                    color = Design.colors.inkSoft.copy(alpha = alpha)
-                )
-                highlight?.let {
-                    Text(
-                        text = it,
-                        style = Design.typography.labelLarge,
-                        color = Design.colors.primary.copy(alpha = alpha)
-                    )
-                }
             }
+        }
 
-            if (isEnabled) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                    contentDescription = stringResource(startContentDescription),
-                    tint = Design.colors.inkMuted,
-                    modifier = Modifier.size(Design.dimensions.sizes.icon)
-                )
-            }
+        if (isEnabled) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                contentDescription = stringResource(startContentDescription),
+                tint = Design.colors.inkMuted,
+                modifier = Modifier.size(Design.dimensions.sizes.icon)
+            )
         }
     }
 }

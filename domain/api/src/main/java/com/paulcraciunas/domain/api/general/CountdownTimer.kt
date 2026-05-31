@@ -97,5 +97,7 @@ interface CountdownTimer {
             seconds = seconds + incrementSeconds,
             millis = millis,
         )
+
+        fun roundSeconds(): Int = if (millis >= 500) seconds + 1 else seconds
     }
 }

@@ -1,11 +1,13 @@
 package com.paulcraciunas.screens.common.design.theme
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import com.paulcraciunas.screens.common.design.theme.walnut.WalnutDarkColors
 import com.paulcraciunas.screens.common.design.theme.walnut.WalnutLightColors
 
@@ -74,7 +76,12 @@ data class ChessGymColors(
     val achievementTierDiamond: Color,
 
     val isDark: Boolean,
-)
+) {
+    val borderNone: BorderStroke = BorderStroke(0.dp, borderSoft)
+    val softBorderStroke: BorderStroke = BorderStroke(1.dp, borderSoft)
+    val primaryBorderStroke: BorderStroke = BorderStroke(1.dp, primary)
+    val surfaceBorderStroke: BorderStroke = BorderStroke(2.dp, surface)
+}
 
 /**
  * Provides the extended [ChessGymColors] palette across the tree.

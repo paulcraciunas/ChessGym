@@ -6,9 +6,10 @@ import com.paulcraciunas.domain.api.puzzles.GetFailedPuzzles
 import com.paulcraciunas.domain.api.puzzles.OnFailedPuzzleComplete
 import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.Side
-import com.paulcraciunas.game.logic.api.board.loc
+import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.impl.RealGameFactory
 import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -92,13 +93,13 @@ internal class FailedPuzzlesViewModelTest {
         val underTest = buildVm()
 
         // When - make correct moves to complete puzzle
-        underTest.onSquareClicked("e7".loc()) // Select piece
+        underTest.onSquareClicked(Locus.e7) // Select piece
         testDispatcher.scheduler.advanceUntilIdle()
-        underTest.onSquareClicked("e5".loc()) // Make correct move (e7-e5)
+        underTest.onSquareClicked(Locus.e5) // Make correct move (e7-e5)
         testDispatcher.scheduler.advanceUntilIdle()
-        underTest.onSquareClicked("b8".loc()) // Select piece
+        underTest.onSquareClicked(Locus.b8) // Select piece
         testDispatcher.scheduler.advanceUntilIdle()
-        underTest.onSquareClicked("c6".loc()) // Make correct move (b8-c6)
+        underTest.onSquareClicked(Locus.c6) // Make correct move (b8-c6)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then - puzzle should have progressed, results should have one entry
@@ -117,13 +118,13 @@ internal class FailedPuzzlesViewModelTest {
         val underTest = buildVm()
 
         // When - solve the puzzle
-        underTest.onSquareClicked("e7".loc())
+        underTest.onSquareClicked(Locus.e7)
         testDispatcher.scheduler.advanceUntilIdle()
-        underTest.onSquareClicked("e5".loc())
+        underTest.onSquareClicked(Locus.e5)
         testDispatcher.scheduler.advanceUntilIdle()
-        underTest.onSquareClicked("b8".loc())
+        underTest.onSquareClicked(Locus.b8)
         testDispatcher.scheduler.advanceUntilIdle()
-        underTest.onSquareClicked("c6".loc())
+        underTest.onSquareClicked(Locus.c6)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
@@ -138,9 +139,9 @@ internal class FailedPuzzlesViewModelTest {
         val underTest = buildVm()
 
         // When - make wrong move
-        underTest.onSquareClicked("e7".loc())
+        underTest.onSquareClicked(Locus.e7)
         testDispatcher.scheduler.advanceUntilIdle()
-        underTest.onSquareClicked("e6".loc()) // Wrong move (e7-e6 instead of e7-e5)
+        underTest.onSquareClicked(Locus.e6) // Wrong move (e7-e6 instead of e7-e5)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then - should move to next puzzle, result should show failure
@@ -158,9 +159,9 @@ internal class FailedPuzzlesViewModelTest {
         val underTest = buildVm()
 
         // When - make wrong move
-        underTest.onSquareClicked("e7".loc())
+        underTest.onSquareClicked(Locus.e7)
         testDispatcher.scheduler.advanceUntilIdle()
-        underTest.onSquareClicked("e6".loc())
+        underTest.onSquareClicked(Locus.e6)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
@@ -174,13 +175,13 @@ internal class FailedPuzzlesViewModelTest {
         val underTest = buildVm()
 
         // When - complete the puzzle
-        underTest.onSquareClicked("e7".loc())
+        underTest.onSquareClicked(Locus.e7)
         testDispatcher.scheduler.advanceUntilIdle()
-        underTest.onSquareClicked("e5".loc())
+        underTest.onSquareClicked(Locus.e5)
         testDispatcher.scheduler.advanceUntilIdle()
-        underTest.onSquareClicked("b8".loc())
+        underTest.onSquareClicked(Locus.b8)
         testDispatcher.scheduler.advanceUntilIdle()
-        underTest.onSquareClicked("c6".loc())
+        underTest.onSquareClicked(Locus.c6)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
@@ -198,13 +199,13 @@ internal class FailedPuzzlesViewModelTest {
         val underTest = buildVm()
 
         // Complete the puzzle
-        underTest.onSquareClicked("e7".loc())
+        underTest.onSquareClicked(Locus.e7)
         testDispatcher.scheduler.advanceUntilIdle()
-        underTest.onSquareClicked("e5".loc())
+        underTest.onSquareClicked(Locus.e5)
         testDispatcher.scheduler.advanceUntilIdle()
-        underTest.onSquareClicked("b8".loc())
+        underTest.onSquareClicked(Locus.b8)
         testDispatcher.scheduler.advanceUntilIdle()
-        underTest.onSquareClicked("c6".loc())
+        underTest.onSquareClicked(Locus.c6)
         testDispatcher.scheduler.advanceUntilIdle()
 
         assertTrue((underTest.uiState.value as FailedPuzzlesUiState.Finished).showCompletionDialog)
@@ -224,13 +225,13 @@ internal class FailedPuzzlesViewModelTest {
         val underTest = buildVm()
 
         // When
-        underTest.onSquareClicked("e7".loc())
+        underTest.onSquareClicked(Locus.e7)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
         val playingState = underTest.uiState.value as FailedPuzzlesUiState.Playing
         val boardData = playingState.data.boardData
-        assertTrue(boardData.at("e7".loc()).piece?.isSelected == true)
+        assertTrue(boardData.at(Locus.e7).piece?.isSelected == true)
     }
 
     @Test
@@ -240,17 +241,17 @@ internal class FailedPuzzlesViewModelTest {
         val underTest = buildVm()
 
         // Select a piece
-        underTest.onSquareClicked("e7".loc())
+        underTest.onSquareClicked(Locus.e7)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // When - click same square
-        underTest.onSquareClicked("e7".loc())
+        underTest.onSquareClicked(Locus.e7)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
         val playingState = underTest.uiState.value as FailedPuzzlesUiState.Playing
         val boardData = playingState.data.boardData
-        assertTrue(boardData.at("e7".loc()).piece?.isSelected != true)
+        assertTrue(boardData.at(Locus.e7).piece?.isSelected != true)
     }
 
     @Test
@@ -261,23 +262,23 @@ internal class FailedPuzzlesViewModelTest {
         val underTest = buildVm()
 
         // Complete first puzzle
-        underTest.onSquareClicked("e7".loc())
+        underTest.onSquareClicked(Locus.e7)
         testDispatcher.scheduler.advanceUntilIdle()
-        underTest.onSquareClicked("e5".loc())
+        underTest.onSquareClicked(Locus.e5)
         testDispatcher.scheduler.advanceUntilIdle()
-        underTest.onSquareClicked("b8".loc())
+        underTest.onSquareClicked(Locus.b8)
         testDispatcher.scheduler.advanceUntilIdle()
-        underTest.onSquareClicked("c6".loc())
+        underTest.onSquareClicked(Locus.c6)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Complete second puzzle
-        underTest.onSquareClicked("e7".loc())
+        underTest.onSquareClicked(Locus.e7)
         testDispatcher.scheduler.advanceUntilIdle()
-        underTest.onSquareClicked("e5".loc())
+        underTest.onSquareClicked(Locus.e5)
         testDispatcher.scheduler.advanceUntilIdle()
-        underTest.onSquareClicked("b8".loc())
+        underTest.onSquareClicked(Locus.b8)
         testDispatcher.scheduler.advanceUntilIdle()
-        underTest.onSquareClicked("c6".loc())
+        underTest.onSquareClicked(Locus.c6)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
@@ -297,12 +298,11 @@ internal class FailedPuzzlesViewModelTest {
             getPuzzleFen = getPuzzleFen,
             appSettingsRepository = appSettingsRepository,
             timer = timer,
-            puzzleInteractor = RealGameFactory().puzzleInteractor(),
         )
         // Don't advance dispatcher - state is still loading
 
         // When
-        underTest.onSquareClicked("e7".loc())
+        underTest.onSquareClicked(Locus.e7)
 
         // Then - should still be loading (no crash)
         assertTrue(underTest.uiState.value is FailedPuzzlesUiState.Loading)
@@ -314,19 +314,19 @@ internal class FailedPuzzlesViewModelTest {
         getFailedPuzzles.enqueue(buildStandardPuzzle())
         val underTest = buildVm()
 
-        underTest.onSquareClicked("e7".loc())
+        underTest.onSquareClicked(Locus.e7)
         testDispatcher.scheduler.advanceUntilIdle()
-        underTest.onSquareClicked("e5".loc())
+        underTest.onSquareClicked(Locus.e5)
         testDispatcher.scheduler.advanceUntilIdle()
-        underTest.onSquareClicked("b8".loc())
+        underTest.onSquareClicked(Locus.b8)
         testDispatcher.scheduler.advanceUntilIdle()
-        underTest.onSquareClicked("c6".loc())
+        underTest.onSquareClicked(Locus.c6)
         testDispatcher.scheduler.advanceUntilIdle()
 
         assertTrue(underTest.uiState.value is FailedPuzzlesUiState.Finished)
 
         // When
-        underTest.onSquareClicked("e2".loc())
+        underTest.onSquareClicked(Locus.e2)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then - should still be finished
@@ -340,7 +340,6 @@ internal class FailedPuzzlesViewModelTest {
             getPuzzleFen = getPuzzleFen,
             appSettingsRepository = appSettingsRepository,
             timer = timer,
-            puzzleInteractor = RealGameFactory().puzzleInteractor(),
         )
         testDispatcher.scheduler.advanceUntilIdle()
         return underTest
@@ -377,7 +376,7 @@ private class FakeGetFailedPuzzles : GetFailedPuzzles {
         this.exception = exception
     }
 
-    override suspend fun load(batchSize: Int) {
+    override suspend fun load(scope: CoroutineScope, bufferSize: Int) {
         exception?.let { throw it }
     }
 
@@ -387,8 +386,6 @@ private class FakeGetFailedPuzzles : GetFailedPuzzles {
     }
 
     override fun totalCount(): Int = _totalCount
-
-    override fun remainingCount(): Int = puzzles.size
 }
 
 private class FakeOnFailedPuzzleComplete : OnFailedPuzzleComplete {

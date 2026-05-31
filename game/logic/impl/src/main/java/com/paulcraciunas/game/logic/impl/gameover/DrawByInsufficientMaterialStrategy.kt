@@ -36,7 +36,7 @@ internal class DrawByInsufficientMaterialStrategy : GameOverStrategy {
             if (pieces[Piece.Bishop]?.size == 2) {
                 // Check if the bishops are of the same colour
                 // It doesn't matter on whose side they are
-                return pieces[Piece.Bishop]?.map { it.side() }?.toMutableSet()?.size == 1
+                return pieces[Piece.Bishop]?.map { it.side }?.toMutableSet()?.size == 1
             }
         }
         return false

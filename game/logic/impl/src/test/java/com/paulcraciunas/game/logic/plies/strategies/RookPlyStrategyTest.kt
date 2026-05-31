@@ -2,16 +2,13 @@ package com.paulcraciunas.game.logic.plies.strategies
 
 import com.paulcraciunas.game.logic.allLocationsExcept
 import com.paulcraciunas.game.logic.api.Side
-import com.paulcraciunas.game.logic.api.board.File.e
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.api.board.Rank.`4`
 import com.paulcraciunas.game.logic.assertMoves
 import com.paulcraciunas.game.logic.assertNoMoves
 import com.paulcraciunas.game.logic.impl.MutableGameInfo
 import com.paulcraciunas.game.logic.impl.board.Board
 import com.paulcraciunas.game.logic.impl.plies.strategies.RookPlyStrategy
-import com.paulcraciunas.game.logic.loc
 import com.paulcraciunas.game.logic.surroundRook
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -19,7 +16,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 internal class RookPlyStrategyTest {
-    private val home = Locus(e, `4`)
+    private val home = Locus.e4
     private val on = Board().apply {
         add(piece = Piece.Rook, side = Side.BLACK, at = home)
     }
@@ -63,7 +60,7 @@ internal class RookPlyStrategyTest {
             turn = Side.BLACK,
             piece = Piece.Rook,
             home = home,
-            neighbours.map { it.loc() },
+            neighbours,
         )
     }
 
@@ -91,11 +88,11 @@ internal class RookPlyStrategyTest {
     fun `WHEN rook is surrounded by enemies THEN it can attack them`() {
         on.surroundRook(at = home, side = Side.WHITE)
 
-        neighbours.map { it.loc() }
+        neighbours
             .forEach {
                 assertTrue(underTest.canAttack(from = home, to = it, on = on, turn = with.turn))
             }
-        allLocationsExcept(home, neighbours.map { it.loc() }).forEach {
+        allLocationsExcept(home, neighbours).forEach {
             assertFalse(underTest.canAttack(from = home, to = it, on = on, turn = with.turn))
         }
     }
@@ -103,22 +100,22 @@ internal class RookPlyStrategyTest {
     companion object {
         val validLocations = listOf(
             // e file
-            "e1".loc(),
-            "e2".loc(),
-            "e3".loc(),
-            "e5".loc(),
-            "e6".loc(),
-            "e7".loc(),
-            "e8".loc(),
+            Locus.e1,
+            Locus.e2,
+            Locus.e3,
+            Locus.e5,
+            Locus.e6,
+            Locus.e7,
+            Locus.e8,
             // 4-th rank
-            "a4".loc(),
-            "b4".loc(),
-            "c4".loc(),
-            "d4".loc(),
-            "f4".loc(),
-            "g4".loc(),
-            "h4".loc(),
+            Locus.a4,
+            Locus.b4,
+            Locus.c4,
+            Locus.d4,
+            Locus.f4,
+            Locus.g4,
+            Locus.h4,
         )
-        val neighbours = listOf("e3", "e5", "d4", "f4")
+        val neighbours = listOf(Locus.e3, Locus.e5, Locus.d4, Locus.f4)
     }
 }

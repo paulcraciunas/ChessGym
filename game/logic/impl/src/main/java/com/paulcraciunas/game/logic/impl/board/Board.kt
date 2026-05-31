@@ -6,135 +6,120 @@ import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Rank
+import com.paulcraciunas.game.logic.api.board.SidedPiece
 import java.util.EnumMap
+import java.util.EnumSet
 
-data class Board(
-    private val board: Array<Array<Piece?>> =
-        Array(Rank.entries.size) {
-            Array(File.entries.size) { null }
-        },
-) : IBoard {
-    // Useful to keep track of, as we use this often in checking move validity
-    private val pieces: EnumMap<Side, EnumMap<Piece, HashSet<Locus>>> = EnumMap(Side::class.java)
+data class Board(private val board: Array<SidedPiece?> = arrayOfNulls(64)) : IBoard {
+    private val pieces: EnumMap<SidedPiece, EnumSet<Locus>> = EnumMap(SidedPiece::class.java)
 
     init {
-        Side.entries.forEach { side ->
-            pieces[side] = EnumMap(Piece::class.java)
-            Piece.entries.forEach { piece ->
-                pieces[side]!![piece] = HashSet()
-            }
+        SidedPiece.entries.forEach { sidedPiece ->
+            pieces[sidedPiece] = EnumSet.noneOf(Locus::class.java)
         }
     }
 
     override fun from(other: IBoard): Board = apply {
-        Locus.all {
-            board[it.rank.dec()][it.file.dec()] = other.at(it.file, it.rank)
+        Locus.entries.forEach { locus ->
+            val piece = other.at(locus)
+            val side = Side.entries.firstOrNull { other.has(it, locus) }
+
+            board[locus.ordinal] = if (piece != null && side != null) {
+                SidedPiece.of(side, piece)
+            } else null
         }
-        Side.entries.forEach { side ->
-            Piece.entries.forEach { piece ->
-                pieces[side]!![piece]!!.clear()
-                pieces[side]!![piece]!!.addAll(other.pieces(side,piece))
-            }
+
+        SidedPiece.entries.forEach { sidedPiece ->
+            val targetSet = pieces[sidedPiece]!!
+            targetSet.clear()
+            targetSet.addAll(other.pieces(sidedPiece.side, sidedPiece.piece))
         }
     }
 
     override fun add(piece: Piece, side: Side, at: Locus) {
         assert(isEmpty(at))
-
-        board[at.rank.dec()][at.file.dec()] = piece
-        pieces[side]!![piece]!!.add(at)
+        val sidedPiece = SidedPiece.of(side, piece)
+        board[at.ordinal] = sidedPiece
+        pieces[sidedPiece]!!.add(at)
     }
 
     override fun remove(at: Locus): Piece? {
-        val removed = board[at.rank.dec()][at.file.dec()]
-        board[at.rank.dec()][at.file.dec()] = null
-        removed?.let {
-            Side.entries.forEach {
-                pieces[it]!![removed]!!.remove(at)
-            }
-        }
-        return removed
+        val removedSidedPiece = board[at.ordinal] ?: return null
+        board[at.ordinal] = null
+
+        pieces[removedSidedPiece]!!.remove(at)
+        return removedSidedPiece.piece
     }
 
     override fun forEach(action: (Piece, Locus) -> Unit) {
-        Locus.all { loc ->
-            board[loc.rank.dec()][loc.file.dec()]?.let { action(it, loc) }
+        Locus.entries.forEach { locus ->
+            board[locus.ordinal]?.let { action(it.piece, locus) }
         }
     }
 
     override fun forEachPiece(turn: Side, action: (Piece, Locus) -> Unit) {
-        pieces[turn]!!.forEach { entry ->
-            entry.value.forEach { locus ->
-                action(entry.key, locus)
+        SidedPiece.entries.filter { it.side == turn }.forEach { sidedPiece ->
+            pieces[sidedPiece]!!.forEach { locus ->
+                action(sidedPiece.piece, locus)
             }
         }
     }
 
     override fun has(piece: Piece, side: Side, at: Locus): Boolean =
-        pieces[side]!![piece]!!.contains(at)
+        pieces[SidedPiece.of(side, piece)]!!.contains(at)
 
-    override fun has(side: Side, at: Locus): Boolean =
-        Piece.entries.any { pieces[side]!![it]!!.contains(at) }
+    override fun has(side: Side, at: Locus): Boolean = board[at.ordinal]?.side == side
 
     override fun has(side: Side, action: (Piece, Locus) -> Boolean): Boolean {
-        for (entry in pieces[side]!!) {
-            for (locus in entry.value) {
-                if (action(entry.key, locus)) {
-                    return true
-                }
-            }
+        return SidedPiece.entries.filter { it.side == side }.any { sidedPiece ->
+            pieces[sidedPiece]!!.any { locus -> action(sidedPiece.piece, locus) }
         }
-        return false
     }
 
-    override fun king(side: Side): Locus? = pieces[side]!![Piece.King]!!.firstOrNull()
-
-    override fun at(at: Locus): Piece? = at(at.file, at.rank)
-
-    override fun at(file: File, rank: Rank): Piece? = board[rank.dec()][file.dec()]
-
-    override fun pieces(side: Side, piece: Piece): Set<Locus> = pieces[side]!![piece]!!
-
-    override fun isEmpty(at: Locus): Boolean = isEmpty(at.file, at.rank)
-
-    override fun isEmpty(file: File, rank: Rank): Boolean = board[rank.dec()][file.dec()] == null
-
+    override fun king(side: Side): Locus? = pieces[SidedPiece.of(side, Piece.King)]!!.firstOrNull()
+    override fun at(at: Locus): Piece? = board[at.ordinal]?.piece
+    override fun at(file: File, rank: Rank): Piece? = board[lookup[rank.ordinal][file.ordinal].ordinal]?.piece
+    override fun pieces(side: Side, piece: Piece): Set<Locus> = pieces[SidedPiece.of(side, piece)]!!
+    override fun isEmpty(at: Locus): Boolean = board[at.ordinal] == null
+    override fun isEmpty(file: File, rank: Rank): Boolean = board[lookup[rank.ordinal][file.ordinal].ordinal] == null
     override fun move(from: Locus, to: Locus, turn: Side): Piece? {
         assert(!isEmpty(from))
         assert(isEmpty(to) || has(turn.other(), to))
 
-        val captured = board[to.rank.dec()][to.file.dec()]
-        board[to.rank.dec()][to.file.dec()] = board[from.rank.dec()][from.file.dec()]
-        board[from.rank.dec()][from.file.dec()] = null
-        Piece.entries.forEach { piece ->
-            if (pieces[turn]!![piece]!!.contains(from)) {
-                pieces[turn]!![piece]!!.remove(from)
-                pieces[turn]!![piece]!!.add(to)
-            }
+        val movingSidedPiece = board[from.ordinal]!!
+        val capturedSidedPiece = board[to.ordinal]
+
+        board[to.ordinal] = movingSidedPiece
+        board[from.ordinal] = null
+
+        pieces[movingSidedPiece]!!.remove(from)
+        pieces[movingSidedPiece]!!.add(to)
+
+        capturedSidedPiece?.let {
+            pieces[it]!!.remove(to)
         }
-        captured?.let {
-            if (pieces[turn.other()]!![it]!!.contains(to)) {
-                pieces[turn.other()]!![it]!!.remove(to)
-            }
-        }
-        return captured
+
+        return capturedSidedPiece?.piece
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
-
         other as Board
-
-        if (!board.contentDeepEquals(other.board)) return false
-        if (pieces != other.pieces) return false
-
-        return true
+        return board.contentEquals(other.board) && pieces == other.pieces
     }
 
     override fun hashCode(): Int {
-        var result = board.contentDeepHashCode()
+        var result = board.contentHashCode()
         result = 31 * result + pieces.hashCode()
         return result
+    }
+
+    companion object {
+        private val lookup: Array<Array<Locus>> = Array(Rank.entries.size) { r ->
+            Array(File.entries.size) { f ->
+                Locus.entries.first { it.rank.ordinal == r && it.file.ordinal == f }
+            }
+        }
     }
 }

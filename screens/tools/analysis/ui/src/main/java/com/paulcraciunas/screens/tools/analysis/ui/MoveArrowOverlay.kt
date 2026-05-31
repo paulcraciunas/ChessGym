@@ -20,37 +20,35 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
-import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
-import com.paulcraciunas.screens.tools.analysis.vm.MoveArrow
+import com.paulcraciunas.screens.tools.analysis.vm.AnalysisUiState
 import kotlin.math.atan2
 import kotlin.math.hypot
 
 @Composable
 internal fun MoveArrowOverlay(
-    arrow: MoveArrow?,
+    move: AnalysisUiState.EngineData.SuggestedMove?,
     orientation: BoardOrientation,
     modifier: Modifier = Modifier,
     color: Color = Design.colors.ink,
 ) {
-    if (arrow == null) return
+    if (move == null) return
 
     val tipVector = ImageVector.vectorResource(id = R.drawable.line_end_tip)
     val bodyVector = ImageVector.vectorResource(id = R.drawable.line_body)
     val tipPainter = rememberVectorPainter(image = tipVector)
     val bodyPainter = rememberVectorPainter(image = bodyVector)
 
-    val indices = remember(arrow, orientation) {
+    val indices = remember(move, orientation) {
         object {
-            val fromFile = fileIndex(arrow.from.file.ordinal, orientation)
-            val fromRank = rankIndex(arrow.from.rank.ordinal, orientation)
-            val toFile = fileIndex(arrow.to.file.ordinal, orientation)
-            val toRank = rankIndex(arrow.to.rank.ordinal, orientation)
+            val fromFile = fileIndex(move.from.file.ordinal, orientation)
+            val fromRank = rankIndex(move.from.rank.ordinal, orientation)
+            val toFile = fileIndex(move.to.file.ordinal, orientation)
+            val toRank = rankIndex(move.to.rank.ordinal, orientation)
         }
     }
 
@@ -158,10 +156,7 @@ private fun MoveArrowWhitePreview() {
     ChessGymTheme {
         Box(modifier = Modifier.size(300.dp)) {
             MoveArrowOverlay(
-                arrow = MoveArrow(
-                    from = Locus(File.e, Rank.`2`),
-                    to = Locus(File.e, Rank.`4`)
-                ),
+                move = AnalysisUiState.EngineData.SuggestedMove(from = Locus.e2, to = Locus.e4),
                 orientation = BoardOrientation.White
             )
         }
@@ -174,10 +169,7 @@ private fun MoveArrowKnightPreview() {
     ChessGymTheme {
         Box(modifier = Modifier.size(300.dp)) {
             MoveArrowOverlay(
-                arrow = MoveArrow(
-                    from = Locus(File.g, Rank.`1`),
-                    to = Locus(File.f, Rank.`3`)
-                ),
+                move = AnalysisUiState.EngineData.SuggestedMove(from = Locus.g1, to = Locus.f3),
                 orientation = BoardOrientation.White,
                 color = Color.Green
             )

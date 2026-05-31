@@ -4,9 +4,6 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -20,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.design.theme.Design
 
@@ -40,7 +38,7 @@ fun PrimaryButton(
         modifier = modifier.height(Design.dimensions.sizes.primaryButton),
         enabled = enabled,
         shape = Design.shapes.button,
-        border = if (style == PrimaryButtonStyle.Clear) borderSoft() else null,
+        border = if (style == PrimaryButtonStyle.Clear) Design.colors.softBorderStroke else null,
         colors = ButtonDefaults.buttonColors(
             containerColor = style.containerColor(),
             contentColor = style.contentColor(),
@@ -95,7 +93,7 @@ fun PlayButton(
         text = stringResource(textId),
         onClick = onClick,
         modifier = modifier,
-        leadingIcon = Icons.Filled.PlayArrow
+        leadingIcon = ImageVector.vectorResource(id = R.drawable.play_icon),
     )
 }
 
@@ -109,7 +107,7 @@ fun RefreshButton(
         text = stringResource(textId),
         onClick = onClick,
         modifier = modifier,
-        leadingIcon = Icons.Filled.Refresh
+        leadingIcon = ImageVector.vectorResource(id = R.drawable.retry_icon),
     )
 }
 
@@ -125,7 +123,7 @@ fun OutlineSegmentButton(
         onClick = onClick,
         modifier = modifier.height(Design.dimensions.sizes.outlineButton),
         shape = Design.shapes.buttonOutline,
-        border = if (selected) borderPrimary() else borderSoft(),
+        border = if (selected) Design.colors.primaryBorderStroke else Design.colors.softBorderStroke,
         colors = ButtonDefaults.outlinedButtonColors(
             containerColor = if (selected) Design.colors.primarySoft else Design.colors.surface,
             contentColor = if (selected) Design.colors.primary else Design.colors.inkSoft,

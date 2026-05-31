@@ -7,15 +7,19 @@ import com.paulcraciunas.domain.api.puzzles.OnPuzzleRushComplete
 import com.paulcraciunas.domain.api.puzzles.PuzzleRushResult
 import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.Side
-import com.paulcraciunas.game.logic.api.board.loc
+import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.impl.RealGameFactory
 import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
 import com.paulcraciunas.user.api.FakeUserRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestDispatcher
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -38,6 +42,8 @@ internal class PuzzleRushViewModelTest {
     private val getPuzzleFen = FakeGetPuzzleFen()
     private val appSettingsRepository = FakeAppSettingsRepository()
 
+    private lateinit var underTest: PuzzleRushViewModel
+
     @BeforeEach
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
@@ -54,14 +60,14 @@ internal class PuzzleRushViewModelTest {
         puzzleSeries.enqueue(buildStandardPuzzle())
 
         // When
-        val underTest = buildVm()
+        buildVm()
 
         // Then
         assertTrue(underTest.uiState.value is PuzzleRushUiState.Ready)
         (underTest.uiState.value as PuzzleRushUiState.Ready).apply {
             assertEquals(DEFAULT_RATING, data.rating)
             assertEquals(Side.BLACK, data.player)
-            assertEquals(PuzzleRushViewModel.DURATION_SECONDS, timeRemainingSeconds)
+            assertEquals(PuzzleRushViewModel.TOTAL_RUSH_DURATION_SECONDS, timeRemainingSeconds)
         }
     }
 
@@ -70,7 +76,7 @@ internal class PuzzleRushViewModelTest {
         // Given - no puzzles enqueued
 
         // When
-        val underTest = buildVm()
+        buildVm()
 
         // Then
         assertTrue(underTest.uiState.value is PuzzleRushUiState.Failed)
@@ -82,7 +88,7 @@ internal class PuzzleRushViewModelTest {
         puzzleSeries.withFailure(RuntimeException("boom"))
 
         // When
-        val underTest = buildVm()
+        buildVm()
 
         // Then
         assertTrue(underTest.uiState.value is PuzzleRushUiState.Failed)
@@ -92,10 +98,10 @@ internal class PuzzleRushViewModelTest {
     fun `GIVEN ready state WHEN onSquareClicked THEN timer starts and state becomes playing`() = runTest {
         // Given
         puzzleSeries.enqueue(buildStandardPuzzle())
-        val underTest = buildVm()
+        buildVm()
 
         // When - click on player's piece to start the rush
-        underTest.onSquareClicked("e7".loc())
+        underTest.onSquareClicked(Locus.e7)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
@@ -108,18 +114,18 @@ internal class PuzzleRushViewModelTest {
         // Given
         puzzleSeries.enqueue(buildStandardPuzzle())
         puzzleSeries.enqueue(buildStandardPuzzle(rating = 1250))
-        val underTest = buildVm()
+        buildVm()
 
         // Start the rush
-        underTest.onSquareClicked("e7".loc())
+        underTest.onSquareClicked(Locus.e7)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // When - make correct moves to complete puzzle
-        underTest.onSquareClicked("e5".loc()) // Make correct move (e7-e5)
+        underTest.onSquareClicked(Locus.e5) // Make correct move (e7-e5)
         testDispatcher.scheduler.advanceUntilIdle()
-        underTest.onSquareClicked("b8".loc()) // Make correct move (e7-e5)
+        underTest.onSquareClicked(Locus.b8) // Make correct move (e7-e5)
         testDispatcher.scheduler.advanceUntilIdle()
-        underTest.onSquareClicked("c6".loc()) // Make correct move (e7-e5)
+        underTest.onSquareClicked(Locus.c6) // Make correct move (e7-e5)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then - puzzle should have progressed, results should have one entry
@@ -132,14 +138,14 @@ internal class PuzzleRushViewModelTest {
     fun `GIVEN playing state WHEN wrong move made THEN rush finishes`() = runTest {
         // Given
         puzzleSeries.enqueue(buildStandardPuzzle())
-        val underTest = buildVm()
+        buildVm()
 
         // Start the rush
-        underTest.onSquareClicked("e7".loc())
+        underTest.onSquareClicked(Locus.e7)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // When - make wrong move
-        underTest.onSquareClicked("e6".loc()) // Wrong move (e7-e6 instead of e7-e5)
+        underTest.onSquareClicked(Locus.e6) // Wrong move (e7-e6 instead of e7-e5)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then - rush should be finished
@@ -154,10 +160,10 @@ internal class PuzzleRushViewModelTest {
     fun `GIVEN playing state WHEN time expires THEN rush finishes`() = runTest {
         // Given
         puzzleSeries.enqueue(buildStandardPuzzle())
-        val underTest = buildVm()
+        buildVm()
 
         // Start the rush
-        underTest.onSquareClicked("e7".loc())
+        underTest.onSquareClicked(Locus.e7)
 
         // When - time expires
         countdownTimer.advanceUntilIdle() // make sure to move this before the scheduler, to take notice of effects
@@ -172,12 +178,12 @@ internal class PuzzleRushViewModelTest {
     fun `GIVEN rush finished WHEN onPuzzleRushComplete called THEN result is logged`() = runTest {
         // Given
         puzzleSeries.enqueue(buildStandardPuzzle())
-        val underTest = buildVm()
+        buildVm()
 
         // Start and fail the rush
-        underTest.onSquareClicked("e7".loc())
+        underTest.onSquareClicked(Locus.e7)
         testDispatcher.scheduler.advanceUntilIdle()
-        underTest.onSquareClicked("e6".loc()) // Wrong move
+        underTest.onSquareClicked(Locus.e6) // Wrong move
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
@@ -192,12 +198,12 @@ internal class PuzzleRushViewModelTest {
     fun `GIVEN finished state WHEN onPlayAgain THEN resets to ready`() = runTest {
         // Given
         puzzleSeries.enqueue(buildStandardPuzzle())
-        val underTest = buildVm()
+        buildVm()
 
         // Fail the rush
-        underTest.onSquareClicked("e7".loc())
+        underTest.onSquareClicked(Locus.e7)
         testDispatcher.scheduler.advanceUntilIdle()
-        underTest.onSquareClicked("e6".loc())
+        underTest.onSquareClicked(Locus.e6)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Prepare next game
@@ -216,12 +222,12 @@ internal class PuzzleRushViewModelTest {
     fun `GIVEN finished state WHEN onDismissSummary THEN dialog is hidden`() = runTest {
         // Given
         puzzleSeries.enqueue(buildStandardPuzzle())
-        val underTest = buildVm()
+        buildVm()
 
         // Fail the rush
-        underTest.onSquareClicked("e7".loc())
+        underTest.onSquareClicked(Locus.e7)
         testDispatcher.scheduler.advanceUntilIdle()
-        underTest.onSquareClicked("e6".loc())
+        underTest.onSquareClicked(Locus.e6)
         testDispatcher.scheduler.advanceUntilIdle()
 
         assertTrue((underTest.uiState.value as PuzzleRushUiState.Finished).showSummaryDialog)
@@ -239,17 +245,17 @@ internal class PuzzleRushViewModelTest {
         // Given
         puzzleSeries.enqueue(buildStandardPuzzle())
         puzzleSeries.enqueue(buildStandardPuzzle(rating = 1250))
-        val underTest = buildVm()
+        buildVm()
 
         // Start the rush
-        underTest.onSquareClicked("e7".loc())
+        underTest.onSquareClicked(Locus.e7)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Make correct moves to complete puzzle
-        underTest.onSquareClicked("e5".loc())
+        underTest.onSquareClicked(Locus.e5)
         testDispatcher.scheduler.advanceUntilIdle()
-        underTest.onSquareClicked("b8".loc())
-        underTest.onSquareClicked("c6".loc())
+        underTest.onSquareClicked(Locus.b8)
+        underTest.onSquareClicked(Locus.c6)
         // Don't advance -- simulating the animation delay period
 
         // Timer expires during animation
@@ -267,8 +273,8 @@ internal class PuzzleRushViewModelTest {
     fun `GIVEN no selection WHEN onSquareClicked THEN selection and moves are marked`() = runTest {
         // Given
         puzzleSeries.enqueue(buildStandardPuzzle())
-        val underTest = buildVm()
-        underTest.onSquareClicked("e7".loc()) // Start rush
+        buildVm()
+        underTest.onSquareClicked(Locus.e7) // Start rush
 
         // When
         testDispatcher.scheduler.advanceUntilIdle()
@@ -276,21 +282,21 @@ internal class PuzzleRushViewModelTest {
         // Then
         val playingState = underTest.uiState.value as PuzzleRushUiState.Playing
         val boardData = playingState.data.boardData
-        assertTrue(boardData.at("e7".loc()).piece?.isSelected == true)
+        assertTrue(boardData.at(Locus.e7).piece?.isSelected == true)
     }
 
-    private fun buildVm(): PuzzleRushViewModel {
-        val underTest = PuzzleRushViewModel(
+    private fun TestScope.buildVm() {
+        underTest = PuzzleRushViewModel(
             puzzleSeries = puzzleSeries,
             onPuzzleRushComplete = onPuzzleRushComplete,
             countdownTimer = countdownTimer,
             appSettingsRepository = appSettingsRepository,
             userRepository = userRepository,
             getPuzzleFen = getPuzzleFen,
-            puzzleInteractor = RealGameFactory().puzzleInteractor(),
         )
-        testDispatcher.scheduler.advanceUntilIdle()
-        return underTest
+        advanceUntilIdle()
+        observeUiState()
+        advanceUntilIdle()
     }
 
     private fun buildStandardPuzzle(
@@ -301,6 +307,12 @@ internal class PuzzleRushViewModelTest {
         .withRating(rating)
         .withMoves(moves)
         .buildPuzzle()
+
+    private fun TestScope.observeUiState() {
+        backgroundScope.launch(UnconfinedTestDispatcher(testDispatcher.scheduler)) {
+            underTest.uiState.collect {}
+        }
+    }
 
     private companion object {
         private const val DEFAULT_RATING: Int = 1200

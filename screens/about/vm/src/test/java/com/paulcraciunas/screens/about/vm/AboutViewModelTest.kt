@@ -2,25 +2,41 @@ package com.paulcraciunas.screens.about.vm
 
 import com.paulcraciunas.domain.api.billing.BillingUseCase
 import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class AboutViewModelTest {
+    private val testDispatcher = StandardTestDispatcher()
     private val appSettingsRepository = FakeAppSettingsRepository()
     private val billingUseCase = FakeBillingUseCase()
     private val underTest = AboutViewModel(
         appSettingsRepository = appSettingsRepository,
         billingUseCase = billingUseCase,
     )
+
+    @BeforeEach
+    fun setUp() {
+        Dispatchers.setMain(testDispatcher)
+    }
+    @AfterEach
+    fun tearDown() {
+        Dispatchers.resetMain()
+    }
 
     @Nested
     internal inner class Initialization {

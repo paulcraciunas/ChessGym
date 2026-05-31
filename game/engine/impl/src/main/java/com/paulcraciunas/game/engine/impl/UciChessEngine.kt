@@ -62,10 +62,7 @@ internal class UciChessEngine @Inject constructor(
         uci.execute<UciResponse.Ready>(UciCommand.IsReady)
     }
 
-    override fun analyzePosition(
-        fen: String,
-        multiPvCount: Int,
-    ): Flow<AnalysisResult> = flow {
+    override fun analyzePosition(fen: String, multiPvCount: Int): Flow<AnalysisResult> = flow {
         uci.sendCommand(UciCommand.Stop)
         uci.execute<UciResponse.Ready>(UciCommand.IsReady)
 

@@ -2,7 +2,6 @@ package com.paulcraciunas.screens.common.design.theme.walnut
 
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.screens.common.design.theme.ChessGymDimensions
-import kotlin.Float
 
 internal val WalnutDimensions = ChessGymDimensions(
     /** Spacing scale (4-pt base, biased to 8-pt rhythm). */
@@ -38,6 +37,7 @@ internal val WalnutDimensions = ChessGymDimensions(
         outlineButton = 40.dp,
         hitTarget = 48.dp,
         iconButton = 38.dp,
+        iconLarge = 32.dp,
         icon = 20.dp,
         iconSmall = 12.dp,
         avatar = 56.dp,
@@ -56,6 +56,8 @@ internal val WalnutDimensions = ChessGymDimensions(
         timeControl = 80.dp,
         progressRing = 80.dp,
         trophyTile = 138.dp,
+        chessBoardBorder = 14.dp,
+        evaluationBar = 30.dp,
     ),
     blur = ChessGymDimensions.Blur(
         default = 0.dp,

@@ -7,7 +7,7 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.impl.RealGameFactory
+import com.paulcraciunas.logic.builders.Builders
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -15,11 +15,10 @@ import org.junit.jupiter.api.assertDoesNotThrow
 
 internal class GenerateMoveThePieceBoardImplTest {
     private val randomFactory = SequentialRandomFactory()
-    private val gameFactory = RealGameFactory()
-    private val moveValidator = gameFactory.moveValidator()
+    private val moveValidator = Builders.moveValidator()
 
     private val underTest = GenerateMoveThePieceBoardImpl(
-        GenerateRandomLociImpl(randomFactory), randomFactory, gameFactory
+        GenerateRandomLociImpl(randomFactory), randomFactory
     )
 
     @Test

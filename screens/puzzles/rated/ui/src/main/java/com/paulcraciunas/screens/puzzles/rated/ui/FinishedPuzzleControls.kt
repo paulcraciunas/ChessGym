@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -15,7 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.design.components.ChessGymChip
-import com.paulcraciunas.screens.common.design.components.PrimaryPillButton
+import com.paulcraciunas.screens.common.design.components.PlayButton
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
@@ -52,11 +50,10 @@ internal fun FinishedPuzzleControls(
             )
         }
 
-        PrimaryPillButton(
-            text = stringResource(R.string.rated_puzzle_next_description),
+        PlayButton(
             onClick = onPlayNext,
             modifier = Modifier.testTag { RatedPuzzleScreenTags.Finished.PLAY_NEXT },
-            leadingIcon = Icons.Filled.PlayArrow,
+            textId = R.string.rated_puzzle_next_description,
         )
     }
 }

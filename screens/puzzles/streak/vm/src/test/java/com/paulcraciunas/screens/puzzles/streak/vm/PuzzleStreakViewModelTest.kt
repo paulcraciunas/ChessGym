@@ -6,11 +6,8 @@ import com.paulcraciunas.domain.api.puzzles.OnStreakComplete
 import com.paulcraciunas.domain.api.puzzles.OnStreakPuzzleComplete
 import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.Side
-import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.api.board.Rank
-import com.paulcraciunas.game.logic.api.board.loc
 import com.paulcraciunas.game.logic.impl.RealGameFactory
 import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
 import kotlinx.coroutines.Dispatchers
@@ -60,7 +57,7 @@ internal class PuzzleStreakViewModelTest {
             assertEquals(DEFAULT_RATING, data.rating)
             assertEquals(Side.BLACK, data.player)
             assertEquals(0, streakCount)
-            assertNull(promotion)
+            assertNull(data.promotion)
         }
     }
 
@@ -95,29 +92,30 @@ internal class PuzzleStreakViewModelTest {
         val underTest = buildVm(buildStandardPuzzle())
 
         // When
-        underTest.onSquareClicked("e7".loc())
+        underTest.onSquareClicked(Locus.e7)
+        testDispatcher.scheduler.runCurrent()
 
         // Then
         val playingState = underTest.uiState.value as PuzzleStreakUiState.Playing
-        val selectedSquare = playingState.data.boardData.at(Rank.`7`, File.e)
+        val selectedSquare = playingState.data.boardData.at(Locus.e7)
         assertEquals(true, selectedSquare.piece?.isSelected)
-        assertTrue(playingState.data.boardData.at(Rank.`5`, File.e).canMoveTo)
+        assertTrue(playingState.data.boardData.at(Locus.e5).canMoveTo)
     }
 
     @Test
     fun `GIVEN selected square WHEN onSquareClicked invalid target THEN selection is cleared`() = runTest {
         // Given
         val underTest = buildVm(buildStandardPuzzle())
-        underTest.onSquareClicked("e7".loc())
+        underTest.onSquareClicked(Locus.e7)
 
         // When
-        underTest.onSquareClicked("e4".loc())
+        underTest.onSquareClicked(Locus.e4)
 
         // Then
         val playingState = underTest.uiState.value as PuzzleStreakUiState.Playing
-        val selectedSquare = playingState.data.boardData.at(Rank.`7`, File.e)
+        val selectedSquare = playingState.data.boardData.at(Locus.e7)
         assertEquals(false, selectedSquare.piece?.isSelected)
-        assertFalse(playingState.data.boardData.at(Rank.`5`, File.e).canMoveTo)
+        assertFalse(playingState.data.boardData.at(Locus.e5).canMoveTo)
     }
 
     @Test
@@ -125,17 +123,18 @@ internal class PuzzleStreakViewModelTest {
         // Given
         appSettingsRepository.updateAutoPromote(false)
         val underTest = buildVm(buildPromotionPuzzle())
-        underTest.onSquareClicked("a7".loc())
+        underTest.onSquareClicked(Locus.a7)
 
         // When
-        underTest.onSquareClicked("a8".loc())
+        underTest.onSquareClicked(Locus.a8)
+        testDispatcher.scheduler.runCurrent()
 
         // Then
         val playingState = underTest.uiState.value as PuzzleStreakUiState.Playing
-        assertNotNull(playingState.promotion)
-        val promotion = playingState.promotion!!
+        assertNotNull(playingState.data.promotion)
+        val promotion = playingState.data.promotion!!
         assertTrue(promotion.showChooser)
-        assertEquals(Locus(File.a, Rank.`8`), promotion.at)
+        assertEquals(Locus.a8, promotion.at)
     }
 
     @Test
@@ -146,8 +145,8 @@ internal class PuzzleStreakViewModelTest {
         val underTest = buildVm(buildPromotionPuzzle())
         val nextPuzzle = buildStandardPuzzle(rating = 450)
         getStreakPuzzle.enqueue(GetStreakPuzzle.Data(nextPuzzle, currentStreakCount = 1))
-        underTest.onSquareClicked("a7".loc())
-        underTest.onSquareClicked("a8".loc())
+        underTest.onSquareClicked(Locus.a7)
+        underTest.onSquareClicked(Locus.a8)
 
         // When
         underTest.onPromote(Piece.Queen)
@@ -166,12 +165,13 @@ internal class PuzzleStreakViewModelTest {
 
         // When
         underTest.onHintRequested()
+        testDispatcher.scheduler.runCurrent()
 
         // Then
         val playingState = underTest.uiState.value as PuzzleStreakUiState.Playing
-        val selectedSquare = playingState.data.boardData.at("e7".loc())
+        val selectedSquare = playingState.data.boardData.at(Locus.e7)
         assertEquals(true, selectedSquare.piece?.isSelected)
-        assertTrue(playingState.data.boardData.at("e5".loc()).canMoveTo)
+        assertTrue(playingState.data.boardData.at(Locus.e5).canMoveTo)
     }
 
     @Test
@@ -183,8 +183,8 @@ internal class PuzzleStreakViewModelTest {
         getStreakPuzzle.enqueue(GetStreakPuzzle.Data(nextPuzzle, currentStreakCount = 1))
 
         // When - play the winning move
-        underTest.onSquareClicked("e8".loc())
-        underTest.onSquareClicked("e1".loc())
+        underTest.onSquareClicked(Locus.e8)
+        underTest.onSquareClicked(Locus.e1)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
@@ -200,8 +200,8 @@ internal class PuzzleStreakViewModelTest {
         onStreakComplete.streakCount = 0
 
         // When - play wrong move (not e7e5)
-        underTest.onSquareClicked("d7".loc())
-        underTest.onSquareClicked("d5".loc())
+        underTest.onSquareClicked(Locus.d7)
+        underTest.onSquareClicked(Locus.d5)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
@@ -218,8 +218,8 @@ internal class PuzzleStreakViewModelTest {
         val underTest = buildVm(buildStandardPuzzle(), currentStreakCount = 50)
 
         // When - play wrong move
-        underTest.onSquareClicked("d7".loc())
-        underTest.onSquareClicked("d5".loc())
+        underTest.onSquareClicked(Locus.d7)
+        underTest.onSquareClicked(Locus.d5)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
@@ -235,8 +235,8 @@ internal class PuzzleStreakViewModelTest {
         getStreakPuzzle.enqueue(GetStreakPuzzle.Data(newPuzzle, currentStreakCount = 0))
 
         // End the streak
-        underTest.onSquareClicked("d7".loc())
-        underTest.onSquareClicked("d5".loc())
+        underTest.onSquareClicked(Locus.d7)
+        underTest.onSquareClicked(Locus.d5)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // When
@@ -252,8 +252,8 @@ internal class PuzzleStreakViewModelTest {
     fun `GIVEN streak ended with summary shown WHEN onDismissSummary THEN hides summary`() = runTest {
         // Given
         val underTest = buildVm(buildStandardPuzzle())
-        underTest.onSquareClicked("d7".loc())
-        underTest.onSquareClicked("d5".loc())
+        underTest.onSquareClicked(Locus.d7)
+        underTest.onSquareClicked(Locus.d5)
         testDispatcher.scheduler.advanceUntilIdle()
 
         val endedStateBefore = underTest.uiState.value as PuzzleStreakUiState.StreakEnded
@@ -274,8 +274,8 @@ internal class PuzzleStreakViewModelTest {
         val underTest = buildVm(buildOneMoveWinPuzzle())
 
         // When - play the winning move
-        underTest.onSquareClicked("e8".loc())
-        underTest.onSquareClicked("e1".loc())
+        underTest.onSquareClicked(Locus.e8)
+        underTest.onSquareClicked(Locus.e1)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
@@ -291,8 +291,8 @@ internal class PuzzleStreakViewModelTest {
         val nextPuzzle = buildStandardPuzzle(rating = 500)
         getStreakPuzzle.enqueue(GetStreakPuzzle.Data(nextPuzzle, currentStreakCount = 1))
 
-        underTest.onSquareClicked("e8".loc())
-        underTest.onSquareClicked("e1".loc())
+        underTest.onSquareClicked(Locus.e8)
+        underTest.onSquareClicked(Locus.e1)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // When
@@ -315,8 +315,8 @@ internal class PuzzleStreakViewModelTest {
         getStreakPuzzle.enqueue(GetStreakPuzzle.Data(nextPuzzle, currentStreakCount = 1))
 
         // When - play the winning move
-        underTest.onSquareClicked("e8".loc())
-        underTest.onSquareClicked("e1".loc())
+        underTest.onSquareClicked(Locus.e8)
+        underTest.onSquareClicked(Locus.e1)
         testDispatcher.scheduler.advanceUntilIdle()
 
         // Then - should auto-advance without setting isAwaitingNextPuzzle
@@ -332,15 +332,15 @@ internal class PuzzleStreakViewModelTest {
         appSettingsRepository.updateAutoNextPuzzle(false)
         val underTest = buildVm(buildOneMoveWinPuzzle())
 
-        underTest.onSquareClicked("e8".loc())
-        underTest.onSquareClicked("e1".loc())
+        underTest.onSquareClicked(Locus.e8)
+        underTest.onSquareClicked(Locus.e1)
         testDispatcher.scheduler.advanceUntilIdle()
 
         val stateBefore = underTest.uiState.value as PuzzleStreakUiState.Playing
         assertTrue(stateBefore.isAwaitingNextPuzzle)
 
         // When - try to interact
-        underTest.onSquareClicked("e7".loc())
+        underTest.onSquareClicked(Locus.e7)
 
         // Then - state should not change
         val stateAfter = underTest.uiState.value as PuzzleStreakUiState.Playing
@@ -358,7 +358,6 @@ internal class PuzzleStreakViewModelTest {
             onStreakComplete = onStreakComplete,
             appSettingsRepository = appSettingsRepository,
             timer = timer,
-            puzzleInteractor = RealGameFactory().puzzleInteractor()
         )
         testDispatcher.scheduler.advanceUntilIdle()
         return underTest
@@ -377,9 +376,9 @@ internal class PuzzleStreakViewModelTest {
         .withId(PROMOTION_ID)
         .withRating(DEFAULT_RATING)
         .withTurn(Side.BLACK)
-        .withPiece(Piece.King, Side.WHITE, "e1".loc())
-        .withPiece(Piece.King, Side.BLACK, "e8".loc())
-        .withPiece(Piece.Pawn, Side.WHITE, "a7".loc())
+        .withPiece(Piece.King, Side.WHITE, Locus.e1)
+        .withPiece(Piece.King, Side.BLACK, Locus.e8)
+        .withPiece(Piece.Pawn, Side.WHITE, Locus.a7)
         .withMoves(listOf("e8e7", "a7a8q", "e7e6"))
         .buildPuzzle()
 
@@ -387,9 +386,9 @@ internal class PuzzleStreakViewModelTest {
         .withId(ONE_MOVE_WIN_ID)
         .withRating(DEFAULT_RATING)
         .withTurn(Side.BLACK)
-        .withPiece(Piece.King, Side.WHITE, "g3".loc())
-        .withPiece(Piece.King, Side.BLACK, "h1".loc())
-        .withPiece(Piece.Queen, Side.WHITE, "e8".loc())
+        .withPiece(Piece.King, Side.WHITE, Locus.g3)
+        .withPiece(Piece.King, Side.BLACK, Locus.h1)
+        .withPiece(Piece.Queen, Side.WHITE, Locus.e8)
         .withMoves(listOf("h1g1", "e8e1"))  // Black moves, white delivers checkmate
         .buildPuzzle()
 

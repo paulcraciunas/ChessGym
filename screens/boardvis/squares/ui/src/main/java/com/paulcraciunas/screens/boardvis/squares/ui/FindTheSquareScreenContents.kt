@@ -1,9 +1,7 @@
 package com.paulcraciunas.screens.boardvis.squares.ui
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
@@ -13,11 +11,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.global.resources.R
-import com.paulcraciunas.screens.boardvis.squares.vm.FindTheSquareScreenInteractor
 import com.paulcraciunas.screens.boardvis.squares.vm.FindTheSquareUiState
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
+import com.paulcraciunas.screens.data.SideSelection
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.design.components.SpacerSize
 import com.paulcraciunas.screens.common.design.components.Title
@@ -27,33 +26,25 @@ import com.paulcraciunas.screens.common.theme.ChessGymTheme
 @Composable
 internal fun FindTheSquareScreenContents(
     state: FindTheSquareUiState,
-    showBorders: Boolean,
-    enableAnimations: Boolean,
-    interactions: FindTheSquareScreenInteractor,
+    onSideSelected: (side: SideSelection) -> Unit,
+    onPlayClicked: () -> Unit,
+    onSquareClicked: (locus: Locus) -> Unit,
+    onPlayAgain: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
     ) {
-        Box(
-            modifier = Modifier.fillMaxWidth()
-                .aspectRatio(1f),
-            contentAlignment = Alignment.Center
+        ChessBoard(
+            board = state.boardData,
+            orientation = BoardOrientation.fromSide(state.orientation),
+            onClick = onSquareClicked,
         ) {
-            val orientation = BoardOrientation.fromSide(state.orientation)
-            ChessBoard(
-                board = state.boardData,
-                orientation = orientation,
-                onClick = interactions::onSquareClicked,
-                showBorders = showBorders,
-                enableAnimations = enableAnimations,
-                modifier = Modifier.fillMaxWidth()
-            )
-
             if (state is FindTheSquareUiState.Playing) {
                 SquareNameOverlay(
                     currentSquare = state.currentSquare,
-                    showError = state.showError
+                    showError = state.showError,
+                    modifier = Modifier.align(Alignment.Center),
                 )
             }
         }
@@ -63,8 +54,8 @@ internal fun FindTheSquareScreenContents(
                 FindTheSquareControls(
                     selectedSide = state.selectedSide,
                     isPlaying = false,
-                    onSideSelected = interactions::onSideSelected,
-                    onPlayClicked = interactions::onPlayClicked
+                    onSideSelected = onSideSelected,
+                    onPlayClicked = onPlayClicked
                 )
             }
             is FindTheSquareUiState.Playing -> PlayingControls(score = state.score)
@@ -73,7 +64,7 @@ internal fun FindTheSquareScreenContents(
                     score = state.score,
                     isNewHighScore = state.isNewHighScore,
                     previousHighScore = state.previousHighScore,
-                    onPlayAgain = interactions::onPlayAgain,
+                    onPlayAgain = onPlayAgain,
                     modifier = Modifier.padding(Design.dimensions.spacing.xxl)
                 )
             }
@@ -87,7 +78,9 @@ internal fun PlayingControls(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.fillMaxWidth().padding(Design.dimensions.spacing.xl),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(Design.dimensions.spacing.xl),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Title(
@@ -100,7 +93,6 @@ internal fun PlayingControls(
         )
     }
 }
-
 
 @Preview("PlayingControls", showBackground = true)
 @Preview("GameSummary - New High Score (dark)", uiMode = UI_MODE_NIGHT_YES)

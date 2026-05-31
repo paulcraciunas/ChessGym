@@ -1,10 +1,10 @@
 package com.paulcraciunas.game.logic.plies
 
 import com.paulcraciunas.game.logic.api.Side
+import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.impl.board.Board
 import com.paulcraciunas.game.logic.impl.plies.PromotionPly
-import com.paulcraciunas.game.logic.loc
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
@@ -19,8 +19,8 @@ internal class PromotionPlyTest {
     fun `WHEN executing a promotion THEN the pawn is removed and desired piece is added`() {
         val ply = PromotionPly(
             turn = Side.WHITE,
-            from = "c7".loc(),
-            to = "c8".loc(),
+            from = Locus.c7,
+            to = Locus.c8,
             captured = null,
             resultingPiece = Piece.Queen
         )
@@ -38,8 +38,8 @@ internal class PromotionPlyTest {
     fun `WHEN executing a promotion for black THEN the pawn is removed and desired piece is added`() {
         val ply = PromotionPly(
             turn = Side.BLACK,
-            from = "c2".loc(),
-            to = "c1".loc(),
+            from = Locus.c2,
+            to = Locus.c1,
             captured = null,
             resultingPiece = Piece.Queen
         )
@@ -56,8 +56,8 @@ internal class PromotionPlyTest {
     fun `GIVEN a piece to capture WHEN executing THEN captured piece is removed`() {
         val ply = PromotionPly(
             turn = Side.WHITE,
-            from = "c7".loc(),
-            to = "b8".loc(),
+            from = Locus.c7,
+            to = Locus.b8,
             captured = Piece.Bishop,
             resultingPiece = Piece.Queen
         )
@@ -75,8 +75,8 @@ internal class PromotionPlyTest {
     fun `GIVEN a piece to capture for black WHEN executing THEN captured piece is removed`() {
         val ply = PromotionPly(
             turn = Side.BLACK,
-            from = "c2".loc(),
-            to = "b1".loc(),
+            from = Locus.c2,
+            to = Locus.b1,
             captured = Piece.Bishop,
             resultingPiece = Piece.Queen
         )
@@ -94,8 +94,8 @@ internal class PromotionPlyTest {
     fun `GIVEN no promotion selected WHEN executing a promotion THEN assume a Queen`() {
         val ply = PromotionPly(
             turn = Side.BLACK,
-            from = "c2".loc(),
-            to = "b1".loc(),
+            from = Locus.c2,
+            to = Locus.b1,
             captured = Piece.Bishop,
         )
         on.add(piece = Piece.Pawn, side = Side.BLACK, at = ply.from)
@@ -113,8 +113,8 @@ internal class PromotionPlyTest {
     fun `WHEN pawn is not near promotion THEN exec throws`() {
         val ply = PromotionPly(
             turn = Side.WHITE,
-            from = "c6".loc(),
-            to = "c8".loc(),
+            from = Locus.c6,
+            to = Locus.c8,
             captured = null,
             resultingPiece = Piece.Queen
         )
@@ -127,8 +127,8 @@ internal class PromotionPlyTest {
     fun `WHEN black pawn is not near promotion THEN exec throws`() {
         val ply = PromotionPly(
             turn = Side.BLACK,
-            from = "c3".loc(),
-            to = "c1".loc(),
+            from = Locus.c3,
+            to = Locus.c1,
             captured = null,
             resultingPiece = Piece.Queen
         )
@@ -141,8 +141,8 @@ internal class PromotionPlyTest {
     fun `WHEN pawn is not promoting THEN exec throws`() {
         val ply = PromotionPly(
             turn = Side.WHITE,
-            from = "c6".loc(),
-            to = "c6".loc(),
+            from = Locus.c6,
+            to = Locus.c6,
             captured = null,
             resultingPiece = Piece.Queen
         )
@@ -155,8 +155,8 @@ internal class PromotionPlyTest {
     fun `GIVEN no promotion selected WHEN accepting THEN ply executes correctly`() {
         val ply = PromotionPly(
             turn = Side.WHITE,
-            from = "c7".loc(),
-            to = "c8".loc(),
+            from = Locus.c7,
+            to = Locus.c8,
             captured = null,
         )
         on.add(piece = Piece.Pawn, side = Side.WHITE, at = ply.from)
@@ -172,8 +172,8 @@ internal class PromotionPlyTest {
     fun `WHEN undoing a promotion THEN the desired piece is removed and the pawn is added back`() {
         val ply = PromotionPly(
             turn = Side.WHITE,
-            from = "c7".loc(),
-            to = "c8".loc(),
+            from = Locus.c7,
+            to = Locus.c8,
             captured = null,
             resultingPiece = Piece.Queen
         )
@@ -189,8 +189,8 @@ internal class PromotionPlyTest {
     fun `WHEN undoing a capture promotion THEN the captured piece is added back`() {
         val ply = PromotionPly(
             turn = Side.WHITE,
-            from = "c7".loc(),
-            to = "b8".loc(),
+            from = Locus.c7,
+            to = Locus.b8,
             captured = Piece.Bishop,
             resultingPiece = Piece.Queen
         )
@@ -206,8 +206,8 @@ internal class PromotionPlyTest {
     fun `WHEN promoting to a Pawn or King THEN throw`() {
         val ply = PromotionPly(
             turn = Side.WHITE,
-            from = "c7".loc(),
-            to = "b8".loc(),
+            from = Locus.c7,
+            to = Locus.b8,
             captured = Piece.Bishop,
         )
 
@@ -225,8 +225,8 @@ internal class PromotionPlyTest {
             "c8=Q",
             PromotionPly(
                 Side.WHITE,
-                "c7".loc(),
-                "c8".loc(),
+                Locus.c7,
+                Locus.c8,
                 resultingPiece = Piece.Queen
             ).algebraic()
         )
@@ -234,8 +234,8 @@ internal class PromotionPlyTest {
             "cxb1=B",
             PromotionPly(
                 turn = Side.BLACK,
-                from = "c2".loc(),
-                to = "b1".loc(),
+                from = Locus.c2,
+                to = Locus.b1,
                 captured = Piece.Rook,
                 resultingPiece = Piece.Bishop
             ).algebraic()

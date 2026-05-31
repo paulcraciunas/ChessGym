@@ -24,7 +24,6 @@ import com.paulcraciunas.screens.common.design.components.ChipTone
 import com.paulcraciunas.screens.common.design.components.Eyebrow
 import com.paulcraciunas.screens.common.design.components.RefreshButton
 import com.paulcraciunas.screens.common.design.components.Title
-import com.paulcraciunas.screens.common.design.components.borderSoft
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
@@ -41,7 +40,7 @@ internal fun GameSummary(
         modifier = modifier
             .fillMaxWidth()
             .clip(Design.shapes.card)
-            .border(borderSoft(), Design.shapes.card)
+            .border(Design.colors.softBorderStroke, Design.shapes.card)
             .background(Design.colors.surface)
             .padding(Design.dimensions.spacing.xgut)
             .testTag { FindTheSquareTags.GAME_SUMMARY },

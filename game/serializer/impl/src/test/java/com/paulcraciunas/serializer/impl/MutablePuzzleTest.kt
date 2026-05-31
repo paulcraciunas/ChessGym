@@ -2,9 +2,9 @@ package com.paulcraciunas.serializer.impl
 
 import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Puzzle
+import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.impl.RealGameFactory
-import com.paulcraciunas.game.logic.loc
 import com.paulcraciunas.serializer.impl.binary.BinaryAdapter
 import com.paulcraciunas.serializer.impl.binary.BinaryPuzzleReader
 import com.paulcraciunas.serializer.impl.binary.BinaryPuzzleWriter
@@ -33,7 +33,7 @@ internal class MutablePuzzleTest {
             moves.forEach { move ->
                 from = move.substring(0, 2)
                 to = move.substring(2, 4)
-                expectedMove = puzzle.ply(from.loc(), to.loc())
+                expectedMove = puzzle.ply(Locus.from(from)!!, Locus.from(to)!!)
                 // Verify promotions
                 if (move.length == 5) { // promotion
                     expectedMove?.promote(

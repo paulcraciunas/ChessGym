@@ -1,12 +1,11 @@
 package com.paulcraciunas.screens.home.ui
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,18 +17,19 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.domain.api.achievements.Achievement
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.achievements.tierName
-import com.paulcraciunas.screens.common.design.components.ChessGymHeroCard
+import com.paulcraciunas.screens.common.design.components.ChessGymElevatedCard
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.design.components.Eyebrow
 import com.paulcraciunas.screens.common.design.components.HairlineDivider
+import com.paulcraciunas.screens.common.design.components.IconSize
 import com.paulcraciunas.screens.common.design.components.SpacerSize
+import com.paulcraciunas.screens.common.design.components.TextBadge
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
@@ -43,34 +43,32 @@ internal fun UserProfileCard(
     ribbons: List<HomeUiState.Ribbon>,
     modifier: Modifier = Modifier,
 ) {
-    ChessGymHeroCard(
+    ChessGymElevatedCard(
         modifier = modifier
             .fillMaxWidth()
-            .testTag { HomeScreenTags.Profile.CARD }
+            .testTag { HomeScreenTags.Profile.CARD },
+        contentPadding = PaddingValues(Design.dimensions.spacing.xxxl),
+        verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.lg),
     ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.lg)
+        NameAndRating(userProfile = userProfile)
+        HairlineDivider(modifier = Modifier.fillMaxWidth())
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            NameAndRating(userProfile = userProfile)
-            HairlineDivider(modifier = Modifier.fillMaxWidth())
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Property(
-                    label = stringResource(R.string.home_label_activities),
-                    value = userProfile.totalActivities.toString(),
-                    modifier = Modifier.testTag { HomeScreenTags.Profile.ACTIVITIES }
-                )
-                Property(
-                    label = stringResource(R.string.home_label_member_since),
-                    value = userProfile.joinDate.format(formatter)
-                )
-            }
+            Property(
+                label = stringResource(R.string.home_label_activities),
+                value = userProfile.totalActivities.toString(),
+                modifier = Modifier.testTag { HomeScreenTags.Profile.ACTIVITIES }
+            )
+            Property(
+                label = stringResource(R.string.home_label_member_since),
+                value = userProfile.joinDate.format(formatter)
+            )
+        }
 
-            if (ribbons.isNotEmpty()) {
-                RibbonRow(ribbons = ribbons)
-            }
+        if (ribbons.isNotEmpty()) {
+            RibbonRow(ribbons = ribbons)
         }
     }
 }
@@ -84,20 +82,12 @@ private fun NameAndRating(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.Top
     ) {
-        Box(
-            modifier = Modifier
-                .size(Design.dimensions.sizes.avatar)
-                .clip(Design.shapes.circle)
-                .background(Design.colors.primary),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = userProfile.initial(),
-                style = Design.typography.headlineSmall,
-                color = Design.colors.onPrimary,
-                modifier = Modifier.testTag { HomeScreenTags.Profile.INITIALS }
-            )
-        }
+        TextBadge(
+            text = userProfile.initial(),
+            size = IconSize.XLarge,
+            textStyle = Design.typography.displaySmall,
+            modifier = Modifier.testTag { HomeScreenTags.Profile.INITIALS }
+        )
         ChessGymSpacer(size = SpacerSize.LARGE)
         Column(modifier = Modifier.weight(1f)) {
             ChessGymSpacer(size = SpacerSize.SMALL)
@@ -140,7 +130,7 @@ private fun NameAndRating(
 internal fun Property(
     label: String,
     value: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier,

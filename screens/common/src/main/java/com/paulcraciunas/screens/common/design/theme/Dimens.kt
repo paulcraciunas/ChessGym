@@ -49,6 +49,7 @@ data class ChessGymDimensions(
         val outlineButton: Dp,
         val hitTarget: Dp,
         val iconButton: Dp,
+        val iconLarge: Dp,
         val icon: Dp,
         val iconSmall: Dp,
         val avatar: Dp,
@@ -67,6 +68,8 @@ data class ChessGymDimensions(
         val timeControl: Dp,
         val progressRing: Dp,
         val trophyTile: Dp,
+        val chessBoardBorder: Dp,
+        val evaluationBar: Dp,
     )
 
     @Immutable

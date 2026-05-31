@@ -1,7 +1,6 @@
 package com.paulcraciunas.screens.tools.analysis.ui
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,129 +8,113 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import com.paulcraciunas.screens.common.design.theme.Design
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.paulcraciunas.game.engine.api.EngineLine
-import com.paulcraciunas.game.engine.api.EngineMove
-import com.paulcraciunas.game.engine.api.Evaluation
-import com.paulcraciunas.game.engine.api.UciMoveParser
-import com.paulcraciunas.game.logic.api.Side
-import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.global.resources.R
-
-import com.paulcraciunas.screens.common.AppBar
-
+import com.paulcraciunas.screens.common.ChildAppBar
+import com.paulcraciunas.screens.common.LocalUiSettings
+import com.paulcraciunas.screens.common.UiSettings
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
 import com.paulcraciunas.screens.common.controls.CapturedPieces
 import com.paulcraciunas.screens.common.controls.MoveNavigationControls
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.dialogs.PromotionDialog
-import com.paulcraciunas.screens.common.previews.SampleBoardViewData
+import com.paulcraciunas.screens.common.previews.PreviewData
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
-import com.paulcraciunas.screens.tools.analysis.vm.AnalysisScreenInteractor
 import com.paulcraciunas.screens.tools.analysis.vm.AnalysisUiState
-import com.paulcraciunas.screens.tools.analysis.vm.MoveArrow
-import com.paulcraciunas.screens.tools.analysis.vm.StubAnalysisScreenInteractor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AnalysisScreen(
     uiState: AnalysisUiState,
-    showBorders: Boolean,
-    highlightLegalMoves: Boolean,
-    enableAnimations: Boolean,
     onNavigateBack: () -> Unit,
-    interactions: AnalysisScreenInteractor,
     modifier: Modifier = Modifier,
+    onSquareClicked: (locus: Locus) -> Unit = {},
+    onPromote: (to: Piece) -> Unit = {},
+    onJumpToStart: () -> Unit = {},
+    onPreviousMove: () -> Unit = {},
+    onNextMove: () -> Unit = {},
+    onJumpToEnd: () -> Unit = {},
 ) {
-    val bgColor = Design.colors.primarySoft
     Scaffold(
-        topBar = {
-            AppBar(
-                title = stringResource(R.string.tools_analysis_title),
-                navButton = { Back(onClick = onNavigateBack) },
-            )
-        },
-        modifier = modifier.testTag { AnalysisScreenTags.SCREEN }
+        topBar = { ChildAppBar(onBack = onNavigateBack, title = stringResource(R.string.tools_analysis_title)) },
+        containerColor = Design.colors.primarySoft,
+        modifier = modifier.testTag { AnalysisScreenTags.SCREEN },
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
-                .background(bgColor),
+                .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            CapturedPieces(
-                capturedPieces = uiState.captured[uiState.playerSide.other()]!!,
-                side = uiState.playerSide,
-                modifier = Modifier.fillMaxWidth(),
-            )
+            val data = uiState.data
+            val orientation = BoardOrientation.fromSide(data.player)
+            CapturedPieces(capturedPieces = data.captured.byOpponent, side = uiState.data.player, modifier = Modifier.fillMaxWidth())
             ChessBoard(
-                board = uiState.boardData,
-                orientation = BoardOrientation.fromSide(uiState.playerSide),
-                onClick = interactions::onSquareClicked,
-                showBorders = showBorders,
-                highlightLegalMoves = highlightLegalMoves,
-                enableAnimations = enableAnimations,
-                modifier = Modifier.fillMaxWidth(),
+                board = data.boardData,
+                orientation = orientation,
+                onClick = onSquareClicked,
+                modifier = Modifier.fillMaxWidth()
             ) {
                 MoveArrowOverlay(
-                    arrow = uiState.topMoveArrow,
-                    orientation = BoardOrientation.fromSide(uiState.playerSide),
+                    move = uiState.engineData?.topMove,
+                    orientation = orientation,
                     modifier = Modifier
                         .matchParentSize()
                         .let { mod ->
-                            if (showBorders) mod.padding(Design.dimensions.spacing.xl) else mod
+                            if (LocalUiSettings.current.showBorders) mod.padding(Design.dimensions.spacing.xl) else mod
                         },
                 )
             }
             CapturedPieces(
-                capturedPieces = uiState.captured[uiState.playerSide]!!,
-                side = uiState.playerSide.other(),
-                modifier = Modifier.fillMaxWidth(),
+                capturedPieces = uiState.data.captured.byPlayer,
+                side = uiState.data.player.other(),
+                modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(Design.dimensions.spacing.sm))
             MoveNavigationControls(
                 canGoBack = uiState.canNavigateBack,
                 canGoForward = uiState.canNavigateForward,
-                onJumpToStart = interactions::onJumpToStart,
-                onPreviousMove = interactions::onPreviousMove,
-                onNextMove = interactions::onNextMove,
-                onJumpToEnd = interactions::onJumpToEnd,
+                onJumpToStart = onJumpToStart,
+                onPreviousMove = onPreviousMove,
+                onNextMove = onNextMove,
+                onJumpToEnd = onJumpToEnd,
             )
             Spacer(modifier = Modifier.height(Design.dimensions.spacing.sm))
             EvaluationBar(
-                evaluation = uiState.evaluation,
-                depth = uiState.analysisDepth,
+                evaluation = uiState.engineData?.evaluation,
+                depth = uiState.engineData?.analysisDepth ?: 0,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = Design.dimensions.spacing.xxl)
                     .testTag { AnalysisScreenTags.EVALUATION_BAR },
             )
             Spacer(modifier = Modifier.height(Design.dimensions.spacing.sm))
-            EngineLines(
-                lines = uiState.engineLines,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .testTag { AnalysisScreenTags.ENGINE_LINES },
-            )
+            if (uiState.engineData?.engineLines?.isEmpty() == false) {
+                EngineLines(
+                    lines = uiState.engineData?.engineLines!!,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag { AnalysisScreenTags.ENGINE_LINES },
+                )
+            }
             Spacer(modifier = Modifier.height(Design.dimensions.spacing.xxl))
         }
     }
 
-    uiState.pendingPromotion?.let {
+    uiState.data.promotion?.let {
         PromotionDialog(
-            side = uiState.playerSide,
-            onPieceChosen = interactions::onPromote,
+            side = uiState.data.player,
+            onPieceChosen = onPromote,
         )
     }
 }
@@ -141,39 +124,22 @@ fun AnalysisScreen(
 @Composable
 private fun AnalysisScreenStartingPreview() {
     ChessGymTheme {
-        AnalysisScreen(
-            uiState = AnalysisUiState(
-                boardData = SampleBoardViewData.startingBoard(),
-                evaluation = Evaluation.Centipawns(30),
-                analysisDepth = 15,
-                engineLines = listOf(
-                    EngineLine(1, Evaluation.Centipawns(30), sampleMoves("e2e4", "e7e5", "g1f3")),
-                    EngineLine(2, Evaluation.Centipawns(20), sampleMoves("d2d4", "d7d5")),
-                    EngineLine(3, Evaluation.Centipawns(12), sampleMoves("g1f3", "d7d5")),
-                ),
-                topMoveArrow = MoveArrow(
-                    from = Locus(
-                        File.e,
-                        Rank.`2`,
+        CompositionLocalProvider(LocalUiSettings provides UiSettings.default()) {
+            AnalysisScreen(
+                uiState = AnalysisUiState(
+                    data = PreviewData().whiteGameData(),
+                    engineData = AnalysisUiState.EngineData(
+                        evaluation = AnalysisUiState.EngineData.CurrentEvaluation(normalised = 0.6f, display = "+0.3"),
+                        engineLines = Previews().engineLines(),
+                        topMove = AnalysisUiState.EngineData.SuggestedMove(from = Locus.e2, to = Locus.e4),
+                        analysisDepth = 15,
                     ),
-                    to = Locus(
-                        File.e,
-                        Rank.`4`,
-                    ),
+                    canNavigateBack = true,
+                    canNavigateForward = false,
                 ),
-                captured = hashMapOf(
-                    Side.WHITE to listOf(Piece.Pawn, Piece.Knight, Piece.Pawn),
-                    Side.BLACK to listOf(Piece.Bishop, Piece.Pawn, Piece.Pawn, Piece.Rook)
-                ),
-                canNavigateBack = true,
-                canNavigateForward = false,
-            ),
-            showBorders = true,
-            highlightLegalMoves = true,
-            enableAnimations = false,
-            onNavigateBack = {},
-            interactions = StubAnalysisScreenInteractor(),
-        )
+                onNavigateBack = {},
+            )
+        }
     }
 }
 
@@ -181,23 +147,15 @@ private fun AnalysisScreenStartingPreview() {
 @Composable
 private fun AnalysisScreenEmptyPreview() {
     ChessGymTheme {
-        AnalysisScreen(
-            uiState = AnalysisUiState(
-                captured = hashMapOf(
-                    Side.WHITE to emptyList(),
-                    Side.BLACK to emptyList()
+        CompositionLocalProvider(LocalUiSettings provides UiSettings.default()) {
+            AnalysisScreen(
+                uiState = AnalysisUiState(
+                    data = PreviewData().whiteGameData(),
+                    canNavigateBack = true,
+                    canNavigateForward = false,
                 ),
-                canNavigateBack = true,
-                canNavigateForward = false,
-            ),
-            showBorders = false,
-            highlightLegalMoves = true,
-            enableAnimations = false,
-            onNavigateBack = {},
-            interactions = StubAnalysisScreenInteractor(),
-        )
+                onNavigateBack = {},
+            )
+        }
     }
 }
-
-private fun sampleMoves(vararg uciMoves: String): List<EngineMove> =
-    uciMoves.mapNotNull { UciMoveParser.parse(it) }

@@ -5,6 +5,9 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import com.paulcraciunas.chessgym.debug.DebugMenuProvider
+import com.paulcraciunas.chessgym.main.AccountEvent
+import com.paulcraciunas.chessgym.main.MainScreenDialog
+import com.paulcraciunas.chessgym.main.MainScreenViewModel
 import com.paulcraciunas.domain.api.achievements.FakeAchievementNotificationManager
 import com.paulcraciunas.domain.api.auth.DeleteAccountUseCase
 import com.paulcraciunas.domain.api.auth.SignOutUseCase

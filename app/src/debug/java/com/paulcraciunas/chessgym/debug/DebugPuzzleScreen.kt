@@ -27,21 +27,19 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.screens.common.AppBar
+import com.paulcraciunas.screens.common.ChildAppBar
 import com.paulcraciunas.screens.common.LoadingContent
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
 import com.paulcraciunas.screens.common.controls.CapturedPieces
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.dialogs.PromotionDialog
-import com.paulcraciunas.screens.common.model.PuzzleData
+import com.paulcraciunas.screens.data.BoardState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DebugPuzzleScreen(
     uiState: DebugPuzzleUiState,
-    showBorders: Boolean,
-    highlightLegalMoves: Boolean,
-    enableAnimations: Boolean,
     onNavigateBack: () -> Unit,
     onLoadPuzzle: (Int) -> Unit,
     onSquareClicked: (Locus) -> Unit,
@@ -50,42 +48,23 @@ fun DebugPuzzleScreen(
     var puzzleIdText by rememberSaveable { mutableStateOf("") }
 
     Scaffold(
-        topBar = {
-            AppBar(
-                title = "Debug: Load Puzzle",
-                navButton = { Back(onClick = onNavigateBack) },
-            )
-        },
+        topBar = { ChildAppBar(onBack = onNavigateBack, title = "Debug: Load Puzzle") },
+        containerColor = Design.colors.primarySoft,
+        modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
+            modifier = Modifier.padding(innerPadding),
         ) {
             when (uiState) {
-                is DebugPuzzleUiState.Loading -> {
-                    LoadingContent(modifier = Modifier.weight(1f))
-                }
-                is DebugPuzzleUiState.Error -> {
-                    ErrorContent(
-                        message = uiState.message,
-                        modifier = Modifier.weight(1f),
-                    )
-                }
-                is DebugPuzzleUiState.Idle -> {
-                    IdleContent(modifier = Modifier.weight(1f))
-                }
-                is DebugPuzzleUiState.BoardState -> {
-                    BoardContent(
-                        uiState = uiState,
-                        showBorders = showBorders,
-                        highlightLegalMoves = highlightLegalMoves,
-                        enableAnimations = enableAnimations,
-                        onSquareClicked = onSquareClicked,
-                        onPromote = onPromote,
-                        modifier = Modifier.weight(1f),
-                    )
-                }
+                is DebugPuzzleUiState.Loading -> LoadingContent(modifier = Modifier.weight(1f))
+                is DebugPuzzleUiState.Error -> ErrorContent(message = uiState.message, modifier = Modifier.weight(1f))
+                is DebugPuzzleUiState.Idle -> IdleContent(modifier = Modifier.weight(1f))
+                is DebugPuzzleUiState.WithBoard -> BoardContent(
+                    uiState = uiState,
+                    onSquareClicked = onSquareClicked,
+                    onPromote = onPromote,
+                    modifier = Modifier.weight(1f),
+                )
             }
             PuzzleIdInput(
                 puzzleIdText = puzzleIdText,
@@ -104,39 +83,22 @@ fun DebugPuzzleScreen(
 
 @Composable
 private fun BoardContent(
-    uiState: DebugPuzzleUiState.BoardState,
-    showBorders: Boolean,
-    highlightLegalMoves: Boolean,
-    enableAnimations: Boolean,
+    uiState: DebugPuzzleUiState.WithBoard,
     onSquareClicked: (Locus) -> Unit,
     onPromote: (Piece) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val data: PuzzleData = uiState.data
-    val isFinished = uiState is DebugPuzzleUiState.Finished
-
+    val data: BoardState = uiState.data
     Column(modifier = modifier) {
-        CapturedPieces(
-            capturedPieces = data.captured[data.player.other()]!!,
-            side = data.player,
-            modifier = Modifier.fillMaxWidth(),
-        )
+        CapturedPieces(capturedPieces = data.captured.byOpponent, side = data.player, modifier = Modifier.fillMaxWidth())
         ChessBoard(
             board = data.boardData,
             orientation = BoardOrientation.fromSide(data.player),
-            onClick = if (isFinished) { _ -> } else onSquareClicked,
-            showBorders = showBorders,
-            highlightLegalMoves = highlightLegalMoves,
-            enableAnimations = enableAnimations,
-            modifier = Modifier.fillMaxWidth(),
+            onClick = onSquareClicked,
+            modifier = Modifier.fillMaxWidth()
         )
-        CapturedPieces(
-            capturedPieces = data.captured[data.player]!!,
-            side = data.player.other(),
-            modifier = Modifier.fillMaxWidth(),
-        )
-
-        if (isFinished) {
+        CapturedPieces(capturedPieces = data.captured.byPlayer, side = data.player.other(), modifier = Modifier.fillMaxWidth())
+        if (uiState is DebugPuzzleUiState.Finished) {
             Text(
                 text = if (uiState.isSuccess) "Puzzle solved!" else "Puzzle failed",
                 style = MaterialTheme.typography.titleMedium,
@@ -151,7 +113,7 @@ private fun BoardContent(
             )
         }
 
-        if (uiState is DebugPuzzleUiState.Playing && uiState.promotion != null) {
+        if (uiState is DebugPuzzleUiState.Playing && data.promotion != null) {
             PromotionDialog(
                 side = data.player,
                 onPieceChosen = onPromote,

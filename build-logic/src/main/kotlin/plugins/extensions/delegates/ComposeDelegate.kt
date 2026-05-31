@@ -4,6 +4,7 @@ import common.libs
 import common.plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
+import plugins.android.configureComposeCompilerReports
 import plugins.android.includeCompose
 import plugins.extensions.android
 import kotlin.reflect.KProperty
@@ -29,7 +30,7 @@ internal class ComposeDelegate(private val project: Project) {
                         compose = true
                     }
                 }
-
+                configureComposeCompilerReports()
                 dependencies {
                     includeCompose(libs)
                 }

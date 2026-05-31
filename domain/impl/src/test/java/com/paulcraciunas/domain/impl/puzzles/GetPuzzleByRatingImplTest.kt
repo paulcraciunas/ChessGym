@@ -1,6 +1,7 @@
 package com.paulcraciunas.domain.impl.puzzles
 
 import com.paulcraciunas.puzzles.api.FakePuzzleRepository
+import com.paulcraciunas.serializer.api.Serializer
 import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -21,7 +22,7 @@ internal class GetPuzzleByRatingImplTest {
         // GIVEN
         val targetRating = 1500
         fakePuzzleRepository.withPuzzle(
-            fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            fen = Serializer.STARTING_FEN,
             moves = "e4",
             rating = targetRating
         )
@@ -39,7 +40,7 @@ internal class GetPuzzleByRatingImplTest {
         val targetRating = 1500
         val puzzleInRange = 1501
         fakePuzzleRepository.withPuzzle(
-            fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            fen = Serializer.STARTING_FEN,
             moves = "e4",
             rating = puzzleInRange
         )
@@ -57,7 +58,7 @@ internal class GetPuzzleByRatingImplTest {
         val targetRating = 1500
         val puzzleBelow = 1499
         fakePuzzleRepository.withPuzzle(
-            fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            fen = Serializer.STARTING_FEN,
             moves = "e4",
             rating = puzzleBelow
         )
@@ -75,7 +76,7 @@ internal class GetPuzzleByRatingImplTest {
         val targetRating = 1500
         val puzzleAbove = 1501
         fakePuzzleRepository.withPuzzle(
-            fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            fen = Serializer.STARTING_FEN,
             moves = "e4",
             rating = puzzleAbove
         )
@@ -93,7 +94,7 @@ internal class GetPuzzleByRatingImplTest {
         val targetRating = 1500
         val puzzleInExpandedRange = 1502
         fakePuzzleRepository.withPuzzle(
-            fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            fen = Serializer.STARTING_FEN,
             moves = "e4",
             rating = puzzleInExpandedRange
         )
@@ -111,7 +112,7 @@ internal class GetPuzzleByRatingImplTest {
         val targetRating = 1500
         val puzzleInFurtherRange = 1503
         fakePuzzleRepository.withPuzzle(
-            fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            fen = Serializer.STARTING_FEN,
             moves = "e4",
             rating = puzzleInFurtherRange
         )
@@ -129,7 +130,7 @@ internal class GetPuzzleByRatingImplTest {
         val targetRating = 1500
         val puzzleBelowInRange = 1498
         fakePuzzleRepository.withPuzzle(
-            fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            fen = Serializer.STARTING_FEN,
             moves = "e4",
             rating = puzzleBelowInRange
         )
@@ -147,7 +148,7 @@ internal class GetPuzzleByRatingImplTest {
         val targetRating = 1500
         val puzzleBelowInFurtherRange = 1497
         fakePuzzleRepository.withPuzzle(
-            fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            fen = Serializer.STARTING_FEN,
             moves = "e4",
             rating = puzzleBelowInFurtherRange
         )
@@ -176,7 +177,7 @@ internal class GetPuzzleByRatingImplTest {
         val targetRating = 400
         val puzzleAtMin = 400
         fakePuzzleRepository.withPuzzle(
-            fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            fen = Serializer.STARTING_FEN,
             moves = "e4",
             rating = puzzleAtMin
         )
@@ -194,7 +195,7 @@ internal class GetPuzzleByRatingImplTest {
         val targetRating = 2500
         val puzzleAtMax = 2500
         fakePuzzleRepository.withPuzzle(
-            fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            fen = Serializer.STARTING_FEN,
             moves = "e4",
             rating = puzzleAtMax
         )
@@ -236,12 +237,12 @@ internal class GetPuzzleByRatingImplTest {
         val secondPuzzle = 1499
 
         fakePuzzleRepository.withPuzzle(
-            fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            fen = Serializer.STARTING_FEN,
             moves = "e4",
             rating = firstPuzzle
         )
         fakePuzzleRepository.withPuzzle(
-            fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            fen = Serializer.STARTING_FEN,
             moves = "d4",
             rating = secondPuzzle
         )
@@ -263,7 +264,7 @@ internal class GetPuzzleByRatingImplTest {
 
         // No puzzle at 1500, 1501, 1502, but found at 1503
         fakePuzzleRepository.withPuzzle(
-            fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            fen = Serializer.STARTING_FEN,
             moves = "e4",
             rating = puzzleFoundAtExpansion
         )
@@ -296,7 +297,7 @@ internal class GetPuzzleByRatingImplTest {
         val targetRating = 1500
         val existingPuzzleRating = 1501
         fakePuzzleRepository.withPuzzle(
-            fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            fen = Serializer.STARTING_FEN,
             moves = "e4",
             rating = existingPuzzleRating
         )

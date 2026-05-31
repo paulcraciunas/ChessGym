@@ -5,15 +5,17 @@ plugins {
 androidLibrary {
     namespace = "com.paulcraciunas.screens.tools.analysis.vm"
     di = true
+    compose = true
 }
 
 dependencies {
     implementation(project(":domain:api"))
     implementation(project(":game:logic:api"))
+    implementation(project(":game:logic:builders"))
     implementation(project(":game:engine:api"))
     implementation(project(":game:serializer:api"))
     implementation(project(":game:serializer:di"))
-    implementation(project(":screens:common"))
+    implementation(project(":screens:data"))
     implementation(project(":settings:application:api"))
 
     implementation(libs.public.timber)

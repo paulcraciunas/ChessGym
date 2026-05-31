@@ -2,13 +2,10 @@ package com.paulcraciunas.game.logic.plies
 
 import com.paulcraciunas.game.logic.api.Ply
 import com.paulcraciunas.game.logic.api.Side
-import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.api.board.Rank
 import com.paulcraciunas.game.logic.impl.board.Board
 import com.paulcraciunas.game.logic.impl.plies.StandardPly
-import com.paulcraciunas.game.logic.loc
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -79,7 +76,7 @@ internal class StandardPlyTest {
     fun `WHEN serializing to algebraic notation THEN return correct string`() {
         assertEquals("Rc7", ply.algebraic())
         assertEquals("Qxf7", plyWithCapture.algebraic())
-        assertEquals("e4", StandardPly(Side.WHITE, Piece.Pawn, "e2".loc(), "e4".loc()).algebraic())
+        assertEquals("e4", StandardPly(Side.WHITE, Piece.Pawn, Locus.e2, Locus.e4).algebraic())
     }
 
     @Test
@@ -88,8 +85,8 @@ internal class StandardPlyTest {
             "exd5", StandardPly(
                 Side.WHITE,
                 Piece.Pawn,
-                "e4".loc(),
-                "d5".loc(),
+                Locus.e4,
+                Locus.d5,
                 captured = Piece.Pawn
             ).algebraic()
         )
@@ -101,8 +98,8 @@ internal class StandardPlyTest {
             "Nbd2", StandardPly(
                 Side.WHITE,
                 Piece.Knight,
-                "b1".loc(),
-                "d2".loc(),
+                Locus.b1,
+                Locus.d2,
                 disambiguate = Ply.Disambiguate.File
             ).algebraic()
         )
@@ -114,8 +111,8 @@ internal class StandardPlyTest {
             "R1xa7", StandardPly(
                 Side.WHITE,
                 Piece.Rook,
-                "a1".loc(),
-                "a7".loc(),
+                Locus.a1,
+                Locus.a7,
                 captured = Piece.Queen,
                 disambiguate = Ply.Disambiguate.Rank
             ).algebraic()
@@ -126,15 +123,15 @@ internal class StandardPlyTest {
         private val ply = StandardPly(
             turn = Side.WHITE,
             piece = Piece.Rook,
-            from = Locus(File.c, Rank.`3`),
-            to = Locus(File.c, Rank.`7`),
+            from = Locus.c3,
+            to = Locus.c7,
             captured = null
         )
         private val plyWithCapture = StandardPly(
             turn = Side.WHITE,
             piece = Piece.Queen,
-            from = Locus(File.f, Rank.`3`),
-            to = Locus(File.f, Rank.`7`),
+            from = Locus.f3,
+            to = Locus.f7,
             captured = Piece.Pawn
         )
     }

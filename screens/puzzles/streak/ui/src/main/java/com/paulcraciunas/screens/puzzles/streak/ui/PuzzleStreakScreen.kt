@@ -1,15 +1,6 @@
 package com.paulcraciunas.screens.puzzles.streak.ui
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,44 +13,51 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.paulcraciunas.game.logic.api.Side
+import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.global.resources.R
-import com.paulcraciunas.screens.common.AppBar
+import com.paulcraciunas.screens.common.AnimatedBoard
+import com.paulcraciunas.screens.common.AnimatedControls
+import com.paulcraciunas.screens.common.ChildAppBar
 import com.paulcraciunas.screens.common.FailedContent
 import com.paulcraciunas.screens.common.LoadingContent
+import com.paulcraciunas.screens.common.LocalUiSettings
+import com.paulcraciunas.screens.common.UiSettings
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
 import com.paulcraciunas.screens.common.controls.CapturedPieces
 import com.paulcraciunas.screens.common.controls.DefaultPuzzleControls
-import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.design.components.PrimaryButton
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.dialogs.AbandonConfirmationDialog
 import com.paulcraciunas.screens.common.dialogs.PromotionDialog
-import com.paulcraciunas.screens.common.model.PuzzleData
-import com.paulcraciunas.screens.common.previews.SampleBoardViewData
+import com.paulcraciunas.screens.common.previews.PreviewData
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
-import com.paulcraciunas.screens.puzzles.streak.vm.PuzzleStreakScreenInteractor
 import com.paulcraciunas.screens.puzzles.streak.vm.PuzzleStreakUiState
-import com.paulcraciunas.screens.puzzles.streak.vm.StubPuzzleStreakScreenInteractor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PuzzleStreakScreen(
     uiState: PuzzleStreakUiState,
-    showBorders: Boolean,
-    highlightLegalMoves: Boolean,
-    enableAnimations: Boolean,
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit = {},
-    interactions: PuzzleStreakScreenInteractor = StubPuzzleStreakScreenInteractor(),
+    onSquareClicked: (selection: Locus) -> Unit = {},
+    onPromote: (to: Piece) -> Unit = {},
+    onHintRequested: () -> Unit = {},
+    onAbandon: () -> Unit = {},
+    onAbandonConfirmed: () -> Unit = {},
+    onAbandonDismissed: () -> Unit = {},
+    onNewStreak: () -> Unit = {},
+    onNextPuzzle: () -> Unit = {},
+    onDismissSummary: () -> Unit = {},
 ) {
     val streakCount = when (uiState) {
         is PuzzleStreakUiState.Playing -> uiState.streakCount
@@ -68,104 +66,97 @@ fun PuzzleStreakScreen(
     }
     Scaffold(
         topBar = {
-            AppBar(
+            ChildAppBar(
                 title = stringResource(R.string.puzzle_mode_streak_title),
-                navButton = { Back(onClick = onNavigateBack) },
-                actions = { if (streakCount > 0) StreakCounter(count = streakCount) }
-            )
+                onBack = onNavigateBack,
+                actions = {
+                    if (streakCount > 0) StreakCounter(
+                        count = streakCount,
+                        modifier = Modifier.padding(horizontal = Design.dimensions.spacing.lg, vertical = Design.dimensions.spacing.sm)
+                    )
+                })
         },
+        containerColor = Design.colors.primarySoft,
         modifier = modifier.testTag { PuzzleStreakScreenTags.SCREEN },
     ) { innerPadding ->
+        val defaultModifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)
         when (uiState) {
-            is PuzzleStreakUiState.Loading -> {
-                LoadingContent(modifier = Modifier.fillMaxSize().padding(innerPadding))
-            }
-            is PuzzleStreakUiState.Failed -> {
-                FailedContent(modifier = Modifier.fillMaxSize().padding(innerPadding))
-            }
-            is PuzzleStreakUiState.BoardState -> {
-                PuzzleStreakContent(
-                    uiState = uiState,
-                    showBorders = showBorders,
-                    highlightLegalMoves = highlightLegalMoves,
-                    enableAnimations = enableAnimations,
-                    interactions = interactions,
-                    modifier = Modifier.background(Design.colors.primarySoft)
-                        .padding(innerPadding)
-                )
-            }
+            is PuzzleStreakUiState.Loading -> LoadingContent(modifier = defaultModifier)
+            is PuzzleStreakUiState.Failed -> FailedContent(modifier = defaultModifier)
+            is PuzzleStreakUiState.WithBoard -> PuzzleStreakContent(
+                uiState = uiState,
+                onSquareClicked = onSquareClicked,
+                onPromote = onPromote,
+                onHintRequested = onHintRequested,
+                onAbandon = onAbandon,
+                onAbandonConfirmed = onAbandonConfirmed,
+                onAbandonDismissed = onAbandonDismissed,
+                onNewStreak = onNewStreak,
+                onNextPuzzle = onNextPuzzle,
+                onDismissSummary = onDismissSummary,
+                modifier = defaultModifier,
+            )
         }
     }
 }
 
 @Composable
 private fun PuzzleStreakContent(
-    uiState: PuzzleStreakUiState.BoardState,
-    showBorders: Boolean,
-    highlightLegalMoves: Boolean,
-    enableAnimations: Boolean,
-    interactions: PuzzleStreakScreenInteractor,
+    uiState: PuzzleStreakUiState.WithBoard,
+    onSquareClicked: (selection: Locus) -> Unit,
+    onPromote: (to: Piece) -> Unit,
+    onHintRequested: () -> Unit,
+    onAbandon: () -> Unit,
+    onAbandonConfirmed: () -> Unit,
+    onAbandonDismissed: () -> Unit,
+    onNewStreak: () -> Unit,
+    onNextPuzzle: () -> Unit,
+    onDismissSummary: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val data = uiState.data
     val isShowingSolution = uiState is PuzzleStreakUiState.Playing && uiState.isShowingSolution
     val isAwaitingNext = uiState is PuzzleStreakUiState.Playing && uiState.isAwaitingNextPuzzle
-    val isBoardInteractive = !isShowingSolution && !isAwaitingNext
-    Column(
-        modifier = modifier.fillMaxSize()
-    ) {
-        CapturedPieces(
-            capturedPieces = data.captured[data.player.other()] ?: emptyList(),
-            side = data.player,
-            modifier = Modifier.fillMaxWidth()
-        )
-        ChessBoard(
-            board = data.boardData,
-            orientation = BoardOrientation.fromSide(data.player),
-            onClick = if (isBoardInteractive) interactions::onSquareClicked else { _ -> },
-            showBorders = showBorders,
-            highlightLegalMoves = highlightLegalMoves,
-            enableAnimations = enableAnimations,
-            modifier = Modifier.fillMaxWidth()
-        )
-        CapturedPieces(
-            capturedPieces = data.captured[data.player] ?: emptyList(),
-            side = data.player.other(),
-            modifier = Modifier.fillMaxWidth()
-        )
-        ChessGymSpacer()
-        AnimatedContent(
-            targetState = uiState is PuzzleStreakUiState.StreakEnded,
-            transitionSpec = {
-                if (enableAnimations) {
-                    (slideInVertically { height -> height } + fadeIn())
-                        .togetherWith(slideOutVertically { height -> -height } + fadeOut())
-                } else {
-                    EnterTransition.None togetherWith ExitTransition.None
-                }
-            },
-            label = "ControlsAnimation"
-        ) { isEnded ->
+    Column(modifier = modifier) {
+        CapturedPieces(capturedPieces = data.captured.byOpponent, side = data.player, modifier = Modifier.fillMaxWidth())
+        AnimatedBoard(
+            targetState = data,
+            contentKey = { it.id },
+        ) { puzzleData ->
+            ChessBoard(
+                board = puzzleData.boardData,
+                orientation = BoardOrientation.fromSide(puzzleData.player),
+                onClick = onSquareClicked,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+        CapturedPieces(capturedPieces = data.captured.byPlayer, side = data.player.other(), modifier = Modifier.fillMaxWidth())
+        AnimatedControls(targetState = uiState is PuzzleStreakUiState.StreakEnded) { isEnded ->
+            val controlsModifier = Modifier
+                .fillMaxWidth()
+                .padding(top = Design.dimensions.spacing.sm)
             if (isEnded && uiState is PuzzleStreakUiState.StreakEnded) {
                 StreakEndedControls(
                     finalStreakCount = uiState.finalStreakCount,
-                    onNewStreak = interactions::onNewStreak,
-                    modifier = Modifier.fillMaxWidth(),
+                    onNewStreak = onNewStreak,
+                    modifier = controlsModifier,
                 )
             } else if (uiState is PuzzleStreakUiState.Playing) {
                 if (isAwaitingNext) {
                     NextPuzzleControls(
                         streakCount = uiState.streakCount,
-                        onNextPuzzle = interactions::onNextPuzzle,
-                        modifier = Modifier.fillMaxWidth(),
+                        onNextPuzzle = onNextPuzzle,
+                        modifier = controlsModifier,
                     )
                 } else {
                     DefaultPuzzleControls(
                         hintEnabled = uiState.hintEnabled && !isShowingSolution,
                         toMove = data.player,
-                        onHintRequested = interactions::onHintRequested,
-                        onAbandonRequested = interactions::onAbandon,
-                        modifier = Modifier.fillMaxWidth(),
+                        onHintRequested = onHintRequested,
+                        onAbandonRequested = onAbandon,
+                        modifier = controlsModifier,
                         abandonEnabled = !isShowingSolution,
                     )
                 }
@@ -176,14 +167,14 @@ private fun PuzzleStreakContent(
         if (uiState is PuzzleStreakUiState.Playing && !isShowingSolution) {
             if (uiState.showAbandonDialog) {
                 AbandonConfirmationDialog(
-                    onConfirm = interactions::onAbandonConfirmed,
-                    onDismiss = interactions::onAbandonDismissed
+                    onConfirm = onAbandonConfirmed,
+                    onDismiss = onAbandonDismissed
                 )
             }
-            if (uiState.promotion != null) {
+            if (uiState.data.promotion != null) {
                 PromotionDialog(
                     side = data.player,
-                    onPieceChosen = interactions::onPromote
+                    onPieceChosen = onPromote
                 )
             }
         }
@@ -191,10 +182,9 @@ private fun PuzzleStreakContent(
             StreakSummaryDialog(
                 streakCount = uiState.finalStreakCount,
                 isNewHighScore = uiState.isNewHighScore,
-                onDismiss = interactions::onDismissSummary
+                onDismiss = onDismissSummary
             )
         }
-        ChessGymSpacer()
     }
 }
 
@@ -204,36 +194,22 @@ private fun NextPuzzleControls(
     onNextPuzzle: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(
+    Row(
         modifier = modifier
+            .fillMaxWidth()
             .padding(horizontal = Design.dimensions.spacing.xxl, vertical = Design.dimensions.spacing.sm),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    painter = painterResource(R.drawable.puzzle_streak_icon),
-                    contentDescription = null,
-                    tint = Design.colors.success,
-                    modifier = Modifier.size(Design.dimensions.sizes.icon)
-                )
-                ChessGymSpacer()
-                Text(
-                    text = streakCount.toString(),
-                    style = Design.typography.titleLarge,
-                    color = Design.colors.success,
-                )
-            }
-            PrimaryButton(
-                text = stringResource(R.string.puzzle_streak_next_puzzle),
-                onClick = onNextPuzzle,
-                modifier = Modifier.testTag { PuzzleStreakScreenTags.NEXT_PUZZLE },
-            )
-        }
+        StreakCounter(
+            count = streakCount,
+            tint = Design.colors.success
+        )
+        PrimaryButton(
+            text = stringResource(R.string.puzzle_streak_next_puzzle),
+            onClick = onNextPuzzle,
+            modifier = Modifier.testTag { PuzzleStreakScreenTags.NEXT_PUZZLE },
+        )
     }
 }
 
@@ -241,23 +217,23 @@ private fun NextPuzzleControls(
 private fun StreakCounter(
     count: Int,
     modifier: Modifier = Modifier,
+    tint: Color = Design.colors.primary,
 ) {
     Row(
-        modifier = modifier.padding(horizontal = Design.dimensions.spacing.lg, vertical = Design.dimensions.spacing.sm),
-        horizontalArrangement = Arrangement.Center,
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.sm),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             painter = painterResource(R.drawable.puzzle_streak_icon),
             contentDescription = null,
-            tint = Design.colors.primary,
+            tint = tint,
             modifier = Modifier.size(Design.dimensions.sizes.icon)
         )
-        ChessGymSpacer()
         Text(
             text = count.toString(),
             style = Design.typography.titleLarge,
-            color = Design.colors.primary,
+            color = tint,
             modifier = Modifier.testTag { PuzzleStreakScreenTags.STREAK_COUNTER }
         )
     }
@@ -268,26 +244,16 @@ private fun StreakCounter(
 @Composable
 private fun PlayingPreview() {
     ChessGymTheme {
-        PuzzleStreakScreen(
-            uiState = PuzzleStreakUiState.Playing(
-                data = PuzzleData(
-                    rating = 650,
-                    player = Side.WHITE,
-                    boardData = SampleBoardViewData.startingBoard(),
-                    captured = hashMapOf(
-                        Side.WHITE to listOf(Piece.Pawn, Piece.Knight),
-                        Side.BLACK to listOf(Piece.Bishop, Piece.Pawn)
-                    ),
+        CompositionLocalProvider(LocalUiSettings provides UiSettings.default()) {
+            PuzzleStreakScreen(
+                uiState = PuzzleStreakUiState.Playing(
+                    data = PreviewData().whitePuzzleData(),
+                    streakCount = 12,
+                    hintEnabled = true,
+                    showAbandonDialog = false,
                 ),
-                streakCount = 12,
-                hintEnabled = true,
-                showAbandonDialog = false,
-                promotion = null,
-            ),
-            showBorders = true,
-            highlightLegalMoves = true,
-            enableAnimations = true
-        )
+            )
+        }
     }
 }
 
@@ -296,54 +262,34 @@ private fun PlayingPreview() {
 @Composable
 private fun PuzzleEndedPreview() {
     ChessGymTheme {
-        PuzzleStreakScreen(
-            uiState = PuzzleStreakUiState.Playing(
-                data = PuzzleData(
-                    rating = 650,
-                    player = Side.WHITE,
-                    boardData = SampleBoardViewData.startingBoard(),
-                    captured = hashMapOf(
-                        Side.WHITE to listOf(Piece.Pawn, Piece.Knight),
-                        Side.BLACK to listOf(Piece.Bishop, Piece.Pawn)
-                    ),
+        CompositionLocalProvider(LocalUiSettings provides UiSettings.default()) {
+            PuzzleStreakScreen(
+                uiState = PuzzleStreakUiState.Playing(
+                    data = PreviewData().whitePuzzleData(),
+                    streakCount = 12,
+                    hintEnabled = true,
+                    isAwaitingNextPuzzle = true,
+                    showAbandonDialog = false,
                 ),
-                streakCount = 12,
-                hintEnabled = true,
-                isAwaitingNextPuzzle = true,
-                showAbandonDialog = false,
-                promotion = null,
-            ),
-            showBorders = true,
-            highlightLegalMoves = true,
-            enableAnimations = true
-        )
+            )
+        }
     }
 }
-
 
 @Preview
 @Preview("Dark mode", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 private fun StreakEndedPreview() {
     ChessGymTheme {
-        PuzzleStreakScreen(
-            uiState = PuzzleStreakUiState.StreakEnded(
-                data = PuzzleData(
-                    rating = 850,
-                    player = Side.BLACK,
-                    boardData = SampleBoardViewData.startingBoard(),
-                    captured = hashMapOf(
-                        Side.WHITE to listOf(Piece.Queen),
-                        Side.BLACK to listOf(Piece.Rook, Piece.Pawn, Piece.Pawn)
-                    ),
+        CompositionLocalProvider(LocalUiSettings provides UiSettings.default()) {
+            PuzzleStreakScreen(
+                uiState = PuzzleStreakUiState.StreakEnded(
+                    data = PreviewData().blackPuzzleData(),
+                    finalStreakCount = 15,
+                    isNewHighScore = false,
+                    showSummary = false,
                 ),
-                finalStreakCount = 15,
-                isNewHighScore = false,
-                showSummary = false,
-            ),
-            showBorders = true,
-            highlightLegalMoves = true,
-            enableAnimations = true
-        )
+            )
+        }
     }
 }

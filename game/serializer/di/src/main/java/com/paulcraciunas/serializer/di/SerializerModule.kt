@@ -1,6 +1,6 @@
 package com.paulcraciunas.serializer.di
 
-import com.paulcraciunas.game.logic.api.GameFactory
+import com.paulcraciunas.logic.builders.Builders
 import com.paulcraciunas.serializer.api.Serializer
 import com.paulcraciunas.serializer.impl.FenSerializer
 import com.paulcraciunas.serializer.impl.PgnSerializer
@@ -23,10 +23,10 @@ internal class SerializerModule {
     @SerializerFen
     @Provides
     @Singleton
-    fun provideFenSerializer(gameFactory: GameFactory): Serializer = FenSerializer(gameFactory)
+    fun provideFenSerializer(): Serializer = FenSerializer(gameFactory = Builders.gameFactory())
 
     @SerializerPgn
     @Provides
     @Singleton
-    fun providePgnSerializer(gameFactory: GameFactory): Serializer = PgnSerializer(gameFactory)
+    fun providePgnSerializer(): Serializer = PgnSerializer(gameFactory = Builders.gameFactory())
 }

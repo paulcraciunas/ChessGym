@@ -11,14 +11,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.paulcraciunas.game.logic.api.board.Locus
-import com.paulcraciunas.game.logic.api.board.loc
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
@@ -28,7 +26,7 @@ private const val ANIMATION_DURATION_MS = 300
 internal fun SquareNameOverlay(
     currentSquare: Locus,
     showError: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val textColor by animateColorAsState(
         targetValue = if (showError) {
@@ -40,31 +38,28 @@ internal fun SquareNameOverlay(
         label = "textColorAnimation"
     )
 
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        AnimatedContent(
-            targetState = currentSquare,
-            transitionSpec = {
-                slideInHorizontally(
-                    animationSpec = tween(ANIMATION_DURATION_MS),
-                    initialOffsetX = { fullWidth -> fullWidth }
-                ) togetherWith slideOutHorizontally(
-                    animationSpec = tween(ANIMATION_DURATION_MS),
-                    targetOffsetX = { fullWidth -> -fullWidth }
-                )
-            },
-            label = "squareNameAnimation"
-        ) { square ->
-            Text(
-                text = square.toString().uppercase(),
-                fontSize = 192.sp,
-                fontWeight = FontWeight.Bold,
-                color = textColor,
-                style = Design.typography.displayLarge
+    AnimatedContent(
+        targetState = currentSquare,
+        transitionSpec = {
+            slideInHorizontally(
+                animationSpec = tween(ANIMATION_DURATION_MS),
+                initialOffsetX = { fullWidth -> fullWidth }
+            ) togetherWith slideOutHorizontally(
+                animationSpec = tween(ANIMATION_DURATION_MS),
+                targetOffsetX = { fullWidth -> -fullWidth }
             )
-        }
+        },
+        label = "squareNameAnimation",
+        modifier = modifier,
+    ) { square ->
+        Text(
+            text = square.toString().uppercase(),
+            fontSize = 192.sp,
+            fontWeight = FontWeight.Bold,
+            color = textColor,
+            style = Design.typography.displayLarge,
+
+            )
     }
 }
 
@@ -74,7 +69,7 @@ private fun SquareNameOverlayPreview() {
     ChessGymTheme {
         Box(modifier = Modifier.fillMaxSize()) {
             SquareNameOverlay(
-                currentSquare = "e4".loc(),
+                currentSquare = Locus.e4,
                 showError = false
             )
         }
@@ -87,7 +82,7 @@ private fun SquareNameOverlayErrorPreview() {
     ChessGymTheme {
         Box(modifier = Modifier.fillMaxSize()) {
             SquareNameOverlay(
-                currentSquare = "e4".loc(),
+                currentSquare = Locus.e4,
                 showError = true
             )
         }

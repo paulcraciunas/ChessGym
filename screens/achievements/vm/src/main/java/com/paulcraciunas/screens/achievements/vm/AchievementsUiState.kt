@@ -1,7 +1,9 @@
 package com.paulcraciunas.screens.achievements.vm
 
+import androidx.compose.runtime.Immutable
 import com.paulcraciunas.domain.api.achievements.Achievement
 
+@Immutable
 data class AchievementsUiState(
     val summary: TrophyCaseSummary = TrophyCaseSummary(),
     val categories: List<CategoryGroup> = emptyList(),
@@ -9,6 +11,7 @@ data class AchievementsUiState(
     val isLoading: Boolean = true,
     val isError: Boolean = false,
 ) {
+    @Immutable
     data class TrophyCaseSummary(
         val totalEarned: Int = 0,
         val totalAchievements: Int = 0,
@@ -16,6 +19,7 @@ data class AchievementsUiState(
         val locked: Int = 0,
     )
 
+    @Immutable
     data class CategoryGroup(
         val category: AchievementCategory,
         val earnedCount: Int,
@@ -23,6 +27,7 @@ data class AchievementsUiState(
         val achievements: List<AchievementState>,
     )
 
+    @Immutable
     sealed class AchievementState {
         abstract val achievement: Achievement
         abstract val unseen: Boolean
@@ -35,6 +40,7 @@ data class AchievementsUiState(
 
         fun isCompleted(): Boolean = this is Complete
 
+        @Immutable
         sealed class Incomplete : AchievementState() {
             abstract val nextThreshold: Long
 
@@ -44,6 +50,7 @@ data class AchievementsUiState(
             override fun hasProgress(): Boolean = currentTier != null || currentProgress > 0
         }
 
+        @Immutable
         data class Unearned(
             override val achievement: Achievement,
             override val currentProgress: Long,
@@ -59,6 +66,7 @@ data class AchievementsUiState(
             override fun displayTier(): Achievement.Tier = Achievement.Tier.ONE
         }
 
+        @Immutable
         data class Earned(
             override val achievement: Achievement,
             override val unseen: Boolean,
@@ -73,6 +81,7 @@ data class AchievementsUiState(
             override fun displayTier(): Achievement.Tier = currentTier
         }
 
+        @Immutable
         data class Complete(
             override val achievement: Achievement,
             override val unseen: Boolean,
@@ -85,5 +94,4 @@ data class AchievementsUiState(
             override fun displayTier(): Achievement.Tier = currentTier
         }
     }
-
 }

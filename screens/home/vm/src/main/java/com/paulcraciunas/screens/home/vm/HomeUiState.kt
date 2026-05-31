@@ -1,8 +1,10 @@
 package com.paulcraciunas.screens.home.vm
 
+import androidx.compose.runtime.Immutable
 import com.paulcraciunas.domain.api.achievements.Achievement
 import java.time.LocalDate
 
+@Immutable
 data class HomeUiState(
     val userProfile: UserProfile = UserProfile(),
     val userStats: Stats = Stats(),
@@ -11,11 +13,13 @@ data class HomeUiState(
     val ribbons: List<Ribbon> = emptyList(),
     val isLoading: Boolean = true,
 ) {
+    @Immutable
     data class Ribbon(
         val achievement: Achievement,
         val tier: Achievement.Tier,
     )
 
+    @Immutable
     data class UserProfile(
         val name: String = "ChessPlayer",
         val currentRating: Int = 1200,
@@ -38,11 +42,13 @@ data class HomeUiState(
         val bestBlindModeScore: Int = 0,
     )
 
+    @Immutable
     data class HistoryGroup(
         val label: String,
         val events: List<HistoryEvent>
     )
 
+    @Immutable
     sealed class HistoryEvent {
         data class PuzzleRushEvent(
             val highScore: Int,

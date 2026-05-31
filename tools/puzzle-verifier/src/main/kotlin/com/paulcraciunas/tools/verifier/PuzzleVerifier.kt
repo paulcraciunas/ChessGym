@@ -4,8 +4,7 @@ import com.github.luben.zstd.ZstdInputStream
 import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.Locus
-import com.paulcraciunas.game.logic.api.board.loc
-import com.paulcraciunas.game.logic.impl.RealGameFactory
+import com.paulcraciunas.logic.builders.Builders
 import com.paulcraciunas.serializer.impl.FenSerializer
 import com.paulcraciunas.serializer.impl.binary.BinaryAdapter
 import com.paulcraciunas.serializer.impl.binary.BinaryPuzzleReader
@@ -21,7 +20,7 @@ private const val PROGRESS_INTERVAL = 100_000
 private const val DUMMY_RATING = 1500
 
 fun main() {
-    val factory = RealGameFactory()
+    val factory = Builders.gameFactory()
     val adapter = BinaryAdapter()
     val writer = BinaryPuzzleWriter(FenSerializer(factory), adapter)
     val reader = BinaryPuzzleReader(factory, adapter)
@@ -115,8 +114,8 @@ private fun verifyPlaythrough(
         puzzle.start()
         val moveList = moves.split(' ')
         moveList.forEach { move ->
-            val from: Locus = move.substring(0, 2).loc()
-            val to: Locus = move.substring(2, 4).loc()
+            val from: Locus = Locus.from(move.substring(0, 2))!!
+            val to: Locus = Locus.from(move.substring(2, 4))!!
             val ply = puzzle.ply(from, to)
                 ?: error("No valid ply found for move $move (from=$from, to=$to)")
 

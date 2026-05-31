@@ -22,15 +22,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.screens.common.design.theme.Design
-import com.paulcraciunas.screens.common.model.PuzzleResult
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
+import com.paulcraciunas.screens.data.PuzzleResult
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun PuzzleResultsGrid(
     results: List<PuzzleResult>,
     modifier: Modifier = Modifier,
-    onFailedPuzzleClicked: ((Int) -> Unit) = {},
+    onFailedPuzzleClicked: (Int) -> Unit = {},
 ) {
     FlowRow(
         modifier = modifier,
@@ -40,9 +40,7 @@ fun PuzzleResultsGrid(
         results.forEach { result ->
             PuzzleResultItem(
                 result = result,
-                onClick = if (!result.success && result.id != null) {
-                    { onFailedPuzzleClicked(result.id) }
-                } else null,
+                onClick = onFailedPuzzleClicked,
             )
         }
     }
@@ -51,7 +49,7 @@ fun PuzzleResultsGrid(
 @Composable
 private fun PuzzleResultItem(
     result: PuzzleResult,
-    onClick: (() -> Unit)?,
+    onClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val backgroundColor = if (result.success) {
@@ -69,7 +67,7 @@ private fun PuzzleResultItem(
     Box(
         modifier = modifier
             .clip(Design.shapes.cardCompact)
-            .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
+            .then(if (!result.success && result.id != null) Modifier.clickable { onClick(result.id!!) } else Modifier)
             .background(backgroundColor)
             .padding(Design.dimensions.spacing.sm),
         contentAlignment = Alignment.Center
@@ -131,7 +129,7 @@ private fun PuzzleResultItemSuccessPreview() {
     ChessGymTheme {
         PuzzleResultItem(
             result = PuzzleResult(id = 1, rating = 1350, success = true),
-            onClick = null,
+            onClick = {},
         )
     }
 }

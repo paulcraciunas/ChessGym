@@ -10,7 +10,7 @@ import com.paulcraciunas.screens.achievements.vm.AchievementsUiState.Achievement
 import com.paulcraciunas.screens.common.achievements.displayName
 import com.paulcraciunas.screens.common.achievements.tierColor
 import com.paulcraciunas.screens.common.achievements.tierName
-import com.paulcraciunas.screens.common.design.components.TrophyShelfTile
+import com.paulcraciunas.screens.common.design.components.TrophyShelfTile2
 import com.paulcraciunas.screens.common.design.theme.Design
 
 @Composable
@@ -19,14 +19,16 @@ internal fun AchievementTile(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    TrophyShelfTile(
-        title = item.achievement.tierName(item.displayTier()),
-        description = item.achievement.displayName(),
-        hue = item.currentTier.tierColor(),
+    val title = item.achievement.tierName(item.displayTier())
+    val description = item.achievement.displayName()
+    val hue = item.currentTier.tierColor()
+    TrophyShelfTile2(
+        title = title,
+        description = description,
+        hue = hue,
         valueNow = item.currentProgress.toInt(),
         valueMax = if (item is AchievementState.Incomplete) item.nextThreshold.toInt() else item.currentProgress.toInt(),
         earned = item.isCompleted(),
-        locked = !item.hasProgress(),
         onClick = onClick,
         modifier = modifier,
         icon = {
@@ -34,11 +36,7 @@ internal fun AchievementTile(
                 painter = painterResource(id = R.drawable.military_medal_icon),
                 contentDescription = null,
                 modifier = Modifier.size(Design.dimensions.spacing.section),
-                tint = if (item.currentTier != null) {
-                    Design.colors.primary
-                } else {
-                    Design.colors.inkMuted
-                },
+                tint = Design.colors.onPrimary,
             )
         },
     )

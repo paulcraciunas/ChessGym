@@ -10,6 +10,7 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
+import com.paulcraciunas.logic.builders.Builders
 import javax.inject.Inject
 
 /**
@@ -25,10 +26,9 @@ import javax.inject.Inject
 class GenerateMoveThePieceBoardImpl @Inject constructor(
     private val randomLocus: GenerateRandomLociImpl,
     private val randomFactory: RandomFactory,
-    private val gameFactory: GameFactory,
 ) : GenerateMoveThePieceBoard {
-
-    private val moveValidator: MoveValidator = gameFactory.moveValidator()
+    private val gameFactory: GameFactory = Builders.gameFactory()
+    private val moveValidator: MoveValidator = Builders.moveValidator()
 
     override fun invoke(
         piece: Piece,

@@ -19,7 +19,7 @@ import com.paulcraciunas.screens.common.testTag
 internal fun BorderRanks(
     orientation: BoardOrientation,
     modifier: Modifier = Modifier,
-    width: Dp = 15.dp
+    width: Dp = 15.dp,
 ) {
     Column(
         modifier = modifier

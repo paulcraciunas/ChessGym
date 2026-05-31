@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application tools:ignore="MissingApplicationIcon">
+        <profileable android:shell="true"
+            tools:targetApi="29" />
+        <activity
+            android:name=".benchmark.BenchmarkPuzzleStreakActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ChessGym">
+            <intent-filter>
+                <action android:name="com.paulcraciunas.chessgym.BENCHMARK_PUZZLE_STREAK" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".benchmark.BenchmarkPuzzleRushActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ChessGym">
+            <intent-filter>
+                <action android:name="com.paulcraciunas.chessgym.BENCHMARK_PUZZLE_RUSH" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".benchmark.BenchmarkMainToAchievementsActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ChessGym">
+            <intent-filter>
+                <action android:name="com.paulcraciunas.chessgym.BENCHMARK_MAIN_TO_ACHIEVEMENTS" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

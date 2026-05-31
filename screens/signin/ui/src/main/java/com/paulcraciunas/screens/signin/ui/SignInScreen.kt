@@ -32,7 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.paulcraciunas.screens.common.AppBar
+import com.paulcraciunas.screens.common.ChildAppBar
 import com.paulcraciunas.screens.common.Footer
 import com.paulcraciunas.screens.common.controls.Header
 import com.paulcraciunas.screens.common.controls.HeaderAlign
@@ -68,12 +68,9 @@ fun SignInScreen(
     Scaffold(
         modifier = modifier,
         topBar = {
-            AppBar(
-                title = stringResource(
-                    if (isSignUpMode) GlobalR.string.sign_up_title
-                    else GlobalR.string.sign_in_title
-                ),
-                navButton = { Back(onClick = onNavigateBack) },
+            ChildAppBar(
+                onBack = onNavigateBack,
+                title = stringResource(if (isSignUpMode) GlobalR.string.sign_up_title else GlobalR.string.sign_in_title),
             )
         },
     ) { innerPadding ->

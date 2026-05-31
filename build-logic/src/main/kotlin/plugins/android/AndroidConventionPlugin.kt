@@ -60,7 +60,7 @@ class AndroidConventionPlugin : ConventionPlugin() {
                     isMinifyEnabled = false
                 }
                 release {
-                    isMinifyEnabled = true
+                    isMinifyEnabled = false //This is applied at application level
                     proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"))
                 }
             }

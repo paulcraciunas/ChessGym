@@ -5,14 +5,16 @@ plugins {
 androidLibrary {
     namespace = "com.paulcraciunas.screens.tools.importgame.vm"
     di = true
+    compose = true
 }
 
 dependencies {
     implementation(project(":game:logic:api"))
+    implementation(project(":game:logic:builders"))
     implementation(project(":game:serializer:api"))
     implementation(project(":game:serializer:di"))
     implementation(project(":settings:application:api"))
-    implementation(project(":screens:common"))
+    implementation(project(":screens:data"))
 
     implementation(libs.public.timber)
     implementation(libs.androidx.lifecycle.runtime.ktx)

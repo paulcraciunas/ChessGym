@@ -2,14 +2,19 @@ package com.paulcraciunas.domain.impl.puzzles
 
 import com.paulcraciunas.domain.api.puzzles.GetFailedPuzzles
 import com.paulcraciunas.game.logic.api.Puzzle
+import com.paulcraciunas.global.qualifiers.IoDispatcher
 import com.paulcraciunas.puzzles.api.PuzzleRepository
 import com.paulcraciunas.user.api.UserRepository
-import java.util.ArrayDeque
-import java.util.Deque
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * Implementation of [GetFailedPuzzles] that loads failed puzzles in batches.
+ * Implementation of [GetFailedPuzzles] that loads failed puzzles in a buffer.
  *
  * Puzzles are loaded by their IDs from the user's failed puzzles list,
  * in smaller batches for memory efficiency.
@@ -17,46 +22,31 @@ import javax.inject.Inject
 class GetFailedPuzzlesImpl @Inject constructor(
     private val userRepository: UserRepository,
     private val puzzleRepository: PuzzleRepository,
+    @param:IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : GetFailedPuzzles {
-
-    private val buffer: Deque<Puzzle> = ArrayDeque()
-    private var pendingIds: List<Int> = emptyList()
-    private var currentIndex = 0
-    private var batchSize = GetFailedPuzzles.BATCH_SIZE
+    private var puzzleChannel = Channel<Puzzle>(capacity = 10).apply { close() }
+    private var producerJob: Job? = null
     private var totalPuzzleCount = 0
 
-    override suspend fun load(batchSize: Int) {
-        buffer.clear()
-        this.batchSize = batchSize
-        this.currentIndex = 0
+    override suspend fun load(scope: CoroutineScope, bufferSize: Int) {
+        producerJob?.cancel()
+        puzzleChannel.close()
+        puzzleChannel = Channel(capacity = bufferSize)
 
-        val user = userRepository.get()
-        this.pendingIds = user.failedPuzzles
-        this.totalPuzzleCount = pendingIds.size
-    }
-
-    override suspend fun next(): Puzzle? {
-        if (buffer.isEmpty() && currentIndex < pendingIds.size) {
-            loadNextBatch()
-        }
-        return buffer.pollFirst()
-    }
-
-    override fun totalCount(): Int = totalPuzzleCount
-
-    override fun remainingCount(): Int = (pendingIds.size - currentIndex) + buffer.size
-
-    private suspend fun loadNextBatch() {
-        val endIndex = minOf(currentIndex + batchSize, pendingIds.size)
-        val idsToLoad = pendingIds.subList(currentIndex, endIndex)
-
-        for (id in idsToLoad) {
-            val puzzle = puzzleRepository.getById(id)
-            if (puzzle != null) {
-                buffer.addLast(puzzle)
+        producerJob = scope.launch(ioDispatcher) {
+            val failedPuzzles = userRepository.get().failedPuzzles
+            totalPuzzleCount = failedPuzzles.size
+            failedPuzzles.forEach { id ->
+                ensureActive()
+                puzzleRepository.getById(id)?.let { puzzleChannel.send(it) }
             }
         }
-
-        currentIndex = endIndex
     }
+
+    override suspend fun next(): Puzzle? = if (producerJob?.isActive == true) {
+        puzzleChannel.receiveCatching().getOrNull()
+    } else {
+        puzzleChannel.tryReceive().getOrNull()
+    }
+    override fun totalCount(): Int = totalPuzzleCount
 }

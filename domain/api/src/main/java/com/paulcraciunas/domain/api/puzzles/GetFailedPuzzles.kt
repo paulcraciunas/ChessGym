@@ -1,16 +1,19 @@
 package com.paulcraciunas.domain.api.puzzles
 
 import com.paulcraciunas.game.logic.api.Puzzle
+import kotlinx.coroutines.CoroutineScope
 
 /**
- * Provides failed puzzles one at a time, loading them in batches for efficiency.
+ * Provides failed puzzles one at a time, loading them in a buffer for efficiency.
  *
  * Usage:
  * ```
  * failedPuzzles.load()
- * while (true) {
- *     val puzzle = failedPuzzles.next() ?: break
- *     // Use puzzle
+ * val puzzle = failedPuzzles.next()
+ * if (puzzle != null) {
+ *     // load next puzzle
+ * } else {
+ *     // display results
  * }
  * ```
  *
@@ -20,28 +23,19 @@ interface GetFailedPuzzles {
     /**
      * Loads the failed puzzle IDs from the user and clears any previously buffered puzzles.
      *
-     * @param batchSize Number of puzzles to load per batch
+     * @param bufferSize Number of puzzles to load per batch
      */
-    suspend fun load(batchSize: Int = BATCH_SIZE)
+    suspend fun load(scope: CoroutineScope, bufferSize: Int = BUFFER_SIZE)
 
     /**
-     * Returns the next failed puzzle, loading a new batch if needed.
+     * Returns the next failed puzzle, updating the buffer if needed.
      *
      * @return The next puzzle, or null if no more puzzles are available
      */
     suspend fun next(): Puzzle?
-
-    /**
-     * Returns the total count of failed puzzles to retry.
-     */
     fun totalCount(): Int
 
-    /**
-     * Returns the count of remaining puzzles that haven't been retrieved yet.
-     */
-    fun remainingCount(): Int
-
     companion object Defaults {
-        const val BATCH_SIZE = 5
+        const val BUFFER_SIZE = 5
     }
 }

@@ -13,7 +13,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.paulcraciunas.chessgym.MainScreen
+import com.paulcraciunas.chessgym.main.MainScreen
 import com.paulcraciunas.screens.loading.ui.LoadingScreen
 import com.paulcraciunas.screens.loading.vm.LoadingViewModel
 

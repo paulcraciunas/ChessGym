@@ -4,12 +4,8 @@ import com.paulcraciunas.domain.api.boardvis.GenerateMoveThePieceBoard
 import com.paulcraciunas.domain.api.boardvis.MoveResult
 import com.paulcraciunas.domain.api.boardvis.MoveThePieceBoardData
 import com.paulcraciunas.game.logic.api.Side
-import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.game.logic.api.board.Rank
-import com.paulcraciunas.game.logic.api.board.loc
-import com.paulcraciunas.game.logic.impl.RealGameFactory
 import com.paulcraciunas.game.logic.impl.board.Board
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -18,18 +14,17 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 internal class MoveThePieceGameEngineImplTest {
-    private val playerLocus = "d4".loc()
+    private val playerLocus = Locus.d4
     private val simpleBoard = Board().apply {
-        add(Piece.Rook, side = Side.BLACK, "a1".loc())
+        add(Piece.Rook, side = Side.BLACK, Locus.a1)
         add(Piece.Rook, side = Side.WHITE, playerLocus)
     }
-    private val gameFactory = RealGameFactory()
 
     @Test
     fun `GIVEN game not started WHEN getState THEN throws exception`() {
         // Given
-        val generateBoard = FakeGenerateMoveThePieceBoard(MoveThePieceBoardData(playerPieceLocus = "d4".loc(), board = Board()))
-        val underTest = MoveThePieceGameEngineImpl(generateBoard, gameFactory)
+        val generateBoard = FakeGenerateMoveThePieceBoard(MoveThePieceBoardData(playerPieceLocus = Locus.d4, board = Board()))
+        val underTest = MoveThePieceGameEngineImpl(generateBoard)
 
         // When/Then
         assertThrows(IllegalStateException::class.java) {
@@ -41,7 +36,7 @@ internal class MoveThePieceGameEngineImplTest {
     fun `GIVEN game started WHEN getState THEN returns correct initial state`() {
         // Given
         val generateBoard = FakeGenerateMoveThePieceBoard(MoveThePieceBoardData(playerLocus, simpleBoard))
-        val underTest = MoveThePieceGameEngineImpl(generateBoard, gameFactory)
+        val underTest = MoveThePieceGameEngineImpl(generateBoard)
 
         // When
         underTest.startGame(
@@ -69,16 +64,16 @@ internal class MoveThePieceGameEngineImplTest {
     fun `GIVEN valid move WHEN makeMove THEN returns Success`() {
         // Given
         val generateBoard = FakeGenerateMoveThePieceBoard(MoveThePieceBoardData(playerLocus, simpleBoard))
-        val underTest = MoveThePieceGameEngineImpl(generateBoard, gameFactory)
+        val underTest = MoveThePieceGameEngineImpl(generateBoard)
         underTest.startGame(Piece.Rook, 2, 1, true)
 
         // When - move rook to e4 (valid horizontal move)
-        val result = underTest.makeMove(Locus(File.e, Rank.`4`))
+        val result = underTest.makeMove(Locus.e4)
 
         // Then
         assertTrue(result is MoveResult.Success)
         val state = (result as MoveResult.Success).newState
-        assertEquals(Locus(File.e, Rank.`4`), state.playerPieceLocus)
+        assertEquals(Locus.e4, state.playerPieceLocus)
         assertEquals(1, state.movesRemaining)
     }
 
@@ -86,11 +81,11 @@ internal class MoveThePieceGameEngineImplTest {
     fun `GIVEN invalid move WHEN makeMove THEN returns Invalid`() {
         // Given
         val generateBoard = FakeGenerateMoveThePieceBoard(MoveThePieceBoardData(playerLocus, simpleBoard))
-        val underTest = MoveThePieceGameEngineImpl(generateBoard, gameFactory)
+        val underTest = MoveThePieceGameEngineImpl(generateBoard)
         underTest.startGame(Piece.Rook, 2, 1, true)
 
         // When - try diagonal move (invalid for rook)
-        val result = underTest.makeMove(Locus(File.e, Rank.`5`))
+        val result = underTest.makeMove(Locus.e5)
 
         // Then
         assertTrue(result is MoveResult.Invalid)
@@ -101,14 +96,14 @@ internal class MoveThePieceGameEngineImplTest {
         // Given - white rook at d4, black rook at d1 attacks along d-file
         val board = Board().apply {
             add(Piece.Rook, side = Side.WHITE, playerLocus)
-            add(Piece.Rook, side = Side.BLACK, "d1".loc())
+            add(Piece.Rook, side = Side.BLACK, Locus.d1)
         }
         val generateBoard = FakeGenerateMoveThePieceBoard(MoveThePieceBoardData(playerLocus, board))
-        val underTest = MoveThePieceGameEngineImpl(generateBoard, gameFactory)
+        val underTest = MoveThePieceGameEngineImpl(generateBoard)
         underTest.startGame(Piece.Rook, 2, 1, true)
 
         // When - move down the d-file (attacked by black rook)
-        val result = underTest.makeMove(Locus(File.d, Rank.`2`))
+        val result = underTest.makeMove(Locus.d2)
 
         // Then
         assertTrue(result is MoveResult.Captured)
@@ -121,11 +116,11 @@ internal class MoveThePieceGameEngineImplTest {
     fun `GIVEN last move of level WHEN makeMove THEN returns LevelComplete`() {
         // Given
         val generateBoard = FakeGenerateMoveThePieceBoard(MoveThePieceBoardData(playerLocus, simpleBoard))
-        val underTest = MoveThePieceGameEngineImpl(generateBoard, gameFactory)
+        val underTest = MoveThePieceGameEngineImpl(generateBoard)
         underTest.startGame(Piece.Rook, 1, 1, true) // Only 1 move required
 
         // When
-        val result = underTest.makeMove("e4".loc())
+        val result = underTest.makeMove(Locus.e4)
 
         // Then
         assertTrue(result is MoveResult.LevelComplete)
@@ -138,12 +133,12 @@ internal class MoveThePieceGameEngineImplTest {
     fun `GIVEN visited square WHEN makeMove THEN returns Invalid`() {
         // Given
         val generateBoard = FakeGenerateMoveThePieceBoard(MoveThePieceBoardData(playerLocus, simpleBoard))
-        val underTest = MoveThePieceGameEngineImpl(generateBoard, gameFactory)
+        val underTest = MoveThePieceGameEngineImpl(generateBoard)
         underTest.startGame(Piece.Rook, 3, 1, true)
 
         // When - move to e4, then try to move back to d4 (already visited)
-        underTest.makeMove("e4".loc())
-        val result = underTest.makeMove("d4".loc())
+        underTest.makeMove(Locus.e4)
+        val result = underTest.makeMove(Locus.d4)
 
         // Then
         assertTrue(result is MoveResult.Invalid)
@@ -153,7 +148,7 @@ internal class MoveThePieceGameEngineImplTest {
     fun `GIVEN reset called WHEN getState THEN throws exception`() {
         // Given
         val generateBoard = FakeGenerateMoveThePieceBoard(MoveThePieceBoardData(playerLocus, Board()))
-        val underTest = MoveThePieceGameEngineImpl(generateBoard, gameFactory)
+        val underTest = MoveThePieceGameEngineImpl(generateBoard)
         underTest.startGame(Piece.Rook, 1, 0, true)
 
         // When
@@ -169,11 +164,11 @@ internal class MoveThePieceGameEngineImplTest {
     fun `GIVEN training mode WHEN advancing levels THEN piece stays the same`() {
         // Given
         val generateBoard = FakeGenerateMoveThePieceBoard(MoveThePieceBoardData(playerLocus, simpleBoard))
-        val underTest = MoveThePieceGameEngineImpl(generateBoard, gameFactory)
+        val underTest = MoveThePieceGameEngineImpl(generateBoard)
         underTest.startGame(Piece.Bishop, 1, 0, true)
 
         // When - complete level
-        val result = underTest.makeMove("e5".loc()) // Valid bishop move
+        val result = underTest.makeMove(Locus.e5) // Valid bishop move
 
         // Then
         assertTrue(result is MoveResult.LevelComplete)
@@ -186,15 +181,15 @@ internal class MoveThePieceGameEngineImplTest {
         // Given - Black rook at a4, player Rook at d4.
         // d4 blocks the a4 rook from reaching f4. Moving to f4 unblocks the line.
         val board = Board().apply {
-            add(Piece.Rook, side = Side.BLACK, "a4".loc())
+            add(Piece.Rook, side = Side.BLACK, Locus.a4)
             add(Piece.Rook, side = Side.WHITE, playerLocus)
         }
         val generateBoard = FakeGenerateMoveThePieceBoard(MoveThePieceBoardData(playerLocus, board))
-        val underTest = MoveThePieceGameEngineImpl(generateBoard, gameFactory)
+        val underTest = MoveThePieceGameEngineImpl(generateBoard)
         underTest.startGame(Piece.Rook, 2, 1, true)
 
         // When - move to f4 (unblocks rank 4 for the black rook)
-        val result = underTest.makeMove("f4".loc())
+        val result = underTest.makeMove(Locus.f4)
 
         // Then - f4 is attacked along rank 4 after the player vacates d4
         assertTrue(result is MoveResult.Captured)
@@ -207,11 +202,11 @@ internal class MoveThePieceGameEngineImplTest {
     fun `GIVEN non-training mode WHEN advancing levels THEN piece changes`() {
         // Given
         val generateBoard = FakeGenerateMoveThePieceBoard(MoveThePieceBoardData(playerLocus, simpleBoard))
-        val underTest = MoveThePieceGameEngineImpl(generateBoard, gameFactory)
+        val underTest = MoveThePieceGameEngineImpl(generateBoard)
         underTest.startGame(Piece.Bishop, 1, 0, false) // Non-training, starts with Bishop
 
         // When - complete level
-        val result = underTest.makeMove("e5".loc()) // Valid bishop move
+        val result = underTest.makeMove(Locus.e5) // Valid bishop move
 
         // Then
         assertTrue(result is MoveResult.LevelComplete)

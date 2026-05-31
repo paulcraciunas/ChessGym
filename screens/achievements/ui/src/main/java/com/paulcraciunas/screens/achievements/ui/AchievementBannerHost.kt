@@ -28,24 +28,24 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.domain.api.achievements.Achievement
 import com.paulcraciunas.domain.api.achievements.AchievementNotification
-import com.paulcraciunas.domain.api.achievements.AchievementNotificationManager
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.achievements.tierName
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 
 private const val BANNER_DISPLAY_MILLIS = 3000L
 
 @Composable
 fun AchievementBannerHost(
-    notificationManager: AchievementNotificationManager,
+    notifications: () -> Flow<AchievementNotification>,
     modifier: Modifier = Modifier,
 ) {
     var activeNotification by remember { mutableStateOf<AchievementNotification?>(null) }
 
-    LaunchedEffect(notificationManager) {
-        notificationManager.notifications.collect { notification ->
+    LaunchedEffect(notifications) {
+        notifications().collect { notification ->
             activeNotification = notification
             delay(BANNER_DISPLAY_MILLIS)
             activeNotification = null

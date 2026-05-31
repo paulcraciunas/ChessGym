@@ -4,12 +4,12 @@ import com.paulcraciunas.domain.api.boardvis.GameEngineState
 import com.paulcraciunas.domain.api.boardvis.GenerateMoveThePieceBoard
 import com.paulcraciunas.domain.api.boardvis.MoveResult
 import com.paulcraciunas.domain.api.boardvis.MoveThePieceGameEngine
-import com.paulcraciunas.game.logic.api.GameFactory
 import com.paulcraciunas.game.logic.api.MoveValidator
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
+import com.paulcraciunas.logic.builders.Builders
 import javax.inject.Inject
 
 /**
@@ -18,10 +18,9 @@ import javax.inject.Inject
  */
 class MoveThePieceGameEngineImpl @Inject constructor(
     private val generateBoard: GenerateMoveThePieceBoard,
-    gameFactory: GameFactory
 ) : MoveThePieceGameEngine {
 
-    private val moveValidator: MoveValidator = gameFactory.moveValidator()
+    private val moveValidator: MoveValidator = Builders.moveValidator()
     private var state: GameEngineState? = null
     private var board: IBoard? = null
 

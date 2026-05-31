@@ -19,7 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.domain.api.achievements.Achievement
-import com.paulcraciunas.screens.common.AppBar
+import com.paulcraciunas.screens.common.ChildAppBar
 import com.paulcraciunas.screens.common.LoadingContent
 import com.paulcraciunas.screens.common.achievements.displayName
 
@@ -30,14 +30,7 @@ fun ForceAchievementScreen(
     onNavigateBack: () -> Unit,
     onForceAchievement: (Achievement, Achievement.Tier) -> Unit,
 ) {
-    Scaffold(
-        topBar = {
-            AppBar(
-                title = "Debug: Force Achievement",
-                navButton = { Back(onClick = onNavigateBack) },
-            )
-        },
-    ) { innerPadding ->
+    Scaffold(topBar = { ChildAppBar(onBack = onNavigateBack, title = "Debug: Force Achievement") }) { innerPadding ->
         if (uiState.isLoading) {
             LoadingContent(
                 modifier = Modifier

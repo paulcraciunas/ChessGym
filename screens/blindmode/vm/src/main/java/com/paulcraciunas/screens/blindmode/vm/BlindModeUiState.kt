@@ -1,49 +1,33 @@
 package com.paulcraciunas.screens.blindmode.vm
 
-import com.paulcraciunas.game.logic.api.Side
-import com.paulcraciunas.game.logic.api.board.Locus
-import com.paulcraciunas.screens.common.controls.SideSelection
-import com.paulcraciunas.screens.common.model.BoardViewData
-import com.paulcraciunas.screens.common.previews.SampleBoardViewData
+import androidx.compose.runtime.Immutable
+import com.paulcraciunas.screens.data.BoardState
+import com.paulcraciunas.screens.data.SideSelection
 
+@Immutable
 sealed class BlindModeUiState {
     abstract val isTrainingMode: Boolean
-    abstract val selectedSide: SideSelection
 
-    data class PendingPromotion(val from: Locus, val to: Locus)
-
+    @Immutable
     data class Setup(
         override val isTrainingMode: Boolean = true,
-        override val selectedSide: SideSelection = SideSelection.WHITE,
+        val selectedSide: SideSelection = SideSelection.WHITE,
     ) : BlindModeUiState()
 
+    @Immutable
     data class Playing(
-        override val isTrainingMode: Boolean = true,
-        override val selectedSide: SideSelection = SideSelection.WHITE,
-        val boardData: BoardViewData = SampleBoardViewData.emptyBoard(),
+        override val isTrainingMode: Boolean,
+        val data: BoardState,
         val moveHistory: String = "",
-        val playerSide: Side = Side.WHITE,
-        val selectedSquare: Locus? = null,
-        val legalMoves: List<Locus> = emptyList(),
         val isRevealAvailable: Boolean = true,
-        val isThinking: Boolean = false,
-        val pendingPromotion: PendingPromotion? = null,
         val isAbandonDialogShown: Boolean = false,
         val isRevealing: Boolean = false,
     ) : BlindModeUiState()
 
+    @Immutable
     data class GameOver(
-        override val isTrainingMode: Boolean = true,
-        override val selectedSide: SideSelection = SideSelection.WHITE,
-        val playerSide: Side = Side.WHITE,
-        val boardData: BoardViewData,
-        val moveHistory: String = "",
-        val result: GameResult = GameResult.Win,
+        override val isTrainingMode: Boolean,
+        val data: BoardState,
+        val moveHistory: String,
     ) : BlindModeUiState()
-
-    enum class GameResult {
-        Win,
-        Draw,
-        Loss
-    }
 }

@@ -11,14 +11,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.global.resources.R
-import com.paulcraciunas.screens.common.AppBar
-import com.paulcraciunas.screens.common.AppBarAlignment
 import com.paulcraciunas.screens.common.Footer
 import com.paulcraciunas.screens.common.LoadingContent
-
+import com.paulcraciunas.screens.common.TopLevelAppBar
 import com.paulcraciunas.screens.common.controls.AnalysisCard
 import com.paulcraciunas.screens.common.controls.ClockCard
 import com.paulcraciunas.screens.common.controls.Header
@@ -38,12 +35,7 @@ fun ToolsDashboardScreen(
     onDrawerToggle: () -> Unit = {},
 ) {
     Scaffold(
-        topBar = {
-            AppBar(
-                titleAlign = AppBarAlignment.Center,
-                navButton = { Home(onClick = onDrawerToggle) }
-            )
-        },
+        topBar = { TopLevelAppBar(onHome = onDrawerToggle) },
         modifier = modifier.testTag { ToolsDashboardTags.SCREEN },
     ) { innerPadding ->
         when {

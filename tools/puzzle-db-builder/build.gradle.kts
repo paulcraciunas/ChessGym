@@ -9,7 +9,7 @@ application {
 
 dependencies {
     implementation(project(":game:logic:api"))
-    implementation(project(":game:logic:impl"))
+    implementation(project(":game:logic:builders"))
     implementation(project(":game:puzzles:api"))
     implementation(project(":game:serializer:api"))
     implementation(project(":game:serializer:impl"))

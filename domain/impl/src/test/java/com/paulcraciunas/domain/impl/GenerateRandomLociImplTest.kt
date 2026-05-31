@@ -1,7 +1,7 @@
 package com.paulcraciunas.domain.impl
 
 import com.paulcraciunas.domain.api.general.RandomFactory
-import com.paulcraciunas.game.logic.api.board.loc
+import com.paulcraciunas.game.logic.api.board.Locus
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -18,7 +18,7 @@ internal class GenerateRandomLociImplTest {
         val result = underTest()
 
         // Then
-        assertEquals("a1".loc(), result)
+        assertEquals(Locus.a1, result)
     }
 
     @Test
@@ -30,7 +30,7 @@ internal class GenerateRandomLociImplTest {
         val result = underTest()
 
         // Then
-        assertEquals("h8".loc(), result)
+        assertEquals(Locus.h8, result)
     }
 
     @Test
@@ -42,7 +42,7 @@ internal class GenerateRandomLociImplTest {
         val result = underTest()
 
         // Then
-        assertEquals("e5".loc(), result)
+        assertEquals(Locus.e5, result)
     }
 
     @Test
@@ -54,7 +54,7 @@ internal class GenerateRandomLociImplTest {
         val result = underTest()
 
         // Then
-        assertEquals("c6".loc(), result)
+        assertEquals(Locus.c6, result)
     }
 
     @Test
@@ -68,9 +68,9 @@ internal class GenerateRandomLociImplTest {
         val third = underTest()
 
         // Then
-        assertEquals("a1".loc(), first)
-        assertEquals("d5".loc(), second)
-        assertEquals("h8".loc(), third)
+        assertEquals(Locus.a1, first)
+        assertEquals(Locus.d5, second)
+        assertEquals(Locus.h8, third)
     }
 
     @Test

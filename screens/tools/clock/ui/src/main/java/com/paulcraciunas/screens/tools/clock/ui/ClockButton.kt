@@ -27,7 +27,6 @@ import com.paulcraciunas.domain.api.general.CountdownTimer
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.design.components.SpacerSize
-import com.paulcraciunas.screens.common.design.components.borderSoft
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
@@ -75,7 +74,7 @@ internal fun ClockButton(
             disabledElevation = Design.dimensions.elevation.none,
         ),
         contentPadding = PaddingValues(Design.dimensions.spacing.xxl),
-        border = borderSoft(),
+        border = Design.colors.softBorderStroke,
         modifier = modifier
             .fillMaxWidth()
             .padding(Design.dimensions.spacing.sm)

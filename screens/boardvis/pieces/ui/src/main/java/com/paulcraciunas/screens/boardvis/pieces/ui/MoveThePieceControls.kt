@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -34,11 +33,10 @@ import com.paulcraciunas.screens.common.design.components.ChipStyle
 import com.paulcraciunas.screens.common.design.components.ChipTone
 import com.paulcraciunas.screens.common.design.components.Eyebrow
 import com.paulcraciunas.screens.common.design.components.PlayButton
-import com.paulcraciunas.screens.common.design.components.PrimaryPillButton
+import com.paulcraciunas.screens.common.design.components.RefreshButton
 import com.paulcraciunas.screens.common.design.components.SpacerSize
 import com.paulcraciunas.screens.common.design.components.Title
 import com.paulcraciunas.screens.common.design.components.ToggleRow
-import com.paulcraciunas.screens.common.design.components.borderSoft
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.extensions.alpha
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
@@ -176,7 +174,7 @@ internal fun MoveThePieceGameOverControls(
         modifier = modifier
             .fillMaxWidth()
             .clip(Design.shapes.card)
-            .border(borderSoft(), Design.shapes.card)
+            .border(Design.colors.softBorderStroke, Design.shapes.card)
             .background(Design.colors.surface)
             .padding(Design.dimensions.spacing.xgut),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -203,11 +201,7 @@ internal fun MoveThePieceGameOverControls(
                 leadingIcon = Icons.Default.Star,
             )
         }
-        PrimaryPillButton(
-            text = stringResource(R.string.boardvis_play_again),
-            onClick = onPlayAgain,
-            leadingIcon = Icons.Filled.Refresh,
-        )
+        RefreshButton(onClick = onPlayAgain)
     }
 }
 

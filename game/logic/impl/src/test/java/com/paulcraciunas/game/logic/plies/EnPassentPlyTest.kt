@@ -1,10 +1,10 @@
 package com.paulcraciunas.game.logic.plies
 
 import com.paulcraciunas.game.logic.api.Side
+import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.impl.board.Board
 import com.paulcraciunas.game.logic.impl.plies.EnPassentPly
-import com.paulcraciunas.game.logic.loc
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -15,76 +15,76 @@ internal class EnPassentPlyTest {
 
     private val underTest = EnPassentPly(
         turn = Side.WHITE,
-        from = "e5".loc(),
-        to = "d6".loc(),
-        passedLoc = "d5".loc()
+        from = Locus.e5,
+        to = Locus.d6,
+        passedLoc = Locus.d5
     )
 
     @Test
     fun `WHEN executing an en passent THEN the pawn moves and the other pawn is captured`() {
-        on.add(piece = Piece.Pawn, side = Side.WHITE, at = "e5".loc())
-        on.add(piece = Piece.Pawn, side = Side.BLACK, at = "d5".loc())
+        on.add(piece = Piece.Pawn, side = Side.WHITE, at = Locus.e5)
+        on.add(piece = Piece.Pawn, side = Side.BLACK, at = Locus.d5)
 
         underTest.exec(on)
 
-        assertTrue(on.has(Piece.Pawn, Side.WHITE, "d6".loc()))
+        assertTrue(on.has(Piece.Pawn, Side.WHITE, Locus.d6))
         on.forEachPiece(Side.WHITE) { piece, locus ->
             assertEquals(Piece.Pawn, piece)
-            assertEquals("d6".loc(), locus)
+            assertEquals(Locus.d6, locus)
         }
         on.forEachPiece(Side.BLACK) { piece, locus ->
             throw IllegalStateException("Not expecting $piece at $locus")
         }
-        assertTrue(on.isEmpty("e5".loc()))
-        assertTrue(on.isEmpty("d5".loc()))
+        assertTrue(on.isEmpty(Locus.e5))
+        assertTrue(on.isEmpty(Locus.d5))
     }
 
     @Test
     fun `WHEN piece is present where the pawn should end up THEN exec throws`() {
-        on.add(piece = Piece.Pawn, side = Side.WHITE, at = "e5".loc())
-        on.add(piece = Piece.Pawn, side = Side.BLACK, at = "d6".loc())
+        on.add(piece = Piece.Pawn, side = Side.WHITE, at = Locus.e5)
+        on.add(piece = Piece.Pawn, side = Side.BLACK, at = Locus.d6)
 
         assertThrows<AssertionError> { underTest.exec(on) }
     }
 
     @Test
     fun `WHEN there is no pawn to capture en passent THEN exec throws`() {
-        on.add(piece = Piece.Pawn, side = Side.WHITE, at = "e5".loc())
+        on.add(piece = Piece.Pawn, side = Side.WHITE, at = Locus.e5)
 
         assertThrows<AssertionError> { underTest.exec(on) }
     }
 
     @Test
     fun `WHEN attempting to capture en passent a non-pawn THEN exec throws`() {
-        on.add(piece = Piece.Pawn, side = Side.WHITE, at = "e5".loc())
-        on.add(piece = Piece.Knight, side = Side.BLACK, at = "d6".loc())
+        on.add(piece = Piece.Pawn, side = Side.WHITE, at = Locus.e5)
+        on.add(piece = Piece.Knight, side = Side.BLACK, at = Locus.d6)
 
         assertThrows<AssertionError> { underTest.exec(on) }
     }
 
     @Test
     fun `WHEN undoing an en passent THEN the pawn moves back and the other pawn is put back`() {
-        on.add(piece = Piece.Pawn, side = Side.WHITE, at = "d6".loc())
+        on.add(piece = Piece.Pawn, side = Side.WHITE, at = Locus.d6)
 
         underTest.undo(on)
 
-        assertTrue(on.has(Piece.Pawn, Side.WHITE, "e5".loc()))
-        assertTrue(on.has(Piece.Pawn, Side.BLACK, "d5".loc()))
+        assertTrue(on.has(Piece.Pawn, Side.WHITE, Locus.e5))
+        assertTrue(on.has(Piece.Pawn, Side.BLACK, Locus.d5))
         on.forEachPiece(Side.WHITE) { piece, locus ->
             assertEquals(Piece.Pawn, piece)
-            assertEquals("e5".loc(), locus)
+            assertEquals(Locus.e5, locus)
         }
         on.forEachPiece(Side.BLACK) { piece, locus ->
             assertEquals(Piece.Pawn, piece)
-            assertEquals("d5".loc(), locus)
+            assertEquals(Locus.d5, locus)
         }
-        assertTrue(on.isEmpty("d6".loc()))
+        assertTrue(on.isEmpty(Locus.d6))
     }
 
     @Test
     fun `GIVEN destination is occupied WHEN undoing an en passent THEN throw`() {
-        on.add(piece = Piece.Pawn, side = Side.WHITE, at = "d6".loc())
-        on.add(piece = Piece.Knight, side = Side.BLACK, at = "e5".loc())
+        on.add(piece = Piece.Pawn, side = Side.WHITE, at = Locus.d6)
+        on.add(piece = Piece.Knight, side = Side.BLACK, at = Locus.e5)
 
         assertThrows<AssertionError> { underTest.undo(on) }
     }

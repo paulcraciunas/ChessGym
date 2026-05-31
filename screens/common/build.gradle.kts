@@ -11,11 +11,26 @@ android {
     buildFeatures {
         buildConfig = true
     }
+    defaultConfig {
+        buildConfigField("boolean", "ENABLE_TEST_TAGS", "false")
+    }
+    buildTypes {
+        create("benchmark") {
+            initWith(getByName("release"))
+            matchingFallbacks += listOf("release")
+            buildConfigField("boolean", "ENABLE_TEST_TAGS", "true")
+        }
+    }
 }
 
 dependencies {
     implementation(project(":global:resources"))
     implementation(project(":game:logic:api"))
     implementation(project(":domain:api"))
+    api(project(":screens:data"))
+    api(project(":settings:application:api"))
+
+    "benchmarkApi"(libs.androidx.compose.runtime.tracing)
+
     testImplementation(project(":game:logic:impl"))
 }

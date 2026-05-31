@@ -1,23 +1,17 @@
 package com.paulcraciunas.screens.tools.importgame.vm
 
-import com.paulcraciunas.game.logic.api.Side
-import com.paulcraciunas.game.logic.api.board.Locus
-import com.paulcraciunas.screens.common.model.BoardViewData
-import com.paulcraciunas.screens.common.previews.SampleBoardViewData
+import androidx.compose.runtime.Immutable
+import com.paulcraciunas.screens.data.BoardState
 
+@Immutable
 data class ImportGameUiState(
-    val boardData: BoardViewData = SampleBoardViewData.emptyBoard(),
-    val pendingPromotion: PendingPromotion? = null,
-    val importDialogType: ImportType? = null,
+    val data: BoardState = BoardState.empty,
+    val showImportDialog: ImportType? = null,
+    val importType: ImportType? = null,
     val importError: String? = null,
     val isGameLoaded: Boolean = false,
-    val orientation: Side = Side.WHITE,
-    val playerSide: Side = Side.WHITE,
-    val currentMoveIndex: Int = 0,
-    val totalMoves: Int = 0,
-    val importSource: ImportType? = null,
+    val canNavigateBack: Boolean = false,
+    val canNavigateForward: Boolean = false,
 )
 
 enum class ImportType { FEN, PGN }
-
-data class PendingPromotion(val from: Locus, val to: Locus)

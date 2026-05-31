@@ -12,17 +12,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
+import com.paulcraciunas.screens.data.SideSelection
 
-enum class SideSelection {
-    WHITE,
-    BLACK,
-    RANDOM;
-}
 
 @Composable
 fun SideSelectionControls(
@@ -41,7 +36,6 @@ fun SideSelectionControls(
         ) {
             SideSelectionButton(
                 iconRes = R.drawable.king_white,
-                side = Side.WHITE,
                 contentDescription = stringResource(R.string.boardvis_play_as_white),
                 isSelected = selectedSide == SideSelection.WHITE,
                 onClick = { onSideSelected(SideSelection.WHITE) },
@@ -49,7 +43,6 @@ fun SideSelectionControls(
             )
             SideSelectionButton(
                 iconRes = R.drawable.king_black,
-                side = Side.BLACK,
                 contentDescription = stringResource(R.string.boardvis_play_as_black),
                 isSelected = selectedSide == SideSelection.BLACK,
                 onClick = { onSideSelected(SideSelection.BLACK) },
@@ -57,7 +50,6 @@ fun SideSelectionControls(
             )
             SideSelectionButton(
                 iconRes = R.drawable.side_select,
-                side = Side.WHITE,
                 contentDescription = stringResource(R.string.boardvis_play_random),
                 isSelected = selectedSide == SideSelection.RANDOM,
                 onClick = { onSideSelected(SideSelection.RANDOM) },

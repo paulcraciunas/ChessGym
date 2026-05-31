@@ -3,20 +3,24 @@ package com.paulcraciunas.screens.puzzles.rated.vm
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.paulcraciunas.domain.api.general.EloResult
+import com.paulcraciunas.domain.api.general.Timer
 import com.paulcraciunas.domain.api.puzzles.GetRatedPuzzle
 import com.paulcraciunas.domain.api.puzzles.OnPuzzleComplete
 import com.paulcraciunas.domain.api.puzzles.PuzzleCompletionResult
-import com.paulcraciunas.domain.api.general.Timer
-import com.paulcraciunas.game.logic.api.PuzzleInteractor
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.screens.common.model.PuzzleViewModelHelper
-import com.paulcraciunas.screens.common.model.PuzzleViewModelHelper.OnSquareClick
+import com.paulcraciunas.screens.data.BoardState
+import com.paulcraciunas.screens.data.PuzzleSessionFactory
+import com.paulcraciunas.screens.data.SessionSettings
+import com.paulcraciunas.screens.data.runAs
+import com.paulcraciunas.screens.data.updateAs
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -25,25 +29,33 @@ import javax.inject.Inject
 class RatedPuzzleViewModel @Inject constructor(
     private val getRatedPuzzle: GetRatedPuzzle,
     private val onPuzzleComplete: OnPuzzleComplete,
-    private val appSettingsRepository: AppSettingsRepository,
+    appSettingsRepository: AppSettingsRepository,
     private val timer: Timer,
-    puzzleInteractor: PuzzleInteractor,
-) : ViewModel(), RatedPuzzleScreenInteractor {
-    private val helper = PuzzleViewModelHelper(puzzleInteractor = puzzleInteractor)
+) : ViewModel() {
+    private val factory = PuzzleSessionFactory()
+    private val session = factory.get()
 
     private val _uiState = MutableStateFlow<RatedPuzzleUiState>(RatedPuzzleUiState.Loading)
     val uiState: StateFlow<RatedPuzzleUiState> = _uiState.asStateFlow()
-    private var puzzleData: GetRatedPuzzle.Data? = null
+    private lateinit var result: EloResult
 
     init {
-        observeSettings()
+        session.bindSettings(viewModelScope, appSettingsRepository.appSettings.map {
+            SessionSettings(it.autoPromote, it.enableAnimations)
+        })
+        observeBoardState()
         loadPuzzle()
     }
 
-    private fun observeSettings() {
+    private fun observeBoardState() {
         viewModelScope.launch {
-            appSettingsRepository.appSettings.collect { settings ->
-                helper.autoPromote = settings.autoPromote
+            session.data.collect { boardState ->
+                _uiState.updateAs { it: RatedPuzzleUiState.Playing -> it.copy(data = boardState) }
+                _uiState.runAs<RatedPuzzleUiState.Playing> {
+                    if (boardState.isOver && !it.isShowingSolution) {
+                        finishPuzzle(boardState, boardState.won)
+                    }
+                }
             }
         }
     }
@@ -51,74 +63,48 @@ class RatedPuzzleViewModel @Inject constructor(
     private fun loadPuzzle() {
         viewModelScope.launch {
             try {
-                puzzleData = getRatedPuzzle()
-                val data = helper.load(puzzleData!!.puzzle)
+                val puzzleData = getRatedPuzzle()
+                result = puzzleData.ratingChange
+                factory.load(viewModelScope, puzzleData.puzzle)
                 timer.start()
-                _uiState.value = RatedPuzzleUiState.Playing(
-                    data = data,
-                    hintEnabled = true,
-                    showAbandonDialog = false,
-                    promotion = null
-                )
+                _uiState.update { RatedPuzzleUiState.Playing(data = session.currentState, hintEnabled = true, showAbandonDialog = false) }
             } catch (e: Exception) {
                 Timber.w(e, "Failed to load rated puzzle")
-                _uiState.value = RatedPuzzleUiState.Failed
+                _uiState.update { RatedPuzzleUiState.Failed }
             }
         }
     }
 
-    override fun onSquareClicked(selection: Locus) = whilePlayingInteractive {
-        handleMoveResult(helper.handleSquareClick(selection))
+    fun onSquareClicked(selection: Locus) = _uiState.runAs<RatedPuzzleUiState.Playing> {
+        if (!it.isShowingSolution) session.onClick(selection)
     }
 
-    override fun onPromote(to: Piece) = whilePlayingInteractive { state ->
-        if (state.promotion == null) return@whilePlayingInteractive
-        handleMoveResult(helper.promote(to, state.promotion.at))
+    fun onPromote(to: Piece) = session.promoteIfPending(to)
+    fun onHintRequested() = _uiState.runAs<RatedPuzzleUiState.Playing> {
+        if (it.hintEnabled && !it.isShowingSolution) {
+            session.hint()
+            _uiState.updateAs { it: RatedPuzzleUiState.Playing -> it.copy(hintEnabled = false) }
+        }
     }
 
-    override fun onHintRequested() = whilePlayingInteractive { state ->
-        helper.hint()
-        _uiState.value = state.copy(data = helper.buildPuzzleData(), hintEnabled = false)
-    }
-
-    override fun onAbandon() = whilePlayingInteractive { state ->
-        _uiState.value = state.copy(showAbandonDialog = true)
-    }
-
-    override fun onAbandonConfirmed() = whilePlaying { state ->
-        // Start showing solution animation
-        _uiState.value = state.copy(
-            showAbandonDialog = false,
-            isShowingSolution = true,
-        )
+    fun onAbandon() = _uiState.updateAs { it: RatedPuzzleUiState.Playing -> it.copy(showAbandonDialog = true) }
+    fun onAbandonDismissed() = _uiState.updateAs { it: RatedPuzzleUiState.Playing -> it.copy(showAbandonDialog = false) }
+    fun onAbandonConfirmed() {
+        _uiState.updateAs { it: RatedPuzzleUiState.Playing -> it.copy(showAbandonDialog = false, isShowingSolution = true) }
 
         viewModelScope.launch {
-            helper.playSolution { data ->
-                val currentState = _uiState.value
-                val canUpdate = currentState is RatedPuzzleUiState.Playing && currentState.isShowingSolution
-                canUpdate.also { if (canUpdate) _uiState.value = currentState.copy(data = data) }
-            }
-
-            // After solution shown, finish the puzzle as failed
-            finishPuzzle(isSuccess = false)
+            session.playSolution { _uiState.value is RatedPuzzleUiState.Playing }
+            finishPuzzle(session.currentState, isSuccess = false)
         }
     }
 
-    override fun onAbandonDismissed() = whilePlayingInteractive { state ->
-        _uiState.value = state.copy(showAbandonDialog = false)
-    }
-
-    override fun onNextPuzzle() {
+    fun onNextPuzzle() {
         loadPuzzle()
     }
 
-    // Returns true if back press was handled, false otherwise
     fun onNavigateBackPressed(): Boolean {
-        if (_uiState.value is RatedPuzzleUiState.Playing) {
-            onAbandon()
-            return true
-        }
-        return false
+        _uiState.runAs<RatedPuzzleUiState.Playing> { onAbandon() }
+        return _uiState.value is RatedPuzzleUiState.Playing
     }
 
     fun onStop() {
@@ -129,49 +115,28 @@ class RatedPuzzleViewModel @Inject constructor(
         timer.resume()
     }
 
-    private fun handleMoveResult(result: OnSquareClick) = whilePlaying { state ->
-        when {
-            result.promotion != null -> _uiState.value = state.copy(promotion = result.promotion)
-            !result.isOver -> _uiState.value = state.copy(data = result.data, promotion = null)
-            else -> finishPuzzle(result.isSuccess)
+    private fun finishPuzzle(data: BoardState, isSuccess: Boolean) = _uiState.runAs<RatedPuzzleUiState.Playing> {
+        _uiState.update {
+            RatedPuzzleUiState.Finished(
+                data = data,
+                success = isSuccess,
+                ratingChange = result.get(success = isSuccess),
+            )
         }
+        logResult(data, isSuccess)
     }
 
-    private fun finishPuzzle(isSuccess: Boolean) {
-        _uiState.value = RatedPuzzleUiState.Finished(
-            data = helper.buildPuzzleData(),
-            success = isSuccess,
-            ratingChange = puzzleData!!.ratingChange.get(success = isSuccess),
-        )
-        logResult(isSuccess, puzzleData!!.ratingChange)
-    }
-
-    private fun logResult(success: Boolean, eloResult: EloResult) {
+    private fun logResult(data: BoardState, success: Boolean) {
         viewModelScope.launch {
             onPuzzleComplete(
                 PuzzleCompletionResult(
-                    puzzleId = helper.id,
-                    puzzleRating = helper.rating,
+                    puzzleId = data.id,
+                    puzzleRating = data.rating!!,
                     wasSuccessful = success,
-                    ratingChange = eloResult.get(success = success),
+                    ratingChange = result.get(success = success),
                     timeSpentMillis = timer.elapsed(),
                 )
             )
         }
-    }
-
-    private fun whilePlaying(block: (RatedPuzzleUiState.Playing) -> Unit) {
-        val state = _uiState.value
-        if (state !is RatedPuzzleUiState.Playing) return
-
-        block(state)
-    }
-
-    /** Same as [whilePlaying] but also blocks interaction while showing solution */
-    private fun whilePlayingInteractive(block: (RatedPuzzleUiState.Playing) -> Unit) {
-        val state = _uiState.value
-        if (state !is RatedPuzzleUiState.Playing || state.isShowingSolution) return
-
-        block(state)
     }
 }

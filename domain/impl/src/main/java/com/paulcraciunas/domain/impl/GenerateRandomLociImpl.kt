@@ -19,9 +19,6 @@ class GenerateRandomLociImpl @Inject constructor(
         val fileIndex = randomFactory.nextInt(from = 0, to = File.entries.size)
         val rankIndex = randomFactory.nextInt(from = 0, to = Rank.entries.size)
 
-        return Locus(
-            file = File.fromDec(fileIndex),
-            rank = Rank.fromDec(rankIndex)
-        )
+        return Locus.from(file = File.fromDec(fileIndex), rank = Rank.fromDec(rankIndex))
     }
 }
