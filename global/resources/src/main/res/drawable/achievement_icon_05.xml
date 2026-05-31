@@ -1,0 +1,77 @@
+<!--
+  ~ Copyright (C) 2026 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="9.46"
+    android:viewportHeight="9.46">
+    <path
+        android:pathData="M3.22,0.28l0,2.15m0,4.77l0,1.98"
+        android:strokeWidth="0.15"
+        android:strokeColor="#6880A4" />
+    <path
+        android:pathData="M6.24,0.28l0,2.25m0,4.67l0,1.98"
+        android:strokeWidth="0.15"
+        android:strokeColor="#6880A4" />
+    <path
+        android:pathData="M9.18,3.23l-1.79,0m-5.32,0l-1.79,0"
+        android:strokeWidth="0.15"
+        android:strokeColor="#6880A4" />
+    <path
+        android:pathData="M9.18,6.24l-1.55,0m-5.8,0l-1.55,0"
+        android:strokeWidth="0.15"
+        android:strokeColor="#6880A4" />
+    <path
+        android:pathData="M0.62,4.83c2.6,-3.62 5.63,-3.62 8.22,0 -2.59,3.62 -5.62,3.62 -8.22,0z"
+        android:strokeWidth="0.15"
+        android:strokeColor="#6880A4" />
+    <path
+        android:pathData="M7.19,4.65c0,1.39 -1.12,2.51 -2.52,2.51 -1.39,0 -2.51,-1.12 -2.51,-2.51 0,-1.4 1.12,-2.52 2.51,-2.52 0.57,0 1.09,0.18 1.51,0.49 -0.08,0.09 -0.12,0.2 -0.12,0.32 0,0.27 0.21,0.48 0.47,0.48 0.11,0 0.21,-0.04 0.29,-0.1 0.24,0.39 0.37,0.84 0.37,1.33z"
+        android:strokeWidth="0.15"
+        android:strokeColor="#6880A4" />
+    <path
+        android:pathData="M4.05,2.92L4.05,6.37"
+        android:strokeWidth="0.15"
+        android:strokeColor="#6880A4" />
+    <path
+        android:pathData="M5.3,2.92L5.3,6.37"
+        android:strokeWidth="0.15"
+        android:strokeColor="#6880A4" />
+    <path
+        android:pathData="M6.4,4.02L2.95,4.02"
+        android:strokeWidth="0.15"
+        android:strokeColor="#6880A4" />
+    <path
+        android:pathData="M6.4,5.27L2.95,5.27"
+        android:strokeWidth="0.15"
+        android:strokeColor="#6880A4" />
+    <path
+        android:pathData="M4.15,5.15L5.18,4.12"
+        android:strokeWidth="0.15"
+        android:strokeColor="#6880A4" />
+    <path
+        android:pathData="M4.75,5.17L5.2,4.72"
+        android:strokeWidth="0.15"
+        android:strokeColor="#6880A4" />
+    <path
+        android:pathData="M4.15,4.57L4.6,4.12"
+        android:strokeWidth="0.15"
+        android:strokeColor="#6880A4" />
+    <path
+        android:pathData="M0.87,0.14L8.59,0.14A0.73,0.73 0,0 1,9.32 0.87L9.32,8.59A0.73,0.73 0,0 1,8.59 9.32L0.87,9.32A0.73,0.73 0,0 1,0.14 8.59L0.14,0.87A0.73,0.73 0,0 1,0.87 0.14z"
+        android:strokeWidth="0.15"
+        android:strokeColor="#6880A4" />
+</vector>
