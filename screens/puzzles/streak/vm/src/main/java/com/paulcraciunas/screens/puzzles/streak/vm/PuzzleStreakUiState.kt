@@ -1,8 +1,7 @@
 package com.paulcraciunas.screens.puzzles.streak.vm
 
 import androidx.compose.runtime.Immutable
-import com.paulcraciunas.screens.data.PlayableData
-import com.paulcraciunas.screens.data.Promotion
+import com.paulcraciunas.screens.data.BoardState
 
 @Immutable
 sealed class PuzzleStreakUiState {
@@ -12,27 +11,25 @@ sealed class PuzzleStreakUiState {
     data object Failed : PuzzleStreakUiState()
 
     @Immutable
-    abstract class BoardState : PuzzleStreakUiState() {
-        abstract val data: PlayableData
+    abstract class WithBoard : PuzzleStreakUiState() {
+        abstract val data: BoardState
     }
 
     @Immutable
     data class Playing(
-        override val data: PlayableData,
+        override val data: BoardState,
         val streakCount: Int,
         val hintEnabled: Boolean = true,
         val showAbandonDialog: Boolean = false,
         val isShowingSolution: Boolean = false,
         val isAwaitingNextPuzzle: Boolean = false,
-        val isAnimating: Boolean = false,
-        val promotion: Promotion?,
-    ) : BoardState()
+    ) : WithBoard()
 
     @Immutable
     data class StreakEnded(
-        override val data: PlayableData,
+        override val data: BoardState,
         val finalStreakCount: Int,
         val isNewHighScore: Boolean,
         val showSummary: Boolean,
-    ) : BoardState()
+    ) : WithBoard()
 }

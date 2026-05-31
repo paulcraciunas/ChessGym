@@ -85,7 +85,7 @@ fun PuzzleStreakScreen(
         when (uiState) {
             is PuzzleStreakUiState.Loading -> LoadingContent(modifier = defaultModifier)
             is PuzzleStreakUiState.Failed -> FailedContent(modifier = defaultModifier)
-            is PuzzleStreakUiState.BoardState -> PuzzleStreakContent(
+            is PuzzleStreakUiState.WithBoard -> PuzzleStreakContent(
                 uiState = uiState,
                 onSquareClicked = onSquareClicked,
                 onPromote = onPromote,
@@ -104,7 +104,7 @@ fun PuzzleStreakScreen(
 
 @Composable
 private fun PuzzleStreakContent(
-    uiState: PuzzleStreakUiState.BoardState,
+    uiState: PuzzleStreakUiState.WithBoard,
     onSquareClicked: (selection: Locus) -> Unit,
     onPromote: (to: Piece) -> Unit,
     onHintRequested: () -> Unit,
@@ -119,7 +119,6 @@ private fun PuzzleStreakContent(
     val data = uiState.data
     val isShowingSolution = uiState is PuzzleStreakUiState.Playing && uiState.isShowingSolution
     val isAwaitingNext = uiState is PuzzleStreakUiState.Playing && uiState.isAwaitingNextPuzzle
-    val isBoardInteractive = !isShowingSolution && !isAwaitingNext
     Column(modifier = modifier) {
         CapturedPieces(capturedPieces = data.captured.byOpponent, side = data.player, modifier = Modifier.fillMaxWidth())
         AnimatedBoard(
@@ -129,7 +128,7 @@ private fun PuzzleStreakContent(
             ChessBoard(
                 board = puzzleData.boardData,
                 orientation = BoardOrientation.fromSide(puzzleData.player),
-                onClick = if (isBoardInteractive) onSquareClicked else { _ -> },
+                onClick = onSquareClicked,
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -172,7 +171,7 @@ private fun PuzzleStreakContent(
                     onDismiss = onAbandonDismissed
                 )
             }
-            if (uiState.promotion != null) {
+            if (uiState.data.promotion != null) {
                 PromotionDialog(
                     side = data.player,
                     onPieceChosen = onPromote
@@ -252,7 +251,6 @@ private fun PlayingPreview() {
                     streakCount = 12,
                     hintEnabled = true,
                     showAbandonDialog = false,
-                    promotion = null,
                 ),
             )
         }
@@ -272,7 +270,6 @@ private fun PuzzleEndedPreview() {
                     hintEnabled = true,
                     isAwaitingNextPuzzle = true,
                     showAbandonDialog = false,
-                    promotion = null,
                 ),
             )
         }

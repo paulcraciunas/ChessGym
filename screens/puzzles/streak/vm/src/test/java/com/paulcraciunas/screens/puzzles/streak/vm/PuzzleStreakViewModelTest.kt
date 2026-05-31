@@ -57,7 +57,7 @@ internal class PuzzleStreakViewModelTest {
             assertEquals(DEFAULT_RATING, data.rating)
             assertEquals(Side.BLACK, data.player)
             assertEquals(0, streakCount)
-            assertNull(promotion)
+            assertNull(data.promotion)
         }
     }
 
@@ -93,6 +93,7 @@ internal class PuzzleStreakViewModelTest {
 
         // When
         underTest.onSquareClicked(Locus.e7)
+        testDispatcher.scheduler.runCurrent()
 
         // Then
         val playingState = underTest.uiState.value as PuzzleStreakUiState.Playing
@@ -126,11 +127,12 @@ internal class PuzzleStreakViewModelTest {
 
         // When
         underTest.onSquareClicked(Locus.a8)
+        testDispatcher.scheduler.runCurrent()
 
         // Then
         val playingState = underTest.uiState.value as PuzzleStreakUiState.Playing
-        assertNotNull(playingState.promotion)
-        val promotion = playingState.promotion!!
+        assertNotNull(playingState.data.promotion)
+        val promotion = playingState.data.promotion!!
         assertTrue(promotion.showChooser)
         assertEquals(Locus.a8, promotion.at)
     }
@@ -163,6 +165,7 @@ internal class PuzzleStreakViewModelTest {
 
         // When
         underTest.onHintRequested()
+        testDispatcher.scheduler.runCurrent()
 
         // Then
         val playingState = underTest.uiState.value as PuzzleStreakUiState.Playing

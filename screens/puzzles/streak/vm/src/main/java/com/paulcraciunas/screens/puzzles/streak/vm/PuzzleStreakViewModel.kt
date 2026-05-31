@@ -8,18 +8,17 @@ import com.paulcraciunas.domain.api.puzzles.OnStreakComplete
 import com.paulcraciunas.domain.api.puzzles.OnStreakPuzzleComplete
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.screens.data.PIECE_MOVE_ANIMATION_DURATION_MS
-import com.paulcraciunas.screens.data.BoardInteractionHelper
-import com.paulcraciunas.screens.data.ClickResult
-import com.paulcraciunas.screens.data.PuzzlePlayableBoard
-import com.paulcraciunas.screens.data.PuzzleSolution
+import com.paulcraciunas.screens.data.PuzzleSessionFactory
+import com.paulcraciunas.screens.data.SessionSettings
+import com.paulcraciunas.screens.data.runAs
+import com.paulcraciunas.screens.data.updateAs
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -33,22 +32,28 @@ class PuzzleStreakViewModel @Inject constructor(
     private val appSettingsRepository: AppSettingsRepository,
     private val timer: Timer,
 ) : ViewModel() {
-    private val helper = BoardInteractionHelper(solution = PuzzleSolution())
-    private var enableAnimations: Boolean = true
-
+    private val factory = PuzzleSessionFactory()
+    private val session = factory.get()
     private val _uiState = MutableStateFlow<PuzzleStreakUiState>(PuzzleStreakUiState.Loading)
     val uiState: StateFlow<PuzzleStreakUiState> = _uiState.asStateFlow()
 
     init {
-        observeSettings()
+        session.bindSettings(viewModelScope, appSettingsRepository.appSettings.map {
+            SessionSettings(it.autoPromote, it.enableAnimations)
+        })
+        observeBoardState()
         loadPuzzle()
     }
 
-    private fun observeSettings() {
+    private fun observeBoardState() {
         viewModelScope.launch {
-            appSettingsRepository.appSettings.collect { settings ->
-                helper.autoPromote = settings.autoPromote
-                enableAnimations = settings.enableAnimations
+            session.data.collect { boardState ->
+                _uiState.updateAs { it: PuzzleStreakUiState.Playing -> it.copy(data = boardState) }
+                _uiState.runAs<PuzzleStreakUiState.Playing> {
+                    if (boardState.isOver && boardState.interactive && !it.isShowingSolution && !it.isAwaitingNextPuzzle) {
+                        onPuzzleCompleted()
+                    }
+                }
             }
         }
     }
@@ -67,46 +72,31 @@ class PuzzleStreakViewModel @Inject constructor(
                 loadNextPuzzle()
             } catch (e: Exception) {
                 Timber.w(e, "Failed to load streak puzzle")
-                _uiState.value = PuzzleStreakUiState.Failed
+                _uiState.update { PuzzleStreakUiState.Failed }
             }
         }
     }
 
-    fun onSquareClicked(selection: Locus) = whilePlayingInteractive {
-        handleMoveResult(helper.handleSquareClick(selection))
-    }
-
-    fun onPromote(to: Piece) = whilePlayingInteractive { state ->
-        state.promotion?.let {
-            handleMoveResult(helper.promote(to, state.promotion.at))
+    fun onSquareClicked(selection: Locus) = whilePlayingInteractive { session.onClick(selection) }
+    fun onPromote(to: Piece) = whilePlayingInteractive { session.promoteIfPending(to) }
+    fun onHintRequested() = whilePlayingInteractive { state ->
+        if (state.hintEnabled) {
+            session.hint()
+            _uiState.updateAs { it: PuzzleStreakUiState.Playing -> it.copy(hintEnabled = false) }
         }
     }
 
-    fun onHintRequested() = _uiState.updateInteractive { state ->
-        if (!state.hintEnabled) state
-        else state.copy(
-            data = helper.hint(),
-            hintEnabled = false,
-        )
-    }
-
-    fun onAbandon() = _uiState.updateInteractive { it.copy(showAbandonDialog = true) }
-    fun onAbandonConfirmed() = whilePlaying {
-        // Start showing solution animation
-        _uiState.updateInteractive { it.copy(showAbandonDialog = false, isShowingSolution = true) }
+    fun onAbandon() = _uiState.updateAs { it: PuzzleStreakUiState.Playing -> it.copy(showAbandonDialog = true) }
+    fun onAbandonConfirmed() = _uiState.runAs<PuzzleStreakUiState.Playing> {
+        _uiState.updateAs { it: PuzzleStreakUiState.Playing -> it.copy(showAbandonDialog = false, isShowingSolution = true) }
 
         viewModelScope.launch {
-            helper.playSolution { data ->
-                _uiState.updatePlaying { it.copy(data = data) }
-                return@playSolution _uiState.value is PuzzleStreakUiState.Playing
-            }
-            // After solution shown, end the streak
+            session.playSolution { _uiState.value is PuzzleStreakUiState.Playing }
             endStreak()
         }
     }
 
-    fun onAbandonDismissed() = _uiState.updatePlaying { it.copy(showAbandonDialog = false) }
-
+    fun onAbandonDismissed() = _uiState.updateAs { it: PuzzleStreakUiState.Playing -> it.copy(showAbandonDialog = false) }
     fun onNewStreak() {
         _uiState.update { PuzzleStreakUiState.Loading }
         loadPuzzle()
@@ -119,33 +109,20 @@ class PuzzleStreakViewModel @Inject constructor(
         }
     }
 
-    private fun handleMoveResult(result: ClickResult) {
-        _uiState.updatePlaying { it.copy(data = result.data, promotion = result.promotion, isAnimating = result.data.isOver) }
-        if (result.data.isOver) {
-            onPuzzleCompleted(result)
-        }
-    }
-
-    fun onNextPuzzle() = whilePlaying { state ->
-        if (!state.isAwaitingNextPuzzle) return@whilePlaying
-
-        viewModelScope.launch {
-            goToNext()
-        }
-    }
-
-    private fun onPuzzleCompleted(result: ClickResult) = whilePlaying {
-        viewModelScope.launch {
-            if (enableAnimations) {
-                delay(ANIMATION_WAIT_MS)
+    fun onNextPuzzle() = _uiState.runAs<PuzzleStreakUiState.Playing> {
+        if (it.isAwaitingNextPuzzle) {
+            viewModelScope.launch {
+                goToNext()
             }
+        }
+    }
 
-            if (result.data.won) {
-                val timeSpent = timer.elapsed()
-                onStreakPuzzleComplete(timeSpent)
-
+    private fun onPuzzleCompleted() = _uiState.runAs<PuzzleStreakUiState.Playing> {
+        viewModelScope.launch {
+            if (session.currentState.won) {
+                onStreakPuzzleComplete(timer.elapsed())
                 if (appSettingsRepository.appSettings.first().autoNextPuzzle) goToNext()
-                else _uiState.updatePlaying { it.copy(isAwaitingNextPuzzle = true, isAnimating = false) }
+                else _uiState.updateAs { it: PuzzleStreakUiState.Playing -> it.copy(isAwaitingNextPuzzle = true) }
             } else {
                 endStreak()
             }
@@ -164,14 +141,14 @@ class PuzzleStreakViewModel @Inject constructor(
     private suspend fun loadNextPuzzle() {
         timer.start()
         val data = getStreakPuzzle()
+        factory.load(viewModelScope, data.puzzle)
         _uiState.update {
             PuzzleStreakUiState.Playing(
-                data = helper.load(PuzzlePlayableBoard(data.puzzle)),
+                data = session.currentState,
                 streakCount = data.currentStreakCount,
                 isAwaitingNextPuzzle = false,
                 hintEnabled = true,
                 showAbandonDialog = false,
-                promotion = null,
             )
         }
     }
@@ -179,9 +156,9 @@ class PuzzleStreakViewModel @Inject constructor(
     private suspend fun endStreak() {
         val timeSpent = timer.elapsed()
         val result = onStreakComplete(timeSpent)
-        _uiState.updatePlaying {
+        _uiState.updateAs { _: PuzzleStreakUiState.Playing ->
             PuzzleStreakUiState.StreakEnded(
-                data = helper.current(),
+                data = session.currentState,
                 finalStreakCount = result.finalStreakCount,
                 isNewHighScore = result.isNewHighScore,
                 showSummary = true,
@@ -189,33 +166,7 @@ class PuzzleStreakViewModel @Inject constructor(
         }
     }
 
-    private fun whilePlaying(block: (PuzzleStreakUiState.Playing) -> Unit) {
-        val state = _uiState.value
-        if (state !is PuzzleStreakUiState.Playing) return
-        block(state)
-    }
-
-    /** Same as [whilePlaying] but also blocks interaction while showing solution, awaiting next, or animating */
-    private fun whilePlayingInteractive(block: (PuzzleStreakUiState.Playing) -> Unit) {
-        val state = _uiState.value
-        if (state !is PuzzleStreakUiState.Playing || state.isShowingSolution || state.isAwaitingNextPuzzle || state.isAnimating) return
-        block(state)
-    }
-
-    private inline fun MutableStateFlow<PuzzleStreakUiState>.updatePlaying(
-        crossinline function: (PuzzleStreakUiState.Playing) -> PuzzleStreakUiState,
-    ) = update { state ->
-        if (state !is PuzzleStreakUiState.Playing) state else function(state)
-    }
-
-    private inline fun MutableStateFlow<PuzzleStreakUiState>.updateInteractive(
-        crossinline function: (PuzzleStreakUiState.Playing) -> PuzzleStreakUiState,
-    ) = update { state ->
-        if (state !is PuzzleStreakUiState.Playing || state.isShowingSolution || state.isAwaitingNextPuzzle || state.isAnimating) state
-        else function(state)
-    }
-
-    companion object {
-        internal const val ANIMATION_WAIT_MS = PIECE_MOVE_ANIMATION_DURATION_MS + 50L
+    private inline fun whilePlayingInteractive(block: (PuzzleStreakUiState.Playing) -> Unit) = _uiState.runAs<PuzzleStreakUiState.Playing> {
+        if (!it.isShowingSolution && !it.isAwaitingNextPuzzle) block(it)
     }
 }
