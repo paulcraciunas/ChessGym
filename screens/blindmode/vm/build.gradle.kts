@@ -11,6 +11,7 @@ androidLibrary {
 dependencies {
     implementation(project(":domain:api"))
     implementation(project(":game:logic:api"))
+    implementation(project(":game:logic:builders"))
     implementation(project(":game:engine:api"))
     implementation(project(":screens:data"))
     implementation(project(":settings:application:api"))

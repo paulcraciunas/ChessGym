@@ -122,9 +122,10 @@ private fun PlayingContent(
         },
         label = "revealAlpha",
     )
+    val isThinking = !state.data.interactive
     val controlsAlpha by animateFloatAsState(
-        targetValue = if (state.isThinking) 0f else 1f,
-        animationSpec = tween(durationMillis = 200), // Adjust speed here
+        targetValue = if (isThinking) 0f else 1f,
+        animationSpec = tween(durationMillis = 200),
         label = "controlsAlpha"
     )
     ChessBoard(
@@ -136,11 +137,11 @@ private fun PlayingContent(
     )
     ChessGymSpacer()
     DefaultPuzzleControls(
-        hintEnabled = !state.isThinking && !state.isRevealing && state.isRevealAvailable,
+        hintEnabled = !isThinking && !state.isRevealing && state.isRevealAvailable,
         toMove = state.data.player,
         onHintRequested = onReveal,
         onAbandonRequested = onResign,
-        abandonEnabled = !state.isThinking && !state.isRevealing,
+        abandonEnabled = !isThinking && !state.isRevealing,
         moveIndicatorTextRes = R.string.blind_mode_your_turn,
         modifier = Modifier.alpha(controlsAlpha),
     )
@@ -148,10 +149,10 @@ private fun PlayingContent(
     if (state.moveHistory.isNotEmpty()) {
         MoveHistoryDisplay(moveHistory = state.moveHistory)
     }
-    if (state.isThinking) {
+    if (isThinking) {
         ThinkingIndicator()
     }
-    if (state.pendingPromotion != null) {
+    if (state.data.promotion != null) {
         PromotionDialog(
             side = state.data.player,
             onPieceChosen = onPromote,
@@ -209,7 +210,6 @@ private fun BlindModePlayingPreview() {
                     data = PreviewData().whiteGameData(),
                     moveHistory = "1. e4 e5 2. Nf3 Nc6",
                     isRevealAvailable = true,
-                    isThinking = false,
                 ),
                 onDrawerToggle = {},
             )
@@ -225,10 +225,9 @@ private fun BlindModeThinkingPreview() {
             BlindModeScreen(
                 uiState = BlindModeUiState.Playing(
                     isTrainingMode = true,
-                    data = PreviewData().whiteGameData(),
+                    data = PreviewData().whiteGameData().copy(interactive = false),
                     moveHistory = "1. e4 e5 2. Nf3 Nc6",
                     isRevealAvailable = true,
-                    isThinking = true,
                 ),
                 onDrawerToggle = {},
             )
@@ -247,7 +246,6 @@ private fun BlindModeRevealingPreview() {
                     data = PreviewData().whiteGameData(),
                     moveHistory = "1. e4 e5 2. Nf3 Nc6",
                     isRevealAvailable = true,
-                    isThinking = false,
                     isRevealing = true,
                 ),
                 onDrawerToggle = {},

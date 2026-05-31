@@ -1,9 +1,8 @@
 package com.paulcraciunas.screens.blindmode.vm
 
 import androidx.compose.runtime.Immutable
+import com.paulcraciunas.screens.data.BoardState
 import com.paulcraciunas.screens.data.SideSelection
-import com.paulcraciunas.screens.data.PlayableData
-import com.paulcraciunas.screens.data.Promotion
 
 @Immutable
 sealed class BlindModeUiState {
@@ -18,11 +17,9 @@ sealed class BlindModeUiState {
     @Immutable
     data class Playing(
         override val isTrainingMode: Boolean,
-        val data: PlayableData,
-        val pendingPromotion: Promotion? = null,
+        val data: BoardState,
         val moveHistory: String = "",
         val isRevealAvailable: Boolean = true,
-        val isThinking: Boolean = false,
         val isAbandonDialogShown: Boolean = false,
         val isRevealing: Boolean = false,
     ) : BlindModeUiState()
@@ -30,7 +27,7 @@ sealed class BlindModeUiState {
     @Immutable
     data class GameOver(
         override val isTrainingMode: Boolean,
-        val data: PlayableData,
+        val data: BoardState,
         val moveHistory: String,
     ) : BlindModeUiState()
 }

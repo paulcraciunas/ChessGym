@@ -15,7 +15,7 @@ import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.design.components.RefreshButton
 import com.paulcraciunas.screens.common.design.components.SpacerSize
 import com.paulcraciunas.screens.common.design.theme.Design
-import com.paulcraciunas.screens.data.PlayableData
+import com.paulcraciunas.screens.data.Outcome
 
 @Composable
 internal fun GameOverContent(
@@ -44,9 +44,9 @@ internal fun GameOverContent(
 }
 
 @StringRes
-private fun PlayableData.Outcome?.stringRes(): Int = when (this) {
-    PlayableData.Outcome.Won -> R.string.result_checkmate
-    PlayableData.Outcome.Drew -> R.string.result_draw
-    PlayableData.Outcome.Lost -> R.string.result_loss
+private fun Outcome?.stringRes(): Int = when (this) {
+    Outcome.Won -> R.string.result_checkmate
+    Outcome.Drew -> R.string.result_draw
+    Outcome.Lost -> R.string.result_loss
     null -> throw IllegalArgumentException("Can't show a result if the game has no outcome")
 }

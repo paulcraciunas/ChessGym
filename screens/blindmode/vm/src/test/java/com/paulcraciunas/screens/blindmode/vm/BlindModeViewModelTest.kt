@@ -3,15 +3,15 @@ package com.paulcraciunas.screens.blindmode.vm
 import com.paulcraciunas.domain.api.blindmode.FakeOnBlindModeGameComplete
 import com.paulcraciunas.domain.api.general.FakeTimer
 import com.paulcraciunas.domain.api.general.FixedRandomFactory
-import com.paulcraciunas.domain.impl.blindmode.BlindModeOrchestratorImpl
+import com.paulcraciunas.domain.impl.engine.EngineOrchestratorImpl
 import com.paulcraciunas.game.engine.api.ChessEngine
 import com.paulcraciunas.game.engine.api.EngineMove
 import com.paulcraciunas.game.engine.api.FakeChessEngine
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.impl.RealGameFactory
+import com.paulcraciunas.screens.data.Outcome
 import com.paulcraciunas.screens.data.SideSelection
-import com.paulcraciunas.screens.data.PlayableData
 import com.paulcraciunas.serializer.impl.FenSerializer
 import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
 import com.paulcraciunas.user.api.FakeUserRepository
@@ -48,7 +48,7 @@ internal class BlindModeViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
         underTest = BlindModeViewModel(
-            orchestrator = BlindModeOrchestratorImpl(
+            engineOrchestrator = EngineOrchestratorImpl(
                 chessEngine = engine,
                 serializer = FenSerializer(RealGameFactory()),
                 dispatcher = testDispatcher,
@@ -113,13 +113,13 @@ internal class BlindModeViewModelTest {
             }
 
         @Test
-        fun `GIVEN setup with White WHEN onPlayClicked THEN no engine move requested`() =
+        fun `GIVEN setup with White WHEN onPlayClicked THEN board is interactive`() =
             runTest {
                 underTest.onPlayClicked()
                 advanceUntilIdle()
 
                 val state = underTest.uiState.value as BlindModeUiState.Playing
-                assertFalse(state.isThinking)
+                assertTrue(state.data.interactive)
             }
 
         @Test
@@ -128,10 +128,10 @@ internal class BlindModeViewModelTest {
                 prepareEngineForBlackGame()
                 underTest.onSideSelected(SideSelection.BLACK)
                 underTest.onPlayClicked()
-                advanceUntilIdle()
+                testDispatcher.scheduler.advanceUntilIdle()
 
                 val state = underTest.uiState.value as BlindModeUiState.Playing
-                assertFalse(state.isThinking)
+                assertTrue(state.data.interactive)
                 assertTrue(state.moveHistory.isNotEmpty())
             }
     }
@@ -144,6 +144,7 @@ internal class BlindModeViewModelTest {
                 startGame()
 
                 underTest.onSquareClicked(Locus.e2)
+                testDispatcher.scheduler.runCurrent()
 
                 val state = underTest.uiState.value as BlindModeUiState.Playing
                 assertEquals(Locus.e2, state.data.boardData.selection)
@@ -172,7 +173,7 @@ internal class BlindModeViewModelTest {
                 advanceUntilIdle()
 
                 val state = underTest.uiState.value as BlindModeUiState.Playing
-                assertFalse(state.isThinking)
+                assertTrue(state.data.interactive)
                 assertNull(state.data.boardData.selection)
                 assertTrue(state.moveHistory.isNotEmpty())
             }
@@ -201,18 +202,19 @@ internal class BlindModeViewModelTest {
             }
 
         @Test
-        fun `GIVEN thinking state WHEN onSquareClicked THEN ignored`() = runTest {
+        fun `GIVEN engine thinking WHEN onSquareClicked THEN ignored`() = runTest {
             startGame()
 
             underTest.onSquareClicked(Locus.e2)
+            testDispatcher.scheduler.runCurrent()
             underTest.onSquareClicked(Locus.e4)
 
-            val thinkingState = underTest.uiState.value as BlindModeUiState.Playing
-            assertTrue(thinkingState.isThinking)
-
+            // Click before the opponent coroutine runs — board is not interactive
             underTest.onSquareClicked(Locus.d2)
+
+            testDispatcher.scheduler.advanceUntilIdle()
             val stateAfter = underTest.uiState.value as BlindModeUiState.Playing
-            assertTrue(stateAfter.isThinking)
+            assertTrue(stateAfter.data.interactive)
             assertNull(stateAfter.data.boardData.selection)
         }
     }
@@ -227,7 +229,7 @@ internal class BlindModeViewModelTest {
             advanceUntilIdle()
 
             val state = underTest.uiState.value as BlindModeUiState.GameOver
-            assertEquals(PlayableData.Outcome.Lost, state.data.outcome)
+            assertEquals(Outcome.Lost, state.data.outcome)
             assertNotNull(fakeOnComplete.lastResult)
         }
 
@@ -430,7 +432,7 @@ internal class BlindModeViewModelTest {
                 advanceUntilIdle()
 
                 val state = underTest.uiState.value as BlindModeUiState.GameOver
-                assertEquals(PlayableData.Outcome.Lost, state.data.outcome)
+                assertEquals(Outcome.Lost, state.data.outcome)
             }
     }
 
