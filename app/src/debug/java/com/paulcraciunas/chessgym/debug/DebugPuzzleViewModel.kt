@@ -1,14 +1,15 @@
 package com.paulcraciunas.chessgym.debug
 
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.puzzles.api.PuzzleRepository
-import com.paulcraciunas.screens.data.BoardInteractionHelper
-import com.paulcraciunas.screens.data.PlayableData
-import com.paulcraciunas.screens.data.Promotion
-import com.paulcraciunas.screens.data.PuzzlePlayableBoard
+import com.paulcraciunas.screens.data.BoardState
+import com.paulcraciunas.screens.data.PuzzleSessionFactory
+import com.paulcraciunas.screens.data.runAs
+import com.paulcraciunas.screens.data.updateAs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,51 +23,49 @@ import javax.inject.Inject
 class DebugPuzzleViewModel @Inject constructor(
     private val puzzleRepository: PuzzleRepository,
 ) : ViewModel() {
-    private val helper = BoardInteractionHelper()
+    private val factory = PuzzleSessionFactory(withSolution = false)
+    private val session = factory.get()
 
     private val _uiState = MutableStateFlow<DebugPuzzleUiState>(DebugPuzzleUiState.Idle)
     val uiState: StateFlow<DebugPuzzleUiState> = _uiState.asStateFlow()
 
+    init {
+        observeBoardState()
+    }
+
+    private fun observeBoardState() {
+        viewModelScope.launch {
+            session.data.collect { boardState ->
+                _uiState.updateAs { it: DebugPuzzleUiState.Playing -> it.copy(data = boardState) }
+                _uiState.runAs<DebugPuzzleUiState.Playing> {
+                    if (boardState.isOver) {
+                        _uiState.update { DebugPuzzleUiState.Finished(data = boardState, isSuccess = boardState.won) }
+                    }
+                }
+            }
+        }
+    }
+
     fun loadPuzzle(id: Int) {
-        _uiState.value = DebugPuzzleUiState.Loading
+        _uiState.update { DebugPuzzleUiState.Loading }
         viewModelScope.launch {
             try {
                 val puzzle = puzzleRepository.getById(id)
-                _uiState.update {
-                    if (puzzle == null) DebugPuzzleUiState.Error("Puzzle #$id not found")
-                    else DebugPuzzleUiState.Playing(data = helper.load(PuzzlePlayableBoard(puzzle)), promotion = null)
+                if (puzzle == null) {
+                    _uiState.update { DebugPuzzleUiState.Error("Puzzle #$id not found") }
+                } else {
+                    factory.load(viewModelScope, puzzle)
+                    _uiState.update { DebugPuzzleUiState.Playing(data = session.currentState) }
                 }
             } catch (e: Exception) {
                 Timber.w(e, "Failed to load debug puzzle #%d", id)
-                _uiState.value = DebugPuzzleUiState.Error("Failed to load puzzle: ${e.message}")
+                _uiState.update { DebugPuzzleUiState.Error("Failed to load puzzle: ${e.message}") }
             }
         }
     }
 
-    fun onSquareClicked(selection: Locus) {
-        _uiState.updatePlaying {
-            val result = helper.handleSquareClick(selection)
-            if (!result.data.isOver) it.copy(data = result.data, promotion = result.promotion)
-            else DebugPuzzleUiState.Finished(data = result.data, isSuccess = result.data.won)
-        }
-    }
-
-    fun onPromote(to: Piece) {
-        _uiState.updatePlaying {
-            if (it.promotion == null) it
-            else {
-                val result = helper.promote(to, it.promotion.at)
-                if (!result.data.isOver) it.copy(data = result.data, promotion = null)
-                else DebugPuzzleUiState.Finished(data = result.data, isSuccess = result.data.won)
-            }
-        }
-    }
-
-    private inline fun MutableStateFlow<DebugPuzzleUiState>.updatePlaying(
-        crossinline function: (DebugPuzzleUiState.Playing) -> DebugPuzzleUiState,
-    ) = update { state ->
-        if (state !is DebugPuzzleUiState.Playing) state else function(state)
-    }
+    fun onSquareClicked(selection: Locus) = _uiState.runAs<DebugPuzzleUiState.Playing> { session.onClick(selection) }
+    fun onPromote(to: Piece) = session.promoteIfPending(to)
 }
 
 sealed class DebugPuzzleUiState {
@@ -74,17 +73,14 @@ sealed class DebugPuzzleUiState {
     data object Loading : DebugPuzzleUiState()
     data class Error(val message: String) : DebugPuzzleUiState()
 
-    abstract class BoardState : DebugPuzzleUiState() {
-        abstract val data: PlayableData
+    @Immutable
+    abstract class WithBoard : DebugPuzzleUiState() {
+        abstract val data: BoardState
     }
 
-    data class Playing(
-        override val data: PlayableData,
-        val promotion: Promotion?,
-    ) : BoardState()
+    @Immutable
+    data class Playing(override val data: BoardState) : WithBoard()
 
-    data class Finished(
-        override val data: PlayableData,
-        val isSuccess: Boolean,
-    ) : BoardState()
+    @Immutable
+    data class Finished(override val data: BoardState, val isSuccess: Boolean) : WithBoard()
 }
