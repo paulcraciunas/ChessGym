@@ -5,7 +5,7 @@ import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import com.paulcraciunas.screens.boardvis.squares.ui.FindTheSquareTags
-import com.paulcraciunas.screens.data.SideSelectionTags
+import com.paulcraciunas.screens.common.controls.SideSelectionTags
 
 class FindTheSquareScreenAssertions(private val rule: ComposeTestRule) {
 

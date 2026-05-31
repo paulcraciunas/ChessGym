@@ -14,7 +14,11 @@ import com.paulcraciunas.user.api.FakeUserRepository
 import com.paulcraciunas.user.api.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -310,8 +314,10 @@ internal class FindTheSquareViewModelTest {
         assertEquals(1, fakeOnFindSquareComplete.lastResult?.score)
     }
 
-    private fun setupViewModel(user: User = User()) = runTest {
-        userRepository.local.saveUser(user)
+    private fun TestScope.setupViewModel(user: User = User()) {
+        launch {
+            userRepository.local.saveUser(user)
+        }
         underTest = FindTheSquareViewModel(
             generateRandomLoci = fakeGenerateRandomLoci,
             onFindSquareComplete = fakeOnFindSquareComplete,
@@ -320,7 +326,14 @@ internal class FindTheSquareViewModelTest {
             randomFactory = fakeRandomFactory,
             gameDuration = DefaultGameDuration(),
         )
-        testDispatcher.scheduler.advanceUntilIdle()
+        advanceUntilIdle()
+        observeUiState()
+    }
+
+    private fun TestScope.observeUiState() {
+        backgroundScope.launch(UnconfinedTestDispatcher(testDispatcher.scheduler)) {
+            underTest.uiState.collect {}
+        }
     }
 }
 
