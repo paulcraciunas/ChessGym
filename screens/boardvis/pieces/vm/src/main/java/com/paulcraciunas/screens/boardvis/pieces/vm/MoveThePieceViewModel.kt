@@ -14,14 +14,19 @@ import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.logic.builders.Builders
 import com.paulcraciunas.screens.data.BoardViewData
+import com.paulcraciunas.screens.data.runAs
+import com.paulcraciunas.screens.data.updateAs
 import com.paulcraciunas.user.api.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -32,7 +37,7 @@ class MoveThePieceViewModel @Inject constructor(
     @param:DefaultTimer private val countdownTimer: CountdownTimer,
     private val userRepository: UserRepository,
 ) : ViewModel() {
-
+    private var timerObserverJob: Job? = null
     private var currentHighScore: Int = 0
     private val _viewState = MutableStateFlow<ViewState>(ViewState.Setup())
 
@@ -40,17 +45,12 @@ class MoveThePieceViewModel @Inject constructor(
         _viewState,
         countdownTimer.remaining.map { it.roundSeconds() }
     ) { viewState, remainingSeconds ->
-        if (viewState is ViewState.Playing && remainingSeconds <= 0) {
-            finishGame(wasCaptured = false)
-            return@combine _viewState.value.toUiState(remainingSeconds)
-        }
         viewState.toUiState(remainingSeconds)
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.Eagerly,
+        started = SharingStarted.WhileSubscribed(5_000),
         initialValue = MoveThePieceUiState.Setup()
     )
-
 
     init {
         viewModelScope.launch {
@@ -61,24 +61,17 @@ class MoveThePieceViewModel @Inject constructor(
         countdownTimer.set(MoveThePieceUiState.DEFAULT_DURATION_SECONDS)
     }
 
-    fun onTrainingModeToggled(enabled: Boolean) {
-        val currentState = _viewState.value
-        if (currentState is ViewState.Setup) {
-            _viewState.value = currentState.copy(isTrainingMode = enabled)
+    private fun observeTimer() {
+        timerObserverJob?.cancel()
+        timerObserverJob = viewModelScope.launch {
+            countdownTimer.remaining.first { it.roundSeconds() <= 0 }
+            _viewState.runAs<ViewState.Playing> { finishGame(state = it, wasCaptured = false) }
         }
     }
 
-    fun onPieceSelected(piece: Piece) {
-        val currentState = _viewState.value
-        if (currentState is ViewState.Setup) {
-            _viewState.value = currentState.copy(selectedPiece = piece)
-        }
-    }
-
-    fun onPlayClicked() {
-        val currentState = _viewState.value
-        if (currentState !is ViewState.Setup) return
-
+    fun onTrainingModeToggled(enabled: Boolean) = _viewState.updateAs { it: ViewState.Setup -> it.copy(isTrainingMode = enabled) }
+    fun onPieceSelected(piece: Piece) = _viewState.updateAs { it: ViewState.Setup -> it.copy(selectedPiece = piece) }
+    fun onPlayClicked() = _viewState.runAs<ViewState.Setup> { currentState ->
         val initialPiece = if (currentState.isTrainingMode) {
             currentState.selectedPiece
         } else {
@@ -91,43 +84,38 @@ class MoveThePieceViewModel @Inject constructor(
             opposingPieceCount = INITIAL_OPPOSING_PIECES,
             isTrainingMode = currentState.isTrainingMode,
         )
-
         countdownTimer.start(scope = viewModelScope)
+        observeTimer()
 
         val engineState = gameEngine.getState()
-        _viewState.value = ViewState.Playing(
-            boardState = MoveThePieceBoardState(
-                playerPieceLocus = engineState.playerPieceLocus,
-                playerPiece = engineState.playerPiece,
-                opposingPieces = engineState.opposingPieces,
-                visitedSquares = engineState.visitedSquares
-            ),
-            movesRemaining = engineState.movesRemaining,
-            currentScore = engineState.currentScore,
-            isTrainingMode = currentState.isTrainingMode
-        )
+        _viewState.update {
+            ViewState.Playing(
+                boardState = MoveThePieceBoardState(
+                    playerPieceLocus = engineState.playerPieceLocus,
+                    playerPiece = engineState.playerPiece,
+                    opposingPieces = engineState.opposingPieces,
+                    visitedSquares = engineState.visitedSquares
+                ),
+                movesRemaining = engineState.movesRemaining,
+                currentScore = engineState.currentScore,
+                isTrainingMode = currentState.isTrainingMode
+            )
+        }
     }
 
-    fun onSquareClicked(locus: Locus) {
-        val currentState = _viewState.value
-        if (currentState !is ViewState.Playing) return
-
+    fun onSquareClicked(locus: Locus) = _viewState.runAs<ViewState.Playing> { state ->
         when (val result = gameEngine.makeMove(locus)) {
-            is MoveResult.Invalid -> {
-                // Do nothing - invalid move
-            }
-            is MoveResult.Captured -> {
-                finishGame(wasCaptured = true)
-            }
-            is MoveResult.Success -> {
-                _viewState.value = currentState.copy(
+            is MoveResult.Invalid -> {}// Do nothing - invalid move
+            is MoveResult.Captured -> finishGame(state = state, wasCaptured = true)
+            is MoveResult.Success -> _viewState.updateAs { it: ViewState.Playing ->
+                it.copy(
                     boardState = result.newState.toBoardState(),
                     movesRemaining = result.newState.movesRemaining,
                     currentScore = result.newState.currentScore
                 )
             }
-            is MoveResult.LevelComplete -> {
-                _viewState.value = currentState.copy(
+            is MoveResult.LevelComplete -> _viewState.updateAs { it: ViewState.Playing ->
+                it.copy(
                     boardState = result.newState.toBoardState(),
                     movesRemaining = result.newState.movesRemaining,
                     currentScore = result.newState.currentScore
@@ -142,29 +130,30 @@ class MoveThePieceViewModel @Inject constructor(
         _viewState.value = ViewState.Setup()
     }
 
-    private fun finishGame(wasCaptured: Boolean) {
+    private fun finishGame(state: ViewState.Playing, wasCaptured: Boolean) {
         countdownTimer.stop()
 
-        val playingState = _viewState.value as? ViewState.Playing ?: return
-        val score = playingState.currentScore
-        val isNewHighScore = score > currentHighScore && !playingState.isTrainingMode
+        val score = state.currentScore
+        val isNewHighScore = score > currentHighScore && !state.isTrainingMode
 
         viewModelScope.launch {
             onComplete(
                 MoveThePieceResult(
                     score = score,
                     timeSpentMillis = countdownTimer.elapsedMillis(),
-                    isTrainingMode = playingState.isTrainingMode
+                    isTrainingMode = state.isTrainingMode
                 )
             )
         }
 
-        _viewState.value = ViewState.GameOver(
-            lastBoardState = playingState.boardState,
-            finalScore = score,
-            isNewHighScore = isNewHighScore,
-            wasCaptured = wasCaptured
-        )
+        _viewState.update {
+            ViewState.GameOver(
+                lastBoardState = state.boardState,
+                finalScore = score,
+                isNewHighScore = isNewHighScore,
+                wasCaptured = wasCaptured
+            )
+        }
     }
 
     private sealed class ViewState {
