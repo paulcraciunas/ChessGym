@@ -8,15 +8,13 @@ import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.state.GameInfo
 
-class GamePlayableBoard(
-    val game: Game,
-    override val player: Side,
-) : PlayableBoard {
+internal class GamePlayableBoard(val game: Game, override val player: Side) : PlayableBoard {
     override val board: IBoard get() = game.board
     override val info: GameInfo get() = game.info
-    override val activeSide: Side get() = game.info.turn
+    override val playerSide: Side get() = player
     override val rating: Int? get() = game.rating
     override val id: Int? get() = null
+    override val lastMovePly: Ply? get() = game.history.lastOrNull()
 
     override fun initialize() {
         if (game.state == Game.GameState.Ready) {
@@ -30,14 +28,14 @@ class GamePlayableBoard(
     override fun play(ply: Ply): Unit = game.play(ply)
     override fun resign(): Unit = game.resign()
     override fun isOver(): Boolean = game.state is Game.GameState.Finished
-    override fun outcome(): PlayableData.Outcome? {
+    override fun outcome(): Outcome? {
         val result = (game.state as? Game.GameState.Finished)?.result ?: return null
-        val lastPly = game.info.lastPly ?: return PlayableData.Outcome.Lost // Finish what you started, dear player
+        val lastPly = game.info.lastPly ?: return Outcome.Lost // Finish what you started, dear player
         return when {
-            result == Result.Resigned -> PlayableData.Outcome.Lost
-            result.isDraw() -> PlayableData.Outcome.Drew
-            lastPly.turn == player -> PlayableData.Outcome.Won
-            else -> PlayableData.Outcome.Lost
+            result == Result.Resigned -> Outcome.Lost
+            result.isDraw() -> Outcome.Drew
+            lastPly.turn == player -> Outcome.Won
+            else -> Outcome.Lost
         }
     }
 }
