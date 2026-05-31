@@ -35,7 +35,7 @@ class AchievementsViewModel @Inject constructor(
         state.copy(selectedAchievement = selected)
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.Eagerly,
+        started = SharingStarted.WhileSubscribed(5_000),
         initialValue = AchievementsUiState(isLoading = true)
     )
 
