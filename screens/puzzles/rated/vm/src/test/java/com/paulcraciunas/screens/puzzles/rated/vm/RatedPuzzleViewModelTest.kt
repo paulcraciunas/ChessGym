@@ -61,7 +61,7 @@ internal class RatedPuzzleViewModelTest {
             assertEquals(Side.BLACK, data.player)
             assertTrue(hintEnabled)
             assertFalse(showAbandonDialog)
-            assertNull(promotion)
+            assertNull(data.promotion)
         }
         assertTrue(timer.isRunning())
     }
@@ -85,6 +85,7 @@ internal class RatedPuzzleViewModelTest {
 
         // When
         underTest.onSquareClicked(Locus.e7)
+        testDispatcher.scheduler.runCurrent()
 
         // Then
         val playingState = underTest.uiState.value as RatedPuzzleUiState.Playing
@@ -118,11 +119,12 @@ internal class RatedPuzzleViewModelTest {
 
         // When
         underTest.onSquareClicked(Locus.a8)
+        testDispatcher.scheduler.runCurrent()
 
         // Then
         val playingState = underTest.uiState.value as RatedPuzzleUiState.Playing
-        assertNotNull(playingState.promotion)
-        val promotion = playingState.promotion!!
+        assertNotNull(playingState.data.promotion)
+        val promotion = playingState.data.promotion!!
         assertTrue(promotion.showChooser)
         assertEquals(Locus.a8, promotion.at)
     }
@@ -137,10 +139,11 @@ internal class RatedPuzzleViewModelTest {
 
         // When
         underTest.onPromote(Piece.Queen)
+        testDispatcher.scheduler.advanceUntilIdle()
 
         // Then
-        val playingState = underTest.uiState.value as RatedPuzzleUiState.Finished
-        val promotedSquare = playingState.data.boardData.at(Locus.a8)
+        val finishedState = underTest.uiState.value as RatedPuzzleUiState.Finished
+        val promotedSquare = finishedState.data.boardData.at(Locus.a8)
         assertEquals(Piece.Queen, promotedSquare.piece?.piece?.piece)
         assertEquals(Side.WHITE, promotedSquare.piece?.piece?.side)
     }
@@ -152,6 +155,7 @@ internal class RatedPuzzleViewModelTest {
 
         // When
         underTest.onHintRequested()
+        testDispatcher.scheduler.runCurrent()
 
         // Then
         val playingState = underTest.uiState.value as RatedPuzzleUiState.Playing

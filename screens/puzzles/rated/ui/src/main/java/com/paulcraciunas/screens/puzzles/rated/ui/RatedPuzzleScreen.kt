@@ -48,7 +48,7 @@ fun RatedPuzzleScreen(
     onNextPuzzle: () -> Unit = {},
 ) {
     val title = when (uiState) {
-        is RatedPuzzleUiState.BoardState -> stringResource(R.string.rated_puzzle_title, uiState.data.rating!!)
+        is RatedPuzzleUiState.WithBoard -> stringResource(R.string.rated_puzzle_title, uiState.data.rating!!)
         else -> stringResource(R.string.puzzle_mode_rated_title)
     }
     Scaffold(
@@ -62,7 +62,7 @@ fun RatedPuzzleScreen(
         when (uiState) {
             is RatedPuzzleUiState.Loading -> LoadingContent(modifier = defaultModifier.testTag { RatedPuzzleScreenTags.LOADING })
             is RatedPuzzleUiState.Failed -> FailedContent(modifier = defaultModifier.testTag { RatedPuzzleScreenTags.FAILED })
-            is RatedPuzzleUiState.BoardState -> {
+            is RatedPuzzleUiState.WithBoard -> {
                 RatedPuzzleContent(
                     uiState = uiState,
                     onSquareClicked = onSquareClicked,
@@ -81,7 +81,7 @@ fun RatedPuzzleScreen(
 
 @Composable
 private fun RatedPuzzleContent(
-    uiState: RatedPuzzleUiState.BoardState,
+    uiState: RatedPuzzleUiState.WithBoard,
     onSquareClicked: (selection: Locus) -> Unit,
     onPromote: (to: Piece) -> Unit,
     onHintRequested: () -> Unit,
@@ -100,7 +100,7 @@ private fun RatedPuzzleContent(
         ChessBoard(
             board = data.boardData,
             orientation = BoardOrientation.fromSide(data.player),
-            onClick = if (!isShowingSolution) onSquareClicked else { _ -> },
+            onClick = onSquareClicked,
             modifier = Modifier.fillMaxWidth()
         )
         CapturedPieces(capturedPieces = data.captured.byPlayer, side = data.player.other(), modifier = Modifier.fillMaxWidth())
@@ -132,7 +132,7 @@ private fun RatedPuzzleContent(
                     onDismiss = onAbandonDismissed
                 )
             }
-            if (uiState.promotion != null) {
+            if (uiState.data.promotion != null) {
                 PromotionDialog(
                     side = data.player,
                     onPieceChosen = onPromote
@@ -153,7 +153,6 @@ private fun WhitePlayingPreview() {
                     data = PreviewData().whitePuzzleData(),
                     hintEnabled = true,
                     showAbandonDialog = false,
-                    promotion = null,
                 ),
             )
         }
@@ -171,7 +170,6 @@ private fun BlackPlayingPreview() {
                     data = PreviewData().blackPuzzleData(),
                     hintEnabled = true,
                     showAbandonDialog = false,
-                    promotion = null,
                 ),
             )
         }
