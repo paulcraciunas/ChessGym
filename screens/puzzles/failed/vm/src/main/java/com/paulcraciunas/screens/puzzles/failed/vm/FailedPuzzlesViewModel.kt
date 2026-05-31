@@ -9,20 +9,20 @@ import com.paulcraciunas.domain.api.puzzles.OnFailedPuzzleComplete
 import com.paulcraciunas.domain.api.puzzles.PuzzleAnalysisData
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.screens.data.PIECE_MOVE_ANIMATION_DURATION_MS
-import com.paulcraciunas.screens.data.BoardInteractionHelper
-import com.paulcraciunas.screens.data.ClickResult
-import com.paulcraciunas.screens.data.PlayableData
-import com.paulcraciunas.screens.data.PuzzlePlayableBoard
+import com.paulcraciunas.screens.data.BoardState
 import com.paulcraciunas.screens.data.PuzzleResult
+import com.paulcraciunas.screens.data.PuzzleSessionFactory
+import com.paulcraciunas.screens.data.SessionSettings
+import com.paulcraciunas.screens.data.runAs
+import com.paulcraciunas.screens.data.updateAs
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -34,12 +34,11 @@ class FailedPuzzlesViewModel @Inject constructor(
     private val getFailedPuzzles: GetFailedPuzzles,
     private val onFailedPuzzleComplete: OnFailedPuzzleComplete,
     private val getPuzzleFen: GetPuzzleFen,
-    private val appSettingsRepository: AppSettingsRepository,
+    appSettingsRepository: AppSettingsRepository,
     private val timer: Timer,
 ) : ViewModel() {
-    private val helper = BoardInteractionHelper()
-    private var enableAnimations: Boolean = true
-
+    private val factory = PuzzleSessionFactory(withSolution = false)
+    private val session = factory.get()
     private val _navigateToAnalysis = Channel<PuzzleAnalysisData>(Channel.BUFFERED)
     val navigateToAnalysis: Flow<PuzzleAnalysisData> = _navigateToAnalysis.receiveAsFlow()
 
@@ -47,15 +46,20 @@ class FailedPuzzlesViewModel @Inject constructor(
     val uiState: StateFlow<FailedPuzzlesUiState> = _uiState.asStateFlow()
 
     init {
-        observeSettings()
+        session.bindSettings(viewModelScope, appSettingsRepository.appSettings.map {
+            SessionSettings(it.autoPromote, it.enableAnimations)
+        })
+        observeBoardState()
         loadPuzzles()
     }
 
-    private fun observeSettings() {
+    private fun observeBoardState() {
         viewModelScope.launch {
-            appSettingsRepository.appSettings.collect { settings ->
-                helper.autoPromote = settings.autoPromote
-                enableAnimations = settings.enableAnimations
+            session.data.collect { boardState ->
+                _uiState.updateAs { it: FailedPuzzlesUiState.Playing -> it.copy(data = boardState) }
+                _uiState.runAs<FailedPuzzlesUiState.Playing> {
+                    if (boardState.isOver && boardState.interactive) onPuzzleCompleted(boardState, boardState.won)
+                }
             }
         }
     }
@@ -73,16 +77,17 @@ class FailedPuzzlesViewModel @Inject constructor(
             try {
                 getFailedPuzzles.load(viewModelScope)
                 val puzzle = getFailedPuzzles.next()
-                _uiState.update {
-                    if (puzzle == null) FailedPuzzlesUiState.Empty
-                    else FailedPuzzlesUiState.Playing(
-                        data = helper.load(PuzzlePlayableBoard(puzzle)),
-                        progress = FailedPuzzlesUiState.Progress(solved = 0, total = getFailedPuzzles.totalCount()),
-                        results = emptyList(),
-                        promotion = null,
-                    )
-                }
-                whilePlaying {
+                if (puzzle == null) {
+                    _uiState.update { FailedPuzzlesUiState.Empty }
+                } else {
+                    factory.load(viewModelScope, puzzle)
+                    _uiState.update {
+                        FailedPuzzlesUiState.Playing(
+                            data = session.currentState,
+                            progress = FailedPuzzlesUiState.Progress(solved = 0, total = getFailedPuzzles.totalCount()),
+                            results = emptyList(),
+                        )
+                    }
                     timer.start()
                 }
             } catch (e: Exception) {
@@ -92,23 +97,9 @@ class FailedPuzzlesViewModel @Inject constructor(
         }
     }
 
-    fun onSquareClicked(selection: Locus) = whilePlayingInteractive {
-        handleMoveResult(helper.handleSquareClick(selection))
-    }
-
-    fun onPromote(to: Piece) = whilePlayingInteractive { state ->
-        state.promotion?.let {
-            handleMoveResult(helper.promote(to, state.promotion.at))
-        }
-    }
-
-    fun onDismissCompletion() {
-        _uiState.update { state ->
-            if (state is FailedPuzzlesUiState.Finished) state.copy(showCompletionDialog = false)
-            else state
-        }
-    }
-
+    fun onSquareClicked(selection: Locus) = _uiState.runAs<FailedPuzzlesUiState.Playing> { session.onClick(selection) }
+    fun onPromote(to: Piece) = session.promoteIfPending(to)
+    fun onDismissCompletion() = _uiState.updateAs { it: FailedPuzzlesUiState.Finished -> it.copy(showCompletionDialog = false) }
     fun onAnalyzeFailedPuzzle(puzzleId: Int) {
         viewModelScope.launch {
             getPuzzleFen(puzzleId)?.let { data -> _navigateToAnalysis.send(data) }
@@ -116,64 +107,34 @@ class FailedPuzzlesViewModel @Inject constructor(
         }
     }
 
-    private fun handleMoveResult(result: ClickResult) {
-        _uiState.updatePlaying { it.copy(data = result.data, promotion = result.promotion, isAnimating = result.data.isOver) }
-        if (result.data.isOver) {
-            onPuzzleCompleted(result.data, result.data.won)
-        }
-    }
-
-    private fun onPuzzleCompleted(data: PlayableData, isSuccess: Boolean) = whilePlaying { state ->
+    private fun onPuzzleCompleted(data: BoardState, isSuccess: Boolean) = _uiState.runAs<FailedPuzzlesUiState.Playing> { state ->
         viewModelScope.launch {
             if (isSuccess) {
                 data.id?.let { onFailedPuzzleComplete(it, timer.elapsed()) }
             }
-            if (enableAnimations) {
-                delay(ANIMATION_WAIT_MS)
-            }
             val updatedResults = state.results + PuzzleResult(id = data.id, rating = data.rating!!, success = isSuccess)
             val progress = state.progress.copy(solved = updatedResults.count { it.success })
             val nextPuzzle = getFailedPuzzles.next()
-            _uiState.update {
-                if (nextPuzzle != null) {
+            if (nextPuzzle != null) {
+                factory.load(viewModelScope, nextPuzzle)
+                _uiState.update {
                     FailedPuzzlesUiState.Playing(
-                        data = helper.load(PuzzlePlayableBoard(nextPuzzle)),
+                        data = session.currentState,
                         progress = progress,
                         results = updatedResults,
-                        promotion = null,
                     )
-                } else FailedPuzzlesUiState.Finished(
-                    data = data,
-                    progress = progress,
-                    results = updatedResults,
-                    showCompletionDialog = true,
-                )
-            }
-            whilePlaying {
+                }
                 timer.start()
+            } else {
+                _uiState.update {
+                    FailedPuzzlesUiState.Finished(
+                        data = data,
+                        progress = progress,
+                        results = updatedResults,
+                        showCompletionDialog = true,
+                    )
+                }
             }
         }
-    }
-
-    companion object {
-        internal const val ANIMATION_WAIT_MS = PIECE_MOVE_ANIMATION_DURATION_MS + 50L
-    }
-
-    private fun whilePlaying(block: (FailedPuzzlesUiState.Playing) -> Unit) {
-        val state = _uiState.value
-        if (state !is FailedPuzzlesUiState.Playing) return
-        block(state)
-    }
-
-    private fun whilePlayingInteractive(block: (FailedPuzzlesUiState.Playing) -> Unit) {
-        val state = _uiState.value
-        if (state !is FailedPuzzlesUiState.Playing || state.isAnimating) return
-        block(state)
-    }
-
-    private inline fun MutableStateFlow<FailedPuzzlesUiState>.updatePlaying(
-        crossinline function: (FailedPuzzlesUiState.Playing) -> FailedPuzzlesUiState,
-    ) = update { state ->
-        if (state !is FailedPuzzlesUiState.Playing) state else function(state)
     }
 }

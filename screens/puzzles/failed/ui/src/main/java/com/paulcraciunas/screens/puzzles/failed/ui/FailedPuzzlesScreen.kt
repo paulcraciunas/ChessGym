@@ -48,7 +48,7 @@ fun FailedPuzzlesScreen(
     onAnalyzeFailedPuzzle: (puzzleId: Int) -> Unit = {},
 ) {
     val progress = when (uiState) {
-        is FailedPuzzlesUiState.BoardState -> uiState.progress
+        is FailedPuzzlesUiState.WithBoard -> uiState.progress
         else -> null
     }
 
@@ -77,7 +77,7 @@ fun FailedPuzzlesScreen(
             is FailedPuzzlesUiState.Empty -> EmptyFailedPuzzlesContent(modifier = screenModifier)
             is FailedPuzzlesUiState.Loading -> LoadingContent(modifier = screenModifier)
             is FailedPuzzlesUiState.Failed -> FailedContent(modifier = screenModifier)
-            is FailedPuzzlesUiState.BoardState -> {
+            is FailedPuzzlesUiState.WithBoard -> {
                 FailedPuzzlesContent(
                     uiState = uiState,
                     onSquareClicked = onSquareClicked,
@@ -94,7 +94,7 @@ fun FailedPuzzlesScreen(
 @SuppressLint("UnusedContentLambdaTargetStateParameter")
 @Composable
 private fun FailedPuzzlesContent(
-    uiState: FailedPuzzlesUiState.BoardState,
+    uiState: FailedPuzzlesUiState.WithBoard,
     onSquareClicked: (selection: Locus) -> Unit,
     onPromote: (to: Piece) -> Unit,
     onDismissCompletion: () -> Unit,
@@ -105,7 +105,6 @@ private fun FailedPuzzlesContent(
     Column(
         modifier = modifier.fillMaxSize()
     ) {
-        val isBoardInteractive = uiState !is FailedPuzzlesUiState.Playing || !uiState.isAnimating
         CapturedPieces(capturedPieces = data.captured.byOpponent, side = data.player, modifier = Modifier.fillMaxWidth())
         AnimatedBoard(
             targetState = data,
@@ -114,7 +113,7 @@ private fun FailedPuzzlesContent(
             ChessBoard(
                 board = puzzleData.boardData,
                 orientation = BoardOrientation.fromSide(puzzleData.player),
-                onClick = if (isBoardInteractive) onSquareClicked else { _ -> },
+                onClick = onSquareClicked,
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -129,7 +128,7 @@ private fun FailedPuzzlesContent(
                     .padding(horizontal = Design.dimensions.spacing.xxl)
             )
         }
-        if (uiState is FailedPuzzlesUiState.Playing && uiState.promotion != null) {
+        if (uiState is FailedPuzzlesUiState.Playing && uiState.data.promotion != null) {
             PromotionDialog(
                 side = data.player,
                 onPieceChosen = onPromote
@@ -168,7 +167,6 @@ private fun PlayingPreview() {
                     data = PreviewData().blackPuzzleData(),
                     progress = FailedPuzzlesUiState.Progress(solved = 3, total = 10),
                     results = PreviewData().fewResults(),
-                    promotion = null,
                 ),
             )
         }
