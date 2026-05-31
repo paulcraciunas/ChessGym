@@ -76,7 +76,7 @@ fun ImportGameScreen(
             ChessBoard(
                 board = data.boardData,
                 orientation = BoardOrientation.fromSide(data.player),
-                onClick = if (uiState.isGameLoaded) onSquareClicked else { _ -> },
+                onClick = onSquareClicked,
                 modifier = Modifier.fillMaxWidth()
             )
             CapturedPieces(
@@ -116,7 +116,7 @@ fun ImportGameScreen(
         )
     }
 
-    uiState.promotion?.let {
+    uiState.data.promotion?.let {
         PromotionDialog(side = uiState.data.player, onPieceChosen = onPromote)
     }
 }

@@ -1,26 +1,13 @@
 package com.paulcraciunas.screens.tools.importgame.vm
 
 import androidx.compose.runtime.Immutable
-import com.paulcraciunas.game.logic.api.Side
-import com.paulcraciunas.screens.data.BoardViewData
-import com.paulcraciunas.screens.data.CapturedPieces
-import com.paulcraciunas.screens.data.PlayableData
-import com.paulcraciunas.screens.data.Promotion
+import com.paulcraciunas.screens.data.BoardState
 
 @Immutable
 data class ImportGameUiState(
-    val data: PlayableData = PlayableData(
-        rating = null,
-        player = Side.WHITE,
-        id = null,
-        boardData = BoardViewData.empty(),
-        captured = CapturedPieces(byOpponent = "", byPlayer = ""),
-        isOver = false,
-        outcome = null,
-    ),
-    val promotion: Promotion? = null,
+    val data: BoardState = BoardState.empty,
     val showImportDialog: ImportType? = null,
-    val importType: ImportType? = null, // Keeps track of already imported game
+    val importType: ImportType? = null,
     val importError: String? = null,
     val isGameLoaded: Boolean = false,
     val canNavigateBack: Boolean = false,

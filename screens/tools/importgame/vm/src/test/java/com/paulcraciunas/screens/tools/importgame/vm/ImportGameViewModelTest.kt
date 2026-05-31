@@ -333,11 +333,13 @@ internal class ImportGameViewModelTest {
     private fun importStartingPosition() {
         underTest.onFenClicked()
         underTest.onImport(Serializer.STARTING_FEN)
+        testDispatcher.scheduler.advanceUntilIdle()
     }
 
     private fun importPgn(pgn: String) {
         underTest.onPgnClicked()
         underTest.onImport(pgn)
+        testDispatcher.scheduler.advanceUntilIdle()
     }
 
     private fun playMove(from: Locus, to: Locus) {
