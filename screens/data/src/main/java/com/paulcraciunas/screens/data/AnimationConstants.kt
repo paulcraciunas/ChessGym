@@ -1,3 +1,4 @@
 package com.paulcraciunas.screens.data
 
 const val PIECE_MOVE_ANIMATION_DURATION_MS = 200
+const val COMPLETION_ANIMATION_WAIT_MS = PIECE_MOVE_ANIMATION_DURATION_MS + 50L

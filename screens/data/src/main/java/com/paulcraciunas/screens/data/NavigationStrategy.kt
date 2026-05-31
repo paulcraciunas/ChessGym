@@ -4,7 +4,6 @@ import com.paulcraciunas.game.logic.api.Game
 import com.paulcraciunas.game.logic.api.algebraic
 
 interface NavigationStrategy {
-    fun load(playable: PlayableBoard)
     fun size(): Int
     fun algebraic(): String
 
@@ -18,9 +17,11 @@ interface NavigationStrategy {
 
 class GameNavigation : NavigationStrategy {
     private var game: Game? = null
-    override fun load(playable: PlayableBoard) {
-        game = (playable as? GamePlayableBoard)?.game
+
+    fun load(game: Game) {
+        this.game = game
     }
+
     override fun size(): Int = (game?.historySize ?: 0) / 2
     override fun algebraic(): String = game?.history?.algebraic() ?: ""
 
@@ -33,7 +34,6 @@ class GameNavigation : NavigationStrategy {
 }
 
 object NoOpNavigation : NavigationStrategy {
-    override fun load(playable: PlayableBoard) {}
     override fun size(): Int = 0
     override fun algebraic(): String = ""
 

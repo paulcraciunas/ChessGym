@@ -4,23 +4,41 @@ import androidx.compose.runtime.Immutable
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 
+enum class Outcome {
+    Won,
+    Drew,
+    Lost,
+}
+
 @Immutable
-data class PlayableData(
+data class BoardState(
     val rating: Int?,
     val player: Side,
     val id: Int?,
     val boardData: BoardViewData,
+    val promotion: Promotion?,
+    val movePlayed: Boolean,
     val captured: CapturedPieces,
     val isOver: Boolean,
+    val interactive: Boolean,
     val outcome: Outcome?,
 ) {
     val won: Boolean // simple convenience property, as we query this in multiple places
         get() = outcome == Outcome.Won
 
-    enum class Outcome {
-        Won,
-        Drew,
-        Lost,
+    companion object {
+        val empty = BoardState(
+            rating = null,
+            player = Side.WHITE,
+            id = null,
+            boardData = BoardViewData.empty(),
+            promotion = null,
+            movePlayed = false,
+            captured = CapturedPieces("", ""),
+            isOver = false,
+            interactive = false,
+            outcome = null,
+        )
     }
 }
 
@@ -28,14 +46,6 @@ data class PlayableData(
 data class CapturedPieces(
     val byPlayer: String,
     val byOpponent: String,
-)
-
-@Immutable
-data class ClickResult(
-    val data: PlayableData,
-    val promotion: Promotion?,
-    val movePlayed: Boolean,
-
 )
 
 @Immutable

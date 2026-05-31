@@ -2,61 +2,73 @@ package com.paulcraciunas.screens.common.previews
 
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Piece
+import com.paulcraciunas.screens.data.BoardState
 import com.paulcraciunas.screens.data.BoardViewData
 import com.paulcraciunas.screens.data.CapturedPieces
-import com.paulcraciunas.screens.data.PlayableData
 import com.paulcraciunas.screens.data.PuzzleResult
 
 class PreviewData {
-    fun whitePuzzleData() = PlayableData(
+    fun whitePuzzleData() = BoardState(
         rating = 1400,
         player = Side.WHITE,
         id = 42,
         boardData = BoardViewData.default(),
+        promotion = null,
+        movePlayed = false,
         captured = CapturedPieces(
             byPlayer = listOf(Piece.Knight, Piece.Pawn).joinToString("") { it.unicode },
             byOpponent = listOf(Piece.Rook, Piece.Bishop, Piece.Pawn).joinToString("") { it.unicode },
         ),
         isOver = false,
+        interactive = true,
         outcome = null,
     )
 
-    fun blackPuzzleData() = PlayableData(
+    fun blackPuzzleData() = BoardState(
         rating = 1350,
         player = Side.BLACK,
         id = 84,
         boardData = BoardViewData.default(),
+        promotion = null,
+        movePlayed = false,
         captured = CapturedPieces(
             byPlayer = listOf(Piece.Queen, Piece.Rook, Piece.Pawn, Piece.Pawn, Piece.Pawn).joinToString("") { it.unicode },
             byOpponent = listOf(Piece.Rook, Piece.Bishop, Piece.Pawn).joinToString("") { it.unicode },
         ),
         isOver = false,
+        interactive = true,
         outcome = null,
     )
 
-    fun whiteGameData() = PlayableData(
+    fun whiteGameData() = BoardState(
         rating = 1442,
         player = Side.WHITE,
         id = null,
         boardData = BoardViewData.default(),
+        promotion = null,
+        movePlayed = false,
         captured = CapturedPieces(
             byPlayer = listOf(Piece.Knight, Piece.Pawn).joinToString("") { it.unicode },
             byOpponent = listOf(Piece.Rook, Piece.Bishop, Piece.Pawn).joinToString("") { it.unicode },
         ),
         isOver = false,
+        interactive = true,
         outcome = null,
     )
 
-    fun blackGameData() = PlayableData(
+    fun blackGameData() = BoardState(
         rating = 1350,
         player = Side.BLACK,
         id = null,
         boardData = BoardViewData.default(),
+        promotion = null,
+        movePlayed = false,
         captured = CapturedPieces(
             byPlayer = listOf(Piece.Queen, Piece.Rook, Piece.Pawn, Piece.Pawn, Piece.Pawn).joinToString("") { it.unicode },
             byOpponent = listOf(Piece.Rook, Piece.Bishop, Piece.Pawn).joinToString("") { it.unicode },
         ),
         isOver = false,
+        interactive = true,
         outcome = null,
     )
 
