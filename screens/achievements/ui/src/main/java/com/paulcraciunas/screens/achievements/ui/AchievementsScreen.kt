@@ -127,7 +127,7 @@ private fun AchievementsContent(
                 AchievementTile(
                     item = achievement,
                     onClick = { onAchievementClicked(achievement) },
-                    modifier = Modifier.height(210.dp),
+                    modifier = Modifier.height(230.dp),
                 )
             }
         }

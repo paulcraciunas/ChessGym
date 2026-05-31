@@ -1,37 +1,36 @@
 package com.paulcraciunas.screens.common.design.components
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.Fill
-import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.graphics.isSpecified
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
@@ -46,18 +45,15 @@ fun TrophyShelfTile2(
     modifier: Modifier = Modifier,
     earned: Boolean = false,
     onClick: (() -> Unit)? = null,
-    icon: @Composable (() -> Unit),
+    medallion: @Composable () -> Unit,
 ) {
     val progressFraction = remember(valueNow, valueMax) {
         (valueNow.toFloat() / valueMax.coerceAtLeast(1)).coerceIn(0f, 1f)
     }
-    val progressColor = if (earned) Design.colors.accent else hue
     val earnedLabel = stringResource(R.string.achievement_earned_label)
     val progressText = remember(earned, valueNow, valueMax, earnedLabel) {
         if (earned) earnedLabel else "$valueNow / $valueMax"
     }
-    val progressTextColor = if (earned) Design.colors.accent else Design.colors.inkMuted
-
     Column(
         modifier = modifier
             .shadow(Design.dimensions.elevation.sm, Design.shapes.card)
@@ -68,11 +64,7 @@ fun TrophyShelfTile2(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.xs),
     ) {
-        AchievementMedallion2(
-            size = Design.dimensions.sizes.medallionLg,
-            earned = earned,
-            icon = icon,
-        )
+        medallion()
         Text(
             text = title,
             color = Design.colors.ink,
@@ -89,59 +81,69 @@ fun TrophyShelfTile2(
         )
         LinearProgress(
             progress = progressFraction,
-            color = progressColor,
+            color = hue,
         )
         Text(
             text = progressText,
-            color = progressTextColor,
+            color = hue,
             style = Design.textStyles.monoSmall,
         )
     }
 }
 
+/**
+ * Draws an achievement icon with an optional tier outline behind it.
+ * Uses a single [Canvas] — no nested layout nodes — for efficient rendering
+ * in lists/grids.
+ *
+ * When [outlinePainter] is `null` (unearned), only the icon is drawn at
+ * [ICON_FRACTION_STANDALONE] of the container.
+ * When [outlinePainter] is provided (earned), the outline fills the container
+ * and the icon is drawn at [ICON_FRACTION_WITH_OUTLINE].
+ */
 @Composable
 fun AchievementMedallion2(
+    iconPainter: Painter,
     modifier: Modifier = Modifier,
     size: Dp = Design.dimensions.sizes.medallionLg,
-    earned: Boolean = false,
-    icon: @Composable (() -> Unit),
+    outlinePainter: Painter? = null,
+    outlineTint: Color = Design.colors.primarySoft,
+    iconTint: Color = Color.Unspecified,
 ) {
-    val bg = Design.colors.primaryDeep
-    val outerBorderColor = if (earned) Design.colors.accent else Design.colors.border
-    val outerBorderWidth = if (earned) 2.dp else 1.dp
+    val iconFraction = if (outlinePainter != null) ICON_FRACTION_WITH_OUTLINE else ICON_FRACTION_STANDALONE
 
-    Box(
-        modifier = modifier
-            .size(size)
-            .drawBehind {
-                drawCircle(
-                    color = bg,
-                    style = Fill
-                )
-                val outerWidthPx = outerBorderWidth.toPx()
-                drawCircle( // outer border
-                    color = outerBorderColor,
-                    radius = (size.toPx() - outerWidthPx) / 2f,
-                    style = Stroke(width = outerWidthPx)
-                )
-            },
-        contentAlignment = Alignment.Center,
+    Canvas(modifier = modifier.size(size)) {
+        outlinePainter?.let { drawPainterScaled(it, outlineTint) }
+        drawPainterScaled(iconPainter, iconTint, scaleFraction = iconFraction)
+    }
+}
+
+private fun DrawScope.drawPainterScaled(
+    painter: Painter,
+    tint: Color = Color.Unspecified,
+    scaleFraction: Float = 1f,
+) {
+    val intrinsic = painter.intrinsicSize
+    if (intrinsic == Size.Unspecified) return
+
+    val targetWidth = size.width * scaleFraction
+    val targetHeight = size.height * scaleFraction
+    val scale = minOf(targetWidth / intrinsic.width, targetHeight / intrinsic.height)
+    val drawSize = Size(intrinsic.width * scale, intrinsic.height * scale)
+    val colorFilter = if (tint.isSpecified) ColorFilter.tint(tint) else null
+
+    translate(
+        left = (size.width - drawSize.width) / 2f,
+        top = (size.height - drawSize.height) / 3f,
     ) {
-        icon()
-        if (earned) {
-            Box(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .size(Design.dimensions.spacing.gut)
-                    .background(Design.colors.accent, CircleShape)
-                    .border(Design.colors.surfaceBorderStroke, Design.shapes.circle),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text("✓", color = Design.colors.onPrimary, style = MaterialTheme.typography.labelSmall)
-            }
+        with(painter) {
+            draw(size = drawSize, colorFilter = colorFilter)
         }
     }
 }
+
+private const val ICON_FRACTION_WITH_OUTLINE = 0.50f
+private const val ICON_FRACTION_STANDALONE = 0.70f
 
 @Preview(name = "TrophyShelfTile")
 @Preview(name = "TrophyShelfTile (Dark)", uiMode = UI_MODE_NIGHT_YES)
@@ -160,12 +162,10 @@ private fun TrophyShelfTile2Preview() {
                 hue = Color(0xFFFFD700),
                 valueNow = 2450,
                 valueMax = 2500,
-                icon = {
-                    Icon(
-                        imageVector = Icons.Default.Star,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(Design.dimensions.sizes.icon)
+                medallion = {
+                    AchievementMedallion2(
+                        iconPainter = painterResource(R.drawable.achievement_icon_03),
+                        size = Design.dimensions.sizes.medallionLg,
                     )
                 },
                 modifier = Modifier.width(Design.dimensions.sizes.trophyTile),
@@ -176,15 +176,15 @@ private fun TrophyShelfTile2Preview() {
                 hue = Color(0xFF2196F3),
                 valueNow = 1,
                 valueMax = 1,
-                icon = {
-                    Icon(
-                        imageVector = Icons.Default.Star,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(Design.dimensions.sizes.icon)
+                earned = true,
+                medallion = {
+                    AchievementMedallion2(
+                        iconPainter = painterResource(R.drawable.achievement_icon_03),
+                        outlinePainter = painterResource(R.drawable.achievement_outline_tier_3),
+                        outlineTint = Color(0xFFFFD700),
+                        size = Design.dimensions.sizes.medallionLg,
                     )
                 },
-                earned = true,
                 modifier = Modifier.width(Design.dimensions.sizes.trophyTile),
             )
         }
