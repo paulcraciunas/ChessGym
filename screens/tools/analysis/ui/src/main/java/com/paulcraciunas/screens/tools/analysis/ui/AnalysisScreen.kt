@@ -111,7 +111,7 @@ fun AnalysisScreen(
         }
     }
 
-    uiState.promotion?.let {
+    uiState.data.promotion?.let {
         PromotionDialog(
             side = uiState.data.player,
             onPieceChosen = onPromote,

@@ -371,8 +371,8 @@ internal class AnalysisViewModelTest {
             playMove(Locus.e7, Locus.e8)
 
             val state = underTest.uiState.value
-            assertNotNull(state.promotion)
-            assertEquals(Locus.e8, state.promotion?.at)
+            assertNotNull(state.data.promotion)
+            assertEquals(Locus.e8, state.data.promotion?.at)
         }
 
         @Test
@@ -385,13 +385,13 @@ internal class AnalysisViewModelTest {
             advanceUntilIdle()
 
             playMove(Locus.e7, Locus.e8)
-            assertNotNull(underTest.uiState.value.promotion)
+            assertNotNull(underTest.uiState.value.data.promotion)
 
             underTest.onPromote(Piece.Queen)
             advanceUntilIdle()
 
             val state = underTest.uiState.value
-            assertNull(state.promotion)
+            assertNull(state.data.promotion)
             state.assertCanNavigateBack()
         }
 
@@ -431,7 +431,7 @@ internal class AnalysisViewModelTest {
             advanceUntilIdle()
 
             val state = underTest.uiState.value
-            assertNull(state.promotion)
+            assertNull(state.data.promotion)
             underTest.uiState.value.assertCanNavigateBack()
         }
 
