@@ -158,7 +158,7 @@
     <string name="loading_error_generic">एक त्रुटि हुई। कृपया पुनः प्रयास करें।</string>
     <string name="loading_error_consent_required">आगे बढ़ने के लिए क्रैश रिपोर्टिंग की सहमति आवश्यक है। हम केवल ऐप की स्थिरता बेहतर करने के लिए तकनीकी क्रैश डेटा एकत्र करते हैं।</string>
     <string name="crash_consent_dialog_title">हमें बेहतर बनाने में मदद करें</string>
-    <string name="crash_consent_dialog_body">ChessGym एप्लिकेशन त्रुटियों को पहचानने और ठीक करने के लिए क्रैश रिपोर्टिंग का उपयोग करता है। यह डेटा केवल क्रैश पहचानने और सभी उपयोगकर्ताओं के लिए ऐप की स्थिरता बेहतर करने के लिए उपयोग किया जाता है।\n\nकोई भी व्यक्तिगत जानकारी, गेम डेटा, या उपयोग पैटर्न एकत्र नहीं किए जाते — केवल तकनीकी क्रैश विवरण (जैसे स्टैक ट्रेस और डिवाइस मॉडल) जब कुछ गलत हो जाता है।\n\nआप इस सेटिंग को बाद में ऐप में बदल सकते हैं।</string>
+    <string name="crash_consent_dialog_body">ChessGym एप्लिकेशन त्रुटियों को पहचानने और ठीक करने के लिए क्रैश रिपोर्टिंग का उपयोग करता है। यह डेटा केवल क्रैश पहचानने और सभी उपयोगकर्ताओं के लिए ऐप की स्थिरता बेहतर करने के लिए उपयोग किया जाता है।\n\n&lt;b>कोई भी व्यक्तिगत जानकारी, गेम डेटा, या उपयोग पैटर्न एकत्र नहीं किए जाते&lt;/b> — केवल तकनीकी क्रैश विवरण (जैसे स्टैक ट्रेस और डिवाइस मॉडल) जब कुछ गलत हो जाता है।\n\nआप इस सेटिंग को बाद में ऐप में बदल सकते हैं।</string>
     <string name="loading_fact_eyebrow">क्या आप जानते हैं?</string>
     <string-array name="loading_fact_titles">
         <item>शक्तिहीन रानी</item>
@@ -348,8 +348,9 @@
     <string name="about_title">के बारे में</string>
     <string name="about_general_title">सामान्य</string>
     <string name="about_legal_title">कानूनी</string>
-    <string name="about_creator_title">निर्माता</string>
-    <string name="about_creator_description">ChessGym को Paul Mihai Craciunas ने बनाया है, जो लंदन से एक Android इंजीनियर हैं, शतरंज के प्रति जुनूनी हैं, और लोगों की सुधार की यात्रा में मदद करने की उम्मीद रखते हैं।</string>
+    <string name="about_app_title">ऐप</string>
+    <string name="about_app_description">Paul Craciunas द्वारा ❤\uFE0F से बनाया गया।\t</string>
+    <string name="about_dedication_danya">यह एप्लिकेशन ग्रैंडमास्टर &lt;b>Daniel Naroditsky&lt;/b> (1995–2025) की स्मृति को सम्मानपूर्वक समर्पित है, जिनके संक्रामक जुनून, अद्वितीय स्पष्टता और शानदार शिक्षण वीडियो ने लाखों दिमागों को प्रेरित किया और शतरंज के खेल के प्रति एक सार्वभौमिक आनंद को पुनर्जीवित किया।</string>
     <string name="about_contact_title">संपर्क</string>
     <string name="about_contact_description">कानूनी चिंताओं, व्यावसायिक अवसरों, या किसी अन्य पूछताछ के लिए, कृपया ईमेल के माध्यम से संपर्क करें।</string>
     <string name="about_contact_email">contact@chessgym.app</string>
@@ -365,7 +366,7 @@
     <string name="about_donate_medium">सैंडविच</string>
     <string name="about_donate_large">पिज़्ज़ा</string>
     <string name="about_rate_title">ऐप को रेट करें</string>
-    <string name="about_rate_description">ChessGym का आनंद ले रहे हैं? Play Store पर रेटिंग दें</string>
+    <string name="about_rate_description">ChessGym का आनंद ले रहे हैं? रेटिंग दें</string>
     <string name="about_libraries_title">ओपन सोर्स लाइब्रेरी</string>
     <string name="about_libraries_description">ChessGym निम्नलिखित ओपन सोर्स लाइब्रेरी के साथ बना है:</string>
     <string name="about_privacy_policy_title">गोपनीयता नीति</string>
@@ -442,20 +443,20 @@
     <string name="achievement_category_failed_puzzles_redeemed">असफल पहेलियाँ सुधारी गईं</string>
     <string name="achievement_category_find_square_sessions">चौक ढूंढें सत्र</string>
     <string name="achievement_category_move_piece_sessions">मोहरा चलाएं सत्र</string>
-    <string name="achievement_category_blind_mode_wins">होमर की विरासत</string>
+    <string name="achievement_category_blind_mode_wins">ब्लाइंड मोड जीत</string>
     <string name="achievement_category_rated_win_streak">रेटेड जीत स्ट्रीक</string>
     <string name="achievement_category_rating_climber">रेटिंग पर्वतारोही</string>
-    <string name="achievement_category_blind_strategist">ब्लाइंड रणनीतिकार</string>
-    <string name="achievement_category_rush_champion">रश चैम्पियन</string>
-    <string name="achievement_category_streak_legend">स्ट्रीक लीजेंड</string>
-    <string name="achievement_category_eagle_eye">बाज की नज़र</string>
-    <string name="achievement_category_knights_path">घोड़े का पथ</string>
-    <string name="achievement_category_puzzle_addict">पहेली प्रेमी</string>
+    <string name="achievement_category_blind_strategist">ब्लाइंड मोड रेटिंग</string>
+    <string name="achievement_category_rush_champion">रश उच्च स्कोर</string>
+    <string name="achievement_category_streak_legend">स्ट्रीक उच्च स्कोर</string>
+    <string name="achievement_category_eagle_eye">चौक ढूंढें उच्च स्कोर</string>
+    <string name="achievement_category_knights_path">मोहरा चलाएं उच्च स्कोर</string>
+    <string name="achievement_category_puzzle_addict">हल की गई पहेलियाँ</string>
     <string name="achievement_category_time_invested">समय निवेश</string>
-    <string name="achievement_category_daily_grinder">दैनिक अभ्यासकर्ता</string>
-    <string name="achievement_category_consistency_king">निरंतरता का राजा</string>
+    <string name="achievement_category_daily_grinder">लगातार दिन खेले</string>
+    <string name="achievement_category_consistency_king">सबसे अधिक लगातार दिन</string>
     <string name="achievement_category_board_vision">बोर्ड दृष्टि</string>
-    <string name="achievement_category_rush_solver">रश हल करने वाला</string>
+    <string name="achievement_category_rush_solver">रश पहेलियाँ हल की गईं</string>
 
     <!-- Tier names: RATED_PUZZLES_SOLVED -->
     <string name="achievement_rated_puzzles_solved_one">पहेली उत्साही</string>

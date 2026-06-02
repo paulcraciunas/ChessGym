@@ -158,7 +158,7 @@
     <string name="loading_error_generic">Ein Fehler ist aufgetreten. Bitte versuche es erneut.</string>
     <string name="loading_error_consent_required">Die Zustimmung zur Absturzberichterstattung ist erforderlich, um fortzufahren. Wir erfassen nur technische Absturzdaten, um die App-Stabilität zu verbessern.</string>
     <string name="crash_consent_dialog_title">Hilf uns, uns zu verbessern</string>
-    <string name="crash_consent_dialog_body">ChessGym verwendet Absturzberichte, um Anwendungsfehler zu erkennen und zu beheben. Diese Daten werden ausschließlich zur Identifizierung von Abstürzen und zur Verbesserung der App-Stabilität für alle Benutzer verwendet.\n\nEs werden keine persönlichen Informationen, Spieldaten oder Nutzungsmuster erfasst — nur technische Absturzdetails (wie Stack-Traces und Gerätemodell), wenn etwas schiefgeht.\n\nDu kannst diese Einstellung später in der App ändern.</string>
+    <string name="crash_consent_dialog_body">ChessGym verwendet Absturzberichte, um Anwendungsfehler zu erkennen und zu beheben. Diese Daten werden ausschließlich zur Identifizierung von Abstürzen und zur Verbesserung der App-Stabilität für alle Benutzer verwendet.\n\n&lt;b>Es werden keine persönlichen Informationen, Spieldaten oder Nutzungsmuster erfasst&lt;/b> — nur technische Absturzdetails (wie Stack-Traces und Gerätemodell), wenn etwas schiefgeht.\n\nDu kannst diese Einstellung später in der App ändern.</string>
     <string name="loading_fact_eyebrow">Wusstest du das?</string>
     <string-array name="loading_fact_titles">
         <item>Die machtlose Dame</item>
@@ -348,8 +348,9 @@
     <string name="about_title">Über</string>
     <string name="about_general_title">Allgemein</string>
     <string name="about_legal_title">Rechtliches</string>
-    <string name="about_creator_title">Der Entwickler</string>
-    <string name="about_creator_description">ChessGym wurde von Paul Mihai Craciunas erstellt, einem Android-Entwickler aus London, der leidenschaftlich Schach spielt und Menschen auf ihrem Weg zur Verbesserung helfen möchte.</string>
+    <string name="about_app_title">Die App</string>
+    <string name="about_app_description">Mit ❤\uFE0F von Paul Craciunas entwickelt.\t</string>
+    <string name="about_dedication_danya">Diese Anwendung ist dem Gedenken an Großmeister &lt;b>Daniel Naroditsky&lt;/b> (1995–2025) gewidmet, dessen ansteckende Leidenschaft, unübertroffene Klarheit und brillante Lehrvideos Hunderttausende inspiriert und eine universelle Freude am Schachspiel neu entfacht haben.</string>
     <string name="about_contact_title">Kontakt</string>
     <string name="about_contact_description">Bei rechtlichen Anliegen, Geschäftsmöglichkeiten oder anderen Anfragen wende dich bitte per E-Mail an uns.</string>
     <string name="about_contact_email">contact@chessgym.app</string>
@@ -365,7 +366,7 @@
     <string name="about_donate_medium">Sandwich</string>
     <string name="about_donate_large">Pizza</string>
     <string name="about_rate_title">App bewerten</string>
-    <string name="about_rate_description">Gefällt dir ChessGym? Hinterlasse eine Bewertung im Play Store</string>
+    <string name="about_rate_description">Gefällt dir ChessGym? Hinterlasse eine Bewertung</string>
     <string name="about_libraries_title">Open-Source-Bibliotheken</string>
     <string name="about_libraries_description">ChessGym wurde mit folgenden Open-Source-Bibliotheken erstellt:</string>
     <string name="about_privacy_policy_title">Datenschutzrichtlinie</string>
@@ -442,20 +443,20 @@
     <string name="achievement_category_failed_puzzles_redeemed">Fehlgeschlagene Aufgaben wiedergutgemacht</string>
     <string name="achievement_category_find_square_sessions">Feld-finden-Sitzungen</string>
     <string name="achievement_category_move_piece_sessions">Figur-bewegen-Sitzungen</string>
-    <string name="achievement_category_blind_mode_wins">Homers Erbe</string>
+    <string name="achievement_category_blind_mode_wins">Blindmodus-Siege</string>
     <string name="achievement_category_rated_win_streak">Bewertete Gewinnserie</string>
     <string name="achievement_category_rating_climber">Bewertungsaufsteiger</string>
-    <string name="achievement_category_blind_strategist">Blinder Stratege</string>
-    <string name="achievement_category_rush_champion">Rush-Champion</string>
-    <string name="achievement_category_streak_legend">Serien-Legende</string>
-    <string name="achievement_category_eagle_eye">Adlerauge</string>
-    <string name="achievement_category_knights_path">Springerpfad</string>
-    <string name="achievement_category_puzzle_addict">Aufgaben-Süchtiger</string>
+    <string name="achievement_category_blind_strategist">Blindmodus-Bewertung</string>
+    <string name="achievement_category_rush_champion">Rush-Bestleistung</string>
+    <string name="achievement_category_streak_legend">Serien-Bestleistung</string>
+    <string name="achievement_category_eagle_eye">Feld-finden-Bestleistung</string>
+    <string name="achievement_category_knights_path">Figur-bewegen-Bestleistung</string>
+    <string name="achievement_category_puzzle_addict">Gelöste Aufgaben</string>
     <string name="achievement_category_time_invested">Investierte Zeit</string>
-    <string name="achievement_category_daily_grinder">Täglicher Trainingsfleiß</string>
-    <string name="achievement_category_consistency_king">König der Beständigkeit</string>
+    <string name="achievement_category_daily_grinder">Aufeinanderfolgende Spieltage</string>
+    <string name="achievement_category_consistency_king">Meiste aufeinanderfolgende Tage</string>
     <string name="achievement_category_board_vision">Brettvision</string>
-    <string name="achievement_category_rush_solver">Rush-Löser</string>
+    <string name="achievement_category_rush_solver">Rush-Aufgaben gelöst</string>
 
     <!-- Tier names: RATED_PUZZLES_SOLVED -->
     <string name="achievement_rated_puzzles_solved_one">Aufgaben-Enthusiast</string>

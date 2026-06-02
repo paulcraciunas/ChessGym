@@ -154,7 +154,7 @@
     <string name="loading_error_generic">Terjadi kesalahan. Silakan coba lagi.</string>
     <string name="loading_error_consent_required">Persetujuan pelaporan kerusakan diperlukan untuk melanjutkan. Kami hanya mengumpulkan data kerusakan teknis untuk meningkatkan stabilitas aplikasi.</string>
     <string name="crash_consent_dialog_title">Bantu Kami Berkembang</string>
-    <string name="crash_consent_dialog_body">ChessGym menggunakan pelaporan kerusakan untuk mendeteksi dan memperbaiki kesalahan aplikasi. Data ini digunakan semata-mata untuk mengidentifikasi kerusakan dan meningkatkan stabilitas aplikasi bagi semua pengguna.\n\nTidak ada informasi pribadi, data permainan, atau pola penggunaan yang dikumpulkan — hanya detail kerusakan teknis (seperti jejak tumpukan dan model perangkat) ketika sesuatu berjalan salah.\n\nKamu dapat mengubah pengaturan ini nanti di aplikasi.</string>
+    <string name="crash_consent_dialog_body">ChessGym menggunakan pelaporan kerusakan untuk mendeteksi dan memperbaiki kesalahan aplikasi. Data ini digunakan semata-mata untuk mengidentifikasi kerusakan dan meningkatkan stabilitas aplikasi bagi semua pengguna.\n\n&lt;b>Tidak ada informasi pribadi, data permainan, atau pola penggunaan yang dikumpulkan&lt;/b> — hanya detail kerusakan teknis (seperti jejak tumpukan dan model perangkat) ketika sesuatu berjalan salah.\n\nKamu dapat mengubah pengaturan ini nanti di aplikasi.</string>
     <string name="loading_fact_eyebrow">Tahukah kamu?</string>
     <string-array name="loading_fact_titles">
         <item>Ratu yang Lemah</item>
@@ -343,8 +343,9 @@
     <string name="about_title">Tentang</string>
     <string name="about_general_title">Umum</string>
     <string name="about_legal_title">Hukum</string>
-    <string name="about_creator_title">Sang Pencipta</string>
-    <string name="about_creator_description">ChessGym dibuat oleh Paul Mihai Craciunas, seorang insinyur Android dari London, yang bersemangat tentang Catur dan berharap dapat membantu orang dalam perjalanan mereka menuju peningkatan.</string>
+    <string name="about_app_title">Aplikasi</string>
+    <string name="about_app_description">Dibuat dengan ❤\uFE0F oleh Paul Craciunas.\t</string>
+    <string name="about_dedication_danya">Aplikasi ini dengan penuh hormat didedikasikan untuk mengenang Grandmaster &lt;b>Daniel Naroditsky&lt;/b> (1995–2025), yang semangat menularnya, kejelasan tak tertandingi, dan video instruksional brilian telah menginspirasi ratusan ribu pikiran dan menyalakan kembali kegembiraan universal untuk permainan catur.</string>
     <string name="about_contact_title">Kontak</string>
     <string name="about_contact_description">Untuk masalah hukum, peluang komersial, atau pertanyaan lainnya, silakan hubungi kami melalui email.</string>
     <string name="about_contact_email">contact@chessgym.app</string>
@@ -360,7 +361,7 @@
     <string name="about_donate_medium">Sandwich</string>
     <string name="about_donate_large">Pizza</string>
     <string name="about_rate_title">Beri Nilai Aplikasi</string>
-    <string name="about_rate_description">Menikmati ChessGym? Tinggalkan penilaian di Play Store</string>
+    <string name="about_rate_description">Menikmati ChessGym? Tinggalkan penilaian</string>
     <string name="about_libraries_title">Pustaka Sumber Terbuka</string>
     <string name="about_libraries_description">ChessGym dibangun dengan pustaka sumber terbuka berikut:</string>
     <string name="about_privacy_policy_title">Kebijakan Privasi</string>
@@ -437,20 +438,20 @@
     <string name="achievement_category_failed_puzzles_redeemed">Teka-teki Gagal Ditebus</string>
     <string name="achievement_category_find_square_sessions">Sesi Temukan Kotak</string>
     <string name="achievement_category_move_piece_sessions">Sesi Gerakkan Bidak</string>
-    <string name="achievement_category_blind_mode_wins">Warisan Homer</string>
+    <string name="achievement_category_blind_mode_wins">Kemenangan Mode Buta</string>
     <string name="achievement_category_rated_win_streak">Rangkaian Kemenangan Berperingkat</string>
     <string name="achievement_category_rating_climber">Pendaki Peringkat</string>
-    <string name="achievement_category_blind_strategist">Ahli Strategi Buta</string>
-    <string name="achievement_category_rush_champion">Juara Rush</string>
-    <string name="achievement_category_streak_legend">Legenda Rangkaian</string>
-    <string name="achievement_category_eagle_eye">Mata Elang</string>
-    <string name="achievement_category_knights_path">Jalur Kuda</string>
-    <string name="achievement_category_puzzle_addict">Penggemar Teka-teki</string>
+    <string name="achievement_category_blind_strategist">Peringkat Mode Buta</string>
+    <string name="achievement_category_rush_champion">Skor Tertinggi Rush</string>
+    <string name="achievement_category_streak_legend">Skor Tertinggi Rangkaian</string>
+    <string name="achievement_category_eagle_eye">Skor Tertinggi Temukan Kotak</string>
+    <string name="achievement_category_knights_path">Skor Tertinggi Gerakkan Bidak</string>
+    <string name="achievement_category_puzzle_addict">Teka-teki Diselesaikan</string>
     <string name="achievement_category_time_invested">Waktu Diinvestasikan</string>
-    <string name="achievement_category_daily_grinder">Pemain Harian</string>
-    <string name="achievement_category_consistency_king">Raja Konsistensi</string>
+    <string name="achievement_category_daily_grinder">Hari Bermain Berturut-turut</string>
+    <string name="achievement_category_consistency_king">Hari Berturut-turut Terbanyak</string>
     <string name="achievement_category_board_vision">Visi Papan</string>
-    <string name="achievement_category_rush_solver">Pemecah Rush</string>
+    <string name="achievement_category_rush_solver">Teka-teki Rush Diselesaikan</string>
 
     <!-- Tier names: RATED_PUZZLES_SOLVED -->
     <string name="achievement_rated_puzzles_solved_one">Penggemar Teka-teki</string>

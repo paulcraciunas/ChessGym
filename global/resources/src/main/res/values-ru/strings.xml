@@ -166,7 +166,7 @@
     <string name="loading_error_generic">Произошла ошибка. Пожалуйста, попробуйте снова.</string>
     <string name="loading_error_consent_required">Для продолжения необходимо согласие на отчёты об ошибках. Мы собираем только технические данные о сбоях для улучшения стабильности приложения.</string>
     <string name="crash_consent_dialog_title">Помогите нам улучшить приложение</string>
-    <string name="crash_consent_dialog_body">ChessGym использует отчёты об ошибках для обнаружения и исправления сбоев приложения. Эти данные используются исключительно для выявления сбоев и улучшения стабильности приложения для всех пользователей.\n\nЛичная информация, игровые данные и шаблоны использования не собираются — только технические данные о сбоях (такие как трассировки стека и модель устройства), когда что-то идёт не так.\n\nВы можете изменить этот параметр позже в приложении.</string>
+    <string name="crash_consent_dialog_body">ChessGym использует отчёты об ошибках для обнаружения и исправления сбоев приложения. Эти данные используются исключительно для выявления сбоев и улучшения стабильности приложения для всех пользователей.\n\n&lt;b>Личная информация, игровые данные и шаблоны использования не собираются&lt;/b> — только технические данные о сбоях (такие как трассировки стека и модель устройства), когда что-то идёт не так.\n\nВы можете изменить этот параметр позже в приложении.</string>
     <string name="loading_fact_eyebrow">Знаете ли вы?</string>
     <string-array name="loading_fact_titles">
         <item>Беспомощный ферзь</item>
@@ -358,8 +358,9 @@
     <string name="about_title">О приложении</string>
     <string name="about_general_title">Общее</string>
     <string name="about_legal_title">Правовая информация</string>
-    <string name="about_creator_title">Создатель</string>
-    <string name="about_creator_description">ChessGym был создан Paul Mihai Craciunas, Android-инженером из Лондона, увлечённым шахматами, стремящимся помочь людям на пути к совершенствованию.</string>
+    <string name="about_app_title">Приложение</string>
+    <string name="about_app_description">Сделано с ❤\uFE0F — Paul Craciunas.\t</string>
+    <string name="about_dedication_danya">Это приложение с уважением посвящено памяти гроссмейстера &lt;b>Даниэля Народицкого&lt;/b> (1995–2025), чья заразительная страсть, непревзойдённая ясность и блестящие обучающие видео вдохновили сотни тысяч умов и возродили всеобщую радость от игры в шахматы.</string>
     <string name="about_contact_title">Контакты</string>
     <string name="about_contact_description">По юридическим вопросам, коммерческим предложениям или другим запросам, пожалуйста, свяжитесь с нами по электронной почте.</string>
     <string name="about_contact_email">contact@chessgym.app</string>
@@ -375,7 +376,7 @@
     <string name="about_donate_medium">Бутерброд</string>
     <string name="about_donate_large">Пицца</string>
     <string name="about_rate_title">Оценить приложение</string>
-    <string name="about_rate_description">Нравится ChessGym? Оставьте оценку в Play Store</string>
+    <string name="about_rate_description">Нравится ChessGym? Оставьте оценку</string>
     <string name="about_libraries_title">Библиотеки с открытым исходным кодом</string>
     <string name="about_libraries_description">ChessGym построен с использованием следующих библиотек с открытым исходным кодом:</string>
     <string name="about_privacy_policy_title">Политика конфиденциальности</string>
@@ -452,20 +453,20 @@
     <string name="achievement_category_failed_puzzles_redeemed">Исправленные нерешённые задачи</string>
     <string name="achievement_category_find_square_sessions">Сессии поиска клетки</string>
     <string name="achievement_category_move_piece_sessions">Сессии хода фигурой</string>
-    <string name="achievement_category_blind_mode_wins">Наследие Гомера</string>
+    <string name="achievement_category_blind_mode_wins">Победы в режиме вслепую</string>
     <string name="achievement_category_rated_win_streak">Серия побед в рейтинге</string>
     <string name="achievement_category_rating_climber">Покоритель рейтинга</string>
-    <string name="achievement_category_blind_strategist">Слепой стратег</string>
-    <string name="achievement_category_rush_champion">Чемпион раша</string>
-    <string name="achievement_category_streak_legend">Легенда серий</string>
-    <string name="achievement_category_eagle_eye">Орлиный взор</string>
-    <string name="achievement_category_knights_path">Путь коня</string>
-    <string name="achievement_category_puzzle_addict">Поклонник задач</string>
+    <string name="achievement_category_blind_strategist">Рейтинг режима вслепую</string>
+    <string name="achievement_category_rush_champion">Рекорд раша</string>
+    <string name="achievement_category_streak_legend">Рекорд серий</string>
+    <string name="achievement_category_eagle_eye">Рекорд поиска клетки</string>
+    <string name="achievement_category_knights_path">Рекорд хода фигурой</string>
+    <string name="achievement_category_puzzle_addict">Решённые задачи</string>
     <string name="achievement_category_time_invested">Вложенное время</string>
-    <string name="achievement_category_daily_grinder">Ежедневный игрок</string>
-    <string name="achievement_category_consistency_king">Король постоянства</string>
+    <string name="achievement_category_daily_grinder">Дней игры подряд</string>
+    <string name="achievement_category_consistency_king">Максимум дней подряд</string>
     <string name="achievement_category_board_vision">Видение доски</string>
-    <string name="achievement_category_rush_solver">Решатель раша</string>
+    <string name="achievement_category_rush_solver">Решённые задачи раша</string>
 
     <!-- Tier names: RATED_PUZZLES_SOLVED -->
     <string name="achievement_rated_puzzles_solved_one">Любитель задач</string>

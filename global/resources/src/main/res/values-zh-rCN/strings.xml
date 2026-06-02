@@ -154,7 +154,7 @@
     <string name="loading_error_generic">发生错误，请重试。</string>
     <string name="loading_error_consent_required">需要同意崩溃报告才能继续。我们仅收集技术崩溃数据以改善应用稳定性。</string>
     <string name="crash_consent_dialog_title">帮助我们改进</string>
-    <string name="crash_consent_dialog_body">ChessGym 使用崩溃报告来检测和修复应用错误。此数据仅用于识别崩溃并改善所有用户的应用稳定性。\n\n我们不收集任何个人信息、游戏数据或使用模式——仅在出现问题时收集技术崩溃详情（如堆栈跟踪和设备型号）。\n\n您可以稍后在应用中更改此设置。</string>
+    <string name="crash_consent_dialog_body">ChessGym 使用崩溃报告来检测和修复应用错误。此数据仅用于识别崩溃并改善所有用户的应用稳定性。\n\n&lt;b>我们不收集任何个人信息、游戏数据或使用模式&lt;/b>——仅在出现问题时收集技术崩溃详情（如堆栈跟踪和设备型号）。\n\n您可以稍后在应用中更改此设置。</string>
     <string name="loading_fact_eyebrow">您知道吗？</string>
     <string-array name="loading_fact_titles">
         <item>无力的后</item>
@@ -343,8 +343,9 @@
     <string name="about_title">关于</string>
     <string name="about_general_title">通用</string>
     <string name="about_legal_title">法律</string>
-    <string name="about_creator_title">创作者</string>
-    <string name="about_creator_description">ChessGym 由 Paul Mihai Craciunas 创建，他是来自伦敦的 Android 工程师，热爱国际象棋，希望帮助人们在提升棋艺的旅程中不断进步。</string>
+    <string name="about_app_title">应用</string>
+    <string name="about_app_description">Paul Craciunas 用 ❤\uFE0F 构建。\t</string>
+    <string name="about_dedication_danya">本应用谨以崇敬之心献给国际象棋特级大师&lt;b>Daniel Naroditsky&lt;/b>（1995–2025）的纪念。他富有感染力的热情、无与伦比的清晰讲解和精彩的教学视频激励了数十万人，重新点燃了人们对国际象棋的热爱。</string>
     <string name="about_contact_title">联系方式</string>
     <string name="about_contact_description">如有法律问题、商业机会或其他咨询，请通过电子邮件联系。</string>
     <string name="about_contact_email">contact@chessgym.app</string>
@@ -360,7 +361,7 @@
     <string name="about_donate_medium">三明治</string>
     <string name="about_donate_large">披萨</string>
     <string name="about_rate_title">为应用评分</string>
-    <string name="about_rate_description">喜欢 ChessGym？在 Play 商店留下评分</string>
+    <string name="about_rate_description">喜欢 ChessGym？留下评分</string>
     <string name="about_libraries_title">开源库</string>
     <string name="about_libraries_description">ChessGym 使用以下开源库构建：</string>
     <string name="about_privacy_policy_title">隐私政策</string>
@@ -437,20 +438,20 @@
     <string name="achievement_category_failed_puzzles_redeemed">失败棋谜挽救</string>
     <string name="achievement_category_find_square_sessions">找格子场次</string>
     <string name="achievement_category_move_piece_sessions">移动棋子场次</string>
-    <string name="achievement_category_blind_mode_wins">荷马的传承</string>
+    <string name="achievement_category_blind_mode_wins">盲棋模式胜利</string>
     <string name="achievement_category_rated_win_streak">等级连胜</string>
     <string name="achievement_category_rating_climber">等级分攀登者</string>
-    <string name="achievement_category_blind_strategist">盲棋战略家</string>
-    <string name="achievement_category_rush_champion">闪电冠军</string>
-    <string name="achievement_category_streak_legend">连胜传奇</string>
-    <string name="achievement_category_eagle_eye">鹰眼</string>
-    <string name="achievement_category_knights_path">马的路径</string>
-    <string name="achievement_category_puzzle_addict">棋谜成瘾者</string>
+    <string name="achievement_category_blind_strategist">盲棋模式等级分</string>
+    <string name="achievement_category_rush_champion">闪电最高分</string>
+    <string name="achievement_category_streak_legend">连胜最高分</string>
+    <string name="achievement_category_eagle_eye">找格子最高分</string>
+    <string name="achievement_category_knights_path">移动棋子最高分</string>
+    <string name="achievement_category_puzzle_addict">已解棋谜</string>
     <string name="achievement_category_time_invested">时间投入</string>
-    <string name="achievement_category_daily_grinder">每日磨砺</string>
-    <string name="achievement_category_consistency_king">坚持之王</string>
+    <string name="achievement_category_daily_grinder">连续游戏天数</string>
+    <string name="achievement_category_consistency_king">最多连续天数</string>
     <string name="achievement_category_board_vision">棋盘视野</string>
-    <string name="achievement_category_rush_solver">闪电解谜者</string>
+    <string name="achievement_category_rush_solver">闪电棋谜已解</string>
 
     <!-- Tier names: RATED_PUZZLES_SOLVED -->
     <string name="achievement_rated_puzzles_solved_one">棋谜爱好者</string>

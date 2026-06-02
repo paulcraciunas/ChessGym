@@ -154,7 +154,7 @@
     <string name="loading_error_generic">エラーが発生しました。もう一度お試しください。</string>
     <string name="loading_error_consent_required">続行するにはクラッシュレポートへの同意が必要です。アプリの安定性向上のために技術的なクラッシュデータのみを収集します。</string>
     <string name="crash_consent_dialog_title">改善にご協力ください</string>
-    <string name="crash_consent_dialog_body">ChessGymはクラッシュレポートを使用してアプリのエラーを検出・修正しています。このデータはクラッシュを特定し、すべてのユーザーのアプリ安定性を向上させるためだけに使用されます。\n\n個人情報、ゲームデータ、使用パターンは収集されません。問題が発生した場合にのみ、技術的なクラッシュの詳細（スタックトレースやデバイスモデルなど）が収集されます。\n\nこの設定は後でアプリ内で変更できます。</string>
+    <string name="crash_consent_dialog_body">ChessGymはクラッシュレポートを使用してアプリのエラーを検出・修正しています。このデータはクラッシュを特定し、すべてのユーザーのアプリ安定性を向上させるためだけに使用されます。\n\n&lt;b>個人情報、ゲームデータ、使用パターンは収集されません&lt;/b>。問題が発生した場合にのみ、技術的なクラッシュの詳細（スタックトレースやデバイスモデルなど）が収集されます。\n\nこの設定は後でアプリ内で変更できます。</string>
     <string name="loading_fact_eyebrow">ご存知ですか？</string>
     <string-array name="loading_fact_titles">
         <item>無力なクイーン</item>
@@ -343,8 +343,9 @@
     <string name="about_title">アプリについて</string>
     <string name="about_general_title">一般</string>
     <string name="about_legal_title">法的情報</string>
-    <string name="about_creator_title">制作者</string>
-    <string name="about_creator_description">ChessGymはPaul Mihai Craciunasによって制作されました。ロンドン出身のAndroidエンジニアで、チェスに情熱を持ち、人々が上達の旅を歩む手助けをしたいと願っています。</string>
+    <string name="about_app_title">アプリ</string>
+    <string name="about_app_description">Paul Craciunas が ❤\uFE0F を込めて制作。\t</string>
+    <string name="about_dedication_danya">このアプリケーションは、グランドマスター&lt;b>Daniel Naroditsky&lt;/b>（1995–2025）の思い出に心を込めて捧げます。その感染力のある情熱、比類なき明晰さ、そして素晴らしい教育動画は数十万人の心を刺激し、チェスへの普遍的な喜びを再び灯しました。</string>
     <string name="about_contact_title">お問い合わせ</string>
     <string name="about_contact_description">法的問題、ビジネス機会、その他のお問い合わせは、メールにてご連絡ください。</string>
     <string name="about_contact_email">contact@chessgym.app</string>
@@ -360,7 +361,7 @@
     <string name="about_donate_medium">サンドイッチ</string>
     <string name="about_donate_large">ピザ</string>
     <string name="about_rate_title">アプリを評価</string>
-    <string name="about_rate_description">ChessGymをお楽しみですか？Playストアで評価をお願いします</string>
+    <string name="about_rate_description">ChessGymをお楽しみですか？評価をお願いします</string>
     <string name="about_libraries_title">オープンソースライブラリ</string>
     <string name="about_libraries_description">ChessGymは以下のオープンソースライブラリを使用して構築されています：</string>
     <string name="about_privacy_policy_title">プライバシーポリシー</string>
@@ -437,20 +438,20 @@
     <string name="achievement_category_failed_puzzles_redeemed">失敗パズル挽回</string>
     <string name="achievement_category_find_square_sessions">マス探しセッション</string>
     <string name="achievement_category_move_piece_sessions">駒移動セッション</string>
-    <string name="achievement_category_blind_mode_wins">ホメロスの遺産</string>
+    <string name="achievement_category_blind_mode_wins">ブラインドモード勝利</string>
     <string name="achievement_category_rated_win_streak">レーティング連勝</string>
     <string name="achievement_category_rating_climber">レーティング上昇者</string>
-    <string name="achievement_category_blind_strategist">ブラインド戦略家</string>
-    <string name="achievement_category_rush_champion">ラッシュチャンピオン</string>
-    <string name="achievement_category_streak_legend">ストリーク伝説</string>
-    <string name="achievement_category_eagle_eye">鷹の目</string>
-    <string name="achievement_category_knights_path">ナイトの道</string>
-    <string name="achievement_category_puzzle_addict">パズル中毒</string>
+    <string name="achievement_category_blind_strategist">ブラインドモードレーティング</string>
+    <string name="achievement_category_rush_champion">ラッシュハイスコア</string>
+    <string name="achievement_category_streak_legend">ストリークハイスコア</string>
+    <string name="achievement_category_eagle_eye">マス探しハイスコア</string>
+    <string name="achievement_category_knights_path">駒移動ハイスコア</string>
+    <string name="achievement_category_puzzle_addict">解いたパズル</string>
     <string name="achievement_category_time_invested">投資した時間</string>
-    <string name="achievement_category_daily_grinder">日課の鍛錬</string>
-    <string name="achievement_category_consistency_king">継続の王</string>
+    <string name="achievement_category_daily_grinder">連続プレイ日数</string>
+    <string name="achievement_category_consistency_king">最長連続日数</string>
     <string name="achievement_category_board_vision">ボードビジョン</string>
-    <string name="achievement_category_rush_solver">ラッシュソルバー</string>
+    <string name="achievement_category_rush_solver">ラッシュ解答数</string>
 
     <!-- Tier names: RATED_PUZZLES_SOLVED -->
     <string name="achievement_rated_puzzles_solved_one">パズル愛好者</string>

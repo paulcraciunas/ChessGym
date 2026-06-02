@@ -158,7 +158,7 @@
     <string name="loading_error_generic">Une erreur est survenue. Veuillez réessayer.</string>
     <string name="loading_error_consent_required">Le consentement au rapport d\'erreurs est requis pour continuer. Nous collectons uniquement des données techniques de plantage pour améliorer la stabilité de l\'application.</string>
     <string name="crash_consent_dialog_title">Aidez-nous à nous améliorer</string>
-    <string name="crash_consent_dialog_body">ChessGym utilise les rapports de plantage pour détecter et corriger les erreurs de l\'application. Ces données sont utilisées uniquement pour identifier les plantages et améliorer la stabilité de l\'application pour tous les utilisateurs.\n\nAucune information personnelle, donnée de jeu ou habitude d\'utilisation n\'est collectée — uniquement des détails techniques de plantage (tels que les traces de pile et le modèle de l\'appareil) en cas de problème.\n\nVous pouvez modifier ce paramètre ultérieurement dans l\'application.</string>
+    <string name="crash_consent_dialog_body">ChessGym utilise les rapports de plantage pour détecter et corriger les erreurs de l\'application. Ces données sont utilisées uniquement pour identifier les plantages et améliorer la stabilité de l\'application pour tous les utilisateurs.\n\n&lt;b>Aucune information personnelle, donnée de jeu ou habitude d\'utilisation n\'est collectée&lt;/b> — uniquement des détails techniques de plantage (tels que les traces de pile et le modèle de l\'appareil) en cas de problème.\n\nVous pouvez modifier ce paramètre ultérieurement dans l\'application.</string>
     <string name="loading_fact_eyebrow">Le saviez-vous ?</string>
     <string-array name="loading_fact_titles">
         <item>La Dame sans pouvoir</item>
@@ -348,8 +348,9 @@
     <string name="about_title">À propos</string>
     <string name="about_general_title">Général</string>
     <string name="about_legal_title">Légal</string>
-    <string name="about_creator_title">Le créateur</string>
-    <string name="about_creator_description">ChessGym a été créé par Paul Mihai Craciunas, un ingénieur Android de Londres, passionné par les échecs, souhaitant aider les gens dans leur parcours d\'amélioration.</string>
+    <string name="about_app_title">L\'application</string>
+    <string name="about_app_description">Créé avec ❤\uFE0F par Paul Craciunas.\t</string>
+    <string name="about_dedication_danya">Cette application est respectueusement dédiée à la mémoire du Grand Maître &lt;b>Daniel Naroditsky&lt;/b> (1995–2025), dont la passion communicative, la clarté inégalée et les brillantes vidéos pédagogiques ont inspiré des centaines de milliers d\'esprits et ravivé une joie universelle pour le jeu d\'échecs.</string>
     <string name="about_contact_title">Contact</string>
     <string name="about_contact_description">Pour toute préoccupation juridique, opportunité commerciale ou autre demande, veuillez nous contacter par e-mail.</string>
     <string name="about_contact_email">contact@chessgym.app</string>
@@ -365,7 +366,7 @@
     <string name="about_donate_medium">Sandwich</string>
     <string name="about_donate_large">Pizza</string>
     <string name="about_rate_title">Évaluer l\'application</string>
-    <string name="about_rate_description">Vous appréciez ChessGym ? Laissez une note sur le Play Store</string>
+    <string name="about_rate_description">Vous appréciez ChessGym ? Laissez une note</string>
     <string name="about_libraries_title">Bibliothèques open source</string>
     <string name="about_libraries_description">ChessGym est construit avec les bibliothèques open source suivantes :</string>
     <string name="about_privacy_policy_title">Politique de confidentialité</string>
@@ -442,20 +443,20 @@
     <string name="achievement_category_failed_puzzles_redeemed">Puzzles échoués rattrapés</string>
     <string name="achievement_category_find_square_sessions">Sessions Trouver la case</string>
     <string name="achievement_category_move_piece_sessions">Sessions Déplacer la pièce</string>
-    <string name="achievement_category_blind_mode_wins">L\'héritage d\'Homère</string>
+    <string name="achievement_category_blind_mode_wins">Victoires en mode aveugle</string>
     <string name="achievement_category_rated_win_streak">Série de victoires classées</string>
     <string name="achievement_category_rating_climber">Grimpeur de classement</string>
-    <string name="achievement_category_blind_strategist">Stratège aveugle</string>
-    <string name="achievement_category_rush_champion">Champion Rush</string>
-    <string name="achievement_category_streak_legend">Légende des séries</string>
-    <string name="achievement_category_eagle_eye">Œil d\'aigle</string>
-    <string name="achievement_category_knights_path">Le chemin du Cavalier</string>
-    <string name="achievement_category_puzzle_addict">Accro aux puzzles</string>
+    <string name="achievement_category_blind_strategist">Classement mode aveugle</string>
+    <string name="achievement_category_rush_champion">Meilleur score Rush</string>
+    <string name="achievement_category_streak_legend">Meilleur score séries</string>
+    <string name="achievement_category_eagle_eye">Meilleur score Trouver la case</string>
+    <string name="achievement_category_knights_path">Meilleur score Déplacer la pièce</string>
+    <string name="achievement_category_puzzle_addict">Puzzles résolus</string>
     <string name="achievement_category_time_invested">Temps investi</string>
-    <string name="achievement_category_daily_grinder">Joueur assidu</string>
-    <string name="achievement_category_consistency_king">Roi de la régularité</string>
+    <string name="achievement_category_daily_grinder">Jours consécutifs joués</string>
+    <string name="achievement_category_consistency_king">Le plus de jours consécutifs</string>
     <string name="achievement_category_board_vision">Vision du plateau</string>
-    <string name="achievement_category_rush_solver">Solveur Rush</string>
+    <string name="achievement_category_rush_solver">Puzzles Rush résolus</string>
 
     <!-- Tier names: RATED_PUZZLES_SOLVED -->
     <string name="achievement_rated_puzzles_solved_one">Passionné de puzzles</string>

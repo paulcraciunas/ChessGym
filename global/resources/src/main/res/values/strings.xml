@@ -157,7 +157,7 @@
     <string name="loading_error_generic">An error occurred. Please try again.</string>
     <string name="loading_error_consent_required">Crash reporting consent is required to proceed. We only collect technical crash data to improve app stability.</string>
     <string name="crash_consent_dialog_title">Help Us Improve</string>
-    <string name="crash_consent_dialog_body">ChessGym uses crash reporting to detect and fix application errors. This data is used solely to identify crashes and improve app stability for all users.\n\nNo personal information, game data, or usage patterns are collected — only technical crash details (such as stack traces and device model) when something goes wrong.\n\nYou can change this setting later in the app.</string>
+    <string name="crash_consent_dialog_body">ChessGym uses crash reporting to detect and fix application errors. This data is used solely to identify crashes and improve app stability for all users.\n\n&lt;b>No personal information, game data, or usage patterns are collected&lt;/b> — only technical crash details (such as stack traces and device model) when something goes wrong.\n\nYou can change this setting later in the app.</string>
     <string name="loading_fact_eyebrow">Did you know?</string>
     <string-array name="loading_fact_titles">
         <item>The Powerless Queen</item>
@@ -347,8 +347,9 @@
     <string name="about_title">About</string>
     <string name="about_general_title">General</string>
     <string name="about_legal_title">Legal</string>
-    <string name="about_creator_title">The Creator</string>
-    <string name="about_creator_description">ChessGym was created by Paul Mihai Craciunas, an Android engineer from London, passionate about Chess, hoping to help people on their journey of improvement.</string>
+    <string name="about_app_title">The App</string>
+    <string name="about_app_description">Built with ❤\uFE0F by Paul Craciunas.\t</string>
+    <string name="about_dedication_danya">This application is respectfully dedicated to the memory of Grandmaster &lt;b>Daniel Naroditsky&lt;/b> (1995–2025), whose infectious passion, unmatched clarity, and brilliant instructional videos inspired hundreds of thousands of minds and rekindled a universal joy for the game of chess.</string>
     <string name="about_contact_title">Contact</string>
     <string name="about_contact_description">For legal concerns, commercial opportunities, or any other inquiries, please reach out via email.</string>
     <string name="about_contact_email">contact@chessgym.app</string>
@@ -364,7 +365,7 @@
     <string name="about_donate_medium">Sandwich</string>
     <string name="about_donate_large">Pizza</string>
     <string name="about_rate_title">Rate the App</string>
-    <string name="about_rate_description">Enjoying ChessGym? Leave a rating on the Play Store</string>
+    <string name="about_rate_description">Enjoying ChessGym? Leave a rating</string>
     <string name="about_libraries_title">Open Source Libraries</string>
     <string name="about_libraries_description">ChessGym is built with the following open source libraries:</string>
     <string name="about_privacy_policy_title">Privacy Policy</string>
@@ -441,20 +442,20 @@
     <string name="achievement_category_failed_puzzles_redeemed">Failed Puzzles Redeemed</string>
     <string name="achievement_category_find_square_sessions">Find Square Sessions</string>
     <string name="achievement_category_move_piece_sessions">Move Piece Sessions</string>
-    <string name="achievement_category_blind_mode_wins">Homer\'s Legacy</string>
+    <string name="achievement_category_blind_mode_wins">Blind Mode Wins</string>
     <string name="achievement_category_rated_win_streak">Rated Win Streak</string>
     <string name="achievement_category_rating_climber">Rating Climber</string>
-    <string name="achievement_category_blind_strategist">Blind Strategist</string>
-    <string name="achievement_category_rush_champion">Rush Champion</string>
-    <string name="achievement_category_streak_legend">Streak Legend</string>
-    <string name="achievement_category_eagle_eye">Eagle Eye</string>
-    <string name="achievement_category_knights_path">Knight\'s Path</string>
-    <string name="achievement_category_puzzle_addict">Puzzle Addict</string>
+    <string name="achievement_category_blind_strategist">Blind Mode Rating</string>
+    <string name="achievement_category_rush_champion">Rush High Score</string>
+    <string name="achievement_category_streak_legend">Streak High Score</string>
+    <string name="achievement_category_eagle_eye">Find the Square High Score</string>
+    <string name="achievement_category_knights_path">Move the Piece High Score</string>
+    <string name="achievement_category_puzzle_addict">Puzzles Solved</string>
     <string name="achievement_category_time_invested">Time Invested</string>
-    <string name="achievement_category_daily_grinder">Daily Grinder</string>
-    <string name="achievement_category_consistency_king">Consistency King</string>
+    <string name="achievement_category_daily_grinder">Consecutive Days Played</string>
+    <string name="achievement_category_consistency_king">Most Consecutive Days</string>
     <string name="achievement_category_board_vision">Board Vision</string>
-    <string name="achievement_category_rush_solver">Rush Solver</string>
+    <string name="achievement_category_rush_solver">Rush Puzzles Solved</string>
 
     <!-- Tier names: RATED_PUZZLES_SOLVED -->
     <string name="achievement_rated_puzzles_solved_one">Puzzle Enthusiast</string>

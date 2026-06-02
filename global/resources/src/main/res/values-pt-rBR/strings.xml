@@ -158,7 +158,7 @@
     <string name="loading_error_generic">Ocorreu um erro. Por favor, tente novamente.</string>
     <string name="loading_error_consent_required">O consentimento para relatórios de falhas é necessário para continuar. Coletamos apenas dados técnicos de falhas para melhorar a estabilidade do app.</string>
     <string name="crash_consent_dialog_title">Ajude-nos a melhorar</string>
-    <string name="crash_consent_dialog_body">ChessGym usa relatórios de falhas para detectar e corrigir erros do aplicativo. Esses dados são usados exclusivamente para identificar falhas e melhorar a estabilidade do app para todos os usuários.\n\nNenhuma informação pessoal, dados de jogo ou padrões de uso são coletados — apenas detalhes técnicos de falhas (como rastros de pilha e modelo do dispositivo) quando algo dá errado.\n\nVocê pode alterar essa configuração posteriormente no app.</string>
+    <string name="crash_consent_dialog_body">ChessGym usa relatórios de falhas para detectar e corrigir erros do aplicativo. Esses dados são usados exclusivamente para identificar falhas e melhorar a estabilidade do app para todos os usuários.\n\n&lt;b>Nenhuma informação pessoal, dados de jogo ou padrões de uso são coletados&lt;/b> — apenas detalhes técnicos de falhas (como rastros de pilha e modelo do dispositivo) quando algo dá errado.\n\nVocê pode alterar essa configuração posteriormente no app.</string>
     <string name="loading_fact_eyebrow">Você sabia?</string>
     <string-array name="loading_fact_titles">
         <item>A Dama sem poder</item>
@@ -348,8 +348,9 @@
     <string name="about_title">Sobre</string>
     <string name="about_general_title">Geral</string>
     <string name="about_legal_title">Jurídico</string>
-    <string name="about_creator_title">O criador</string>
-    <string name="about_creator_description">ChessGym foi criado por Paul Mihai Craciunas, um engenheiro Android de Londres, apaixonado por xadrez, esperando ajudar as pessoas em sua jornada de melhoria.</string>
+    <string name="about_app_title">O App</string>
+    <string name="about_app_description">Feito com ❤\uFE0F por Paul Craciunas.\t</string>
+    <string name="about_dedication_danya">Esta aplicação é respeitosamente dedicada à memória do Grande Mestre &lt;b>Daniel Naroditsky&lt;/b> (1995–2025), cuja paixão contagiante, clareza incomparável e brilhantes vídeos instrutivos inspiraram centenas de milhares de mentes e reacenderam uma alegria universal pelo jogo de xadrez.</string>
     <string name="about_contact_title">Contato</string>
     <string name="about_contact_description">Para questões legais, oportunidades comerciais ou qualquer outra consulta, entre em contato por e-mail.</string>
     <string name="about_contact_email">contact@chessgym.app</string>
@@ -365,7 +366,7 @@
     <string name="about_donate_medium">Sanduíche</string>
     <string name="about_donate_large">Pizza</string>
     <string name="about_rate_title">Avalie o app</string>
-    <string name="about_rate_description">Está gostando do ChessGym? Deixe uma avaliação na Play Store</string>
+    <string name="about_rate_description">Está gostando do ChessGym? Deixe uma avaliação</string>
     <string name="about_libraries_title">Bibliotecas de código aberto</string>
     <string name="about_libraries_description">ChessGym é construído com as seguintes bibliotecas de código aberto:</string>
     <string name="about_privacy_policy_title">Política de Privacidade</string>
@@ -442,20 +443,20 @@
     <string name="achievement_category_failed_puzzles_redeemed">Puzzles falhos remediados</string>
     <string name="achievement_category_find_square_sessions">Sessões de Encontre a Casa</string>
     <string name="achievement_category_move_piece_sessions">Sessões de Mova a Peça</string>
-    <string name="achievement_category_blind_mode_wins">O legado de Homero</string>
+    <string name="achievement_category_blind_mode_wins">Vitórias no modo cego</string>
     <string name="achievement_category_rated_win_streak">Sequência de vitórias ranqueadas</string>
     <string name="achievement_category_rating_climber">Escalador de pontuação</string>
-    <string name="achievement_category_blind_strategist">Estrategista cego</string>
-    <string name="achievement_category_rush_champion">Campeão do Rush</string>
-    <string name="achievement_category_streak_legend">Lenda da sequência</string>
-    <string name="achievement_category_eagle_eye">Olho de águia</string>
-    <string name="achievement_category_knights_path">Caminho do cavalo</string>
-    <string name="achievement_category_puzzle_addict">Viciado em puzzles</string>
+    <string name="achievement_category_blind_strategist">Pontuação do modo cego</string>
+    <string name="achievement_category_rush_champion">Recorde do Rush</string>
+    <string name="achievement_category_streak_legend">Recorde da sequência</string>
+    <string name="achievement_category_eagle_eye">Recorde de Encontre a Casa</string>
+    <string name="achievement_category_knights_path">Recorde de Mova a Peça</string>
+    <string name="achievement_category_puzzle_addict">Puzzles resolvidos</string>
     <string name="achievement_category_time_invested">Tempo investido</string>
-    <string name="achievement_category_daily_grinder">Constância diária</string>
-    <string name="achievement_category_consistency_king">Rei da constância</string>
+    <string name="achievement_category_daily_grinder">Dias consecutivos jogados</string>
+    <string name="achievement_category_consistency_king">Maior número de dias consecutivos</string>
     <string name="achievement_category_board_vision">Visão do tabuleiro</string>
-    <string name="achievement_category_rush_solver">Resolvedor do Rush</string>
+    <string name="achievement_category_rush_solver">Puzzles do Rush resolvidos</string>
 
     <!-- Tier names: RATED_PUZZLES_SOLVED -->
     <string name="achievement_rated_puzzles_solved_one">Entusiasta de puzzles</string>
