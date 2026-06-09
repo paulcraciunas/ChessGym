@@ -13,22 +13,22 @@ sealed class PuzzleStreakUiState {
     @Immutable
     abstract class WithBoard : PuzzleStreakUiState() {
         abstract val data: BoardState
+        abstract val streakCount: Int
     }
 
     @Immutable
     data class Playing(
         override val data: BoardState,
-        val streakCount: Int,
+        override val streakCount: Int,
         val hintEnabled: Boolean = true,
         val showAbandonDialog: Boolean = false,
-        val isShowingSolution: Boolean = false,
         val isAwaitingNextPuzzle: Boolean = false,
     ) : WithBoard()
 
     @Immutable
     data class StreakEnded(
         override val data: BoardState,
-        val finalStreakCount: Int,
+        override val streakCount: Int,
         val isNewHighScore: Boolean,
         val showSummary: Boolean,
     ) : WithBoard()

@@ -1017,6 +1017,43 @@ internal class PlaySessionTest {
         }
 
         @Test
+        fun `GIVEN odd-move puzzle WHEN opponent plays final move without animations THEN puzzle completes`() = runTest {
+            val puzzle = buildPuzzle(moves = listOf("e2e4", "e7e5", "g1f3"))
+            val session = buildSession(puzzle)
+            val config = noAnimationsConfig().copy(endMode = PlaySessionConfiguration.EndMode.OnSourceExhausted)
+            val playSession = buildPlaySession(config = config, sessions = singleSessionSource(session))
+
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession.run() }
+            advanceUntilIdle()
+
+            makeMove(playSession, from = Locus.e7, to = Locus.e5)
+
+            val state = playSession.state.value
+            assertEquals(PlaySessionState.Status.Ended, state.status)
+            assertEquals(1, state.results.size)
+            assertTrue(state.results.first().success)
+        }
+
+        @Test
+        fun `GIVEN odd-move puzzle WHEN opponent plays final move with animations THEN puzzle completes`() = runTest {
+            val puzzle = buildPuzzle(moves = listOf("e2e4", "e7e5", "g1f3"))
+            val session = buildSession(puzzle)
+            val config = animationsConfig(moveMs = 50).copy(endMode = PlaySessionConfiguration.EndMode.OnSourceExhausted)
+            val playSession = buildPlaySession(config = config, sessions = singleSessionSource(session))
+
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession.run() }
+            advanceUntilIdle()
+
+            makeMove(playSession, from = Locus.e7, to = Locus.e5)
+            advanceTimeBy(200)
+
+            val state = playSession.state.value
+            assertEquals(PlaySessionState.Status.Ended, state.status)
+            assertEquals(1, state.results.size)
+            assertTrue(state.results.first().success)
+        }
+
+        @Test
         fun `GIVEN multiple intents queued during animation WHEN animation ends THEN only non-blocked are processed`() = runTest {
             val playSession = buildPlaySession(config = animationsConfig(moveMs = 100), sessions = singleSessionSource())
 

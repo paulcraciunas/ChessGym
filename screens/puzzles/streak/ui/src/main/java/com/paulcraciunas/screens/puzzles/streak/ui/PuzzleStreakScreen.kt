@@ -117,7 +117,6 @@ private fun PuzzleStreakContent(
     modifier: Modifier = Modifier,
 ) {
     val data = uiState.data
-    val isShowingSolution = uiState is PuzzleStreakUiState.Playing && uiState.isShowingSolution
     val isAwaitingNext = uiState is PuzzleStreakUiState.Playing && uiState.isAwaitingNextPuzzle
     Column(modifier = modifier) {
         CapturedPieces(capturedPieces = data.captured.byOpponent, side = data.player, modifier = Modifier.fillMaxWidth())
@@ -139,7 +138,7 @@ private fun PuzzleStreakContent(
                 .padding(top = Design.dimensions.spacing.sm)
             if (isEnded && uiState is PuzzleStreakUiState.StreakEnded) {
                 StreakEndedControls(
-                    finalStreakCount = uiState.finalStreakCount,
+                    finalStreakCount = uiState.streakCount,
                     onNewStreak = onNewStreak,
                     modifier = controlsModifier,
                 )
@@ -152,19 +151,19 @@ private fun PuzzleStreakContent(
                     )
                 } else {
                     DefaultPuzzleControls(
-                        hintEnabled = uiState.hintEnabled && !isShowingSolution,
+                        hintEnabled = uiState.hintEnabled,
                         toMove = data.player,
                         onHintRequested = onHintRequested,
                         onAbandonRequested = onAbandon,
                         modifier = controlsModifier,
-                        abandonEnabled = !isShowingSolution,
+                        abandonEnabled = true,
                     )
                 }
             }
         }
 
         // Dialogs
-        if (uiState is PuzzleStreakUiState.Playing && !isShowingSolution) {
+        if (uiState is PuzzleStreakUiState.Playing) {
             if (uiState.showAbandonDialog) {
                 AbandonConfirmationDialog(
                     onConfirm = onAbandonConfirmed,
@@ -180,7 +179,7 @@ private fun PuzzleStreakContent(
         }
         if (uiState is PuzzleStreakUiState.StreakEnded && uiState.showSummary) {
             StreakSummaryDialog(
-                streakCount = uiState.finalStreakCount,
+                streakCount = uiState.streakCount,
                 isNewHighScore = uiState.isNewHighScore,
                 onDismiss = onDismissSummary
             )
@@ -285,7 +284,7 @@ private fun StreakEndedPreview() {
             PuzzleStreakScreen(
                 uiState = PuzzleStreakUiState.StreakEnded(
                     data = PreviewData().blackPuzzleData(),
-                    finalStreakCount = 15,
+                    streakCount = 15,
                     isNewHighScore = false,
                     showSummary = false,
                 ),

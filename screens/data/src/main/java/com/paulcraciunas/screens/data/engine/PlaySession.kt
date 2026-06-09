@@ -152,7 +152,7 @@ class PlaySession(
     private suspend fun CoroutineScope.onAnimationPhaseComplete(phase: AnimationPhase, session: BoardSession): IntentOutcome =
         when (phase) {
             AnimationPhase.MoveAnimated -> onMoveAnimated(session)
-            AnimationPhase.OpponentMoveAnimated -> onOpponentMoveAnimated()
+            AnimationPhase.OpponentMoveAnimated -> onOpponentMoveAnimated(session)
             AnimationPhase.BoardSwapped -> onBoardSwapped(session)
             AnimationPhase.SolutionStepAnimated -> onSolutionStepAnimated(session)
         }
@@ -171,8 +171,13 @@ class PlaySession(
         }
     }
 
-    private fun onOpponentMoveAnimated(): IntentOutcome {
+    private fun onOpponentMoveAnimated(session: BoardSession): IntentOutcome {
         _state.update { it.copy(isAnimating = false) }
+        val boardState = _state.value.boardState
+        if (boardState.outcome != null) {
+            _state.update { it.copy(results = it.results + session.result()) }
+            return if (boardState.won) IntentOutcome.Success else IntentOutcome.Defeat
+        }
         return IntentOutcome.Continue
     }
 
@@ -412,11 +417,18 @@ class PlaySession(
 
     private suspend fun playOpponentMoveImmediately(session: BoardSession) {
         if (session.playOpponentMove()) {
+            val boardState = session.boardState()
             _state.update {
                 it.copy(
-                    boardState = session.boardState(),
+                    boardState = boardState,
                     navigation = session.navigation(),
                     isAnimating = false,
+                )
+            }
+            if (boardState.outcome != null) {
+                _state.update { it.copy(results = it.results + session.result()) }
+                intentChannel.send(
+                    if (boardState.won) PlayIntent.SessionFinished else PlayIntent.SessionFailed
                 )
             }
         }
