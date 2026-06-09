@@ -1163,6 +1163,27 @@ internal class PlaySessionTest {
         }
 
         @Test
+        fun `GIVEN OnFirstFailure with multiple sessions WHEN puzzle fails THEN onPlayComplete is called`() = runTest {
+            val config = noAnimationsConfig().copy(endMode = PlaySessionConfiguration.EndMode.OnFirstFailure)
+            var completedState: PlaySessionState? = null
+            val playSession = buildPlaySession(
+                config = config,
+                sessions = multiSessionSource(3),
+                onPlayComplete = PlaySession.OnComplete { completedState = it },
+            )
+
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession.run() }
+            advanceUntilIdle()
+
+            makeMove(playSession, from = Locus.d7, to = Locus.d5)
+
+            assertNotNull(completedState)
+            assertEquals(PlaySessionState.Status.Ended, completedState!!.status)
+            assertEquals(1, completedState.results.size)
+            assertFalse(completedState.results.first().success)
+        }
+
+        @Test
         fun `GIVEN OnSourceExhausted WHEN all puzzles solved THEN ends with Ended status`() = runTest {
             val config = noAnimationsConfig().copy(endMode = PlaySessionConfiguration.EndMode.OnSourceExhausted, autoNextOverride = true)
             var completeCalled = false

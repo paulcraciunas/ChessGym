@@ -91,13 +91,15 @@ class PlaySession(
                         -> break
                         IntentOutcome.End -> {
                             onGameOver(session)
-                            return@collect
+                            throw GameEndSignal()
                         }
                     }
                 }
                 onSessionOver(session)
             }
             onSourceExhausted()
+        } catch (_: GameEndSignal) {
+            // Game ended normally (timer expired, first failure in rush mode, etc.)
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
@@ -459,6 +461,8 @@ private fun Channel<*>.flush() {
     while (tryReceive().isSuccess) { /* discard stale intents */
     }
 }
+
+private class GameEndSignal : Exception()
 
 private fun BoardSession.navigation(): PlaySessionState.Navigation? =
     if (canNavigate()) PlaySessionState.Navigation(
