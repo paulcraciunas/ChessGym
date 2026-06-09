@@ -48,7 +48,7 @@ fun RatedPuzzleScreen(
     onNextPuzzle: () -> Unit = {},
 ) {
     val title = when (uiState) {
-        is RatedPuzzleUiState.WithBoard -> stringResource(R.string.rated_puzzle_title, uiState.data.rating!!)
+        is RatedPuzzleUiState.WithBoard -> stringResource(R.string.rated_puzzle_title, uiState.rating)
         else -> stringResource(R.string.puzzle_mode_rated_title)
     }
     Scaffold(
@@ -92,7 +92,6 @@ private fun RatedPuzzleContent(
     modifier: Modifier = Modifier,
 ) {
     val data = uiState.data
-    val isShowingSolution = uiState is RatedPuzzleUiState.Playing && uiState.isShowingSolution
     Column(
         modifier = modifier.fillMaxSize()
     ) {
@@ -116,16 +115,16 @@ private fun RatedPuzzleContent(
                 )
             } else if (uiState is RatedPuzzleUiState.Playing) {
                 DefaultPuzzleControls(
-                    hintEnabled = uiState.hintEnabled && !isShowingSolution,
+                    hintEnabled = uiState.hintEnabled,
                     toMove = data.player,
                     onHintRequested = onHintRequested,
                     onAbandonRequested = onAbandon,
                     modifier = Modifier.fillMaxWidth(),
-                    abandonEnabled = !isShowingSolution,
+                    abandonEnabled = true,
                 )
             }
         }
-        if (uiState is RatedPuzzleUiState.Playing && !isShowingSolution) {
+        if (uiState is RatedPuzzleUiState.Playing) {
             if (uiState.showAbandonDialog) {
                 AbandonConfirmationDialog(
                     onConfirm = onAbandonConfirmed,
@@ -150,6 +149,7 @@ private fun WhitePlayingPreview() {
         CompositionLocalProvider(LocalUiSettings provides UiSettings.default()) {
             RatedPuzzleScreen(
                 uiState = RatedPuzzleUiState.Playing(
+                    rating = 1442,
                     data = PreviewData().whitePuzzleData(),
                     hintEnabled = true,
                     showAbandonDialog = false,
@@ -166,10 +166,11 @@ private fun BlackPlayingPreview() {
     ChessGymTheme {
         CompositionLocalProvider(LocalUiSettings provides UiSettings.default()) {
             RatedPuzzleScreen(
-                uiState = RatedPuzzleUiState.Playing(
+                uiState = RatedPuzzleUiState.Finished(
+                    rating = 1442,
                     data = PreviewData().blackPuzzleData(),
-                    hintEnabled = true,
-                    showAbandonDialog = false,
+                    success = true,
+                    ratingChange = 42,
                 ),
             )
         }

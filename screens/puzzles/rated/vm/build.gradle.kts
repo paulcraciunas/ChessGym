@@ -13,6 +13,7 @@ dependencies {
     implementation(project(":game:logic:api"))
     implementation(project(":game:logic:builders"))
     implementation(project(":game:puzzles:api"))
+    implementation(project(":global:qualifiers"))
     implementation(project(":screens:data"))
     implementation(project(":settings:application:api"))
 
@@ -21,5 +22,7 @@ dependencies {
 
     testImplementation(testFixtures(project(":settings:application:api")))
     testImplementation(testFixtures(project(":domain:api")))
+    testImplementation(testFixtures(project(":user:api")))
+    testImplementation(project(":domain:impl"))
     testImplementation(project(":game:logic:impl"))
 }
