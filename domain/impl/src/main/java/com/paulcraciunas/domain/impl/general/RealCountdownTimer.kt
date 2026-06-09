@@ -9,7 +9,7 @@ import java.time.Duration
 import javax.inject.Inject
 
 class RealCountdownTimer @Inject constructor(
-    private val clock: Clock = Clock.systemUTC(),
+    private val clock: Clock,
 ) : CountdownTimer {
 
     override fun start(durationMs: Long, intervalMillis: Long): Flow<CountdownTimer.Remainder> = flow {
