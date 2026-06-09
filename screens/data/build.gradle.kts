@@ -17,6 +17,7 @@ dependencies {
     implementation(libs.public.timber)
 
     testImplementation(project(":game:logic:impl"))
+    testImplementation(testFixtures(project(":domain:api")))
     testImplementation(testFixtures(project(":game:engine:api")))
     testImplementation(testFixtures(project(":settings:application:api")))
 }

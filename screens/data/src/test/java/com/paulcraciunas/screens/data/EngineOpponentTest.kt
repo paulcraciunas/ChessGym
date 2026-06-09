@@ -3,104 +3,142 @@ package com.paulcraciunas.screens.data
 import com.paulcraciunas.game.engine.api.ChessEngine
 import com.paulcraciunas.game.engine.api.FakeEngineOrchestrator
 import com.paulcraciunas.game.logic.api.Game
-import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.impl.RealGameFactory
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 internal class EngineOpponentTest {
     private val gameFactory = RealGameFactory()
-    private val fakeOrchestrator = FakeEngineOrchestrator()
+    private val orchestrator = FakeEngineOrchestrator()
 
-    private lateinit var game: Game
-    private lateinit var underTest: EngineOpponent
+    @Nested
+    internal inner class Init {
+        @Test
+        fun `GIVEN game with rating WHEN init THEN starts engine with that rating`() = runTest {
+            val game = buildGame(rating = 2000).also { it.start() }
+            val underTest = EngineOpponent(orchestrator, game)
 
-    @BeforeEach
-    fun setup() {
-        game = gameFactory.builder()
-            .withDefaultBoard()
-            .withRating(1500)
-            .buildGame()
-        game.start()
-        underTest = EngineOpponent(fakeOrchestrator).apply { load(game) }
+            underTest.init()
+
+            assertEquals(2000, orchestrator.currentElo)
+        }
+
+        @Test
+        fun `GIVEN game without rating WHEN init THEN starts engine with DEFAULT_ELO`() = runTest {
+            val game = buildGame().also { it.start() }
+            val underTest = EngineOpponent(orchestrator, game)
+
+            underTest.init()
+
+            assertEquals(ChessEngine.DEFAULT_ELO, orchestrator.currentElo)
+        }
     }
 
-    @Test
-    fun `GIVEN engine WHEN prepare THEN starts new game with correct elo`() = runTest {
-        underTest.prepare()
+    @Nested
+    internal inner class CanPlay {
+        @Test
+        fun `GIVEN game in Ready state WHEN canPlay THEN returns true`() {
+            val game = buildGame()
+            val underTest = EngineOpponent(orchestrator, game)
 
-        assertEquals(1500, fakeOrchestrator.currentElo)
+            assertTrue(underTest.canPlay())
+        }
+
+        @Test
+        fun `GIVEN game in InProgress state WHEN canPlay THEN returns true`() {
+            val game = buildGame().also { it.start() }
+            val underTest = EngineOpponent(orchestrator, game)
+
+            assertTrue(underTest.canPlay())
+        }
+
+        @Test
+        fun `GIVEN game in Finished state WHEN canPlay THEN returns false`() {
+            val game = buildGame().also { it.start(); it.resign() }
+            val underTest = EngineOpponent(orchestrator, game)
+
+            assertFalse(underTest.canPlay())
+        }
     }
 
-    @Test
-    fun `GIVEN engine WHEN prepare with new game THEN updates elo`() = runTest {
-        underTest.prepare()
+    @Nested
+    internal inner class PlayNext {
+        @Test
+        fun `GIVEN game in progress WHEN playNext THEN requests engine move and plays it`() =
+            runTest {
+                val game = buildGame().also { it.start() }
+                val move = game.plies(Locus.e2).first()
+                orchestrator.enqueueMoves(move)
+                val underTest = EngineOpponent(orchestrator, game)
 
-        val newGame = gameFactory.builder()
-            .withDefaultBoard()
-            .withRating(1800)
-            .buildGame()
-        newGame.start()
-        underTest = EngineOpponent(fakeOrchestrator).apply { load(newGame) }
-        underTest.prepare()
+                val result = underTest.playNext()
 
-        assertEquals(1800, fakeOrchestrator.currentElo)
+                assertTrue(result)
+                assertEquals(Game.GameState.InProgress, game.state)
+            }
+
+        @Test
+        fun `GIVEN game in progress WHEN playNext THEN advances the game state`() = runTest {
+            val game = buildGame().also { it.start() }
+            val initialHistorySize = game.historySize
+            val move = game.plies(Locus.e2).first()
+            orchestrator.enqueueMoves(move)
+            val underTest = EngineOpponent(orchestrator, game)
+
+            underTest.playNext()
+
+            assertEquals(initialHistorySize + 1, game.historySize)
+        }
+
+        @Test
+        fun `GIVEN game finished WHEN playNext THEN returns false without requesting move`() =
+            runTest {
+                val game = buildGame().also { it.start(); it.resign() }
+                val underTest = EngineOpponent(orchestrator, game)
+
+                val result = underTest.playNext()
+
+                assertFalse(result)
+            }
+
+        @Test
+        fun `GIVEN game leading to checkmate WHEN playNext THEN game finishes`() = runTest {
+            val game = buildGame().also { it.start() }
+            game.play(Locus.f2, Locus.f3)
+            game.play(Locus.e7, Locus.e5)
+            game.play(Locus.g2, Locus.g4)
+
+            val checkmate = game.ply(Locus.d8, Locus.h4)!!
+            orchestrator.enqueueMoves(checkmate)
+            val underTest = EngineOpponent(orchestrator, game)
+
+            val result = underTest.playNext()
+
+            assertTrue(result)
+            assertTrue(game.state is Game.GameState.Finished)
+        }
     }
 
-    @Test
-    fun `GIVEN game in progress WHEN canPlay THEN returns true`() {
-        assertTrue(underTest.canPlay())
+    @Nested
+    internal inner class Shutdown {
+        @Test
+        fun `GIVEN engine opponent WHEN shutdown THEN stops the orchestrator`() = runTest {
+            val game = buildGame().also { it.start() }
+            val underTest = EngineOpponent(orchestrator, game)
+
+            underTest.shutdown()
+
+            assertTrue(orchestrator.isStopped)
+        }
     }
 
-    @Test
-    fun `GIVEN game finished WHEN canPlay THEN returns false`() {
-        game.resign()
-        assertFalse(underTest.canPlay())
-    }
-
-    @Test
-    fun `GIVEN game in progress WHEN playNext THEN engine move is played on game`() = runTest {
-        underTest.prepare()
-        game.play(Locus.e2, Locus.e4)
-
-        val ply = game.plies(Locus.e7).first { it.to == Locus.e5 }
-        fakeOrchestrator.enqueueMoves(ply)
-
-        val result = underTest.playNext()
-
-        assertTrue(result)
-        assertEquals(Side.WHITE, game.info.turn)
-    }
-
-    @Test
-    fun `GIVEN game finished WHEN playNext THEN returns false`() = runTest {
-        game.resign()
-        val result = underTest.playNext()
-        assertFalse(result)
-    }
-
-    @Test
-    fun `GIVEN running engine WHEN shutdown THEN stops orchestrator`() = runTest {
-        underTest.prepare()
-        underTest.shutdown()
-        assertTrue(fakeOrchestrator.isStopped)
-    }
-
-    @Test
-    fun `GIVEN game without rating WHEN prepare THEN uses default elo`() = runTest {
-        val unratedGame = gameFactory.builder()
-            .withDefaultBoard()
-            .buildGame()
-        unratedGame.start()
-        val opponent = EngineOpponent(fakeOrchestrator).apply { load(unratedGame) }
-
-        opponent.prepare()
-
-        assertEquals(ChessEngine.DEFAULT_ELO, fakeOrchestrator.currentElo)
-    }
+    private fun buildGame(rating: Int? = null): Game = gameFactory.builder()
+        .withDefaultBoard()
+        .apply { rating?.let { withRating(it) } }
+        .buildGame()
 }
