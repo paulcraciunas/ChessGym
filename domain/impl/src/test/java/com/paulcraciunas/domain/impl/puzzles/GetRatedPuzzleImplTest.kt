@@ -2,6 +2,7 @@ package com.paulcraciunas.domain.impl.puzzles
 
 import com.paulcraciunas.domain.api.general.FixedRandomFactory
 import com.paulcraciunas.domain.api.puzzles.GetRatedPuzzle
+import com.paulcraciunas.domain.api.puzzles.NoPuzzleException
 import com.paulcraciunas.domain.impl.general.CalculateEloImpl
 import com.paulcraciunas.puzzles.api.FakePuzzleRepository
 import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
@@ -167,7 +168,7 @@ internal class GetRatedPuzzleImplTest {
         fixedRandomFactory.returnValue = UserDefaults.RATING
 
         // When / Then
-        assertThrows<IllegalArgumentException> {
+        assertThrows<NoPuzzleException> {
             underTest()
         }
     }

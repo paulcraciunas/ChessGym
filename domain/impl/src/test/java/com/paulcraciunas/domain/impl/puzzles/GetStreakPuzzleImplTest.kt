@@ -1,22 +1,29 @@
 package com.paulcraciunas.domain.impl.puzzles
 
 import com.paulcraciunas.domain.api.puzzles.GetStreakPuzzle
+import com.paulcraciunas.domain.api.puzzles.NoPuzzleException
 import com.paulcraciunas.puzzles.api.FakePuzzleRepository
 import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
 import com.paulcraciunas.user.api.FakeUserRepository
 import com.paulcraciunas.user.api.User
 import com.paulcraciunas.user.api.UserDefaults
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
+@OptIn(ExperimentalCoroutinesApi::class)
 internal class GetStreakPuzzleImplTest {
+    private val testDispatcher = UnconfinedTestDispatcher()
     private val fakeUserRepository = FakeUserRepository()
     private val fakePuzzleRepository = FakePuzzleRepository()
     private val underTest = GetStreakPuzzleImpl(
         userRepository = fakeUserRepository,
         puzzleRepository = fakePuzzleRepository,
-        getPuzzleByRating = GetPuzzleByRatingImpl(fakePuzzleRepository, FakeAppSettingsRepository.default())
+        getPuzzleByRating = GetPuzzleByRatingImpl(fakePuzzleRepository, FakeAppSettingsRepository.default()),
+        dispatcher = testDispatcher,
     )
 
     @Test
@@ -140,7 +147,7 @@ internal class GetStreakPuzzleImplTest {
     }
 
     @Test
-    fun `GIVEN no puzzle available WHEN invoke THEN throws exception`() = runTest {
+    fun `GIVEN no puzzle available WHEN invoke THEN throws NoPuzzleException`() = runTest {
         // Given
         val user = UserDefaults.signedInUser().copy(
             ratings = UserDefaults.signedInUser().ratings.copy(
@@ -149,10 +156,9 @@ internal class GetStreakPuzzleImplTest {
         )
         fakeUserRepository.update(user)
 
-        try {
+        // Then
+        assertThrows<NoPuzzleException> {
             underTest()
-        } catch (e: Throwable) {
-            assertEquals(IllegalArgumentException::class.java, e::class.java)
         }
     }
 

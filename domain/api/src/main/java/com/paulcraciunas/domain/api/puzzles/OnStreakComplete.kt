@@ -16,10 +16,5 @@ interface OnStreakComplete {
      * @param timeSpentMillis total time spent in the streak session
      * @return the result of the streak completion
      */
-    suspend operator fun invoke(timeSpentMillis: Long): StreakCompleteResult
-
-    data class StreakCompleteResult(
-        val isNewHighScore: Boolean,
-        val finalStreakCount: Int,
-    )
+    suspend operator fun invoke(timeSpentMillis: Long)
 }

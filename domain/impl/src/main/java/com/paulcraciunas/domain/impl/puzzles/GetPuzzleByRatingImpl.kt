@@ -1,6 +1,7 @@
 package com.paulcraciunas.domain.impl.puzzles
 
 import com.paulcraciunas.domain.api.puzzles.GetPuzzleByRating
+import com.paulcraciunas.domain.api.puzzles.NoPuzzleException
 import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.puzzles.api.PuzzleRepository
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
@@ -38,6 +39,6 @@ class GetPuzzleByRatingImpl @Inject constructor(
             }
         }
 
-        throw IllegalArgumentException("Invalid rating $targetRating. No puzzles in database match within available rating range.")
+        throw NoPuzzleException("Invalid rating $targetRating. No puzzles in database match within available rating range.")
     }
 }

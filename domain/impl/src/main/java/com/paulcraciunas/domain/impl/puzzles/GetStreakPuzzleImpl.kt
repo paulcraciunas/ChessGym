@@ -2,8 +2,11 @@ package com.paulcraciunas.domain.impl.puzzles
 
 import com.paulcraciunas.domain.api.puzzles.GetPuzzleByRating
 import com.paulcraciunas.domain.api.puzzles.GetStreakPuzzle
+import com.paulcraciunas.global.qualifiers.IoDispatcher
 import com.paulcraciunas.puzzles.api.PuzzleRepository
 import com.paulcraciunas.user.api.UserRepository
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -20,9 +23,10 @@ class GetStreakPuzzleImpl @Inject constructor(
     private val userRepository: UserRepository,
     private val puzzleRepository: PuzzleRepository,
     private val getPuzzleByRating: GetPuzzleByRating,
+    @param:IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) : GetStreakPuzzle {
 
-    override suspend fun invoke(): GetStreakPuzzle.Data {
+    override suspend fun invoke(): GetStreakPuzzle.Data = withContext(dispatcher) {
         val user = userRepository.get()
         val currentCount = user.ratings.puzzleStreak.currentCount
         val lastPuzzleId = user.ratings.puzzleStreak.lastPuzzleId
@@ -31,7 +35,7 @@ class GetStreakPuzzleImpl @Inject constructor(
         if (lastPuzzleId != null) {
             val puzzle = puzzleRepository.getById(lastPuzzleId)
             if (puzzle != null) {
-                return GetStreakPuzzle.Data(
+                return@withContext GetStreakPuzzle.Data(
                     puzzle = puzzle,
                     currentStreakCount = currentCount,
                 )
@@ -51,7 +55,7 @@ class GetStreakPuzzleImpl @Inject constructor(
         )
         userRepository.update(updatedUser)
 
-        return GetStreakPuzzle.Data(
+        return@withContext GetStreakPuzzle.Data(
             puzzle = puzzle,
             currentStreakCount = currentCount,
         )

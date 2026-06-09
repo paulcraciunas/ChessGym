@@ -6,14 +6,17 @@ import com.paulcraciunas.domain.impl.achievements.UpdateAchievementProgressImpl
 import com.paulcraciunas.user.api.FakeUserRepository
 import com.paulcraciunas.user.api.User
 import com.paulcraciunas.user.api.UserDefaults
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 internal class OnStreakCompleteImplTest {
+    private val testDispatcher = UnconfinedTestDispatcher()
     private val fakeUserRepository = FakeUserRepository()
     private val updateAchievementProgress = UpdateAchievementProgressImpl(
         FakeAchievementNotificationManager(),
@@ -21,10 +24,11 @@ internal class OnStreakCompleteImplTest {
     private val underTest = OnStreakCompleteImpl(
         fakeUserRepository,
         updateAchievementProgress,
+        testDispatcher,
     )
 
     @Test
-    fun `GIVEN streak higher than high score WHEN invoke THEN updates high score and returns true`() = runTest {
+    fun `GIVEN streak higher than high score WHEN invoke THEN updates high score`() = runTest {
         // Given
         val currentHighScore = UserDefaults.HIGH_SCORE_STREAK
         val newStreakCount = currentHighScore + 10
@@ -36,17 +40,16 @@ internal class OnStreakCompleteImplTest {
         fakeUserRepository.update(user)
 
         // When
-        val result = underTest(TIME_SPENT)
+        underTest(TIME_SPENT)
 
         // Then
-        assertTrue(result.isNewHighScore)
         fakeUserRepository.get().apply {
             assertEquals(newStreakCount, highScores.puzzleStreak)
         }
     }
 
     @Test
-    fun `GIVEN streak lower than high score WHEN invoke THEN does not update high score and returns false`() = runTest {
+    fun `GIVEN streak lower than high score WHEN invoke THEN does not update high score`() = runTest {
         // Given
         val currentHighScore = UserDefaults.HIGH_SCORE_STREAK
         val lowerStreakCount = currentHighScore - 10
@@ -58,17 +61,16 @@ internal class OnStreakCompleteImplTest {
         fakeUserRepository.update(user)
 
         // When
-        val result = underTest(TIME_SPENT)
+        underTest(TIME_SPENT)
 
         // Then
-        assertFalse(result.isNewHighScore)
         fakeUserRepository.get().apply {
             assertEquals(currentHighScore, highScores.puzzleStreak)
         }
     }
 
     @Test
-    fun `GIVEN streak equal to high score WHEN invoke THEN does not update high score and returns false`() = runTest {
+    fun `GIVEN streak equal to high score WHEN invoke THEN does not update high score`() = runTest {
         // Given
         val currentHighScore = UserDefaults.HIGH_SCORE_STREAK
         val user = UserDefaults.signedInUser().copy(
@@ -79,10 +81,9 @@ internal class OnStreakCompleteImplTest {
         fakeUserRepository.update(user)
 
         // When
-        val result = underTest(TIME_SPENT)
+        underTest(TIME_SPENT)
 
         // Then
-        assertFalse(result.isNewHighScore)
         fakeUserRepository.get().apply {
             assertEquals(currentHighScore, highScores.puzzleStreak)
         }
@@ -138,10 +139,9 @@ internal class OnStreakCompleteImplTest {
         fakeUserRepository.update(user)
 
         // When
-        val result = underTest(TIME_SPENT)
+        underTest(TIME_SPENT)
 
         // Then
-        assertTrue(result.isNewHighScore)
         fakeUserRepository.get().apply {
             assertEquals(5, highScores.puzzleStreak)
         }
@@ -159,10 +159,9 @@ internal class OnStreakCompleteImplTest {
         fakeUserRepository.update(user)
 
         // When
-        val result = underTest(TIME_SPENT)
+        underTest(TIME_SPENT)
 
         // Then
-        assertFalse(result.isNewHighScore)
         fakeUserRepository.get().apply {
             assertEquals(currentHighScore, highScores.puzzleStreak)
         }

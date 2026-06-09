@@ -3,6 +3,7 @@ package com.paulcraciunas.domain.impl.puzzles
 import com.paulcraciunas.domain.api.general.RandomFactory
 import com.paulcraciunas.domain.api.puzzles.GetPuzzleByRating
 import com.paulcraciunas.domain.api.puzzles.GetPuzzleSeries
+import com.paulcraciunas.domain.api.puzzles.NoPuzzleException
 import com.paulcraciunas.game.logic.api.Puzzle
 import javax.inject.Inject
 
@@ -23,7 +24,7 @@ class GetPuzzleSeriesImpl @Inject constructor(
                     return@repeat // Can't have 2 puzzles with the same rating in a series
                 result.add(puzzle)
                 rating += randomFactory.nextInt(1, increment)
-            } catch (_: IllegalArgumentException) {
+            } catch (_: NoPuzzleException) {
                 return result
             }
         }

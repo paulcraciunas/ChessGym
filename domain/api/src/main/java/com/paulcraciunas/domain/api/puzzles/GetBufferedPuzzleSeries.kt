@@ -1,45 +1,18 @@
 package com.paulcraciunas.domain.api.puzzles
 
 import com.paulcraciunas.game.logic.api.Puzzle
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 
 /**
- * Provides puzzles one at a time, loading them in batches for efficiency.
- *
- * Usage:
- * ```
- * puzzleSeries(batchSize = 10, ratingStart = 400, increment = 60)
- * while (true) {
- *     val puzzle = puzzleSeries.next() ?: break
- *     // Use puzzle
- * }
- * ```
- *
- * Note: This class is not Thread-safe!
+ * Provides a series of puzzles, loading them in a buffer for efficiency.
+ * Runs on the I/O Dispatcher.
  */
 interface GetBufferedPuzzleSeries {
-    /**
-     * Resets and configures the puzzle series.
-     *
-     * Clears any buffered puzzles and configures new parameters.
-     *
-     * @param batchSize Number of puzzles to load per batch
-     * @param ratingStart Starting rating for puzzles
-     * @param increment Maximum rating increment between puzzles
-     */
-    fun start(
-        scope: CoroutineScope,
-        batchSize: Int = BATCH_SIZE,
+    fun execute(
+        bufferSize: Int = BATCH_SIZE,
         ratingStart: Int = RATING_START,
         increment: Int = INCREMENT,
-    )
-
-    /**
-     * Returns the next puzzle, loading a new batch if needed.
-     *
-     * @return The next puzzle, or throws exception if no more puzzles are available
-     */
-    suspend fun next(): Puzzle
+    ): Flow<Puzzle>
 
     companion object Defaults {
         const val BATCH_SIZE = 10
