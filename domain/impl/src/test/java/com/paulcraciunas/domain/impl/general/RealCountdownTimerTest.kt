@@ -1,457 +1,418 @@
 package com.paulcraciunas.domain.impl.general
 
-import com.paulcraciunas.domain.api.general.CountdownTimer.Remainder
+import com.paulcraciunas.domain.api.general.CountdownTimer
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import java.time.Clock
-import java.time.Instant
-import java.time.ZoneId
-import java.util.concurrent.atomic.AtomicLong
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class RealCountdownTimerTest {
     private val testClock = ControllableClock()
-    private val testDispatcher = StandardTestDispatcher()
-    private val testScope = TestScope(testDispatcher)
-    private lateinit var underTest: RealCountdownTimer
-
-    @BeforeEach
-    fun setUp() {
-        underTest = RealCountdownTimer(testClock)
-    }
+    private val underTest = RealCountdownTimer(testClock)
 
     @Nested
-    internal inner class InitialState {
+    internal inner class BasicEmissions {
         @Test
-        fun `WHEN created THEN remaining is zero`() {
-            assertEquals(Remainder(0, 0), underTest.remaining.value)
-        }
+        fun `GIVEN 5s duration WHEN collected THEN emits decreasing remainders`() = runTest {
+            val emissions = mutableListOf<CountdownTimer.Remainder>()
 
-        @Test
-        fun `WHEN created THEN isExpired is true`() {
-            assertTrue(underTest.isExpired)
-        }
-    }
+            val job = backgroundScope.launch {
+                underTest.start(durationMs = 5000L, intervalMillis = 1000L).collect {
+                    emissions.add(it)
+                }
+            }
+            runCurrent() // Let flow start and emit first value
 
-    @Nested
-    internal inner class SetDuration {
-        @Test
-        fun `GIVEN not running WHEN set with seconds THEN remaining updated`() {
-            // When
-            underTest.set(durationSeconds = 60)
+            assertEquals(1, emissions.size)
+            assertEquals(CountdownTimer.Remainder(5, 0), emissions.first())
 
-            // Then
-            assertEquals(Remainder(60, 0), underTest.remaining.value)
-        }
-
-        @Test
-        fun `GIVEN not running WHEN set with remainder THEN remaining updated`() {
-            // When
-            underTest.set(Remainder(seconds = 120, millis = 500))
-
-            // Then
-            assertEquals(Remainder(120, 500), underTest.remaining.value)
-        }
-
-        @Test
-        fun `GIVEN running WHEN set with seconds THEN remaining unchanged`() = runTest(testDispatcher) {
-            // Given
-            underTest.set(durationSeconds = 60)
-            underTest.start(testScope)
-
-            // When
-            underTest.set(durationSeconds = 120)
-
-            // Then
-            assertEquals(Remainder(60, 0), underTest.remaining.value)
-
-            // Cleanup
-            underTest.stop()
-        }
-
-        @Test
-        fun `GIVEN running WHEN set with remainder THEN remaining unchanged`() = runTest(testDispatcher) {
-            // Given
-            underTest.set(durationSeconds = 60)
-            underTest.start(testScope)
-
-            // When
-            underTest.set(Remainder(120, 0))
-
-            // Then
-            assertEquals(Remainder(60, 0), underTest.remaining.value)
-
-            // Cleanup
-            underTest.stop()
-        }
-
-        @Test
-        fun `GIVEN set and stopped WHEN set again THEN remaining updated`() = runTest(testDispatcher) {
-            // Given
-            underTest.set(durationSeconds = 60)
-            underTest.start(testScope)
-            underTest.stop()
-
-            // When
-            underTest.set(durationSeconds = 120)
-
-            // Then
-            assertEquals(Remainder(120, 0), underTest.remaining.value)
-        }
-
-        @Test
-        fun `WHEN isExpired after set THEN returns false`() {
-            // When
-            underTest.set(durationSeconds = 60)
-
-            // Then
-            assertFalse(underTest.isExpired)
-        }
-    }
-
-    @Nested
-    internal inner class SetInterval {
-        @Test
-        fun `WHEN setInterval with valid value THEN interval is used`() = runTest(testDispatcher) {
-            // Given
-            underTest.setInterval(500)
-            underTest.set(durationSeconds = 10)
-            underTest.start(testScope)
-
-            // When - advance 500ms virtual time + clock
-            testClock.advanceBy(500)
-            advanceTimeBy(501)
-            runCurrent()
-
-            // Then - should have ticked once after 500ms
-            val remaining = underTest.remaining.value
-            assertTrue(remaining.seconds < 10 || (remaining.seconds == 10 && remaining.millis < 0))
-
-            // Cleanup
-            underTest.stop()
-        }
-
-        @Test
-        fun `WHEN setInterval below minimum THEN coerced to 1ms`() = runTest(testDispatcher) {
-            // Given
-            underTest.setInterval(-100)
-            underTest.set(durationSeconds = 10)
-            underTest.start(testScope)
-
-            // When - advance 1ms
-            testClock.advanceBy(1)
-            advanceTimeBy(2)
-            runCurrent()
-
-            // Then - timer should have ticked
-            val remaining = underTest.remaining.value
-            assertTrue(remaining.seconds <= 10)
-
-            // Cleanup
-            underTest.stop()
-        }
-
-        @Test
-        fun `WHEN setInterval above maximum THEN coerced to 10000ms`() = runTest(testDispatcher) {
-            // Given
-            underTest.setInterval(20_000)
-            underTest.set(durationSeconds = 60)
-            underTest.start(testScope)
-
-            // When - advance 5 seconds (less than coerced 10s interval)
-            testClock.advanceBy(5_000)
-            advanceTimeBy(5_001)
-            runCurrent()
-
-            // Then - no tick yet, still at 60s
-            assertEquals(Remainder(60, 0), underTest.remaining.value)
-
-            // Cleanup
-            underTest.stop()
-        }
-    }
-
-    @Nested
-    internal inner class Countdown {
-        @Test
-        fun `GIVEN 10 second timer WHEN 1 second passes THEN remaining is 9 seconds`() = runTest(testDispatcher) {
-            // Given
-            underTest.set(durationSeconds = 10)
-            underTest.start(testScope)
-
-            // When
-            testClock.advanceBy(1_000)
-            advanceTimeBy(1_001)
-            runCurrent()
-
-            // Then
-            assertEquals(Remainder(9, 0), underTest.remaining.value)
-
-            // Cleanup
-            underTest.stop()
-        }
-
-        @Test
-        fun `GIVEN 10 second timer WHEN 5 seconds pass THEN remaining is 5 seconds`() = runTest(testDispatcher) {
-            // Given
-            underTest.set(durationSeconds = 10)
-            underTest.start(testScope)
-
-            // When - 5 ticks of 1 second each
             repeat(5) {
-                testClock.advanceBy(1_000)
-                advanceTimeBy(1_001)
+                testClock.advanceBy(1000)
+                advanceTimeBy(1001)
                 runCurrent()
             }
 
-            // Then
-            assertEquals(Remainder(5, 0), underTest.remaining.value)
+            job.cancel()
 
-            // Cleanup
-            underTest.stop()
+            // Initial + 4 intermediate + final zero = 6
+            assertTrue(emissions.size >= 5)
+            assertEquals(5, emissions.first().seconds)
+            assertEquals(CountdownTimer.Remainder(0, 0), emissions.last())
         }
 
         @Test
-        fun `GIVEN 100ms interval WHEN 500ms passes THEN remaining decreases by 500ms`() = runTest(testDispatcher) {
-            // Given
-            underTest.setInterval(100)
-            underTest.set(durationSeconds = 10)
-            underTest.start(testScope)
+        fun `GIVEN 3s duration WHEN fully collected THEN flow completes naturally`() = runTest {
+            val emissions = mutableListOf<CountdownTimer.Remainder>()
 
-            // When - 5 ticks of 100ms each = 500ms total
-            repeat(5) {
+            val job = backgroundScope.launch {
+                underTest.start(durationMs = 3000L, intervalMillis = 1000L).collect {
+                    emissions.add(it)
+                }
+            }
+            runCurrent()
+
+            repeat(4) {
+                testClock.advanceBy(1000)
+                advanceTimeBy(1001)
+                runCurrent()
+            }
+
+            assertEquals(CountdownTimer.Remainder(0, 0), emissions.last())
+            job.cancel()
+        }
+
+        @Test
+        fun `GIVEN timer WHEN first emission THEN shows full remaining time`() = runTest {
+            var firstEmission: CountdownTimer.Remainder? = null
+
+            val job = backgroundScope.launch {
+                underTest.start(durationMs = 10_000L, intervalMillis = 1000L).collect {
+                    if (firstEmission == null) firstEmission = it
+                }
+            }
+            runCurrent()
+
+            assertEquals(10, firstEmission?.seconds)
+            assertEquals(0, firstEmission?.millis)
+            job.cancel()
+        }
+
+        @Test
+        fun `GIVEN timer WHEN final emission THEN is always zero remainder`() = runTest {
+            val emissions = mutableListOf<CountdownTimer.Remainder>()
+
+            val job = backgroundScope.launch {
+                underTest.start(durationMs = 2000L, intervalMillis = 1000L).collect {
+                    emissions.add(it)
+                }
+            }
+            runCurrent()
+
+            repeat(3) {
+                testClock.advanceBy(1000)
+                advanceTimeBy(1001)
+                runCurrent()
+            }
+
+            job.cancel()
+            assertEquals(CountdownTimer.Remainder(0, 0), emissions.last())
+        }
+    }
+
+    @Nested
+    internal inner class IntervalBehavior {
+        @Test
+        fun `GIVEN 100ms interval WHEN collected THEN emits more frequently`() = runTest {
+            val emissions = mutableListOf<CountdownTimer.Remainder>()
+
+            val job = backgroundScope.launch {
+                underTest.start(durationMs = 1000L, intervalMillis = 100L).collect {
+                    emissions.add(it)
+                }
+            }
+            runCurrent()
+
+            repeat(11) {
                 testClock.advanceBy(100)
                 advanceTimeBy(101)
                 runCurrent()
             }
 
-            // Then
-            assertEquals(Remainder(9, 500), underTest.remaining.value)
-
-            // Cleanup
-            underTest.stop()
+            job.cancel()
+            assertTrue(emissions.size >= 10)
         }
 
         @Test
-        fun `GIVEN timer with millis remainder WHEN ticking THEN millis decrease correctly`() = runTest(testDispatcher) {
-            // Given
-            underTest.setInterval(100)
-            underTest.set(Remainder(seconds = 5, millis = 500))
-            underTest.start(testScope)
+        fun `GIVEN interval below minimum WHEN start THEN coerces to 1ms`() = runTest {
+            val emissions = mutableListOf<CountdownTimer.Remainder>()
 
-            // When - 3 ticks of 100ms each = 300ms total
-            repeat(3) {
-                testClock.advanceBy(100)
-                advanceTimeBy(101)
+            val job = backgroundScope.launch {
+                underTest.start(durationMs = 100L, intervalMillis = -5L).collect {
+                    emissions.add(it)
+                }
+            }
+            runCurrent()
+
+            testClock.advanceBy(200)
+            advanceTimeBy(201)
+            runCurrent()
+
+            job.cancel()
+            assertTrue(emissions.isNotEmpty())
+        }
+
+        @Test
+        fun `GIVEN interval above maximum WHEN start THEN coerces to 10000ms`() = runTest {
+            val emissions = mutableListOf<CountdownTimer.Remainder>()
+
+            val job = backgroundScope.launch {
+                underTest.start(durationMs = 25_000L, intervalMillis = 99_999L).collect {
+                    emissions.add(it)
+                }
+            }
+            runCurrent()
+
+            // First emission happens immediately
+            assertEquals(1, emissions.size)
+            assertEquals(25, emissions.first().seconds)
+
+            // After 5 seconds, no additional tick (coerced to 10s interval)
+            testClock.advanceBy(5000)
+            advanceTimeBy(5001)
+            runCurrent()
+            assertEquals(1, emissions.size)
+
+            // After 10s total, should tick
+            testClock.advanceBy(5000)
+            advanceTimeBy(5001)
+            runCurrent()
+            assertTrue(emissions.size >= 2)
+
+            job.cancel()
+        }
+
+        @Test
+        fun `GIVEN 500ms interval on 2s timer WHEN collected THEN emits correct remainders`() = runTest {
+            val emissions = mutableListOf<CountdownTimer.Remainder>()
+
+            val job = backgroundScope.launch {
+                underTest.start(durationMs = 2000L, intervalMillis = 500L).collect {
+                    emissions.add(it)
+                }
+            }
+            runCurrent()
+
+            // First emission at t=0: Remainder(2, 0)
+            assertEquals(CountdownTimer.Remainder(2, 0), emissions.first())
+
+            repeat(4) {
+                testClock.advanceBy(500)
+                advanceTimeBy(501)
                 runCurrent()
             }
 
-            // Then
-            assertEquals(Remainder(5, 200), underTest.remaining.value)
+            job.cancel()
 
-            // Cleanup
-            underTest.stop()
+            assertTrue(emissions.size >= 4)
+            assertEquals(CountdownTimer.Remainder(0, 0), emissions.last())
         }
+    }
 
+    @Nested
+    internal inner class WallClockAnchoring {
         @Test
-        fun `GIVEN timer WHEN time reaches zero THEN stops automatically`() = runTest(testDispatcher) {
-            // Given
-            underTest.set(durationSeconds = 2)
-            underTest.start(testScope)
+        fun `GIVEN delay drift WHEN ticking THEN remaining is calculated from wall clock`() = runTest {
+            val emissions = mutableListOf<CountdownTimer.Remainder>()
 
-            // When - advance 3 seconds (more than the 2-second timer)
-            repeat(3) {
-                testClock.advanceBy(1_000)
-                advanceTimeBy(1_001)
-                runCurrent()
+            val job = backgroundScope.launch {
+                underTest.start(durationMs = 10_000L, intervalMillis = 1000L).collect {
+                    emissions.add(it)
+                }
             }
+            runCurrent()
 
-            // Then
-            assertFalse(underTest.remaining.value.isPositive())
-            assertTrue(underTest.isExpired)
+            // Simulate drift: clock advances 1200ms but delay was only 1000ms
+            testClock.advanceBy(1200)
+            advanceTimeBy(1001)
+            runCurrent()
 
-            // Cleanup
-            underTest.stop()
+            // Despite delay waking up at 1000ms virtual, clock shows 1200ms elapsed
+            val afterDrift = emissions.last()
+            assertEquals(8, afterDrift.seconds)
+            assertEquals(800, afterDrift.millis)
+
+            job.cancel()
         }
 
         @Test
-        fun `GIVEN timer WHEN reaches zero THEN remaining does not go negative`() = runTest(testDispatcher) {
-            // Given
-            underTest.set(durationSeconds = 1)
-            underTest.start(testScope)
+        fun `GIVEN consistent timing WHEN multiple ticks THEN remainders are accurate`() = runTest {
+            val emissions = mutableListOf<CountdownTimer.Remainder>()
 
-            // When - advance well past zero
-            repeat(5) {
-                testClock.advanceBy(1_000)
-                advanceTimeBy(1_001)
-                runCurrent()
+            val job = backgroundScope.launch {
+                underTest.start(durationMs = 5000L, intervalMillis = 1000L).collect {
+                    emissions.add(it)
+                }
             }
+            runCurrent()
 
-            // Then
-            val remaining = underTest.remaining.value
-            assertTrue(remaining.seconds >= 0)
-            assertTrue(remaining.millis >= 0)
+            assertEquals(CountdownTimer.Remainder(5, 0), emissions.last())
 
-            // Cleanup
-            underTest.stop()
+            testClock.advanceBy(1000)
+            advanceTimeBy(1001)
+            runCurrent()
+            assertEquals(CountdownTimer.Remainder(4, 0), emissions.last())
+
+            testClock.advanceBy(1000)
+            advanceTimeBy(1001)
+            runCurrent()
+            assertEquals(CountdownTimer.Remainder(3, 0), emissions.last())
+
+            job.cancel()
         }
     }
 
     @Nested
-    internal inner class StopBehavior {
+    internal inner class Cancellation {
         @Test
-        fun `GIVEN running timer WHEN stopped THEN remaining freezes`() = runTest(testDispatcher) {
-            // Given
-            underTest.set(durationSeconds = 10)
-            underTest.start(testScope)
+        fun `GIVEN collecting flow WHEN job cancelled THEN no more emissions`() = runTest {
+            val emissions = mutableListOf<CountdownTimer.Remainder>()
 
-            testClock.advanceBy(3_000)
-            advanceTimeBy(3_001)
-            runCurrent()
-            val frozenRemaining = underTest.remaining.value
-
-            // When
-            underTest.stop()
-
-            // Then - advance more time, remaining should not change
-            testClock.advanceBy(5_000)
-            advanceTimeBy(5_001)
+            val job = backgroundScope.launch {
+                underTest.start(durationMs = 10_000L, intervalMillis = 1000L).collect {
+                    emissions.add(it)
+                }
+            }
             runCurrent()
 
-            assertEquals(frozenRemaining, underTest.remaining.value)
+            testClock.advanceBy(2000)
+            advanceTimeBy(2001)
+            runCurrent()
+
+            val countBeforeCancel = emissions.size
+            job.cancel()
+
+            testClock.advanceBy(5000)
+            advanceTimeBy(5001)
+            runCurrent()
+
+            assertEquals(countBeforeCancel, emissions.size)
         }
 
         @Test
-        fun `GIVEN stopped timer WHEN stop called again THEN no error`() {
-            // Given
-            underTest.set(durationSeconds = 10)
-            underTest.stop()
+        fun `GIVEN timer not yet started WHEN start and immediately cancel THEN minimal emissions`() = runTest {
+            val emissions = mutableListOf<CountdownTimer.Remainder>()
 
-            // When/Then - should not throw
-            underTest.stop()
+            val job = backgroundScope.launch {
+                underTest.start(durationMs = 60_000L, intervalMillis = 1000L).collect {
+                    emissions.add(it)
+                }
+            }
+            runCurrent()
+            job.cancel()
+
+            // At most the initial emission
+            assertTrue(emissions.size <= 1)
         }
     }
 
     @Nested
-    internal inner class RestartBehavior {
+    internal inner class RemainderDataClass {
         @Test
-        fun `GIVEN running timer WHEN start called again THEN restarts from current remainder`() = runTest(testDispatcher) {
-            // Given
-            underTest.set(durationSeconds = 10)
-            underTest.start(testScope)
+        fun `GIVEN positive seconds WHEN isPositive THEN returns true`() {
+            assertTrue(CountdownTimer.Remainder(1, 0).isPositive())
+        }
 
-            testClock.advanceBy(3_000)
-            advanceTimeBy(3_001)
-            runCurrent()
+        @Test
+        fun `GIVEN zero seconds positive millis WHEN isPositive THEN returns true`() {
+            assertTrue(CountdownTimer.Remainder(0, 500).isPositive())
+        }
 
-            // When - restart
-            underTest.start(testScope)
+        @Test
+        fun `GIVEN zero seconds zero millis WHEN isPositive THEN returns false`() {
+            assertFalse(CountdownTimer.Remainder(0, 0).isPositive())
+        }
 
-            // Then - advance 1 second from restart point
-            testClock.advanceBy(1_000)
-            advanceTimeBy(1_001)
-            runCurrent()
-
-            val remaining = underTest.remaining.value
-            assertEquals(Remainder(6, 0), remaining)
-
-            // Cleanup
-            underTest.stop()
+        @Test
+        fun `GIVEN large values WHEN isPositive THEN returns true`() {
+            assertTrue(CountdownTimer.Remainder(3600, 999).isPositive())
         }
     }
 
     @Nested
-    internal inner class ElapsedTime {
+    internal inner class EdgeCases {
         @Test
-        fun `GIVEN started timer WHEN elapsed called THEN returns time since start`() = runTest(testDispatcher) {
-            // Given
-            underTest.set(durationSeconds = 60)
-            underTest.start(testScope)
+        fun `GIVEN zero duration WHEN start THEN emits final zero immediately`() = runTest {
+            val emissions = mutableListOf<CountdownTimer.Remainder>()
 
-            // When
-            testClock.advanceBy(5_000)
+            val job = backgroundScope.launch {
+                underTest.start(durationMs = 0L, intervalMillis = 1000L).collect {
+                    emissions.add(it)
+                }
+            }
+            runCurrent()
+            advanceTimeBy(100)
+            runCurrent()
 
-            // Then
-            assertEquals(5_000, underTest.elapsedMillis())
+            job.cancel()
 
-            // Cleanup
-            underTest.stop()
+            assertTrue(emissions.isNotEmpty())
+            assertEquals(CountdownTimer.Remainder(0, 0), emissions.last())
         }
 
         @Test
-        fun `GIVEN not started WHEN elapsed called THEN returns near zero`() {
-            // When/Then
-            assertEquals(0, underTest.elapsedMillis())
+        fun `GIVEN very short duration WHEN start THEN completes quickly`() = runTest {
+            val emissions = mutableListOf<CountdownTimer.Remainder>()
+
+            val job = backgroundScope.launch {
+                underTest.start(durationMs = 50L, intervalMillis = 100L).collect {
+                    emissions.add(it)
+                }
+            }
+            runCurrent()
+
+            testClock.advanceBy(100)
+            advanceTimeBy(101)
+            runCurrent()
+
+            job.cancel()
+            assertEquals(CountdownTimer.Remainder(0, 0), emissions.last())
+        }
+
+        @Test
+        fun `GIVEN millis remainder WHEN emitting THEN splits seconds and millis correctly`() = runTest {
+            val emissions = mutableListOf<CountdownTimer.Remainder>()
+
+            val job = backgroundScope.launch {
+                underTest.start(durationMs = 2500L, intervalMillis = 1000L).collect {
+                    emissions.add(it)
+                }
+            }
+            runCurrent()
+
+            assertEquals(CountdownTimer.Remainder(2, 500), emissions.first())
+
+            testClock.advanceBy(1000)
+            advanceTimeBy(1001)
+            runCurrent()
+            assertEquals(CountdownTimer.Remainder(1, 500), emissions.last())
+
+            job.cancel()
+        }
+
+        @Test
+        fun `GIVEN multiple starts WHEN collecting second flow THEN works independently`() = runTest {
+            val firstEmissions = mutableListOf<CountdownTimer.Remainder>()
+            val secondEmissions = mutableListOf<CountdownTimer.Remainder>()
+
+            val job1 = backgroundScope.launch {
+                underTest.start(durationMs = 3000L, intervalMillis = 1000L).collect {
+                    firstEmissions.add(it)
+                }
+            }
+            runCurrent()
+
+            testClock.advanceBy(1000)
+            advanceTimeBy(1001)
+            runCurrent()
+            job1.cancel()
+
+            val job2 = backgroundScope.launch {
+                underTest.start(durationMs = 2000L, intervalMillis = 1000L).collect {
+                    secondEmissions.add(it)
+                }
+            }
+            runCurrent()
+
+            assertTrue(secondEmissions.isNotEmpty())
+            assertEquals(2, secondEmissions.first().seconds)
+            job2.cancel()
         }
     }
-
-    @Nested
-    internal inner class RemainderOperations {
-        @Test
-        fun `WHEN subtract smaller from larger THEN result is positive`() {
-            val a = Remainder(10, 500)
-            val b = Remainder(3, 200)
-            assertEquals(Remainder(7, 300), a - b)
-        }
-
-        @Test
-        fun `WHEN subtract with millis borrow THEN handles correctly`() {
-            val a = Remainder(10, 200)
-            val b = Remainder(3, 500)
-            assertEquals(Remainder(6, 700), a - b)
-        }
-
-        @Test
-        fun `WHEN subtract larger from smaller THEN result is zero`() {
-            val a = Remainder(3, 0)
-            val b = Remainder(5, 0)
-            assertEquals(Remainder(0, 0), a - b)
-        }
-
-        @Test
-        fun `WHEN add seconds THEN seconds increase`() {
-            val remainder = Remainder(10, 500)
-            val result = remainder + 5
-            assertEquals(Remainder(15, 500), result)
-        }
-
-        @Test
-        fun `GIVEN positive remainder WHEN isPositive THEN returns true`() {
-            assertTrue(Remainder(1, 0).isPositive())
-            assertTrue(Remainder(0, 1).isPositive())
-            assertTrue(Remainder(10, 500).isPositive())
-        }
-
-        @Test
-        fun `GIVEN zero remainder WHEN isPositive THEN returns false`() {
-            assertFalse(Remainder(0, 0).isPositive())
-        }
-    }
-}
-
-/**
- * A controllable [Clock] for testing that allows advancing time manually.
- * Virtual time starts at a fixed epoch and advances only when [advanceBy] is called.
- */
-private class ControllableClock : Clock() {
-    private val offsetMillis = AtomicLong(0)
-    private val baseInstant: Instant = Instant.parse("2026-01-01T00:00:00Z")
-
-    fun advanceBy(millis: Long) {
-        offsetMillis.addAndGet(millis)
-    }
-
-    override fun instant(): Instant = baseInstant.plusMillis(offsetMillis.get())
-    override fun withZone(zone: ZoneId?): Clock = this
-    override fun getZone(): ZoneId = ZoneId.of("UTC")
 }

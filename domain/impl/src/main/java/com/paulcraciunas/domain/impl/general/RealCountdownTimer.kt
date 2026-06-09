@@ -1,84 +1,38 @@
 package com.paulcraciunas.domain.impl.general
 
 import com.paulcraciunas.domain.api.general.CountdownTimer
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import java.time.Clock
 import java.time.Duration
-import java.time.Instant
 import javax.inject.Inject
 
-/**
- * Implementation of [CountdownTimer] that emits remaining time via a [StateFlow].
- *
- * Uses [Clock] for time tracking to ensure accurate timing
- * even when the device sleeps or the app is backgrounded.
- */
 class RealCountdownTimer @Inject constructor(
     private val clock: Clock = Clock.systemUTC(),
 ) : CountdownTimer {
-    private val _remaining = MutableStateFlow(CountdownTimer.Remainder(seconds = 0, millis = 0))
-    override val remaining: StateFlow<CountdownTimer.Remainder> = _remaining.asStateFlow()
 
-    override val isExpired: Boolean
-        get() = !_remaining.value.isPositive()
+    override fun start(durationMs: Long, intervalMillis: Long): Flow<CountdownTimer.Remainder> = flow {
+        val interval = intervalMillis.coerceIn(1L, 10_000L)
+        val startTime = clock.instant()
+        // Anchor the deadline to absolute wall-clock time to prevent delay-drift
+        val deadline = startTime.plusMillis(durationMs)
 
-    private var interval: Long = DEFAULT_INTERVAL
-    private var lastTickInstant: Instant = clock.instant()
-    private var startInstant: Instant = clock.instant()
-    private var countdownJob: Job? = null
+        var now = clock.instant()
+        while (now.isBefore(deadline)) {
+            val totalRemainingMs = Duration.between(now, deadline).toMillis()
+            emit(
+                CountdownTimer.Remainder(
+                    seconds = (totalRemainingMs / 1000).toInt(),
+                    millis = (totalRemainingMs % 1000).toInt()
+                )
+            )
 
-    override fun setInterval(intervalMillis: Int) {
-        interval = intervalMillis.toLong().coerceIn(MIN_INTERVAL, MAX_INTERVAL)
-    }
-
-    override fun set(durationSeconds: Int) {
-        if (countdownJob == null) {
-            _remaining.value = CountdownTimer.Remainder(seconds = durationSeconds, millis = 0)
+            // Dynamic correction: Sleep for the standard interval, but
+            // even if delay() wakes up late, the next loop recalculates against the absolute deadline
+            delay(interval)
+            now = clock.instant()
         }
-    }
-
-    override fun set(remainder: CountdownTimer.Remainder) {
-        if (countdownJob == null) {
-            _remaining.value = remainder
-        }
-    }
-
-    override fun start(scope: CoroutineScope) {
-        stop()
-        val now = clock.instant()
-        this.startInstant = now
-        this.lastTickInstant = now
-
-        countdownJob = scope.launch {
-            while (isActive && _remaining.value.isPositive()) {
-                delay(interval)
-                val now = clock.instant()
-                val delta = Duration.between(lastTickInstant, now)
-                lastTickInstant = now
-                val deltaSeconds = delta.seconds.toInt()
-                val deltaMillis = (delta.toMillis() % 1000).toInt()
-                _remaining.value -= CountdownTimer.Remainder(seconds = deltaSeconds, millis = deltaMillis)
-            }
-        }
-    }
-
-    override fun stop() {
-        countdownJob?.cancel()
-        countdownJob = null
-    }
-
-    override fun elapsedMillis(): Long = Duration.between(startInstant, clock.instant()).toMillis()
-
-    companion object {
-        private const val DEFAULT_INTERVAL = 1000L
-        private const val MIN_INTERVAL = 1L
-        private const val MAX_INTERVAL = 10_000L
+        emit(CountdownTimer.Remainder(seconds = 0, millis = 0)) // Final deterministic emission
     }
 }

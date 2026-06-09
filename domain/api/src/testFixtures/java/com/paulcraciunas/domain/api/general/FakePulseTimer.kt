@@ -5,39 +5,36 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.consumeAsFlow
 
 /**
- * Test fake for [CountdownTimer] that gives full control over emissions.
+ * Test fake for [PulseTimer] that gives full control over pulse emissions.
  *
  * Usage:
  * ```
- * val timer = FakeCountdownTimer()
- * val flow = timer.start(durationMs = 5000)
+ * val timer = FakePulseTimer()
+ * val flow = timer.start(intervalMillis = 100)
  * // In a coroutine collecting the flow:
- * timer.emit(CountdownTimer.Remainder(4, 0))
- * timer.emit(CountdownTimer.Remainder(3, 0))
+ * timer.emit(100L) // simulate 100ms elapsed
+ * timer.emit(102L) // simulate 102ms elapsed (slight drift)
  * timer.complete() // terminates the flow
  * ```
  */
-class FakeCountdownTimer : CountdownTimer {
-    private var channel = Channel<CountdownTimer.Remainder>(Channel.UNLIMITED)
+class FakePulseTimer : PulseTimer {
+    private var channel = Channel<Long>(Channel.UNLIMITED)
 
-    var lastDurationMs: Long = 0L
-        private set
     var lastIntervalMillis: Long = 0L
         private set
     var startCount: Int = 0
         private set
 
-    override fun start(durationMs: Long, intervalMillis: Long): Flow<CountdownTimer.Remainder> {
+    override fun start(intervalMillis: Long): Flow<Long> {
         channel.cancel()
         channel = Channel(Channel.UNLIMITED)
-        lastDurationMs = durationMs
         lastIntervalMillis = intervalMillis
         startCount++
         return channel.consumeAsFlow()
     }
 
-    suspend fun emit(remainder: CountdownTimer.Remainder) {
-        channel.send(remainder)
+    suspend fun emit(elapsedMillis: Long) {
+        channel.send(elapsedMillis)
     }
 
     fun complete() {
@@ -48,7 +45,6 @@ class FakeCountdownTimer : CountdownTimer {
         channel.cancel()
         channel = Channel(Channel.UNLIMITED)
         startCount = 0
-        lastDurationMs = 0L
         lastIntervalMillis = 0L
     }
 }
