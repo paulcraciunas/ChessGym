@@ -1,12 +1,12 @@
 package com.paulcraciunas.screens.data.engine
 
 import com.paulcraciunas.domain.api.general.CountdownTimerV2
-import com.paulcraciunas.screens.data.BOARD_ANIMATION_DURATION_MS
 import com.paulcraciunas.screens.data.BoardSession
 import com.paulcraciunas.screens.data.BoardState
-import com.paulcraciunas.screens.data.PIECE_MOVE_ANIMATION_DURATION_MS
+import com.paulcraciunas.screens.data.engine.PlayIntent.AnimationPhase
 import com.paulcraciunas.screens.data.engine.PlaySessionConfiguration.EndMode
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -37,12 +37,14 @@ class PlaySession(
     private val config: PlaySessionConfiguration
         get() = configuration.load()
     private val _state = MutableStateFlow(value = PlaySessionState())
-    private var intentChannel: Channel<PlayIntent>? = null
+
+    private var intentChannel: Channel<PlayIntent>? = null // TODO Paul: perhaps this shouldn't be mutable after all
+    private var runJob: Job? = null
     private var timerJob: Job? = null
     private var animationJob: Job? = null
 
     fun interface OnComplete {
-        suspend operator fun invoke(result: PlaySessionState)
+        suspend operator fun invoke(onCompleteState: PlaySessionState)
     }
 
     fun interface SessionsSource {
@@ -50,36 +52,44 @@ class PlaySession(
     }
 
     val state = _state.asStateFlow()
-    fun reConfig(function: (PlaySessionConfiguration) -> PlaySessionConfiguration) = configuration.update { function(it) }
-    fun accept(action: PlayIntent) {
-        intentChannel?.trySend(action)
+
+    fun reConfig(function: (PlaySessionConfiguration) -> PlaySessionConfiguration) {
+        configuration.update { function(it) }
+    }
+
+    fun accept(intent: PlayIntent) {
+        intentChannel?.trySend(intent)
     }
 
     fun run(scope: CoroutineScope) {
-        intentChannel = Channel(capacity = Channel.UNLIMITED)
-        scope.launch(defaultDispatcher) {
-            startRun(scope)
+        runJob?.cancel()
+        animationJob?.cancel()
+        animationJob = null
 
+        val channel = Channel<PlayIntent>(capacity = Channel.UNLIMITED)
+        intentChannel = channel
+
+        runJob = scope.launch(defaultDispatcher) {
             try {
-                // all sessions loop
+                startRun(scope)
                 sessions().collect { session ->
-                    onNewSession(scope, session)
+                    onNewSession(scope, session, channel)
 
-                    // current session loop
                     while (isActive) {
-                        val intent = intentChannel!!.receive()
+                        val intent = channel.receive()
                         if (_state.value.status == PlaySessionState.Status.Ready) {
                             _state.update { it.copy(status = PlaySessionState.Status.Playing) }
                         }
                         if (_state.value.status == PlaySessionState.Status.Paused && !intent.resumable) {
                             continue
                         }
-                        var outcome = process(scope, intent, session)
-                        // Check if we're configured to stop on first failure
-                        if (outcome == IntentOutcome.Defeat && config.endMode == EndMode.OnFirstFailure) outcome = IntentOutcome.End
+                        var outcome = process(scope, intent, session, channel)
+                        if (outcome == IntentOutcome.Defeat && config.endMode == EndMode.OnFirstFailure) {
+                            outcome = IntentOutcome.End
+                        }
                         when (outcome) {
                             IntentOutcome.Continue -> continue
-                            IntentOutcome.Defeat, // Otherwise, we stop when collect ends - EndMode.OnSourceExhausted
+                            IntentOutcome.Defeat,
                             IntentOutcome.Success -> break
                             IntentOutcome.End -> {
                                 onGameOver(session)
@@ -89,75 +99,183 @@ class PlaySession(
                     }
                     onSessionOver(session)
                 }
+                onSourceExhausted()
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
-                _state.update { it.copy(status = PlaySessionState.Status.Failed, isAnimating = false, errorMessage = e.message) }
+                _state.update {
+                    it.copy(
+                        status = PlaySessionState.Status.Failed,
+                        isAnimating = false,
+                        errorMessage = e.message,
+                    )
+                }
             } finally {
                 timerJob?.cancel()
                 timerJob = null
+                animationJob?.cancel()
+                animationJob = null
+                channel.close()
+                intentChannel = null
             }
-            // The game loop has fully terminated, the timer is dead
-            with(_state.value) {
-                if (status == PlaySessionState.Status.Ended) {
-                    onPlayComplete(this)
-                }
+            if (_state.value.status == PlaySessionState.Status.Ended) {
+                onPlayComplete(_state.value)
             }
         }
-        // Only update the channel outside the coroutine, so we don't have to worry about synchronization
-        intentChannel?.close()
-        intentChannel = null
     }
 
-    fun clearSummary() = _state.update { it.copy(showSummary = false) }
+    fun clearSummary() {
+       if (runJob == null) {
+           _state.update { it.copy(showSummary = false) }
+       }
+    }
 
-    private suspend fun process(scope: CoroutineScope, intent: PlayIntent, session: BoardSession): IntentOutcome =
-        if (_state.value.isAnimating && intent.blockedByAnimation) { // ignore intents while animations are on
-            IntentOutcome.Continue
-        } else when (intent) { // exhaustive when
-            is PlayIntent.ExpireTime -> IntentOutcome.End
+    fun reset() {
+        if (runJob == null) {
+            _state.update { PlaySessionState() }
+        }
+    }
+
+    private suspend fun process(
+        scope: CoroutineScope,
+        intent: PlayIntent,
+        session: BoardSession,
+        channel: Channel<PlayIntent>,
+    ): IntentOutcome {
+        if (_state.value.isAnimating && intent.blockedByAnimation) {
+            return IntentOutcome.Continue
+        }
+        val outcome = when (intent) {
+            is PlayIntent.ExpireTime -> onExpireTime()
             is PlayIntent.SessionFinished -> IntentOutcome.Success
             is PlayIntent.SessionFailed -> IntentOutcome.Defeat
-            is PlayIntent.SelectSquare -> onMove(scope, session, session.onClick(intent.selection))
-            is PlayIntent.Promote -> onMove(scope, session, session.promoteIfPending(intent.to))
+            is PlayIntent.SelectSquare -> onMove(scope, session, session.onClick(intent.selection), channel)
+            is PlayIntent.Promote -> onMove(scope, session, session.promoteIfPending(intent.to), channel)
             is PlayIntent.Hint -> onHint(session)
-            is PlayIntent.RequestAbandon -> requestAbandon()
-            is PlayIntent.DismissAbandon -> dismissAbandon()
-            is PlayIntent.ConfirmAbandon -> confirmAbandon(scope, session)
-            is PlayIntent.Navigate -> navigate(session, intent.type)
-            is PlayIntent.Resume -> onResume(scope, session)
+            is PlayIntent.RequestAbandon -> onRequestAbandon()
+            is PlayIntent.DismissAbandon -> onDismissAbandon()
+            is PlayIntent.ConfirmAbandon -> onConfirmAbandon(scope, session, channel)
+            is PlayIntent.Navigate -> onNavigate(session, intent.type)
+            is PlayIntent.Resume -> onResume(scope, session, channel)
+            is PlayIntent.AnimationPhaseComplete -> onAnimationPhaseComplete(scope, intent.phase, session, channel)
         }
+        if (outcome == IntentOutcome.End) {
+            animationJob?.cancel()
+            animationJob = null
+        }
+        return outcome
+    }
 
-    private suspend fun onNewSession(scope: CoroutineScope, session: BoardSession, resume: Boolean = false) {
-        if (!resume && (_state.value.status == PlaySessionState.Status.Paused)) {
-            return
-        }
-        val isFirstBoard = _state.value.status == PlaySessionState.Status.Loading
-        session.autoPromote = config.autoPromote
-        // If this is not the first session, wait for boards to swap
-        val animateTransition = config.waitForAnimations && !isFirstBoard
-        _state.update {
-            PlaySessionState(
-                status = when {
-                    isFirstBoard -> PlaySessionState.Status.Ready
-                    resume -> PlaySessionState.Status.Playing
-                    else -> it.status
-                },
-                boardState = session.boardState(),
-                isAnimating = animateTransition,
-            )
-        }
-        if (animateTransition) {
-            animationJob = scope.launch {
-                waitForAnimation(AnimationType.BoardSwap)
-                if (session.playOpponentMove()) {
-                    _state.update { it.copy(boardState = session.boardState(), navigation = session.navigation()) }
-                    waitForAnimation(AnimationType.Move)
-                }
+    private suspend fun onAnimationPhaseComplete(
+        scope: CoroutineScope,
+        phase: AnimationPhase,
+        session: BoardSession,
+        channel: Channel<PlayIntent>,
+    ): IntentOutcome = when (phase) {
+        AnimationPhase.MoveAnimated -> onMoveAnimated(scope, session, channel)
+        AnimationPhase.OpponentMoveAnimated -> onOpponentMoveAnimated()
+        AnimationPhase.BoardSwapped -> onBoardSwapped(scope, session, channel)
+        AnimationPhase.SolutionStepAnimated -> onSolutionStepAnimated(scope, session, channel)
+    }
+
+    private suspend fun onMoveAnimated(
+        scope: CoroutineScope,
+        session: BoardSession,
+        channel: Channel<PlayIntent>,
+    ): IntentOutcome {
+        val currentBoard = _state.value.boardState
+        return if (currentBoard.outcome != null) {
+            if (currentBoard.won) IntentOutcome.Success else IntentOutcome.Defeat
+        } else {
+            if (session.canPlayOpponentMove()) {
+                playOpponentMove(scope, session, channel)
+            } else {
                 _state.update { it.copy(isAnimating = false) }
             }
+            IntentOutcome.Continue
+        }
+    }
+
+    private fun onOpponentMoveAnimated(): IntentOutcome {
+        _state.update { it.copy(isAnimating = false) }
+        return IntentOutcome.Continue
+    }
+
+    private suspend fun onBoardSwapped(
+        scope: CoroutineScope,
+        session: BoardSession,
+        channel: Channel<PlayIntent>,
+    ): IntentOutcome {
+        if (session.canPlayOpponentMove()) {
+            playOpponentMove(scope, session, channel)
         } else {
-            if (session.playOpponentMove()) {
-                _state.update { it.copy(boardState = session.boardState(), navigation = session.navigation(), isAnimating = false) }
+            _state.update { it.copy(isAnimating = false) }
+        }
+        return IntentOutcome.Continue
+    }
+
+    private fun onSolutionStepAnimated(
+        scope: CoroutineScope,
+        session: BoardSession,
+        channel: Channel<PlayIntent>,
+    ): IntentOutcome {
+        if (session.solution.hasSolutionMoves()) {
+            if (session.playNextSolutionMove()) {
+                _state.update { it.copy(boardState = session.boardState(), navigation = session.navigation()) }
             }
+            launchAnimationDelay(scope, config.solutionStepDelayMs, AnimationPhase.SolutionStepAnimated, channel)
+            return IntentOutcome.Continue
+        }
+        _state.update { it.copy(isAnimating = false) }
+        return IntentOutcome.Defeat
+    }
+
+    private suspend fun onNewSession(
+        scope: CoroutineScope,
+        session: BoardSession,
+        channel: Channel<PlayIntent>,
+    ) {
+        if (_state.value.status == PlaySessionState.Status.Paused) return
+
+        val isFirstSession = _state.value.status == PlaySessionState.Status.Loading
+        session.autoPromote = config.autoPromote
+        val shouldAnimate = config.waitForAnimations && !isFirstSession
+        _state.update {
+            it.copy(
+                status = if (isFirstSession) PlaySessionState.Status.Ready else it.status,
+                boardState = session.boardState(),
+                isAnimating = shouldAnimate,
+                navigation = null,
+                abandonRequested = false,
+            )
+        }
+        if (shouldAnimate) {
+            launchAnimationDelay(scope, config.boardSwapAnimationMs, AnimationPhase.BoardSwapped, channel)
+        } else {
+            playOpponentMoveImmediately(session)
+        }
+    }
+
+    private suspend fun onResumeSession(
+        scope: CoroutineScope,
+        session: BoardSession,
+        channel: Channel<PlayIntent>,
+    ) {
+        session.autoPromote = config.autoPromote
+        val shouldAnimate = config.waitForAnimations
+        _state.update {
+            it.copy(
+                status = PlaySessionState.Status.Playing,
+                boardState = session.boardState(),
+                isAnimating = shouldAnimate,
+                navigation = null,
+                abandonRequested = false,
+            )
+        }
+        if (shouldAnimate) {
+            launchAnimationDelay(scope, config.boardSwapAnimationMs, AnimationPhase.BoardSwapped, channel)
+        } else {
+            playOpponentMoveImmediately(session)
         }
     }
 
@@ -169,8 +287,33 @@ class PlaySession(
         }
     }
 
+    private fun onSourceExhausted() {
+        _state.update {
+            it.copy(
+                status = PlaySessionState.Status.Ended,
+                isAnimating = false,
+                showSummary = true,
+            )
+        }
+    }
+
+    private suspend fun onGameOver(lastSession: BoardSession) {
+        animationJob?.cancel()
+        animationJob = null
+        lastSession.close()
+        _state.update {
+            it.copy(
+                boardState = lastSession.clear(),
+                status = PlaySessionState.Status.Ended,
+                remainingTimeMs = 0L,
+                isAnimating = false,
+                showSummary = true,
+            )
+        }
+    }
+
     private suspend fun startRun(scope: CoroutineScope) {
-        _state.update { // reset state in case this isn't the first run
+        _state.update {
             PlaySessionState(
                 status = PlaySessionState.Status.Loading,
                 results = emptyList(),
@@ -197,64 +340,54 @@ class PlaySession(
         }
     }
 
-    private suspend fun onMove(scope: CoroutineScope, session: BoardSession, nextBoard: BoardState): IntentOutcome {
+    private suspend fun onMove(
+        scope: CoroutineScope,
+        session: BoardSession,
+        nextBoard: BoardState,
+        channel: Channel<PlayIntent>,
+    ): IntentOutcome {
+        if (!nextBoard.movePlayed) {
+            _state.update { it.copy(boardState = nextBoard) }
+            return IntentOutcome.Continue
+        }
+
         if (timerJob == null && config.timed?.mode == PlaySessionConfiguration.TimedMode.StartOnClick) {
             timerJob = startTimer(scope)
         }
 
-        // If a move was played, we need to take care of:
-        // 1. Session might be over
-        // 2. Opponent's move
-        // 3. Wait for animations to complete
-        return if (nextBoard.movePlayed) {
-            if (nextBoard.outcome != null) { // 1. Session is over
-                _state.update { // Update results first, in case the timer expires during animation
-                    it.copy(
-                        results = it.results + session.result(),
-                        boardState = nextBoard,
-                        navigation = session.navigation(),
-                        isAnimating = config.waitForAnimations, // If this is true, we can safely return Continue
-                    )
-                }
-                if (config.waitForAnimations) { // 3. Wait for the move animation and complete
-                    animationJob = scope.launch {
-                        waitForAnimation(AnimationType.Move)
-                        intentChannel?.send(if (nextBoard.won) PlayIntent.SessionFinished else PlayIntent.SessionFailed)
-                    }
-                    IntentOutcome.Continue // This will end when the above SessionFinished/SessionFailed is processed
-                } else {
-                    if (nextBoard.won) {
-                        IntentOutcome.Success
-                    } else {
-                        IntentOutcome.Defeat
-                    }
-                }
-            } else {
-                _state.update {
-                    it.copy(
-                        boardState = nextBoard,
-                        navigation = session.navigation(),
-                        isAnimating = config.waitForAnimations,
-                    )
-                }
-                if (config.waitForAnimations) {
-                    animationJob = scope.launch {
-                        waitForAnimation(AnimationType.Move)
-                        if (session.playOpponentMove()) {
-                            _state.update { it.copy(boardState = session.boardState(), navigation = session.navigation()) }
-                            waitForAnimation(AnimationType.Move)
-                        }
-                        _state.update { it.copy(isAnimating = false) }
-                    }
-                } else {
-                    if (session.playOpponentMove()) {
-                        _state.update { it.copy(boardState = session.boardState(), navigation = session.navigation(), isAnimating = false) }
-                    }
-                }
-                IntentOutcome.Continue
+        return if (nextBoard.outcome != null) {
+            _state.update {
+                it.copy(
+                    results = it.results + session.result(),
+                    boardState = nextBoard,
+                    navigation = session.navigation(),
+                    isAnimating = config.waitForAnimations,
+                )
             }
-        } else IntentOutcome.Continue
+            if (config.waitForAnimations) {
+                launchAnimationDelay(scope, config.moveAnimationMs, AnimationPhase.MoveAnimated, channel)
+                IntentOutcome.Continue
+            } else {
+                if (nextBoard.won) IntentOutcome.Success else IntentOutcome.Defeat
+            }
+        } else {
+            _state.update {
+                it.copy(
+                    boardState = nextBoard,
+                    navigation = session.navigation(),
+                    isAnimating = config.waitForAnimations,
+                )
+            }
+            if (config.waitForAnimations) {
+                launchAnimationDelay(scope, config.moveAnimationMs, AnimationPhase.MoveAnimated, channel)
+            } else {
+                playOpponentMoveImmediately(session)
+            }
+            IntentOutcome.Continue
+        }
     }
+
+    private fun onExpireTime(): IntentOutcome = IntentOutcome.End
 
     private fun onHint(session: BoardSession): IntentOutcome {
         _state.update {
@@ -266,27 +399,32 @@ class PlaySession(
         return IntentOutcome.Continue
     }
 
-    private fun requestAbandon(): IntentOutcome {
+    private fun onRequestAbandon(): IntentOutcome {
         _state.update { it.copy(abandonRequested = true) }
         return IntentOutcome.Continue
     }
 
-    private fun dismissAbandon(): IntentOutcome {
+    private fun onDismissAbandon(): IntentOutcome {
         _state.update { it.copy(abandonRequested = false) }
         return IntentOutcome.Continue
     }
 
-    private fun confirmAbandon(scope: CoroutineScope, session: BoardSession): IntentOutcome {
-        _state.update { it.copy(boardState = session.boardState(), abandonRequested = false, isAnimating = config.waitForAnimations) }
+    private fun onConfirmAbandon(
+        scope: CoroutineScope,
+        session: BoardSession,
+        channel: Channel<PlayIntent>,
+    ): IntentOutcome {
+        _state.update {
+            it.copy(
+                boardState = session.boardState(),
+                abandonRequested = false,
+                isAnimating = config.waitForAnimations,
+            )
+        }
         return if (config.waitForAnimations && session.solution.hasSolutionMoves()) {
-            animationJob = scope.launch {
-                while (session.solution.hasSolutionMoves()) {
-                    if (session.playNextSolutionMove()) {
-                        _state.update { it.copy(boardState = session.boardState(), navigation = session.navigation()) }
-                        waitForAnimation(AnimationType.Solution)
-                    }
-                }
-                intentChannel?.send(PlayIntent.SessionFailed)
+            if (session.playNextSolutionMove()) {
+                _state.update { it.copy(boardState = session.boardState(), navigation = session.navigation()) }
+                launchAnimationDelay(scope, config.solutionStepDelayMs, AnimationPhase.SolutionStepAnimated, channel)
             }
             IntentOutcome.Continue
         } else {
@@ -294,7 +432,7 @@ class PlaySession(
         }
     }
 
-    private fun navigate(session: BoardSession, type: PlayIntent.Navigation): IntentOutcome {
+    private fun onNavigate(session: BoardSession, type: PlayIntent.Navigation): IntentOutcome {
         _state.update {
             it.copy(
                 boardState = when (type) {
@@ -309,22 +447,41 @@ class PlaySession(
         return IntentOutcome.Continue
     }
 
-    private suspend fun onResume(scope: CoroutineScope, session: BoardSession): IntentOutcome {
-        onNewSession(scope = scope, session = session, resume = true)
+    private suspend fun onResume(scope: CoroutineScope, session: BoardSession, channel: Channel<PlayIntent>): IntentOutcome {
+        onResumeSession(scope, session, channel)
         return IntentOutcome.Continue
     }
 
-    private suspend fun onGameOver(lastSession: BoardSession) {
-        lastSession.close()
-        _state.update {
-            it.copy(
-                boardState = lastSession.clear(), // clear any selection as it would look broken
-                status = PlaySessionState.Status.Ended,
-                results = it.results + lastSession.result(),
-                remainingTimeMs = 0L,
-                isAnimating = false,
-                showSummary = true,
-            )
+    private suspend fun playOpponentMove(
+        scope: CoroutineScope,
+        session: BoardSession,
+        channel: Channel<PlayIntent>,
+    ) {
+        // TODO Paul: we need to signal here that we might be waiting for the opponent to move
+        if (session.playOpponentMove()) {
+            _state.update { it.copy(boardState = session.boardState(), navigation = session.navigation()) }
+            launchAnimationDelay(scope, config.moveAnimationMs, AnimationPhase.OpponentMoveAnimated, channel)
+        } else {
+            _state.update { it.copy(isAnimating = false) }
+        }
+    }
+
+    private suspend fun playOpponentMoveImmediately(session: BoardSession) {
+        if (session.playOpponentMove()) {
+            _state.update {
+                it.copy(
+                    boardState = session.boardState(),
+                    navigation = session.navigation(),
+                    isAnimating = false,
+                )
+            }
+        }
+    }
+
+    private fun launchAnimationDelay(scope: CoroutineScope, durationMs: Long, phase: AnimationPhase, channel: Channel<PlayIntent>) {
+        animationJob = scope.launch(defaultDispatcher) {
+            delay(durationMs)
+            channel.send(PlayIntent.AnimationPhaseComplete(phase))
         }
     }
 
@@ -333,26 +490,12 @@ class PlaySession(
             ?.collect { remainder ->
                 if (!remainder.isPositive()) {
                     intentChannel?.send(PlayIntent.ExpireTime)
-                    return@collect // finish the flow
+                    return@collect
                 } else {
                     val totalMs = (remainder.seconds * 1000L) + remainder.millis
                     _state.update { it.copy(remainingTimeMs = totalMs) }
                 }
             }
-    }
-
-    private suspend fun waitForAnimation(animation: AnimationType) {
-        when (animation) {
-            AnimationType.Move -> delay(PIECE_MOVE_ANIMATION_DURATION_MS.toLong())
-            AnimationType.Solution -> delay(SOLUTION_MOVE_DELAY_MS)
-            AnimationType.BoardSwap -> delay(BOARD_ANIMATION_DURATION_MS.toLong())
-        }
-    }
-
-    private enum class AnimationType {
-        Move,
-        BoardSwap,
-        Solution,
     }
 
     private enum class IntentOutcome {
@@ -361,15 +504,12 @@ class PlaySession(
         Defeat,
         End,
     }
-
-    companion object {
-        private const val SOLUTION_MOVE_DELAY_MS = 750L // Give the player a chance to process the information
-    }
 }
 
-private fun BoardSession.navigation(): PlaySessionState.Navigation? = if (canNavigate()) PlaySessionState.Navigation(
-    canGoBack = canUndo(),
-    canGoForward = canReplay(),
-    completedMoves = completedMoves(),
-    algebraicHistory = algebraicHistory(),
-) else null
+private fun BoardSession.navigation(): PlaySessionState.Navigation? =
+    if (canNavigate()) PlaySessionState.Navigation(
+        canGoBack = canUndo(),
+        canGoForward = canReplay(),
+        completedMoves = completedMoves(),
+        algebraicHistory = algebraicHistory(),
+    ) else null

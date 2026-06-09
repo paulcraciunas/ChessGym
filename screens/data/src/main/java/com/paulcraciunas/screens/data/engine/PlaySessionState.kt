@@ -15,7 +15,14 @@ data class PlaySessionState(
     val abandonRequested: Boolean = false,
     val showSummary: Boolean = false,
 ) {
-    enum class Status { Loading, Ready, Playing, Paused, Ended, Failed }
+    enum class Status {
+        Loading, // Initial starting state
+        Ready, // State used before first session begins playing
+        Playing, // State used while playing
+        Paused, // State used after finishing one session, before loading the next
+        Ended, // All sessions have been processed
+        Failed // Unrecoverable exception encountered
+    }
 
     data class Navigation(
         val canGoBack: Boolean,

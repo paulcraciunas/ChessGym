@@ -16,7 +16,10 @@ sealed class PlayIntent(
     data object ConfirmAbandon : PlayIntent(blockedByAnimation = true, resumable = false)
     data object Resume : PlayIntent(blockedByAnimation = true, resumable = true)
 
-    // Implementation details
+    internal data class AnimationPhaseComplete(
+        val phase: AnimationPhase,
+    ) : PlayIntent(blockedByAnimation = false, resumable = false)
+
     internal data object ExpireTime : PlayIntent(blockedByAnimation = false, resumable = true)
     internal data object SessionFinished : PlayIntent(blockedByAnimation = false, resumable = false)
     internal data object SessionFailed : PlayIntent(blockedByAnimation = false, resumable = false)
@@ -26,5 +29,12 @@ sealed class PlayIntent(
         Back,
         Forward,
         ToEnd,
+    }
+
+    internal enum class AnimationPhase {
+        MoveAnimated,
+        OpponentMoveAnimated,
+        BoardSwapped,
+        SolutionStepAnimated,
     }
 }

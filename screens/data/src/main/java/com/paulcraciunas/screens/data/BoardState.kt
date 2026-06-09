@@ -19,8 +19,6 @@ data class BoardState(
     val promotion: Promotion?,
     val movePlayed: Boolean,
     val captured: CapturedPieces,
-    val isOver: Boolean,
-    val interactive: Boolean,
     val outcome: Outcome?,
 ) {
     val won: Boolean // simple convenience property, as we query this in multiple places
@@ -28,15 +26,13 @@ data class BoardState(
 
     companion object {
         val empty = BoardState(
-            rating = null,
             player = Side.WHITE,
+            rating = null,
             id = null,
             boardData = BoardViewData.empty(),
             promotion = null,
             movePlayed = false,
             captured = CapturedPieces("", ""),
-            isOver = false,
-            interactive = false,
             outcome = null,
         )
     }

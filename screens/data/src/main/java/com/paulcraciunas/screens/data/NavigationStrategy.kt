@@ -15,22 +15,16 @@ interface NavigationStrategy {
     fun replayAll()
 }
 
-class GameNavigation : NavigationStrategy {
-    private var game: Game? = null
+class GameNavigation(private val game: Game) : NavigationStrategy {
+    override fun size(): Int = game.historySize / 2
+    override fun algebraic(): String = game.history.algebraic()
 
-    fun load(game: Game) {
-        this.game = game
-    }
-
-    override fun size(): Int = (game?.historySize ?: 0) / 2
-    override fun algebraic(): String = game?.history?.algebraic() ?: ""
-
-    override fun canUndo(): Boolean = game?.canUndo() == true
-    override fun canReplay(): Boolean = game?.canReplay() == true
-    override fun undoLast() { game?.undoLast() }
-    override fun undoAll() { game?.undoAll() }
-    override fun replayNext() { game?.replayNext() }
-    override fun replayAll() { game?.replayAll() }
+    override fun canUndo(): Boolean = game.canUndo()
+    override fun canReplay(): Boolean = game.canReplay()
+    override fun undoLast() { game.undoLast() }
+    override fun undoAll() { game.undoAll() }
+    override fun replayNext() { game.replayNext() }
+    override fun replayAll() { game.replayAll() }
 }
 
 object NoOpNavigation : NavigationStrategy {

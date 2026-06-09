@@ -7,7 +7,7 @@ import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.state.GameInfo
 
-internal class PuzzlePlayableBoard(val puzzle: Puzzle) : PlayableBoard {
+class PuzzlePlayableBoard(val puzzle: Puzzle) : PlayableBoard {
     override val board: IBoard get() = puzzle.board
     override val info: GameInfo get() = puzzle.info
     override val player: Side get() = puzzle.player
@@ -26,6 +26,7 @@ internal class PuzzlePlayableBoard(val puzzle: Puzzle) : PlayableBoard {
     override fun play(from: Locus, to: Locus): Unit = puzzle.play(from, to)
     override fun play(ply: Ply): Unit = puzzle.play(ply)
     override fun resign(): Unit = puzzle.resign()
+    override fun isPlayerTurn(): Boolean = info.turn == player
     override fun isOver(): Boolean = puzzle.state.isOver()
     override fun outcome(): Outcome? = when {
         !isOver() -> null
