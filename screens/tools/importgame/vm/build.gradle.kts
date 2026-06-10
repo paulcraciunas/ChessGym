@@ -13,6 +13,7 @@ dependencies {
     implementation(project(":game:logic:builders"))
     implementation(project(":game:serializer:api"))
     implementation(project(":game:serializer:di"))
+    implementation(project(":global:qualifiers"))
     implementation(project(":settings:application:api"))
     implementation(project(":screens:data"))
 
