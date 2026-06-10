@@ -6,15 +6,22 @@ import com.paulcraciunas.domain.api.general.EloResult
 import com.paulcraciunas.domain.api.general.Timer
 import com.paulcraciunas.domain.api.puzzles.GetRatedPuzzle
 import com.paulcraciunas.domain.api.puzzles.OnPuzzleComplete
+import com.paulcraciunas.domain.api.puzzles.PuzzleCompletionResult
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.global.qualifiers.DefaultDispatcher
+import com.paulcraciunas.screens.data.BoardSession
+import com.paulcraciunas.screens.data.NoOpNavigation
+import com.paulcraciunas.screens.data.PuzzlePlayableBoard
+import com.paulcraciunas.screens.data.PuzzleSolution
+import com.paulcraciunas.screens.data.ScriptedOpponent
 import com.paulcraciunas.screens.data.engine.PlayIntent
-import com.paulcraciunas.screens.data.engine.PlaySession
-import com.paulcraciunas.screens.data.engine.PlaySessionState
+import com.paulcraciunas.screens.data.engine.SinglePlaySession
+import com.paulcraciunas.screens.data.engine.SingleSessionState
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -22,22 +29,22 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.coroutines.cancellation.CancellationException
 
 @HiltViewModel
 class RatedPuzzleViewModel @Inject constructor(
     @param:DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher,
     private val timer: Timer,
-    getRatedPuzzle: GetRatedPuzzle,
-    onPuzzleComplete: OnPuzzleComplete,
+    private val getRatedPuzzle: GetRatedPuzzle,
+    private val onPuzzleComplete: OnPuzzleComplete,
     appSettingsRepository: AppSettingsRepository,
 ) : ViewModel() {
     private val ratingChange = MutableStateFlow(EloResult(0, 0))
-    private val playSession = PlaySession(
+    private val playSession = SinglePlaySession(
         settingsRepository = appSettingsRepository,
-        config = ratedConfiguration(),
-        sessions = RatedPuzzleSessions(getRatedPuzzle, ratingChange),
-        onSessionComplete = RatedPuzzleOnComplete(onPuzzleComplete, ratingChange, timer),
+        config = ratedSessionConfiguration(),
     )
+    private var runJob: Job? = null
 
     val uiState: StateFlow<RatedPuzzleUiState> = combine(
         playSession.state,
@@ -51,7 +58,7 @@ class RatedPuzzleViewModel @Inject constructor(
 
     init {
         timer.start()
-        viewModelScope.launch(defaultDispatcher) { playSession.run() }
+        loadNextPuzzle()
     }
 
     fun onStop() { timer.pause() }
@@ -62,27 +69,64 @@ class RatedPuzzleViewModel @Inject constructor(
     fun onAbandon() = playSession.accept(PlayIntent.RequestAbandon)
     fun onAbandonDismissed() = playSession.accept(PlayIntent.DismissAbandon)
     fun onAbandonConfirmed() = playSession.accept(PlayIntent.ConfirmAbandon)
-    fun onNextPuzzle() = playSession.accept(PlayIntent.Resume)
 
-    fun onNavigateBackPressed(): Boolean {
-        if (playSession.state.value.status == PlaySessionState.Status.Playing) {
-            playSession.accept(PlayIntent.RequestAbandon)
-        }
-        return playSession.state.value.status == PlaySessionState.Status.Playing
+    fun onNextPuzzle() {
+        playSession.reset()
+        loadNextPuzzle()
     }
 
-    private fun PlaySessionState.toUiState(elo: EloResult): RatedPuzzleUiState = when (status) {
-        PlaySessionState.Status.Failed -> RatedPuzzleUiState.Failed
-        PlaySessionState.Status.Loading -> RatedPuzzleUiState.Loading
-        PlaySessionState.Status.Ended,
-        PlaySessionState.Status.Paused -> RatedPuzzleUiState.Finished(
+    fun onNavigateBackPressed(): Boolean {
+        val isPlaying = playSession.state.value.status == SingleSessionState.Status.Playing
+        if (isPlaying) {
+            playSession.accept(PlayIntent.RequestAbandon)
+        }
+        return isPlaying
+    }
+
+    private fun loadNextPuzzle() {
+        runJob?.cancel()
+        runJob = viewModelScope.launch(defaultDispatcher) {
+            try {
+                val puzzleData = getRatedPuzzle()
+                ratingChange.value = puzzleData.ratingChange
+                val session = BoardSession(
+                    navigation = NoOpNavigation,
+                    solution = PuzzleSolution(puzzleData.puzzle),
+                    opponent = ScriptedOpponent(puzzleData.puzzle),
+                ).load(PuzzlePlayableBoard(puzzleData.puzzle))
+                playSession.run(session)
+                reportPuzzleComplete()
+            } catch (e: Exception) {
+                if (e is CancellationException) throw e
+                playSession.reportError(e.message)
+            }
+        }
+    }
+
+    private suspend fun reportPuzzleComplete() {
+        val finalState = playSession.state.value
+        onPuzzleComplete(
+            PuzzleCompletionResult(
+                puzzleId = finalState.boardState.id,
+                puzzleRating = finalState.boardState.rating!!,
+                wasSuccessful = finalState.boardState.won,
+                ratingChange = ratingChange.value.getNormalized(success = finalState.boardState.won),
+                timeSpentMillis = timer.elapsed(),
+            )
+        )
+    }
+
+    private fun SingleSessionState.toUiState(elo: EloResult): RatedPuzzleUiState = when (status) {
+        SingleSessionState.Status.Failed -> RatedPuzzleUiState.Failed
+        SingleSessionState.Status.Loading -> RatedPuzzleUiState.Loading
+        SingleSessionState.Status.GameOver -> RatedPuzzleUiState.Finished(
             rating = boardState.rating ?: 0,
             data = boardState,
             success = boardState.won,
             ratingChange = elo.get(success = boardState.won),
         )
-        PlaySessionState.Status.Ready,
-        PlaySessionState.Status.Playing -> RatedPuzzleUiState.Playing(
+        SingleSessionState.Status.Ready,
+        SingleSessionState.Status.Playing -> RatedPuzzleUiState.Playing(
             rating = boardState.rating ?: 0,
             data = boardState,
             hintEnabled = hintAvailable,

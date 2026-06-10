@@ -65,10 +65,10 @@ class PuzzleStreakViewModel @Inject constructor(
     fun onStart() { timer.resume() }
 
     fun onNavigateBackPressed(): Boolean {
-        if (playSession.state.value.status == PlaySessionState.Status.Playing) {
+        if (playSession.stateValue.status == PlaySessionState.Status.Playing) {
             playSession.accept(intent = PlayIntent.RequestAbandon)
         }
-        return playSession.state.value.status == PlaySessionState.Status.Playing
+        return playSession.stateValue.status == PlaySessionState.Status.Playing
     }
 
     fun onSquareClicked(selection: Locus) = playSession.accept(intent = PlayIntent.SelectSquare(selection))

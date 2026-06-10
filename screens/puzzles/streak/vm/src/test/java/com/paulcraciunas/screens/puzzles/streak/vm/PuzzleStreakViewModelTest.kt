@@ -16,6 +16,7 @@ import com.paulcraciunas.user.api.FakeUserRepository
 import com.paulcraciunas.user.api.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.TestScope
@@ -332,11 +333,11 @@ internal class PuzzleStreakViewModelTest {
         @Test
         fun `GIVEN streak ended WHEN onNewStreak THEN loads new puzzle`() = runTest(testDispatcher) {
             buildVm(buildStandardPuzzle(), currentStreakCount = 5)
-            getStreakPuzzle.enqueue(GetStreakPuzzle.Data(buildStandardPuzzle(rating = 400), currentStreakCount = 0))
 
             makeMove(from = Locus.d7, to = Locus.d5)
             assertTrue(underTest.uiState.value is PuzzleStreakUiState.StreakEnded)
 
+            getStreakPuzzle.enqueue(GetStreakPuzzle.Data(buildStandardPuzzle(rating = 400), currentStreakCount = 0))
             underTest.onNewStreak()
             advanceUntilIdle()
 
@@ -557,9 +558,7 @@ internal class PuzzleStreakViewModelTest {
 }
 
 private class QueuedGetStreakPuzzle : GetStreakPuzzle {
-    private val channel = kotlinx.coroutines.channels.Channel<GetStreakPuzzle.Data>(
-        capacity = kotlinx.coroutines.channels.Channel.UNLIMITED
-    )
+    private val channel = Channel<GetStreakPuzzle.Data>(capacity = Channel.UNLIMITED)
     private var exception: Exception? = null
 
     fun enqueue(data: GetStreakPuzzle.Data) {

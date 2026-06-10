@@ -51,7 +51,7 @@ internal class PlaySessionTest {
         fun `GIVEN play session WHEN created THEN state is Loading`() = runTest {
             val playSession = buildPlaySession(sessions = singleSessionSource())
 
-            assertEquals(PlaySessionState.Status.Loading, playSession.state.value.status)
+            assertEquals(PlaySessionState.Status.Loading, playSession.stateValue.status)
         }
 
         @Test
@@ -61,7 +61,7 @@ internal class PlaySessionTest {
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession.run() }
             advanceUntilIdle()
 
-            assertEquals(PlaySessionState.Status.Ready, playSession.state.value.status)
+            assertEquals(PlaySessionState.Status.Ready, playSession.stateValue.status)
         }
 
         @Test
@@ -71,8 +71,8 @@ internal class PlaySessionTest {
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession.run() }
             advanceUntilIdle()
 
-            assertNotNull(playSession.state.value.boardState)
-            assertEquals(Side.BLACK, playSession.state.value.boardState.player)
+            assertNotNull(playSession.stateValue.boardState)
+            assertEquals(Side.BLACK, playSession.stateValue.boardState.player)
         }
 
         @Test
@@ -82,7 +82,7 @@ internal class PlaySessionTest {
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession.run() }
             advanceUntilIdle()
 
-            val board = playSession.state.value.boardState
+            val board = playSession.stateValue.boardState
             assertNotNull(board.boardData.at(Locus.e4).piece)
         }
 
@@ -93,7 +93,7 @@ internal class PlaySessionTest {
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession.run() }
             advanceUntilIdle()
 
-            assertFalse(playSession.state.value.isAnimating)
+            assertFalse(playSession.stateValue.isAnimating)
         }
 
         @Test
@@ -106,8 +106,8 @@ internal class PlaySessionTest {
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession.run() }
             advanceUntilIdle()
 
-            assertEquals(PlaySessionState.Status.Failed, playSession.state.value.status)
-            assertEquals("DB failure", playSession.state.value.errorMessage)
+            assertEquals(PlaySessionState.Status.Failed, playSession.stateValue.status)
+            assertEquals("DB failure", playSession.stateValue.errorMessage)
         }
 
         @Test
@@ -129,7 +129,7 @@ internal class PlaySessionTest {
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession.run() }
             advanceUntilIdle()
 
-            assertTrue(playSession.state.value.hintAvailable)
+            assertTrue(playSession.stateValue.hintAvailable)
         }
 
         @Test
@@ -139,7 +139,7 @@ internal class PlaySessionTest {
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession.run() }
             advanceUntilIdle()
 
-            assertFalse(playSession.state.value.hintAvailable)
+            assertFalse(playSession.stateValue.hintAvailable)
         }
     }
 
@@ -155,7 +155,7 @@ internal class PlaySessionTest {
             playSession.accept(PlayIntent.SelectSquare(Locus.e7))
             advanceUntilIdle()
 
-            assertEquals(PlaySessionState.Status.Playing, playSession.state.value.status)
+            assertEquals(PlaySessionState.Status.Playing, playSession.stateValue.status)
         }
 
         @Test
@@ -168,7 +168,7 @@ internal class PlaySessionTest {
             playSession.accept(PlayIntent.SelectSquare(Locus.e7))
             advanceUntilIdle()
 
-            val board = playSession.state.value.boardState
+            val board = playSession.stateValue.boardState
             assertEquals(Locus.e7, board.boardData.selection)
         }
 
@@ -181,7 +181,7 @@ internal class PlaySessionTest {
 
             makeMove(playSession, from = Locus.e7, to = Locus.e5)
 
-            assertTrue(playSession.state.value.boardState.movePlayed)
+            assertTrue(playSession.stateValue.boardState.movePlayed)
         }
 
         @Test
@@ -193,7 +193,7 @@ internal class PlaySessionTest {
 
             makeMove(playSession, from = Locus.e7, to = Locus.e5)
 
-            assertNotNull(playSession.state.value.boardState.boardData.at(Locus.f3).piece)
+            assertNotNull(playSession.stateValue.boardState.boardData.at(Locus.f3).piece)
         }
 
         @Test
@@ -205,7 +205,7 @@ internal class PlaySessionTest {
 
             makeMove(playSession, from = Locus.d7, to = Locus.d5)
 
-            assertEquals(PlaySessionState.Status.Ended, playSession.state.value.status)
+            assertEquals(PlaySessionState.Status.Ended, playSession.stateValue.status)
         }
 
         @Test
@@ -217,7 +217,7 @@ internal class PlaySessionTest {
 
             makeMove(playSession, from = Locus.d7, to = Locus.d5)
 
-            val results = playSession.state.value.results
+            val results = playSession.stateValue.results
             assertEquals(1, results.size)
             assertFalse(results.first().success)
         }
@@ -233,7 +233,7 @@ internal class PlaySessionTest {
             makeMove(playSession, from = Locus.e7, to = Locus.e5)
             makeMove(playSession, from = Locus.b8, to = Locus.c6)
 
-            val results = playSession.state.value.results
+            val results = playSession.stateValue.results
             assertEquals(1, results.size)
             assertTrue(results.first().success)
         }
@@ -248,7 +248,7 @@ internal class PlaySessionTest {
             playSession.accept(PlayIntent.SelectSquare(Locus.e5))
             advanceUntilIdle()
 
-            assertNull(playSession.state.value.boardState.boardData.selection)
+            assertNull(playSession.stateValue.boardState.boardData.selection)
         }
 
         @Test
@@ -261,7 +261,7 @@ internal class PlaySessionTest {
             playSession.accept(PlayIntent.SelectSquare(Locus.e2))
             advanceUntilIdle()
 
-            assertNull(playSession.state.value.boardState.boardData.selection)
+            assertNull(playSession.stateValue.boardState.boardData.selection)
         }
     }
 
@@ -276,7 +276,7 @@ internal class PlaySessionTest {
 
             makeMove(playSession, from = Locus.e7, to = Locus.e5)
 
-            assertTrue(playSession.state.value.isAnimating)
+            assertTrue(playSession.stateValue.isAnimating)
         }
 
         @Test
@@ -291,7 +291,7 @@ internal class PlaySessionTest {
             playSession.accept(PlayIntent.SelectSquare(Locus.e5))
             advanceTimeBy(200)
 
-            assertFalse(playSession.state.value.isAnimating)
+            assertFalse(playSession.stateValue.isAnimating)
         }
 
         @Test
@@ -306,11 +306,11 @@ internal class PlaySessionTest {
             playSession.accept(PlayIntent.SelectSquare(Locus.e5))
             advanceTimeBy(10)
 
-            assertTrue(playSession.state.value.isAnimating)
+            assertTrue(playSession.stateValue.isAnimating)
             playSession.accept(PlayIntent.SelectSquare(Locus.b8))
             advanceTimeBy(10)
 
-            val board = playSession.state.value.boardState
+            val board = playSession.stateValue.boardState
             assertNull(board.boardData.selection)
         }
 
@@ -331,7 +331,7 @@ internal class PlaySessionTest {
             playSession.accept(PlayIntent.SelectSquare(Locus.c6))
             advanceTimeBy(10)
 
-            assertTrue(playSession.state.value.isAnimating)
+            assertTrue(playSession.stateValue.isAnimating)
         }
 
         @Test
@@ -345,13 +345,13 @@ internal class PlaySessionTest {
             advanceUntilIdle()
             playSession.accept(PlayIntent.SelectSquare(Locus.e5))
             advanceTimeBy(50)
-            assertTrue(playSession.state.value.isAnimating)
+            assertTrue(playSession.stateValue.isAnimating)
 
             advanceTimeBy(60)
-            assertTrue(playSession.state.value.isAnimating)
+            assertTrue(playSession.stateValue.isAnimating)
 
             advanceTimeBy(100)
-            assertFalse(playSession.state.value.isAnimating)
+            assertFalse(playSession.stateValue.isAnimating)
         }
     }
 
@@ -364,7 +364,7 @@ internal class PlaySessionTest {
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession.run() }
             advanceUntilIdle()
 
-            assertEquals(5000L, playSession.state.value.remainingTimeMs)
+            assertEquals(5000L, playSession.stateValue.remainingTimeMs)
         }
 
         @Test
@@ -375,13 +375,13 @@ internal class PlaySessionTest {
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession.run() }
             advanceUntilIdle()
 
-            assertEquals(3000L, playSession.state.value.remainingTimeMs)
+            assertEquals(3000L, playSession.stateValue.remainingTimeMs)
 
             makeMove(playSession, from = Locus.e7, to = Locus.e5)
             timer.emit(CountdownTimer.Remainder(2, 800))
             advanceUntilIdle()
 
-            assertTrue(playSession.state.value.remainingTimeMs!! < 3000L)
+            assertTrue(playSession.stateValue.remainingTimeMs!! < 3000L)
         }
 
         @Test
@@ -394,7 +394,7 @@ internal class PlaySessionTest {
             timer.emit(CountdownTimer.Remainder(2, 500))
             advanceUntilIdle()
 
-            assertTrue(playSession.state.value.remainingTimeMs!! < 3000L)
+            assertTrue(playSession.stateValue.remainingTimeMs!! < 3000L)
         }
 
         @Test
@@ -407,7 +407,7 @@ internal class PlaySessionTest {
             timer.emit(CountdownTimer.Remainder(0, 0))
             advanceUntilIdle()
 
-            assertEquals(PlaySessionState.Status.Ended, playSession.state.value.status)
+            assertEquals(PlaySessionState.Status.Ended, playSession.stateValue.status)
         }
 
         @Test
@@ -423,8 +423,8 @@ internal class PlaySessionTest {
             timer.emit(CountdownTimer.Remainder(0, 0))
             advanceUntilIdle()
 
-            assertEquals(PlaySessionState.Status.Ended, playSession.state.value.status)
-            assertTrue(playSession.state.value.results.isEmpty())
+            assertEquals(PlaySessionState.Status.Ended, playSession.stateValue.status)
+            assertTrue(playSession.stateValue.results.isEmpty())
         }
 
         @Test
@@ -442,12 +442,12 @@ internal class PlaySessionTest {
             playSession.accept(PlayIntent.SelectSquare(Locus.e5))
             advanceTimeBy(10)
 
-            assertTrue(playSession.state.value.isAnimating)
+            assertTrue(playSession.stateValue.isAnimating)
             timer.emit(CountdownTimer.Remainder(0, 0))
             advanceUntilIdle()
 
-            assertEquals(PlaySessionState.Status.Ended, playSession.state.value.status)
-            assertFalse(playSession.state.value.isAnimating)
+            assertEquals(PlaySessionState.Status.Ended, playSession.stateValue.status)
+            assertFalse(playSession.stateValue.isAnimating)
         }
 
         @Test
@@ -460,7 +460,7 @@ internal class PlaySessionTest {
             timer.emit(CountdownTimer.Remainder(0, 0))
             advanceUntilIdle()
 
-            assertTrue(playSession.state.value.showSummary)
+            assertTrue(playSession.stateValue.showSummary)
         }
 
         @Test
@@ -473,7 +473,7 @@ internal class PlaySessionTest {
             timer.emit(CountdownTimer.Remainder(0, 0))
             advanceUntilIdle()
 
-            assertEquals(0L, playSession.state.value.remainingTimeMs)
+            assertEquals(0L, playSession.stateValue.remainingTimeMs)
         }
     }
 
@@ -493,8 +493,8 @@ internal class PlaySessionTest {
             makeMove(playSession, from = Locus.e7, to = Locus.e5)
             makeMove(playSession, from = Locus.b8, to = Locus.c6)
 
-            assertEquals(PlaySessionState.Status.Playing, playSession.state.value.status)
-            assertEquals(1, playSession.state.value.results.size)
+            assertEquals(PlaySessionState.Status.Playing, playSession.stateValue.status)
+            assertEquals(1, playSession.stateValue.results.size)
         }
 
         @Test
@@ -511,7 +511,7 @@ internal class PlaySessionTest {
             makeMove(playSession, from = Locus.e7, to = Locus.e5)
             makeMove(playSession, from = Locus.b8, to = Locus.c6)
 
-            assertEquals(PlaySessionState.Status.Paused, playSession.state.value.status)
+            assertEquals(PlaySessionState.Status.Paused, playSession.stateValue.status)
         }
 
         @Test
@@ -528,12 +528,12 @@ internal class PlaySessionTest {
             makeMove(playSession, from = Locus.e7, to = Locus.e5)
             makeMove(playSession, from = Locus.b8, to = Locus.c6)
 
-            assertEquals(PlaySessionState.Status.Paused, playSession.state.value.status)
+            assertEquals(PlaySessionState.Status.Paused, playSession.stateValue.status)
 
             playSession.accept(PlayIntent.Resume)
             advanceUntilIdle()
 
-            assertEquals(PlaySessionState.Status.Playing, playSession.state.value.status)
+            assertEquals(PlaySessionState.Status.Playing, playSession.stateValue.status)
         }
 
         @Test
@@ -553,7 +553,7 @@ internal class PlaySessionTest {
             playSession.accept(PlayIntent.SelectSquare(Locus.e7))
             advanceUntilIdle()
 
-            assertEquals(PlaySessionState.Status.Paused, playSession.state.value.status)
+            assertEquals(PlaySessionState.Status.Paused, playSession.stateValue.status)
         }
 
         @Test
@@ -569,9 +569,9 @@ internal class PlaySessionTest {
 
             makeMove(playSession, from = Locus.d7, to = Locus.d5)
 
-            assertEquals(PlaySessionState.Status.Playing, playSession.state.value.status)
-            assertEquals(1, playSession.state.value.results.size)
-            assertFalse(playSession.state.value.results.first().success)
+            assertEquals(PlaySessionState.Status.Playing, playSession.stateValue.status)
+            assertEquals(1, playSession.stateValue.results.size)
+            assertFalse(playSession.stateValue.results.first().success)
         }
 
         @Test
@@ -634,8 +634,8 @@ internal class PlaySessionTest {
             makeMove(playSession, from = Locus.e7, to = Locus.e5)
             makeMove(playSession, from = Locus.b8, to = Locus.c6)
 
-            assertEquals(2, playSession.state.value.results.size)
-            assertTrue(playSession.state.value.results.all { it.success })
+            assertEquals(2, playSession.stateValue.results.size)
+            assertTrue(playSession.stateValue.results.all { it.success })
         }
     }
 
@@ -653,7 +653,7 @@ internal class PlaySessionTest {
             playSession.accept(PlayIntent.RequestAbandon)
             advanceUntilIdle()
 
-            assertTrue(playSession.state.value.abandonRequested)
+            assertTrue(playSession.stateValue.abandonRequested)
         }
 
         @Test
@@ -670,7 +670,7 @@ internal class PlaySessionTest {
             playSession.accept(PlayIntent.DismissAbandon)
             advanceUntilIdle()
 
-            assertFalse(playSession.state.value.abandonRequested)
+            assertFalse(playSession.stateValue.abandonRequested)
         }
 
         @Test
@@ -685,7 +685,7 @@ internal class PlaySessionTest {
             playSession.accept(PlayIntent.ConfirmAbandon)
             advanceUntilIdle()
 
-            assertEquals(PlaySessionState.Status.Ended, playSession.state.value.status)
+            assertEquals(PlaySessionState.Status.Ended, playSession.stateValue.status)
         }
 
         @Test
@@ -701,7 +701,7 @@ internal class PlaySessionTest {
             playSession.accept(PlayIntent.ConfirmAbandon)
             advanceTimeBy(10)
 
-            assertTrue(playSession.state.value.isAnimating)
+            assertTrue(playSession.stateValue.isAnimating)
         }
 
         @Test
@@ -717,7 +717,7 @@ internal class PlaySessionTest {
             playSession.accept(PlayIntent.ConfirmAbandon)
             advanceTimeBy(500)
 
-            assertEquals(PlaySessionState.Status.Ended, playSession.state.value.status)
+            assertEquals(PlaySessionState.Status.Ended, playSession.stateValue.status)
         }
     }
 
@@ -737,7 +737,7 @@ internal class PlaySessionTest {
             playSession.accept(PlayIntent.Hint)
             advanceUntilIdle()
 
-            assertTrue(playSession.state.value.hintAvailable)
+            assertTrue(playSession.stateValue.hintAvailable)
         }
 
         @Test
@@ -754,7 +754,7 @@ internal class PlaySessionTest {
             playSession.accept(PlayIntent.Hint)
             advanceUntilIdle()
 
-            assertFalse(playSession.state.value.hintAvailable)
+            assertFalse(playSession.stateValue.hintAvailable)
         }
 
         @Test
@@ -771,7 +771,7 @@ internal class PlaySessionTest {
             playSession.accept(PlayIntent.Hint)
             advanceUntilIdle()
 
-            val board = playSession.state.value.boardState
+            val board = playSession.stateValue.boardState
             assertEquals(Locus.e7, board.boardData.selection)
         }
     }
@@ -793,7 +793,7 @@ internal class PlaySessionTest {
             sessionFlow.emit(session)
             advanceUntilIdle()
 
-            assertEquals(PlaySessionState.Status.Ready, playSession.state.value.status)
+            assertEquals(PlaySessionState.Status.Ready, playSession.stateValue.status)
         }
 
         @Test
@@ -806,7 +806,7 @@ internal class PlaySessionTest {
             advanceUntilIdle()
             makeMove(playSession, from = Locus.d7, to = Locus.d5)
 
-            assertEquals(PlaySessionState.Status.Ended, playSession.state.value.status)
+            assertEquals(PlaySessionState.Status.Ended, playSession.stateValue.status)
 
             val puzzle2 = buildPuzzle(id = 2)
             val session2 = buildSession(puzzle2)
@@ -815,7 +815,7 @@ internal class PlaySessionTest {
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession2.run() }
             advanceUntilIdle()
 
-            assertEquals(PlaySessionState.Status.Ready, playSession2.state.value.status)
+            assertEquals(PlaySessionState.Status.Ready, playSession2.stateValue.status)
         }
     }
 
@@ -878,19 +878,18 @@ internal class PlaySessionTest {
     @Nested
     internal inner class Configuration {
         @Test
-        fun `GIVEN play session WHEN reConfig called THEN config updates atomically`() = runTest {
+        fun `GIVEN play session with unlimited hints WHEN run THEN hints available`() = runTest {
             val puzzle = buildPuzzle()
             val session = buildSession(puzzle)
             val playSession = buildPlaySession(
-                config = noAnimationsConfig().copy(hints = null),
+                config = noAnimationsConfig().copy(hints = PlaySessionConfiguration.HintMode.Unlimited),
                 sessions = singleSessionSource(session),
             )
 
-            playSession.reConfig { it.copy(hints = PlaySessionConfiguration.HintMode.Unlimited) }
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession.run() }
             advanceUntilIdle()
 
-            assertTrue(playSession.state.value.hintAvailable)
+            assertTrue(playSession.stateValue.hintAvailable)
         }
 
         @Test
@@ -913,7 +912,7 @@ internal class PlaySessionTest {
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession.run() }
             advanceUntilIdle()
 
-            assertFalse(playSession.state.value.isAnimating)
+            assertFalse(playSession.stateValue.isAnimating)
         }
     }
 
@@ -927,11 +926,11 @@ internal class PlaySessionTest {
             advanceUntilIdle()
             makeMove(playSession, from = Locus.d7, to = Locus.d5)
 
-            assertTrue(playSession.state.value.showSummary)
+            assertTrue(playSession.stateValue.showSummary)
 
             playSession.clearSummary()
 
-            assertFalse(playSession.state.value.showSummary)
+            assertFalse(playSession.stateValue.showSummary)
         }
     }
 
@@ -945,7 +944,7 @@ internal class PlaySessionTest {
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession.run() }
             advanceUntilIdle()
 
-            assertEquals(PlaySessionState.Status.Ready, playSession.state.value.status)
+            assertEquals(PlaySessionState.Status.Ready, playSession.stateValue.status)
         }
 
         @Test
@@ -963,8 +962,8 @@ internal class PlaySessionTest {
             playSession.accept(PlayIntent.SelectSquare(Locus.c6))
             advanceUntilIdle()
 
-            assertEquals(1, playSession.state.value.results.size)
-            assertTrue(playSession.state.value.results.first().success)
+            assertEquals(1, playSession.stateValue.results.size)
+            assertTrue(playSession.stateValue.results.first().success)
         }
 
         @Test
@@ -979,7 +978,7 @@ internal class PlaySessionTest {
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession.run() }
             advanceUntilIdle()
 
-            assertEquals(PlaySessionState.Status.Ended, playSession.state.value.status)
+            assertEquals(PlaySessionState.Status.Ended, playSession.stateValue.status)
             assertTrue(completeCalled)
         }
 
@@ -1011,12 +1010,12 @@ internal class PlaySessionTest {
 
             makeMove(playSession, from = Locus.a2, to = Locus.a1)
 
-            assertNotNull(playSession.state.value.boardState.promotion)
+            assertNotNull(playSession.stateValue.boardState.promotion)
 
             playSession.accept(PlayIntent.Promote(Piece.Queen))
             advanceUntilIdle()
 
-            assertNull(playSession.state.value.boardState.promotion)
+            assertNull(playSession.stateValue.boardState.promotion)
         }
 
         @Test
@@ -1031,7 +1030,7 @@ internal class PlaySessionTest {
 
             makeMove(playSession, from = Locus.e7, to = Locus.e5)
 
-            val state = playSession.state.value
+            val state = playSession.stateValue
             assertEquals(PlaySessionState.Status.Ended, state.status)
             assertEquals(1, state.results.size)
             assertTrue(state.results.first().success)
@@ -1050,7 +1049,7 @@ internal class PlaySessionTest {
             makeMove(playSession, from = Locus.e7, to = Locus.e5)
             advanceTimeBy(200)
 
-            val state = playSession.state.value
+            val state = playSession.stateValue
             assertEquals(PlaySessionState.Status.Ended, state.status)
             assertEquals(1, state.results.size)
             assertTrue(state.results.first().success)
@@ -1072,8 +1071,8 @@ internal class PlaySessionTest {
             playSession.accept(PlayIntent.SelectSquare(Locus.c6))
             advanceTimeBy(500)
 
-            assertFalse(playSession.state.value.isAnimating)
-            assertEquals(PlaySessionState.Status.Playing, playSession.state.value.status)
+            assertFalse(playSession.stateValue.isAnimating)
+            assertEquals(PlaySessionState.Status.Playing, playSession.stateValue.status)
         }
 
         @Test
@@ -1084,8 +1083,8 @@ internal class PlaySessionTest {
             advanceUntilIdle()
             makeMove(playSession, from = Locus.d7, to = Locus.d5)
 
-            assertTrue(playSession.state.value.showSummary)
-            assertEquals(PlaySessionState.Status.Ended, playSession.state.value.status)
+            assertTrue(playSession.stateValue.showSummary)
+            assertEquals(PlaySessionState.Status.Ended, playSession.stateValue.status)
         }
 
         @Test
@@ -1098,7 +1097,7 @@ internal class PlaySessionTest {
             makeMove(playSession, from = Locus.e7, to = Locus.e5)
             makeMove(playSession, from = Locus.b8, to = Locus.c6)
 
-            val state = playSession.state.value
+            val state = playSession.stateValue
             assertEquals(1, state.results.size)
             assertTrue(state.results.first().success)
         }
@@ -1120,12 +1119,12 @@ internal class PlaySessionTest {
             advanceUntilIdle()
             playSession.accept(PlayIntent.SelectSquare(Locus.e5))
             advanceTimeBy(10)
-            assertTrue(playSession.state.value.isAnimating)
+            assertTrue(playSession.stateValue.isAnimating)
 
             timer.emit(CountdownTimer.Remainder(0, 0))
             advanceUntilIdle()
 
-            assertEquals(PlaySessionState.Status.Ended, playSession.state.value.status)
+            assertEquals(PlaySessionState.Status.Ended, playSession.stateValue.status)
         }
 
         @Test
@@ -1142,11 +1141,11 @@ internal class PlaySessionTest {
             playSession.accept(PlayIntent.SelectSquare(Locus.e5))
             advanceTimeBy(10)
 
-            assertTrue(playSession.state.value.isAnimating)
+            assertTrue(playSession.stateValue.isAnimating)
             playSession.accept(PlayIntent.Hint)
             advanceTimeBy(10)
 
-            assertTrue(playSession.state.value.hintAvailable)
+            assertTrue(playSession.stateValue.hintAvailable)
         }
 
         @Test
@@ -1164,7 +1163,7 @@ internal class PlaySessionTest {
             playSession.accept(PlayIntent.RequestAbandon)
             advanceTimeBy(10)
 
-            assertFalse(playSession.state.value.abandonRequested)
+            assertFalse(playSession.stateValue.abandonRequested)
         }
     }
 
@@ -1180,8 +1179,8 @@ internal class PlaySessionTest {
 
             makeMove(playSession, from = Locus.d7, to = Locus.d5)
 
-            assertEquals(PlaySessionState.Status.Ended, playSession.state.value.status)
-            assertTrue(playSession.state.value.showSummary)
+            assertEquals(PlaySessionState.Status.Ended, playSession.stateValue.status)
+            assertTrue(playSession.stateValue.showSummary)
         }
 
         @Test
@@ -1197,9 +1196,9 @@ internal class PlaySessionTest {
 
             makeMove(playSession, from = Locus.d7, to = Locus.d5)
 
-            assertEquals(PlaySessionState.Status.Playing, playSession.state.value.status)
-            assertEquals(1, playSession.state.value.results.size)
-            assertFalse(playSession.state.value.results.first().success)
+            assertEquals(PlaySessionState.Status.Playing, playSession.stateValue.status)
+            assertEquals(1, playSession.stateValue.results.size)
+            assertFalse(playSession.stateValue.results.first().success)
         }
 
         @Test
@@ -1258,7 +1257,7 @@ internal class PlaySessionTest {
             makeMove(playSession, from = Locus.e7, to = Locus.e5)
             makeMove(playSession, from = Locus.b8, to = Locus.c6)
 
-            val result = playSession.state.value.results.first()
+            val result = playSession.stateValue.results.first()
             assertEquals(42, result.id)
             assertEquals(1500, result.rating)
             assertEquals(Outcome.Won, result.outcome)
@@ -1276,7 +1275,7 @@ internal class PlaySessionTest {
 
             makeMove(playSession, from = Locus.d7, to = Locus.d5)
 
-            val result = playSession.state.value.results.first()
+            val result = playSession.stateValue.results.first()
             assertEquals(7, result.id)
             assertEquals(800, result.rating)
             assertFalse(result.success)
@@ -1294,7 +1293,7 @@ internal class PlaySessionTest {
             timer.emit(CountdownTimer.Remainder(0, 0))
             advanceUntilIdle()
 
-            assertTrue(playSession.state.value.results.isEmpty())
+            assertTrue(playSession.stateValue.results.isEmpty())
         }
 
         @Test
@@ -1317,7 +1316,7 @@ internal class PlaySessionTest {
             timer.emit(CountdownTimer.Remainder(0, 0))
             advanceUntilIdle()
 
-            val results = playSession.state.value.results
+            val results = playSession.stateValue.results
             assertEquals(1, results.size)
             assertTrue(results.first().success)
             assertEquals(1, results.first().id)
@@ -1339,7 +1338,7 @@ internal class PlaySessionTest {
             }
             advanceUntilIdle()
 
-            assertEquals(PlaySessionState.Status.Playing, playSession.state.value.status)
+            assertEquals(PlaySessionState.Status.Playing, playSession.stateValue.status)
         }
 
         @Test
@@ -1351,7 +1350,7 @@ internal class PlaySessionTest {
 
             makeMove(playSession, from = Locus.d7, to = Locus.d5)
 
-            assertEquals(PlaySessionState.Status.Ended, playSession.state.value.status)
+            assertEquals(PlaySessionState.Status.Ended, playSession.stateValue.status)
 
             playSession.accept(PlayIntent.SelectSquare(Locus.e7))
             advanceUntilIdle()
@@ -1367,7 +1366,7 @@ internal class PlaySessionTest {
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession.run() }
             advanceUntilIdle()
 
-            assertNull(playSession.state.value.navigation)
+            assertNull(playSession.stateValue.navigation)
         }
 
         @Test
@@ -1385,7 +1384,7 @@ internal class PlaySessionTest {
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession.run() }
             advanceUntilIdle()
 
-            val navigation = playSession.state.value.navigation
+            val navigation = playSession.stateValue.navigation
             assertNotNull(navigation)
             assertTrue(navigation!!.canGoBack)
             assertFalse(navigation.canGoForward)
@@ -1404,7 +1403,7 @@ internal class PlaySessionTest {
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession.run() }
             advanceUntilIdle()
 
-            val navigation = playSession.state.value.navigation
+            val navigation = playSession.stateValue.navigation
             assertNotNull(navigation)
             assertFalse(navigation!!.canGoBack)
             assertFalse(navigation.canGoForward)
@@ -1420,7 +1419,7 @@ internal class PlaySessionTest {
             playSession.accept(PlayIntent.Navigate(PlayIntent.Navigation.ToStart))
             advanceUntilIdle()
 
-            assertEquals(PlaySessionState.Status.Playing, playSession.state.value.status)
+            assertEquals(PlaySessionState.Status.Playing, playSession.stateValue.status)
         }
 
         @Test
@@ -1433,7 +1432,7 @@ internal class PlaySessionTest {
             playSession.accept(PlayIntent.Navigate(PlayIntent.Navigation.Back))
             advanceUntilIdle()
 
-            assertEquals(PlaySessionState.Status.Playing, playSession.state.value.status)
+            assertEquals(PlaySessionState.Status.Playing, playSession.stateValue.status)
         }
 
         @Test
@@ -1446,7 +1445,7 @@ internal class PlaySessionTest {
             playSession.accept(PlayIntent.Navigate(PlayIntent.Navigation.Forward))
             advanceUntilIdle()
 
-            assertEquals(PlaySessionState.Status.Playing, playSession.state.value.status)
+            assertEquals(PlaySessionState.Status.Playing, playSession.stateValue.status)
         }
 
         @Test
@@ -1459,7 +1458,7 @@ internal class PlaySessionTest {
             playSession.accept(PlayIntent.Navigate(PlayIntent.Navigation.ToEnd))
             advanceUntilIdle()
 
-            assertEquals(PlaySessionState.Status.Playing, playSession.state.value.status)
+            assertEquals(PlaySessionState.Status.Playing, playSession.stateValue.status)
         }
     }
 
@@ -1474,12 +1473,12 @@ internal class PlaySessionTest {
 
             playSession.accept(PlayIntent.SelectSquare(Locus.e7))
             advanceUntilIdle()
-            assertEquals(Locus.e7, playSession.state.value.boardState.boardData.selection)
+            assertEquals(Locus.e7, playSession.stateValue.boardState.boardData.selection)
 
             playSession.accept(PlayIntent.SelectSquare(Locus.d7))
             advanceUntilIdle()
 
-            assertNull(playSession.state.value.boardState.boardData.selection)
+            assertNull(playSession.stateValue.boardState.boardData.selection)
         }
 
         @Test
@@ -1494,7 +1493,7 @@ internal class PlaySessionTest {
             playSession.accept(PlayIntent.SelectSquare(Locus.e7))
             advanceUntilIdle()
 
-            assertNull(playSession.state.value.boardState.boardData.selection)
+            assertNull(playSession.stateValue.boardState.boardData.selection)
         }
 
         @Test
@@ -1508,7 +1507,7 @@ internal class PlaySessionTest {
 
             makeMove(playSession, from = Locus.d7, to = Locus.d5)
 
-            val result = playSession.state.value.results.first()
+            val result = playSession.stateValue.results.first()
             assertEquals(99, result.id)
             assertEquals(1800, result.rating)
         }
@@ -1532,7 +1531,7 @@ internal class PlaySessionTest {
             makeMove(playSession, from = Locus.e7, to = Locus.e5)
             makeMove(playSession, from = Locus.b8, to = Locus.c6)
 
-            val results = playSession.state.value.results
+            val results = playSession.stateValue.results
             assertEquals(2, results.size)
             assertEquals(1, results[0].id)
             assertEquals(2, results[1].id)
@@ -1549,23 +1548,20 @@ internal class PlaySessionTest {
 
             makeMove(playSession, from = Locus.d7, to = Locus.d5)
 
-            assertEquals(PlaySessionState.Status.Ended, playSession.state.value.status)
-            assertFalse(playSession.state.value.isAnimating)
+            assertEquals(PlaySessionState.Status.Ended, playSession.stateValue.status)
+            assertFalse(playSession.stateValue.isAnimating)
         }
 
         @Test
-        fun `GIVEN reConfig WHEN before run THEN new config used`() = runTest {
+        fun `GIVEN config with hints WHEN run THEN hints available`() = runTest {
             val session = buildSessionWithSolution(buildPuzzle())
-            val config = noAnimationsConfig().copy(hints = null)
+            val config = noAnimationsConfig().copy(hints = PlaySessionConfiguration.HintMode.Unlimited)
             val playSession = buildPlaySession(config = config, sessions = singleSessionSource(session))
-
-            playSession.reConfig { it.copy(hints = PlaySessionConfiguration.HintMode.Unlimited) }
-            settingsRepository.setAppSettings(settingsRepository.getCurrentSettings())
 
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession.run() }
             advanceUntilIdle()
 
-            assertTrue(playSession.state.value.hintAvailable)
+            assertTrue(playSession.stateValue.hintAvailable)
         }
 
         @Test
@@ -1574,12 +1570,12 @@ internal class PlaySessionTest {
 
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession.run() }
             advanceUntilIdle()
-            assertEquals(PlaySessionState.Status.Ready, playSession.state.value.status)
+            assertEquals(PlaySessionState.Status.Ready, playSession.stateValue.status)
 
             playSession.accept(PlayIntent.SelectSquare(Locus.a7))
             advanceUntilIdle()
 
-            assertEquals(PlaySessionState.Status.Playing, playSession.state.value.status)
+            assertEquals(PlaySessionState.Status.Playing, playSession.stateValue.status)
         }
 
         @Test
@@ -1596,7 +1592,7 @@ internal class PlaySessionTest {
 
             makeMove(playSession, from = Locus.e7, to = Locus.e5)
 
-            assertTrue(playSession.state.value.boardState.movePlayed)
+            assertTrue(playSession.stateValue.boardState.movePlayed)
         }
 
         @Test
@@ -1607,7 +1603,7 @@ internal class PlaySessionTest {
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession.run() }
             advanceTimeBy(1000)
 
-            assertEquals(5000L, playSession.state.value.remainingTimeMs)
+            assertEquals(5000L, playSession.stateValue.remainingTimeMs)
         }
 
         @Test
@@ -1632,7 +1628,7 @@ internal class PlaySessionTest {
             makeMove(playSession, from = Locus.e7, to = Locus.e5)
             makeMove(playSession, from = Locus.b8, to = Locus.c6)
 
-            val results = playSession.state.value.results
+            val results = playSession.stateValue.results
             assertEquals(3, results.size)
             assertTrue(results[0].success)
             assertFalse(results[1].success)
@@ -1647,7 +1643,7 @@ internal class PlaySessionTest {
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession.run() }
             advanceUntilIdle()
 
-            assertFalse(playSession.state.value.isAnimating)
+            assertFalse(playSession.stateValue.isAnimating)
         }
 
         @Test
@@ -1659,7 +1655,7 @@ internal class PlaySessionTest {
 
             makeMove(playSession, from = Locus.e7, to = Locus.e3)
 
-            val board = playSession.state.value.boardState
+            val board = playSession.stateValue.boardState
             assertFalse(board.movePlayed)
         }
 
@@ -1704,11 +1700,11 @@ internal class PlaySessionTest {
             makeMove(playSession, from = Locus.e7, to = Locus.e5)
             makeMove(playSession, from = Locus.b8, to = Locus.c6)
 
-            assertEquals(PlaySessionState.Status.Paused, playSession.state.value.status)
+            assertEquals(PlaySessionState.Status.Paused, playSession.stateValue.status)
             timer.emit(CountdownTimer.Remainder(4, 500))
             advanceUntilIdle()
 
-            val timeAfterPause = playSession.state.value.remainingTimeMs
+            val timeAfterPause = playSession.stateValue.remainingTimeMs
             assertNotNull(timeAfterPause)
             assertTrue(timeAfterPause!! < 5000L)
         }
@@ -1733,7 +1729,7 @@ internal class PlaySessionTest {
             makeMove(playSession, from = Locus.e7, to = Locus.e5)
             makeMove(playSession, from = Locus.b8, to = Locus.c6)
 
-            val results = playSession.state.value.results
+            val results = playSession.stateValue.results
             assertEquals(2, results.size)
             assertEquals(800, results[0].rating)
             assertEquals(2000, results[1].rating)
@@ -1755,42 +1751,42 @@ internal class PlaySessionTest {
             makeMove(playSession, from = Locus.e7, to = Locus.e5)
             makeMove(playSession, from = Locus.b8, to = Locus.c6)
 
-            assertTrue(playSession.state.value.showSummary)
+            assertTrue(playSession.stateValue.showSummary)
             playSession.clearSummary()
-            assertFalse(playSession.state.value.showSummary)
+            assertFalse(playSession.stateValue.showSummary)
         }
 
         @Test
-        fun `GIVEN play session WHEN reConfig called THEN configuration updates atomically`() = runTest {
-            val playSession = buildPlaySession(sessions = singleSessionSource())
+        fun `GIVEN play session WHEN autoNext disabled THEN pauses between sessions`() = runTest {
+            val playSession = buildPlaySession(sessions = singleSessionSource(), autoNext = false)
 
-            playSession.reConfig { it.copy(autoNextOverride = false) }
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession.run() }
             advanceUntilIdle()
 
             playSession.accept(PlayIntent.SelectSquare(Locus.e7))
             advanceUntilIdle()
 
-            assertNotNull(playSession.state.value.boardState.boardData.selection)
+            assertNotNull(playSession.stateValue.boardState.boardData.selection)
         }
 
         @Test
-        fun `GIVEN running session WHEN reConfig changes autoNext THEN next session behavior changes`() = runTest {
+        fun `GIVEN running session WHEN autoNext toggled off THEN next session pauses`() = runTest {
             val config = noAnimationsConfig().copy(
                 endMode = PlaySessionConfiguration.EndMode.OnSourceExhausted,
-                autoNextOverride = true,
             )
             val playSession = buildPlaySession(config = config, sessions = multiSessionSource(2))
 
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession.run() }
             advanceUntilIdle()
 
-            playSession.reConfig { it.copy(autoNextOverride = false) }
+            settingsRepository.setAppSettings(
+                settingsRepository.getCurrentSettings().copy(autoNextPuzzle = false)
+            )
 
             makeMove(playSession, from = Locus.e7, to = Locus.e5)
             makeMove(playSession, from = Locus.b8, to = Locus.c6)
 
-            assertEquals(PlaySessionState.Status.Paused, playSession.state.value.status)
+            assertEquals(PlaySessionState.Status.Paused, playSession.stateValue.status)
         }
     }
 
@@ -1811,7 +1807,7 @@ internal class PlaySessionTest {
             timer.emit(CountdownTimer.Remainder(2, 500))
             advanceUntilIdle()
 
-            val remaining = playSession.state.value.remainingTimeMs
+            val remaining = playSession.stateValue.remainingTimeMs
             assertNotNull(remaining)
             assertTrue(remaining!! < 3000L)
         }
@@ -1831,7 +1827,7 @@ internal class PlaySessionTest {
             timer.emit(CountdownTimer.Remainder(0, 0))
             advanceUntilIdle()
 
-            assertEquals(PlaySessionState.Status.Ended, playSession.state.value.status)
+            assertEquals(PlaySessionState.Status.Ended, playSession.stateValue.status)
         }
 
         @Test
@@ -1847,7 +1843,7 @@ internal class PlaySessionTest {
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession.run() }
             advanceUntilIdle()
 
-            assertEquals(5000L, playSession.state.value.remainingTimeMs)
+            assertEquals(5000L, playSession.stateValue.remainingTimeMs)
         }
     }
 
@@ -1863,12 +1859,12 @@ internal class PlaySessionTest {
 
             makeMove(playSession, from = Locus.e7, to = Locus.e5)
 
-            assertTrue(playSession.state.value.isAnimating)
+            assertTrue(playSession.stateValue.isAnimating)
 
             playSession.accept(PlayIntent.SelectSquare(Locus.d7))
             advanceUntilIdle()
 
-            assertTrue(playSession.state.value.isAnimating)
+            assertTrue(playSession.stateValue.isAnimating)
         }
 
         @Test
@@ -1883,10 +1879,10 @@ internal class PlaySessionTest {
 
             makeMove(playSession, from = Locus.e7, to = Locus.e5)
 
-            assertTrue(playSession.state.value.isAnimating)
+            assertTrue(playSession.stateValue.isAnimating)
             playSession.accept(PlayIntent.Hint)
             advanceUntilIdle()
-            assertTrue(playSession.state.value.isAnimating)
+            assertTrue(playSession.stateValue.isAnimating)
         }
 
         @Test
@@ -1897,8 +1893,8 @@ internal class PlaySessionTest {
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession.run() }
             advanceTimeBy(50)
 
-            assertFalse(playSession.state.value.isAnimating)
-            assertEquals(PlaySessionState.Status.Ready, playSession.state.value.status)
+            assertFalse(playSession.stateValue.isAnimating)
+            assertEquals(PlaySessionState.Status.Ready, playSession.stateValue.status)
         }
 
         @Test
@@ -1916,12 +1912,12 @@ internal class PlaySessionTest {
 
             makeMove(playSession, from = Locus.e7, to = Locus.e5)
 
-            assertTrue(playSession.state.value.isAnimating)
+            assertTrue(playSession.stateValue.isAnimating)
 
             timer.emit(CountdownTimer.Remainder(0, 0))
             advanceUntilIdle()
-            assertEquals(PlaySessionState.Status.Ended, playSession.state.value.status)
-            assertFalse(playSession.state.value.isAnimating)
+            assertEquals(PlaySessionState.Status.Ended, playSession.stateValue.status)
+            assertFalse(playSession.stateValue.isAnimating)
         }
     }
 
@@ -1933,7 +1929,7 @@ internal class PlaySessionTest {
 
             playSession.accept(PlayIntent.SelectSquare(Locus.e7))
 
-            assertEquals(PlaySessionState.Status.Loading, playSession.state.value.status)
+            assertEquals(PlaySessionState.Status.Loading, playSession.stateValue.status)
         }
 
         @Test
@@ -1945,12 +1941,12 @@ internal class PlaySessionTest {
 
             makeMove(playSession, from = Locus.d7, to = Locus.d5)
 
-            assertEquals(PlaySessionState.Status.Ended, playSession.state.value.status)
+            assertEquals(PlaySessionState.Status.Ended, playSession.stateValue.status)
 
             playSession.accept(PlayIntent.SelectSquare(Locus.a2))
             advanceUntilIdle()
 
-            assertEquals(PlaySessionState.Status.Ended, playSession.state.value.status)
+            assertEquals(PlaySessionState.Status.Ended, playSession.stateValue.status)
         }
     }
 
@@ -1970,14 +1966,14 @@ internal class PlaySessionTest {
             makeMove(playSession, from = Locus.e7, to = Locus.e5)
             makeMove(playSession, from = Locus.b8, to = Locus.c6)
 
-            assertEquals(PlaySessionState.Status.Paused, playSession.state.value.status)
+            assertEquals(PlaySessionState.Status.Paused, playSession.stateValue.status)
 
             playSession.accept(PlayIntent.SelectSquare(Locus.e7))
             advanceUntilIdle()
             playSession.accept(PlayIntent.Hint)
             advanceUntilIdle()
 
-            assertEquals(PlaySessionState.Status.Paused, playSession.state.value.status)
+            assertEquals(PlaySessionState.Status.Paused, playSession.stateValue.status)
         }
 
         @Test
@@ -1994,12 +1990,12 @@ internal class PlaySessionTest {
             makeMove(playSession, from = Locus.e7, to = Locus.e5)
             makeMove(playSession, from = Locus.b8, to = Locus.c6)
 
-            assertEquals(PlaySessionState.Status.Paused, playSession.state.value.status)
+            assertEquals(PlaySessionState.Status.Paused, playSession.stateValue.status)
 
             playSession.accept(PlayIntent.Resume)
             advanceUntilIdle()
 
-            assertEquals(PlaySessionState.Status.Playing, playSession.state.value.status)
+            assertEquals(PlaySessionState.Status.Playing, playSession.stateValue.status)
         }
 
         @Test
@@ -2020,12 +2016,12 @@ internal class PlaySessionTest {
             makeMove(playSession, from = Locus.e7, to = Locus.e5)
             makeMove(playSession, from = Locus.b8, to = Locus.c6)
 
-            assertEquals(PlaySessionState.Status.Paused, playSession.state.value.status)
+            assertEquals(PlaySessionState.Status.Paused, playSession.stateValue.status)
 
             timer.emit(CountdownTimer.Remainder(0, 0))
             advanceUntilIdle()
 
-            assertEquals(PlaySessionState.Status.Ended, playSession.state.value.status)
+            assertEquals(PlaySessionState.Status.Ended, playSession.stateValue.status)
         }
     }
 
@@ -2042,12 +2038,12 @@ internal class PlaySessionTest {
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession.run() }
             advanceUntilIdle()
 
-            assertTrue(playSession.state.value.hintAvailable)
+            assertTrue(playSession.stateValue.hintAvailable)
 
             playSession.accept(PlayIntent.Hint)
             advanceUntilIdle()
 
-            assertFalse(playSession.state.value.hintAvailable)
+            assertFalse(playSession.stateValue.hintAvailable)
         }
 
         @Test
@@ -2061,12 +2057,12 @@ internal class PlaySessionTest {
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession.run() }
             advanceUntilIdle()
 
-            assertTrue(playSession.state.value.hintAvailable)
+            assertTrue(playSession.stateValue.hintAvailable)
 
             playSession.accept(PlayIntent.Hint)
             advanceUntilIdle()
 
-            assertTrue(playSession.state.value.hintAvailable)
+            assertTrue(playSession.stateValue.hintAvailable)
         }
 
         @Test
@@ -2077,7 +2073,7 @@ internal class PlaySessionTest {
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession.run() }
             advanceUntilIdle()
 
-            assertFalse(playSession.state.value.hintAvailable)
+            assertFalse(playSession.stateValue.hintAvailable)
         }
     }
 
