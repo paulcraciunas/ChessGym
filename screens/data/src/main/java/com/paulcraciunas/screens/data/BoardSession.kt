@@ -137,6 +137,11 @@ class BoardSession(
         return state
     }
 
+    fun resign(): BoardState {
+        playable.resign()
+        return refresh()
+    }
+
     suspend fun close() {
         opponent.shutdown()
     }
