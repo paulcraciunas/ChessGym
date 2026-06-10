@@ -314,11 +314,52 @@ internal class FindTheSquareViewModelTest {
         assertEquals(1, fakeOnFindSquareComplete.lastResult?.score)
     }
 
+    @Test
+    fun `GIVEN playing WHEN onPlayAgain called THEN game cancelled and returns to setup`() = runTest {
+        // Given
+        setupViewModel()
+        fakeGenerateRandomLoci.nextLocus = Locus.e4
+        underTest.onPlayClicked()
+        testDispatcher.scheduler.advanceUntilIdle()
+        assertTrue(fakeCountdownTimer.isRunning)
+
+        // When - play again while timer is still active
+        underTest.onPlayAgain()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Then
+        assertTrue(underTest.uiState.value is FindTheSquareUiState.Setup)
+        assertFalse(fakeOnFindSquareComplete.invoked)
+    }
+
+    @Test
+    fun `GIVEN playing WHEN onPlayAgain then play again THEN new game starts cleanly`() = runTest {
+        // Given - start and abort first game
+        setupViewModel()
+        fakeGenerateRandomLoci.nextLocus = Locus.e4
+        underTest.onPlayClicked()
+        testDispatcher.scheduler.advanceUntilIdle()
+        underTest.onPlayAgain()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // When - start second game
+        fakeGenerateRandomLoci.nextLocus = Locus.d5
+        underTest.onPlayClicked()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Then - new game is running cleanly
+        val state = underTest.uiState.value as FindTheSquareUiState.Playing
+        assertEquals(Locus.d5, state.currentSquare)
+        assertEquals(0, state.score)
+        assertTrue(fakeCountdownTimer.isRunning)
+    }
+
     private fun TestScope.setupViewModel(user: User = User()) {
         launch {
             userRepository.local.saveUser(user)
         }
         underTest = FindTheSquareViewModel(
+            dispatcher = testDispatcher,
             generateRandomLoci = fakeGenerateRandomLoci,
             onFindSquareComplete = fakeOnFindSquareComplete,
             countdownTimer = fakeCountdownTimer,

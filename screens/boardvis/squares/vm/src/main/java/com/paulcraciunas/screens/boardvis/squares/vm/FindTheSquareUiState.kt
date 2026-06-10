@@ -5,25 +5,28 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.screens.data.SideSelection
 import com.paulcraciunas.screens.data.BoardViewData
+import com.paulcraciunas.screens.data.toSide
 
 @Immutable
 sealed class FindTheSquareUiState {
     val boardData: BoardViewData = BoardViewData.default()
     abstract val orientation: Side
+    abstract val timeRemaining: String
 
     @Immutable
     data class Setup(
         val selectedSide: SideSelection = SideSelection.WHITE,
-        val timeRemainingSeconds: Int = DEFAULT_DURATION_SECONDS,
-        override val orientation: Side = selectedSide.toSetupSide(),
-    ) : FindTheSquareUiState()
+        override val orientation: Side = selectedSide.toSide(),
+    ) : FindTheSquareUiState() {
+        override val timeRemaining: String = "$DEFAULT_DURATION_SECONDS.0"
+    }
 
     @Immutable
     data class Playing(
         override val orientation: Side,
+        override val timeRemaining: String,
         val currentSquare: Locus,
         val score: Int,
-        val timeRemainingSeconds: Int,
         val showError: Boolean = false,
     ) : FindTheSquareUiState()
 
@@ -33,15 +36,11 @@ sealed class FindTheSquareUiState {
         val score: Int,
         val isNewHighScore: Boolean,
         val previousHighScore: Int,
-    ) : FindTheSquareUiState()
+    ) : FindTheSquareUiState() {
+        override val timeRemaining: String = "0.0"
+    }
 
     companion object {
         const val DEFAULT_DURATION_SECONDS = 30
     }
-}
-
-private fun SideSelection.toSetupSide(): Side = when (this) {
-    SideSelection.WHITE -> Side.WHITE
-    SideSelection.BLACK -> Side.BLACK
-    SideSelection.RANDOM -> Side.WHITE // during setup, we don't care about generating random sides
 }
