@@ -1,7 +1,6 @@
 package com.paulcraciunas.chessgym.screens
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -65,20 +64,20 @@ internal fun PuzzleRush(tabNavController: NavHostController) {
     val vm: PuzzleRushViewModel = hiltViewModel()
     val puzzleRushState by vm.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
-        vm.navigateToAnalysis.collect { data ->
-            tabNavController.navigate(Screen.Analysis(fen = data.fen, firstMove = data.firstMove))
-        }
-    }
-
     PuzzleRushScreen(
         uiState = puzzleRushState,
+        onNavigateBack = {
+            if (!vm.onNavigateBackPressed()) {
+                tabNavController.popBackStack(Screen.PuzzleDashboard, inclusive = false)
+            }
+        },
         onSquareClicked = vm::onSquareClicked,
         onPromote = vm::onPromote,
         onPlayAgain = vm::onPlayAgain,
         onDismissSummary = vm::onDismissSummary,
+        onAbandonConfirmed = vm::onAbandonConfirmed,
+        onAbandonDismissed = vm::onAbandonDismissed,
         onAnalyzeFailedPuzzle = vm::onAnalyzeFailedPuzzle,
-        onNavigateBack = { tabNavController.popBackStack(Screen.PuzzleDashboard, inclusive = false) },
     )
 }
 
@@ -89,12 +88,6 @@ internal fun FailedPuzzles(tabNavController: NavHostController) {
 
     LifecycleEventEffect(Lifecycle.Event.ON_STOP) { vm.onStop() }
     LifecycleEventEffect(Lifecycle.Event.ON_START) { vm.onStart() }
-
-    LaunchedEffect(Unit) {
-        vm.navigateToAnalysis.collect { data ->
-            tabNavController.navigate(Screen.Analysis(fen = data.fen, firstMove = data.firstMove))
-        }
-    }
 
     FailedPuzzlesScreen(
         uiState = failedPuzzlesState,
@@ -116,7 +109,11 @@ internal fun PuzzleStreak(tabNavController: NavHostController) {
 
     PuzzleStreakScreen(
         uiState = puzzleStreakState,
-        onNavigateBack = { tabNavController.popBackStack(Screen.PuzzleDashboard, inclusive = false) },
+        onNavigateBack = {
+            if (!vm.onNavigateBackPressed()) {
+                tabNavController.popBackStack(Screen.PuzzleDashboard, inclusive = false)
+            }
+        },
         onSquareClicked = vm::onSquareClicked,
         onPromote = vm::onPromote,
         onHintRequested = vm::onHintRequested,
