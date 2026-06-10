@@ -32,7 +32,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DebugPuzzleViewModel @Inject constructor(
-    @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
+    @param:DefaultDispatcher private val dispatcher: CoroutineDispatcher,
     appSettingsRepository: AppSettingsRepository,
     puzzleRepository: PuzzleRepository,
 ) : ViewModel() {
