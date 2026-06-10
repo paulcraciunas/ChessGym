@@ -17,7 +17,6 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.paulcraciunas.domain.api.general.CountdownTimer
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.ChildAppBar
@@ -139,7 +138,12 @@ private object TonePlayer {
 private fun ClockSetupPreview() {
     ChessGymTheme {
         ClockScreen(
-            uiState = ClockUiState.Setup(),
+            uiState = ClockUiState.Setup(
+                whiteTime = "5:00",
+                blackTime = "5:00",
+                selectedMinutes = 5,
+                selectedIncrement = 1,
+            ),
             onNavigateBack = {},
         )
     }
@@ -151,8 +155,8 @@ private fun ClockPlayingPreview() {
     ChessGymTheme {
         ClockScreen(
             uiState = ClockUiState.Playing(
-                whiteTime = CountdownTimer.Remainder(245, millis = 0),
-                blackTime = CountdownTimer.Remainder(280, millis = 0),
+                whiteTime = "4:05",
+                blackTime = "4:40",
                 activePlayer = Side.WHITE,
             ),
             onNavigateBack = {},
@@ -166,8 +170,8 @@ private fun ClockFinishedPreview() {
     ChessGymTheme {
         ClockScreen(
             uiState = ClockUiState.Finished(
-                whiteTime = CountdownTimer.Remainder(0, millis = 0),
-                blackTime = CountdownTimer.Remainder(180, millis = 0),
+                whiteTime = "0:00",
+                blackTime = "3:00",
                 loser = Side.WHITE,
             ),
             onNavigateBack = {},

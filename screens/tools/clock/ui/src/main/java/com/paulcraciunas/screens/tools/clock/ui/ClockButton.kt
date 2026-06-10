@@ -23,7 +23,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.paulcraciunas.domain.api.general.CountdownTimer
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.design.components.SpacerSize
@@ -32,7 +31,7 @@ import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
 internal fun ClockButton(
-    remainder: CountdownTimer.Remainder,
+    remainder: String,
     label: String,
     isEnabled: Boolean,
     isLoser: Boolean,
@@ -95,7 +94,7 @@ internal fun ClockButton(
                 text = if (isSetup) {
                     stringResource(R.string.clock_tap_to_start)
                 } else {
-                    formatTime(remainder)
+                    remainder
                 },
                 style = Design.textStyles.displayNumeric,
             )
@@ -112,17 +111,6 @@ internal fun ClockButton(
     }
 }
 
-private fun formatTime(remainder: CountdownTimer.Remainder): String {
-    val minutes = remainder.seconds / 60
-    val seconds = remainder.seconds % 60
-    val tenths = (remainder.millis % 1000) / 100
-
-    return when {
-        minutes > 0 -> "%d:%02d".format(minutes, seconds)
-        else -> "%d.%d".format(seconds, tenths) // Show tenths only when under a minute
-    }
-}
-
 @Preview(name = "Active Player")
 @Preview(name = "Active Player - Dark", uiMode = UI_MODE_NIGHT_YES)
 @Composable
@@ -130,7 +118,7 @@ private fun ClockButtonActivePreview() {
     ChessGymTheme {
         Surface {
             ClockButton(
-                remainder = CountdownTimer.Remainder(seconds = 300, millis = 0),
+                remainder = "5:00",
                 label = "White",
                 isEnabled = true,
                 isLoser = false,
@@ -149,7 +137,7 @@ private fun ClockButtonInactivePreview() {
     ChessGymTheme {
         Surface {
             ClockButton(
-                remainder = CountdownTimer.Remainder(seconds = 285, millis = 0),
+                remainder = "4:45",
                 label = "Black",
                 isEnabled = false,
                 isLoser = false,
@@ -168,7 +156,7 @@ private fun ClockButtonSetupPreview() {
     ChessGymTheme {
         Surface {
             ClockButton(
-                remainder = CountdownTimer.Remainder(seconds = 600, millis = 0),
+                remainder = "10:00",
                 label = "White",
                 isEnabled = true,
                 isLoser = false,
@@ -188,7 +176,7 @@ private fun ClockButtonLoserPreview() {
     ChessGymTheme {
         Surface {
             ClockButton(
-                remainder = CountdownTimer.Remainder(seconds = 0, millis = 0),
+                remainder = "00.0",
                 label = "Black",
                 isEnabled = false,
                 isLoser = true,

@@ -19,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.paulcraciunas.domain.api.general.CountdownTimer
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.design.components.Eyebrow
@@ -148,7 +147,12 @@ internal fun ClockControls(
 private fun ClockControlsSetupPreview() {
     ChessGymTheme {
         ClockControls(
-            uiState = ClockUiState.Setup(),
+            uiState = ClockUiState.Setup(
+                whiteTime = "5:00",
+                blackTime = "5:00",
+                selectedMinutes = 5,
+                selectedIncrement = 1,
+            ),
         )
     }
 }
@@ -159,8 +163,8 @@ private fun ClockControlsPlayingPreview() {
     ChessGymTheme {
         ClockControls(
             uiState = ClockUiState.Playing(
-                whiteTime = CountdownTimer.Remainder(120, 0),
-                blackTime = CountdownTimer.Remainder(150, 0),
+                whiteTime = "2:00",
+                blackTime = "2:30",
                 activePlayer = Side.WHITE,
             ),
         )
@@ -173,8 +177,8 @@ private fun ClockControlsFinishedPreview() {
     ChessGymTheme {
         ClockControls(
             uiState = ClockUiState.Finished(
-                whiteTime = CountdownTimer.Remainder(0, 0),
-                blackTime = CountdownTimer.Remainder(120, 0),
+                whiteTime = "0:00",
+                blackTime = "2:00",
                 loser = Side.WHITE,
             ),
         )

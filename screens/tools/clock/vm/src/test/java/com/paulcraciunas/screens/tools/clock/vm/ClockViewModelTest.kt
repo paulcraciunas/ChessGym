@@ -1,18 +1,17 @@
 package com.paulcraciunas.screens.tools.clock.vm
 
-import com.paulcraciunas.domain.api.general.CountdownTimer.Remainder
-import com.paulcraciunas.domain.api.general.FakeCountdownTimer
+import com.paulcraciunas.domain.api.general.FakePulseTimer
 import com.paulcraciunas.game.logic.api.Side
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
@@ -20,15 +19,14 @@ import org.junit.jupiter.api.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class ClockViewModelTest {
-    private val whiteTimer = FakeCountdownTimer()
-    private val blackTimer = FakeCountdownTimer()
-    private val testDispatcher = StandardTestDispatcher()
+    private val pulseTimer = FakePulseTimer()
+    private val testDispatcher = UnconfinedTestDispatcher()
     private lateinit var underTest: ClockViewModel
 
     @BeforeEach
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
-        underTest = ClockViewModel(whiteTimer, blackTimer)
+        underTest = ClockViewModel(dispatcher = testDispatcher, pulseTimer = pulseTimer)
     }
 
     @AfterEach
@@ -40,72 +38,56 @@ internal class ClockViewModelTest {
     @Nested
     internal inner class Initialization {
         @Test
-        fun `WHEN viewModel initialized THEN uiState is Setup with defaults`() = runTest(testDispatcher) {
-            // Then
-            val state = underTest.uiState.value
-            assertTrue(state is ClockUiState.Setup)
-            val setup = state as ClockUiState.Setup
-            assertEquals(ClockUiState.DEFAULT_MINUTES, setup.selectedMinutes)
-            assertEquals(ClockUiState.DEFAULT_INCREMENT, setup.selectedIncrement)
+        fun `WHEN viewModel initialized THEN uiState is Setup with defaults`() = clockTest {
+            val state = underTest.uiState.value as ClockUiState.Setup
+            assertEquals(5, state.selectedMinutes)
+            assertEquals(1, state.selectedIncrement)
         }
 
         @Test
-        fun `WHEN viewModel initialized THEN timers have correct interval`() = runTest(testDispatcher) {
-            // Then
+        fun `WHEN viewModel initialized THEN times show default duration`() = clockTest {
             val state = underTest.uiState.value as ClockUiState.Setup
-            assertEquals(Remainder(ClockUiState.DEFAULT_MINUTES * 60, 0), state.whiteTime)
-            assertEquals(Remainder(ClockUiState.DEFAULT_MINUTES * 60, 0), state.blackTime)
+            assertEquals("5:00", state.whiteTime)
+            assertEquals("5:00", state.blackTime)
         }
     }
 
     @Nested
     internal inner class SetupConfiguration {
         @Test
-        fun `GIVEN Setup state WHEN time selected THEN selectedMinutes updated`() = runTest(testDispatcher) {
-            // When
+        fun `GIVEN Setup state WHEN time selected THEN selectedMinutes and display updated`() = clockTest {
             underTest.onTimeSelected(10)
 
-            // Then
             val state = underTest.uiState.value as ClockUiState.Setup
             assertEquals(10, state.selectedMinutes)
-            assertEquals(Remainder(10 * 60, 0), state.whiteTime)
-            assertEquals(Remainder(10 * 60, 0), state.blackTime)
+            assertEquals("10:00", state.whiteTime)
+            assertEquals("10:00", state.blackTime)
         }
 
         @Test
-        fun `GIVEN Setup state WHEN increment selected THEN selectedIncrement updated`() = runTest(testDispatcher) {
-            // When
+        fun `GIVEN Setup state WHEN increment selected THEN selectedIncrement updated`() = clockTest {
             underTest.onIncrementSelected(5)
 
-            // Then
             val state = underTest.uiState.value as ClockUiState.Setup
             assertEquals(5, state.selectedIncrement)
         }
 
         @Test
-        fun `GIVEN Playing state WHEN time selected THEN state unchanged`() = runTest(testDispatcher) {
-            // Given
+        fun `GIVEN Playing state WHEN time selected THEN state unchanged`() = clockTest {
             underTest.onWhiteTapped()
-            runCurrent()
 
-            // When
             underTest.onTimeSelected(10)
 
-            // Then
             val state = underTest.uiState.value as ClockUiState.Playing
-            assertEquals(Remainder(ClockUiState.DEFAULT_MINUTES * 60, 0), state.whiteTime)
+            assertEquals("5:00", state.whiteTime)
         }
 
         @Test
-        fun `GIVEN Playing state WHEN increment selected THEN state unchanged`() = runTest(testDispatcher) {
-            // Given
+        fun `GIVEN Playing state WHEN increment selected THEN state unchanged`() = clockTest {
             underTest.onWhiteTapped()
-            runCurrent()
 
-            // When
             underTest.onIncrementSelected(10)
 
-            // Then
             assertTrue(underTest.uiState.value is ClockUiState.Playing)
         }
     }
@@ -113,114 +95,78 @@ internal class ClockViewModelTest {
     @Nested
     internal inner class StartingGame {
         @Test
-        fun `GIVEN Setup state WHEN white tapped THEN game starts with black active`() = runTest(testDispatcher) {
-            // When
+        fun `GIVEN Setup state WHEN white tapped THEN game starts with black active`() = clockTest {
             underTest.onWhiteTapped()
-            runCurrent()
 
-            // Then
             val state = underTest.uiState.value as ClockUiState.Playing
             assertEquals(Side.BLACK, state.activePlayer)
-            assertEquals(Remainder(ClockUiState.DEFAULT_MINUTES * 60, 0), state.whiteTime)
-            assertEquals(Remainder(ClockUiState.DEFAULT_MINUTES * 60, 0), state.blackTime)
-            assertFalse(whiteTimer.isRunning)
-            assertTrue(blackTimer.isRunning)
+            assertEquals("5:00", state.whiteTime)
+            assertEquals("5:00", state.blackTime)
         }
 
         @Test
-        fun `GIVEN Setup state WHEN black tapped THEN state unchanged`() = runTest(testDispatcher) {
-            // When
-            underTest.onBlackTapped()
-            runCurrent()
-
-            // Then
-            assertTrue(underTest.uiState.value is ClockUiState.Setup)
-            assertFalse(whiteTimer.isRunning)
-            assertFalse(blackTimer.isRunning)
-        }
-
-        @Test
-        fun `GIVEN custom time selected WHEN game starts THEN uses selected time`() = runTest(testDispatcher) {
-            // Given
-            underTest.onTimeSelected(10)
-
-            // When
+        fun `GIVEN Setup state WHEN white tapped THEN pulse timer started`() = clockTest {
             underTest.onWhiteTapped()
-            runCurrent()
 
-            // Then
+            assertEquals(1, pulseTimer.startCount)
+            assertEquals(ClockViewModel.TICK_INTERVAL_MS, pulseTimer.lastIntervalMillis)
+        }
+
+        @Test
+        fun `GIVEN Setup state WHEN black tapped THEN state unchanged`() = clockTest {
+            underTest.onBlackTapped()
+
+            assertTrue(underTest.uiState.value is ClockUiState.Setup)
+            assertEquals(0, pulseTimer.startCount)
+        }
+
+        @Test
+        fun `GIVEN custom time selected WHEN game starts THEN uses selected time`() = clockTest {
+            underTest.onTimeSelected(10)
+            underTest.onWhiteTapped()
+
             val state = underTest.uiState.value as ClockUiState.Playing
-            assertEquals(Remainder(10 * 60, 0), state.whiteTime)
-            assertEquals(Remainder(10 * 60, 0), state.blackTime)
+            assertEquals("10:00", state.whiteTime)
+            assertEquals("10:00", state.blackTime)
         }
     }
 
     @Nested
     internal inner class SwitchingPlayers {
         @Test
-        fun `GIVEN black active WHEN black tapped THEN switches to white`() = runTest(testDispatcher) {
-            // Given
+        fun `GIVEN black active WHEN black tapped THEN switches to white`() = clockTest {
             underTest.onWhiteTapped()
-            runCurrent()
-
-            // When
             underTest.onBlackTapped()
-            runCurrent()
 
-            // Then
             val state = underTest.uiState.value as ClockUiState.Playing
             assertEquals(Side.WHITE, state.activePlayer)
-            assertTrue(whiteTimer.isRunning)
-            assertFalse(blackTimer.isRunning)
         }
 
         @Test
-        fun `GIVEN black active WHEN white tapped THEN ignored`() = runTest(testDispatcher) {
-            // Given
+        fun `GIVEN black active WHEN white tapped THEN ignored`() = clockTest {
             underTest.onWhiteTapped()
-            runCurrent()
-
-            // When
             underTest.onWhiteTapped()
-            runCurrent()
 
-            // Then
             val state = underTest.uiState.value as ClockUiState.Playing
             assertEquals(Side.BLACK, state.activePlayer)
         }
 
         @Test
-        fun `GIVEN white active WHEN white tapped THEN switches to black`() = runTest(testDispatcher) {
-            // Given
+        fun `GIVEN white active WHEN white tapped THEN switches to black`() = clockTest {
             underTest.onWhiteTapped()
-            runCurrent()
             underTest.onBlackTapped()
-            runCurrent()
-
-            // When
             underTest.onWhiteTapped()
-            runCurrent()
 
-            // Then
             val state = underTest.uiState.value as ClockUiState.Playing
             assertEquals(Side.BLACK, state.activePlayer)
-            assertFalse(whiteTimer.isRunning)
-            assertTrue(blackTimer.isRunning)
         }
 
         @Test
-        fun `GIVEN white active WHEN black tapped THEN ignored`() = runTest(testDispatcher) {
-            // Given
+        fun `GIVEN white active WHEN black tapped THEN ignored`() = clockTest {
             underTest.onWhiteTapped()
-            runCurrent()
             underTest.onBlackTapped()
-            runCurrent()
-
-            // When
             underTest.onBlackTapped()
-            runCurrent()
 
-            // Then
             val state = underTest.uiState.value as ClockUiState.Playing
             assertEquals(Side.WHITE, state.activePlayer)
         }
@@ -229,184 +175,128 @@ internal class ClockViewModelTest {
     @Nested
     internal inner class IncrementBehavior {
         @Test
-        fun `GIVEN increment configured WHEN black switches THEN increment added to black`() = runTest(testDispatcher) {
-            // Given
+        fun `GIVEN increment configured WHEN black switches THEN increment added to black`() = clockTest {
             underTest.onIncrementSelected(5)
             underTest.onWhiteTapped()
-            runCurrent()
-
-            // When
             underTest.onBlackTapped()
-            runCurrent()
 
-            // Then
             val state = underTest.uiState.value as ClockUiState.Playing
-            assertEquals(Remainder(ClockUiState.DEFAULT_MINUTES * 60, 0), state.whiteTime)
-            assertEquals(Remainder(ClockUiState.DEFAULT_MINUTES * 60 + 5, 0), state.blackTime)
+            assertEquals("5:00", state.whiteTime)
+            assertEquals("5:05", state.blackTime)
         }
 
         @Test
-        fun `GIVEN increment configured WHEN white switches THEN increment added to white`() = runTest(testDispatcher) {
-            // Given
+        fun `GIVEN increment configured WHEN white switches THEN increment added to white`() = clockTest {
             underTest.onIncrementSelected(3)
             underTest.onWhiteTapped()
-            runCurrent()
             underTest.onBlackTapped()
-            runCurrent()
-
-            // When
             underTest.onWhiteTapped()
-            runCurrent()
 
-            // Then
             val state = underTest.uiState.value as ClockUiState.Playing
-            assertEquals(Remainder(ClockUiState.DEFAULT_MINUTES * 60 + 3, 0), state.whiteTime)
+            assertEquals("5:03", state.whiteTime)
         }
 
         @Test
-        fun `GIVEN zero increment WHEN player switches THEN no time added`() = runTest(testDispatcher) {
-            // Given
+        fun `GIVEN zero increment WHEN player switches THEN no time added`() = clockTest {
             underTest.onIncrementSelected(0)
             underTest.onWhiteTapped()
-            runCurrent()
-
-            // When
             underTest.onBlackTapped()
-            runCurrent()
 
-            // Then
             val state = underTest.uiState.value as ClockUiState.Playing
-            assertEquals(Remainder(ClockUiState.DEFAULT_MINUTES * 60, 0), state.blackTime)
+            assertEquals("5:00", state.blackTime)
         }
     }
 
     @Nested
     internal inner class TimerUpdates {
         @Test
-        fun `GIVEN black active WHEN timer ticks THEN black time decreases`() = runTest(testDispatcher) {
-            // Given
+        fun `GIVEN black active WHEN timer ticks THEN black time decreases`() = clockTest {
             underTest.onWhiteTapped()
-            runCurrent()
 
-            // When
-            blackTimer.advanceTimeBy(seconds = 1)
-            runCurrent()
+            pulseTimer.emit(1000L)
 
-            // Then
             val state = underTest.uiState.value as ClockUiState.Playing
-            assertEquals(Remainder(ClockUiState.DEFAULT_MINUTES * 60, 0), state.whiteTime)
-            assertEquals(Remainder(ClockUiState.DEFAULT_MINUTES * 60 - 1, 0), state.blackTime)
+            assertEquals("5:00", state.whiteTime)
+            assertEquals("4:59", state.blackTime)
         }
 
         @Test
-        fun `GIVEN white active WHEN timer ticks THEN white time decreases`() = runTest(testDispatcher) {
-            // Given
+        fun `GIVEN white active WHEN timer ticks THEN white time decreases`() = clockTest {
             underTest.onIncrementSelected(0)
             underTest.onWhiteTapped()
-            runCurrent()
             underTest.onBlackTapped()
-            runCurrent()
 
-            // When
-            whiteTimer.advanceTimeBy(seconds = 5)
-            runCurrent()
+            pulseTimer.emit(5000L)
 
-            // Then
             val state = underTest.uiState.value as ClockUiState.Playing
-            assertEquals(Remainder(ClockUiState.DEFAULT_MINUTES * 60 - 5, 0), state.whiteTime)
-            assertEquals(Remainder(ClockUiState.DEFAULT_MINUTES * 60, 0), state.blackTime)
+            assertEquals("4:55", state.whiteTime)
+            assertEquals("5:00", state.blackTime)
         }
 
         @Test
-        fun `GIVEN black active WHEN timer ticks with millis THEN black time decreases precisely`() = runTest(testDispatcher) {
-            // Given
+        fun `GIVEN black active WHEN timer ticks sub-minute THEN shows tenths`() = clockTest {
+            underTest.onTimeSelected(1)
             underTest.onWhiteTapped()
-            runCurrent()
 
-            // When
-            blackTimer.advanceTimeBy(seconds = 0, millis = 500)
-            runCurrent()
-
-            // Then
+            pulseTimer.emit(55_000L)
             val state = underTest.uiState.value as ClockUiState.Playing
-            assertEquals(Remainder(ClockUiState.DEFAULT_MINUTES * 60 - 1, 500), state.blackTime)
+            assertEquals("5.0", state.blackTime)
+
+            pulseTimer.emit(4_500L)
+            val updated = underTest.uiState.value as ClockUiState.Playing
+            assertEquals("0.5", updated.blackTime)
         }
     }
 
     @Nested
     internal inner class GameFinish {
         @Test
-        fun `GIVEN black active WHEN black time reaches zero THEN finished with black as loser`() = runTest(testDispatcher) {
-            // Given
+        fun `GIVEN black active WHEN black time reaches zero THEN finished with black as loser`() = clockTest {
             underTest.onTimeSelected(1)
             underTest.onWhiteTapped()
-            runCurrent()
 
-            // When
-            blackTimer.advanceUntilIdle()
-            runCurrent()
+            pulseTimer.emit(60_000L)
 
-            // Then
             val state = underTest.uiState.value as ClockUiState.Finished
             assertEquals(Side.BLACK, state.loser)
-            assertFalse(state.blackTime.isPositive())
-            assertFalse(whiteTimer.isRunning)
-            assertFalse(blackTimer.isRunning)
+            assertEquals("0.0", state.blackTime)
         }
 
         @Test
-        fun `GIVEN white active WHEN white time reaches zero THEN finished with white as loser`() = runTest(testDispatcher) {
-            // Given
+        fun `GIVEN white active WHEN white time reaches zero THEN finished with white as loser`() = clockTest {
             underTest.onTimeSelected(1)
             underTest.onIncrementSelected(0)
             underTest.onWhiteTapped()
-            runCurrent()
             underTest.onBlackTapped()
-            runCurrent()
 
-            // When
-            whiteTimer.advanceUntilIdle()
-            runCurrent()
+            pulseTimer.emit(60_000L)
 
-            // Then
             val state = underTest.uiState.value as ClockUiState.Finished
             assertEquals(Side.WHITE, state.loser)
-            assertFalse(state.whiteTime.isPositive())
+            assertEquals("0.0", state.whiteTime)
         }
 
         @Test
-        fun `GIVEN Finished state WHEN white tapped THEN state unchanged`() = runTest(testDispatcher) {
-            // Given
+        fun `GIVEN Finished state WHEN white tapped THEN state unchanged`() = clockTest {
             underTest.onTimeSelected(1)
             underTest.onWhiteTapped()
-            runCurrent()
-            blackTimer.advanceUntilIdle()
-            runCurrent()
+            pulseTimer.emit(60_000L)
             assertTrue(underTest.uiState.value is ClockUiState.Finished)
 
-            // When
             underTest.onWhiteTapped()
-            runCurrent()
 
-            // Then
             assertTrue(underTest.uiState.value is ClockUiState.Finished)
         }
 
         @Test
-        fun `GIVEN Finished state WHEN black tapped THEN state unchanged`() = runTest(testDispatcher) {
-            // Given
+        fun `GIVEN Finished state WHEN black tapped THEN state unchanged`() = clockTest {
             underTest.onTimeSelected(1)
             underTest.onWhiteTapped()
-            runCurrent()
-            blackTimer.advanceUntilIdle()
-            runCurrent()
+            pulseTimer.emit(60_000L)
             assertTrue(underTest.uiState.value is ClockUiState.Finished)
 
-            // When
             underTest.onBlackTapped()
-            runCurrent()
 
-            // Then
             assertTrue(underTest.uiState.value is ClockUiState.Finished)
         }
     }
@@ -414,76 +304,65 @@ internal class ClockViewModelTest {
     @Nested
     internal inner class StopAndNewGame {
         @Test
-        fun `GIVEN Playing state WHEN stop pressed THEN returns to Setup`() = runTest(testDispatcher) {
-            // Given
+        fun `GIVEN Playing state WHEN stop pressed THEN returns to Setup`() = clockTest {
             underTest.onWhiteTapped()
-            runCurrent()
             assertTrue(underTest.uiState.value is ClockUiState.Playing)
 
-            // When
             underTest.onStop()
-            runCurrent()
 
-            // Then
             val state = underTest.uiState.value as ClockUiState.Setup
-            assertEquals(ClockUiState.DEFAULT_MINUTES, state.selectedMinutes)
-            assertEquals(ClockUiState.DEFAULT_INCREMENT, state.selectedIncrement)
-            assertFalse(whiteTimer.isRunning)
-            assertFalse(blackTimer.isRunning)
+            assertEquals(5, state.selectedMinutes)
+            assertEquals(1, state.selectedIncrement)
         }
 
         @Test
-        fun `GIVEN Playing state WHEN stop pressed THEN preserves time selections`() = runTest(testDispatcher) {
-            // Given
+        fun `GIVEN Playing state WHEN stop pressed THEN preserves time selections`() = clockTest {
             underTest.onTimeSelected(10)
             underTest.onIncrementSelected(5)
             underTest.onWhiteTapped()
-            runCurrent()
 
-            // When
             underTest.onStop()
-            runCurrent()
 
-            // Then
             val state = underTest.uiState.value as ClockUiState.Setup
             assertEquals(10, state.selectedMinutes)
             assertEquals(5, state.selectedIncrement)
         }
 
         @Test
-        fun `GIVEN Finished state WHEN new game pressed THEN returns to Setup`() = runTest(testDispatcher) {
-            // Given
+        fun `GIVEN Playing state WHEN stop pressed THEN time resets to selected`() = clockTest {
+            underTest.onTimeSelected(10)
+            underTest.onWhiteTapped()
+            pulseTimer.emit(5000L)
+
+            underTest.onStop()
+
+            val state = underTest.uiState.value as ClockUiState.Setup
+            assertEquals("10:00", state.whiteTime)
+            assertEquals("10:00", state.blackTime)
+        }
+
+        @Test
+        fun `GIVEN Finished state WHEN new game pressed THEN returns to Setup`() = clockTest {
             underTest.onTimeSelected(1)
             underTest.onWhiteTapped()
-            runCurrent()
-            blackTimer.advanceUntilIdle()
-            runCurrent()
+            pulseTimer.emit(60_000L)
             assertTrue(underTest.uiState.value is ClockUiState.Finished)
 
-            // When
             underTest.onNewGame()
-            runCurrent()
 
-            // Then
             val state = underTest.uiState.value as ClockUiState.Setup
             assertEquals(1, state.selectedMinutes)
         }
 
         @Test
-        fun `GIVEN Finished state WHEN new game pressed THEN preserves time selections`() = runTest(testDispatcher) {
-            // Given
+        fun `GIVEN Finished state WHEN new game pressed THEN preserves time selections`() = clockTest {
             underTest.onTimeSelected(3)
             underTest.onIncrementSelected(10)
             underTest.onWhiteTapped()
-            runCurrent()
-            blackTimer.advanceUntilIdle()
-            runCurrent()
+            pulseTimer.emit(180_000L)
 
-            // When
             underTest.onNewGame()
-            runCurrent()
 
-            // Then
             val state = underTest.uiState.value as ClockUiState.Setup
             assertEquals(3, state.selectedMinutes)
             assertEquals(10, state.selectedIncrement)
@@ -493,51 +372,43 @@ internal class ClockViewModelTest {
     @Nested
     internal inner class AlternatingPlay {
         @Test
-        fun `WHEN players alternate taps THEN times adjust correctly`() = runTest(testDispatcher) {
-            // Given
+        fun `WHEN players alternate taps THEN times adjust correctly`() = clockTest {
             underTest.onTimeSelected(1)
             underTest.onIncrementSelected(3)
             underTest.onWhiteTapped()
-            runCurrent()
 
-            // When - black plays for 5 seconds, then taps
-            blackTimer.advanceTimeBy(seconds = 5)
-            runCurrent()
+            pulseTimer.emit(5000L)
             underTest.onBlackTapped()
-            runCurrent()
 
-            // Then - white: 60s, black: 60 - 5 + 3 = 58s, active: white
+            // white: 60s (1:00), black: 60 - 5 + 3 = 58s (sub-minute format: 58.0)
             val state = underTest.uiState.value as ClockUiState.Playing
             assertEquals(Side.WHITE, state.activePlayer)
-            assertEquals(Remainder(60, 0), state.whiteTime)
-            assertEquals(Remainder(58, 0), state.blackTime)
+            assertEquals("1:00", state.whiteTime)
+            assertEquals("58.0", state.blackTime)
         }
 
         @Test
-        fun `WHEN multiple alternations THEN all times track correctly`() = runTest(testDispatcher) {
-            // Given - 1 minute game, 0 increment
+        fun `WHEN multiple alternations THEN all times track correctly`() = clockTest {
             underTest.onTimeSelected(1)
             underTest.onIncrementSelected(0)
             underTest.onWhiteTapped()
-            runCurrent()
 
-            // Black plays 10s
-            blackTimer.advanceTimeBy(seconds = 10)
-            runCurrent()
+            pulseTimer.emit(10_000L)
             underTest.onBlackTapped()
-            runCurrent()
 
-            // White plays 15s
-            whiteTimer.advanceTimeBy(seconds = 15)
-            runCurrent()
+            pulseTimer.emit(15_000L)
             underTest.onWhiteTapped()
-            runCurrent()
 
-            // Then - white: 60-15 = 45s, black: 60-10 = 50s, active: black
+            // white: 60-15 = 45s, black: 60-10 = 50s (sub-minute = tenths format)
             val state = underTest.uiState.value as ClockUiState.Playing
             assertEquals(Side.BLACK, state.activePlayer)
-            assertEquals(Remainder(45, 0), state.whiteTime)
-            assertEquals(Remainder(50, 0), state.blackTime)
+            assertEquals("45.0", state.whiteTime)
+            assertEquals("50.0", state.blackTime)
         }
+    }
+
+    private fun clockTest(block: suspend TestScope.() -> Unit) = runTest(testDispatcher) {
+        backgroundScope.launch(testDispatcher) { underTest.uiState.collect {} }
+        block()
     }
 }
