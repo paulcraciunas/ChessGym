@@ -14,15 +14,12 @@ class AnalyzePositionImpl @Inject constructor(
         engine.prepareForAnalysis()
     }
 
-    override fun invoke(fen: String): Flow<AnalysisResult> {
+    override fun analyze(fen: String): Flow<AnalysisResult> {
         return engine.analyzePosition(fen)
     }
 
-    override suspend fun stopAnalysis() {
-        engine.stopAnalysis()
-    }
-
     override suspend fun shutdown() {
+        engine.stopAnalysis()
         engine.shutdown()
     }
 }

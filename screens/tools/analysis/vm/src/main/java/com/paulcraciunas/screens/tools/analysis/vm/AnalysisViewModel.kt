@@ -3,30 +3,38 @@ package com.paulcraciunas.screens.tools.analysis.vm
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.paulcraciunas.domain.api.analysis.AnalyzePosition
-import com.paulcraciunas.game.logic.api.Side
+import com.paulcraciunas.domain.api.puzzles.GetPuzzleFen
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.screens.data.BoardState
-import com.paulcraciunas.screens.data.GameSessionFactory
-import com.paulcraciunas.screens.data.SessionSettings
+import com.paulcraciunas.global.qualifiers.ApplicationScope
+import com.paulcraciunas.global.qualifiers.DefaultDispatcher
+import com.paulcraciunas.screens.data.engine.PlayIntent
+import com.paulcraciunas.screens.data.engine.SinglePlaySession
+import com.paulcraciunas.screens.data.engine.SingleSessionConfiguration
+import com.paulcraciunas.screens.data.engine.SingleSessionState
 import com.paulcraciunas.serializer.api.Serializer
 import com.paulcraciunas.serializer.di.SerializerFen
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.sample
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -35,136 +43,95 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AnalysisViewModel @Inject constructor(
-    @param:SerializerFen private val fenSerializer: Serializer,
+    @param:DefaultDispatcher private val dispatcher: CoroutineDispatcher,
+    @param:ApplicationScope private val appScope: CoroutineScope,
     private val analyzePosition: AnalyzePosition,
+    @SerializerFen fenSerializer: Serializer,
+    getPuzzleFen: GetPuzzleFen,
     appSettingsRepository: AppSettingsRepository,
 ) : ViewModel() {
-
-    private val _uiState = MutableStateFlow(AnalysisUiState())
-    val uiState: StateFlow<AnalysisUiState> = _uiState.asStateFlow()
-
-    private val factory = GameSessionFactory()
-    private val session = factory.get()
     private val adapter = EngineDataAdapter()
+    private val session = AnalysisSession(fenSerializer, getPuzzleFen)
+    private val playSession = SinglePlaySession(
+        settingsRepository = appSettingsRepository,
+        config = SingleSessionConfiguration(gameOverBehavior = SingleSessionConfiguration.GameOverBehavior.AllowNavigation),
+    )
+    private val engineData = MutableStateFlow<AnalysisUiState.EngineData?>(null)
+    private var runJob: Job? = null
     private var analysisJob: Job? = null
-    private var navigationDebounceJob: Job? = null
     private var enableThrottling: Boolean = true
 
-    init {
-        session.bindSettings(viewModelScope, appSettingsRepository.appSettings.map {
-            SessionSettings(it.autoPromote, it.enableAnimations)
-        })
-    }
+    val uiState: StateFlow<AnalysisUiState> = combine(
+        engineData,
+        playSession.state
+    ) { data, state -> state.toUiState(data) }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = AnalysisUiState()
+        )
 
     internal fun disableThrottling() {
         enableThrottling = false
     }
 
-    fun loadPosition(fen: String? = null, firstMove: String? = null) {
-        viewModelScope.launch {
-            val targetFen = fen ?: Serializer.STARTING_FEN
-            if (firstMove != null) {
-                try {
-                    val game = fenSerializer.from(targetFen)
-                    factory.load(viewModelScope, game, game.info.turn.other())
-                    game.play(firstMove)
-                    session.refresh()
-                    beginGame()
-                    return@launch
-                } catch (e: Exception) {
-                    Timber.w(e, "Failed to load FEN position: $fen")
-                }
-            }
-            val game = fenSerializer.from(targetFen)
-            factory.load(viewModelScope, game, game.info.turn)
-            beginGame()
+    fun loadPosition(puzzleId: Int? = null) {
+        puzzleId?.let { session.withPuzzle(it) }
+        runJob?.cancel()
+        analysisJob?.cancel()
+        runJob = viewModelScope.launch(dispatcher) {
+            playSession.run(session.createSession())
         }
+        observePositionChanges()
     }
 
-    fun onSquareClicked(locus: Locus) {
-        if (!session.isLoaded()) {
-            loadPosition()
-            return
-        }
-        session.onClick(locus)
-        applyMoveAndAnalyze()
-    }
-
-    fun onPromote(to: Piece) {
-        session.promoteIfPending(to)
-        applyMoveAndAnalyze()
-    }
-
-    fun onJumpToStart() = navigate { session.undoAll() }
-    fun onPreviousMove() = navigate { session.undoLast() }
-    fun onNextMove() = navigate { session.replayNext() }
-    fun onJumpToEnd() = navigate { session.replayAll() }
+    fun onSquareClicked(selection: Locus) = playSession.accept(intent = PlayIntent.SelectSquare(selection))
+    fun onPromote(to: Piece) = playSession.accept(intent = PlayIntent.Promote(to))
+    fun onJumpToStart() = navigate(PlayIntent.Navigation.ToStart)
+    fun onPreviousMove() = navigate(PlayIntent.Navigation.Back)
+    fun onNextMove() = navigate(PlayIntent.Navigation.Forward)
+    fun onJumpToEnd() = navigate(PlayIntent.Navigation.ToEnd)
 
     override fun onCleared() {
         analysisJob?.cancel()
-        @OptIn(DelicateCoroutinesApi::class)
-        GlobalScope.launch {
+        appScope.launch {
             withContext(NonCancellable) {
-                runCatching { analyzePosition.stopAnalysis() }
-                    .onFailure { Timber.w(it, "Failed to stop analysis on cleanup") }
                 runCatching { analyzePosition.shutdown() }
-                    .onFailure { Timber.w(it, "Failed to shutdown engine on cleanup") }
+                    .onFailure { Timber.w(it, "Failed to shutdown engine") }
             }
         }
     }
 
-    private fun beginGame() {
-        updateState(session.currentState)
-        analyze(fen = currentFen(), sideToMove = session.toMove(), start = true)
+    private fun navigate(type: PlayIntent.Navigation) {
+        playSession.accept(intent = PlayIntent.Navigate(type))
     }
 
-    private fun applyMoveAndAnalyze() {
-        val data = session.currentState
-        updateState(data)
-        if (data.movePlayed) {
-            navigationDebounceJob?.cancel()
-            analyze(fen = currentFen(), sideToMove = session.toMove())
-        }
-    }
-
-    private fun navigate(action: () -> Unit) {
-        action()
-        updateState(session.currentState)
-
-        navigationDebounceJob?.cancel()
-        navigationDebounceJob = viewModelScope.launch {
-            delay(NAVIGATION_DEBOUNCE_MS)
-            analyze(fen = currentFen(), sideToMove = session.toMove())
-        }
-    }
-
-    private fun updateState(data: BoardState) = _uiState.update {
-        it.copy(
-            data = data,
-            canNavigateForward = session.canReplay(),
-            canNavigateBack = session.canUndo(),
-        )
-    }
-
-    private fun currentFen(): String = fenSerializer.of(factory.currentGame())
-    private fun analyze(fen: String, sideToMove: Side = Side.WHITE, start: Boolean = false) {
-        val previousJob = analysisJob
-        analysisJob = viewModelScope.launch {
-            if (previousJob != null) {
-                previousJob.cancel()
-                analyzePosition.stopAnalysis()
-                previousJob.join()
-            }
-            if (start) {
-                analyzePosition.prepare()
-            }
-            analyzePosition(fen)
-                .onStart { _uiState.update { it.copy(engineData = null) } }
+    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
+    private fun observePositionChanges() {
+        analysisJob = viewModelScope.launch(dispatcher) {
+            analyzePosition.prepare()
+            playSession.state
+                .filter { it.status == SingleSessionState.Status.Ready || it.status == SingleSessionState.Status.Playing }
+                .map { session.moveIndex }
+                .distinctUntilChanged()
+                .debounce(ANALYSIS_DEBOUNCE_MS)
+                .flatMapLatest {
+                    engineData.update { null }
+                    analyzePosition.analyze(session.fen)
+                        .map { fen -> adapter.from(fen, session.turn) }
+                }
                 .throttle()
                 .catch { Timber.e(it, "Analysis error") }
-                .collect { result -> _uiState.update { it.copy(engineData = adapter.from(result, sideToMove)) } }
+                .collect { result -> engineData.update { result } }
         }
     }
+
+    private fun SingleSessionState.toUiState(engineData: AnalysisUiState.EngineData?): AnalysisUiState = AnalysisUiState(
+        data = this.boardState,
+        engineData = engineData,
+        canNavigateForward = navigation?.canGoForward == true,
+        canNavigateBack = navigation?.canGoBack == true,
+    )
 
     @OptIn(FlowPreview::class)
     private fun <T> Flow<T>.throttle(): Flow<T> =
@@ -172,6 +139,6 @@ class AnalysisViewModel @Inject constructor(
 
     companion object {
         private const val ANALYSIS_SAMPLE_PERIOD_MS = 200L
-        private const val NAVIGATION_DEBOUNCE_MS = 300L
+        private const val ANALYSIS_DEBOUNCE_MS = 200L
     }
 }

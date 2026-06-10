@@ -1,6 +1,8 @@
 package com.paulcraciunas.screens.tools.analysis.vm
 
-import com.paulcraciunas.domain.api.analysis.AnalyzePosition
+import com.paulcraciunas.domain.api.puzzles.GetPuzzleFen
+import com.paulcraciunas.domain.api.puzzles.PuzzleAnalysisData
+import com.paulcraciunas.domain.impl.analysis.AnalyzePositionImpl
 import com.paulcraciunas.game.engine.api.AnalysisResult
 import com.paulcraciunas.game.engine.api.EngineLine
 import com.paulcraciunas.game.engine.api.EngineMove
@@ -12,10 +14,12 @@ import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.impl.RealGameFactory
 import com.paulcraciunas.serializer.impl.FenSerializer
 import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -35,19 +39,24 @@ internal class AnalysisViewModelTest {
     private val gameFactory = RealGameFactory()
     private val fenSerializer = FenSerializer(gameFactory)
     private val fakeEngine = FakeChessEngine()
-    private val fakeAnalyzePosition = FakeAnalyzePosition(fakeEngine)
+    private val fakeAnalyzePosition = AnalyzePositionImpl(fakeEngine)
     private val appSettingsRepository = FakeAppSettingsRepository()
+    private val fakeGetPuzzleFen = FakeGetPuzzleFen()
 
     private lateinit var underTest: AnalysisViewModel
 
     private val testDispatcher = StandardTestDispatcher()
+    private val testScope = CoroutineScope(testDispatcher)
 
     @BeforeEach
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
         underTest = AnalysisViewModel(
-            fenSerializer = fenSerializer,
+            dispatcher = testDispatcher,
+            appScope = testScope,
             analyzePosition = fakeAnalyzePosition,
+            fenSerializer = fenSerializer,
+            getPuzzleFen = fakeGetPuzzleFen,
             appSettingsRepository = appSettingsRepository,
         ).also { it.disableThrottling() }
     }
@@ -75,7 +84,7 @@ internal class AnalysisViewModelTest {
     @Nested
     internal inner class PositionLoading {
         @Test
-        fun `GIVEN starting FEN WHEN loadPosition THEN board is loaded`() = runTest {
+        fun `GIVEN starting FEN WHEN loadPosition THEN board is loaded`() = analysisTest {
             underTest.loadPosition()
             advanceUntilIdle()
 
@@ -84,9 +93,9 @@ internal class AnalysisViewModelTest {
         }
 
         @Test
-        fun `GIVEN custom FEN WHEN loadPosition THEN board shows custom position`() = runTest {
-            val fen = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1"
-            underTest.loadPosition(fen)
+        fun `GIVEN puzzle FEN WHEN loadPosition THEN board shows position after firstMove`() = analysisTest {
+            fakeGetPuzzleFen.setPuzzle(1, PuzzleAnalysisData(fen = STARTING_FEN, firstMove = "e2e4"))
+            underTest.loadPosition(puzzleId = 1)
             advanceUntilIdle()
 
             val state = underTest.uiState.value
@@ -94,7 +103,7 @@ internal class AnalysisViewModelTest {
         }
 
         @Test
-        fun `GIVEN position loaded WHEN analysis result emitted THEN state updated`() = runTest {
+        fun `GIVEN position loaded WHEN analysis result emitted THEN state updated`() = analysisTest {
             fakeEngine.enqueueAnalysisResults(
                 listOf(
                     AnalysisResult(
@@ -124,7 +133,7 @@ internal class AnalysisViewModelTest {
         }
 
         @Test
-        fun `GIVEN analysis with top move WHEN result emitted THEN arrow is set`() = runTest {
+        fun `GIVEN analysis with top move WHEN result emitted THEN arrow is set`() = analysisTest {
             fakeEngine.enqueueAnalysisResults(
                 listOf(
                     AnalysisResult(
@@ -151,7 +160,7 @@ internal class AnalysisViewModelTest {
         }
 
         @Test
-        fun `GIVEN position loaded WHEN loadPosition THEN navigation resets`() = runTest {
+        fun `GIVEN position loaded WHEN loadPosition THEN navigation resets`() = analysisTest {
             underTest.loadPosition()
             advanceUntilIdle()
 
@@ -163,13 +172,12 @@ internal class AnalysisViewModelTest {
     @Nested
     internal inner class FirstMove {
         @Test
-        fun `GIVEN firstMove provided WHEN loadPosition THEN move is played`() = runTest {
-            underTest.loadPosition(firstMove = "e2e4")
+        fun `GIVEN puzzle with firstMove WHEN loadPosition THEN position reflects firstMove played`() = analysisTest {
+            fakeGetPuzzleFen.setPuzzle(1, PuzzleAnalysisData(fen = STARTING_FEN, firstMove = "e2e4"))
+            underTest.loadPosition(puzzleId = 1)
             advanceUntilIdle()
 
             val state = underTest.uiState.value
-            state.assertCanNavigateBack()
-            // After e4, it's black's turn
             assertEquals(Side.BLACK, state.data.player)
         }
     }
@@ -177,7 +185,7 @@ internal class AnalysisViewModelTest {
     @Nested
     internal inner class EvaluationNormalization {
         @Test
-        fun `GIVEN white to move WHEN analysis returns positive score THEN displayed as positive`() = runTest {
+        fun `GIVEN white to move WHEN analysis returns positive score THEN displayed as positive`() = analysisTest {
             fakeEngine.enqueueAnalysisResults(
                 listOf(
                     AnalysisResult(
@@ -201,8 +209,8 @@ internal class AnalysisViewModelTest {
         }
 
         @Test
-        fun `GIVEN black to move WHEN analysis returns negative score THEN negated to white perspective`() = runTest {
-            val fen = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1"
+        fun `GIVEN black to move WHEN analysis returns negative score THEN negated to white perspective`() = analysisTest {
+            fakeGetPuzzleFen.setPuzzle(1, PuzzleAnalysisData(fen = STARTING_FEN, firstMove = "e2e4"))
             fakeEngine.enqueueAnalysisResults(
                 listOf(
                     AnalysisResult(
@@ -219,7 +227,7 @@ internal class AnalysisViewModelTest {
                 )
             )
 
-            underTest.loadPosition(fen)
+            underTest.loadPosition(puzzleId = 1)
             advanceUntilIdle()
 
             assertEquals(0.675f, underTest.uiState.value.engineData?.evaluation?.normalised)
@@ -227,8 +235,8 @@ internal class AnalysisViewModelTest {
         }
 
         @Test
-        fun `GIVEN black to move WHEN analysis returns positive score THEN negated to show black winning`() = runTest {
-            val fen = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1"
+        fun `GIVEN black to move WHEN analysis returns positive score THEN negated to show black winning`() = analysisTest {
+            fakeGetPuzzleFen.setPuzzle(1, PuzzleAnalysisData(fen = STARTING_FEN, firstMove = "e2e4"))
             fakeEngine.enqueueAnalysisResults(
                 listOf(
                     AnalysisResult(
@@ -245,15 +253,15 @@ internal class AnalysisViewModelTest {
                 )
             )
 
-            underTest.loadPosition(fen)
+            underTest.loadPosition(puzzleId = 1)
             advanceUntilIdle()
 
             assertEquals(0.40f, underTest.uiState.value.engineData?.evaluation?.normalised)
         }
 
         @Test
-        fun `GIVEN black to move WHEN mate score THEN negated`() = runTest {
-            val fen = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1"
+        fun `GIVEN black to move WHEN mate score THEN negated`() = analysisTest {
+            fakeGetPuzzleFen.setPuzzle(1, PuzzleAnalysisData(fen = STARTING_FEN, firstMove = "e2e4"))
             fakeEngine.enqueueAnalysisResults(
                 listOf(
                     AnalysisResult(
@@ -270,7 +278,7 @@ internal class AnalysisViewModelTest {
                 )
             )
 
-            underTest.loadPosition(fen)
+            underTest.loadPosition(puzzleId = 1)
             advanceUntilIdle()
 
             assertEquals(0.03f, underTest.uiState.value.engineData?.evaluation?.normalised)
@@ -281,18 +289,19 @@ internal class AnalysisViewModelTest {
     @Nested
     internal inner class BoardInteraction {
         @Test
-        fun `GIVEN position loaded WHEN square with piece clicked THEN board data updates`() = runTest {
+        fun `GIVEN position loaded WHEN square with piece clicked THEN board data updates`() = analysisTest {
             underTest.loadPosition()
             advanceUntilIdle()
 
             underTest.onSquareClicked(Locus.e2)
+            advanceUntilIdle()
 
             val state = underTest.uiState.value
             assertTrue(state.data.boardData.at(Locus.e2).piece?.isSelected == true)
         }
 
         @Test
-        fun `GIVEN piece selected WHEN legal move made THEN move recorded in history`() = runTest {
+        fun `GIVEN piece selected WHEN legal move made THEN move recorded in history`() = analysisTest {
             underTest.loadPosition()
             advanceUntilIdle()
 
@@ -304,7 +313,7 @@ internal class AnalysisViewModelTest {
         }
 
         @Test
-        fun `GIVEN position loaded WHEN move made THEN analysis restarts with new position`() = runTest {
+        fun `GIVEN position loaded WHEN move made THEN analysis restarts with new position`() = analysisTest {
             fakeEngine.enqueueAnalysisResults(
                 listOf(
                     AnalysisResult(
@@ -360,15 +369,15 @@ internal class AnalysisViewModelTest {
     @Nested
     internal inner class Promotion {
         @Test
-        fun `GIVEN pawn on 7th rank WHEN promotion move clicked THEN pendingPromotion has correct from square`() = runTest {
-            val fen = PROMOTION_FEN
+        fun `GIVEN pawn on 7th rank WHEN promotion move clicked THEN pendingPromotion has correct from square`() = analysisTest {
             appSettingsRepository.updateAutoPromote(false)
             advanceUntilIdle()
 
-            underTest.loadPosition(fen)
+            loadPromotionPosition()
             advanceUntilIdle()
 
             playMove(Locus.e7, Locus.e8)
+            advanceUntilIdle()
 
             val state = underTest.uiState.value
             assertNotNull(state.data.promotion)
@@ -376,15 +385,15 @@ internal class AnalysisViewModelTest {
         }
 
         @Test
-        fun `GIVEN pending promotion WHEN onPromote THEN move is recorded with correct from and piece`() = runTest {
-            val fen = PROMOTION_FEN
+        fun `GIVEN pending promotion WHEN onPromote THEN move is recorded with correct from and piece`() = analysisTest {
             appSettingsRepository.updateAutoPromote(false)
             advanceUntilIdle()
 
-            underTest.loadPosition(fen)
+            loadPromotionPosition()
             advanceUntilIdle()
 
             playMove(Locus.e7, Locus.e8)
+            advanceUntilIdle()
             assertNotNull(underTest.uiState.value.data.promotion)
 
             underTest.onPromote(Piece.Queen)
@@ -396,14 +405,15 @@ internal class AnalysisViewModelTest {
         }
 
         @Test
-        fun `GIVEN pending promotion WHEN onPromote THEN navigating back and replaying succeeds`() = runTest {
+        fun `GIVEN pending promotion WHEN onPromote THEN navigating back and replaying succeeds`() = analysisTest {
             appSettingsRepository.updateAutoPromote(false)
             advanceUntilIdle()
 
-            underTest.loadPosition(PROMOTION_FEN)
+            loadPromotionPosition()
             advanceUntilIdle()
 
             playMove(Locus.e7, Locus.e8)
+            advanceUntilIdle()
             underTest.onPromote(Piece.Rook)
             advanceUntilIdle()
             underTest.uiState.value.assertCanNavigateBack()
@@ -412,19 +422,17 @@ internal class AnalysisViewModelTest {
             advanceUntilIdle()
             underTest.uiState.value.assertCanNavigateForward()
 
-            // Navigate forward -- this would crash if from was incorrectly recorded
-            underTest.onNextMove()
+            underTest.onJumpToEnd()
             advanceUntilIdle()
             underTest.uiState.value.assertCanNavigateBack()
         }
 
         @Test
-        fun `GIVEN autoPromote enabled WHEN promotion move clicked THEN move is auto-promoted and recorded`() = runTest {
-            val fen = PROMOTION_FEN
+        fun `GIVEN autoPromote enabled WHEN promotion move clicked THEN move is auto-promoted and recorded`() = analysisTest {
             appSettingsRepository.updateAutoPromote(true)
             advanceUntilIdle()
 
-            underTest.loadPosition(fen)
+            loadPromotionPosition()
             advanceUntilIdle()
 
             playMove(Locus.e7, Locus.e8)
@@ -436,12 +444,11 @@ internal class AnalysisViewModelTest {
         }
 
         @Test
-        fun `GIVEN autoPromote enabled WHEN promotion move played THEN navigating back and replaying succeeds`() = runTest {
-            val fen = PROMOTION_FEN
+        fun `GIVEN autoPromote enabled WHEN promotion move played THEN navigating back and replaying succeeds`() = analysisTest {
             appSettingsRepository.updateAutoPromote(true)
             advanceUntilIdle()
 
-            underTest.loadPosition(fen)
+            loadPromotionPosition()
             advanceUntilIdle()
 
             playMove(Locus.e7, Locus.e8)
@@ -452,17 +459,21 @@ internal class AnalysisViewModelTest {
             advanceUntilIdle()
             underTest.uiState.value.assertCanNavigateForward()
 
-            // Navigate forward -- validates the recorded move can be replayed correctly
-            underTest.onNextMove()
+            underTest.onJumpToEnd()
             advanceUntilIdle()
             underTest.uiState.value.assertCanNavigateBack()
+        }
+
+        private fun loadPromotionPosition() {
+            fakeGetPuzzleFen.setPuzzle(99, PuzzleAnalysisData(fen = PROMOTION_FEN, firstMove = "h8h7"))
+            underTest.loadPosition(puzzleId = 99)
         }
     }
 
     @Nested
     internal inner class Navigation {
         @Test
-        fun `GIVEN moves played WHEN previousMove THEN shows previous position`() = runTest {
+        fun `GIVEN moves played WHEN previousMove THEN shows previous position`() = analysisTest {
             underTest.loadPosition()
             advanceUntilIdle()
 
@@ -476,7 +487,7 @@ internal class AnalysisViewModelTest {
         }
 
         @Test
-        fun `GIVEN at start WHEN nextMove THEN shows next position`() = runTest {
+        fun `GIVEN at start WHEN nextMove THEN shows next position`() = analysisTest {
             underTest.loadPosition()
             advanceUntilIdle()
 
@@ -493,7 +504,7 @@ internal class AnalysisViewModelTest {
         }
 
         @Test
-        fun `GIVEN multiple moves WHEN jumpToStart THEN index is zero`() = runTest {
+        fun `GIVEN multiple moves WHEN jumpToStart THEN index is zero`() = analysisTest {
             underTest.loadPosition()
             advanceUntilIdle()
 
@@ -509,7 +520,7 @@ internal class AnalysisViewModelTest {
         }
 
         @Test
-        fun `GIVEN navigated back WHEN jumpToEnd THEN index is at last move`() = runTest {
+        fun `GIVEN navigated back WHEN jumpToEnd THEN index is at last move`() = analysisTest {
             underTest.loadPosition()
             advanceUntilIdle()
 
@@ -528,7 +539,7 @@ internal class AnalysisViewModelTest {
         }
 
         @Test
-        fun `GIVEN navigated back WHEN new move played THEN future is truncated`() = runTest {
+        fun `GIVEN navigated back WHEN new move played THEN future is truncated`() = analysisTest {
             underTest.loadPosition()
             advanceUntilIdle()
 
@@ -547,7 +558,7 @@ internal class AnalysisViewModelTest {
         }
 
         @Test
-        fun `GIVEN moves played WHEN navigating back and forth THEN playerSide stays consistent`() = runTest {
+        fun `GIVEN moves played WHEN navigating back and forth THEN playerSide stays consistent`() = analysisTest {
             underTest.loadPosition()
             advanceUntilIdle()
             val originalSide = underTest.uiState.value.data.player
@@ -575,7 +586,7 @@ internal class AnalysisViewModelTest {
         }
 
         @Test
-        fun `GIVEN move played WHEN navigating to start THEN no last move highlights`() = runTest {
+        fun `GIVEN move played WHEN navigating to start THEN no last move highlights`() = analysisTest {
             underTest.loadPosition()
             advanceUntilIdle()
 
@@ -593,16 +604,17 @@ internal class AnalysisViewModelTest {
         }
 
         @Test
-        fun `GIVEN multiple moves WHEN navigating back THEN last move highlights match previous move`() = runTest {
+        fun `GIVEN move played WHEN navigating forward THEN last move highlights match replayed move`() = analysisTest {
             underTest.loadPosition()
             advanceUntilIdle()
 
             playMove(Locus.e2, Locus.e4)
             advanceUntilIdle()
-            playMove(Locus.e7, Locus.e5)
+
+            underTest.onJumpToStart()
             advanceUntilIdle()
 
-            underTest.onPreviousMove()
+            underTest.onNextMove()
             advanceUntilIdle()
 
             val boardData = underTest.uiState.value.data.boardData
@@ -613,8 +625,14 @@ internal class AnalysisViewModelTest {
         }
     }
 
-    private fun playMove(from: Locus, to: Locus) {
+    private fun analysisTest(block: suspend TestScope.() -> Unit) = runTest(testDispatcher) {
+        backgroundScope.launch(testDispatcher) { underTest.uiState.collect {} }
+        block()
+    }
+
+    private fun TestScope.playMove(from: Locus, to: Locus) {
         underTest.onSquareClicked(from)
+        advanceUntilIdle()
         underTest.onSquareClicked(to)
     }
 
@@ -634,27 +652,18 @@ internal class AnalysisViewModelTest {
     }
 
     private companion object {
-        // White pawn on e7, e8 empty, black king on h8, white king on a1
-        const val PROMOTION_FEN = "7k/4P3/8/8/8/8/8/K7 w - - 0 1"
+        const val STARTING_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+        // Black to move; after firstMove "h8h7", white can promote the e7 pawn
+        const val PROMOTION_FEN = "7k/4P3/8/8/8/8/8/K7 b - - 0 1"
     }
 }
 
-private class FakeAnalyzePosition(
-    private val engine: FakeChessEngine,
-) : AnalyzePosition {
-    override suspend fun prepare() {
-        engine.prepareForAnalysis()
+private class FakeGetPuzzleFen : GetPuzzleFen {
+    private val puzzles = mutableMapOf<Int, PuzzleAnalysisData>()
+
+    fun setPuzzle(id: Int, data: PuzzleAnalysisData) {
+        puzzles[id] = data
     }
 
-    override fun invoke(fen: String): Flow<AnalysisResult> {
-        return engine.analyzePosition(fen)
-    }
-
-    override suspend fun stopAnalysis() {
-        engine.stopAnalysis()
-    }
-
-    override suspend fun shutdown() {
-        engine.shutdown()
-    }
+    override suspend fun invoke(puzzleId: Int): PuzzleAnalysisData? = puzzles[puzzleId]
 }
