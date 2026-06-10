@@ -76,7 +76,10 @@ class DebugPuzzleViewModel @Inject constructor(
 private fun PlaySessionState.toUiState(): DebugPuzzleUiState = when (status) {
     PlaySessionState.Status.Failed -> DebugPuzzleUiState.Error(message = errorMessage ?: "")
     PlaySessionState.Status.Loading -> DebugPuzzleUiState.Loading
-    PlaySessionState.Status.Ended -> DebugPuzzleUiState.Finished(data = boardState, isSuccess = results.last().success)
+    PlaySessionState.Status.Ended -> DebugPuzzleUiState.Finished(
+        data = boardState,
+        isSuccess = boardState.won,
+    )
     else -> DebugPuzzleUiState.Playing(data = boardState)
 }
 
