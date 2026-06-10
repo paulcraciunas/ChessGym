@@ -5,12 +5,13 @@ import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.screens.data.BoardState
 import com.paulcraciunas.screens.data.BoardViewData
 import com.paulcraciunas.screens.data.CapturedPieces
-import com.paulcraciunas.screens.data.PuzzleResult
+import com.paulcraciunas.screens.data.Outcome
+import com.paulcraciunas.screens.data.SessionResult
 
 class PreviewData {
     fun whitePuzzleData() = BoardState(
-        rating = 1400,
         player = Side.WHITE,
+        rating = 1442,
         id = 42,
         boardData = BoardViewData.default(),
         promotion = null,
@@ -19,14 +20,12 @@ class PreviewData {
             byPlayer = listOf(Piece.Knight, Piece.Pawn).joinToString("") { it.unicode },
             byOpponent = listOf(Piece.Rook, Piece.Bishop, Piece.Pawn).joinToString("") { it.unicode },
         ),
-        isOver = false,
-        interactive = true,
         outcome = null,
     )
 
     fun blackPuzzleData() = BoardState(
-        rating = 1350,
         player = Side.BLACK,
+        rating = 1442,
         id = 84,
         boardData = BoardViewData.default(),
         promotion = null,
@@ -35,14 +34,12 @@ class PreviewData {
             byPlayer = listOf(Piece.Queen, Piece.Rook, Piece.Pawn, Piece.Pawn, Piece.Pawn).joinToString("") { it.unicode },
             byOpponent = listOf(Piece.Rook, Piece.Bishop, Piece.Pawn).joinToString("") { it.unicode },
         ),
-        isOver = false,
-        interactive = true,
         outcome = null,
     )
 
     fun whiteGameData() = BoardState(
-        rating = 1442,
         player = Side.WHITE,
+        rating = null,
         id = null,
         boardData = BoardViewData.default(),
         promotion = null,
@@ -51,14 +48,12 @@ class PreviewData {
             byPlayer = listOf(Piece.Knight, Piece.Pawn).joinToString("") { it.unicode },
             byOpponent = listOf(Piece.Rook, Piece.Bishop, Piece.Pawn).joinToString("") { it.unicode },
         ),
-        isOver = false,
-        interactive = true,
         outcome = null,
     )
 
     fun blackGameData() = BoardState(
-        rating = 1350,
         player = Side.BLACK,
+        rating = null,
         id = null,
         boardData = BoardViewData.default(),
         promotion = null,
@@ -67,27 +62,25 @@ class PreviewData {
             byPlayer = listOf(Piece.Queen, Piece.Rook, Piece.Pawn, Piece.Pawn, Piece.Pawn).joinToString("") { it.unicode },
             byOpponent = listOf(Piece.Rook, Piece.Bishop, Piece.Pawn).joinToString("") { it.unicode },
         ),
-        isOver = false,
-        interactive = true,
         outcome = null,
     )
 
     fun fewResults() = listOf(
-        PuzzleResult(id = 1, rating = 1200, success = true),
-        PuzzleResult(id = 2, rating = 1250, success = true),
-        PuzzleResult(id = 3, rating = 1300, success = false),
+        SessionResult(id = 1, rating = 1200, outcome = Outcome.Won),
+        SessionResult(id = 2, rating = 1250, outcome = Outcome.Won),
+        SessionResult(id = 3, rating = 1300, outcome = Outcome.Lost),
     )
 
     fun manyResults() = listOf(
-        PuzzleResult(id = 1, rating = 1200, success = true),
-        PuzzleResult(id = 2, rating = 1250, success = true),
-        PuzzleResult(id = 3, rating = 1300, success = true),
-        PuzzleResult(id = 4, rating = 1342, success = true),
-        PuzzleResult(id = 5, rating = 1355, success = true),
-        PuzzleResult(id = 6, rating = 1379, success = true),
-        PuzzleResult(id = 7, rating = 1398, success = true),
-        PuzzleResult(id = 8, rating = 1414, success = true),
-        PuzzleResult(id = 9, rating = 1449, success = true),
-        PuzzleResult(id = 10, rating = 1488, success = false),
+        SessionResult(id = 1, rating = 1200, outcome = Outcome.Won),
+        SessionResult(id = 2, rating = 1250, outcome = Outcome.Won),
+        SessionResult(id = 3, rating = 1300, outcome = Outcome.Won),
+        SessionResult(id = 4, rating = 1342, outcome = Outcome.Won),
+        SessionResult(id = 5, rating = 1355, outcome = Outcome.Won),
+        SessionResult(id = 6, rating = 1379, outcome = Outcome.Won),
+        SessionResult(id = 7, rating = 1398, outcome = Outcome.Won),
+        SessionResult(id = 8, rating = 1414, outcome = Outcome.Won),
+        SessionResult(id = 9, rating = 1449, outcome = Outcome.Won),
+        SessionResult(id = 10, rating = 1488, outcome = Outcome.Lost),
     )
 }
