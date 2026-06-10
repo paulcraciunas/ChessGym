@@ -1,6 +1,5 @@
 package com.paulcraciunas.screens.data.engine
 
-import com.paulcraciunas.game.logic.api.Game
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.impl.RealGameFactory
@@ -12,7 +11,6 @@ import com.paulcraciunas.screens.data.NoOpOpponent
 import com.paulcraciunas.screens.data.NoOpSolution
 import com.paulcraciunas.screens.data.Outcome
 import com.paulcraciunas.screens.data.ScriptedOpponent
-import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.screens.data.PuzzlePlayableBoard
 import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
