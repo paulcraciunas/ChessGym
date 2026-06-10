@@ -2,7 +2,7 @@ package com.paulcraciunas.screens.puzzles.failed.vm
 
 import androidx.compose.runtime.Immutable
 import com.paulcraciunas.screens.data.BoardState
-import com.paulcraciunas.screens.data.PuzzleResult
+import com.paulcraciunas.screens.data.SessionResult
 
 @Immutable
 sealed class FailedPuzzlesUiState {
@@ -14,21 +14,21 @@ sealed class FailedPuzzlesUiState {
     abstract class WithBoard : FailedPuzzlesUiState() {
         abstract val data: BoardState
         abstract val progress: Progress
-        abstract val results: List<PuzzleResult>
+        abstract val results: List<SessionResult>
     }
 
     @Immutable
     data class Playing(
         override val data: BoardState,
         override val progress: Progress,
-        override val results: List<PuzzleResult>,
+        override val results: List<SessionResult>,
     ) : WithBoard()
 
     @Immutable
     data class Finished(
         override val data: BoardState,
         override val progress: Progress,
-        override val results: List<PuzzleResult>,
+        override val results: List<SessionResult>,
         val showCompletionDialog: Boolean,
     ) : WithBoard()
 
