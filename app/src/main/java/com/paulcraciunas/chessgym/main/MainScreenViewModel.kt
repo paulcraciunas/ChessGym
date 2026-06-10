@@ -8,6 +8,7 @@ import com.paulcraciunas.domain.api.achievements.AchievementNotificationManager
 import com.paulcraciunas.domain.api.auth.DeleteAccountResult
 import com.paulcraciunas.domain.api.auth.DeleteAccountUseCase
 import com.paulcraciunas.domain.api.auth.SignOutUseCase
+import com.paulcraciunas.global.navigation.NavigationDispatcher
 import com.paulcraciunas.screens.common.UiSettings
 import com.paulcraciunas.settings.application.api.AppSettings
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
@@ -56,6 +57,7 @@ class MainScreenViewModel @Inject constructor(
     private val signOutUseCase: SignOutUseCase,
     private val deleteAccountUseCase: DeleteAccountUseCase,
     val debugMenuProvider: DebugMenuProvider,
+    val navigationDispatcher: NavigationDispatcher,
     val achievementNotificationManager: AchievementNotificationManager,
 ) : ViewModel() {
     private val _dialogState = MutableStateFlow<MainScreenDialog?>(null)

@@ -15,6 +15,7 @@ import com.paulcraciunas.domain.impl.auth.DeleteAccountUseCaseImpl
 import com.paulcraciunas.domain.impl.auth.SignOutUseCaseImpl
 import com.paulcraciunas.global.device.api.fakes.FakeGetNetworkState
 import com.paulcraciunas.global.device.api.usecases.GetNetworkState.NetworkState
+import com.paulcraciunas.global.navigation.NavigationDispatcher
 import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
 import com.paulcraciunas.user.api.AuthResult
 import com.paulcraciunas.user.api.FakeAuthService
@@ -289,6 +290,7 @@ internal class MainScreenViewModelTest {
         signOutUseCase = signOutUseCase,
         deleteAccountUseCase = deleteAccountUseCase,
         debugMenuProvider = NoOpDebugMenuProvider(),
+        navigationDispatcher = NavigationDispatcher(),
         achievementNotificationManager = FakeAchievementNotificationManager(),
     )
 
