@@ -200,6 +200,70 @@ internal class BoardSessionTest {
     }
 
     @Nested
+    internal inner class OnClickTurnBased {
+        @Test
+        fun `GIVEN white played WHEN clicking black piece THEN piece is selected`() {
+            val game = buildGame()
+            game.start()
+            val playable = GamePlayableBoard(game, Side.WHITE)
+            val session = BoardSession(navigation = GameNavigation(game)).load(playable)
+
+            session.onClick(Locus.e2)
+            session.onClick(Locus.e4)
+
+            val state = session.onClick(Locus.e7)
+
+            assertEquals(Locus.e7, state.boardData.selection)
+        }
+
+        @Test
+        fun `GIVEN white played WHEN clicking white piece THEN state is unchanged`() {
+            val game = buildGame()
+            game.start()
+            val playable = GamePlayableBoard(game, Side.WHITE)
+            val session = BoardSession(navigation = GameNavigation(game)).load(playable)
+
+            session.onClick(Locus.e2)
+            session.onClick(Locus.e4)
+            val afterMove = session.boardState()
+
+            val state = session.onClick(Locus.d2)
+
+            assertEquals(afterMove, state)
+        }
+
+        @Test
+        fun `GIVEN both sides played WHEN clicking white piece again THEN piece is selected`() {
+            val game = buildGame()
+            game.start()
+            val playable = GamePlayableBoard(game, Side.WHITE)
+            val session = BoardSession(navigation = GameNavigation(game)).load(playable)
+
+            session.onClick(Locus.e2)
+            session.onClick(Locus.e4)
+            session.onClick(Locus.e7)
+            session.onClick(Locus.e5)
+
+            val state = session.onClick(Locus.d2)
+
+            assertEquals(Locus.d2, state.boardData.selection)
+        }
+
+        @Test
+        fun `GIVEN free play WHEN alternating sides THEN player field stays as initial side`() {
+            val game = buildGame()
+            game.start()
+            val playable = GamePlayableBoard(game, Side.WHITE)
+            val session = BoardSession(navigation = GameNavigation(game)).load(playable)
+
+            session.onClick(Locus.e2)
+            session.onClick(Locus.e4)
+
+            assertEquals(Side.WHITE, session.boardState().player)
+        }
+    }
+
+    @Nested
     internal inner class OnClickMoveExecution {
         @Test
         fun `GIVEN piece selected WHEN clicking valid target THEN move is played`() {

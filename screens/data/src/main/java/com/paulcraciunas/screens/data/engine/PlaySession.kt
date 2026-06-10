@@ -214,7 +214,7 @@ class PlaySession(
                 status = if (isFirstSession) PlaySessionState.Status.Ready else it.status,
                 boardState = session.boardState(),
                 isAnimating = shouldAnimate,
-                navigation = null,
+                navigation = session.navigation(),
                 abandonRequested = false,
             )
         }

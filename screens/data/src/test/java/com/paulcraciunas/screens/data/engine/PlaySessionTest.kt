@@ -8,7 +8,10 @@ import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.impl.RealGameFactory
 import com.paulcraciunas.screens.data.BoardSession
+import com.paulcraciunas.screens.data.GameNavigation
+import com.paulcraciunas.screens.data.GamePlayableBoard
 import com.paulcraciunas.screens.data.NoOpNavigation
+import com.paulcraciunas.screens.data.NoOpOpponent
 import com.paulcraciunas.screens.data.NoOpSolution
 import com.paulcraciunas.screens.data.Outcome
 import com.paulcraciunas.screens.data.PuzzlePlayableBoard
@@ -1365,6 +1368,46 @@ internal class PlaySessionTest {
             advanceUntilIdle()
 
             assertNull(playSession.state.value.navigation)
+        }
+
+        @Test
+        fun `GIVEN session with pre-loaded moves WHEN run THEN navigation reflects history`() = runTest {
+            val game = gameFactory.builder().withDefaultBoard().buildGame()
+            game.start()
+            game.play(Locus.e2, Locus.e4)
+            game.play(Locus.e7, Locus.e5)
+            val session = BoardSession(
+                navigation = GameNavigation(game),
+                opponent = NoOpOpponent,
+            ).load(GamePlayableBoard(game, Side.WHITE))
+            val playSession = buildPlaySession(sessions = singleSessionSource(session))
+
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession.run() }
+            advanceUntilIdle()
+
+            val navigation = playSession.state.value.navigation
+            assertNotNull(navigation)
+            assertTrue(navigation!!.canGoBack)
+            assertFalse(navigation.canGoForward)
+        }
+
+        @Test
+        fun `GIVEN session with no moves WHEN run THEN navigation has no back`() = runTest {
+            val game = gameFactory.builder().withDefaultBoard().buildGame()
+            game.start()
+            val session = BoardSession(
+                navigation = GameNavigation(game),
+                opponent = NoOpOpponent,
+            ).load(GamePlayableBoard(game, Side.WHITE))
+            val playSession = buildPlaySession(sessions = singleSessionSource(session))
+
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession.run() }
+            advanceUntilIdle()
+
+            val navigation = playSession.state.value.navigation
+            assertNotNull(navigation)
+            assertFalse(navigation!!.canGoBack)
+            assertFalse(navigation.canGoForward)
         }
 
         @Test

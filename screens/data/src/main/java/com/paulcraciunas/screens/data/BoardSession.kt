@@ -79,7 +79,7 @@ class BoardSession(
                     outcome = playable.outcome(),
                 )
             }
-        } else if (playable.board.has(state.player, selection)) {
+        } else if (playable.board.has(playable.info.turn, selection)) {
             state.copy(
                 boardData = state.boardData.select(at = selection, moves = moves(from = selection)),
                 movePlayed = false
