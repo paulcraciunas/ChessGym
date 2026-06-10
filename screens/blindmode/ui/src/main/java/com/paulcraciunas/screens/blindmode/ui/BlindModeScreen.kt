@@ -122,9 +122,8 @@ private fun PlayingContent(
         },
         label = "revealAlpha",
     )
-    val isThinking = !state.data.interactive
     val controlsAlpha by animateFloatAsState(
-        targetValue = if (isThinking) 0f else 1f,
+        targetValue = if (state.isThinking) 0f else 1f,
         animationSpec = tween(durationMillis = 200),
         label = "controlsAlpha"
     )
@@ -137,11 +136,11 @@ private fun PlayingContent(
     )
     ChessGymSpacer()
     DefaultPuzzleControls(
-        hintEnabled = !isThinking && !state.isRevealing && state.isRevealAvailable,
+        hintEnabled = !state.isThinking && !state.isRevealing && state.isRevealAvailable,
         toMove = state.data.player,
         onHintRequested = onReveal,
         onAbandonRequested = onResign,
-        abandonEnabled = !isThinking && !state.isRevealing,
+        abandonEnabled = !state.isThinking && !state.isRevealing,
         moveIndicatorTextRes = R.string.blind_mode_your_turn,
         modifier = Modifier.alpha(controlsAlpha),
     )
@@ -149,7 +148,7 @@ private fun PlayingContent(
     if (state.moveHistory.isNotEmpty()) {
         MoveHistoryDisplay(moveHistory = state.moveHistory)
     }
-    if (isThinking) {
+    if (state.isThinking) {
         ThinkingIndicator()
     }
     if (state.data.promotion != null) {
@@ -225,9 +224,10 @@ private fun BlindModeThinkingPreview() {
             BlindModeScreen(
                 uiState = BlindModeUiState.Playing(
                     isTrainingMode = true,
-                    data = PreviewData().whiteGameData().copy(interactive = false),
+                    data = PreviewData().whiteGameData(),
                     moveHistory = "1. e4 e5 2. Nf3 Nc6",
                     isRevealAvailable = true,
+                    isThinking = false,
                 ),
                 onDrawerToggle = {},
             )

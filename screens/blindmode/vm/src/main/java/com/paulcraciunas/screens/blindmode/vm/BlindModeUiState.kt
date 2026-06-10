@@ -22,6 +22,7 @@ sealed class BlindModeUiState {
         val isRevealAvailable: Boolean = true,
         val isAbandonDialogShown: Boolean = false,
         val isRevealing: Boolean = false,
+        val isThinking: Boolean = false,
     ) : BlindModeUiState()
 
     @Immutable
