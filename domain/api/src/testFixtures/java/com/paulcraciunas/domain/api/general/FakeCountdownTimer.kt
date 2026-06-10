@@ -26,6 +26,8 @@ class FakeCountdownTimer : CountdownTimer {
         private set
     var startCount: Int = 0
         private set
+    var isRunning: Boolean = false
+        private set
 
     override fun start(durationMs: Long, intervalMillis: Long): Flow<CountdownTimer.Remainder> {
         channel.cancel()
@@ -33,6 +35,7 @@ class FakeCountdownTimer : CountdownTimer {
         lastDurationMs = durationMs
         lastIntervalMillis = intervalMillis
         startCount++
+        isRunning = true
         return channel.consumeAsFlow()
     }
 
@@ -40,15 +43,12 @@ class FakeCountdownTimer : CountdownTimer {
         channel.send(remainder)
     }
 
-    fun complete() {
-        channel.close()
+    fun advanceUntilIdle() {
+        complete()
     }
 
-    fun reset() {
-        channel.cancel()
-        channel = Channel(Channel.UNLIMITED)
-        startCount = 0
-        lastDurationMs = 0L
-        lastIntervalMillis = 0L
+    fun complete() {
+        isRunning = false
+        channel.close()
     }
 }
