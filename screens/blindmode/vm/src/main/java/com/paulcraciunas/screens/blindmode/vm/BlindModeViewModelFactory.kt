@@ -13,7 +13,6 @@ import com.paulcraciunas.user.api.UserRepository
 
 internal fun blindModeConfiguration(): SingleSessionConfiguration = SingleSessionConfiguration(
     gameOverBehavior = SingleSessionConfiguration.GameOverBehavior.Terminate,
-    timed = null,
     hints = SingleSessionConfiguration.HintMode.Unlimited,
 )
 
