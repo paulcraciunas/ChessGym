@@ -35,7 +35,11 @@ class FailedPuzzlesViewModel @Inject constructor(
         settingsRepository = appSettingsRepository,
         config = failedPuzzlesConfiguration(),
         sessions = FailedPuzzlesSessions(getFailedPuzzles),
-        onSessionComplete = { onFailedPuzzleComplete(it.boardState.id!!, timer.elapsed()) },
+        onSessionComplete = {
+            if (it.boardState.won) {
+                onFailedPuzzleComplete(it.boardState.id!!, timer.elapsed())
+            }
+        },
     )
 
     val uiState: StateFlow<FailedPuzzlesUiState> = playSession.state
@@ -72,10 +76,7 @@ class FailedPuzzlesViewModel @Inject constructor(
         PlaySessionState.Status.Paused,
         PlaySessionState.Status.Playing -> FailedPuzzlesUiState.Playing(
             data = boardState,
-            progress = FailedPuzzlesUiState.Progress(
-                solved = results.count { it.success },
-                total = results.size,
-            ),
+            progress = FailedPuzzlesUiState.Progress(solved = results.count { it.success }, total = results.size),
             results = results,
         )
         PlaySessionState.Status.Ended -> if (results.isEmpty()) {
