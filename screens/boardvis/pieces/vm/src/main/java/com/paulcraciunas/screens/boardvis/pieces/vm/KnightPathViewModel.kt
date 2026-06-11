@@ -173,6 +173,7 @@ class KnightPathViewModel @Inject constructor(
             )
             Status.Finished -> KnightPathUiState.GameOver(
                 boardData = BoardViewData.from(board = exercise!!.board),
+                timeRemaining = timeRemaining.format(),
                 score = score,
                 isNewHighScore = isNewHighScore,
                 wasWrongMove = wasWrongMove,

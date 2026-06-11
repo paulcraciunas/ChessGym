@@ -10,25 +10,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
-import com.paulcraciunas.game.logic.api.board.Piece
-import com.paulcraciunas.screens.boardvis.pieces.vm.MoveThePieceUiState
+import com.paulcraciunas.screens.boardvis.pieces.vm.KnightPathUiState
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
 
 @Composable
-internal fun MoveThePieceScreenContents(
-    state: MoveThePieceUiState,
+internal fun KnightPathScreenContents(
+    state: KnightPathUiState,
     modifier: Modifier = Modifier,
-    onTrainingModeToggled: (enabled: Boolean) -> Unit = {},
-    onPieceSelected: (piece: Piece) -> Unit = {},
     onPlayClicked: () -> Unit = {},
-    onSquareClicked: (locus: Locus) -> Unit = {},
+    onSquareClicked: (Locus) -> Unit = {},
     onPlayAgain: () -> Unit = {},
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
     ) {
-        // Always show white's perspective since player is always white
         ChessBoard(
             board = state.boardData,
             orientation = BoardOrientation.fromSide(Side.WHITE),
@@ -37,28 +33,23 @@ internal fun MoveThePieceScreenContents(
         )
         Spacer(modifier = Modifier.height(16.dp))
         when (state) {
-            is MoveThePieceUiState.Setup -> {
-                MoveThePieceSetupControls(
-                    isTrainingMode = state.isTrainingMode,
-                    selectedPiece = state.selectedPiece,
-                    onTrainingModeToggled = onTrainingModeToggled,
-                    onPieceSelected = onPieceSelected,
+            is KnightPathUiState.Setup -> {
+                KnightPathSetupControls(
                     onPlayClicked = onPlayClicked,
                     modifier = Modifier.padding(horizontal = 16.dp)
                 )
             }
-            is MoveThePieceUiState.Playing -> {
-                MoveThePiecePlayingControls(
-                    movesRemaining = state.movesRemaining,
-                    currentScore = state.currentScore,
+            is KnightPathUiState.Playing -> {
+                KnightPathPlayingControls(
+                    currentScore = state.score,
                     modifier = Modifier.padding(horizontal = 16.dp)
                 )
             }
-            is MoveThePieceUiState.GameOver -> {
-                MoveThePieceGameOverControls(
-                    finalScore = state.finalScore,
+            is KnightPathUiState.GameOver -> {
+                KnightPathGameOverControls(
+                    finalScore = state.score,
                     isNewHighScore = state.isNewHighScore,
-                    wasCaptured = state.wasCaptured,
+                    wasWrongMove = state.wasWrongMove,
                     onPlayAgain = onPlayAgain,
                     modifier = Modifier.padding(16.dp)
                 )
