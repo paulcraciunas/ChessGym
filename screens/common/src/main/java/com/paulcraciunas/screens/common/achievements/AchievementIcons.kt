@@ -12,7 +12,7 @@ val Achievement.iconRes: Int
         Achievement.STREAK_SESSIONS -> R.drawable.achievement_icon_03
         Achievement.FAILED_PUZZLES_REDEEMED -> R.drawable.achievement_icon_04
         Achievement.FIND_SQUARE_SESSIONS -> R.drawable.achievement_icon_05
-        Achievement.MOVE_PIECE_SESSIONS -> R.drawable.achievement_icon_06
+        Achievement.KNIGHT_PATH_SESSIONS -> R.drawable.achievement_icon_06
         Achievement.BLIND_MODE_WINS -> R.drawable.achievement_icon_07
         Achievement.RATED_WIN_STREAK -> R.drawable.achievement_icon_08
         Achievement.RATING_CLIMBER -> R.drawable.achievement_icon_09

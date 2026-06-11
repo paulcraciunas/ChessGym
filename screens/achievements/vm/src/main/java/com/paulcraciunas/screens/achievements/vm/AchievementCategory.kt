@@ -25,7 +25,7 @@ val Achievement.category: AchievementCategory
         -> AchievementCategory.RUSH_AND_STREAK
 
         Achievement.FIND_SQUARE_SESSIONS,
-        Achievement.MOVE_PIECE_SESSIONS,
+        Achievement.KNIGHT_PATH_SESSIONS,
         Achievement.BLIND_MODE_WINS,
         Achievement.BLIND_STRATEGIST,
         Achievement.BOARD_VISION,

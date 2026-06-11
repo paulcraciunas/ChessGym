@@ -285,12 +285,12 @@ internal class AchievementsUiStateAdapterTest {
         fun `GIVEN multiple in-progress WHEN adapt THEN sorted by progress fraction descending`() {
             val result = adapt(
                 achievementState(Achievement.FIND_SQUARE_SESSIONS, null, 1, 5),
-                achievementState(Achievement.MOVE_PIECE_SESSIONS, null, 4, 5),
+                achievementState(Achievement.KNIGHT_PATH_SESSIONS, null, 4, 5),
                 achievementState(Achievement.BLIND_MODE_WINS, null, 2, 5),
             )
 
             val boardVision = findInCategory(result, AchievementCategory.BOARD_VISION)!!
-            assertEquals(Achievement.MOVE_PIECE_SESSIONS, boardVision.achievements[0].achievement)
+            assertEquals(Achievement.KNIGHT_PATH_SESSIONS, boardVision.achievements[0].achievement)
             assertEquals(Achievement.BLIND_MODE_WINS, boardVision.achievements[1].achievement)
             assertEquals(Achievement.FIND_SQUARE_SESSIONS, boardVision.achievements[2].achievement)
         }
