@@ -174,7 +174,7 @@ private fun UserStatsCardPreview() {
                 bestPuzzleRushScore = 23,
                 bestPuzzleStreakScore = 15,
                 bestFindTheSquareScore = 42,
-                bestMoveThePieceScore = 18,
+                bestKnightPathScore = 18,
                 bestBlindModeScore = 8,
             ),
             modifier = Modifier.padding(Design.dimensions.spacing.xxl),
