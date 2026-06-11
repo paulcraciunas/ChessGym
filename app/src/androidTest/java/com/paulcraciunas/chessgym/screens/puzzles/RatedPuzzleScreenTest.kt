@@ -109,7 +109,7 @@ internal class RatedPuzzleScreenTest : BaseUiTest() {
 
         When.ratedPuzzle.confirmAbandon()
         Then.ratedPuzzle
-            .abandonDialogIsDismissed()
+            .abandonDialogIsNotShown()
             .isFinishedWithFailure()
     }
 
@@ -124,16 +124,30 @@ internal class RatedPuzzleScreenTest : BaseUiTest() {
 
         When.ratedPuzzle.dismissAbandon()
         Then.ratedPuzzle
-            .abandonDialogIsDismissed()
+            .abandonDialogIsNotShown()
             .isPlaying()
     }
 
     @Test
-    fun GIVEN_playing_WHEN_pressing_back_THEN_shows_abandon_dialog() {
+    fun GIVEN_playing_WHEN_pressing_back_THEN_does_not_show_abandon_dialog_and_goes_back() {
         When.appIsLaunched()
         When.navigation.navigateToPuzzles()
 
         When.ratedPuzzle.open()
+        When.navigation.goBack()
+
+        Then.ratedPuzzle
+            .abandonDialogIsNotShown()
+        Then.puzzleDashboard.isDisplayed()
+    }
+
+    @Test
+    fun GIVEN_playing_WHEN_making_a_move_and_pressing_back_THEN_shows_abandon_dialog() {
+        When.appIsLaunched()
+        When.navigation.navigateToPuzzles()
+
+        When.ratedPuzzle.open()
+            .playCorrectMove()
         When.navigation.goBack()
 
         Then.ratedPuzzle
@@ -171,9 +185,8 @@ internal class RatedPuzzleScreenTest : BaseUiTest() {
 
     private companion object {
         /**
-         * Rating at which one puzzle exists in `test_puzzles.db` and which matches the default
-         * user rating of 1200 (so `GetRatedPuzzle` can load it without expanding its search).
+         * Rating at which one puzzle exists in `test_puzzles.db` and has multiple moves.
          */
-        const val PUZZLE_RATING: Int = 1200
+        const val PUZZLE_RATING: Int = 1250
     }
 }
