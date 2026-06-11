@@ -17,14 +17,14 @@ class BoardVisDashboardAssertions(private val rule: ComposeTestRule) {
             .assertIsDisplayed()
     }
 
-    fun hasMoveThePieceCard(): BoardVisDashboardAssertions = apply {
-        rule.onNodeWithTag(BoardVisDashboardTags.Cards.MOVE_THE_PIECE)
+    fun hasKnightPathCard(): BoardVisDashboardAssertions = apply {
+        rule.onNodeWithTag(BoardVisDashboardTags.Cards.KNIGHT_PATH)
             .performScrollTo()
             .assertIsDisplayed()
     }
 
     fun hasAllCards(): BoardVisDashboardAssertions = apply {
         hasFindTheSquareCard()
-        hasMoveThePieceCard()
+        hasKnightPathCard()
     }
 }

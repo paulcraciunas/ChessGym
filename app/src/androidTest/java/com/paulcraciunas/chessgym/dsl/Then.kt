@@ -9,7 +9,7 @@ import com.paulcraciunas.chessgym.dsl.assertions.FailedPuzzlesScreenAssertions
 import com.paulcraciunas.chessgym.dsl.assertions.FindTheSquareScreenAssertions
 import com.paulcraciunas.chessgym.dsl.assertions.HomeScreenAssertions
 import com.paulcraciunas.chessgym.dsl.assertions.ImportGameScreenAssertions
-import com.paulcraciunas.chessgym.dsl.assertions.MoveThePieceScreenAssertions
+import com.paulcraciunas.chessgym.dsl.assertions.KnightPathScreenAssertions
 import com.paulcraciunas.chessgym.dsl.assertions.NavigationAssertions
 import com.paulcraciunas.chessgym.dsl.assertions.PuzzleDashboardAssertions
 import com.paulcraciunas.chessgym.dsl.assertions.PuzzleRushScreenAssertions
@@ -32,7 +32,7 @@ object Then {
     lateinit var boardVisDashboard: BoardVisDashboardAssertions
     lateinit var blindMode: BlindModeScreenAssertions
     lateinit var findTheSquare: FindTheSquareScreenAssertions
-    lateinit var moveThePiece: MoveThePieceScreenAssertions
+    lateinit var knightPath: KnightPathScreenAssertions
     lateinit var toolsDashboard: ToolsDashboardAssertions
     lateinit var clockScreen: ClockScreenAssertions
     lateinit var importGame: ImportGameScreenAssertions
@@ -52,7 +52,7 @@ object Then {
         boardVisDashboard = BoardVisDashboardAssertions(rule)
         blindMode = BlindModeScreenAssertions(rule)
         findTheSquare = FindTheSquareScreenAssertions(rule)
-        moveThePiece = MoveThePieceScreenAssertions(rule)
+        knightPath = KnightPathScreenAssertions(rule)
         toolsDashboard = ToolsDashboardAssertions(rule)
         clockScreen = ClockScreenAssertions(rule)
         importGame = ImportGameScreenAssertions(rule)
