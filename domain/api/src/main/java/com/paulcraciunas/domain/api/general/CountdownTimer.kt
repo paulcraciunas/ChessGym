@@ -10,6 +10,9 @@ interface CountdownTimer {
     fun start(durationMs: Long, intervalMillis: Long = 1000L): Flow<Remainder>
 
     data class Remainder(val seconds: Int, val millis: Int) {
-        fun isPositive(): Boolean = seconds > 0 || (seconds == 0 && millis > 0)
+        val ms: Long
+            get() = seconds * 1000L + millis
+        val isPositive: Boolean
+            get() = seconds > 0 || (seconds == 0 && millis > 0)
     }
 }

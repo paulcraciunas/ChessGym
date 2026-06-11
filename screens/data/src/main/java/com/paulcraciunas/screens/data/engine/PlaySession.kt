@@ -153,7 +153,7 @@ class PlaySession(
             ?.collect { remainder ->
                 val totalMs = (remainder.seconds * 1000L) + remainder.millis
                 orchestrator.update { it.copy(remainingTimeMs = totalMs) }
-                if (!remainder.isPositive()) {
+                if (!remainder.isPositive) {
                     timerExpired = true
                     currentSession.accept(PlayIntent.ExpireTime)
                     resumeChannel.trySend(Unit)

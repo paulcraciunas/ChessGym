@@ -306,22 +306,22 @@ internal class RealCountdownTimerTest {
     internal inner class RemainderDataClass {
         @Test
         fun `GIVEN positive seconds WHEN isPositive THEN returns true`() {
-            assertTrue(CountdownTimer.Remainder(1, 0).isPositive())
+            assertTrue(CountdownTimer.Remainder(1, 0).isPositive)
         }
 
         @Test
         fun `GIVEN zero seconds positive millis WHEN isPositive THEN returns true`() {
-            assertTrue(CountdownTimer.Remainder(0, 500).isPositive())
+            assertTrue(CountdownTimer.Remainder(0, 500).isPositive)
         }
 
         @Test
         fun `GIVEN zero seconds zero millis WHEN isPositive THEN returns false`() {
-            assertFalse(CountdownTimer.Remainder(0, 0).isPositive())
+            assertFalse(CountdownTimer.Remainder(0, 0).isPositive)
         }
 
         @Test
         fun `GIVEN large values WHEN isPositive THEN returns true`() {
-            assertTrue(CountdownTimer.Remainder(3600, 999).isPositive())
+            assertTrue(CountdownTimer.Remainder(3600, 999).isPositive)
         }
     }
 
