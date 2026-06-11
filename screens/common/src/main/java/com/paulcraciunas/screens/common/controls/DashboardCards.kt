@@ -145,14 +145,14 @@ fun ImportGameCard(
 )
 
 @Composable
-fun MoveThePieceCard(
+fun KnightPathCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) = DashboardCard(
     isEnabled = true,
     icon = { ResIcon(icon = R.drawable.knight_white) },
-    title = R.string.boardvis_move_piece_title,
-    description = R.string.boardvis_move_piece_description,
+    title = R.string.boardvis_knight_path_title,
+    description = R.string.boardvis_knight_path_description,
     startContentDescription = R.string.boardvis_mode_start,
     highlight = null,
     onClick = onClick,
@@ -184,12 +184,12 @@ private fun FindTheSquareCardNoHighScorePreview() {
     }
 }
 
-@Preview("MoveThePieceCard")
-@Preview("MoveThePieceCard (dark)", uiMode = UI_MODE_NIGHT_YES)
+@Preview("KnightPathCard")
+@Preview("KnightPathCard (dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
-private fun MoveThePieceCardPreview() {
+private fun KnightPathCardPreview() {
     ChessGymTheme {
-        MoveThePieceCard(
+        KnightPathCard(
             onClick = {},
             modifier = Modifier.padding(16.dp)
         )

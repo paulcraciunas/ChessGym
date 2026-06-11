@@ -29,7 +29,7 @@ sealed class Screen {
     data object FindTheSquare : Screen()
 
     @Serializable
-    data object MoveThePiece : Screen()
+    data object KnightPath : Screen()
 
     @Serializable
     data object BlindMode : Screen()

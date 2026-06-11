@@ -58,7 +58,7 @@ import com.paulcraciunas.chessgym.screens.FailedPuzzles
 import com.paulcraciunas.chessgym.screens.FindTheSquare
 import com.paulcraciunas.chessgym.screens.Home
 import com.paulcraciunas.chessgym.screens.ImportGame
-import com.paulcraciunas.chessgym.screens.MoveThePiece
+import com.paulcraciunas.chessgym.screens.KnightPath
 import com.paulcraciunas.chessgym.screens.PuzzleDashboard
 import com.paulcraciunas.chessgym.screens.PuzzleRush
 import com.paulcraciunas.chessgym.screens.PuzzleStreak
@@ -218,7 +218,7 @@ fun MainScreen(
                                 BoardVisDashboard(tabNavController = navController, onDrawerToggle = onDrawerToggle)
                             }
                             animatedComposable<Screen.FindTheSquare> { FindTheSquare(tabNavController = navController) }
-                            animatedComposable<Screen.MoveThePiece> { MoveThePiece(tabNavController = navController) }
+                            animatedComposable<Screen.KnightPath> { KnightPath(tabNavController = navController) }
                             animatedComposable<Screen.BlindMode> { BlindMode(onDrawerToggle = onDrawerToggle) }
                             animatedComposable<Screen.ToolsDashboard> {
                                 ToolsDashboard(tabNavController = navController, onDrawerToggle = onDrawerToggle)

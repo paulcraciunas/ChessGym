@@ -7,6 +7,6 @@ object BoardVisDashboardTags {
     object Cards {
         private const val CARD = "${PREFIX}card_"
         const val FIND_THE_SQUARE = "${CARD}find_the_square"
-        const val MOVE_THE_PIECE = "${CARD}move_the_piece"
+        const val KNIGHT_PATH = "${CARD}knight_path"
     }
 }

@@ -59,12 +59,12 @@ internal class BoardVisDashboardScreenTest : BaseUiTest() {
     }
 
     @Test
-    fun WHEN_tapping_move_the_piece_card_THEN_navigates_to_move_the_piece() {
+    fun WHEN_tapping_knight_path_card_THEN_navigates_to_knight_path() {
         When.appIsLaunched()
         When.navigation.navigateToBoardVis()
-        When.boardVisDashboard.openMoveThePiece()
+        When.boardVisDashboard.openKnightPath()
 
-        Then.moveThePiece.isDisplayed()
+        Then.knightPath.isDisplayed()
     }
 
     @Test
@@ -104,11 +104,11 @@ internal class BoardVisDashboardScreenTest : BaseUiTest() {
     }
 
     @Test
-    fun GIVEN_on_move_the_piece_WHEN_going_back_THEN_returns_to_dashboard() {
+    fun GIVEN_on_knight_path_WHEN_going_back_THEN_returns_to_dashboard() {
         When.appIsLaunched()
         When.navigation.navigateToBoardVis()
-        When.boardVisDashboard.openMoveThePiece()
-        Then.moveThePiece.isDisplayed()
+        When.boardVisDashboard.openKnightPath()
+        Then.knightPath.isDisplayed()
 
         When.navigation.goBack()
 
