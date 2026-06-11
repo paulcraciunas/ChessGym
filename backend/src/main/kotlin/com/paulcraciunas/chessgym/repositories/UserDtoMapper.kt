@@ -39,7 +39,7 @@ class UserDtoMapper {
             "puzzleRush" to user.highScores.puzzleRush,
             "puzzleStreak" to user.highScores.puzzleStreak,
             "findTheSquare" to user.highScores.findTheSquare,
-            "moveThePiece" to user.highScores.moveThePiece,
+            "knightPath" to user.highScores.knightPath,
             "blindMode" to user.highScores.blindMode,
         ),
         "statistics" to mapOf(
@@ -51,7 +51,7 @@ class UserDtoMapper {
             "streakSessions" to user.statistics.streakSessions,
             "failedPuzzlesRedeemed" to user.statistics.failedPuzzlesRedeemed,
             "findSquareSessions" to user.statistics.findSquareSessions,
-            "moveThePieceSessions" to user.statistics.moveThePieceSessions,
+            "knightPathSessions" to user.statistics.knightPathSessions,
             "blindModeWins" to user.statistics.blindModeWins,
             "rushPuzzlesSolved" to user.statistics.rushPuzzlesSolved,
         ),
@@ -82,7 +82,7 @@ class UserDtoMapper {
         puzzleRush = data["puzzleRush"].asInt(),
         puzzleStreak = data["puzzleStreak"].asInt(),
         findTheSquare = data["findTheSquare"].asInt(),
-        moveThePiece = data["moveThePiece"].asInt(),
+        knightPath = data["knightPath"].asInt(),
         blindMode = data["blindMode"].asInt(RatingsDto.DEFAULT_BLIND_MODE_RATING),
     )
 
@@ -95,7 +95,7 @@ class UserDtoMapper {
         streakSessions = data["streakSessions"].asInt(),
         failedPuzzlesRedeemed = data["failedPuzzlesRedeemed"].asInt(),
         findSquareSessions = data["findSquareSessions"].asInt(),
-        moveThePieceSessions = data["moveThePieceSessions"].asInt(),
+        knightPathSessions = data["knightPathSessions"].asInt(),
         blindModeWins = data["blindModeWins"].asInt(),
         rushPuzzlesSolved = data["rushPuzzlesSolved"].asInt(),
     )

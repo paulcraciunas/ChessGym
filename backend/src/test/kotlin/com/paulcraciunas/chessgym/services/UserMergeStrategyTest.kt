@@ -155,13 +155,13 @@ class UserMergeStrategyTest {
         val existing = UserDto(
             highScores = HighScoresDto(
                 ratedPuzzle = 1100, puzzleRush = 20, puzzleStreak = 30,
-                findTheSquare = 40, moveThePiece = 50, blindMode = 500,
+                findTheSquare = 40, knightPath = 50, blindMode = 500,
             ),
         )
         val incoming = UserDto(
             highScores = HighScoresDto(
                 ratedPuzzle = 1200, puzzleRush = 10, puzzleStreak = 35,
-                findTheSquare = 35, moveThePiece = 55, blindMode = 450,
+                findTheSquare = 35, knightPath = 55, blindMode = 450,
             ),
         )
 
@@ -170,7 +170,7 @@ class UserMergeStrategyTest {
         assertEquals(20, merged.highScores.puzzleRush)
         assertEquals(35, merged.highScores.puzzleStreak)
         assertEquals(40, merged.highScores.findTheSquare)
-        assertEquals(55, merged.highScores.moveThePiece)
+        assertEquals(55, merged.highScores.knightPath)
         assertEquals(500, merged.highScores.blindMode)
     }
 
@@ -180,7 +180,7 @@ class UserMergeStrategyTest {
             statistics = StatisticsDto(
                 puzzlesPlayed = 100, puzzlesSolved = 80, totalTimeSpent = 5000L,
                 ratedPuzzlesSolved = 50, puzzleRushSessions = 10, streakSessions = 5,
-                failedPuzzlesRedeemed = 20, findSquareSessions = 15, moveThePieceSessions = 8,
+                failedPuzzlesRedeemed = 20, findSquareSessions = 15, knightPathSessions = 8,
                 blindModeWins = 3, rushPuzzlesSolved = 60,
             ),
         )
@@ -188,7 +188,7 @@ class UserMergeStrategyTest {
             statistics = StatisticsDto(
                 puzzlesPlayed = 110, puzzlesSolved = 75, totalTimeSpent = 4500L,
                 ratedPuzzlesSolved = 55, puzzleRushSessions = 8, streakSessions = 7,
-                failedPuzzlesRedeemed = 18, findSquareSessions = 20, moveThePieceSessions = 6,
+                failedPuzzlesRedeemed = 18, findSquareSessions = 20, knightPathSessions = 6,
                 blindModeWins = 5, rushPuzzlesSolved = 55,
             ),
         )
@@ -202,7 +202,7 @@ class UserMergeStrategyTest {
         assertEquals(7, merged.statistics.streakSessions)
         assertEquals(20, merged.statistics.failedPuzzlesRedeemed)
         assertEquals(20, merged.statistics.findSquareSessions)
-        assertEquals(8, merged.statistics.moveThePieceSessions)
+        assertEquals(8, merged.statistics.knightPathSessions)
         assertEquals(5, merged.statistics.blindModeWins)
         assertEquals(60, merged.statistics.rushPuzzlesSolved)
     }

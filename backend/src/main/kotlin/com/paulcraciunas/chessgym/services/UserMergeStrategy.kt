@@ -34,7 +34,7 @@ class UserMergeStrategy {
         puzzleRush = maxOf(existing.puzzleRush, incoming.puzzleRush),
         puzzleStreak = maxOf(existing.puzzleStreak, incoming.puzzleStreak),
         findTheSquare = maxOf(existing.findTheSquare, incoming.findTheSquare),
-        moveThePiece = maxOf(existing.moveThePiece, incoming.moveThePiece),
+        knightPath = maxOf(existing.knightPath, incoming.knightPath),
         blindMode = maxOf(existing.blindMode, incoming.blindMode),
     )
 
@@ -53,9 +53,9 @@ class UserMergeStrategy {
             incoming.failedPuzzlesRedeemed,
         ),
         findSquareSessions = maxOf(existing.findSquareSessions, incoming.findSquareSessions),
-        moveThePieceSessions = maxOf(
-            existing.moveThePieceSessions,
-            incoming.moveThePieceSessions,
+        knightPathSessions = maxOf(
+            existing.knightPathSessions,
+            incoming.knightPathSessions,
         ),
         blindModeWins = maxOf(existing.blindModeWins, incoming.blindModeWins),
         rushPuzzlesSolved = maxOf(existing.rushPuzzlesSolved, incoming.rushPuzzlesSolved),
