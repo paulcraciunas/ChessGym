@@ -63,7 +63,7 @@ class DefaultStatisticsService(
             "STREAK_SESSIONS" to listOf(10, 50, 100, 250, 500),
             "FAILED_PUZZLES_REDEEMED" to listOf(25, 100, 250, 500, 1000),
             "FIND_SQUARE_SESSIONS" to listOf(10, 50, 100, 250, 500),
-            "MOVE_PIECE_SESSIONS" to listOf(10, 50, 100, 250, 500),
+            "KNIGHT_PATH_SESSIONS" to listOf(10, 50, 100, 250, 500),
             "BLIND_MODE_WINS" to listOf(5, 25, 50, 100, 200),
             "RATED_WIN_STREAK" to listOf(3, 5, 10, 15, 25),
             "RATING_CLIMBER" to listOf(1100, 1300, 1500, 1800, 2000),

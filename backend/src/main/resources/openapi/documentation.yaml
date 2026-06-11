@@ -262,7 +262,7 @@ components:
           type: integer
         findTheSquare:
           type: integer
-        moveThePiece:
+        knightPath:
           type: integer
         blindMode:
           type: integer
@@ -288,7 +288,7 @@ components:
           type: integer
         findSquareSessions:
           type: integer
-        moveThePieceSessions:
+        knightPathSessions:
           type: integer
         blindModeWins:
           type: integer
