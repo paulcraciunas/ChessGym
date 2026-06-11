@@ -1,5 +1,6 @@
 package com.paulcraciunas.domain.impl.general
 
+import com.paulcraciunas.domain.api.general.ControllableClock
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher

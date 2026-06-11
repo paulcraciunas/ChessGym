@@ -1,5 +1,6 @@
 package com.paulcraciunas.domain.impl.general
 
+import com.paulcraciunas.domain.api.general.ControllableClock
 import com.paulcraciunas.domain.api.general.CountdownTimer
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
