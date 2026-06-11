@@ -167,7 +167,7 @@ internal class GetBufferedPuzzleSeriesImplTest {
         }
 
         @Test
-        fun `GIVEN 2 consecutive failures then success WHEN collecting THEN recovers`() = runTest(testDispatcher) {
+        fun `GIVEN 2 consecutive failures before success WHEN collecting THEN recovers`() = runTest(testDispatcher) {
             // Given - fails on calls 1 and 2, succeeds on 3+
             val failingPuzzleByRating = FailNTimesGetPuzzleByRating(
                 delegate = GetPuzzleByRatingImpl(repository, FakeAppSettingsRepository.default()),
