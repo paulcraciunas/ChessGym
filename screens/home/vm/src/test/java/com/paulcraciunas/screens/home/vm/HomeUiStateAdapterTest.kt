@@ -32,7 +32,7 @@ internal class HomeUiStateAdapterTest {
         assertEquals(0, result.userStats.bestPuzzleRushScore)
         assertEquals(0, result.userStats.bestPuzzleStreakScore)
         assertEquals(0, result.userStats.bestFindTheSquareScore)
-        assertEquals(0, result.userStats.bestMoveThePieceScore)
+        assertEquals(0, result.userStats.bestKnightPathScore)
         assertEquals(400, result.userStats.bestBlindModeScore)
 
         assertEquals(emptyList<HomeUiState.HistoryGroup>(), result.history)
@@ -75,7 +75,7 @@ internal class HomeUiStateAdapterTest {
                 puzzleRush = 85,
                 puzzleStreak = 42,
                 findTheSquare = 25,
-                moveThePiece = 15,
+                knightPath = 15,
                 blindMode = 800
             )
         )
@@ -91,7 +91,7 @@ internal class HomeUiStateAdapterTest {
         assertEquals(85, result.userStats.bestPuzzleRushScore)
         assertEquals(42, result.userStats.bestPuzzleStreakScore)
         assertEquals(25, result.userStats.bestFindTheSquareScore)
-        assertEquals(15, result.userStats.bestMoveThePieceScore)
+        assertEquals(15, result.userStats.bestKnightPathScore)
         assertEquals(800, result.userStats.bestBlindModeScore)
     }
 

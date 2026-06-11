@@ -123,8 +123,8 @@ internal fun HighScoresCard(
                     value = stats.bestFindTheSquareScore.toString()
                 )
                 StatRow(
-                    label = stringResource(R.string.user_stat_high_score_move_the_piece),
-                    value = stats.bestMoveThePieceScore.toString()
+                    label = stringResource(R.string.user_stat_high_score_knight_path),
+                    value = stats.bestKnightPathScore.toString()
                 )
             }
         }
@@ -146,7 +146,7 @@ private fun HighScoresCardPreview() {
                 bestPuzzleRushScore = 23,
                 bestPuzzleStreakScore = 15,
                 bestFindTheSquareScore = 42,
-                bestMoveThePieceScore = 18,
+                bestKnightPathScore = 18,
                 bestBlindModeScore = 8,
             ),
             modifier = Modifier.padding(Design.dimensions.spacing.xxl),
