@@ -11,13 +11,14 @@ androidLibrary {
 dependencies {
     implementation(project(":domain:api"))
     implementation(project(":game:logic:api"))
-    implementation(project(":game:logic:builders"))
+    implementation(project(":global:qualifiers"))
     implementation(project(":user:api"))
     implementation(project(":screens:data"))
 
     implementation(libs.androidx.lifecycle.runtime.ktx)
 
     testImplementation(project(":game:logic:impl"))
+    testImplementation(project(":domain:impl"))
     testImplementation(testFixtures(project(":user:api")))
     testImplementation(testFixtures(project(":domain:api")))
 }
