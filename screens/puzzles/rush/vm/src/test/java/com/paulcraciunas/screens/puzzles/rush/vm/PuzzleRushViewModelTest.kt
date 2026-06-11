@@ -256,7 +256,7 @@ internal class PuzzleRushViewModelTest {
     @Nested
     internal inner class Completion {
         @Test
-        fun `GIVEN rush ended via wrong move THEN user stats updated`() = runTest(testDispatcher) {
+        fun `WHEN rush ended via wrong move THEN user stats updated`() = runTest(testDispatcher) {
             puzzleSeries.enqueue(buildPuzzle())
             buildVm()
 
@@ -270,7 +270,7 @@ internal class PuzzleRushViewModelTest {
         }
 
         @Test
-        fun `GIVEN 1 puzzle solved then failure THEN user stats reflect both`() = runTest(testDispatcher) {
+        fun `WHEN 1 puzzle solved with failure THEN user stats reflect both`() = runTest(testDispatcher) {
             puzzleSeries.enqueue(buildPuzzle())
             puzzleSeries.enqueue(buildPuzzle(rating = 1300))
             buildVm()
@@ -286,7 +286,7 @@ internal class PuzzleRushViewModelTest {
         }
 
         @Test
-        fun `GIVEN rush ended THEN high score updated if better`() = runTest(testDispatcher) {
+        fun `WHEN rush ended THEN high score updated if better`() = runTest(testDispatcher) {
             puzzleSeries.enqueue(buildPuzzle())
             puzzleSeries.enqueue(buildPuzzle(rating = 1300))
             buildVm()
@@ -313,7 +313,7 @@ internal class PuzzleRushViewModelTest {
         }
 
         @Test
-        fun `GIVEN rush ended via wrong move THEN failed puzzle IDs stored`() = runTest(testDispatcher) {
+        fun `WHEN rush ended via wrong move THEN failed puzzle IDs stored`() = runTest(testDispatcher) {
             puzzleSeries.enqueue(buildPuzzle())
             buildVm()
 
