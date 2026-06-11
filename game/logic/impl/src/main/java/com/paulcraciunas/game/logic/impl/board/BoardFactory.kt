@@ -10,6 +10,7 @@ import com.paulcraciunas.game.logic.api.board.Rank
 
 object BoardFactory: IBoardFactory {
     override fun defaultBoard(): Board = Board().from(defaultBoard)
+    override fun emptyBoard(): Board = Board()
 
     private val defaultBoard: IBoard = Board()
         .addWhitePieces()
