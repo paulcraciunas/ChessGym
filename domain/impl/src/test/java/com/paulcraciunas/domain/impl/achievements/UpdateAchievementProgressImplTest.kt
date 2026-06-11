@@ -151,11 +151,11 @@ internal class UpdateAchievementProgressImplTest {
 
         @Test
         fun `GIVEN move piece sessions WHEN invoke THEN derives from statistics`() = runTest {
-            val user = User(statistics = User.Statistics(moveThePieceSessions = 15))
+            val user = User(statistics = User.Statistics(knightPathSessions = 15))
 
             val result = underTest(user)
 
-            assertEquals(15L, result.progress(Achievement.MOVE_PIECE_SESSIONS))
+            assertEquals(15L, result.progress(Achievement.KNIGHT_PATH_SESSIONS))
         }
 
         @Test
@@ -170,7 +170,7 @@ internal class UpdateAchievementProgressImplTest {
         @Test
         fun `GIVEN board viz sessions WHEN invoke THEN derives from sum of find and move`() = runTest {
             val user = User(
-                statistics = User.Statistics(findSquareSessions = 5, moveThePieceSessions = 7),
+                statistics = User.Statistics(findSquareSessions = 5, knightPathSessions = 7),
             )
 
             val result = underTest(user)
@@ -234,7 +234,7 @@ internal class UpdateAchievementProgressImplTest {
 
         @Test
         fun `GIVEN knights path WHEN invoke THEN derives from high scores`() = runTest {
-            val user = User(highScores = User.HighScores(moveThePiece = 12))
+            val user = User(highScores = User.HighScores(knightPath = 12))
 
             val result = underTest(user)
 
@@ -441,7 +441,7 @@ internal class UpdateAchievementProgressImplTest {
             Achievement.STREAK_SESSIONS -> User(statistics = User.Statistics(streakSessions = intVal))
             Achievement.FAILED_PUZZLES_REDEEMED -> User(statistics = User.Statistics(failedPuzzlesRedeemed = intVal))
             Achievement.FIND_SQUARE_SESSIONS -> User(statistics = User.Statistics(findSquareSessions = intVal))
-            Achievement.MOVE_PIECE_SESSIONS -> User(statistics = User.Statistics(moveThePieceSessions = intVal))
+            Achievement.KNIGHT_PATH_SESSIONS -> User(statistics = User.Statistics(knightPathSessions = intVal))
             Achievement.BLIND_MODE_WINS -> User(statistics = User.Statistics(blindModeWins = intVal))
             Achievement.BOARD_VISION -> User(statistics = User.Statistics(findSquareSessions = intVal))
             Achievement.RUSH_SOLVER -> User(statistics = User.Statistics(rushPuzzlesSolved = intVal))
@@ -450,7 +450,7 @@ internal class UpdateAchievementProgressImplTest {
             Achievement.RUSH_CHAMPION -> User(highScores = User.HighScores(puzzleRush = intVal))
             Achievement.STREAK_LEGEND -> User(highScores = User.HighScores(puzzleStreak = intVal))
             Achievement.EAGLE_EYE -> User(highScores = User.HighScores(findTheSquare = intVal))
-            Achievement.KNIGHTS_PATH -> User(highScores = User.HighScores(moveThePiece = intVal))
+            Achievement.KNIGHTS_PATH -> User(highScores = User.HighScores(knightPath = intVal))
             Achievement.PUZZLE_ADDICT -> User(statistics = User.Statistics(puzzlesSolved = intVal))
             Achievement.TIME_INVESTED -> User(statistics = User.Statistics(totalTimeSpent = value * MILLIS_PER_HOUR))
             Achievement.RATED_WIN_STREAK -> User(achievements = User.Achievements(bestRatedWinStreak = intVal))
