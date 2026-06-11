@@ -120,7 +120,7 @@
     <string name="user_stat_high_score_blind_mode">Bester Blindmodus</string>
     <string name="user_stat_high_score_puzzle_streak">Beste Puzzle Streak</string>
     <string name="user_stat_high_score_find_the_square">Bestes Feld finden</string>
-    <string name="user_stat_high_score_move_the_piece">Bestes Figur bewegen</string>
+    <string name="user_stat_high_score_knight_path">Bestes Figur bewegen</string>
     <!-- endregion -->
 
     <!-- region Loading -->
@@ -310,12 +310,11 @@
     <!-- endregion -->
 
     <!-- region Move the Piece -->
-    <string name="boardvis_move_piece_title">Figur bewegen</string>
-    <string name="boardvis_move_piece_description">Visualisiere und mache die richtigen Züge auf dem Brett</string>
-    <string name="boardvis_move_piece_training_mode">Trainingsmodus</string>
-    <string name="boardvis_move_piece_moves_remaining">Verbleibende Züge: %1$d</string>
-    <string name="boardvis_move_piece_rules">Bewege deine Figur, ohne auf ein vom Gegner angegriffenes Feld zu landen. Führe die erforderlichen Züge aus, um das nächste Level zu erreichen!</string>
-    <string name="boardvis_move_piece_captured">Geschlagen!</string>
+    <string name="boardvis_knight_path_title">Springerweg</string>
+    <string name="boardvis_knight_path_description">Finde den kürzesten Weg des Springers zum Zielfeld</string>
+    <string name="boardvis_knight_path_rules">Finde den kürzesten Weg für den Springer zum Zielfeld. Ein Fehler und das Spiel ist vorbei!</string>
+    <string name="boardvis_knight_path_captured">Geschlagen!</string>
+    <string name="boardvis_knight_path_wrong_move">Falscher Zug!</string>
     <!-- endregion -->
 
     <!-- region Settings -->
@@ -442,7 +441,7 @@
     <string name="achievement_category_streak_sessions">Serien-Sitzungen</string>
     <string name="achievement_category_failed_puzzles_redeemed">Fehlgeschlagene Aufgaben wiedergutgemacht</string>
     <string name="achievement_category_find_square_sessions">Feld-finden-Sitzungen</string>
-    <string name="achievement_category_move_piece_sessions">Figur-bewegen-Sitzungen</string>
+    <string name="achievement_category_knight_path_sessions">Springerpfad-Sitzungen</string>
     <string name="achievement_category_blind_mode_wins">Blindmodus-Siege</string>
     <string name="achievement_category_rated_win_streak">Bewertete Gewinnserie</string>
     <string name="achievement_category_rating_climber">Bewertungsaufsteiger</string>
@@ -450,7 +449,7 @@
     <string name="achievement_category_rush_champion">Rush-Bestleistung</string>
     <string name="achievement_category_streak_legend">Serien-Bestleistung</string>
     <string name="achievement_category_eagle_eye">Feld-finden-Bestleistung</string>
-    <string name="achievement_category_knights_path">Figur-bewegen-Bestleistung</string>
+    <string name="achievement_category_knights_path">Springerpfad-Bestleistung</string>
     <string name="achievement_category_puzzle_addict">Gelöste Aufgaben</string>
     <string name="achievement_category_time_invested">Investierte Zeit</string>
     <string name="achievement_category_daily_grinder">Aufeinanderfolgende Spieltage</string>
@@ -493,12 +492,12 @@
     <string name="achievement_find_square_sessions_four">Feld-Meister</string>
     <string name="achievement_find_square_sessions_five">Feld-Großmeister</string>
 
-    <!-- Tier names: MOVE_PIECE_SESSIONS -->
-    <string name="achievement_move_piece_sessions_one">Figur-Anfänger</string>
-    <string name="achievement_move_piece_sessions_two">Figur-Beweger</string>
-    <string name="achievement_move_piece_sessions_three">Figur-Navigator</string>
-    <string name="achievement_move_piece_sessions_four">Figur-Meister</string>
-    <string name="achievement_move_piece_sessions_five">Figur-Großmeister</string>
+    <!-- Tier names: KNIGHT_PATH_SESSIONS -->
+    <string name="achievement_knight_path_sessions_one">Figur-Anfänger</string>
+    <string name="achievement_knight_path_sessions_two">Figur-Beweger</string>
+    <string name="achievement_knight_path_sessions_three">Figur-Navigator</string>
+    <string name="achievement_knight_path_sessions_four">Figur-Meister</string>
+    <string name="achievement_knight_path_sessions_five">Figur-Großmeister</string>
 
     <!-- Tier names: BLIND_MODE_WINS -->
     <string name="achievement_blind_mode_wins_one">Odins Lehrling</string>
@@ -604,7 +603,7 @@
     <string name="achievement_desc_streak_sessions">Absolviere Puzzle Streak Sitzungen, um diesen Erfolg zu verdienen</string>
     <string name="achievement_desc_failed_puzzles_redeemed">Versuche erneut und löse zuvor fehlgeschlagene Aufgaben</string>
     <string name="achievement_desc_find_square_sessions">Spiele Feld-finden-Sitzungen, um diesen Erfolg zu verdienen</string>
-    <string name="achievement_desc_move_piece_sessions">Spiele Figur-bewegen-Sitzungen, um diesen Erfolg zu verdienen</string>
+    <string name="achievement_desc_knight_path_sessions">Spiele Springerpfad-Sitzungen, um diesen Erfolg zu verdienen</string>
     <string name="achievement_desc_blind_mode_wins">Gewinne bewertete Blindmodus-Partien, um diesen Erfolg zu verdienen</string>
     <string name="achievement_desc_rated_win_streak">Gewinne aufeinanderfolgende bewertete Aufgaben ohne Fehler</string>
     <string name="achievement_desc_rating_climber">Erhöhe deine Aufgabenbewertung, um neue Höhen zu erreichen</string>
@@ -612,12 +611,12 @@
     <string name="achievement_desc_rush_champion">Setze eine Bestleistung in Puzzle Rush</string>
     <string name="achievement_desc_streak_legend">Setze eine Bestleistung in Puzzle Streak</string>
     <string name="achievement_desc_eagle_eye">Setze eine Bestleistung im Feld finden</string>
-    <string name="achievement_desc_knights_path">Setze eine Bestleistung in Figur bewegen</string>
+    <string name="achievement_desc_knights_path">Setze eine Bestleistung im Springerpfad</string>
     <string name="achievement_desc_puzzle_addict">Löse Aufgaben in allen Spielmodi</string>
     <string name="achievement_desc_time_invested">Bringe Zeit mit dem Üben in allen Spielmodi</string>
     <string name="achievement_desc_daily_grinder">Spiele an aufeinanderfolgenden Tagen, um deine Serie aufzubauen</string>
     <string name="achievement_desc_consistency_king">Erreiche deine beste je aufeinanderfolgende Tages-Serie</string>
-    <string name="achievement_desc_board_vision">Absolviere Feld-finden- und Figur-bewegen-Sitzungen</string>
+    <string name="achievement_desc_board_vision">Absolviere Feld-finden- und Springerpfad-Sitzungen</string>
     <string name="achievement_desc_rush_solver">Löse Aufgaben während Puzzle Rush Sitzungen</string>
 
     <!-- Achievement UI -->

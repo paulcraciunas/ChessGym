@@ -116,7 +116,7 @@
     <string name="user_stat_high_score_blind_mode">Mode Buta Terbaik</string>
     <string name="user_stat_high_score_puzzle_streak">Rangkaian Teka-teki Terbaik</string>
     <string name="user_stat_high_score_find_the_square">Temukan Kotak Terbaik</string>
-    <string name="user_stat_high_score_move_the_piece">Gerakkan Bidak Terbaik</string>
+    <string name="user_stat_high_score_knight_path">Gerakkan Bidak Terbaik</string>
     <!-- endregion -->
 
     <!-- region Loading -->
@@ -305,12 +305,11 @@
     <!-- endregion -->
 
     <!-- region Move the Piece -->
-    <string name="boardvis_move_piece_title">Gerakkan Bidak</string>
-    <string name="boardvis_move_piece_description">Visualisasikan dan buat langkah yang benar di papan</string>
-    <string name="boardvis_move_piece_training_mode">Mode Latihan</string>
-    <string name="boardvis_move_piece_moves_remaining">Langkah Tersisa: %1$d</string>
-    <string name="boardvis_move_piece_rules">Gerakkan bidakmu tanpa mendarat di kotak yang diserang lawan. Selesaikan langkah yang diperlukan untuk maju ke level berikutnya!</string>
-    <string name="boardvis_move_piece_captured">Ditangkap!</string>
+    <string name="boardvis_knight_path_title">Jalur Kuda</string>
+    <string name="boardvis_knight_path_description">Temukan jalur terpendek Kuda menuju kotak tujuan</string>
+    <string name="boardvis_knight_path_rules">Temukan jalur terpendek Kuda menuju kotak tujuan. Satu kesalahan dan permainan berakhir!</string>
+    <string name="boardvis_knight_path_captured">Ditangkap!</string>
+    <string name="boardvis_knight_path_wrong_move">Langkah salah!</string>
     <!-- endregion -->
 
     <!-- region Settings -->
@@ -437,7 +436,7 @@
     <string name="achievement_category_streak_sessions">Sesi Rangkaian</string>
     <string name="achievement_category_failed_puzzles_redeemed">Teka-teki Gagal Ditebus</string>
     <string name="achievement_category_find_square_sessions">Sesi Temukan Kotak</string>
-    <string name="achievement_category_move_piece_sessions">Sesi Gerakkan Bidak</string>
+    <string name="achievement_category_knight_path_sessions">Sesi Jalur Kuda</string>
     <string name="achievement_category_blind_mode_wins">Kemenangan Mode Buta</string>
     <string name="achievement_category_rated_win_streak">Rangkaian Kemenangan Berperingkat</string>
     <string name="achievement_category_rating_climber">Pendaki Peringkat</string>
@@ -445,7 +444,7 @@
     <string name="achievement_category_rush_champion">Skor Tertinggi Rush</string>
     <string name="achievement_category_streak_legend">Skor Tertinggi Rangkaian</string>
     <string name="achievement_category_eagle_eye">Skor Tertinggi Temukan Kotak</string>
-    <string name="achievement_category_knights_path">Skor Tertinggi Gerakkan Bidak</string>
+    <string name="achievement_category_knights_path">Skor Tertinggi Jalur Kuda</string>
     <string name="achievement_category_puzzle_addict">Teka-teki Diselesaikan</string>
     <string name="achievement_category_time_invested">Waktu Diinvestasikan</string>
     <string name="achievement_category_daily_grinder">Hari Bermain Berturut-turut</string>
@@ -488,12 +487,12 @@
     <string name="achievement_find_square_sessions_four">Master Kotak</string>
     <string name="achievement_find_square_sessions_five">Grandmaster Kotak</string>
 
-    <!-- Tier names: MOVE_PIECE_SESSIONS -->
-    <string name="achievement_move_piece_sessions_one">Pemula Bidak</string>
-    <string name="achievement_move_piece_sessions_two">Penggerak Bidak</string>
-    <string name="achievement_move_piece_sessions_three">Navigator Bidak</string>
-    <string name="achievement_move_piece_sessions_four">Master Bidak</string>
-    <string name="achievement_move_piece_sessions_five">Grandmaster Bidak</string>
+    <!-- Tier names: KNIGHT_PATH_SESSIONS -->
+    <string name="achievement_knight_path_sessions_one">Pemula Bidak</string>
+    <string name="achievement_knight_path_sessions_two">Penggerak Bidak</string>
+    <string name="achievement_knight_path_sessions_three">Navigator Bidak</string>
+    <string name="achievement_knight_path_sessions_four">Master Bidak</string>
+    <string name="achievement_knight_path_sessions_five">Grandmaster Bidak</string>
 
     <!-- Tier names: BLIND_MODE_WINS -->
     <string name="achievement_blind_mode_wins_one">Murid Odin</string>
@@ -599,7 +598,7 @@
     <string name="achievement_desc_streak_sessions">Selesaikan sesi Rangkaian Teka-teki untuk mendapatkan pencapaian ini</string>
     <string name="achievement_desc_failed_puzzles_redeemed">Coba kembali dan selesaikan teka-teki yang sebelumnya gagal</string>
     <string name="achievement_desc_find_square_sessions">Mainkan sesi Temukan Kotak untuk mendapatkan pencapaian ini</string>
-    <string name="achievement_desc_move_piece_sessions">Mainkan sesi Gerakkan Bidak untuk mendapatkan pencapaian ini</string>
+    <string name="achievement_desc_knight_path_sessions">Mainkan sesi Jalur Kuda untuk mendapatkan pencapaian ini</string>
     <string name="achievement_desc_blind_mode_wins">Menangkan permainan Mode Buta berperingkat untuk mendapatkan pencapaian ini</string>
     <string name="achievement_desc_rated_win_streak">Menangkan teka-teki berperingkat berturut-turut tanpa gagal</string>
     <string name="achievement_desc_rating_climber">Tingkatkan peringkat teka-tekimu untuk mencapai ketinggian baru</string>
@@ -607,12 +606,12 @@
     <string name="achievement_desc_rush_champion">Tetapkan skor tertinggi di Puzzle Rush</string>
     <string name="achievement_desc_streak_legend">Tetapkan skor tertinggi di Rangkaian Teka-teki</string>
     <string name="achievement_desc_eagle_eye">Tetapkan skor tertinggi di Temukan Kotak</string>
-    <string name="achievement_desc_knights_path">Tetapkan skor tertinggi di Gerakkan Bidak</string>
+    <string name="achievement_desc_knights_path">Tetapkan skor tertinggi di Jalur Kuda</string>
     <string name="achievement_desc_puzzle_addict">Selesaikan teka-teki di semua mode permainan</string>
     <string name="achievement_desc_time_invested">Habiskan waktu berlatih di semua mode permainan</string>
     <string name="achievement_desc_daily_grinder">Bermain pada hari-hari berturut-turut untuk membangun rangkaianmu</string>
     <string name="achievement_desc_consistency_king">Capai rangkaian harian berturut-turut terbaikmu</string>
-    <string name="achievement_desc_board_vision">Selesaikan sesi Temukan Kotak dan Gerakkan Bidak</string>
+    <string name="achievement_desc_board_vision">Selesaikan sesi Temukan Kotak dan Jalur Kuda</string>
     <string name="achievement_desc_rush_solver">Selesaikan teka-teki selama sesi Puzzle Rush</string>
 
     <!-- Achievement UI -->

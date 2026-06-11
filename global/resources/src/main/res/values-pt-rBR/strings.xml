@@ -120,7 +120,7 @@
     <string name="user_stat_high_score_blind_mode">Melhor modo cego</string>
     <string name="user_stat_high_score_puzzle_streak">Melhor Puzzle Streak</string>
     <string name="user_stat_high_score_find_the_square">Melhor Encontre a Casa</string>
-    <string name="user_stat_high_score_move_the_piece">Melhor Mova a Peça</string>
+    <string name="user_stat_high_score_knight_path">Melhor Mova a Peça</string>
     <!-- endregion -->
 
     <!-- region Loading -->
@@ -310,12 +310,11 @@
     <!-- endregion -->
 
     <!-- region Move the Piece -->
-    <string name="boardvis_move_piece_title">Mova a Peça</string>
-    <string name="boardvis_move_piece_description">Visualize e faça os movimentos corretos no tabuleiro</string>
-    <string name="boardvis_move_piece_training_mode">Modo treinamento</string>
-    <string name="boardvis_move_piece_moves_remaining">Movimentos restantes: %1$d</string>
-    <string name="boardvis_move_piece_rules">Mova sua peça sem pousar em uma casa atacada pelo oponente. Complete os movimentos necessários para avançar ao próximo nível!</string>
-    <string name="boardvis_move_piece_captured">Capturada!</string>
+    <string name="boardvis_knight_path_title">Caminho do Cavalo</string>
+    <string name="boardvis_knight_path_description">Encontre o caminho mais curto do Cavalo até a casa de destino</string>
+    <string name="boardvis_knight_path_rules">Encontre o caminho mais curto para o Cavalo chegar à casa de destino. Um erro e o jogo acaba!</string>
+    <string name="boardvis_knight_path_captured">Capturada!</string>
+    <string name="boardvis_knight_path_wrong_move">Movimento errado!</string>
     <!-- endregion -->
 
     <!-- region Settings -->
@@ -442,7 +441,7 @@
     <string name="achievement_category_streak_sessions">Sessões de sequência</string>
     <string name="achievement_category_failed_puzzles_redeemed">Puzzles falhos remediados</string>
     <string name="achievement_category_find_square_sessions">Sessões de Encontre a Casa</string>
-    <string name="achievement_category_move_piece_sessions">Sessões de Mova a Peça</string>
+    <string name="achievement_category_knight_path_sessions">Sessões de Caminho do Cavalo</string>
     <string name="achievement_category_blind_mode_wins">Vitórias no modo cego</string>
     <string name="achievement_category_rated_win_streak">Sequência de vitórias ranqueadas</string>
     <string name="achievement_category_rating_climber">Escalador de pontuação</string>
@@ -450,7 +449,7 @@
     <string name="achievement_category_rush_champion">Recorde do Rush</string>
     <string name="achievement_category_streak_legend">Recorde da sequência</string>
     <string name="achievement_category_eagle_eye">Recorde de Encontre a Casa</string>
-    <string name="achievement_category_knights_path">Recorde de Mova a Peça</string>
+    <string name="achievement_category_knights_path">Recorde de Caminho do Cavalo</string>
     <string name="achievement_category_puzzle_addict">Puzzles resolvidos</string>
     <string name="achievement_category_time_invested">Tempo investido</string>
     <string name="achievement_category_daily_grinder">Dias consecutivos jogados</string>
@@ -493,12 +492,12 @@
     <string name="achievement_find_square_sessions_four">Mestre de casas</string>
     <string name="achievement_find_square_sessions_five">Grão-mestre de casas</string>
 
-    <!-- Tier names: MOVE_PIECE_SESSIONS -->
-    <string name="achievement_move_piece_sessions_one">Iniciante com peças</string>
-    <string name="achievement_move_piece_sessions_two">Movedor de peças</string>
-    <string name="achievement_move_piece_sessions_three">Navegador de peças</string>
-    <string name="achievement_move_piece_sessions_four">Mestre de peças</string>
-    <string name="achievement_move_piece_sessions_five">Grão-mestre de peças</string>
+    <!-- Tier names: KNIGHT_PATH_SESSIONS -->
+    <string name="achievement_knight_path_sessions_one">Iniciante com peças</string>
+    <string name="achievement_knight_path_sessions_two">Movedor de peças</string>
+    <string name="achievement_knight_path_sessions_three">Navegador de peças</string>
+    <string name="achievement_knight_path_sessions_four">Mestre de peças</string>
+    <string name="achievement_knight_path_sessions_five">Grão-mestre de peças</string>
 
     <!-- Tier names: BLIND_MODE_WINS -->
     <string name="achievement_blind_mode_wins_one">Aprendiz de Odin</string>
@@ -604,7 +603,7 @@
     <string name="achievement_desc_streak_sessions">Complete sessões de Puzzle Streak para ganhar esta conquista</string>
     <string name="achievement_desc_failed_puzzles_redeemed">Repita e resolva puzzles que falhou anteriormente</string>
     <string name="achievement_desc_find_square_sessions">Jogue sessões de Encontre a Casa para ganhar esta conquista</string>
-    <string name="achievement_desc_move_piece_sessions">Jogue sessões de Mova a Peça para ganhar esta conquista</string>
+    <string name="achievement_desc_knight_path_sessions">Jogue sessões de Caminho do Cavalo para ganhar esta conquista</string>
     <string name="achievement_desc_blind_mode_wins">Vença partidas ranqueadas no Modo cego para ganhar esta conquista</string>
     <string name="achievement_desc_rated_win_streak">Vença puzzles ranqueados consecutivos sem falhar</string>
     <string name="achievement_desc_rating_climber">Aumente sua pontuação de puzzles para alcançar novos patamares</string>
@@ -612,12 +611,12 @@
     <string name="achievement_desc_rush_champion">Estabeleça um recorde no Puzzle Rush</string>
     <string name="achievement_desc_streak_legend">Estabeleça um recorde no Puzzle Streak</string>
     <string name="achievement_desc_eagle_eye">Estabeleça um recorde em Encontre a Casa</string>
-    <string name="achievement_desc_knights_path">Estabeleça um recorde em Mova a Peça</string>
+    <string name="achievement_desc_knights_path">Estabeleça um recorde em Caminho do Cavalo</string>
     <string name="achievement_desc_puzzle_addict">Resolva puzzles em todos os modos de jogo</string>
     <string name="achievement_desc_time_invested">Dedique tempo praticando em todos os modos de jogo</string>
     <string name="achievement_desc_daily_grinder">Jogue em dias consecutivos para construir sua sequência</string>
     <string name="achievement_desc_consistency_king">Alcance sua melhor sequência diária consecutiva</string>
-    <string name="achievement_desc_board_vision">Complete sessões de Encontre a Casa e Mova a Peça</string>
+    <string name="achievement_desc_board_vision">Complete sessões de Encontre a Casa e Caminho do Cavalo</string>
     <string name="achievement_desc_rush_solver">Resolva puzzles durante as sessões de Puzzle Rush</string>
 
     <!-- Achievement UI -->

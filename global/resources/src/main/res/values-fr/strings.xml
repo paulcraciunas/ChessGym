@@ -120,7 +120,7 @@
     <string name="user_stat_high_score_blind_mode">Meilleur mode aveugle</string>
     <string name="user_stat_high_score_puzzle_streak">Meilleure Puzzle Streak</string>
     <string name="user_stat_high_score_find_the_square">Meilleur Trouver la case</string>
-    <string name="user_stat_high_score_move_the_piece">Meilleur Déplacer la pièce</string>
+    <string name="user_stat_high_score_knight_path">Meilleur Déplacer la pièce</string>
     <!-- endregion -->
 
     <!-- region Loading -->
@@ -310,12 +310,11 @@
     <!-- endregion -->
 
     <!-- region Move the Piece -->
-    <string name="boardvis_move_piece_title">Déplacer la pièce</string>
-    <string name="boardvis_move_piece_description">Visualisez et effectuez les bons coups sur le plateau</string>
-    <string name="boardvis_move_piece_training_mode">Mode entraînement</string>
-    <string name="boardvis_move_piece_moves_remaining">Coups restants : %1$d</string>
-    <string name="boardvis_move_piece_rules">Déplacez votre pièce sans atterrir sur une case attaquée par l\'adversaire. Effectuez les coups requis pour passer au niveau suivant !</string>
-    <string name="boardvis_move_piece_captured">Capturé !</string>
+    <string name="boardvis_knight_path_title">Chemin du Cavalier</string>
+    <string name="boardvis_knight_path_description">Trouvez le chemin le plus court du Cavalier vers la case cible</string>
+    <string name="boardvis_knight_path_rules">Trouvez le chemin le plus court pour que le Cavalier atteigne la case cible. Une erreur et c\'est terminé !</string>
+    <string name="boardvis_knight_path_captured">Capturé !</string>
+    <string name="boardvis_knight_path_wrong_move">Mauvais coup !</string>
     <!-- endregion -->
 
     <!-- region Settings -->
@@ -442,7 +441,7 @@
     <string name="achievement_category_streak_sessions">Sessions de séries</string>
     <string name="achievement_category_failed_puzzles_redeemed">Puzzles échoués rattrapés</string>
     <string name="achievement_category_find_square_sessions">Sessions Trouver la case</string>
-    <string name="achievement_category_move_piece_sessions">Sessions Déplacer la pièce</string>
+    <string name="achievement_category_knight_path_sessions">Sessions Chemin du Cavalier</string>
     <string name="achievement_category_blind_mode_wins">Victoires en mode aveugle</string>
     <string name="achievement_category_rated_win_streak">Série de victoires classées</string>
     <string name="achievement_category_rating_climber">Grimpeur de classement</string>
@@ -450,7 +449,7 @@
     <string name="achievement_category_rush_champion">Meilleur score Rush</string>
     <string name="achievement_category_streak_legend">Meilleur score séries</string>
     <string name="achievement_category_eagle_eye">Meilleur score Trouver la case</string>
-    <string name="achievement_category_knights_path">Meilleur score Déplacer la pièce</string>
+    <string name="achievement_category_knights_path">Meilleur score Chemin du Cavalier</string>
     <string name="achievement_category_puzzle_addict">Puzzles résolus</string>
     <string name="achievement_category_time_invested">Temps investi</string>
     <string name="achievement_category_daily_grinder">Jours consécutifs joués</string>
@@ -493,12 +492,12 @@
     <string name="achievement_find_square_sessions_four">Maître des cases</string>
     <string name="achievement_find_square_sessions_five">Grand Maître des cases</string>
 
-    <!-- Tier names: MOVE_PIECE_SESSIONS -->
-    <string name="achievement_move_piece_sessions_one">Débutant des pièces</string>
-    <string name="achievement_move_piece_sessions_two">Déplaceur de pièces</string>
-    <string name="achievement_move_piece_sessions_three">Navigateur de pièces</string>
-    <string name="achievement_move_piece_sessions_four">Maître des pièces</string>
-    <string name="achievement_move_piece_sessions_five">Grand Maître des pièces</string>
+    <!-- Tier names: KNIGHT_PATH_SESSIONS -->
+    <string name="achievement_knight_path_sessions_one">Débutant des pièces</string>
+    <string name="achievement_knight_path_sessions_two">Déplaceur de pièces</string>
+    <string name="achievement_knight_path_sessions_three">Navigateur de pièces</string>
+    <string name="achievement_knight_path_sessions_four">Maître des pièces</string>
+    <string name="achievement_knight_path_sessions_five">Grand Maître des pièces</string>
 
     <!-- Tier names: BLIND_MODE_WINS -->
     <string name="achievement_blind_mode_wins_one">L\'apprenti d\'Odin</string>
@@ -604,7 +603,7 @@
     <string name="achievement_desc_streak_sessions">Terminez des sessions Puzzle Streak pour gagner ce succès</string>
     <string name="achievement_desc_failed_puzzles_redeemed">Retentez et résolvez les puzzles précédemment échoués</string>
     <string name="achievement_desc_find_square_sessions">Jouez des sessions Trouver la case pour gagner ce succès</string>
-    <string name="achievement_desc_move_piece_sessions">Jouez des sessions Déplacer la pièce pour gagner ce succès</string>
+    <string name="achievement_desc_knight_path_sessions">Jouez des sessions Chemin du Cavalier pour gagner ce succès</string>
     <string name="achievement_desc_blind_mode_wins">Gagnez des parties classées en mode aveugle pour gagner ce succès</string>
     <string name="achievement_desc_rated_win_streak">Gagnez des puzzles classés consécutifs sans échouer</string>
     <string name="achievement_desc_rating_climber">Augmentez votre classement de puzzles pour atteindre de nouveaux sommets</string>
@@ -612,12 +611,12 @@
     <string name="achievement_desc_rush_champion">Établissez un meilleur score en Puzzle Rush</string>
     <string name="achievement_desc_streak_legend">Établissez un meilleur score en Puzzle Streak</string>
     <string name="achievement_desc_eagle_eye">Établissez un meilleur score en Trouver la case</string>
-    <string name="achievement_desc_knights_path">Établissez un meilleur score en Déplacer la pièce</string>
+    <string name="achievement_desc_knights_path">Établissez un meilleur score en Chemin du Cavalier</string>
     <string name="achievement_desc_puzzle_addict">Résolvez des puzzles dans tous les modes de jeu</string>
     <string name="achievement_desc_time_invested">Passez du temps à vous entraîner dans tous les modes de jeu</string>
     <string name="achievement_desc_daily_grinder">Jouez des jours consécutifs pour construire votre série</string>
     <string name="achievement_desc_consistency_king">Atteignez votre meilleure série quotidienne consécutive</string>
-    <string name="achievement_desc_board_vision">Terminez des sessions Trouver la case et Déplacer la pièce</string>
+    <string name="achievement_desc_board_vision">Terminez des sessions Trouver la case et Chemin du Cavalier</string>
     <string name="achievement_desc_rush_solver">Résolvez des puzzles pendant les sessions Puzzle Rush</string>
 
     <!-- Achievement UI -->

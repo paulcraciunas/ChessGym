@@ -116,7 +116,7 @@
     <string name="user_stat_high_score_blind_mode">最佳盲棋</string>
     <string name="user_stat_high_score_puzzle_streak">最佳连胜棋谜</string>
     <string name="user_stat_high_score_find_the_square">最佳找格子</string>
-    <string name="user_stat_high_score_move_the_piece">最佳移动棋子</string>
+    <string name="user_stat_high_score_knight_path">最佳移动棋子</string>
     <!-- endregion -->
 
     <!-- region Loading -->
@@ -305,12 +305,11 @@
     <!-- endregion -->
 
     <!-- region Move the Piece -->
-    <string name="boardvis_move_piece_title">移动棋子</string>
-    <string name="boardvis_move_piece_description">在棋盘上可视化并完成正确的走法</string>
-    <string name="boardvis_move_piece_training_mode">训练模式</string>
-    <string name="boardvis_move_piece_moves_remaining">剩余步数：%1$d</string>
-    <string name="boardvis_move_piece_rules">移动您的棋子，不要落在对方攻击的格子上。完成要求的步数以晋级下一关！</string>
-    <string name="boardvis_move_piece_captured">被吃！</string>
+    <string name="boardvis_knight_path_title">骑士之路</string>
+    <string name="boardvis_knight_path_description">找到骑士到达目标格的最短路径</string>
+    <string name="boardvis_knight_path_rules">找到骑士到达目标格的最短路径。一步走错，游戏结束！</string>
+    <string name="boardvis_knight_path_captured">被吃！</string>
+    <string name="boardvis_knight_path_wrong_move">走错了！</string>
     <!-- endregion -->
 
     <!-- region Settings -->
@@ -437,7 +436,7 @@
     <string name="achievement_category_streak_sessions">连胜场次</string>
     <string name="achievement_category_failed_puzzles_redeemed">失败棋谜挽救</string>
     <string name="achievement_category_find_square_sessions">找格子场次</string>
-    <string name="achievement_category_move_piece_sessions">移动棋子场次</string>
+    <string name="achievement_category_knight_path_sessions">骑士之路场次</string>
     <string name="achievement_category_blind_mode_wins">盲棋模式胜利</string>
     <string name="achievement_category_rated_win_streak">等级连胜</string>
     <string name="achievement_category_rating_climber">等级分攀登者</string>
@@ -445,7 +444,7 @@
     <string name="achievement_category_rush_champion">闪电最高分</string>
     <string name="achievement_category_streak_legend">连胜最高分</string>
     <string name="achievement_category_eagle_eye">找格子最高分</string>
-    <string name="achievement_category_knights_path">移动棋子最高分</string>
+    <string name="achievement_category_knights_path">骑士之路最高分</string>
     <string name="achievement_category_puzzle_addict">已解棋谜</string>
     <string name="achievement_category_time_invested">时间投入</string>
     <string name="achievement_category_daily_grinder">连续游戏天数</string>
@@ -488,12 +487,12 @@
     <string name="achievement_find_square_sessions_four">格子大师</string>
     <string name="achievement_find_square_sessions_five">格子特级大师</string>
 
-    <!-- Tier names: MOVE_PIECE_SESSIONS -->
-    <string name="achievement_move_piece_sessions_one">棋子初学者</string>
-    <string name="achievement_move_piece_sessions_two">棋子搬运工</string>
-    <string name="achievement_move_piece_sessions_three">棋子导航员</string>
-    <string name="achievement_move_piece_sessions_four">棋子大师</string>
-    <string name="achievement_move_piece_sessions_five">棋子特级大师</string>
+    <!-- Tier names: KNIGHT_PATH_SESSIONS -->
+    <string name="achievement_knight_path_sessions_one">棋子初学者</string>
+    <string name="achievement_knight_path_sessions_two">棋子搬运工</string>
+    <string name="achievement_knight_path_sessions_three">棋子导航员</string>
+    <string name="achievement_knight_path_sessions_four">棋子大师</string>
+    <string name="achievement_knight_path_sessions_five">棋子特级大师</string>
 
     <!-- Tier names: BLIND_MODE_WINS -->
     <string name="achievement_blind_mode_wins_one">奥丁的学徒</string>
@@ -599,7 +598,7 @@
     <string name="achievement_desc_streak_sessions">完成连胜棋谜场次以获得此成就</string>
     <string name="achievement_desc_failed_puzzles_redeemed">重试并解决之前失败的棋谜</string>
     <string name="achievement_desc_find_square_sessions">参与找格子场次以获得此成就</string>
-    <string name="achievement_desc_move_piece_sessions">参与移动棋子场次以获得此成就</string>
+    <string name="achievement_desc_knight_path_sessions">参与骑士之路场次以获得此成就</string>
     <string name="achievement_desc_blind_mode_wins">在等级盲棋对局中获胜以获得此成就</string>
     <string name="achievement_desc_rated_win_streak">连续解等级棋谜而不失败</string>
     <string name="achievement_desc_rating_climber">提升棋谜等级分以达到新高度</string>
@@ -607,12 +606,12 @@
     <string name="achievement_desc_rush_champion">在闪电棋谜中创造最高分</string>
     <string name="achievement_desc_streak_legend">在连胜棋谜中创造最高分</string>
     <string name="achievement_desc_eagle_eye">在找格子中创造最高分</string>
-    <string name="achievement_desc_knights_path">在移动棋子中创造最高分</string>
+    <string name="achievement_desc_knights_path">在骑士之路中创造最高分</string>
     <string name="achievement_desc_puzzle_addict">在所有游戏模式中解棋谜</string>
     <string name="achievement_desc_time_invested">在所有游戏模式中花时间练习</string>
     <string name="achievement_desc_daily_grinder">连续多天游戏以建立连胜记录</string>
     <string name="achievement_desc_consistency_king">实现最佳连续每日记录</string>
-    <string name="achievement_desc_board_vision">完成找格子和移动棋子场次</string>
+    <string name="achievement_desc_board_vision">完成找格子和骑士之路场次</string>
     <string name="achievement_desc_rush_solver">在闪电棋谜场次中解棋谜</string>
 
     <!-- Achievement UI -->

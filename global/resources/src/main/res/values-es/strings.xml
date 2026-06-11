@@ -120,7 +120,7 @@
     <string name="user_stat_high_score_blind_mode">Mejor modo ciego</string>
     <string name="user_stat_high_score_puzzle_streak">Mejor Puzzle Streak</string>
     <string name="user_stat_high_score_find_the_square">Mejor Encuentra la casilla</string>
-    <string name="user_stat_high_score_move_the_piece">Mejor Mueve la pieza</string>
+    <string name="user_stat_high_score_knight_path">Mejor Mueve la pieza</string>
     <!-- endregion -->
 
     <!-- region Loading -->
@@ -310,12 +310,11 @@
     <!-- endregion -->
 
     <!-- region Move the Piece -->
-    <string name="boardvis_move_piece_title">Mueve la pieza</string>
-    <string name="boardvis_move_piece_description">Visualiza y realiza los movimientos correctos en el tablero</string>
-    <string name="boardvis_move_piece_training_mode">Modo entrenamiento</string>
-    <string name="boardvis_move_piece_moves_remaining">Movimientos restantes: %1$d</string>
-    <string name="boardvis_move_piece_rules">Mueve tu pieza sin aterrizar en una casilla atacada por el oponente. ¡Completa los movimientos requeridos para avanzar al siguiente nivel!</string>
-    <string name="boardvis_move_piece_captured">¡Capturada!</string>
+    <string name="boardvis_knight_path_title">Camino del Caballo</string>
+    <string name="boardvis_knight_path_description">Encuentra el camino más corto del Caballo hasta la casilla objetivo</string>
+    <string name="boardvis_knight_path_rules">Encuentra el camino más corto para que el Caballo llegue a la casilla objetivo. ¡Un error y se acaba el juego!</string>
+    <string name="boardvis_knight_path_captured">¡Capturada!</string>
+    <string name="boardvis_knight_path_wrong_move">¡Movimiento incorrecto!</string>
     <!-- endregion -->
 
     <!-- region Settings -->
@@ -442,7 +441,7 @@
     <string name="achievement_category_streak_sessions">Sesiones de racha</string>
     <string name="achievement_category_failed_puzzles_redeemed">Puzzles fallados redimidos</string>
     <string name="achievement_category_find_square_sessions">Sesiones de Encuentra la casilla</string>
-    <string name="achievement_category_move_piece_sessions">Sesiones de Mueve la pieza</string>
+    <string name="achievement_category_knight_path_sessions">Sesiones de Camino del Caballo</string>
     <string name="achievement_category_blind_mode_wins">Victorias en modo ciego</string>
     <string name="achievement_category_rated_win_streak">Racha de victorias puntuadas</string>
     <string name="achievement_category_rating_climber">Escalador de puntuación</string>
@@ -450,7 +449,7 @@
     <string name="achievement_category_rush_champion">Puntuación máxima del Rush</string>
     <string name="achievement_category_streak_legend">Puntuación máxima de la racha</string>
     <string name="achievement_category_eagle_eye">Puntuación máxima de Encuentra la casilla</string>
-    <string name="achievement_category_knights_path">Puntuación máxima de Mueve la pieza</string>
+    <string name="achievement_category_knights_path">Puntuación máxima de Camino del Caballo</string>
     <string name="achievement_category_puzzle_addict">Puzzles resueltos</string>
     <string name="achievement_category_time_invested">Tiempo invertido</string>
     <string name="achievement_category_daily_grinder">Días consecutivos jugados</string>
@@ -493,12 +492,12 @@
     <string name="achievement_find_square_sessions_four">Maestro de casillas</string>
     <string name="achievement_find_square_sessions_five">Gran maestro de casillas</string>
 
-    <!-- Tier names: MOVE_PIECE_SESSIONS -->
-    <string name="achievement_move_piece_sessions_one">Principiante de piezas</string>
-    <string name="achievement_move_piece_sessions_two">Movedor de piezas</string>
-    <string name="achievement_move_piece_sessions_three">Navegador de piezas</string>
-    <string name="achievement_move_piece_sessions_four">Maestro de piezas</string>
-    <string name="achievement_move_piece_sessions_five">Gran maestro de piezas</string>
+    <!-- Tier names: KNIGHT_PATH_SESSIONS -->
+    <string name="achievement_knight_path_sessions_one">Principiante de piezas</string>
+    <string name="achievement_knight_path_sessions_two">Movedor de piezas</string>
+    <string name="achievement_knight_path_sessions_three">Navegador de piezas</string>
+    <string name="achievement_knight_path_sessions_four">Maestro de piezas</string>
+    <string name="achievement_knight_path_sessions_five">Gran maestro de piezas</string>
 
     <!-- Tier names: BLIND_MODE_WINS -->
     <string name="achievement_blind_mode_wins_one">El aprendiz de Odín</string>
@@ -604,7 +603,7 @@
     <string name="achievement_desc_streak_sessions">Completa sesiones de Puzzle Streak para conseguir este logro</string>
     <string name="achievement_desc_failed_puzzles_redeemed">Reintenta y resuelve puzzles que hayas fallado previamente</string>
     <string name="achievement_desc_find_square_sessions">Juega sesiones de Encuentra la casilla para conseguir este logro</string>
-    <string name="achievement_desc_move_piece_sessions">Juega sesiones de Mueve la pieza para conseguir este logro</string>
+    <string name="achievement_desc_knight_path_sessions">Juega sesiones de Camino del Caballo para conseguir este logro</string>
     <string name="achievement_desc_blind_mode_wins">Gana partidas puntuadas en Modo ciego para conseguir este logro</string>
     <string name="achievement_desc_rated_win_streak">Gana puzzles puntuados consecutivos sin fallar</string>
     <string name="achievement_desc_rating_climber">Aumenta tu puntuación de puzzles para alcanzar nuevas alturas</string>
@@ -612,12 +611,12 @@
     <string name="achievement_desc_rush_champion">Consigue una puntuación máxima en Puzzle Rush</string>
     <string name="achievement_desc_streak_legend">Consigue una puntuación máxima en Puzzle Streak</string>
     <string name="achievement_desc_eagle_eye">Consigue una puntuación máxima en Encuentra la casilla</string>
-    <string name="achievement_desc_knights_path">Consigue una puntuación máxima en Mueve la pieza</string>
+    <string name="achievement_desc_knights_path">Consigue una puntuación máxima en Camino del Caballo</string>
     <string name="achievement_desc_puzzle_addict">Resuelve puzzles en todos los modos de juego</string>
     <string name="achievement_desc_time_invested">Dedica tiempo practicando en todos los modos de juego</string>
     <string name="achievement_desc_daily_grinder">Juega en días consecutivos para construir tu racha</string>
     <string name="achievement_desc_consistency_king">Consigue tu mejor racha diaria consecutiva</string>
-    <string name="achievement_desc_board_vision">Completa sesiones de Encuentra la casilla y Mueve la pieza</string>
+    <string name="achievement_desc_board_vision">Completa sesiones de Encuentra la casilla y Camino del Caballo</string>
     <string name="achievement_desc_rush_solver">Resuelve puzzles durante las sesiones de Puzzle Rush</string>
 
     <!-- Achievement UI -->

@@ -116,7 +116,7 @@
     <string name="user_stat_high_score_blind_mode">ベストブラインドモード</string>
     <string name="user_stat_high_score_puzzle_streak">ベストパズルストリーク</string>
     <string name="user_stat_high_score_find_the_square">ベストマス探し</string>
-    <string name="user_stat_high_score_move_the_piece">ベスト駒移動</string>
+    <string name="user_stat_high_score_knight_path">ベスト駒移動</string>
     <!-- endregion -->
 
     <!-- region Loading -->
@@ -305,12 +305,11 @@
     <!-- endregion -->
 
     <!-- region Move the Piece -->
-    <string name="boardvis_move_piece_title">駒を動かせ</string>
-    <string name="boardvis_move_piece_description">ボード上で正しい手を可視化して実行</string>
-    <string name="boardvis_move_piece_training_mode">トレーニングモード</string>
-    <string name="boardvis_move_piece_moves_remaining">残り手数: %1$d</string>
-    <string name="boardvis_move_piece_rules">相手に攻撃されるマスに止まらずに駒を動かしてください。必要な手数を達成して次のレベルに進みましょう！</string>
-    <string name="boardvis_move_piece_captured">取られた！</string>
+    <string name="boardvis_knight_path_title">ナイトの道</string>
+    <string name="boardvis_knight_path_description">ナイトが目的のマスに到達する最短ルートを見つけよう</string>
+    <string name="boardvis_knight_path_rules">ナイトが目的のマスに到達する最短ルートを見つけてください。一手でも間違えたらゲームオーバー！</string>
+    <string name="boardvis_knight_path_captured">取られた！</string>
+    <string name="boardvis_knight_path_wrong_move">間違った手！</string>
     <!-- endregion -->
 
     <!-- region Settings -->
@@ -437,7 +436,7 @@
     <string name="achievement_category_streak_sessions">ストリークセッション</string>
     <string name="achievement_category_failed_puzzles_redeemed">失敗パズル挽回</string>
     <string name="achievement_category_find_square_sessions">マス探しセッション</string>
-    <string name="achievement_category_move_piece_sessions">駒移動セッション</string>
+    <string name="achievement_category_knight_path_sessions">ナイトの道セッション</string>
     <string name="achievement_category_blind_mode_wins">ブラインドモード勝利</string>
     <string name="achievement_category_rated_win_streak">レーティング連勝</string>
     <string name="achievement_category_rating_climber">レーティング上昇者</string>
@@ -445,7 +444,7 @@
     <string name="achievement_category_rush_champion">ラッシュハイスコア</string>
     <string name="achievement_category_streak_legend">ストリークハイスコア</string>
     <string name="achievement_category_eagle_eye">マス探しハイスコア</string>
-    <string name="achievement_category_knights_path">駒移動ハイスコア</string>
+    <string name="achievement_category_knights_path">ナイトの道ハイスコア</string>
     <string name="achievement_category_puzzle_addict">解いたパズル</string>
     <string name="achievement_category_time_invested">投資した時間</string>
     <string name="achievement_category_daily_grinder">連続プレイ日数</string>
@@ -488,12 +487,12 @@
     <string name="achievement_find_square_sessions_four">マスマスター</string>
     <string name="achievement_find_square_sessions_five">マスグランドマスター</string>
 
-    <!-- Tier names: MOVE_PIECE_SESSIONS -->
-    <string name="achievement_move_piece_sessions_one">駒初心者</string>
-    <string name="achievement_move_piece_sessions_two">駒を動かす人</string>
-    <string name="achievement_move_piece_sessions_three">駒ナビゲーター</string>
-    <string name="achievement_move_piece_sessions_four">駒マスター</string>
-    <string name="achievement_move_piece_sessions_five">駒グランドマスター</string>
+    <!-- Tier names: KNIGHT_PATH_SESSIONS -->
+    <string name="achievement_knight_path_sessions_one">駒初心者</string>
+    <string name="achievement_knight_path_sessions_two">駒を動かす人</string>
+    <string name="achievement_knight_path_sessions_three">駒ナビゲーター</string>
+    <string name="achievement_knight_path_sessions_four">駒マスター</string>
+    <string name="achievement_knight_path_sessions_five">駒グランドマスター</string>
 
     <!-- Tier names: BLIND_MODE_WINS -->
     <string name="achievement_blind_mode_wins_one">オーディンの弟子</string>
@@ -599,7 +598,7 @@
     <string name="achievement_desc_streak_sessions">この実績を獲得するためにパズルストリークセッションを完了する</string>
     <string name="achievement_desc_failed_puzzles_redeemed">以前失敗したパズルを再挑戦して解く</string>
     <string name="achievement_desc_find_square_sessions">この実績を獲得するためにマス探しセッションをプレイする</string>
-    <string name="achievement_desc_move_piece_sessions">この実績を獲得するために駒移動セッションをプレイする</string>
+    <string name="achievement_desc_knight_path_sessions">この実績を獲得するためにナイトの道のセッションをプレイしてください</string>
     <string name="achievement_desc_blind_mode_wins">この実績を獲得するためにレーティングブラインドモードの試合に勝つ</string>
     <string name="achievement_desc_rated_win_streak">失敗せずに連続してレーティングパズルに勝つ</string>
     <string name="achievement_desc_rating_climber">新たな高みに到達するためにパズルレーティングを上げる</string>
@@ -607,12 +606,12 @@
     <string name="achievement_desc_rush_champion">パズルラッシュでハイスコアを出す</string>
     <string name="achievement_desc_streak_legend">パズルストリークでハイスコアを出す</string>
     <string name="achievement_desc_eagle_eye">マス探しでハイスコアを出す</string>
-    <string name="achievement_desc_knights_path">駒移動でハイスコアを出す</string>
+    <string name="achievement_desc_knights_path">ナイトの道でハイスコアを出す</string>
     <string name="achievement_desc_puzzle_addict">すべてのゲームモードでパズルを解く</string>
     <string name="achievement_desc_time_invested">すべてのゲームモードで練習に時間を費やす</string>
     <string name="achievement_desc_daily_grinder">連続する日数プレイしてストリークを作る</string>
     <string name="achievement_desc_consistency_king">最高の連続毎日ストリークを達成する</string>
-    <string name="achievement_desc_board_vision">マス探しと駒移動セッションを完了する</string>
+    <string name="achievement_desc_board_vision">マス探しとナイトの道のセッションを完了する</string>
     <string name="achievement_desc_rush_solver">パズルラッシュセッション中にパズルを解く</string>
 
     <!-- Achievement UI -->

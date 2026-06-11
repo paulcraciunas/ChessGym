@@ -119,7 +119,7 @@
     <string name="user_stat_high_score_blind_mode">Best Blind Mode</string>
     <string name="user_stat_high_score_puzzle_streak">Best Puzzle Streak</string>
     <string name="user_stat_high_score_find_the_square">Best Find the Square</string>
-    <string name="user_stat_high_score_move_the_piece">Best Move the Piece</string>
+    <string name="user_stat_high_score_knight_path">Best Knight\'s Path</string>
     <!-- endregion -->
 
     <!-- region Loading -->
@@ -308,13 +308,12 @@
     <string name="boardvis_high_score">High Score: %1$d</string>
     <!-- endregion -->
 
-    <!-- region Move the Piece -->
-    <string name="boardvis_move_piece_title">Move the Piece</string>
-    <string name="boardvis_move_piece_description">Visualize and make the correct moves on the board</string>
-    <string name="boardvis_move_piece_training_mode">Training Mode</string>
-    <string name="boardvis_move_piece_moves_remaining">Moves Remaining: %1$d</string>
-    <string name="boardvis_move_piece_rules">Move your piece without landing on a square attacked by the opponent. Complete the required moves to advance to the next level!</string>
-    <string name="boardvis_move_piece_captured">Captured!</string>
+    <!-- region Knight's Path -->
+    <string name="boardvis_knight_path_title">Knight\'s Path</string>
+    <string name="boardvis_knight_path_description">Visualize and make the correct moves on the board</string>
+    <string name="boardvis_knight_path_rules">Find the shortest path for the Knight to reach the destination square. One mistake and it\'s game over!</string>
+    <string name="boardvis_knight_path_captured">Captured!</string>
+    <string name="boardvis_knight_path_wrong_move">Wrong move!</string>
     <!-- endregion -->
 
     <!-- region Settings -->
@@ -441,7 +440,7 @@
     <string name="achievement_category_streak_sessions">Streak Sessions</string>
     <string name="achievement_category_failed_puzzles_redeemed">Failed Puzzles Redeemed</string>
     <string name="achievement_category_find_square_sessions">Find Square Sessions</string>
-    <string name="achievement_category_move_piece_sessions">Move Piece Sessions</string>
+    <string name="achievement_category_knight_path_sessions">Knight Path Sessions</string>
     <string name="achievement_category_blind_mode_wins">Blind Mode Wins</string>
     <string name="achievement_category_rated_win_streak">Rated Win Streak</string>
     <string name="achievement_category_rating_climber">Rating Climber</string>
@@ -449,7 +448,7 @@
     <string name="achievement_category_rush_champion">Rush High Score</string>
     <string name="achievement_category_streak_legend">Streak High Score</string>
     <string name="achievement_category_eagle_eye">Find the Square High Score</string>
-    <string name="achievement_category_knights_path">Move the Piece High Score</string>
+    <string name="achievement_category_knights_path">Knight\'s Path High Score</string>
     <string name="achievement_category_puzzle_addict">Puzzles Solved</string>
     <string name="achievement_category_time_invested">Time Invested</string>
     <string name="achievement_category_daily_grinder">Consecutive Days Played</string>
@@ -492,12 +491,12 @@
     <string name="achievement_find_square_sessions_four">Square Master</string>
     <string name="achievement_find_square_sessions_five">Square Grandmaster</string>
 
-    <!-- Tier names: MOVE_PIECE_SESSIONS -->
-    <string name="achievement_move_piece_sessions_one">Piece Beginner</string>
-    <string name="achievement_move_piece_sessions_two">Piece Mover</string>
-    <string name="achievement_move_piece_sessions_three">Piece Navigator</string>
-    <string name="achievement_move_piece_sessions_four">Piece Master</string>
-    <string name="achievement_move_piece_sessions_five">Piece Grandmaster</string>
+    <!-- Tier names: KNIGHT_PATH_SESSIONS -->
+    <string name="achievement_knight_path_sessions_one">Piece Beginner</string>
+    <string name="achievement_knight_path_sessions_two">Piece Mover</string>
+    <string name="achievement_knight_path_sessions_three">Piece Navigator</string>
+    <string name="achievement_knight_path_sessions_four">Piece Master</string>
+    <string name="achievement_knight_path_sessions_five">Piece Grandmaster</string>
 
     <!-- Tier names: BLIND_MODE_WINS -->
     <string name="achievement_blind_mode_wins_one">Odin\'s Apprentice</string>
@@ -603,7 +602,7 @@
     <string name="achievement_desc_streak_sessions">Complete Puzzle Streak sessions to earn this achievement</string>
     <string name="achievement_desc_failed_puzzles_redeemed">Retry and solve previously failed puzzles</string>
     <string name="achievement_desc_find_square_sessions">Play Find the Square sessions to earn this achievement</string>
-    <string name="achievement_desc_move_piece_sessions">Play Move the Piece sessions to earn this achievement</string>
+    <string name="achievement_desc_knight_path_sessions">Play Knight\'s Path sessions to earn this achievement</string>
     <string name="achievement_desc_blind_mode_wins">Win rated Blind Mode games to earn this achievement</string>
     <string name="achievement_desc_rated_win_streak">Win consecutive rated puzzles without failing</string>
     <string name="achievement_desc_rating_climber">Increase your puzzle rating to reach new heights</string>
@@ -611,12 +610,12 @@
     <string name="achievement_desc_rush_champion">Set a high score in Puzzle Rush</string>
     <string name="achievement_desc_streak_legend">Set a high score in Puzzle Streak</string>
     <string name="achievement_desc_eagle_eye">Set a high score in Find the Square</string>
-    <string name="achievement_desc_knights_path">Set a high score in Move the Piece</string>
+    <string name="achievement_desc_knights_path">Set a high score in Knight\'s Path</string>
     <string name="achievement_desc_puzzle_addict">Solve puzzles across all game modes</string>
     <string name="achievement_desc_time_invested">Spend time practising across all game modes</string>
     <string name="achievement_desc_daily_grinder">Play on consecutive days to build your streak</string>
     <string name="achievement_desc_consistency_king">Achieve your best ever consecutive daily streak</string>
-    <string name="achievement_desc_board_vision">Complete Find the Square and Move the Piece sessions</string>
+    <string name="achievement_desc_board_vision">Complete Find the Square and Knight\'s Path sessions</string>
     <string name="achievement_desc_rush_solver">Solve puzzles during Puzzle Rush sessions</string>
 
     <!-- Achievement UI -->

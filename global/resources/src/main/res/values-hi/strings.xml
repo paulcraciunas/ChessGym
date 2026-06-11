@@ -120,7 +120,7 @@
     <string name="user_stat_high_score_blind_mode">सर्वश्रेष्ठ ब्लाइंड मोड</string>
     <string name="user_stat_high_score_puzzle_streak">सर्वश्रेष्ठ पहेली स्ट्रीक</string>
     <string name="user_stat_high_score_find_the_square">सर्वश्रेष्ठ चौक ढूंढें</string>
-    <string name="user_stat_high_score_move_the_piece">सर्वश्रेष्ठ मोहरा चलाएं</string>
+    <string name="user_stat_high_score_knight_path">सर्वश्रेष्ठ मोहरा चलाएं</string>
     <!-- endregion -->
 
     <!-- region Loading -->
@@ -310,12 +310,11 @@
     <!-- endregion -->
 
     <!-- region Move the Piece -->
-    <string name="boardvis_move_piece_title">मोहरा चलाएं</string>
-    <string name="boardvis_move_piece_description">बोर्ड पर सही चालें विज़ुअलाइज़ करें और चलाएं</string>
-    <string name="boardvis_move_piece_training_mode">प्रशिक्षण मोड</string>
-    <string name="boardvis_move_piece_moves_remaining">शेष चालें: %1$d</string>
-    <string name="boardvis_move_piece_rules">प्रतिद्वंद्वी द्वारा आक्रमण किए गए वर्ग पर उतरे बिना अपना मोहरा चलाएं। अगले स्तर पर जाने के लिए आवश्यक चालें पूरी करें!</string>
-    <string name="boardvis_move_piece_captured">पकड़ा गया!</string>
+    <string name="boardvis_knight_path_title">घोड़े का रास्ता</string>
+    <string name="boardvis_knight_path_description">घोड़े का लक्ष्य वर्ग तक सबसे छोटा रास्ता खोजें</string>
+    <string name="boardvis_knight_path_rules">घोड़े का लक्ष्य वर्ग तक सबसे छोटा रास्ता खोजें। एक गलती और खेल समाप्त!</string>
+    <string name="boardvis_knight_path_captured">पकड़ा गया!</string>
+    <string name="boardvis_knight_path_wrong_move">गलत चाल!</string>
     <!-- endregion -->
 
     <!-- region Settings -->
@@ -442,7 +441,7 @@
     <string name="achievement_category_streak_sessions">स्ट्रीक सत्र</string>
     <string name="achievement_category_failed_puzzles_redeemed">असफल पहेलियाँ सुधारी गईं</string>
     <string name="achievement_category_find_square_sessions">चौक ढूंढें सत्र</string>
-    <string name="achievement_category_move_piece_sessions">मोहरा चलाएं सत्र</string>
+    <string name="achievement_category_knight_path_sessions">घोड़े का रास्ता सत्र</string>
     <string name="achievement_category_blind_mode_wins">ब्लाइंड मोड जीत</string>
     <string name="achievement_category_rated_win_streak">रेटेड जीत स्ट्रीक</string>
     <string name="achievement_category_rating_climber">रेटिंग पर्वतारोही</string>
@@ -450,7 +449,7 @@
     <string name="achievement_category_rush_champion">रश उच्च स्कोर</string>
     <string name="achievement_category_streak_legend">स्ट्रीक उच्च स्कोर</string>
     <string name="achievement_category_eagle_eye">चौक ढूंढें उच्च स्कोर</string>
-    <string name="achievement_category_knights_path">मोहरा चलाएं उच्च स्कोर</string>
+    <string name="achievement_category_knights_path">घोड़े का रास्ता उच्च स्कोर</string>
     <string name="achievement_category_puzzle_addict">हल की गई पहेलियाँ</string>
     <string name="achievement_category_time_invested">समय निवेश</string>
     <string name="achievement_category_daily_grinder">लगातार दिन खेले</string>
@@ -493,12 +492,12 @@
     <string name="achievement_find_square_sessions_four">चौक उस्ताद</string>
     <string name="achievement_find_square_sessions_five">चौक ग्रैंडमास्टर</string>
 
-    <!-- Tier names: MOVE_PIECE_SESSIONS -->
-    <string name="achievement_move_piece_sessions_one">मोहरा शुरुआती</string>
-    <string name="achievement_move_piece_sessions_two">मोहरा चलाने वाला</string>
-    <string name="achievement_move_piece_sessions_three">मोहरा नाविक</string>
-    <string name="achievement_move_piece_sessions_four">मोहरा उस्ताद</string>
-    <string name="achievement_move_piece_sessions_five">मोहरा ग्रैंडमास्टर</string>
+    <!-- Tier names: KNIGHT_PATH_SESSIONS -->
+    <string name="achievement_knight_path_sessions_one">मोहरा शुरुआती</string>
+    <string name="achievement_knight_path_sessions_two">मोहरा चलाने वाला</string>
+    <string name="achievement_knight_path_sessions_three">मोहरा नाविक</string>
+    <string name="achievement_knight_path_sessions_four">मोहरा उस्ताद</string>
+    <string name="achievement_knight_path_sessions_five">मोहरा ग्रैंडमास्टर</string>
 
     <!-- Tier names: BLIND_MODE_WINS -->
     <string name="achievement_blind_mode_wins_one">ओडिन का शिष्य</string>
@@ -604,7 +603,7 @@
     <string name="achievement_desc_streak_sessions">यह उपलब्धि अर्जित करने के लिए पहेली स्ट्रीक सत्र पूरे करें</string>
     <string name="achievement_desc_failed_puzzles_redeemed">पहले असफल पहेलियों को पुनः प्रयास करें और हल करें</string>
     <string name="achievement_desc_find_square_sessions">यह उपलब्धि अर्जित करने के लिए चौक ढूंढें सत्र खेलें</string>
-    <string name="achievement_desc_move_piece_sessions">यह उपलब्धि अर्जित करने के लिए मोहरा चलाएं सत्र खेलें</string>
+    <string name="achievement_desc_knight_path_sessions">यह उपलब्धि अर्जित करने के लिए घोड़े का रास्ता सत्र खेलें</string>
     <string name="achievement_desc_blind_mode_wins">यह उपलब्धि अर्जित करने के लिए रेटेड ब्लाइंड मोड खेल जीतें</string>
     <string name="achievement_desc_rated_win_streak">बिना हारे लगातार रेटेड पहेलियाँ जीतें</string>
     <string name="achievement_desc_rating_climber">नई ऊंचाइयों तक पहुंचने के लिए अपनी पहेली रेटिंग बढ़ाएं</string>
@@ -612,12 +611,12 @@
     <string name="achievement_desc_rush_champion">पज़ल रश में उच्च स्कोर बनाएं</string>
     <string name="achievement_desc_streak_legend">पहेली स्ट्रीक में उच्च स्कोर बनाएं</string>
     <string name="achievement_desc_eagle_eye">चौक ढूंढें में उच्च स्कोर बनाएं</string>
-    <string name="achievement_desc_knights_path">मोहरा चलाएं में उच्च स्कोर बनाएं</string>
+    <string name="achievement_desc_knights_path">घोड़े का रास्ता में उच्च स्कोर बनाएं</string>
     <string name="achievement_desc_puzzle_addict">सभी गेम मोड में पहेलियाँ हल करें</string>
     <string name="achievement_desc_time_invested">सभी गेम मोड में अभ्यास करते हुए समय बिताएं</string>
     <string name="achievement_desc_daily_grinder">अपनी स्ट्रीक बनाने के लिए लगातार दिन खेलें</string>
     <string name="achievement_desc_consistency_king">अपनी सर्वश्रेष्ठ लगातार दैनिक स्ट्रीक हासिल करें</string>
-    <string name="achievement_desc_board_vision">चौक ढूंढें और मोहरा चलाएं सत्र पूरे करें</string>
+    <string name="achievement_desc_board_vision">चौक ढूंढें और घोड़े का रास्ता सत्र पूरे करें</string>
     <string name="achievement_desc_rush_solver">पज़ल रश सत्र में पहेलियाँ हल करें</string>
 
     <!-- Achievement UI -->

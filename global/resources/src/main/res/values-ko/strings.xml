@@ -116,7 +116,7 @@
     <string name="user_stat_high_score_blind_mode">최고 블라인드 모드</string>
     <string name="user_stat_high_score_puzzle_streak">최고 퍼즐 스트릭</string>
     <string name="user_stat_high_score_find_the_square">최고 칸 찾기</string>
-    <string name="user_stat_high_score_move_the_piece">최고 기물 이동</string>
+    <string name="user_stat_high_score_knight_path">최고 기물 이동</string>
     <!-- endregion -->
 
     <!-- region Loading -->
@@ -305,12 +305,11 @@
     <!-- endregion -->
 
     <!-- region Move the Piece -->
-    <string name="boardvis_move_piece_title">기물 이동</string>
-    <string name="boardvis_move_piece_description">보드에서 올바른 수를 시각화하고 이동하세요</string>
-    <string name="boardvis_move_piece_training_mode">훈련 모드</string>
-    <string name="boardvis_move_piece_moves_remaining">남은 수: %1$d</string>
-    <string name="boardvis_move_piece_rules">상대방이 공격하는 칸에 착지하지 않고 기물을 이동하세요. 다음 레벨로 진행하려면 필요한 수를 완료하세요!</string>
-    <string name="boardvis_move_piece_captured">잡혔습니다!</string>
+    <string name="boardvis_knight_path_title">나이트의 경로</string>
+    <string name="boardvis_knight_path_description">나이트가 목표 칸까지 가는 최단 경로를 찾으세요</string>
+    <string name="boardvis_knight_path_rules">나이트가 목표 칸까지 가는 최단 경로를 찾으세요. 한 번 틀리면 게임 오버!</string>
+    <string name="boardvis_knight_path_captured">잡혔습니다!</string>
+    <string name="boardvis_knight_path_wrong_move">잘못된 수!</string>
     <!-- endregion -->
 
     <!-- region Settings -->
@@ -437,7 +436,7 @@
     <string name="achievement_category_streak_sessions">스트릭 세션</string>
     <string name="achievement_category_failed_puzzles_redeemed">실패 퍼즐 만회</string>
     <string name="achievement_category_find_square_sessions">칸 찾기 세션</string>
-    <string name="achievement_category_move_piece_sessions">기물 이동 세션</string>
+    <string name="achievement_category_knight_path_sessions">나이트 경로 세션</string>
     <string name="achievement_category_blind_mode_wins">블라인드 모드 승리</string>
     <string name="achievement_category_rated_win_streak">레이티드 연승</string>
     <string name="achievement_category_rating_climber">레이팅 클라이머</string>
@@ -445,7 +444,7 @@
     <string name="achievement_category_rush_champion">러시 최고 점수</string>
     <string name="achievement_category_streak_legend">스트릭 최고 점수</string>
     <string name="achievement_category_eagle_eye">칸 찾기 최고 점수</string>
-    <string name="achievement_category_knights_path">기물 이동 최고 점수</string>
+    <string name="achievement_category_knights_path">나이트 경로 최고 점수</string>
     <string name="achievement_category_puzzle_addict">해결한 퍼즐</string>
     <string name="achievement_category_time_invested">투자 시간</string>
     <string name="achievement_category_daily_grinder">연속 플레이 일수</string>
@@ -488,12 +487,12 @@
     <string name="achievement_find_square_sessions_four">칸 찾기 마스터</string>
     <string name="achievement_find_square_sessions_five">칸 찾기 그랜드마스터</string>
 
-    <!-- Tier names: MOVE_PIECE_SESSIONS -->
-    <string name="achievement_move_piece_sessions_one">기물 초보자</string>
-    <string name="achievement_move_piece_sessions_two">기물 이동자</string>
-    <string name="achievement_move_piece_sessions_three">기물 항법사</string>
-    <string name="achievement_move_piece_sessions_four">기물 마스터</string>
-    <string name="achievement_move_piece_sessions_five">기물 그랜드마스터</string>
+    <!-- Tier names: KNIGHT_PATH_SESSIONS -->
+    <string name="achievement_knight_path_sessions_one">기물 초보자</string>
+    <string name="achievement_knight_path_sessions_two">기물 이동자</string>
+    <string name="achievement_knight_path_sessions_three">기물 항법사</string>
+    <string name="achievement_knight_path_sessions_four">기물 마스터</string>
+    <string name="achievement_knight_path_sessions_five">기물 그랜드마스터</string>
 
     <!-- Tier names: BLIND_MODE_WINS -->
     <string name="achievement_blind_mode_wins_one">오딘의 제자</string>
@@ -599,7 +598,7 @@
     <string name="achievement_desc_streak_sessions">이 업적을 획득하려면 퍼즐 스트릭 세션을 완료하세요</string>
     <string name="achievement_desc_failed_puzzles_redeemed">이전에 실패한 퍼즐을 재도전하여 해결하세요</string>
     <string name="achievement_desc_find_square_sessions">이 업적을 획득하려면 칸 찾기 세션을 플레이하세요</string>
-    <string name="achievement_desc_move_piece_sessions">이 업적을 획득하려면 기물 이동 세션을 플레이하세요</string>
+    <string name="achievement_desc_knight_path_sessions">이 업적을 획득하려면 나이트 경로 세션을 플레이하세요</string>
     <string name="achievement_desc_blind_mode_wins">이 업적을 획득하려면 레이티드 블라인드 모드 게임을 이기세요</string>
     <string name="achievement_desc_rated_win_streak">실패 없이 연속으로 레이티드 퍼즐을 이기세요</string>
     <string name="achievement_desc_rating_climber">새로운 높이에 도달하기 위해 퍼즐 레이팅을 높이세요</string>
@@ -607,12 +606,12 @@
     <string name="achievement_desc_rush_champion">퍼즐 러시에서 최고 점수를 세우세요</string>
     <string name="achievement_desc_streak_legend">퍼즐 스트릭에서 최고 점수를 세우세요</string>
     <string name="achievement_desc_eagle_eye">칸 찾기에서 최고 점수를 세우세요</string>
-    <string name="achievement_desc_knights_path">기물 이동에서 최고 점수를 세우세요</string>
+    <string name="achievement_desc_knights_path">나이트 경로에서 최고 점수를 세우세요</string>
     <string name="achievement_desc_puzzle_addict">모든 게임 모드에서 퍼즐을 해결하세요</string>
     <string name="achievement_desc_time_invested">모든 게임 모드에서 연습하며 시간을 보내세요</string>
     <string name="achievement_desc_daily_grinder">스트릭을 쌓기 위해 연속된 날에 플레이하세요</string>
     <string name="achievement_desc_consistency_king">역대 최고 연속 일일 스트릭을 달성하세요</string>
-    <string name="achievement_desc_board_vision">칸 찾기와 기물 이동 세션을 완료하세요</string>
+    <string name="achievement_desc_board_vision">칸 찾기와 나이트 경로 세션을 완료하세요</string>
     <string name="achievement_desc_rush_solver">퍼즐 러시 세션에서 퍼즐을 해결하세요</string>
 
     <!-- Achievement UI -->
