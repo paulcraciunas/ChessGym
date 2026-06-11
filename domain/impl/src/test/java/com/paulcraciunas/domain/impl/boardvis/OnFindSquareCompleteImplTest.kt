@@ -234,7 +234,7 @@ internal class OnFindSquareCompleteImplTest {
             assertEquals(UserDefaults.HIGH_SCORE_RATED, highScores.ratedPuzzle)
             assertEquals(UserDefaults.HIGH_SCORE_RUSH, highScores.puzzleRush)
             assertEquals(UserDefaults.HIGH_SCORE_STREAK, highScores.puzzleStreak)
-            assertEquals(UserDefaults.HIGH_SCORE_MOVE_PIECE, highScores.moveThePiece)
+            assertEquals(UserDefaults.HIGH_SCORE_KNIGHT_PATH, highScores.knightPath)
             assertEquals(UserDefaults.RATING_BLIND_MODE, highScores.blindMode)
         }
     }

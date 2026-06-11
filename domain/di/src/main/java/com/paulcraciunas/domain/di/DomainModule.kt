@@ -12,10 +12,9 @@ import com.paulcraciunas.domain.api.auth.ResetPasswordUseCase
 import com.paulcraciunas.domain.api.auth.SignOutUseCase
 import com.paulcraciunas.domain.api.billing.BillingUseCase
 import com.paulcraciunas.domain.api.blindmode.OnBlindModeGameComplete
-import com.paulcraciunas.domain.api.boardvis.GenerateMoveThePieceBoard
-import com.paulcraciunas.domain.api.boardvis.MoveThePieceGameEngine
+import com.paulcraciunas.domain.api.boardvis.GenerateKnightPathExercise
 import com.paulcraciunas.domain.api.boardvis.OnFindSquareComplete
-import com.paulcraciunas.domain.api.boardvis.OnMoveThePieceComplete
+import com.paulcraciunas.domain.api.boardvis.OnKnightPathComplete
 import com.paulcraciunas.domain.api.general.CalculateElo
 import com.paulcraciunas.domain.api.general.Timer
 import com.paulcraciunas.domain.api.puzzles.GetBufferedPuzzleSeries
@@ -41,10 +40,9 @@ import com.paulcraciunas.domain.impl.auth.ResetPasswordUseCaseImpl
 import com.paulcraciunas.domain.impl.auth.SignOutUseCaseImpl
 import com.paulcraciunas.domain.impl.billing.BillingUseCaseImpl
 import com.paulcraciunas.domain.impl.blindmode.OnBlindModeGameCompleteImpl
-import com.paulcraciunas.domain.impl.boardvis.GenerateMoveThePieceBoardImpl
-import com.paulcraciunas.domain.impl.boardvis.MoveThePieceGameEngineImpl
+import com.paulcraciunas.domain.impl.boardvis.GenerateKnightPathExerciseImpl
 import com.paulcraciunas.domain.impl.boardvis.OnFindSquareCompleteImpl
-import com.paulcraciunas.domain.impl.boardvis.OnMoveThePieceCompleteImpl
+import com.paulcraciunas.domain.impl.boardvis.OnKnightPathCompleteImpl
 import com.paulcraciunas.domain.impl.general.CalculateEloImpl
 import com.paulcraciunas.domain.impl.general.SimpleTimer
 import com.paulcraciunas.domain.impl.puzzles.GetBufferedPuzzleSeriesImpl
@@ -130,14 +128,11 @@ internal abstract class DomainModule {
 
     @Binds
     @Singleton
-    abstract fun bindGenerateMoveThePieceBoard(impl: GenerateMoveThePieceBoardImpl): GenerateMoveThePieceBoard
+    abstract fun bindGenerateKnightPathExercise(impl: GenerateKnightPathExerciseImpl): GenerateKnightPathExercise
 
     @Binds
     @Singleton
-    abstract fun bindOnMoveThePieceComplete(impl: OnMoveThePieceCompleteImpl): OnMoveThePieceComplete
-
-    @Binds
-    abstract fun bindMoveThePieceGameEngine(impl: MoveThePieceGameEngineImpl): MoveThePieceGameEngine
+    abstract fun bindOnKnightPathComplete(impl: OnKnightPathCompleteImpl): OnKnightPathComplete
 
     @Binds
     @Singleton
