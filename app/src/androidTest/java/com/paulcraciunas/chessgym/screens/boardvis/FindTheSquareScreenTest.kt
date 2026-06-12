@@ -2,9 +2,6 @@ package com.paulcraciunas.chessgym.screens.boardvis
 
 import com.paulcraciunas.chessgym.base.BaseUiTest
 import com.paulcraciunas.chessgym.di.TestFindTheSquareModule
-import com.paulcraciunas.chessgym.dsl.Given
-import com.paulcraciunas.chessgym.dsl.Then
-import com.paulcraciunas.chessgym.dsl.When
 import com.paulcraciunas.game.logic.api.board.Locus
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
@@ -138,7 +135,7 @@ internal class FindTheSquareScreenTest : BaseUiTest() {
         navigateToFindTheSquare()
         When.findTheSquare.clickPlay()
 
-        When.findTheSquare.waitForGameToEnd(GAME_TIMEOUT_MS)
+        When.clock.advanceSeconds(GAME_TIMEOUT_SECONDS)
 
         Then.findTheSquare
             .isInGameOverPhase()
@@ -153,7 +150,7 @@ internal class FindTheSquareScreenTest : BaseUiTest() {
 
         When.findTheSquare.clickSquare(DETERMINISTIC_SQUARE)
         When.findTheSquare.clickSquare(DETERMINISTIC_SQUARE)
-        When.findTheSquare.waitForGameToEnd(GAME_TIMEOUT_MS)
+        When.clock.advanceSeconds(GAME_TIMEOUT_SECONDS)
 
         Then.findTheSquare
             .isInGameOverPhase()
@@ -168,7 +165,7 @@ internal class FindTheSquareScreenTest : BaseUiTest() {
         navigateToFindTheSquare()
         When.findTheSquare.clickPlay()
         When.findTheSquare.clickSquare(DETERMINISTIC_SQUARE)
-        When.findTheSquare.waitForGameToEnd(GAME_TIMEOUT_MS)
+        When.clock.advanceSeconds(GAME_TIMEOUT_SECONDS)
 
         Then.findTheSquare
             .isInGameOverPhase()
@@ -181,7 +178,7 @@ internal class FindTheSquareScreenTest : BaseUiTest() {
 
         navigateToFindTheSquare()
         When.findTheSquare.clickPlay()
-        When.findTheSquare.waitForGameToEnd(GAME_TIMEOUT_MS)
+        When.clock.advanceSeconds(GAME_TIMEOUT_SECONDS)
 
         Then.findTheSquare
             .isInGameOverPhase()
@@ -192,7 +189,7 @@ internal class FindTheSquareScreenTest : BaseUiTest() {
     fun GIVEN_game_over_WHEN_clicking_play_again_THEN_returns_to_setup() {
         navigateToFindTheSquare()
         When.findTheSquare.clickPlay()
-        When.findTheSquare.waitForGameToEnd(GAME_TIMEOUT_MS)
+        When.clock.advanceSeconds(GAME_TIMEOUT_SECONDS)
         Then.findTheSquare.isInGameOverPhase()
 
         When.findTheSquare.clickPlayAgain()
@@ -206,7 +203,7 @@ internal class FindTheSquareScreenTest : BaseUiTest() {
     fun GIVEN_play_again_setup_WHEN_clicking_play_THEN_new_game_starts() {
         navigateToFindTheSquare()
         When.findTheSquare.clickPlay()
-        When.findTheSquare.waitForGameToEnd(GAME_TIMEOUT_MS)
+        When.clock.advanceSeconds(GAME_TIMEOUT_SECONDS)
         When.findTheSquare.clickPlayAgain()
 
         When.findTheSquare.clickPlay()
@@ -241,7 +238,7 @@ internal class FindTheSquareScreenTest : BaseUiTest() {
     fun GIVEN_game_over_WHEN_going_back_THEN_returns_to_dashboard() {
         navigateToFindTheSquare()
         When.findTheSquare.clickPlay()
-        When.findTheSquare.waitForGameToEnd(GAME_TIMEOUT_MS)
+        When.clock.advanceSeconds(GAME_TIMEOUT_SECONDS)
         Then.findTheSquare.isInGameOverPhase()
 
         When.navigation.goBack()
@@ -294,7 +291,7 @@ internal class FindTheSquareScreenTest : BaseUiTest() {
     }
 
     private fun navigateToFindTheSquare() {
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToBoardVis()
         When.boardVisDashboard.openFindTheSquare()
     }
@@ -303,6 +300,6 @@ internal class FindTheSquareScreenTest : BaseUiTest() {
         val DETERMINISTIC_SQUARE = Locus.a1
         const val DETERMINISTIC_SQUARE_NAME = "A1"
         val WRONG_SQUARE = Locus.e4
-        const val GAME_TIMEOUT_MS = 10_000L
+        const val GAME_TIMEOUT_SECONDS = 31
     }
 }

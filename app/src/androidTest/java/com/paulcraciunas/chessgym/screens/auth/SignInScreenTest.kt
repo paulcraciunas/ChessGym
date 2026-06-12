@@ -1,9 +1,6 @@
 package com.paulcraciunas.chessgym.screens.auth
 
 import com.paulcraciunas.chessgym.base.BaseUiTest
-import com.paulcraciunas.chessgym.dsl.Given
-import com.paulcraciunas.chessgym.dsl.Then
-import com.paulcraciunas.chessgym.dsl.When
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
 import org.junit.Test
@@ -20,7 +17,7 @@ internal class SignInScreenTest : BaseUiTest() {
 
     @Test
     fun WHEN_navigated_to_sign_in_THEN_shows_sign_in_form() {
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToSignIn()
 
         Then.signInScreen
@@ -31,7 +28,7 @@ internal class SignInScreenTest : BaseUiTest() {
 
     @Test
     fun WHEN_toggle_to_sign_up_THEN_shows_display_name_field() {
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToSignIn()
         When.signInScreen.toggleToSignUp()
 
@@ -43,7 +40,7 @@ internal class SignInScreenTest : BaseUiTest() {
 
     @Test
     fun WHEN_toggle_to_sign_up_and_back_THEN_display_name_field_disappears() {
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToSignIn()
         When.signInScreen.toggleToSignUp()
 
@@ -58,7 +55,7 @@ internal class SignInScreenTest : BaseUiTest() {
 
     @Test
     fun GIVEN_sign_in_mode_WHEN_submit_with_empty_fields_THEN_shows_field_errors() {
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToSignIn()
         When.signInScreen.tapSubmit()
 
@@ -69,7 +66,7 @@ internal class SignInScreenTest : BaseUiTest() {
 
     @Test
     fun GIVEN_sign_in_mode_WHEN_submit_with_invalid_email_THEN_shows_email_error() {
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToSignIn()
         When.signInScreen
             .typeEmail("not-an-email")
@@ -82,7 +79,7 @@ internal class SignInScreenTest : BaseUiTest() {
 
     @Test
     fun GIVEN_sign_in_mode_WHEN_submit_with_short_password_THEN_shows_password_error() {
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToSignIn()
         When.signInScreen
             .typeEmail("user@example.com")
@@ -97,7 +94,7 @@ internal class SignInScreenTest : BaseUiTest() {
     fun GIVEN_valid_credentials_WHEN_sign_in_THEN_navigates_back() {
         Given.auth.withExistingUser("user@example.com", "ValidPass123")
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToSignIn()
         When.signInScreen
             .typeEmail("user@example.com")
@@ -111,7 +108,7 @@ internal class SignInScreenTest : BaseUiTest() {
     fun GIVEN_invalid_credentials_WHEN_sign_in_THEN_shows_password_error() {
         Given.auth.withExistingUser("user@example.com", "CorrectPass")
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToSignIn()
         When.signInScreen
             .typeEmail("user@example.com")
@@ -124,7 +121,7 @@ internal class SignInScreenTest : BaseUiTest() {
 
     @Test
     fun GIVEN_non_existent_user_WHEN_sign_in_THEN_shows_email_error() {
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToSignIn()
         When.signInScreen
             .typeEmail("unknown@example.com")
@@ -137,7 +134,7 @@ internal class SignInScreenTest : BaseUiTest() {
 
     @Test
     fun GIVEN_sign_up_mode_WHEN_submit_with_empty_display_name_THEN_shows_error() {
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToSignIn()
         When.signInScreen
             .toggleToSignUp()
@@ -151,7 +148,7 @@ internal class SignInScreenTest : BaseUiTest() {
 
     @Test
     fun GIVEN_sign_up_mode_WHEN_submit_with_short_display_name_THEN_shows_error() {
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToSignIn()
         When.signInScreen
             .toggleToSignUp()
@@ -166,7 +163,7 @@ internal class SignInScreenTest : BaseUiTest() {
 
     @Test
     fun GIVEN_sign_up_mode_WHEN_submit_with_valid_fields_THEN_navigates_back() {
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToSignIn()
         When.signInScreen
             .toggleToSignUp()
@@ -182,7 +179,7 @@ internal class SignInScreenTest : BaseUiTest() {
     fun GIVEN_existing_account_WHEN_sign_up_THEN_shows_email_error() {
         Given.auth.withExistingUser("taken@example.com", "SomePass123")
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToSignIn()
         When.signInScreen
             .toggleToSignUp()
@@ -199,7 +196,7 @@ internal class SignInScreenTest : BaseUiTest() {
     fun GIVEN_existing_user_WHEN_forgot_password_THEN_shows_reset_banner() {
         Given.auth.withExistingUser("user@example.com", "ForgottenPass")
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToSignIn()
         When.signInScreen
             .typeEmail("user@example.com")
@@ -210,7 +207,7 @@ internal class SignInScreenTest : BaseUiTest() {
 
     @Test
     fun GIVEN_empty_email_WHEN_forgot_password_THEN_shows_email_error() {
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToSignIn()
         When.signInScreen.tapForgotPassword()
 
@@ -220,7 +217,7 @@ internal class SignInScreenTest : BaseUiTest() {
 
     @Test
     fun GIVEN_unknown_email_WHEN_forgot_password_THEN_shows_email_error() {
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToSignIn()
         When.signInScreen
             .typeEmail("unknown@example.com")

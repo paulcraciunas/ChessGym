@@ -1,9 +1,6 @@
 package com.paulcraciunas.chessgym.screens.tools
 
 import com.paulcraciunas.chessgym.base.BaseUiTest
-import com.paulcraciunas.chessgym.dsl.Given
-import com.paulcraciunas.chessgym.dsl.Then
-import com.paulcraciunas.chessgym.dsl.When
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
 import org.junit.Test
@@ -38,7 +35,7 @@ internal class AnalysisScreenTest : BaseUiTest() {
     fun WHEN_analysis_runs_THEN_shows_engine_lines() {
         navigateToAnalysis()
 
-        When.compose.waitUntil(ENGINE_WAIT_TIMEOUT_MS) {
+        composeRule.waitUntil(ENGINE_WAIT_TIMEOUT_MS) {
             runCatching {
                 Then.analysisScreen.showsEngineLines()
                 true
@@ -159,7 +156,7 @@ internal class AnalysisScreenTest : BaseUiTest() {
     }
 
     private fun navigateToAnalysis() {
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToTools()
         When.toolsDashboard.openAnalysis()
     }

@@ -1,9 +1,6 @@
 package com.paulcraciunas.chessgym.screens.puzzles
 
 import com.paulcraciunas.chessgym.base.BaseUiTest
-import com.paulcraciunas.chessgym.dsl.Given
-import com.paulcraciunas.chessgym.dsl.Then
-import com.paulcraciunas.chessgym.dsl.When
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
 import org.junit.Test
@@ -24,7 +21,7 @@ internal class FailedPuzzlesScreenTest : BaseUiTest() {
     fun GIVEN_puzzle_loaded_WHEN_opened_THEN_shows_failed_puzzles_screen() {
         Given.user.withFailedPuzzles(PUZZLE_ID)
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         When.failedPuzzles.open()
 
@@ -39,7 +36,7 @@ internal class FailedPuzzlesScreenTest : BaseUiTest() {
         Given.settings.lightMode()
         Given.user.withFailedPuzzles(PUZZLE_ID)
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         When.failedPuzzles.open()
 
@@ -52,7 +49,7 @@ internal class FailedPuzzlesScreenTest : BaseUiTest() {
         Given.settings.darkMode()
         Given.user.withFailedPuzzles(PUZZLE_ID)
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         When.failedPuzzles.open()
 
@@ -64,7 +61,7 @@ internal class FailedPuzzlesScreenTest : BaseUiTest() {
     fun WHEN_playing_all_correct_moves_THEN_shows_completion_dialog() {
         Given.user.withFailedPuzzles(PUZZLE_ID)
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         When.failedPuzzles
             .open()
@@ -77,7 +74,7 @@ internal class FailedPuzzlesScreenTest : BaseUiTest() {
     fun WHEN_playing_wrong_move_THEN_shows_completion_dialog() {
         Given.user.withFailedPuzzles(PUZZLE_ID)
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         When.failedPuzzles
             .open()
@@ -90,7 +87,7 @@ internal class FailedPuzzlesScreenTest : BaseUiTest() {
     fun GIVEN_completion_dialog_shown_WHEN_dismissing_THEN_dialog_is_dismissed() {
         Given.user.withFailedPuzzles(PUZZLE_ID)
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         When.failedPuzzles
             .open()
@@ -105,7 +102,7 @@ internal class FailedPuzzlesScreenTest : BaseUiTest() {
     fun GIVEN_playing_WHEN_pressing_back_THEN_returns_to_dashboard() {
         Given.user.withFailedPuzzles(PUZZLE_ID)
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         When.failedPuzzles.open()
         Then.failedPuzzles.isPlaying()
@@ -119,7 +116,7 @@ internal class FailedPuzzlesScreenTest : BaseUiTest() {
     fun GIVEN_finished_WHEN_pressing_back_THEN_returns_to_dashboard() {
         Given.user.withFailedPuzzles(PUZZLE_ID)
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         When.failedPuzzles
             .open()
@@ -136,7 +133,7 @@ internal class FailedPuzzlesScreenTest : BaseUiTest() {
     fun GIVEN_all_puzzles_solved_WHEN_returning_to_dashboard_THEN_failed_card_not_clickable() {
         Given.user.withFailedPuzzles(PUZZLE_ID)
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         When.failedPuzzles
             .open()
@@ -155,7 +152,7 @@ internal class FailedPuzzlesScreenTest : BaseUiTest() {
     fun GIVEN_puzzle_failed_again_WHEN_returning_to_dashboard_THEN_failed_card_still_clickable() {
         Given.user.withFailedPuzzles(PUZZLE_ID)
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         When.failedPuzzles
             .open()
@@ -172,7 +169,7 @@ internal class FailedPuzzlesScreenTest : BaseUiTest() {
 
     @Test
     fun GIVEN_no_failed_puzzles_WHEN_on_dashboard_THEN_failed_card_is_not_clickable() {
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
 
         Then.puzzleDashboard.failedPuzzlesCardIsNotEnabled()
@@ -182,7 +179,7 @@ internal class FailedPuzzlesScreenTest : BaseUiTest() {
     fun GIVEN_failed_puzzles_exist_WHEN_on_dashboard_THEN_failed_card_is_clickable() {
         Given.user.withFailedPuzzles(PUZZLE_ID)
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
 
         Then.puzzleDashboard.failedPuzzlesCardIsEnabled()
@@ -192,7 +189,7 @@ internal class FailedPuzzlesScreenTest : BaseUiTest() {
     fun GIVEN_failed_puzzle_solved_WHEN_reopening_failed_puzzles_THEN_shows_empty() {
         Given.user.withFailedPuzzles(PUZZLE_ID)
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         When.failedPuzzles
             .open()

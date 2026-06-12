@@ -1,9 +1,6 @@
 package com.paulcraciunas.chessgym.screens.puzzles
 
 import com.paulcraciunas.chessgym.base.BaseUiTest
-import com.paulcraciunas.chessgym.dsl.Given
-import com.paulcraciunas.chessgym.dsl.Then
-import com.paulcraciunas.chessgym.dsl.When
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
 import org.junit.Test
@@ -20,7 +17,7 @@ internal class PuzzleDashboardScreenTest : BaseUiTest() {
 
     @Test
     fun GIVEN_default_user_WHEN_navigated_to_dashboard_THEN_shows_all_cards() {
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
 
         Then.puzzleDashboard
@@ -32,7 +29,7 @@ internal class PuzzleDashboardScreenTest : BaseUiTest() {
     fun GIVEN_light_mode_WHEN_navigated_to_dashboard_THEN_shows_light_background() {
         Given.settings.lightMode()
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
 
         Then.puzzleDashboard.isDisplayed()
@@ -43,7 +40,7 @@ internal class PuzzleDashboardScreenTest : BaseUiTest() {
     fun GIVEN_dark_mode_WHEN_navigated_to_dashboard_THEN_shows_dark_background() {
         Given.settings.darkMode()
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
 
         Then.puzzleDashboard.isDisplayed()
@@ -52,7 +49,7 @@ internal class PuzzleDashboardScreenTest : BaseUiTest() {
 
     @Test
     fun GIVEN_no_failed_puzzles_WHEN_on_dashboard_THEN_failed_card_is_not_clickable() {
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
 
         Then.puzzleDashboard.failedPuzzlesCardIsNotEnabled()
@@ -62,7 +59,7 @@ internal class PuzzleDashboardScreenTest : BaseUiTest() {
     fun GIVEN_failed_puzzles_exist_WHEN_on_dashboard_THEN_failed_card_is_clickable() {
         Given.user.withFailedPuzzles(101, 102, 103)
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
 
         Then.puzzleDashboard.failedPuzzlesCardIsEnabled()
@@ -72,7 +69,7 @@ internal class PuzzleDashboardScreenTest : BaseUiTest() {
     fun WHEN_tapping_rated_puzzle_card_THEN_navigates_to_rated_puzzle() {
         Given.puzzle.withRating(PUZZLE_RATING)
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         When.puzzleDashboard.openRatedPuzzle()
 
@@ -83,7 +80,7 @@ internal class PuzzleDashboardScreenTest : BaseUiTest() {
     fun WHEN_tapping_puzzle_rush_card_THEN_navigates_to_puzzle_rush() {
         Given.puzzle.withRating(PUZZLE_RATING)
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         When.puzzleDashboard.openPuzzleRush()
 
@@ -94,7 +91,7 @@ internal class PuzzleDashboardScreenTest : BaseUiTest() {
     fun WHEN_tapping_puzzle_streak_card_THEN_navigates_to_puzzle_streak() {
         Given.puzzle.withRating(PUZZLE_RATING)
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         When.puzzleDashboard.openPuzzleStreak()
 
@@ -105,7 +102,7 @@ internal class PuzzleDashboardScreenTest : BaseUiTest() {
     fun WHEN_tapping_failed_puzzles_card_THEN_navigates_to_failed_puzzles() {
         Given.user.withFailedPuzzles(101, 102)
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         When.puzzleDashboard.openFailedPuzzles()
 
@@ -114,7 +111,7 @@ internal class PuzzleDashboardScreenTest : BaseUiTest() {
 
     @Test
     fun WHEN_navigating_to_home_tab_THEN_shows_home_screen() {
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         Then.puzzleDashboard.isDisplayed()
 
@@ -125,7 +122,7 @@ internal class PuzzleDashboardScreenTest : BaseUiTest() {
 
     @Test
     fun WHEN_navigating_to_board_vis_tab_THEN_shows_board_vis_dashboard() {
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         Then.puzzleDashboard.isDisplayed()
 
@@ -136,7 +133,7 @@ internal class PuzzleDashboardScreenTest : BaseUiTest() {
 
     @Test
     fun WHEN_navigating_to_blind_mode_tab_THEN_shows_blind_mode_screen() {
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         Then.puzzleDashboard.isDisplayed()
 
@@ -147,7 +144,7 @@ internal class PuzzleDashboardScreenTest : BaseUiTest() {
 
     @Test
     fun WHEN_opening_drawer_THEN_drawer_is_displayed() {
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
 
         When.navigation.openDrawer()
@@ -159,7 +156,7 @@ internal class PuzzleDashboardScreenTest : BaseUiTest() {
     fun GIVEN_on_puzzle_screen_WHEN_going_back_THEN_returns_to_dashboard() {
         Given.puzzle.withRating(PUZZLE_RATING)
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         When.puzzleDashboard.openPuzzleRush()
         Then.puzzleRush.isDisplayed()
