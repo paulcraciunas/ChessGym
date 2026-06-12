@@ -67,7 +67,7 @@ fun FindTheSquareScreen(
                         tone = ChipTone.Accent,
                         leadingIcon = ImageVector.vectorResource(drawable.clock_icon),
                         modifier = Modifier.width(Design.dimensions.sizes.timerChipWidth)
-                            .padding(Design.dimensions.spacing.xxl),
+                            .padding(end = Design.dimensions.spacing.xs),
                     )
                 }
             )
