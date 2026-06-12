@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.produceIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -71,47 +70,38 @@ class PlaySession(
 
     private suspend fun CoroutineScope.runSessions() {
         startRun()
-        var timerJob: Job? = null
-        val sessionsChannel = sessions().produceIn(this)
+        val timerJob: Job = launchTimer()
+        try {
+            sessions().collect { boardSession ->
+                if (orchestrator.value.status != PlaySessionState.Status.Playing) {
+                    orchestrator.update { it.copy(status = PlaySessionState.Status.Playing) }
+                }
 
-        for (boardSession in sessionsChannel) {
-            orchestrator.update { it.copy(status = PlaySessionState.Status.Playing) }
+                currentSession.run(boardSession)
 
-            if (timerJob == null && config.timed != null) {
-                timerJob = launchTimer()
-            }
+                if (!timerExpired) {
+                    onSessionOver(boardSession)
+                    if (shouldEndRun(currentSession.state.value.boardState.outcome)) {
+                        throw EndSessions()
+                    }
 
-            currentSession.run(boardSession)
-
-            if (timerExpired) {
-                onTimerExpired()
-                break
-            }
-
-            onSessionOver(boardSession)
-
-            if (shouldEndRun(currentSession.state.value.boardState.outcome)) {
-                orchestrator.update { it.copy(status = PlaySessionState.Status.Ended, showSummary = true) }
-                break
-            }
-
-            val autoNext = config.autoNextOverride
-                ?: settingsRepository.appSettings.first().autoNextPuzzle
-            if (!autoNext) {
-                orchestrator.update { it.copy(status = PlaySessionState.Status.Paused) }
-                resumeChannel.receive()
-                if (timerExpired) {
-                    onTimerExpired()
-                    break
+                    val autoNext = config.autoNextOverride ?: settingsRepository.appSettings.first().autoNextPuzzle
+                    if (!autoNext) {
+                        orchestrator.update { it.copy(status = PlaySessionState.Status.Paused) }
+                        resumeChannel.receive()
+                    }
+                }
+                if (timerExpired) { // this is NOT redundant! there are suspend calls in the previous check
+                    throw EndSessions()
                 }
             }
-        }
-
-        timerJob?.cancel()
-        sessionsChannel.cancel()
-        // Natural loop completion (source exhausted) — only if we didn't already end via break
-        if (orchestrator.value.status != PlaySessionState.Status.Ended) {
-            onSourceExhausted()
+        } catch (_: EndSessions) { // No-Op. We set status to Ended in finally anyway
+        } finally {
+            timerJob.cancel()
+            // Natural loop completion (source exhausted) — only if we didn't already end via EndSessions signal
+            if (orchestrator.value.status != PlaySessionState.Status.Ended) {
+                orchestrator.update { it.copy(status = PlaySessionState.Status.Ended, showSummary = true) }
+            }
         }
     }
 
@@ -166,22 +156,11 @@ class PlaySession(
         onSessionComplete(currentPlaySessionState())
     }
 
-    private fun onTimerExpired() = orchestrator.update { it.copy(status = PlaySessionState.Status.Ended, showSummary = true) }
-
     private fun shouldEndRun(outcome: Outcome?): Boolean {
         if (outcome == null) return false
         return when (config.endMode) {
             EndMode.OnFirstFailure -> outcome != Outcome.Won
             EndMode.OnSourceExhausted -> false
-        }
-    }
-
-    private fun onSourceExhausted() {
-        orchestrator.update {
-            it.copy(
-                status = PlaySessionState.Status.Ended,
-                showSummary = true,
-            )
         }
     }
 
@@ -216,6 +195,8 @@ class PlaySession(
         val remainingTimeMs: Long = 0L,
         val errorMessage: String? = null,
     )
+
+    private class EndSessions : Throwable()
 }
 
 private fun SingleSessionState.Navigation.toPlayNavigation(): PlaySessionState.Navigation =
