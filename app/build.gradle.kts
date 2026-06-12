@@ -176,6 +176,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     androidTestImplementation(libs.hilt.android.testing)
     androidTestImplementation(project(":domain:api"))
+    androidTestImplementation(project(":domain:impl"))
     androidTestImplementation(project(":game:logic:api"))
     androidTestImplementation(project(":user:api"))
     androidTestImplementation(testFixtures(project(":user:api")))

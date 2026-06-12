@@ -1,8 +1,6 @@
 package com.paulcraciunas.chessgym.base
 
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
-import androidx.test.core.app.ActivityScenario
-import com.paulcraciunas.chessgym.MainActivity
 import com.paulcraciunas.chessgym.dsl.Given
 import com.paulcraciunas.chessgym.dsl.Then
 import com.paulcraciunas.chessgym.dsl.When
@@ -12,6 +10,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 
+@Suppress("PropertyName")
 @HiltAndroidTest
 abstract class BaseUiTest {
     @get:Rule(order = 0)
@@ -20,23 +19,18 @@ abstract class BaseUiTest {
     @get:Rule(order = 1)
     val composeRule = createEmptyComposeRule()
 
-    private var scenario: ActivityScenario<MainActivity>? = null
+    protected val Given = Given()
+    protected val When = When(composeRule)
+    protected val Then = Then(composeRule)
 
     @Before
     open fun setUp() {
         hiltRule.inject()
         Given.puzzle.reset()
-        Given.clock.reset()
-        When.init(composeRule, ::launchApp)
-        Then.init(composeRule)
     }
 
     @After
     fun tearDown() {
-        scenario?.close()
-    }
-
-    private fun launchApp() {
-        scenario = ActivityScenario.launch(MainActivity::class.java)
+        When.app.close()
     }
 }
