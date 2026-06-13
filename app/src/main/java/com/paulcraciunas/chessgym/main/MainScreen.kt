@@ -115,10 +115,6 @@ fun MainScreen(
             }
         }
     }
-    GameSoundEffects(
-        soundManager = vm.soundManager,
-        soundEvents = vm.soundCoordinator,
-    )
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -142,6 +138,11 @@ fun MainScreen(
         if (mainScreenState.isLoading) {
             LoadingContent()
         } else {
+            GameSoundEffects(
+                soundManager = vm.soundManager,
+                soundEvents = vm.soundCoordinator,
+            )
+
             Box {
                 ModalNavigationDrawer(
                     drawerContent = {
