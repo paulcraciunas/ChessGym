@@ -33,6 +33,7 @@ fun Flow<PlaySessionState>.toSoundEvents(timeThresholdMs: Long? = null): Flow<So
         if (prev != null) {
             if (current.status == PlaySessionState.Status.Ready && prev.status != PlaySessionState.Status.Ready) {
                 emit(SoundCoordinator.SoundEvent.GameStart)
+                ticking = false // reset the flag, in case it might be needed later
             }
             if (current.status == PlaySessionState.Status.Ended && prev.status != PlaySessionState.Status.Ended) {
                 emit(SoundCoordinator.SoundEvent.GameOver)
