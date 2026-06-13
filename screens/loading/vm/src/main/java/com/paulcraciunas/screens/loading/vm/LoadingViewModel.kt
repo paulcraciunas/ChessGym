@@ -130,12 +130,15 @@ class LoadingViewModel @Inject constructor(
     fun onDownloadConfirmation(accepted: Boolean) {
         if (accepted) {
             _uiState.update { state ->
-                val ready = state as? LoadingState.Ready ?: return@update state
-                ready.copy(requiresConfirmation = false, dialog = LoadingState.Dialog.None)
+                if (state !is LoadingState.Ready) state
+                else state.copy(requiresConfirmation = false, dialog = LoadingState.Dialog.None)
             }
             checkDeviceConditions()
         } else {
-            _uiState.update { LoadingState.Ready() }
+            _uiState.update { state ->
+                if (state !is LoadingState.Ready) state
+                else LoadingState.Ready(selectedTier = state.selectedTier)
+            }
         }
     }
 
