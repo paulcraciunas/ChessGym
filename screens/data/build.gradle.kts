@@ -12,6 +12,7 @@ dependencies {
     implementation(project(":game:engine:api"))
     implementation(project(":game:logic:api"))
     implementation(project(":game:logic:builders"))
+    implementation(project(":global:sounds"))
     implementation(project(":settings:application:api"))
 
     implementation(libs.public.timber)
