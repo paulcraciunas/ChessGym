@@ -290,7 +290,7 @@ private fun LanguagePicker(
                 DropdownMenuItem(
                     text = {
                         Text(
-                            text = selectedLanguage.fullName(),
+                            text = language.fullName(),
                             style = Design.typography.bodyMedium,
                             color = if (language == selectedLanguage) Design.colors.primary else Design.colors.ink,
                         )
