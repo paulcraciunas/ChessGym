@@ -32,7 +32,6 @@ import com.paulcraciunas.screens.common.controls.MoveNavigationControls
 import com.paulcraciunas.screens.common.controls.CapturedPieces
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.design.components.PrimaryButton
-import com.paulcraciunas.screens.common.design.components.PrimaryButtonStyle
 import com.paulcraciunas.screens.common.design.components.SpacerSize
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.dialogs.PromotionDialog
@@ -139,7 +138,6 @@ private fun ImportButtons(
             modifier = Modifier
                 .weight(1f)
                 .testTag { ImportGameScreenTags.FEN_BUTTON },
-            style = PrimaryButtonStyle.Clear,
         )
         PrimaryButton(
             text = stringResource(R.string.import_pgn),
@@ -147,7 +145,6 @@ private fun ImportButtons(
             modifier = Modifier
                 .weight(1f)
                 .testTag { ImportGameScreenTags.PGN_BUTTON },
-            style = PrimaryButtonStyle.Clear,
         )
     }
 }
