@@ -65,7 +65,7 @@ class PuzzleRushViewModel @Inject constructor(
     init {
         startRush()
         playSession.state
-            .toSoundEvents()
+            .toSoundEvents(PuzzleRushUiStateAdapter.DANGER_THRESHOLD)
             .onEach { sounds.trigger(it) }
             .launchIn(viewModelScope)
     }
