@@ -1,6 +1,13 @@
 package com.paulcraciunas.screens.signin.ui
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -68,11 +75,20 @@ internal fun EmailSignInForm(
     var isPasswordVisible by rememberSaveable { mutableStateOf(false) }
 
     Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.lg),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = modifier.animateContentSize(
+            animationSpec = spring(
+                dampingRatio = Spring.DampingRatioLowBouncy,
+                stiffness = Spring.StiffnessLow
+            )
+        ),
+        verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.xs),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        AnimatedVisibility(visible = isSignUpMode) {
+        AnimatedVisibility(
+            visible = isSignUpMode,
+            enter = fadeIn() + expandVertically(),
+            exit = fadeOut() + shrinkVertically(),
+        ) {
             OutlinedTextField(
                 value = displayName,
                 onValueChange = onDisplayNameChange,
@@ -148,7 +164,8 @@ internal fun EmailSignInForm(
             visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
                 val icon = if (isPasswordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility
-                val description = if (isPasswordVisible) stringResource(GlobalR.string.sign_in_password_hide) else stringResource(GlobalR.string.sign_in_password_show)
+                val description =
+                    if (isPasswordVisible) stringResource(GlobalR.string.sign_in_password_hide) else stringResource(GlobalR.string.sign_in_password_show)
                 IconCircleButton(
                     icon = icon,
                     onClick = { isPasswordVisible = !isPasswordVisible },
@@ -167,12 +184,16 @@ internal fun EmailSignInForm(
                 disabledContainerColor = Design.colors.surfaceAlt
             )
         )
-        AnimatedVisibility(visible = !isSignUpMode) {
+        AnimatedVisibility(
+            visible = !isSignUpMode,
+            enter = fadeIn() + expandVertically(),
+            exit = fadeOut() + shrinkVertically(),
+            modifier = Modifier.align(Alignment.End),
+        ) {
             TextButton(
                 onClick = onForgotPassword,
                 enabled = !isLoading,
                 modifier = Modifier
-                    .align(Alignment.End)
                     .testTag(SignInTags.FORGOT_PASSWORD_BUTTON),
             ) {
                 Text(
