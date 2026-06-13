@@ -10,6 +10,7 @@ import com.paulcraciunas.domain.api.puzzles.PuzzleCompletionResult
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.global.qualifiers.DefaultDispatcher
+import com.paulcraciunas.global.sounds.SoundCoordinator
 import com.paulcraciunas.screens.data.BoardSession
 import com.paulcraciunas.screens.data.NoOpNavigation
 import com.paulcraciunas.screens.data.PuzzlePlayableBoard
@@ -18,6 +19,7 @@ import com.paulcraciunas.screens.data.ScriptedOpponent
 import com.paulcraciunas.screens.data.engine.PlayIntent
 import com.paulcraciunas.screens.data.engine.SinglePlaySession
 import com.paulcraciunas.screens.data.engine.SingleSessionState
+import com.paulcraciunas.screens.data.engine.toSoundEvents
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -26,6 +28,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -37,6 +42,7 @@ class RatedPuzzleViewModel @Inject constructor(
     private val timer: Timer,
     private val getRatedPuzzle: GetRatedPuzzle,
     private val onPuzzleComplete: OnPuzzleComplete,
+    sounds: SoundCoordinator,
     appSettingsRepository: AppSettingsRepository,
 ) : ViewModel() {
     private val ratingChange = MutableStateFlow(EloResult(0, 0))
@@ -59,6 +65,11 @@ class RatedPuzzleViewModel @Inject constructor(
     init {
         timer.start()
         loadNextPuzzle()
+        playSession.state
+            .toSoundEvents()
+            .filter { it is SoundCoordinator.SoundEvent.Move } // Don't want start-game and end-game sounds here
+            .onEach { sounds.trigger(it) }
+            .launchIn(viewModelScope)
     }
 
     fun onStop() { timer.pause() }

@@ -10,6 +10,7 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.impl.RealGameFactory
+import com.paulcraciunas.global.sounds.SoundCoordinator
 import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
 import com.paulcraciunas.user.api.FakeUserRepository
 import com.paulcraciunas.user.api.User
@@ -395,6 +396,7 @@ internal class RatedPuzzleViewModelTest {
             timer = timer,
             getRatedPuzzle = getRatedPuzzle,
             onPuzzleComplete = onPuzzleComplete,
+            sounds = SoundCoordinator(),
             appSettingsRepository = appSettingsRepository,
         )
         backgroundScope.launch(UnconfinedTestDispatcher(testDispatcher.scheduler)) {
