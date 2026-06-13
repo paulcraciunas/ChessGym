@@ -46,7 +46,6 @@ internal fun LandingCard(
     onDownload: () -> Unit,
     onTierSelected: (DatabaseTier) -> Unit,
     onDownloadConfirmation: (Boolean) -> Unit,
-    onPermissionResponse: (Boolean) -> Unit,
     onCrashConsentResponse: (Boolean) -> Unit,
     state: LoadingState.Ready,
     modifier: Modifier = Modifier,
@@ -127,7 +126,6 @@ internal fun LandingCard(
             onCancelled = { onDownloadConfirmation(false) },
             onConfirmed = { onDownloadConfirmation(true) },
         )
-        LoadingState.Dialog.Permission -> PermissionDialog(onPermissionResponse)
         LoadingState.Dialog.None -> {}
     }
 }
@@ -162,7 +160,6 @@ private fun LandingCardPreview() {
             onDownload = {},
             onTierSelected = {},
             onDownloadConfirmation = {},
-            onPermissionResponse = {},
             onCrashConsentResponse = {},
             state = LoadingState.Ready(error = LoadingState.Error.None),
         )
@@ -177,7 +174,6 @@ private fun LandingCardLitePreview() {
             onDownload = {},
             onTierSelected = {},
             onDownloadConfirmation = {},
-            onPermissionResponse = {},
             onCrashConsentResponse = {},
             state = LoadingState.Ready(selectedTier = DatabaseTier.Lite),
         )
@@ -193,7 +189,6 @@ private fun LandingCardWithErrorPreview() {
             onDownload = {},
             onTierSelected = {},
             onDownloadConfirmation = {},
-            onPermissionResponse = {},
             onCrashConsentResponse = {},
             state = LoadingState.Ready(error = LoadingState.Error.NoInternet),
         )

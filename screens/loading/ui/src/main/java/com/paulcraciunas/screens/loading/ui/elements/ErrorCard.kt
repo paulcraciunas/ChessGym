@@ -81,7 +81,6 @@ private fun LoadingState.Error.res(): Int = when (this) {
     LoadingState.Error.DownloadFailed -> R.string.loading_error_download_failed
     LoadingState.Error.DecompressionFailed -> R.string.loading_error_decompression_failed
     LoadingState.Error.DatabaseWriteFailed -> R.string.loading_error_database_write_failed
-    LoadingState.Error.NoPermission -> R.string.loading_error_permission
     LoadingState.Error.ConsentRequired -> R.string.loading_error_consent_required
     LoadingState.Error.NoInternet -> R.string.loading_error_no_internet
     LoadingState.Error.NotEnoughDiskSpace -> R.string.loading_error_not_enough_disk_space

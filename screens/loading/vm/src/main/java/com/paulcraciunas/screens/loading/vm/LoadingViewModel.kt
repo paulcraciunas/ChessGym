@@ -77,12 +77,10 @@ class LoadingViewModel @Inject constructor(
                 !crashReportingConsent.value -> ready.copy(dialog = LoadingState.Dialog.CrashConsent)
                 ready.selectedTier.isBundled -> ready.copy(
                     requiresConfirmation = false,
-                    requiresPermission = false,
                     dialog = LoadingState.Dialog.None,
                     error = LoadingState.Error.None,
                 )
                 ready.requiresConfirmation -> ready.copy(dialog = LoadingState.Dialog.Download)
-                ready.requiresPermission -> ready.copy(dialog = LoadingState.Dialog.Permission)
                 else -> ready.copy(error = LoadingState.Error.None)
             }
         }
@@ -105,7 +103,6 @@ class LoadingViewModel @Inject constructor(
                     if (ready.selectedTier.isBundled) {
                         ready.copy(
                             requiresConfirmation = false,
-                            requiresPermission = false,
                             dialog = LoadingState.Dialog.None,
                             error = LoadingState.Error.None,
                         )
@@ -131,27 +128,14 @@ class LoadingViewModel @Inject constructor(
     }
 
     fun onDownloadConfirmation(accepted: Boolean) {
-        _uiState.update { state ->
-            val ready = state as? LoadingState.Ready ?: return@update state
-            if (accepted) {
-                ready.copy(requiresConfirmation = false, dialog = LoadingState.Dialog.Permission)
-            } else {
-                LoadingState.Ready()
-            }
-        }
-    }
-
-    fun onPermissionReceived(isGranted: Boolean) {
-        if (isGranted) {
-            checkDeviceConditions()
-        } else {
+        if (accepted) {
             _uiState.update { state ->
                 val ready = state as? LoadingState.Ready ?: return@update state
-                ready.copy(
-                    requiresConfirmation = false,
-                    error = LoadingState.Error.NoPermission,
-                )
+                ready.copy(requiresConfirmation = false, dialog = LoadingState.Dialog.None)
             }
+            checkDeviceConditions()
+        } else {
+            _uiState.update { LoadingState.Ready() }
         }
     }
 
@@ -177,7 +161,6 @@ class LoadingViewModel @Inject constructor(
                     val current = state as? LoadingState.Ready ?: return@update state
                     current.copy(
                         requiresConfirmation = false,
-                        requiresPermission = false,
                         dialog = LoadingState.Dialog.None,
                         error = LoadingState.Error.NoInternet,
                     )
@@ -189,7 +172,6 @@ class LoadingViewModel @Inject constructor(
                     val current = state as? LoadingState.Ready ?: return@update state
                     current.copy(
                         requiresConfirmation = false,
-                        requiresPermission = false,
                         dialog = LoadingState.Dialog.None,
                         error = LoadingState.Error.NotEnoughDiskSpace,
                     )
@@ -213,7 +195,6 @@ class LoadingViewModel @Inject constructor(
                         LoadingState.Ready(
                             selectedTier = tier,
                             requiresConfirmation = false,
-                            requiresPermission = false,
                             error = LoadingState.Error.GenericRuntime,
                         )
                     }
@@ -248,7 +229,6 @@ class LoadingViewModel @Inject constructor(
                     LoadingState.Ready(
                         selectedTier = tier,
                         requiresConfirmation = false,
-                        requiresPermission = false,
                         error = progress.error.toLoadingState(),
                     )
                 }
