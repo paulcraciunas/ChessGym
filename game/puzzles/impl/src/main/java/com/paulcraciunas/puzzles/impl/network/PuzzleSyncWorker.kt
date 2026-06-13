@@ -203,7 +203,7 @@ class PuzzleSyncWorker @AssistedInject constructor(
         const val ERROR_UNKNOWN = "unknown_error"
 
         private fun compressionFactor(tierSegment: String): Float = when (tierSegment) {
-            PuzzleDatabaseContract.Tier.FULL -> 2.64f
+            PuzzleDatabaseContract.Tier.FULL -> 1.88f
             PuzzleDatabaseContract.Tier.COMPACT -> 1.73f
             else -> 1.0f
         }
