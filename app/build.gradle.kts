@@ -102,6 +102,7 @@ dependencies {
     implementation(project(":global:notifications"))
     implementation(project(":global:qualifiers"))
     implementation(project(":global:resources"))
+    implementation(project(":global:sounds"))
     implementation(project(":global:utils"))
     implementation(project(":settings:application:impl"))
     implementation(project(":screens:common"))
@@ -138,6 +139,7 @@ dependencies {
 
     // Splash Screen
     implementation(libs.androidx.core.splashscreen)
+    implementation(libs.androidx.appcompat)
 
     // Edge-to-edge
     implementation(libs.androidx.activity.ktx)
