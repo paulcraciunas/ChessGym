@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.screens.boardvis.pieces.vm.KnightPathUiState
+import com.paulcraciunas.screens.common.AnimatedControls
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
 
@@ -32,27 +33,29 @@ internal fun KnightPathScreenContents(
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(16.dp))
-        when (state) {
-            is KnightPathUiState.Setup -> {
-                KnightPathSetupControls(
-                    onPlayClicked = onPlayClicked,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
-            }
-            is KnightPathUiState.Playing -> {
-                KnightPathPlayingControls(
-                    currentScore = state.score,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
-            }
-            is KnightPathUiState.GameOver -> {
-                KnightPathGameOverControls(
-                    finalScore = state.score,
-                    isNewHighScore = state.isNewHighScore,
-                    wasWrongMove = state.wasWrongMove,
-                    onPlayAgain = onPlayAgain,
-                    modifier = Modifier.padding(16.dp)
-                )
+        AnimatedControls(targetState = state) { uiState ->
+            when (uiState) {
+                is KnightPathUiState.Setup -> {
+                    KnightPathSetupControls(
+                        onPlayClicked = onPlayClicked,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                }
+                is KnightPathUiState.Playing -> {
+                    KnightPathPlayingControls(
+                        currentScore = uiState.score,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                }
+                is KnightPathUiState.GameOver -> {
+                    KnightPathGameOverControls(
+                        finalScore = uiState.score,
+                        isNewHighScore = uiState.isNewHighScore,
+                        wasWrongMove = uiState.wasWrongMove,
+                        onPlayAgain = onPlayAgain,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
             }
         }
     }

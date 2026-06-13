@@ -1,8 +1,6 @@
 package com.paulcraciunas.screens.boardvis.squares.ui
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,7 +11,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -39,18 +36,14 @@ internal fun GameSummary(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .clip(Design.shapes.card)
-            .border(Design.colors.softBorderStroke, Design.shapes.card)
-            .background(Design.colors.surface)
-            .padding(Design.dimensions.spacing.xgut)
             .testTag { FindTheSquareTags.GAME_SUMMARY },
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.lg)
     ) {
         Text(
             text = stringResource(R.string.boardvis_game_over),
-            style = Design.typography.headlineSmall,
-            color = Design.colors.ink
+            style = Design.typography.displayMedium,
+            color = Design.colors.ink,
         )
         Title(
             text = stringResource(R.string.boardvis_final_score, score),
@@ -74,7 +67,7 @@ internal fun GameSummary(
     }
 }
 
-@Preview("GameSummary - New High Score")
+@Preview("GameSummary - New High Score", showBackground = true)
 @Preview("GameSummary - New High Score (dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 private fun GameSummaryNewHighScorePreview() {
@@ -89,7 +82,7 @@ private fun GameSummaryNewHighScorePreview() {
     }
 }
 
-@Preview("GameSummary - No High Score")
+@Preview("GameSummary - No High Score", showBackground = true)
 @Composable
 private fun GameSummaryNoHighScorePreview() {
     ChessGymTheme {
