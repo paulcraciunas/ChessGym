@@ -20,10 +20,10 @@ import com.paulcraciunas.screens.data.engine.PlayIntent
 import com.paulcraciunas.screens.data.engine.SinglePlaySession
 import com.paulcraciunas.screens.data.engine.SingleSessionState
 import com.paulcraciunas.screens.data.engine.toSoundEvents
+import com.paulcraciunas.screens.data.utils.SequentialJob
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -32,7 +32,6 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.cancellation.CancellationException
 
@@ -50,7 +49,7 @@ class RatedPuzzleViewModel @Inject constructor(
         settingsRepository = appSettingsRepository,
         config = ratedSessionConfiguration(),
     )
-    private var runJob: Job? = null
+    private val runJob = SequentialJob(viewModelScope)
 
     val uiState: StateFlow<RatedPuzzleUiState> = combine(
         playSession.state,
@@ -95,8 +94,7 @@ class RatedPuzzleViewModel @Inject constructor(
     }
 
     private fun loadNextPuzzle() {
-        runJob?.cancel()
-        runJob = viewModelScope.launch(defaultDispatcher) {
+        runJob.launch(defaultDispatcher) {
             try {
                 val puzzleData = getRatedPuzzle()
                 ratingChange.value = puzzleData.ratingChange

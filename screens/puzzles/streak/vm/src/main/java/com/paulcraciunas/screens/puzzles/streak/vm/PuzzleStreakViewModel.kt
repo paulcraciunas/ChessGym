@@ -14,11 +14,11 @@ import com.paulcraciunas.screens.data.engine.PlayIntent
 import com.paulcraciunas.screens.data.engine.PlaySession
 import com.paulcraciunas.screens.data.engine.PlaySessionState
 import com.paulcraciunas.screens.data.engine.toSoundEvents
+import com.paulcraciunas.screens.data.utils.SequentialJob
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import com.paulcraciunas.user.api.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -26,7 +26,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -49,7 +48,7 @@ class PuzzleStreakViewModel @Inject constructor(
         onSessionComplete = { if (it.boardState.won) onStreakPuzzleComplete(timer.elapsed()) },
     )
 
-    private var runJob: Job? = null
+    private val runJob = SequentialJob(viewModelScope)
     private val highScore = MutableStateFlow(0)
 
     val uiState: StateFlow<PuzzleStreakUiState> = combine(
@@ -90,8 +89,7 @@ class PuzzleStreakViewModel @Inject constructor(
     fun onNextPuzzle() = playSession.accept(intent = PlayIntent.Resume)
     fun onNewStreak() {
         timer.start()
-        runJob?.cancel()
-        runJob = viewModelScope.launch(defaultDispatcher) {
+        runJob.launch(defaultDispatcher) {
             highScore.value = userRepository.get().highScores.puzzleStreak
             playSession.run()
         }

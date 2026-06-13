@@ -17,11 +17,11 @@ import com.paulcraciunas.screens.data.engine.SinglePlaySession
 import com.paulcraciunas.screens.data.engine.SingleSessionState
 import com.paulcraciunas.screens.data.engine.toSoundEvents
 import com.paulcraciunas.screens.data.toSide
+import com.paulcraciunas.screens.data.utils.SequentialJob
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import com.paulcraciunas.user.api.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -59,7 +59,7 @@ class BlindModeViewModel @Inject constructor(
         settingsRepository = appSettingsRepository,
         config = blindModeConfiguration(),
     )
-    private var runJob: Job? = null
+    private val runJob = SequentialJob(viewModelScope)
 
     val uiState: StateFlow<BlindModeUiState> = combine(
         playSession.state,
@@ -92,8 +92,7 @@ class BlindModeViewModel @Inject constructor(
     fun onPlayClicked() {
         session.withStartingSide(vmState.value.selectedSide.toSide { randomFactory.nextInt(0, 2) })
         timer.start()
-        runJob?.cancel()
-        runJob = viewModelScope.launch(dispatcher) {
+        runJob.launch(dispatcher) {
             playSession.run(session.createSession())
             reportGameComplete()
         }
@@ -112,7 +111,7 @@ class BlindModeViewModel @Inject constructor(
     }
 
     fun onPlayAgain() {
-        runJob?.cancel()
+        runJob.cancel()
         playSession.reset()
         vmState.update { it.copy(isRevealing = false, canReveal = true) }
     }

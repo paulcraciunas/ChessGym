@@ -12,6 +12,7 @@ import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.global.qualifiers.DefaultDispatcher
 import com.paulcraciunas.screens.data.SideSelection
 import com.paulcraciunas.screens.data.toSide
+import com.paulcraciunas.screens.data.utils.SequentialJob
 import com.paulcraciunas.user.api.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -20,9 +21,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import java.util.Locale
 import javax.inject.Inject
 
@@ -38,7 +37,7 @@ class FindTheSquareViewModel @Inject constructor(
 ) : ViewModel() {
     private val durationSeconds: Int = gameDuration.seconds
     private val _gameState = MutableStateFlow<GameState>(GameState(timeRemaining = durationSeconds.asRemainder()))
-    private var gameJob: Job? = null
+    private val gameJob = SequentialJob(viewModelScope)
 
     val uiState: StateFlow<FindTheSquareUiState> = _gameState
         .map { it.toUiState() }
@@ -51,8 +50,7 @@ class FindTheSquareViewModel @Inject constructor(
     fun onSideSelected(side: SideSelection) = _gameState.update { it.copy(selectedSide = side) }
     fun onPlayClicked() {
         if (_gameState.value.status != GameState.Status.Setup) return
-        gameJob?.cancel()
-        gameJob = viewModelScope.launch(dispatcher) {
+        gameJob.launch(dispatcher) {
             _gameState.update {
                 it.copy(
                     status = GameState.Status.Playing,
@@ -76,8 +74,7 @@ class FindTheSquareViewModel @Inject constructor(
     }
 
     fun onPlayAgain() {
-        gameJob?.cancel()
-        gameJob = null
+        gameJob.cancel()
         _gameState.update { GameState(timeRemaining = durationSeconds.asRemainder()) }
     }
 
