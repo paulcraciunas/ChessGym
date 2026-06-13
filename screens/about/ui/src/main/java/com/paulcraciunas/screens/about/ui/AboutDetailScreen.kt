@@ -260,33 +260,34 @@ private fun LibraryRow(
     library: LibraryInfo,
     modifier: Modifier = Modifier,
 ) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
+    Column(
+        modifier = modifier.fillMaxWidth()
             .padding(vertical = Design.dimensions.spacing.s),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Column(modifier = Modifier.weight(1f)) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
             Text(
                 text = library.name,
                 style = Design.typography.bodyMedium,
                 fontWeight = FontWeight.Medium,
             )
-            if (library.url.isNotBlank()) {
-                Text(
-                    text = library.url,
-                    style = Design.typography.bodySmall,
-                    color = Design.colors.primary,
-                    textDecoration = TextDecoration.Underline,
-                )
-            }
+            Text(
+                text = library.license,
+                style = Design.typography.bodySmall,
+                color = Design.colors.inkSoft,
+            )
         }
-        Text(
-            text = library.license,
-            style = Design.typography.bodySmall,
-            color = Design.colors.inkSoft,
-        )
+        if (library.url.isNotBlank()) {
+            Text(
+                text = library.url,
+                style = Design.typography.bodySmall,
+                color = Design.colors.primary,
+                textDecoration = TextDecoration.Underline,
+            )
+        }
     }
 }
 
