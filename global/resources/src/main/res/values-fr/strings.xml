@@ -152,7 +152,6 @@
     <string name="loading_error_download_failed">Échec du téléchargement. Vérifiez votre connexion Internet et réessayez.</string>
     <string name="loading_error_decompression_failed">Échec de la décompression de la base de données. Veuillez réessayer.</string>
     <string name="loading_error_database_write_failed">Échec de la construction de la base de données. Veuillez réessayer.</string>
-    <string name="loading_error_permission">Permission refusée. Veuillez activer les notifications pour continuer.</string>
     <string name="loading_error_no_internet">Pas de connexion Internet. Vérifiez votre connexion et réessayez.</string>
     <string name="loading_error_not_enough_disk_space">Espace disque insuffisant. Libérez de l\'espace et réessayez.</string>
     <string name="loading_error_generic">Une erreur est survenue. Veuillez réessayer.</string>
@@ -321,6 +320,8 @@
     <string name="settings_title">Paramètres</string>
     <string name="settings_section_general">Général</string>
     <string name="settings_section_ui">Apparence</string>
+    <string name="settings_sound">Son</string>
+    <string name="settings_sound_description">Jouer des sons pendant les parties</string>
     <string name="settings_haptic_feedback">Retour haptique</string>
     <string name="settings_haptic_feedback_description">Vibrer lors des interactions</string>
     <string name="settings_auto_promote">Promotion automatique</string>
@@ -331,6 +332,7 @@
     <string name="settings_show_borders_description">Afficher les coordonnées autour du plateau</string>
     <string name="settings_highlight_legal_moves">Mettre en évidence les coups légaux</string>
     <string name="settings_highlight_legal_moves_description">Afficher les cases disponibles lorsqu\'une pièce est sélectionnée</string>
+    <string name="settings_language">Langue</string>
     <string name="settings_light_mode">Thème</string>
     <string name="settings_light_mode_light">Clair</string>
     <string name="settings_light_mode_dark">Sombre</string>
@@ -385,6 +387,7 @@
     <string name="tools_mode_start">Démarrer l\'outil</string>
     <string name="tools_clock_description">Chronométrez vos parties avec des contrôles configurables</string>
     <string name="tools_analysis_title">Analyse</string>
+    <string name="tools_analysis_flip_board">Retourner le plateau</string>
     <string name="tools_analysis_description">Analyser des positions avec le moteur</string>
     <string name="tools_import_description">Importer une partie en notation FEN ou PGN</string>
     <!-- endregion -->
@@ -407,6 +410,8 @@
     <string name="import_game_title">Importer une partie</string>
     <string name="import_fen">FEN</string>
     <string name="import_pgn">PGN</string>
+    <string name="import_position">Position</string>
+    <string name="import_game">Partie</string>
     <string name="import_dialog_title_fen">Importer un FEN</string>
     <string name="import_dialog_title_pgn">Importer un PGN</string>
     <string name="import_dialog_hint_fen">Collez la chaîne FEN ici…</string>
@@ -424,6 +429,7 @@
     <string name="blind_mode_title">Mode aveugle</string>
     <string name="blind_mode_training_mode">Mode entraînement</string>
     <string name="blind_mode_training_description">Les parties ne seront pas classées</string>
+    <string name="blind_mode_rated_description">Mode classé</string>
     <string name="blind_mode_play">Jouer</string>
     <string name="blind_mode_resign">Abandonner</string>
     <string name="blind_mode_reveal">Révéler</string>

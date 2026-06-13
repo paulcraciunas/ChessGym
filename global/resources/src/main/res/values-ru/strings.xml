@@ -160,7 +160,6 @@
     <string name="loading_error_download_failed">Загрузка не удалась. Проверьте подключение к интернету и попробуйте снова.</string>
     <string name="loading_error_decompression_failed">Не удалось распаковать базу данных. Пожалуйста, попробуйте снова.</string>
     <string name="loading_error_database_write_failed">Не удалось создать базу данных. Пожалуйста, попробуйте снова.</string>
-    <string name="loading_error_permission">Отказано в разрешении. Пожалуйста, включите уведомления для продолжения.</string>
     <string name="loading_error_no_internet">Нет подключения к интернету. Проверьте соединение и попробуйте снова.</string>
     <string name="loading_error_not_enough_disk_space">Недостаточно места на диске. Освободите место и попробуйте снова.</string>
     <string name="loading_error_generic">Произошла ошибка. Пожалуйста, попробуйте снова.</string>
@@ -331,6 +330,8 @@
     <string name="settings_title">Настройки</string>
     <string name="settings_section_general">Общее</string>
     <string name="settings_section_ui">Внешний вид</string>
+    <string name="settings_sound">Звук</string>
+    <string name="settings_sound_description">Воспроизводить звуки во время игр</string>
     <string name="settings_haptic_feedback">Тактильная отдача</string>
     <string name="settings_haptic_feedback_description">Вибрация при взаимодействии</string>
     <string name="settings_auto_promote">Автопревращение</string>
@@ -341,6 +342,7 @@
     <string name="settings_show_borders_description">Отображать координаты вокруг доски</string>
     <string name="settings_highlight_legal_moves">Подсвечивать допустимые ходы</string>
     <string name="settings_highlight_legal_moves_description">Показывать доступные клетки при выборе фигуры</string>
+    <string name="settings_language">Язык</string>
     <string name="settings_light_mode">Тема</string>
     <string name="settings_light_mode_light">Светлая</string>
     <string name="settings_light_mode_dark">Тёмная</string>
@@ -395,6 +397,7 @@
     <string name="tools_mode_start">Запустить инструмент</string>
     <string name="tools_clock_description">Отсчитывайте время партий с настраиваемыми параметрами</string>
     <string name="tools_analysis_title">Анализ</string>
+    <string name="tools_analysis_flip_board">Перевернуть доску</string>
     <string name="tools_analysis_description">Анализируйте позиции с помощью движка</string>
     <string name="tools_import_description">Импортировать партию из нотации FEN или PGN</string>
     <!-- endregion -->
@@ -417,6 +420,8 @@
     <string name="import_game_title">Импорт партии</string>
     <string name="import_fen">FEN</string>
     <string name="import_pgn">PGN</string>
+    <string name="import_position">Позиция</string>
+    <string name="import_game">Партия</string>
     <string name="import_dialog_title_fen">Импорт FEN</string>
     <string name="import_dialog_title_pgn">Импорт PGN</string>
     <string name="import_dialog_hint_fen">Вставьте строку FEN здесь…</string>
@@ -434,6 +439,7 @@
     <string name="blind_mode_title">Режим вслепую</string>
     <string name="blind_mode_training_mode">Режим тренировки</string>
     <string name="blind_mode_training_description">Партии не влияют на рейтинг</string>
+    <string name="blind_mode_rated_description">Рейтинговый режим</string>
     <string name="blind_mode_play">Играть</string>
     <string name="blind_mode_resign">Сдаться</string>
     <string name="blind_mode_reveal">Показать</string>

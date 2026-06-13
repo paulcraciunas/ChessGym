@@ -148,7 +148,6 @@
     <string name="loading_error_download_failed">下载失败，请检查网络连接后重试。</string>
     <string name="loading_error_decompression_failed">解压数据库失败，请重试。</string>
     <string name="loading_error_database_write_failed">构建数据库失败，请重试。</string>
-    <string name="loading_error_permission">权限被拒绝，请启用通知以继续。</string>
     <string name="loading_error_no_internet">无网络连接，请检查连接后重试。</string>
     <string name="loading_error_not_enough_disk_space">磁盘空间不足，请释放空间后重试。</string>
     <string name="loading_error_generic">发生错误，请重试。</string>
@@ -316,6 +315,8 @@
     <string name="settings_title">设置</string>
     <string name="settings_section_general">通用</string>
     <string name="settings_section_ui">外观</string>
+    <string name="settings_sound">音效</string>
+    <string name="settings_sound_description">游戏中播放音效</string>
     <string name="settings_haptic_feedback">触感反馈</string>
     <string name="settings_haptic_feedback_description">交互时震动</string>
     <string name="settings_auto_promote">自动升变</string>
@@ -326,6 +327,7 @@
     <string name="settings_show_borders_description">在棋盘周围显示坐标</string>
     <string name="settings_highlight_legal_moves">高亮合法步数</string>
     <string name="settings_highlight_legal_moves_description">选中棋子时显示可用格子</string>
+    <string name="settings_language">语言</string>
     <string name="settings_light_mode">主题</string>
     <string name="settings_light_mode_light">浅色</string>
     <string name="settings_light_mode_dark">深色</string>
@@ -380,6 +382,7 @@
     <string name="tools_mode_start">启动工具</string>
     <string name="tools_clock_description">使用可配置控件为对局计时</string>
     <string name="tools_analysis_title">分析</string>
+    <string name="tools_analysis_flip_board">翻转棋盘</string>
     <string name="tools_analysis_description">使用引擎分析局面</string>
     <string name="tools_import_description">从 FEN 或 PGN 导入对局</string>
     <!-- endregion -->
@@ -402,6 +405,8 @@
     <string name="import_game_title">导入对局</string>
     <string name="import_fen">FEN</string>
     <string name="import_pgn">PGN</string>
+    <string name="import_position">局面</string>
+    <string name="import_game">对局</string>
     <string name="import_dialog_title_fen">导入 FEN</string>
     <string name="import_dialog_title_pgn">导入 PGN</string>
     <string name="import_dialog_hint_fen">在此粘贴 FEN 字符串…</string>
@@ -419,6 +424,7 @@
     <string name="blind_mode_title">盲棋模式</string>
     <string name="blind_mode_training_mode">训练模式</string>
     <string name="blind_mode_training_description">对局不影响等级分</string>
+    <string name="blind_mode_rated_description">等级赛模式</string>
     <string name="blind_mode_play">开始</string>
     <string name="blind_mode_resign">认输</string>
     <string name="blind_mode_reveal">显示棋盘</string>

@@ -148,7 +148,6 @@
     <string name="loading_error_download_failed">다운로드 실패. 인터넷 연결을 확인하고 다시 시도해 주세요.</string>
     <string name="loading_error_decompression_failed">데이터베이스 압축 해제 실패. 다시 시도해 주세요.</string>
     <string name="loading_error_database_write_failed">데이터베이스 구축 실패. 다시 시도해 주세요.</string>
-    <string name="loading_error_permission">권한이 거부되었습니다. 계속하려면 알림을 활성화해 주세요.</string>
     <string name="loading_error_no_internet">인터넷 연결 없음. 연결을 확인하고 다시 시도해 주세요.</string>
     <string name="loading_error_not_enough_disk_space">디스크 공간이 부족합니다. 공간을 확보하고 다시 시도해 주세요.</string>
     <string name="loading_error_generic">오류가 발생했습니다. 다시 시도해 주세요.</string>
@@ -316,6 +315,8 @@
     <string name="settings_title">설정</string>
     <string name="settings_section_general">일반</string>
     <string name="settings_section_ui">외관</string>
+    <string name="settings_sound">소리</string>
+    <string name="settings_sound_description">게임 중 소리 재생</string>
     <string name="settings_haptic_feedback">햅틱 피드백</string>
     <string name="settings_haptic_feedback_description">상호작용 시 진동</string>
     <string name="settings_auto_promote">자동 승진</string>
@@ -326,6 +327,7 @@
     <string name="settings_show_borders_description">보드 주위에 좌표 표시</string>
     <string name="settings_highlight_legal_moves">합법적인 수 강조</string>
     <string name="settings_highlight_legal_moves_description">기물 선택 시 이동 가능한 칸 표시</string>
+    <string name="settings_language">언어</string>
     <string name="settings_light_mode">테마</string>
     <string name="settings_light_mode_light">라이트</string>
     <string name="settings_light_mode_dark">다크</string>
@@ -380,6 +382,7 @@
     <string name="tools_mode_start">도구 시작</string>
     <string name="tools_clock_description">설정 가능한 컨트롤로 게임 시간을 재세요</string>
     <string name="tools_analysis_title">분석</string>
+    <string name="tools_analysis_flip_board">보드 뒤집기</string>
     <string name="tools_analysis_description">엔진으로 포지션을 분석하세요</string>
     <string name="tools_import_description">FEN 또는 PGN 표기법에서 게임 가져오기</string>
     <!-- endregion -->
@@ -402,6 +405,8 @@
     <string name="import_game_title">게임 가져오기</string>
     <string name="import_fen">FEN</string>
     <string name="import_pgn">PGN</string>
+    <string name="import_position">포지션</string>
+    <string name="import_game">게임</string>
     <string name="import_dialog_title_fen">FEN 가져오기</string>
     <string name="import_dialog_title_pgn">PGN 가져오기</string>
     <string name="import_dialog_hint_fen">FEN 문자열을 여기에 붙여넣기…</string>
@@ -419,6 +424,7 @@
     <string name="blind_mode_title">블라인드 모드</string>
     <string name="blind_mode_training_mode">훈련 모드</string>
     <string name="blind_mode_training_description">게임이 레이팅에 영향을 주지 않습니다</string>
+    <string name="blind_mode_rated_description">레이티드 모드</string>
     <string name="blind_mode_play">플레이</string>
     <string name="blind_mode_resign">기권</string>
     <string name="blind_mode_reveal">공개</string>

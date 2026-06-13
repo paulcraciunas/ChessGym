@@ -152,7 +152,6 @@
     <string name="loading_error_download_failed">Download fehlgeschlagen. Bitte überprüfe deine Internetverbindung und versuche es erneut.</string>
     <string name="loading_error_decompression_failed">Entpacken der Datenbank fehlgeschlagen. Bitte versuche es erneut.</string>
     <string name="loading_error_database_write_failed">Erstellen der Datenbank fehlgeschlagen. Bitte versuche es erneut.</string>
-    <string name="loading_error_permission">Berechtigung verweigert. Bitte aktiviere Benachrichtigungen, um fortzufahren.</string>
     <string name="loading_error_no_internet">Keine Internetverbindung. Bitte überprüfe deine Verbindung und versuche es erneut.</string>
     <string name="loading_error_not_enough_disk_space">Nicht genug Speicherplatz. Bitte gib Speicherplatz frei und versuche es erneut.</string>
     <string name="loading_error_generic">Ein Fehler ist aufgetreten. Bitte versuche es erneut.</string>
@@ -321,6 +320,8 @@
     <string name="settings_title">Einstellungen</string>
     <string name="settings_section_general">Allgemein</string>
     <string name="settings_section_ui">Erscheinungsbild</string>
+    <string name="settings_sound">Sound</string>
+    <string name="settings_sound_description">Klangs bei Spielen abspielen</string>
     <string name="settings_haptic_feedback">Haptisches Feedback</string>
     <string name="settings_haptic_feedback_description">Vibrieren bei Interaktionen</string>
     <string name="settings_auto_promote">Automatische Umwandlung</string>
@@ -331,6 +332,7 @@
     <string name="settings_show_borders_description">Koordinaten um das Brett anzeigen</string>
     <string name="settings_highlight_legal_moves">Legale Züge hervorheben</string>
     <string name="settings_highlight_legal_moves_description">Verfügbare Felder anzeigen, wenn eine Figur ausgewählt ist</string>
+    <string name="settings_language">Sprache</string>
     <string name="settings_light_mode">Design</string>
     <string name="settings_light_mode_light">Hell</string>
     <string name="settings_light_mode_dark">Dunkel</string>
@@ -385,6 +387,7 @@
     <string name="tools_mode_start">Werkzeug starten</string>
     <string name="tools_clock_description">Messe die Zeit deiner Partien mit konfigurierbaren Kontrollen</string>
     <string name="tools_analysis_title">Analyse</string>
+    <string name="tools_analysis_flip_board">Brett drehen</string>
     <string name="tools_analysis_description">Positionen mit der Engine analysieren</string>
     <string name="tools_import_description">Partie in FEN- oder PGN-Notation importieren</string>
     <!-- endregion -->
@@ -407,6 +410,8 @@
     <string name="import_game_title">Partie importieren</string>
     <string name="import_fen">FEN</string>
     <string name="import_pgn">PGN</string>
+    <string name="import_position">Position</string>
+    <string name="import_game">Partie</string>
     <string name="import_dialog_title_fen">FEN importieren</string>
     <string name="import_dialog_title_pgn">PGN importieren</string>
     <string name="import_dialog_hint_fen">FEN-String hier einfügen…</string>
@@ -424,6 +429,7 @@
     <string name="blind_mode_title">Blindmodus</string>
     <string name="blind_mode_training_mode">Trainingsmodus</string>
     <string name="blind_mode_training_description">Partien wirken sich nicht auf deine Bewertung aus</string>
+    <string name="blind_mode_rated_description">Gewerteter Modus</string>
     <string name="blind_mode_play">Spielen</string>
     <string name="blind_mode_resign">Aufgeben</string>
     <string name="blind_mode_reveal">Enthüllen</string>

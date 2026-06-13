@@ -151,7 +151,6 @@
     <string name="loading_error_download_failed">Download failed. Please check your internet connection and try again.</string>
     <string name="loading_error_decompression_failed">Failed to unpack database. Please try again.</string>
     <string name="loading_error_database_write_failed">Failed to build database. Please try again.</string>
-    <string name="loading_error_permission">Permission denied. Please enable notifications to continue.</string>
     <string name="loading_error_no_internet">No internet connection. Please check your connection and try again.</string>
     <string name="loading_error_not_enough_disk_space">Not enough disk space. Please free up some space and try again.</string>
     <string name="loading_error_generic">An error occurred. Please try again.</string>
@@ -320,6 +319,8 @@
     <string name="settings_title">Settings</string>
     <string name="settings_section_general">General</string>
     <string name="settings_section_ui">Appearance</string>
+    <string name="settings_sound">Sound</string>
+    <string name="settings_sound_description">Play sounds during games</string>
     <string name="settings_haptic_feedback">Haptic feedback</string>
     <string name="settings_haptic_feedback_description">Vibrate on interactions</string>
     <string name="settings_auto_promote">Auto-promote</string>
@@ -330,6 +331,7 @@
     <string name="settings_show_borders_description">Display coordinates around the board</string>
     <string name="settings_highlight_legal_moves">Highlight legal moves</string>
     <string name="settings_highlight_legal_moves_description">Show available squares when a piece is selected</string>
+    <string name="settings_language">Language</string>
     <string name="settings_light_mode">Theme</string>
     <string name="settings_light_mode_light">Light</string>
     <string name="settings_light_mode_dark">Dark</string>
@@ -384,6 +386,7 @@
     <string name="tools_mode_start">Start tool</string>
     <string name="tools_clock_description">Time your games with configurable controls</string>
     <string name="tools_analysis_title">Analysis</string>
+    <string name="tools_analysis_flip_board">Flip board</string>
     <string name="tools_analysis_description">Analyze positions with the engine</string>
     <string name="tools_import_description">Import a game from FEN or PGN notation</string>
     <!-- endregion -->
@@ -404,10 +407,10 @@
 
     <!-- region Import Game Screen -->
     <string name="import_game_title">Import Game</string>
-    <string name="import_fen">FEN</string>
-    <string name="import_pgn">PGN</string>
-    <string name="import_dialog_title_fen">Import FEN</string>
-    <string name="import_dialog_title_pgn">Import PGN</string>
+    <string name="import_fen">Position</string>
+    <string name="import_pgn">Game</string>
+    <string name="import_dialog_title_fen">Import Position</string>
+    <string name="import_dialog_title_pgn">Import Game</string>
     <string name="import_dialog_hint_fen">Paste FEN string here…</string>
     <string name="import_dialog_hint_pgn">Paste PGN text here…</string>
     <string name="import_dialog_confirm">Import</string>
@@ -423,6 +426,7 @@
     <string name="blind_mode_title">Blind Mode</string>
     <string name="blind_mode_training_mode">Training Mode</string>
     <string name="blind_mode_training_description">Games won\'t affect your rating</string>
+    <string name="blind_mode_rated_description">Rated mode</string>
     <string name="blind_mode_play">Play</string>
     <string name="blind_mode_resign">Resign</string>
     <string name="blind_mode_reveal">Reveal</string>

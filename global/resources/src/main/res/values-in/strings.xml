@@ -148,7 +148,6 @@
     <string name="loading_error_download_failed">Unduhan gagal. Silakan periksa koneksi internetmu dan coba lagi.</string>
     <string name="loading_error_decompression_failed">Gagal membongkar basis data. Silakan coba lagi.</string>
     <string name="loading_error_database_write_failed">Gagal membangun basis data. Silakan coba lagi.</string>
-    <string name="loading_error_permission">Izin ditolak. Silakan aktifkan notifikasi untuk melanjutkan.</string>
     <string name="loading_error_no_internet">Tidak ada koneksi internet. Silakan periksa koneksimu dan coba lagi.</string>
     <string name="loading_error_not_enough_disk_space">Ruang disk tidak cukup. Silakan bebaskan ruang dan coba lagi.</string>
     <string name="loading_error_generic">Terjadi kesalahan. Silakan coba lagi.</string>
@@ -316,6 +315,8 @@
     <string name="settings_title">Pengaturan</string>
     <string name="settings_section_general">Umum</string>
     <string name="settings_section_ui">Tampilan</string>
+    <string name="settings_sound">Suara</string>
+    <string name="settings_sound_description">Mainkan suara selama permainan</string>
     <string name="settings_haptic_feedback">Umpan balik haptic</string>
     <string name="settings_haptic_feedback_description">Getar saat interaksi</string>
     <string name="settings_auto_promote">Promosi otomatis</string>
@@ -326,6 +327,7 @@
     <string name="settings_show_borders_description">Tampilkan koordinat di sekitar papan</string>
     <string name="settings_highlight_legal_moves">Sorot langkah yang sah</string>
     <string name="settings_highlight_legal_moves_description">Tampilkan kotak yang tersedia saat bidak dipilih</string>
+    <string name="settings_language">Bahasa</string>
     <string name="settings_light_mode">Tema</string>
     <string name="settings_light_mode_light">Terang</string>
     <string name="settings_light_mode_dark">Gelap</string>
@@ -380,6 +382,7 @@
     <string name="tools_mode_start">Mulai alat</string>
     <string name="tools_clock_description">Hitung waktu permainanmu dengan kontrol yang dapat dikonfigurasi</string>
     <string name="tools_analysis_title">Analisis</string>
+    <string name="tools_analysis_flip_board">Balik papan</string>
     <string name="tools_analysis_description">Analisis posisi dengan mesin</string>
     <string name="tools_import_description">Impor permainan dari notasi FEN atau PGN</string>
     <!-- endregion -->
@@ -402,6 +405,8 @@
     <string name="import_game_title">Impor Permainan</string>
     <string name="import_fen">FEN</string>
     <string name="import_pgn">PGN</string>
+    <string name="import_position">Posisi</string>
+    <string name="import_game">Permainan</string>
     <string name="import_dialog_title_fen">Impor FEN</string>
     <string name="import_dialog_title_pgn">Impor PGN</string>
     <string name="import_dialog_hint_fen">Tempelkan string FEN di sini…</string>
@@ -419,6 +424,7 @@
     <string name="blind_mode_title">Mode Buta</string>
     <string name="blind_mode_training_mode">Mode Latihan</string>
     <string name="blind_mode_training_description">Permainan tidak akan memengaruhi peringkatmu</string>
+    <string name="blind_mode_rated_description">Mode berperingkat</string>
     <string name="blind_mode_play">Bermain</string>
     <string name="blind_mode_resign">Menyerah</string>
     <string name="blind_mode_reveal">Tampilkan</string>

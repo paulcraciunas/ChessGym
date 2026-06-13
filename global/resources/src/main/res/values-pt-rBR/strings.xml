@@ -152,7 +152,6 @@
     <string name="loading_error_download_failed">Falha no download. Por favor, verifique sua conexão com a internet e tente novamente.</string>
     <string name="loading_error_decompression_failed">Falha ao descompactar o banco de dados. Por favor, tente novamente.</string>
     <string name="loading_error_database_write_failed">Falha ao construir o banco de dados. Por favor, tente novamente.</string>
-    <string name="loading_error_permission">Permissão negada. Por favor, ative as notificações para continuar.</string>
     <string name="loading_error_no_internet">Sem conexão com a internet. Por favor, verifique sua conexão e tente novamente.</string>
     <string name="loading_error_not_enough_disk_space">Espaço em disco insuficiente. Por favor, libere espaço e tente novamente.</string>
     <string name="loading_error_generic">Ocorreu um erro. Por favor, tente novamente.</string>
@@ -321,6 +320,8 @@
     <string name="settings_title">Configurações</string>
     <string name="settings_section_general">Geral</string>
     <string name="settings_section_ui">Aparência</string>
+    <string name="settings_sound">Som</string>
+    <string name="settings_sound_description">Reproduzir sons durante as partidas</string>
     <string name="settings_haptic_feedback">Vibração tátil</string>
     <string name="settings_haptic_feedback_description">Vibrar ao interagir</string>
     <string name="settings_auto_promote">Promoção automática</string>
@@ -331,6 +332,7 @@
     <string name="settings_show_borders_description">Exibir coordenadas ao redor do tabuleiro</string>
     <string name="settings_highlight_legal_moves">Destacar lances legais</string>
     <string name="settings_highlight_legal_moves_description">Mostrar casas disponíveis ao selecionar uma peça</string>
+    <string name="settings_language">Idioma</string>
     <string name="settings_light_mode">Tema</string>
     <string name="settings_light_mode_light">Claro</string>
     <string name="settings_light_mode_dark">Escuro</string>
@@ -385,6 +387,7 @@
     <string name="tools_mode_start">Iniciar ferramenta</string>
     <string name="tools_clock_description">Cronometre suas partidas com controles configuráveis</string>
     <string name="tools_analysis_title">Análise</string>
+    <string name="tools_analysis_flip_board">Girar tabuleiro</string>
     <string name="tools_analysis_description">Analise posições com o motor</string>
     <string name="tools_import_description">Importe uma partida em notação FEN ou PGN</string>
     <!-- endregion -->
@@ -407,6 +410,8 @@
     <string name="import_game_title">Importar partida</string>
     <string name="import_fen">FEN</string>
     <string name="import_pgn">PGN</string>
+    <string name="import_position">Posição</string>
+    <string name="import_game">Partida</string>
     <string name="import_dialog_title_fen">Importar FEN</string>
     <string name="import_dialog_title_pgn">Importar PGN</string>
     <string name="import_dialog_hint_fen">Cole a string FEN aqui…</string>
@@ -424,6 +429,7 @@
     <string name="blind_mode_title">Modo cego</string>
     <string name="blind_mode_training_mode">Modo treinamento</string>
     <string name="blind_mode_training_description">As partidas não afetarão sua pontuação</string>
+    <string name="blind_mode_rated_description">Modo ranqueado</string>
     <string name="blind_mode_play">Jogar</string>
     <string name="blind_mode_resign">Resignar</string>
     <string name="blind_mode_reveal">Revelar</string>

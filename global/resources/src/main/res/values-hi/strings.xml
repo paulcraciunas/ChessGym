@@ -152,7 +152,6 @@
     <string name="loading_error_download_failed">डाउनलोड विफल। कृपया अपना इंटरनेट कनेक्शन जांचें और पुनः प्रयास करें।</string>
     <string name="loading_error_decompression_failed">डेटाबेस अनपैक करने में विफल। कृपया पुनः प्रयास करें।</string>
     <string name="loading_error_database_write_failed">डेटाबेस बनाने में विफल। कृपया पुनः प्रयास करें।</string>
-    <string name="loading_error_permission">अनुमति अस्वीकृत। जारी रखने के लिए कृपया सूचनाएं सक्षम करें।</string>
     <string name="loading_error_no_internet">कोई इंटरनेट कनेक्शन नहीं। कृपया अपना कनेक्शन जांचें और पुनः प्रयास करें।</string>
     <string name="loading_error_not_enough_disk_space">पर्याप्त डिस्क स्थान नहीं है। कृपया कुछ स्थान खाली करें और पुनः प्रयास करें।</string>
     <string name="loading_error_generic">एक त्रुटि हुई। कृपया पुनः प्रयास करें।</string>
@@ -321,6 +320,8 @@
     <string name="settings_title">सेटिंग्स</string>
     <string name="settings_section_general">सामान्य</string>
     <string name="settings_section_ui">दिखावट</string>
+    <string name="settings_sound">ध्वनि</string>
+    <string name="settings_sound_description">खेलों के दौरान ध्वनि बजाएं</string>
     <string name="settings_haptic_feedback">हैप्टिक फ़ीडबैक</string>
     <string name="settings_haptic_feedback_description">इंटरैक्शन पर कंपन</string>
     <string name="settings_auto_promote">स्वतः पदोन्नति</string>
@@ -331,6 +332,7 @@
     <string name="settings_show_borders_description">बोर्ड के चारों ओर निर्देशांक प्रदर्शित करें</string>
     <string name="settings_highlight_legal_moves">वैध चालें हाइलाइट करें</string>
     <string name="settings_highlight_legal_moves_description">मोहरा चुनने पर उपलब्ध वर्ग दिखाएं</string>
+    <string name="settings_language">भाषा</string>
     <string name="settings_light_mode">थीम</string>
     <string name="settings_light_mode_light">हल्का</string>
     <string name="settings_light_mode_dark">गहरा</string>
@@ -385,6 +387,7 @@
     <string name="tools_mode_start">टूल शुरू करें</string>
     <string name="tools_clock_description">कॉन्फ़िगर करने योग्य नियंत्रणों के साथ अपने खेलों को समय दें</string>
     <string name="tools_analysis_title">विश्लेषण</string>
+    <string name="tools_analysis_flip_board">बोर्ड पलटें</string>
     <string name="tools_analysis_description">इंजन के साथ स्थितियों का विश्लेषण करें</string>
     <string name="tools_import_description">FEN या PGN नोटेशन से गेम आयात करें</string>
     <!-- endregion -->
@@ -407,6 +410,8 @@
     <string name="import_game_title">गेम आयात करें</string>
     <string name="import_fen">FEN</string>
     <string name="import_pgn">PGN</string>
+    <string name="import_position">स्थिति</string>
+    <string name="import_game">खेल</string>
     <string name="import_dialog_title_fen">FEN आयात करें</string>
     <string name="import_dialog_title_pgn">PGN आयात करें</string>
     <string name="import_dialog_hint_fen">FEN स्ट्रिंग यहाँ पेस्ट करें…</string>
@@ -424,6 +429,7 @@
     <string name="blind_mode_title">ब्लाइंड मोड</string>
     <string name="blind_mode_training_mode">प्रशिक्षण मोड</string>
     <string name="blind_mode_training_description">खेल आपकी रेटिंग को प्रभावित नहीं करेंगे</string>
+    <string name="blind_mode_rated_description">रेटेड मोड</string>
     <string name="blind_mode_play">खेलें</string>
     <string name="blind_mode_resign">हार मानें</string>
     <string name="blind_mode_reveal">प्रकट करें</string>

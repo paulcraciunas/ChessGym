@@ -148,7 +148,6 @@
     <string name="loading_error_download_failed">ダウンロードに失敗しました。インターネット接続を確認してもう一度お試しください。</string>
     <string name="loading_error_decompression_failed">データベースの展開に失敗しました。もう一度お試しください。</string>
     <string name="loading_error_database_write_failed">データベースの構築に失敗しました。もう一度お試しください。</string>
-    <string name="loading_error_permission">権限が拒否されました。続行するには通知を有効にしてください。</string>
     <string name="loading_error_no_internet">インターネット接続がありません。接続を確認してもう一度お試しください。</string>
     <string name="loading_error_not_enough_disk_space">ディスク容量が不足しています。空き容量を確保してもう一度お試しください。</string>
     <string name="loading_error_generic">エラーが発生しました。もう一度お試しください。</string>
@@ -316,6 +315,8 @@
     <string name="settings_title">設定</string>
     <string name="settings_section_general">一般</string>
     <string name="settings_section_ui">外観</string>
+    <string name="settings_sound">サウンド</string>
+    <string name="settings_sound_description">ゲーム中にサウンドを再生</string>
     <string name="settings_haptic_feedback">触覚フィードバック</string>
     <string name="settings_haptic_feedback_description">操作時に振動</string>
     <string name="settings_auto_promote">自動プロモーション</string>
@@ -326,6 +327,7 @@
     <string name="settings_show_borders_description">ボード周辺に座標を表示</string>
     <string name="settings_highlight_legal_moves">合法手をハイライト</string>
     <string name="settings_highlight_legal_moves_description">駒を選択したときに使用可能なマスを表示</string>
+    <string name="settings_language">言語</string>
     <string name="settings_light_mode">テーマ</string>
     <string name="settings_light_mode_light">ライト</string>
     <string name="settings_light_mode_dark">ダーク</string>
@@ -380,6 +382,7 @@
     <string name="tools_mode_start">ツールを開始</string>
     <string name="tools_clock_description">設定可能なコントロールでゲームを計時</string>
     <string name="tools_analysis_title">分析</string>
+    <string name="tools_analysis_flip_board">ボードを反転</string>
     <string name="tools_analysis_description">エンジンで局面を分析</string>
     <string name="tools_import_description">FENまたはPGN表記からゲームをインポート</string>
     <!-- endregion -->
@@ -402,6 +405,8 @@
     <string name="import_game_title">ゲームをインポート</string>
     <string name="import_fen">FEN</string>
     <string name="import_pgn">PGN</string>
+    <string name="import_position">局面</string>
+    <string name="import_game">ゲーム</string>
     <string name="import_dialog_title_fen">FENをインポート</string>
     <string name="import_dialog_title_pgn">PGNをインポート</string>
     <string name="import_dialog_hint_fen">ここにFEN文字列を貼り付け…</string>
@@ -419,6 +424,7 @@
     <string name="blind_mode_title">ブラインドモード</string>
     <string name="blind_mode_training_mode">トレーニングモード</string>
     <string name="blind_mode_training_description">ゲームはレーティングに影響しません</string>
+    <string name="blind_mode_rated_description">レーティングモード</string>
     <string name="blind_mode_play">プレイ</string>
     <string name="blind_mode_resign">投了</string>
     <string name="blind_mode_reveal">ボードを表示</string>
