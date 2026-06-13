@@ -81,7 +81,6 @@ internal fun EmailSignInForm(
                 stiffness = Spring.StiffnessLow
             )
         ),
-        verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.xs),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         AnimatedVisibility(
