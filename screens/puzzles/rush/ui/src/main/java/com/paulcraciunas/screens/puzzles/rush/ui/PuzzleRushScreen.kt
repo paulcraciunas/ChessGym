@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -151,13 +153,19 @@ private fun PuzzleRushContent(
         }
         ChessGymSpacer(size = SpacerSize.XXLARGE)
         if (uiState.results.isNotEmpty()) {
-            PuzzleResultsGrid(
-                results = uiState.results,
-                onFailedPuzzleClicked = onAnalyzeFailedPuzzle,
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = Design.dimensions.spacing.xxl)
-            )
+                    .weight(1f)
+                    .verticalScroll(rememberScrollState())
+            ) {
+                PuzzleResultsGrid(
+                    results = uiState.results,
+                    onFailedPuzzleClicked = onAnalyzeFailedPuzzle,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = Design.dimensions.spacing.xxl)
+                )
+            }
         }
         if (uiState is PuzzleRushUiState.Playing) {
             if (uiState.data.promotion != null) {
