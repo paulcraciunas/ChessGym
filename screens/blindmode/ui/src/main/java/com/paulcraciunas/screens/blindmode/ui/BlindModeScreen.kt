@@ -42,6 +42,7 @@ import com.paulcraciunas.screens.common.dialogs.PromotionDialog
 import com.paulcraciunas.screens.common.previews.PreviewData
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
+import com.paulcraciunas.screens.data.Outcome
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -262,7 +263,7 @@ private fun BlindModeGameOverPreview() {
             BlindModeScreen(
                 uiState = BlindModeUiState.GameOver(
                     isTrainingMode = true,
-                    data = PreviewData().whiteGameData(),
+                    data = PreviewData().whiteGameData().copy(outcome = Outcome.Lost),
                     moveHistory = "1. e4 e5 2. Nf3 Nc6 3. Bb5",
                 ),
                 onDrawerToggle = {},
