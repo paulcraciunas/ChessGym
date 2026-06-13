@@ -10,6 +10,7 @@ import com.paulcraciunas.game.engine.api.FakeChessEngine
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.impl.RealGameFactory
+import com.paulcraciunas.global.sounds.SoundCoordinator
 import com.paulcraciunas.screens.data.Outcome
 import com.paulcraciunas.screens.data.SideSelection
 import com.paulcraciunas.serializer.impl.FenSerializer
@@ -54,6 +55,7 @@ internal class BlindModeViewModelTest {
             timer = timer,
             randomFactory = FixedRandomFactory(),
             onComplete = fakeOnComplete,
+            sounds = SoundCoordinator(),
             engineOrchestrator = EngineOrchestratorImpl(
                 chessEngine = engine,
                 serializer = FenSerializer(RealGameFactory()),

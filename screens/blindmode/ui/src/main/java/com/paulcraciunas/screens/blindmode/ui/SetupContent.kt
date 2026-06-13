@@ -31,7 +31,8 @@ internal fun SetupContent(
         title = stringResource(R.string.blind_mode_training_mode),
         on = state.isTrainingMode,
         onChange = onTrainingModeToggled,
-        subtitle = if (state.isTrainingMode) stringResource(R.string.blind_mode_training_description) else null,
+        subtitle = if (state.isTrainingMode) stringResource(R.string.blind_mode_training_description)
+        else stringResource(R.string.blind_mode_rated_description),
         last = true,
     )
     SideSelectionControls(

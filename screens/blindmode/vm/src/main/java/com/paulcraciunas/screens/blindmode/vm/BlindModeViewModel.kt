@@ -10,10 +10,12 @@ import com.paulcraciunas.game.engine.api.EngineOrchestrator
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.global.qualifiers.DefaultDispatcher
+import com.paulcraciunas.global.sounds.SoundCoordinator
 import com.paulcraciunas.screens.data.SideSelection
 import com.paulcraciunas.screens.data.engine.PlayIntent
 import com.paulcraciunas.screens.data.engine.SinglePlaySession
 import com.paulcraciunas.screens.data.engine.SingleSessionState
+import com.paulcraciunas.screens.data.engine.toSoundEvents
 import com.paulcraciunas.screens.data.toSide
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import com.paulcraciunas.user.api.UserRepository
@@ -25,6 +27,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -43,6 +47,7 @@ class BlindModeViewModel @Inject constructor(
     private val timer: Timer,
     private val randomFactory: RandomFactory,
     private val onComplete: OnBlindModeGameComplete,
+    sounds: SoundCoordinator,
     engineOrchestrator: EngineOrchestrator,
     appSettingsRepository: AppSettingsRepository,
     userRepository: UserRepository,
@@ -66,6 +71,13 @@ class BlindModeViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = BlindModeUiState.Setup()
         )
+
+    init {
+        playSession.state
+            .toSoundEvents()
+            .onEach { sounds.trigger(it) }
+            .launchIn(viewModelScope)
+    }
 
     fun onStop() {
         timer.pause()
