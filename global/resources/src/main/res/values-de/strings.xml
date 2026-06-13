@@ -408,12 +408,10 @@
 
     <!-- region Import Game Screen -->
     <string name="import_game_title">Partie importieren</string>
-    <string name="import_fen">FEN</string>
-    <string name="import_pgn">PGN</string>
-    <string name="import_position">Position</string>
-    <string name="import_game">Partie</string>
-    <string name="import_dialog_title_fen">FEN importieren</string>
-    <string name="import_dialog_title_pgn">PGN importieren</string>
+    <string name="import_fen">Position</string>
+    <string name="import_pgn">Partie</string>
+    <string name="import_dialog_title_fen">Position importieren</string>
+    <string name="import_dialog_title_pgn">Partie importieren</string>
     <string name="import_dialog_hint_fen">FEN-String hier einfügen…</string>
     <string name="import_dialog_hint_pgn">PGN-Text hier einfügen…</string>
     <string name="import_dialog_confirm">Importieren</string>

@@ -408,10 +408,8 @@
 
     <!-- region Import Game Screen -->
     <string name="import_game_title">गेम आयात करें</string>
-    <string name="import_fen">FEN</string>
-    <string name="import_pgn">PGN</string>
-    <string name="import_position">स्थिति</string>
-    <string name="import_game">खेल</string>
+    <string name="import_fen">स्थिति</string>
+    <string name="import_pgn">खेल</string>
     <string name="import_dialog_title_fen">FEN आयात करें</string>
     <string name="import_dialog_title_pgn">PGN आयात करें</string>
     <string name="import_dialog_hint_fen">FEN स्ट्रिंग यहाँ पेस्ट करें…</string>

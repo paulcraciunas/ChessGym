@@ -403,12 +403,10 @@
 
     <!-- region Import Game Screen -->
     <string name="import_game_title">Impor Permainan</string>
-    <string name="import_fen">FEN</string>
-    <string name="import_pgn">PGN</string>
-    <string name="import_position">Posisi</string>
-    <string name="import_game">Permainan</string>
-    <string name="import_dialog_title_fen">Impor FEN</string>
-    <string name="import_dialog_title_pgn">Impor PGN</string>
+    <string name="import_fen">Posisi</string>
+    <string name="import_pgn">Permainan</string>
+    <string name="import_dialog_title_fen">Impor Posisi</string>
+    <string name="import_dialog_title_pgn">Impor Permainan</string>
     <string name="import_dialog_hint_fen">Tempelkan string FEN di sini…</string>
     <string name="import_dialog_hint_pgn">Tempelkan teks PGN di sini…</string>
     <string name="import_dialog_confirm">Impor</string>

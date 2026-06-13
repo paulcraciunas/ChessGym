@@ -418,12 +418,10 @@
 
     <!-- region Import Game Screen -->
     <string name="import_game_title">Импорт партии</string>
-    <string name="import_fen">FEN</string>
-    <string name="import_pgn">PGN</string>
-    <string name="import_position">Позиция</string>
-    <string name="import_game">Партия</string>
-    <string name="import_dialog_title_fen">Импорт FEN</string>
-    <string name="import_dialog_title_pgn">Импорт PGN</string>
+    <string name="import_fen">Позиция</string>
+    <string name="import_pgn">Партия</string>
+    <string name="import_dialog_title_fen">Импорт Позиции</string>
+    <string name="import_dialog_title_pgn">Импорт партии</string>
     <string name="import_dialog_hint_fen">Вставьте строку FEN здесь…</string>
     <string name="import_dialog_hint_pgn">Вставьте текст PGN здесь…</string>
     <string name="import_dialog_confirm">Импортировать</string>

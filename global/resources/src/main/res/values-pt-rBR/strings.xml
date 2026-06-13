@@ -408,12 +408,10 @@
 
     <!-- region Import Game Screen -->
     <string name="import_game_title">Importar partida</string>
-    <string name="import_fen">FEN</string>
-    <string name="import_pgn">PGN</string>
-    <string name="import_position">Posição</string>
-    <string name="import_game">Partida</string>
-    <string name="import_dialog_title_fen">Importar FEN</string>
-    <string name="import_dialog_title_pgn">Importar PGN</string>
+    <string name="import_fen">Posição</string>
+    <string name="import_pgn">Partida</string>
+    <string name="import_dialog_title_fen">Importar posição</string>
+    <string name="import_dialog_title_pgn">Importar partida</string>
     <string name="import_dialog_hint_fen">Cole a string FEN aqui…</string>
     <string name="import_dialog_hint_pgn">Cole o texto PGN aqui…</string>
     <string name="import_dialog_confirm">Importar</string>

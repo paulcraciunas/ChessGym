@@ -403,10 +403,8 @@
 
     <!-- region Import Game Screen -->
     <string name="import_game_title">게임 가져오기</string>
-    <string name="import_fen">FEN</string>
-    <string name="import_pgn">PGN</string>
-    <string name="import_position">포지션</string>
-    <string name="import_game">게임</string>
+    <string name="import_fen">포지션</string>
+    <string name="import_pgn">게임</string>
     <string name="import_dialog_title_fen">FEN 가져오기</string>
     <string name="import_dialog_title_pgn">PGN 가져오기</string>
     <string name="import_dialog_hint_fen">FEN 문자열을 여기에 붙여넣기…</string>

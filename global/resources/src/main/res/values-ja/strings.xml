@@ -403,10 +403,8 @@
 
     <!-- region Import Game Screen -->
     <string name="import_game_title">ゲームをインポート</string>
-    <string name="import_fen">FEN</string>
-    <string name="import_pgn">PGN</string>
-    <string name="import_position">局面</string>
-    <string name="import_game">ゲーム</string>
+    <string name="import_fen">局面</string>
+    <string name="import_pgn">ゲーム</string>
     <string name="import_dialog_title_fen">FENをインポート</string>
     <string name="import_dialog_title_pgn">PGNをインポート</string>
     <string name="import_dialog_hint_fen">ここにFEN文字列を貼り付け…</string>
