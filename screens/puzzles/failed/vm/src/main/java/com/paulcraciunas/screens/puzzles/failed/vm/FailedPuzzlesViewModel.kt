@@ -9,15 +9,19 @@ import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.global.navigation.NavigationDispatcher
 import com.paulcraciunas.global.qualifiers.DefaultDispatcher
+import com.paulcraciunas.global.sounds.SoundCoordinator
 import com.paulcraciunas.screens.data.engine.PlayIntent
 import com.paulcraciunas.screens.data.engine.PlaySession
 import com.paulcraciunas.screens.data.engine.PlaySessionState
+import com.paulcraciunas.screens.data.engine.toSoundEvents
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -30,6 +34,7 @@ class FailedPuzzlesViewModel @Inject constructor(
     getFailedPuzzles: GetFailedPuzzles,
     onFailedPuzzleComplete: OnFailedPuzzleComplete,
     appSettingsRepository: AppSettingsRepository,
+    sounds: SoundCoordinator,
 ) : ViewModel() {
     private val playSession = PlaySession(
         settingsRepository = appSettingsRepository,
@@ -53,6 +58,10 @@ class FailedPuzzlesViewModel @Inject constructor(
     init {
         timer.start()
         viewModelScope.launch(dispatcher) { playSession.run() }
+        playSession.state
+            .toSoundEvents()
+            .onEach { sounds.trigger(it) }
+            .launchIn(viewModelScope)
     }
 
     fun onStop() {

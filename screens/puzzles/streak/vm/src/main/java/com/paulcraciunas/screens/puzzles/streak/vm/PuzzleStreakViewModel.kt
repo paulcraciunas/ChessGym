@@ -9,9 +9,11 @@ import com.paulcraciunas.domain.api.puzzles.OnStreakPuzzleComplete
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.global.qualifiers.DefaultDispatcher
+import com.paulcraciunas.global.sounds.SoundCoordinator
 import com.paulcraciunas.screens.data.engine.PlayIntent
 import com.paulcraciunas.screens.data.engine.PlaySession
 import com.paulcraciunas.screens.data.engine.PlaySessionState
+import com.paulcraciunas.screens.data.engine.toSoundEvents
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import com.paulcraciunas.user.api.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,6 +23,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -34,6 +38,7 @@ class PuzzleStreakViewModel @Inject constructor(
     onStreakPuzzleComplete: OnStreakPuzzleComplete,
     onStreakComplete: OnStreakComplete,
     appSettingsRepository: AppSettingsRepository,
+    sounds: SoundCoordinator,
 ) : ViewModel() {
     private val sessions = PuzzleStreakSessions(getStreakPuzzle)
     private val playSession = PlaySession(
@@ -59,6 +64,10 @@ class PuzzleStreakViewModel @Inject constructor(
 
     init {
         onNewStreak()
+        playSession.state
+            .toSoundEvents()
+            .onEach { sounds.trigger(it) }
+            .launchIn(viewModelScope)
     }
 
     fun onStop() { timer.pause() }

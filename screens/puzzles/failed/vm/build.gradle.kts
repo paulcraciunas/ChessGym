@@ -15,6 +15,7 @@ dependencies {
     implementation(project(":game:puzzles:api"))
     implementation(project(":global:qualifiers"))
     implementation(project(":global:navigation"))
+    implementation(project(":global:sounds"))
     implementation(project(":screens:data"))
     implementation(project(":settings:application:api"))
     implementation(project(":user:api"))

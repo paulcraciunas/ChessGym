@@ -9,6 +9,7 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.impl.RealGameFactory
 import com.paulcraciunas.global.navigation.NavigationDispatcher
+import com.paulcraciunas.global.sounds.SoundCoordinator
 import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
 import com.paulcraciunas.user.api.FakeUserRepository
 import com.paulcraciunas.user.api.User
@@ -344,6 +345,7 @@ internal class FailedPuzzlesViewModelTest {
             getFailedPuzzles = getFailedPuzzles,
             onFailedPuzzleComplete = OnFailedPuzzleCompleteImpl(userRepository, noOpAchievements),
             appSettingsRepository = appSettingsRepository,
+            sounds = SoundCoordinator(),
         )
         backgroundScope.launch(UnconfinedTestDispatcher(testDispatcher.scheduler)) {
             vm.uiState.collect {}
