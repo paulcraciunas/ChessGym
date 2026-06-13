@@ -403,10 +403,8 @@
 
     <!-- region Import Game Screen -->
     <string name="import_game_title">导入对局</string>
-    <string name="import_fen">FEN</string>
-    <string name="import_pgn">PGN</string>
-    <string name="import_position">局面</string>
-    <string name="import_game">对局</string>
+    <string name="import_fen">局面</string>
+    <string name="import_pgn">对局</string>
     <string name="import_dialog_title_fen">导入 FEN</string>
     <string name="import_dialog_title_pgn">导入 PGN</string>
     <string name="import_dialog_hint_fen">在此粘贴 FEN 字符串…</string>
