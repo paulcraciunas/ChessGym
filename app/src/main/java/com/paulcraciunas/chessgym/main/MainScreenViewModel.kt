@@ -9,6 +9,8 @@ import com.paulcraciunas.domain.api.auth.DeleteAccountResult
 import com.paulcraciunas.domain.api.auth.DeleteAccountUseCase
 import com.paulcraciunas.domain.api.auth.SignOutUseCase
 import com.paulcraciunas.global.navigation.NavigationDispatcher
+import com.paulcraciunas.global.sounds.SoundCoordinator
+import com.paulcraciunas.global.sounds.SoundManager
 import com.paulcraciunas.screens.common.UiSettings
 import com.paulcraciunas.settings.application.api.AppSettings
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
@@ -52,13 +54,15 @@ sealed interface MainScreenDialog {
 
 @HiltViewModel
 class MainScreenViewModel @Inject constructor(
-    appSettingsRepository: AppSettingsRepository,
-    userRepository: UserRepository,
     private val signOutUseCase: SignOutUseCase,
     private val deleteAccountUseCase: DeleteAccountUseCase,
     val debugMenuProvider: DebugMenuProvider,
     val navigationDispatcher: NavigationDispatcher,
+    val soundCoordinator: SoundCoordinator,
+    val soundManager: SoundManager,
     val achievementNotificationManager: AchievementNotificationManager,
+    appSettingsRepository: AppSettingsRepository,
+    userRepository: UserRepository,
 ) : ViewModel() {
     private val _dialogState = MutableStateFlow<MainScreenDialog?>(null)
     private val _accountEvent = Channel<AccountEvent>(Channel.BUFFERED)
@@ -132,4 +136,5 @@ private fun AppSettings.uiSettings(): UiSettings = UiSettings(
     enableVibrations = this.enableVibrations,
     highlightLegalMoves = this.highlightLegalMoves,
     enableAnimations = this.enableAnimations,
+    playSounds = this.playSounds,
 )

@@ -66,6 +66,7 @@ import com.paulcraciunas.chessgym.screens.RatedPuzzle
 import com.paulcraciunas.chessgym.screens.Settings
 import com.paulcraciunas.chessgym.screens.SignIn
 import com.paulcraciunas.chessgym.screens.ToolsDashboard
+import com.paulcraciunas.chessgym.sounds.GameSoundEffects
 import com.paulcraciunas.global.navigation.NavigationDispatcher
 import com.paulcraciunas.screens.about.vm.AboutSection
 import com.paulcraciunas.screens.achievements.ui.AchievementBannerHost
@@ -114,6 +115,10 @@ fun MainScreen(
             }
         }
     }
+    GameSoundEffects(
+        soundManager = vm.soundManager,
+        soundEvents = vm.soundCoordinator,
+    )
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()

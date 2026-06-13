@@ -16,6 +16,8 @@ import com.paulcraciunas.domain.impl.auth.SignOutUseCaseImpl
 import com.paulcraciunas.global.device.api.fakes.FakeGetNetworkState
 import com.paulcraciunas.global.device.api.usecases.GetNetworkState.NetworkState
 import com.paulcraciunas.global.navigation.NavigationDispatcher
+import com.paulcraciunas.global.sounds.FakeSoundManager
+import com.paulcraciunas.global.sounds.SoundCoordinator
 import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
 import com.paulcraciunas.user.api.AuthResult
 import com.paulcraciunas.user.api.FakeAuthService
@@ -285,13 +287,15 @@ internal class MainScreenViewModelTest {
         signOutUseCase: SignOutUseCase = defaultSignOutUseCase,
         deleteAccountUseCase: DeleteAccountUseCase = defaultDeleteAccountUseCase,
     ): MainScreenViewModel = MainScreenViewModel(
-        appSettingsRepository = fakeAppSettingsRepository,
-        userRepository = fakeUserRepository,
         signOutUseCase = signOutUseCase,
         deleteAccountUseCase = deleteAccountUseCase,
         debugMenuProvider = NoOpDebugMenuProvider(),
         navigationDispatcher = NavigationDispatcher(),
+        soundCoordinator = SoundCoordinator(),
+        soundManager = FakeSoundManager(),
         achievementNotificationManager = FakeAchievementNotificationManager(),
+        appSettingsRepository = fakeAppSettingsRepository,
+        userRepository = fakeUserRepository,
     )
 
     private fun TestScope.observeUiState() {

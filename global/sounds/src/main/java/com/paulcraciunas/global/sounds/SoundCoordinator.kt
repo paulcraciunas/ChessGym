@@ -14,10 +14,10 @@ class SoundCoordinator @Inject constructor() {
         _events.trySend(element = event)
     }
 
-    enum class SoundEvent {
-        GameStart,
-        GameOver,
-        Move,
-        Tick
+    sealed class SoundEvent {
+        data object GameStart : SoundEvent()
+        data object GameOver : SoundEvent()
+        data object Move : SoundEvent()
+        data class Tick(val durationSeconds: Int) : SoundEvent()
     }
 }
