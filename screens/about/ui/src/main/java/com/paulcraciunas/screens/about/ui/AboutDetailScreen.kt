@@ -5,7 +5,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -22,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.LinkAnnotation
@@ -38,6 +41,7 @@ import com.paulcraciunas.screens.about.vm.AboutSection
 import com.paulcraciunas.screens.about.vm.LibraryInfo
 import com.paulcraciunas.screens.common.ChildAppBar
 import com.paulcraciunas.screens.common.Footer
+import com.paulcraciunas.screens.common.design.components.ChessGymColumnCard
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.design.components.SpacerSize
 import com.paulcraciunas.screens.common.design.components.annotatedTextResource
@@ -122,11 +126,28 @@ private fun AppContent(
             email = stringResource(R.string.about_contact_email),
             onClick = { onEmailClicked("mailto:contact@chessgym.app") },
         )
-        ChessGymSpacer(size = SpacerSize.SECTION)
-        Text(
-            text = annotatedTextResource(R.string.about_dedication_danya),
-            style = MaterialTheme.typography.bodyLarge,
+        ChessGymSpacer(size = SpacerSize.XXLARGE)
+        Icon(
+            painter = painterResource(R.drawable.danya_outline),
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(1f),
+            tint = Design.colors.primary,
+            contentDescription = null,
         )
+        ChessGymSpacer(size = SpacerSize.XXLARGE)
+        ChessGymColumnCard(
+            contentPadding = PaddingValues(
+                horizontal = Design.dimensions.spacing.xxl,
+                vertical = Design.dimensions.spacing.xl,
+            ),
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text(
+                text = annotatedTextResource(R.string.about_dedication_danya),
+                style = MaterialTheme.typography.bodyLarge,
+            )
+        }
     }
 }
 
@@ -261,7 +282,8 @@ private fun LibraryRow(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier
+            .fillMaxWidth()
             .padding(vertical = Design.dimensions.spacing.s),
     ) {
         Row(
