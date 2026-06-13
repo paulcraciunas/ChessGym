@@ -1,6 +1,7 @@
 package com.paulcraciunas.screens.tools.analysis.vm
 
 import androidx.compose.runtime.Immutable
+import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.screens.data.BoardState
@@ -8,6 +9,7 @@ import com.paulcraciunas.screens.data.BoardState
 @Immutable
 data class AnalysisUiState(
     val data: BoardState = BoardState.empty,
+    val orientation: Side = Side.WHITE,
     val engineData: EngineData? = null,
     val canNavigateBack: Boolean = false,
     val canNavigateForward: Boolean = false,

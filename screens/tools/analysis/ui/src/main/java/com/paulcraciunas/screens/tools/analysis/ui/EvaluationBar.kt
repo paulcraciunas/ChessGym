@@ -110,7 +110,7 @@ private fun EvaluationBarBlackAdvantagePreview() {
 private fun EvaluationBarMatePreview() {
     ChessGymTheme {
         EvaluationBar(
-            evaluation = AnalysisUiState.EngineData.CurrentEvaluation(0.97f, "M3"),
+            evaluation = AnalysisUiState.EngineData.CurrentEvaluation(1.0f, "M3"),
             depth = 25,
         )
     }

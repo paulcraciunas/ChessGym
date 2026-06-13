@@ -8,11 +8,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.game.logic.api.board.Locus
@@ -44,9 +47,18 @@ fun AnalysisScreen(
     onPreviousMove: () -> Unit = {},
     onNextMove: () -> Unit = {},
     onJumpToEnd: () -> Unit = {},
+    onFlipBoard: () -> Unit = {},
 ) {
     Scaffold(
-        topBar = { ChildAppBar(onBack = onNavigateBack, title = stringResource(R.string.tools_analysis_title)) },
+        topBar = {
+            ChildAppBar(
+                onBack = onNavigateBack,
+                title = stringResource(R.string.tools_analysis_title),
+                actions = {
+                    FlipBoardButton(onClick = onFlipBoard)
+                },
+            )
+        },
         containerColor = Design.colors.primarySoft,
         modifier = modifier.testTag { AnalysisScreenTags.SCREEN },
     ) { innerPadding ->
@@ -57,7 +69,7 @@ fun AnalysisScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             val data = uiState.data
-            val orientation = BoardOrientation.fromSide(data.player)
+            val orientation = BoardOrientation.fromSide(uiState.orientation)
             CapturedPieces(capturedPieces = data.captured.byOpponent, side = uiState.data.player, modifier = Modifier.fillMaxWidth())
             ChessBoard(
                 board = data.boardData,
@@ -68,11 +80,7 @@ fun AnalysisScreen(
                 MoveArrowOverlay(
                     move = uiState.engineData?.topMove,
                     orientation = orientation,
-                    modifier = Modifier
-                        .matchParentSize()
-                        .let { mod ->
-                            if (LocalUiSettings.current.showBorders) mod.padding(Design.dimensions.spacing.xl) else mod
-                        },
+                    modifier = Modifier.matchParentSize(),
                 )
             }
             CapturedPieces(
@@ -115,6 +123,20 @@ fun AnalysisScreen(
         PromotionDialog(
             side = uiState.data.player,
             onPieceChosen = onPromote,
+        )
+    }
+}
+
+@Composable
+private fun FlipBoardButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    IconButton(onClick = onClick, modifier = modifier) {
+        Icon(
+            painter = painterResource(R.drawable.swap_vert_icon),
+            contentDescription = stringResource(R.string.tools_analysis_flip_board),
+            tint = Design.colors.accent,
         )
     }
 }

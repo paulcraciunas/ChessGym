@@ -12,6 +12,7 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.impl.RealGameFactory
+import com.paulcraciunas.global.sounds.SoundCoordinator
 import com.paulcraciunas.serializer.impl.FenSerializer
 import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
 import kotlinx.coroutines.CoroutineScope
@@ -55,6 +56,7 @@ internal class AnalysisViewModelTest {
             dispatcher = testDispatcher,
             appScope = testScope,
             analyzePosition = fakeAnalyzePosition,
+            sounds = SoundCoordinator(),
             fenSerializer = fenSerializer,
             getPuzzleFen = fakeGetPuzzleFen,
             appSettingsRepository = appSettingsRepository,
@@ -281,7 +283,7 @@ internal class AnalysisViewModelTest {
             underTest.loadPosition(puzzleId = 1)
             advanceUntilIdle()
 
-            assertEquals(0.03f, underTest.uiState.value.engineData?.evaluation?.normalised)
+            assertEquals(0.0f, underTest.uiState.value.engineData?.evaluation?.normalised)
             assertEquals("M-3", underTest.uiState.value.engineData?.evaluation?.display)
         }
     }

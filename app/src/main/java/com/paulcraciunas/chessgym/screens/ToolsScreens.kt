@@ -71,6 +71,7 @@ internal fun AnalysisBoard(
         onPreviousMove = vm::onPreviousMove,
         onNextMove = vm::onNextMove,
         onJumpToEnd = vm::onJumpToEnd,
+        onFlipBoard = vm::onFlipBoard,
     )
 }
 

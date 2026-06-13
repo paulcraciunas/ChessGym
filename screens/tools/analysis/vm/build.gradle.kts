@@ -16,6 +16,7 @@ dependencies {
     implementation(project(":game:serializer:api"))
     implementation(project(":game:serializer:di"))
     implementation(project(":global:qualifiers"))
+    implementation(project(":global:sounds"))
     implementation(project(":screens:data"))
     implementation(project(":settings:application:api"))
 
