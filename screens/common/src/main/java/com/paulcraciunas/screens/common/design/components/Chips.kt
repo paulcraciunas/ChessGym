@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.screens.common.design.theme.Design
@@ -79,6 +80,7 @@ fun ChessGymChip(
         Text(
             text = text,
             color = foregroundTint(tone, style),
+            textAlign = TextAlign.End,
             style = when (style) {
                 ChipStyle.Default -> MaterialTheme.typography.labelMedium
                 ChipStyle.Large -> MaterialTheme.typography.titleLarge

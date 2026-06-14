@@ -1,5 +1,6 @@
 package com.paulcraciunas.screens.puzzles.rush.vm
 
+import com.paulcraciunas.screens.data.RemainingTime
 import com.paulcraciunas.screens.data.engine.PlaySessionState
 import java.util.Locale
 import javax.inject.Inject
@@ -38,11 +39,10 @@ class PuzzleRushUiStateAdapter @Inject constructor() {
     }
 }
 
-internal fun Long.toRemainingTime(): PuzzleRushUiState.RemainingTime =
-    PuzzleRushUiState.RemainingTime(
-        value = formatTime(this),
-        danger = this <= PuzzleRushUiStateAdapter.DANGER_THRESHOLD,
-    )
+internal fun Long.toRemainingTime(): RemainingTime = RemainingTime(
+    value = formatTime(this),
+    danger = this <= PuzzleRushUiStateAdapter.DANGER_THRESHOLD,
+)
 
 private fun formatTime(millis: Long): String {
     val seconds = (millis / 1000) % 60

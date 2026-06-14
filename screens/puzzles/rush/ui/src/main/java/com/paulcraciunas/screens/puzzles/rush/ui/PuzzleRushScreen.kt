@@ -4,25 +4,21 @@ import android.annotation.SuppressLint
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.global.resources.R
-import com.paulcraciunas.global.resources.R.drawable
 import com.paulcraciunas.screens.common.AnimatedBoard
 import com.paulcraciunas.screens.common.AnimatedControls
 import com.paulcraciunas.screens.common.ChildAppBar
@@ -34,9 +30,8 @@ import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
 import com.paulcraciunas.screens.common.controls.CapturedPieces
 import com.paulcraciunas.screens.common.controls.PuzzleResultsGrid
-import com.paulcraciunas.screens.common.design.components.ChessGymChip
+import com.paulcraciunas.screens.common.controls.TimerDisplay
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
-import com.paulcraciunas.screens.common.design.components.ChipTone
 import com.paulcraciunas.screens.common.design.components.SpacerSize
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.dialogs.AbandonConfirmationDialog
@@ -44,8 +39,8 @@ import com.paulcraciunas.screens.common.dialogs.PromotionDialog
 import com.paulcraciunas.screens.common.previews.PreviewData
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
+import com.paulcraciunas.screens.data.RemainingTime
 import com.paulcraciunas.screens.puzzles.rush.vm.PuzzleRushUiState
-import com.paulcraciunas.screens.puzzles.rush.vm.PuzzleRushUiState.RemainingTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -66,15 +61,7 @@ fun PuzzleRushScreen(
             ChildAppBar(
                 title = stringResource(R.string.puzzle_mode_rush_title),
                 onBack = onNavigateBack,
-                actions = {
-                    ChessGymChip(
-                        text = uiState.time.value,
-                        tone = if (uiState.time.danger) ChipTone.Failed else ChipTone.Accent,
-                        leadingIcon = ImageVector.vectorResource(drawable.clock_icon),
-                        modifier = Modifier.width(Design.dimensions.sizes.timerChipWidth),
-                    )
-                }
-            )
+            ) { TimerDisplay(remainingTime = uiState.time) }
         },
         containerColor = Design.colors.primarySoft,
         modifier = modifier.testTag { PuzzleRushScreenTags.SCREEN },
@@ -134,7 +121,10 @@ private fun PuzzleRushContent(
         }
         CapturedPieces(capturedPieces = data.captured.byPlayer, side = data.player.other(), modifier = Modifier.fillMaxWidth())
         ChessGymSpacer()
-        AnimatedControls(targetState = uiState) { state ->
+        AnimatedControls(
+            targetState = uiState,
+            contentKey = { state -> state::class },
+        ) { state ->
             when (state) {
                 is PuzzleRushUiState.Ready -> {
                     ReadyControls(modifier = Modifier.fillMaxWidth())

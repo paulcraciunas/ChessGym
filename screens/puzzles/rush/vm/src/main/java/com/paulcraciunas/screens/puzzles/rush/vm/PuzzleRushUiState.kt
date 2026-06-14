@@ -2,6 +2,7 @@ package com.paulcraciunas.screens.puzzles.rush.vm
 
 import androidx.compose.runtime.Immutable
 import com.paulcraciunas.screens.data.BoardState
+import com.paulcraciunas.screens.data.RemainingTime
 import com.paulcraciunas.screens.data.SessionResult
 
 @Immutable
@@ -45,10 +46,4 @@ sealed class PuzzleRushUiState {
         val showSummaryDialog: Boolean,
         val isNewHighScore: Boolean,
     ) : WithBoard()
-
-    @Immutable
-    data class RemainingTime(
-        val value: String = "03:00",
-        val danger: Boolean = false,
-    )
 }

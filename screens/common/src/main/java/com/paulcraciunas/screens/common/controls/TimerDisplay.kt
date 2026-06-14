@@ -1,5 +1,6 @@
 package com.paulcraciunas.screens.common.controls
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -8,7 +9,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.global.resources.R.drawable
 import com.paulcraciunas.screens.common.design.components.ChessGymChip
 import com.paulcraciunas.screens.common.design.components.ChipTone
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
+import com.paulcraciunas.screens.data.RemainingTime
 
 @Composable
 fun TimerDisplay(
@@ -26,6 +29,19 @@ fun TimerDisplay(
         tone = tone,
         leadingIcon = ImageVector.vectorResource(drawable.clock_icon),
         modifier = modifier,
+    )
+}
+
+@Composable
+fun TimerDisplay(
+    remainingTime: RemainingTime,
+    modifier: Modifier = Modifier
+) {
+    ChessGymChip(
+        text = remainingTime.value,
+        tone = if (remainingTime.danger) ChipTone.Failed else ChipTone.Accent,
+        leadingIcon = ImageVector.vectorResource(drawable.clock_icon),
+        modifier = modifier.padding(Design.dimensions.spacing.xl),
     )
 }
 
