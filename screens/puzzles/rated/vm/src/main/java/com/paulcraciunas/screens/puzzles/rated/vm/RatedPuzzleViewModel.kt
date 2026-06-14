@@ -79,11 +79,7 @@ class RatedPuzzleViewModel @Inject constructor(
     fun onAbandon() = playSession.accept(PlayIntent.RequestAbandon)
     fun onAbandonDismissed() = playSession.accept(PlayIntent.DismissAbandon)
     fun onAbandonConfirmed() = playSession.accept(PlayIntent.ConfirmAbandon)
-
-    fun onNextPuzzle() {
-        playSession.reset()
-        loadNextPuzzle()
-    }
+    fun onNextPuzzle() { loadNextPuzzle() }
 
     fun onNavigateBackPressed(): Boolean {
         val isPlaying = playSession.state.value.status == SingleSessionState.Status.Playing
@@ -119,7 +115,7 @@ class RatedPuzzleViewModel @Inject constructor(
                 puzzleId = finalState.boardState.id,
                 puzzleRating = finalState.boardState.rating!!,
                 wasSuccessful = finalState.boardState.won,
-                ratingChange = ratingChange.value.getNormalized(success = finalState.boardState.won),
+                ratingChange = ratingChange.value.get(success = finalState.boardState.won),
                 timeSpentMillis = timer.elapsed(),
             )
         )

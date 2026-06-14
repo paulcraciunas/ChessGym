@@ -367,7 +367,7 @@ internal class RatedPuzzleViewModelTest {
             makeMove(underTest, from = Locus.d7, to = Locus.d5)
 
             val updatedUser = userRepository.get()
-            assertEquals(User.DEFAULT_RATED_PUZZLE_RATING + DEFAULT_LOSS, updatedUser.ratings.current)
+            assertEquals(User.DEFAULT_RATED_PUZZLE_RATING - DEFAULT_LOSS, updatedUser.ratings.current)
             assertEquals(1, updatedUser.statistics.puzzlesPlayed)
             assertEquals(0, updatedUser.statistics.puzzlesSolved)
             assertTrue(updatedUser.failedPuzzles.contains(42))
@@ -381,7 +381,7 @@ internal class RatedPuzzleViewModelTest {
             testDispatcher.scheduler.advanceUntilIdle()
 
             val updatedUser = userRepository.get()
-            assertEquals(User.DEFAULT_RATED_PUZZLE_RATING + DEFAULT_LOSS, updatedUser.ratings.current)
+            assertEquals(User.DEFAULT_RATED_PUZZLE_RATING - DEFAULT_LOSS, updatedUser.ratings.current)
             assertTrue(updatedUser.failedPuzzles.contains(7))
         }
     }
@@ -438,7 +438,7 @@ internal class RatedPuzzleViewModelTest {
     private companion object {
         private const val DEFAULT_RATING = 1200
         private const val DEFAULT_GAIN = 20
-        private const val DEFAULT_LOSS = -10
+        private const val DEFAULT_LOSS = 10
     }
 }
 
