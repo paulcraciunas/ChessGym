@@ -501,11 +501,11 @@ internal class PuzzleStreakViewModelTest {
         underTest = PuzzleStreakViewModel(
             timer = timer,
             userRepository = userRepository,
+            appSettingsRepository = appSettingsRepository,
             defaultDispatcher = testDispatcher,
             getStreakPuzzle = getStreakPuzzle,
             onStreakPuzzleComplete = onStreakPuzzleComplete,
             onStreakComplete = onStreakComplete,
-            appSettingsRepository = appSettingsRepository,
             sounds = SoundCoordinator(),
         )
         backgroundScope.launch {

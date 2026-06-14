@@ -122,6 +122,7 @@ internal fun PuzzleStreak(tabNavController: NavHostController) {
         onAbandonDismissed = vm::onAbandonDismissed,
         onNewStreak = vm::onNewStreak,
         onNextPuzzle = vm::onNextPuzzle,
+        onAutoNext = vm::onAutoNext,
         onDismissSummary = vm::onDismissSummary,
     )
 }

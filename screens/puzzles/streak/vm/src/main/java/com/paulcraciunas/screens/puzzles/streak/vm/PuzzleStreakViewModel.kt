@@ -26,17 +26,18 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class PuzzleStreakViewModel @Inject constructor(
     private val timer: Timer,
     private val userRepository: UserRepository,
+    private val appSettingsRepository: AppSettingsRepository,
     @param:DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher,
     getStreakPuzzle: GetStreakPuzzle,
     onStreakPuzzleComplete: OnStreakPuzzleComplete,
     onStreakComplete: OnStreakComplete,
-    appSettingsRepository: AppSettingsRepository,
     sounds: SoundCoordinator,
 ) : ViewModel() {
     private val sessions = PuzzleStreakSessions(getStreakPuzzle)
@@ -94,6 +95,11 @@ class PuzzleStreakViewModel @Inject constructor(
             playSession.run()
         }
     }
+    fun onAutoNext(enabled: Boolean) {
+        viewModelScope.launch {
+            appSettingsRepository.updateAutoNextPuzzle(enabled)
+        }
+    }
 
     private fun PlaySessionState.toUiState(currentHighScore: Int): PuzzleStreakUiState = when (this.status) {
         PlaySessionState.Status.Failed -> PuzzleStreakUiState.Failed
@@ -104,12 +110,19 @@ class PuzzleStreakViewModel @Inject constructor(
             showSummary = this.showSummary,
             isNewHighScore = sessions.streakCount > currentHighScore,
         )
+        PlaySessionState.Status.Paused -> PuzzleStreakUiState.Playing(
+            data = this.boardState,
+            streakCount = sessions.streakCount + 1, // we just completed a puzzle
+            hintEnabled = hintAvailable,
+            showAbandonDialog = abandonRequested,
+            isAwaitingNextPuzzle = true,
+        )
         else -> PuzzleStreakUiState.Playing(
             data = this.boardState,
             streakCount = sessions.streakCount,
             hintEnabled = hintAvailable,
             showAbandonDialog = abandonRequested,
-            isAwaitingNextPuzzle = this.status == PlaySessionState.Status.Paused,
+            isAwaitingNextPuzzle = false,
         )
     }
 }
