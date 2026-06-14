@@ -10,6 +10,8 @@ import com.paulcraciunas.domain.api.general.RandomFactory
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.global.qualifiers.DefaultDispatcher
+import com.paulcraciunas.global.sounds.SoundCoordinator
+import com.paulcraciunas.screens.data.RemainingTime
 import com.paulcraciunas.screens.data.SideSelection
 import com.paulcraciunas.screens.data.toSide
 import com.paulcraciunas.screens.data.utils.SequentialJob
@@ -33,6 +35,7 @@ class FindTheSquareViewModel @Inject constructor(
     private val countdownTimer: CountdownTimer,
     private val userRepository: UserRepository,
     private val randomFactory: RandomFactory,
+    private val sounds: SoundCoordinator,
     gameDuration: GameDuration,
 ) : ViewModel() {
     private val durationSeconds: Int = gameDuration.seconds
@@ -84,8 +87,13 @@ class FindTheSquareViewModel @Inject constructor(
 
     private suspend fun startGame() {
         val durationMs = _gameState.value.timeRemaining.seconds * 1000L
+        var isTicking = false
         countdownTimer.start(durationMs = durationMs, intervalMillis = INTERVAL_MS).collect { remainder ->
             _gameState.update { it.copy(timeRemaining = remainder) }
+            if (remainder.seconds < FindTheSquareUiState.DANGER_DURATION_SECONDS && !isTicking) {
+                isTicking = true
+                sounds.trigger(SoundCoordinator.SoundEvent.Tick(FindTheSquareUiState.DANGER_DURATION_SECONDS))
+            }
         }
         _gameState.update {
             it.copy(
@@ -116,7 +124,7 @@ class FindTheSquareViewModel @Inject constructor(
                 orientation = orientation,
                 currentSquare = currentSquare,
                 score = score,
-                timeRemaining = timeRemaining.format(),
+                timeRemaining = timeRemaining.toRemainingTime(),
                 showError = showError,
             )
             Status.Finished -> FindTheSquareUiState.GameOver(
@@ -132,6 +140,10 @@ class FindTheSquareViewModel @Inject constructor(
         const val INTERVAL_MS = 100L
     }
 }
+internal fun CountdownTimer.Remainder.toRemainingTime(): RemainingTime = RemainingTime(
+    value = format(),
+    danger = this.seconds <= FindTheSquareUiState.DANGER_DURATION_SECONDS,
+)
 
 private fun Int.asRemainder() = CountdownTimer.Remainder(seconds = this, millis = 0)
 

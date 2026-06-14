@@ -3,33 +3,29 @@ package com.paulcraciunas.screens.boardvis.squares.ui
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.global.resources.R
-import com.paulcraciunas.global.resources.R.drawable
 import com.paulcraciunas.screens.boardvis.squares.vm.FindTheSquareUiState
 import com.paulcraciunas.screens.common.ChildAppBar
 import com.paulcraciunas.screens.common.LocalUiSettings
 import com.paulcraciunas.screens.common.UiSettings
-import com.paulcraciunas.screens.data.SideSelection
-import com.paulcraciunas.screens.common.design.components.ChessGymChip
-import com.paulcraciunas.screens.common.design.components.ChipTone
+import com.paulcraciunas.screens.common.controls.TimerDisplay
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
+import com.paulcraciunas.screens.data.RemainingTime
+import com.paulcraciunas.screens.data.SideSelection
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,16 +57,7 @@ fun FindTheSquareScreen(
             ChildAppBar(
                 title = stringResource(R.string.boardvis_find_square_title),
                 onBack = onNavigateBack,
-                actions = {
-                    ChessGymChip(
-                        text = uiState.timeRemaining,
-                        tone = ChipTone.Accent,
-                        leadingIcon = ImageVector.vectorResource(drawable.clock_icon),
-                        modifier = Modifier.width(Design.dimensions.sizes.timerChipWidth)
-                            .padding(end = Design.dimensions.spacing.xs),
-                    )
-                }
-            )
+            ) { TimerDisplay(remainingTime = uiState.timeRemaining) }
         },
         containerColor = Design.colors.primarySoft,
         modifier = modifier.testTag { FindTheSquareTags.SCREEN },
@@ -111,7 +98,7 @@ private fun FindTheSquareScreenPlayingPreview() {
                     orientation = Side.WHITE,
                     currentSquare = Locus.e4,
                     score = 5,
-                    timeRemaining = "22.4",
+                    timeRemaining = RemainingTime(value = "22.4", danger = false),
                     showError = false
                 ),
             )

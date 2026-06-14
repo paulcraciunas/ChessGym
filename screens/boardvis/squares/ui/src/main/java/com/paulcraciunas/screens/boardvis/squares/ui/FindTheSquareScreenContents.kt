@@ -50,7 +50,10 @@ internal fun FindTheSquareScreenContents(
             }
         }
         ChessGymSpacer(size = SpacerSize.XXLARGE)
-        AnimatedControls(targetState = state) { uiState ->
+        AnimatedControls(
+            targetState = state,
+            contentKey = { state -> state::class },
+        ) { uiState ->
             when (uiState) {
                 is FindTheSquareUiState.Setup -> {
                     FindTheSquareControls(

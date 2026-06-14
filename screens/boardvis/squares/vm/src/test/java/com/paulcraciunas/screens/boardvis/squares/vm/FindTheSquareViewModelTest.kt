@@ -9,6 +9,7 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.File
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Rank
+import com.paulcraciunas.global.sounds.SoundCoordinator
 import com.paulcraciunas.screens.data.SideSelection
 import com.paulcraciunas.user.api.FakeUserRepository
 import com.paulcraciunas.user.api.User
@@ -365,6 +366,7 @@ internal class FindTheSquareViewModelTest {
             countdownTimer = fakeCountdownTimer,
             userRepository = userRepository,
             randomFactory = fakeRandomFactory,
+            sounds = SoundCoordinator(),
             gameDuration = DefaultGameDuration(),
         )
         advanceUntilIdle()
