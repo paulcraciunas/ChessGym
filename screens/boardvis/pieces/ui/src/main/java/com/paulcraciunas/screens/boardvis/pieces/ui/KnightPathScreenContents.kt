@@ -33,7 +33,10 @@ internal fun KnightPathScreenContents(
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(16.dp))
-        AnimatedControls(targetState = state) { uiState ->
+        AnimatedControls(
+            targetState = state,
+            contentKey = { state -> state::class },
+        ) { uiState ->
             when (uiState) {
                 is KnightPathUiState.Setup -> {
                     KnightPathSetupControls(

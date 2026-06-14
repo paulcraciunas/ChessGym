@@ -10,6 +10,7 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.impl.board.Board
+import com.paulcraciunas.global.sounds.SoundCoordinator
 import com.paulcraciunas.user.api.FakeUserRepository
 import com.paulcraciunas.user.api.User
 import kotlinx.coroutines.Dispatchers
@@ -48,6 +49,7 @@ internal class KnightPathViewModelTest {
             onKnightPathComplete = fakeOnComplete,
             countdownTimer = RealCountdownTimer(SchedulerBackedTestClock(testDispatcher.scheduler)),
             userRepository = userRepository,
+            sounds = SoundCoordinator(),
         )
     }
 
@@ -73,7 +75,7 @@ internal class KnightPathViewModelTest {
         val playing = uiState as KnightPathUiState.Playing
         assertEquals(0, playing.score)
         assertEquals(Locus.d4, playing.destination)
-        assertEquals("29.0", playing.timeRemaining)
+        assertEquals("29.0", playing.timeRemaining.value)
     }
 
     @Test

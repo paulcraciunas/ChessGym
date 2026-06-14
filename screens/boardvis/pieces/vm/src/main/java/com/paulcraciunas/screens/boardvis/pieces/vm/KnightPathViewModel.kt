@@ -10,7 +10,9 @@ import com.paulcraciunas.domain.api.general.CountdownTimer
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.global.qualifiers.DefaultDispatcher
+import com.paulcraciunas.global.sounds.SoundCoordinator
 import com.paulcraciunas.screens.data.BoardViewData
+import com.paulcraciunas.screens.data.RemainingTime
 import com.paulcraciunas.screens.data.utils.SequentialJob
 import com.paulcraciunas.user.api.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,6 +34,7 @@ class KnightPathViewModel @Inject constructor(
     private val onKnightPathComplete: OnKnightPathComplete,
     private val countdownTimer: CountdownTimer,
     private val userRepository: UserRepository,
+    private val sounds: SoundCoordinator,
 ) : ViewModel() {
     private val _gameState = MutableStateFlow(GameState())
     private val gameJob = SequentialJob(viewModelScope)
@@ -116,8 +119,13 @@ class KnightPathViewModel @Inject constructor(
     }
 
     private suspend fun runTimer() {
+        var isTicking = false
         countdownTimer.start(durationMs = DURATION_MS, intervalMillis = INTERVAL_MS).collect { remainder ->
             _gameState.update { it.copy(timeRemaining = remainder) }
+            if (remainder.seconds < KnightPathUiState.DANGER_DURATION_SECONDS && !isTicking) {
+                isTicking = true
+                sounds.trigger(SoundCoordinator.SoundEvent.Tick(KnightPathUiState.DANGER_DURATION_SECONDS))
+            }
         }
         onGameOver(wasWrongMove = false)
     }
@@ -169,11 +177,11 @@ class KnightPathViewModel @Inject constructor(
                 boardData = BoardViewData.from(board = exercise!!.board),
                 destination = exercise.destination,
                 score = score,
-                timeRemaining = timeRemaining.format(),
+                timeRemaining = timeRemaining.toRemainingTime(),
             )
             Status.Finished -> KnightPathUiState.GameOver(
                 boardData = BoardViewData.from(board = exercise!!.board),
-                timeRemaining = timeRemaining.format(),
+                timeRemaining = timeRemaining.toRemainingTime(),
                 score = score,
                 isNewHighScore = isNewHighScore,
                 wasWrongMove = wasWrongMove,
@@ -189,6 +197,11 @@ class KnightPathViewModel @Inject constructor(
         private const val DURATION_MS = KnightPathUiState.DEFAULT_DURATION_SECONDS * 1000L
     }
 }
+
+internal fun CountdownTimer.Remainder.toRemainingTime(): RemainingTime = RemainingTime(
+    value = format(),
+    danger = this.seconds <= KnightPathUiState.DANGER_DURATION_SECONDS,
+)
 
 private fun Int.asRemainder() = CountdownTimer.Remainder(seconds = this, millis = 0)
 

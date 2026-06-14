@@ -17,13 +17,12 @@ import com.paulcraciunas.screens.boardvis.pieces.vm.KnightPathUiState
 import com.paulcraciunas.screens.common.ChildAppBar
 import com.paulcraciunas.screens.common.LocalUiSettings
 import com.paulcraciunas.screens.common.UiSettings
-import com.paulcraciunas.screens.common.design.components.ChessGymChip
-import com.paulcraciunas.screens.common.design.components.ChipStyle
-import com.paulcraciunas.screens.common.design.components.ChipTone
+import com.paulcraciunas.screens.common.controls.TimerDisplay
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.data.BoardViewData
+import com.paulcraciunas.screens.data.RemainingTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,14 +39,7 @@ fun KnightPathScreen(
             ChildAppBar(
                 title = stringResource(R.string.boardvis_knight_path_title),
                 onBack = onNavigateBack,
-            ) {
-                ChessGymChip(
-                    text = uiState.timeRemaining,
-                    tone = ChipTone.Accent,
-                    style = ChipStyle.Default,
-                    modifier = Modifier.padding(Design.dimensions.spacing.xxl)
-                )
-            }
+            ) { TimerDisplay(remainingTime = uiState.timeRemaining) }
         },
         containerColor = Design.colors.primarySoft,
         modifier = modifier.testTag { KnightPathTags.SCREEN },
@@ -87,7 +79,7 @@ private fun KnightPathScreenPlayingPreview() {
             KnightPathScreen(
                 uiState = KnightPathUiState.Playing(
                     boardData = BoardViewData.default(),
-                    timeRemaining = "22.4",
+                    timeRemaining = RemainingTime(value = "22.4", danger = false),
                     destination = Locus.e6,
                     score = 3,
                 ),
@@ -104,7 +96,7 @@ private fun KnightPathScreenGameOverPreview() {
             KnightPathScreen(
                 uiState = KnightPathUiState.GameOver(
                     boardData = BoardViewData.default(),
-                    timeRemaining = "7.6",
+                    timeRemaining = RemainingTime(value = "4.6", danger = true),
                     score = 8,
                     isNewHighScore = true,
                     wasWrongMove = false,
