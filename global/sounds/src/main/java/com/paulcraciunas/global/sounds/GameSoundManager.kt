@@ -55,9 +55,7 @@ class GameSoundManager(
                 val dynamicVolume = 0.5f + (progress * 0.5f)
 
                 soundPool.play(tickSound, dynamicVolume, dynamicVolume, PRIORITY_DEFAULT, NO_LOOP, NORMAL_RATE)
-                delay(500L)
-                soundPool.play(tickSound, dynamicVolume, dynamicVolume, PRIORITY_DEFAULT, NO_LOOP, NORMAL_RATE)
-                delay(500L)
+                delay(1000L)
             }
         }
     }
