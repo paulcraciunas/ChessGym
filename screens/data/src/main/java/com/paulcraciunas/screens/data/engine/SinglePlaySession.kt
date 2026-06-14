@@ -146,6 +146,11 @@ class SinglePlaySession(
     }
 
     private suspend fun startRun(session: BoardSession) {
+        val appSettings = settingsRepository.appSettings.first()
+        uiSettings = UiSettings(
+            autoPromote = appSettings.autoPromote,
+            waitForAnimations = appSettings.enableAnimations,
+        )
         _state.update {
             SingleSessionState(
                 status = SingleSessionState.Status.Loading,
@@ -157,11 +162,6 @@ class SinglePlaySession(
                 abandonRequested = false,
             )
         }
-        val appSettings = settingsRepository.appSettings.first()
-        uiSettings = UiSettings(
-            autoPromote = appSettings.autoPromote,
-            waitForAnimations = appSettings.enableAnimations,
-        )
         session.autoPromote = uiSettings.autoPromote
         session.opponent.init()
         _state.update {
@@ -213,10 +213,8 @@ class SinglePlaySession(
 
     private fun onHint(session: BoardSession): IntentOutcome {
         _state.update {
-            it.copy(
-                boardState = session.hint(),
-                hintAvailable = config.hints == SingleSessionConfiguration.HintMode.Unlimited,
-            )
+            if (!it.hintAvailable) it
+            else it.copy(boardState = session.hint(), hintAvailable = config.hints == SingleSessionConfiguration.HintMode.Unlimited)
         }
         return IntentOutcome.Continue
     }
