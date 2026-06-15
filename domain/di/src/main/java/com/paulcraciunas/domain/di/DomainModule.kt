@@ -13,6 +13,7 @@ import com.paulcraciunas.domain.api.auth.SignOutUseCase
 import com.paulcraciunas.domain.api.billing.BillingUseCase
 import com.paulcraciunas.domain.api.blindmode.OnBlindModeGameComplete
 import com.paulcraciunas.domain.api.boardvis.GenerateKnightPathExercise
+import com.paulcraciunas.domain.api.boardvis.GetKnightPathBufferedSeries
 import com.paulcraciunas.domain.api.boardvis.OnFindSquareComplete
 import com.paulcraciunas.domain.api.boardvis.OnKnightPathComplete
 import com.paulcraciunas.domain.api.general.CalculateElo
@@ -41,6 +42,7 @@ import com.paulcraciunas.domain.impl.auth.SignOutUseCaseImpl
 import com.paulcraciunas.domain.impl.billing.BillingUseCaseImpl
 import com.paulcraciunas.domain.impl.blindmode.OnBlindModeGameCompleteImpl
 import com.paulcraciunas.domain.impl.boardvis.GenerateKnightPathExerciseImpl
+import com.paulcraciunas.domain.impl.boardvis.GetKnightPathBufferedSeriesImpl
 import com.paulcraciunas.domain.impl.boardvis.OnFindSquareCompleteImpl
 import com.paulcraciunas.domain.impl.boardvis.OnKnightPathCompleteImpl
 import com.paulcraciunas.domain.impl.general.CalculateEloImpl
@@ -129,6 +131,10 @@ internal abstract class DomainModule {
     @Binds
     @Singleton
     abstract fun bindGenerateKnightPathExercise(impl: GenerateKnightPathExerciseImpl): GenerateKnightPathExercise
+
+    @Binds
+    @Singleton
+    abstract fun bindGetKnightPathBufferedSeries(impl: GetKnightPathBufferedSeriesImpl): GetKnightPathBufferedSeries
 
     @Binds
     @Singleton

@@ -7,6 +7,7 @@ import com.paulcraciunas.domain.impl.achievements.UpdateAchievementProgressImpl
 import com.paulcraciunas.user.api.FakeUserRepository
 import com.paulcraciunas.user.api.User
 import com.paulcraciunas.user.api.UserDefaults
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
 internal class OnFindSquareCompleteImplTest {
+    private val testDispatcher = StandardTestDispatcher()
     private val fakeUserRepository = FakeUserRepository()
     private val updateAchievementProgress = UpdateAchievementProgressImpl(
         FakeAchievementNotificationManager(),
@@ -21,10 +23,11 @@ internal class OnFindSquareCompleteImplTest {
     private val underTest = OnFindSquareCompleteImpl(
         fakeUserRepository,
         updateAchievementProgress,
+        testDispatcher,
     )
 
     @Test
-    fun `GIVEN score above high score WHEN invoke THEN updates high score`() = runTest {
+    fun `GIVEN score above high score WHEN invoke THEN updates high score`() = runTest(testDispatcher) {
         // Given
         val currentUser = UserDefaults.signedInUser()
         fakeUserRepository.update(currentUser)
@@ -44,7 +47,7 @@ internal class OnFindSquareCompleteImplTest {
     }
 
     @Test
-    fun `GIVEN score below high score WHEN invoke THEN does not update high score`() = runTest {
+    fun `GIVEN score below high score WHEN invoke THEN does not update high score`() = runTest(testDispatcher) {
         // Given
         val currentUser = UserDefaults.signedInUser()
         fakeUserRepository.update(currentUser)
@@ -64,7 +67,7 @@ internal class OnFindSquareCompleteImplTest {
     }
 
     @Test
-    fun `GIVEN score equal to high score WHEN invoke THEN does not update high score`() = runTest {
+    fun `GIVEN score equal to high score WHEN invoke THEN does not update high score`() = runTest(testDispatcher) {
         // Given
         val currentUser = UserDefaults.signedInUser()
         fakeUserRepository.update(currentUser)
@@ -83,7 +86,7 @@ internal class OnFindSquareCompleteImplTest {
     }
 
     @Test
-    fun `GIVEN score below high score WHEN invoke THEN update to total time spent`() = runTest {
+    fun `GIVEN score below high score WHEN invoke THEN update to total time spent`() = runTest(testDispatcher) {
         // Given
         val timeSpent = 30_000L
         val currentUser = UserDefaults.signedInUser()
@@ -104,7 +107,7 @@ internal class OnFindSquareCompleteImplTest {
     }
 
     @Test
-    fun `GIVEN score above high score WHEN invoke THEN update to total time spent`() = runTest {
+    fun `GIVEN score above high score WHEN invoke THEN update to total time spent`() = runTest(testDispatcher) {
         // Given
         val timeSpent = 4_200L
         val currentUser = UserDefaults.signedInUser()
@@ -125,7 +128,7 @@ internal class OnFindSquareCompleteImplTest {
     }
 
     @Test
-    fun `GIVEN result WHEN invoke THEN logs history entry`() = runTest {
+    fun `GIVEN result WHEN invoke THEN logs history entry`() = runTest(testDispatcher) {
         // Given
         val currentUser = UserDefaults.signedInUser()
         fakeUserRepository.update(currentUser)
@@ -150,7 +153,7 @@ internal class OnFindSquareCompleteImplTest {
     }
 
     @Test
-    fun `GIVEN multiple completions same day WHEN invoke THEN merges history entries`() = runTest {
+    fun `GIVEN multiple completions same day WHEN invoke THEN merges history entries`() = runTest(testDispatcher) {
         // Given
         val currentUser = UserDefaults.signedInUser()
         fakeUserRepository.update(currentUser)
@@ -180,7 +183,7 @@ internal class OnFindSquareCompleteImplTest {
     }
 
     @Test
-    fun `GIVEN user with zero high score WHEN invoke with positive score THEN updates high score`() = runTest {
+    fun `GIVEN user with zero high score WHEN invoke with positive score THEN updates high score`() = runTest(testDispatcher) {
         // Given
         val currentUser = User()
         fakeUserRepository.update(currentUser)
@@ -199,7 +202,7 @@ internal class OnFindSquareCompleteImplTest {
     }
 
     @Test
-    fun `GIVEN result WHEN invoke THEN updates achievement-related statistics and progress`() = runTest {
+    fun `GIVEN result WHEN invoke THEN updates achievement-related statistics and progress`() = runTest(testDispatcher) {
         // Given
         val currentUser = UserDefaults.signedInUser()
         fakeUserRepository.update(currentUser)
@@ -217,7 +220,7 @@ internal class OnFindSquareCompleteImplTest {
     }
 
     @Test
-    fun `GIVEN result WHEN invoke THEN does not affect other high scores`() = runTest {
+    fun `GIVEN result WHEN invoke THEN does not affect other high scores`() = runTest(testDispatcher) {
         // Given
         val currentUser = UserDefaults.signedInUser()
         fakeUserRepository.update(currentUser)

@@ -7,6 +7,7 @@ import com.paulcraciunas.domain.impl.achievements.UpdateAchievementProgressImpl
 import com.paulcraciunas.user.api.FakeUserRepository
 import com.paulcraciunas.user.api.User
 import com.paulcraciunas.user.api.UserDefaults
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
 internal class OnKnightPathCompleteImplTest {
+    private val testDispatcher = StandardTestDispatcher()
     private val fakeUserRepository = FakeUserRepository()
     private val updateAchievementProgress = UpdateAchievementProgressImpl(
         FakeAchievementNotificationManager(),
@@ -21,10 +23,11 @@ internal class OnKnightPathCompleteImplTest {
     private val underTest = OnKnightPathCompleteImpl(
         fakeUserRepository,
         updateAchievementProgress,
+        testDispatcher,
     )
 
     @Test
-    fun `GIVEN score above high score WHEN invoke THEN updates high score`() = runTest {
+    fun `GIVEN score above high score WHEN invoke THEN updates high score`() = runTest(testDispatcher) {
         val currentUser = UserDefaults.signedInUser()
         fakeUserRepository.update(currentUser)
         val newHighScore = UserDefaults.HIGH_SCORE_KNIGHT_PATH + 10
@@ -38,7 +41,7 @@ internal class OnKnightPathCompleteImplTest {
     }
 
     @Test
-    fun `GIVEN score below high score WHEN invoke THEN does not update high score`() = runTest {
+    fun `GIVEN score below high score WHEN invoke THEN does not update high score`() = runTest(testDispatcher) {
         val currentUser = UserDefaults.signedInUser()
         fakeUserRepository.update(currentUser)
         val belowHighScore = UserDefaults.HIGH_SCORE_KNIGHT_PATH - 5
@@ -52,7 +55,7 @@ internal class OnKnightPathCompleteImplTest {
     }
 
     @Test
-    fun `GIVEN result WHEN invoke THEN logs history entry`() = runTest {
+    fun `GIVEN result WHEN invoke THEN logs history entry`() = runTest(testDispatcher) {
         val currentUser = UserDefaults.signedInUser()
         fakeUserRepository.update(currentUser)
         val result = KnightPathResult(score = 15, timeSpentMillis = 60_000L)
@@ -71,7 +74,7 @@ internal class OnKnightPathCompleteImplTest {
     }
 
     @Test
-    fun `GIVEN multiple completions same day WHEN invoke THEN merges history entries`() = runTest {
+    fun `GIVEN multiple completions same day WHEN invoke THEN merges history entries`() = runTest(testDispatcher) {
         val currentUser = UserDefaults.signedInUser()
         fakeUserRepository.update(currentUser)
 
@@ -92,7 +95,7 @@ internal class OnKnightPathCompleteImplTest {
     }
 
     @Test
-    fun `GIVEN user with zero high score WHEN invoke THEN updates high score`() = runTest {
+    fun `GIVEN user with zero high score WHEN invoke THEN updates high score`() = runTest(testDispatcher) {
         val currentUser = User()
         fakeUserRepository.update(currentUser)
         val result = KnightPathResult(score = 5, timeSpentMillis = 60_000L)
@@ -105,7 +108,7 @@ internal class OnKnightPathCompleteImplTest {
     }
 
     @Test
-    fun `GIVEN result WHEN invoke THEN updates totalTimeSpent`() = runTest {
+    fun `GIVEN result WHEN invoke THEN updates totalTimeSpent`() = runTest(testDispatcher) {
         val currentUser = UserDefaults.signedInUser()
         fakeUserRepository.update(currentUser)
         val result = KnightPathResult(score = 10, timeSpentMillis = 45_000L)
@@ -121,7 +124,7 @@ internal class OnKnightPathCompleteImplTest {
     }
 
     @Test
-    fun `GIVEN multiple completions WHEN invoke twice THEN totalTimeSpent accumulates`() = runTest {
+    fun `GIVEN multiple completions WHEN invoke twice THEN totalTimeSpent accumulates`() = runTest(testDispatcher) {
         val currentUser = UserDefaults.signedInUser()
         fakeUserRepository.update(currentUser)
         val firstResult = KnightPathResult(score = 5, timeSpentMillis = 20_000L)
@@ -139,7 +142,7 @@ internal class OnKnightPathCompleteImplTest {
     }
 
     @Test
-    fun `GIVEN result WHEN invoke THEN updates achievement-related statistics and progress`() = runTest {
+    fun `GIVEN result WHEN invoke THEN updates achievement-related statistics and progress`() = runTest(testDispatcher) {
         val currentUser = UserDefaults.signedInUser()
         fakeUserRepository.update(currentUser)
         val result = KnightPathResult(score = 15, timeSpentMillis = 60_000L)
@@ -154,7 +157,7 @@ internal class OnKnightPathCompleteImplTest {
     }
 
     @Test
-    fun `GIVEN result WHEN invoke THEN does not affect other high scores`() = runTest {
+    fun `GIVEN result WHEN invoke THEN does not affect other high scores`() = runTest(testDispatcher) {
         val currentUser = UserDefaults.signedInUser()
         fakeUserRepository.update(currentUser)
         val result = KnightPathResult(score = 100, timeSpentMillis = 60_000L)

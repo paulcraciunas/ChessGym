@@ -5,12 +5,10 @@ import com.paulcraciunas.game.logic.api.board.Locus
 
 data class KnightPathExercise(
     val board: IBoard,
-    val destination: Locus,
-    val path: List<Locus>,
-    val movesRequired: Int,
+    val from: Locus,
+    val path: List<Locus>, // contains from as first element
 ) {
     init {
-        assert(path.size == movesRequired + 1)
-        assert(path.last() == destination)
+        assert(path.first() == from)
     }
 }
