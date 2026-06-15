@@ -8,20 +8,20 @@ import com.paulcraciunas.game.logic.api.board.Piece
 @Immutable
 data class SessionResult(
     val id: Int?,
-    val rating: Int,
+    val rating: Int?,
     val outcome: Outcome,
 ) {
     val success: Boolean get() = outcome == Outcome.Won
 }
 
 class BoardSession(
-    val navigation: NavigationStrategy = NoOpNavigation,
-    val solution: SolutionStrategy = NoOpSolution,
-    val opponent: OpponentStrategy = NoOpOpponent,
-) {
+    override val navigation: NavigationStrategy = NoOpNavigation,
+    override val solution: SolutionStrategy = NoOpSolution,
+    override val opponent: OpponentStrategy = NoOpOpponent,
+): AbstractBoardSession() {
     private lateinit var playable: PlayableBoard
     private lateinit var state: BoardState
-    var autoPromote: Boolean = false
+    internal var autoPromote: Boolean = false
 
     fun load(playable: PlayableBoard): BoardSession = apply {
         this.playable = playable
@@ -41,18 +41,13 @@ class BoardSession(
         )
     }
 
-    fun boardState(): BoardState = state
-    fun clear(): BoardState {
+    override fun current(): BoardState = state
+    override fun clear(): BoardState {
         state = state.copy(boardData = state.boardData.clearSelection())
         return state
     }
 
-    fun result(): SessionResult {
-        assert(playable.outcome() != null)
-        return SessionResult(id = playable.id, rating = playable.rating!!, outcome = playable.outcome()!!)
-    }
-
-    fun onClick(selection: Locus): BoardState {
+    override fun onClick(selection: Locus): BoardState {
         if (state.outcome != null) return state
         val current = state.boardData.selection
         state = if (current != null) {
@@ -90,7 +85,8 @@ class BoardSession(
         return state
     }
 
-    fun promote(to: Piece, at: Locus): BoardState {
+    override fun autoPromote(enabled: Boolean) { autoPromote = enabled }
+    override fun promote(to: Piece, at: Locus): BoardState {
         if (state.boardData.selection == null) return state
         state = state.copy(
             boardData = promote(from = state.boardData.selection!!, to = at, result = to),
@@ -102,11 +98,21 @@ class BoardSession(
         return state
     }
 
-    fun promoteIfPending(to: Piece): BoardState =
+    override fun promoteIfPending(to: Piece): BoardState =
         state.promotion?.at?.let { promote(to, it) } ?: state
 
-    fun canPlayOpponentMove(): Boolean = opponent.canPlay() && !playable.isPlayerTurn()
-    suspend fun playOpponentMove(): Boolean {
+    override fun resign(): BoardState {
+        playable.resign()
+        return refresh()
+    }
+
+    override fun result(): SessionResult {
+        assert(playable.outcome() != null)
+        return SessionResult(id = playable.id, rating = playable.rating, outcome = playable.outcome()!!)
+    }
+
+    override fun canPlayOpponentMove(): Boolean = opponent.canPlay() && !playable.isPlayerTurn()
+    override suspend fun playOpponentMove(): Boolean {
         if (!canPlayOpponentMove()) return false
         opponent.playNext()
         state = state.copy(
@@ -123,7 +129,17 @@ class BoardSession(
         return true
     }
 
-    fun refresh(withAnimation: Boolean = false): BoardState {
+    override suspend fun close() {
+        opponent.shutdown()
+    }
+
+    override fun hint(): BoardState {
+        val hintSquare = solution.hintSquare() ?: return state
+        state = state.copy(boardData = state.boardData.clearSelection().select(hintSquare, moves(from = hintSquare)))
+        return state
+    }
+
+    override fun refresh(withAnimation: Boolean): BoardState {
         state = state.copy(
             boardData = BoardViewData.from(
                 board = playable.board,
@@ -135,43 +151,6 @@ class BoardSession(
             outcome = playable.outcome(),
         )
         return state
-    }
-
-    fun resign(): BoardState {
-        playable.resign()
-        return refresh()
-    }
-
-    suspend fun close() {
-        opponent.shutdown()
-    }
-
-    fun completedMoves(): Int = navigation.size()
-    fun algebraicHistory(): String = navigation.algebraic()
-    fun canNavigate(): Boolean = navigation != NoOpNavigation
-    fun canUndo(): Boolean = navigation.canUndo()
-    fun canReplay(): Boolean = navigation.canReplay()
-    fun undoLast(): BoardState = navigate(::canUndo, navigation::undoLast)
-    fun undoAll(): BoardState = navigate(::canUndo, navigation::undoAll)
-    fun replayNext(): BoardState = navigate(::canReplay, navigation::replayNext)
-    fun replayAll(): BoardState = navigate(::canReplay, navigation::replayAll)
-
-    fun hint(): BoardState {
-        val hintSquare = solution.hintSquare() ?: return state
-        state = state.copy(boardData = state.boardData.clearSelection().select(hintSquare, moves(from = hintSquare)))
-        return state
-    }
-
-    fun playNextSolutionMove(): Boolean {
-        if (!solution.playNextSolutionMove()) return false
-        refresh(withAnimation = true)
-        return true
-    }
-
-    private fun navigate(guard: () -> Boolean, action: () -> Unit): BoardState {
-        if (!guard()) return state
-        action()
-        return refresh()
     }
 
     private fun moves(from: Locus): List<Locus> = playable.plies(from).map { it.to }

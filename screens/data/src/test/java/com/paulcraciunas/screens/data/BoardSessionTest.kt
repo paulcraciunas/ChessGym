@@ -23,50 +23,50 @@ internal class BoardSessionTest {
         fun `GIVEN a puzzle WHEN loaded THEN state has correct player`() {
             val session = loadPuzzleSession()
 
-            assertEquals(Side.BLACK, session.boardState().player)
+            assertEquals(Side.BLACK, session.current().player)
         }
 
         @Test
         fun `GIVEN a puzzle WHEN loaded THEN state has correct rating`() {
             val session = loadPuzzleSession(rating = 1500)
 
-            assertEquals(1500, session.boardState().rating)
+            assertEquals(1500, session.current().rating)
         }
 
         @Test
         fun `GIVEN a puzzle WHEN loaded THEN state has correct id`() {
             val session = loadPuzzleSession(id = 42)
 
-            assertEquals(42, session.boardState().id)
+            assertEquals(42, session.current().id)
         }
 
         @Test
         fun `GIVEN a puzzle WHEN loaded THEN no outcome`() {
             val session = loadPuzzleSession()
 
-            assertNull(session.boardState().outcome)
+            assertNull(session.current().outcome)
         }
 
         @Test
         fun `GIVEN a puzzle WHEN loaded THEN no promotion`() {
             val session = loadPuzzleSession()
 
-            assertNull(session.boardState().promotion)
+            assertNull(session.current().promotion)
         }
 
         @Test
         fun `GIVEN a puzzle WHEN loaded THEN movePlayed is false`() {
             val session = loadPuzzleSession()
 
-            assertFalse(session.boardState().movePlayed)
+            assertFalse(session.current().movePlayed)
         }
 
         @Test
         fun `GIVEN a puzzle WHEN loaded THEN captured pieces are empty`() {
             val session = loadPuzzleSession()
 
-            assertEquals("", session.boardState().captured.byPlayer)
-            assertEquals("", session.boardState().captured.byOpponent)
+            assertEquals("", session.current().captured.byPlayer)
+            assertEquals("", session.current().captured.byOpponent)
         }
 
         @Test
@@ -78,15 +78,15 @@ internal class BoardSessionTest {
             // After initialize(), White played e2e4 — pawn is on e4 now
             assertNotNull(playable.board.at(Locus.e4))
             assertNull(playable.board.at(Locus.e2))
-            assertNotNull(session.boardState().boardData.selection == null)
+            assertNotNull(session.current().boardData.selection == null)
         }
 
         @Test
         fun `GIVEN a puzzle WHEN loaded THEN boardData has no selection`() {
             val session = loadPuzzleSession()
 
-            assertNull(session.boardState().boardData.selection)
-            assertTrue(session.boardState().boardData.availableMoves.isEmpty())
+            assertNull(session.current().boardData.selection)
+            assertTrue(session.current().boardData.availableMoves.isEmpty())
         }
 
         @Test
@@ -95,7 +95,7 @@ internal class BoardSessionTest {
             val playable = GamePlayableBoard(game, Side.WHITE)
             val session = BoardSession().load(playable)
 
-            assertEquals(Side.WHITE, session.boardState().player)
+            assertEquals(Side.WHITE, session.current().player)
         }
 
         @Test
@@ -104,7 +104,7 @@ internal class BoardSessionTest {
             val playable = GamePlayableBoard(game, Side.WHITE)
             val session = BoardSession().load(playable)
 
-            assertEquals(1800, session.boardState().rating)
+            assertEquals(1800, session.current().rating)
         }
 
         @Test
@@ -113,7 +113,7 @@ internal class BoardSessionTest {
             val playable = GamePlayableBoard(game, Side.WHITE)
             val session = BoardSession().load(playable)
 
-            assertNull(session.boardState().id)
+            assertNull(session.current().id)
         }
     }
 
@@ -149,7 +149,7 @@ internal class BoardSessionTest {
         @Test
         fun `GIVEN nothing selected WHEN clicking empty square THEN state is unchanged`() {
             val session = loadPuzzleSession()
-            val before = session.boardState()
+            val before = session.current()
 
             val after = session.onClick(Locus.e5)
 
@@ -159,7 +159,7 @@ internal class BoardSessionTest {
         @Test
         fun `GIVEN nothing selected WHEN clicking opponent piece THEN state is unchanged`() {
             val session = loadPuzzleSession()
-            val before = session.boardState()
+            val before = session.current()
 
             // e4 has White's pawn after e2e4
             val after = session.onClick(Locus.e4)
@@ -225,7 +225,7 @@ internal class BoardSessionTest {
 
             session.onClick(Locus.e2)
             session.onClick(Locus.e4)
-            val afterMove = session.boardState()
+            val afterMove = session.current()
 
             val state = session.onClick(Locus.d2)
 
@@ -259,7 +259,7 @@ internal class BoardSessionTest {
             session.onClick(Locus.e2)
             session.onClick(Locus.e4)
 
-            assertEquals(Side.WHITE, session.boardState().player)
+            assertEquals(Side.WHITE, session.current().player)
         }
     }
 
@@ -395,7 +395,7 @@ internal class BoardSessionTest {
         @Test
         fun `GIVEN no pending promotion WHEN promoteIfPending called THEN state is unchanged`() {
             val session = loadPuzzleSession()
-            val before = session.boardState()
+            val before = session.current()
 
             val after = session.promoteIfPending(Piece.Queen)
 
@@ -418,7 +418,7 @@ internal class BoardSessionTest {
         @Test
         fun `GIVEN no selection WHEN promote called THEN state is unchanged`() {
             val session = loadPuzzleSession()
-            val before = session.boardState()
+            val before = session.current()
 
             val after = session.promote(Piece.Queen, Locus.a1)
 
@@ -468,7 +468,7 @@ internal class BoardSessionTest {
             session.onClick(Locus.e5)
 
             session.playOpponentMove()
-            val state = session.boardState()
+            val state = session.current()
 
             assertTrue(state.movePlayed)
         }
@@ -631,7 +631,7 @@ internal class BoardSessionTest {
         @Test
         fun `GIVEN NoOpNavigation WHEN undoLast THEN state is unchanged`() {
             val session = loadPuzzleSession()
-            val before = session.boardState()
+            val before = session.current()
 
             val after = session.undoLast()
 
@@ -641,7 +641,7 @@ internal class BoardSessionTest {
         @Test
         fun `GIVEN NoOpNavigation WHEN replayNext THEN state is unchanged`() {
             val session = loadPuzzleSession()
-            val before = session.boardState()
+            val before = session.current()
 
             val after = session.replayNext()
 
@@ -696,7 +696,7 @@ internal class BoardSessionTest {
         @Test
         fun `GIVEN NoOpSolution WHEN hint THEN state is unchanged`() {
             val session = loadPuzzleSession()
-            val before = session.boardState()
+            val before = session.current()
 
             val after = session.hint()
 
@@ -765,7 +765,7 @@ internal class BoardSessionTest {
         @Test
         fun `GIVEN no selection WHEN clear THEN state is unchanged`() {
             val session = loadPuzzleSession()
-            val before = session.boardState()
+            val before = session.current()
 
             val after = session.clear()
 

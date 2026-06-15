@@ -1,6 +1,6 @@
 package com.paulcraciunas.screens.data.engine
 
-import com.paulcraciunas.screens.data.BoardSession
+import com.paulcraciunas.screens.data.AbstractBoardSession
 import com.paulcraciunas.screens.data.BoardState
 import com.paulcraciunas.screens.data.engine.PlayIntent.AnimationPhase
 import com.paulcraciunas.screens.data.engine.SingleSessionConfiguration.GameOverBehavior
@@ -41,7 +41,7 @@ class SinglePlaySession(
         _state.update { it.copy(status = SingleSessionState.Status.Failed, errorMessage = message) }
     }
 
-    suspend fun run(session: BoardSession) = coroutineScope {
+    suspend fun run(session: AbstractBoardSession) = coroutineScope {
         intentChannel.flush()
         animationJob?.cancel()
         animationJob = null
@@ -87,7 +87,7 @@ class SinglePlaySession(
         }
     }
 
-    private suspend fun CoroutineScope.process(intent: PlayIntent, session: BoardSession): IntentOutcome {
+    private suspend fun CoroutineScope.process(intent: PlayIntent, session: AbstractBoardSession): IntentOutcome {
         if (_state.value.isAnimating && intent.blockedByAnimation) {
             return IntentOutcome.Continue
         }
@@ -107,7 +107,7 @@ class SinglePlaySession(
         }
     }
 
-    private suspend fun CoroutineScope.onAnimationPhaseComplete(phase: AnimationPhase, session: BoardSession): IntentOutcome =
+    private suspend fun CoroutineScope.onAnimationPhaseComplete(phase: AnimationPhase, session: AbstractBoardSession): IntentOutcome =
         when (phase) {
             AnimationPhase.MoveAnimated -> onMoveAnimated(session)
             AnimationPhase.OpponentMoveAnimated -> onOpponentMoveAnimated()
@@ -115,7 +115,7 @@ class SinglePlaySession(
             AnimationPhase.SolutionStepAnimated -> onSolutionStepAnimated(session)
         }
 
-    private suspend fun CoroutineScope.onMoveAnimated(session: BoardSession): IntentOutcome {
+    private suspend fun CoroutineScope.onMoveAnimated(session: AbstractBoardSession): IntentOutcome {
         return if (_state.value.boardState.outcome != null) {
             IntentOutcome.GameOver
         } else {
@@ -136,7 +136,7 @@ class SinglePlaySession(
         return IntentOutcome.Continue
     }
 
-    private suspend fun CoroutineScope.onBoardSwapped(session: BoardSession): IntentOutcome {
+    private suspend fun CoroutineScope.onBoardSwapped(session: AbstractBoardSession): IntentOutcome {
         if (session.canPlayOpponentMove()) {
             playOpponentMove(session)
         } else {
@@ -145,7 +145,7 @@ class SinglePlaySession(
         return IntentOutcome.Continue
     }
 
-    private suspend fun startRun(session: BoardSession) {
+    private suspend fun startRun(session: AbstractBoardSession) {
         val appSettings = settingsRepository.appSettings.first()
         uiSettings = UiSettings(
             autoPromote = appSettings.autoPromote,
@@ -162,19 +162,19 @@ class SinglePlaySession(
                 abandonRequested = false,
             )
         }
-        session.autoPromote = uiSettings.autoPromote
+        session.autoPromote(uiSettings.autoPromote)
         session.opponent.init()
         _state.update {
             it.copy(
                 status = SingleSessionState.Status.Ready,
-                boardState = session.boardState(),
+                boardState = session.current(),
                 navigation = session.navigation(),
             )
         }
         playOpponentMoveImmediately(session)
     }
 
-    private suspend fun CoroutineScope.onMove(session: BoardSession, nextBoard: BoardState): IntentOutcome {
+    private suspend fun CoroutineScope.onMove(session: AbstractBoardSession, nextBoard: BoardState): IntentOutcome {
         if (!nextBoard.movePlayed) {
             _state.update { it.copy(boardState = nextBoard) }
             return IntentOutcome.Continue
@@ -211,7 +211,7 @@ class SinglePlaySession(
         }
     }
 
-    private fun onHint(session: BoardSession): IntentOutcome {
+    private fun onHint(session: AbstractBoardSession): IntentOutcome {
         _state.update {
             if (!it.hintAvailable) it
             else it.copy(boardState = session.hint(), hintAvailable = config.hints == SingleSessionConfiguration.HintMode.Unlimited)
@@ -229,12 +229,12 @@ class SinglePlaySession(
         return IntentOutcome.Continue
     }
 
-    private fun CoroutineScope.onConfirmAbandon(session: BoardSession): IntentOutcome {
+    private fun CoroutineScope.onConfirmAbandon(session: AbstractBoardSession): IntentOutcome {
         _state.update { it.copy(abandonRequested = false) }
-        if (uiSettings.waitForAnimations && session.solution.hasSolutionMoves()) {
-            _state.update { it.copy(boardState = session.boardState(), isAnimating = true) }
+        if (uiSettings.waitForAnimations && session.hasSolutionMoves()) {
+            _state.update { it.copy(boardState = session.current(), isAnimating = true) }
             if (session.playNextSolutionMove()) {
-                _state.update { it.copy(boardState = session.boardState(), navigation = session.navigation()) }
+                _state.update { it.copy(boardState = session.current(), navigation = session.navigation()) }
                 launchAnimationDelay(config.solutionStepDelayMs, AnimationPhase.SolutionStepAnimated)
             }
             return IntentOutcome.Continue
@@ -243,10 +243,10 @@ class SinglePlaySession(
         return IntentOutcome.GameOver
     }
 
-    private fun CoroutineScope.onSolutionStepAnimated(session: BoardSession): IntentOutcome {
-        if (session.solution.hasSolutionMoves()) {
+    private fun CoroutineScope.onSolutionStepAnimated(session: AbstractBoardSession): IntentOutcome {
+        if (session.hasSolutionMoves()) {
             if (session.playNextSolutionMove()) {
-                _state.update { it.copy(boardState = session.boardState(), navigation = session.navigation()) }
+                _state.update { it.copy(boardState = session.current(), navigation = session.navigation()) }
             }
             launchAnimationDelay(config.solutionStepDelayMs, AnimationPhase.SolutionStepAnimated)
             return IntentOutcome.Continue
@@ -255,7 +255,7 @@ class SinglePlaySession(
         return IntentOutcome.GameOver
     }
 
-    private fun onNavigate(session: BoardSession, type: PlayIntent.Navigation): IntentOutcome {
+    private fun onNavigate(session: AbstractBoardSession, type: PlayIntent.Navigation): IntentOutcome {
         val nextBoard = when (type) {
             PlayIntent.Navigation.ToStart -> session.undoAll()
             PlayIntent.Navigation.Back -> session.undoLast()
@@ -277,18 +277,18 @@ class SinglePlaySession(
         return IntentOutcome.Continue
     }
 
-    private suspend fun CoroutineScope.playOpponentMove(session: BoardSession) {
+    private suspend fun CoroutineScope.playOpponentMove(session: AbstractBoardSession) {
         if (session.playOpponentMove()) {
-            _state.update { it.copy(boardState = session.boardState(), navigation = session.navigation()) }
+            _state.update { it.copy(boardState = session.current(), navigation = session.navigation()) }
             launchAnimationDelay(config.moveAnimationMs, AnimationPhase.OpponentMoveAnimated)
         } else {
             _state.update { it.copy(isAnimating = false) }
         }
     }
 
-    private suspend fun playOpponentMoveImmediately(session: BoardSession) {
+    private suspend fun playOpponentMoveImmediately(session: AbstractBoardSession) {
         if (session.playOpponentMove()) {
-            val boardState = session.boardState()
+            val boardState = session.current()
             _state.update { it.copy(boardState = boardState, navigation = session.navigation(), isAnimating = false) }
             if (boardState.outcome != null) {
                 intentChannel.send(
@@ -326,7 +326,7 @@ private fun Channel<*>.flush() {
 private val PlayIntent.isGameOverAllowed: Boolean
     get() = this is PlayIntent.Navigate || this is PlayIntent.AnimationPhaseComplete
 
-private fun BoardSession.navigation(): SingleSessionState.Navigation? =
+private fun AbstractBoardSession.navigation(): SingleSessionState.Navigation? =
     if (canNavigate()) SingleSessionState.Navigation(
         canGoBack = canUndo(),
         canGoForward = canReplay(),

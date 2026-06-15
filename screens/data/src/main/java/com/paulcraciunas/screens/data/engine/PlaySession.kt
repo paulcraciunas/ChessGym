@@ -1,7 +1,7 @@
 package com.paulcraciunas.screens.data.engine
 
 import com.paulcraciunas.domain.api.general.CountdownTimer
-import com.paulcraciunas.screens.data.BoardSession
+import com.paulcraciunas.screens.data.AbstractBoardSession
 import com.paulcraciunas.screens.data.Outcome
 import com.paulcraciunas.screens.data.SessionResult
 import com.paulcraciunas.screens.data.engine.PlaySessionConfiguration.EndMode
@@ -38,7 +38,7 @@ class PlaySession(
     }
 
     fun interface SessionsSource {
-        operator fun invoke(): Flow<BoardSession>
+        operator fun invoke(): Flow<AbstractBoardSession>
     }
 
     val state: Flow<PlaySessionState> = currentSession.state
@@ -151,7 +151,7 @@ class PlaySession(
             }
     }
 
-    private suspend fun onSessionOver(boardSession: BoardSession) {
+    private suspend fun onSessionOver(boardSession: AbstractBoardSession) {
         orchestrator.update { it.copy(results = it.results + boardSession.result()) }
         onSessionComplete(currentPlaySessionState())
     }

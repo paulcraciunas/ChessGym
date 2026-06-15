@@ -38,8 +38,8 @@ internal class PuzzleRushSessionsTest {
         sessions.first().apply {
             assertEquals(NoOpNavigation, navigation)
             assertEquals(NoOpSolution, solution)
-            assertEquals(1200, boardState().rating)
-            assertEquals(Side.BLACK, boardState().player)
+            assertEquals(1200, current().rating)
+            assertEquals(Side.BLACK, current().player)
         }
     }
 
@@ -58,9 +58,9 @@ internal class PuzzleRushSessionsTest {
 
         // Then
         assertEquals(3, sessions.size)
-        assertEquals(1200, sessions[0].boardState().rating)
-        assertEquals(1300, sessions[1].boardState().rating)
-        assertEquals(1400, sessions[2].boardState().rating)
+        assertEquals(1200, sessions[0].current().rating)
+        assertEquals(1300, sessions[1].current().rating)
+        assertEquals(1400, sessions[2].current().rating)
     }
 
     @Test
