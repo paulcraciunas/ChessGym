@@ -11,7 +11,6 @@ class PuzzlePlayableBoard(val puzzle: Puzzle) : PlayableBoard {
     override val board: IBoard get() = puzzle.board
     override val info: GameInfo get() = puzzle.info
     override val player: Side get() = puzzle.player
-    override val playerSide: Side get() = puzzle.player
     override val rating: Int get() = puzzle.rating
     override val id: Int? get() = puzzle.id
     override val lastMovePly: Ply? get() = puzzle.info.lastPly

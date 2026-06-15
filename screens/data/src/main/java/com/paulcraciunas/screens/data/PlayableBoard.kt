@@ -10,7 +10,6 @@ interface PlayableBoard {
     val board: IBoard
     val info: GameInfo
     val player: Side
-    val playerSide: Side
     val rating: Int?
     val id: Int?
     val lastMovePly: Ply?

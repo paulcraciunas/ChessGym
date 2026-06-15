@@ -10,7 +10,6 @@ import com.paulcraciunas.game.logic.api.state.GameInfo
 class GamePlayableBoard(val game: Game, override val player: Side) : PlayableBoard {
     override val board: IBoard get() = game.board
     override val info: GameInfo get() = game.info
-    override val playerSide: Side get() = player
     override val rating: Int? get() = game.rating
     override val id: Int? get() = null
     override val lastMovePly: Ply? get() = game.history.lastOrNull()
