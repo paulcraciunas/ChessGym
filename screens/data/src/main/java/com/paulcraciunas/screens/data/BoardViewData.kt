@@ -64,6 +64,7 @@ data class BoardViewData(
     companion object {
         fun empty(): BoardViewData = BoardViewData(squares = emptySquares)
         fun default(): BoardViewData = BoardViewData(squares = defaultSquares)
+        fun singleKnight(): BoardViewData = BoardViewData(squares = singleKnight)
 
         fun from(board: IBoard, lastMove: Pair<Locus, Locus>? = null, withAnimation: Boolean = false): BoardViewData {
             val updatedSquares = emptySquares.toMutableList().apply {
@@ -118,6 +119,9 @@ private fun indexFrom(loc: Locus): Int = loc.rank.dec() * 8 + loc.file.dec()
 private val emptySquares: List<SquareViewData> = List(64) { SquareViewData(piece = null) }
 private val defaultSquares: List<SquareViewData> = emptySquares.toMutableList().apply {
     load(board = Builders.boardFactory().defaultBoard())
+}
+private val singleKnight: List<SquareViewData> = emptySquares.toMutableList().apply {
+    this[indexFrom(Locus.e4)] = SquareViewData.simple(piece = Piece.Knight, side = Side.WHITE)
 }
 
 private fun MutableList<SquareViewData>.load(board: IBoard) {
