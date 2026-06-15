@@ -7,11 +7,9 @@ import kotlinx.coroutines.flow.Flow
  * The timer is purely cold; it starts when collected and stops when cancelled.
  */
 interface CountdownTimer {
-    fun start(durationMs: Long, intervalMillis: Long = 1000L): Flow<Remainder>
+    fun start(durationMs: Long, intervalMillis: Long = 100L): Flow<Remainder>
 
     data class Remainder(val seconds: Int, val millis: Int) {
-        val ms: Long
-            get() = seconds * 1000L + millis
         val isPositive: Boolean
             get() = seconds > 0 || (seconds == 0 && millis > 0)
     }

@@ -88,7 +88,7 @@ class FindTheSquareViewModel @Inject constructor(
     private suspend fun startGame() {
         val durationMs = _gameState.value.timeRemaining.seconds * 1000L
         var isTicking = false
-        countdownTimer.start(durationMs = durationMs, intervalMillis = INTERVAL_MS).collect { remainder ->
+        countdownTimer.start(durationMs = durationMs).collect { remainder ->
             _gameState.update { it.copy(timeRemaining = remainder) }
             if (remainder.seconds < FindTheSquareUiState.DANGER_DURATION_SECONDS && !isTicking) {
                 isTicking = true
@@ -135,11 +135,8 @@ class FindTheSquareViewModel @Inject constructor(
             )
         }
     }
-
-    companion object {
-        const val INTERVAL_MS = 100L
-    }
 }
+
 internal fun CountdownTimer.Remainder.toRemainingTime(): RemainingTime = RemainingTime(
     value = format(),
     danger = this.seconds <= FindTheSquareUiState.DANGER_DURATION_SECONDS,
