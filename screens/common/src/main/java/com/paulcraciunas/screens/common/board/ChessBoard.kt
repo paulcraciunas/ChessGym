@@ -179,26 +179,26 @@ private fun AnimatedPieceOverlay(
 
     // Using Offset.VectorConverter permits true diagnostic sub-pixel smooth sliding
     val animatedOffset = remember { Animatable(fromOffset, Offset.VectorConverter) }
-    var currentAnimationKey by remember { mutableStateOf<AnimatingPiece?>(null) }
+    var isAnimationRunning by remember { mutableStateOf(true) }
 
     LaunchedEffect(animatingPiece) {
-        if (currentAnimationKey != animatingPiece) {
-            currentAnimationKey = animatingPiece
-            animatedOffset.snapTo(fromOffset)
-            animatedOffset.animateTo(
-                targetValue = toOffset,
-                animationSpec = tween(durationMillis = PIECE_MOVE_ANIMATION_DURATION_MS)
-            )
-        }
+        isAnimationRunning = true
+        animatedOffset.snapTo(fromOffset)
+        animatedOffset.animateTo(
+            targetValue = toOffset,
+            animationSpec = tween(durationMillis = PIECE_MOVE_ANIMATION_DURATION_MS)
+        )
+        isAnimationRunning = false
     }
 
     Box(
         modifier = Modifier
             .size(with(LocalDensity.current) { squareSizePx.toDp() })
             .offset {
+                val offset = if (isAnimationRunning) animatedOffset.value else toOffset
                 IntOffset(
-                    x = animatedOffset.value.x.roundToInt(),
-                    y = animatedOffset.value.y.roundToInt()
+                    x = offset.x.roundToInt(),
+                    y = offset.y.roundToInt()
                 )
             },
         contentAlignment = Alignment.Center,
