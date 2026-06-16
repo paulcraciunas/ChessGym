@@ -127,13 +127,33 @@ internal class KnightPathViewModelTest {
         underTest.onPlayClicked()
         advanceTimeBy(1000L)
 
-        underTest.onSquareClicked(Locus.a1)
+        underTest.onSquareClicked(Locus.e4)
         advanceTimeBy(1000L)
 
         val uiState = underTest.uiState.value
         assertTrue(uiState is KnightPathUiState.GameOver)
         assertTrue((uiState as KnightPathUiState.GameOver).wasWrongMove)
         assertTrue(fakeOnComplete.invoked)
+    }
+
+    @Test
+    fun `GIVEN playing state WHEN impossible knight move attempted THEN game carries on`() = knightPathTest {
+        fakeExerciseSeries.with(twoMoveExercise())
+
+        underTest.onPlayClicked()
+        advanceTimeBy(1000L)
+        val originalBoardState = (underTest.uiState.value as KnightPathUiState.Playing).boardState
+
+        underTest.onSquareClicked(Locus.a1)
+        advanceTimeBy(1000L)
+        val nextBoardState = (underTest.uiState.value as KnightPathUiState.Playing).boardState
+
+        val uiState = underTest.uiState.value
+        assertTrue(uiState is KnightPathUiState.Playing)
+        assertEquals(originalBoardState, nextBoardState)
+        assertEquals(originalBoardState.boardData, nextBoardState.boardData)
+        assertEquals(0, (uiState as KnightPathUiState.Playing).score)
+        assertFalse(fakeOnComplete.invoked)
     }
 
     @Test
