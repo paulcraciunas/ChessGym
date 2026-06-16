@@ -32,7 +32,7 @@ import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 enum class ChipTone { Soft, Accent, Solved, Failed, Earned, Locked }
 
-enum class ChipStyle { Default, Large }
+enum class ChipStyle { Default, Large, Timer }
 
 /** Small rounded label-chip. Defaults to "Soft" tone (primary tint). */
 @Composable
@@ -47,6 +47,7 @@ fun ChessGymChip(
         modifier = modifier
             .background(
                 color = tone.background(), shape = when (style) {
+                    ChipStyle.Timer,
                     ChipStyle.Default -> Design.shapes.circle
                     ChipStyle.Large -> Design.shapes.button
                 }
@@ -54,9 +55,11 @@ fun ChessGymChip(
             .circleBorder(color = tone.border())
             .padding(
                 horizontal = when (style) {
+                    ChipStyle.Timer,
                     ChipStyle.Default -> Design.dimensions.spacing.md
                     ChipStyle.Large -> Design.dimensions.spacing.xl
                 }, vertical = when (style) {
+                    ChipStyle.Timer,
                     ChipStyle.Default -> Design.dimensions.spacing.xxs
                     ChipStyle.Large -> Design.dimensions.spacing.md
                 }
@@ -71,6 +74,7 @@ fun ChessGymChip(
                 tint = foregroundTint(tone, style),
                 modifier = Modifier.size(
                     when (style) {
+                        ChipStyle.Timer,
                         ChipStyle.Default -> Design.dimensions.sizes.iconSmall
                         ChipStyle.Large -> Design.dimensions.sizes.icon
                     }
@@ -82,6 +86,7 @@ fun ChessGymChip(
             color = foregroundTint(tone, style),
             textAlign = TextAlign.End,
             style = when (style) {
+                ChipStyle.Timer -> Design.textStyles.monoTimer
                 ChipStyle.Default -> MaterialTheme.typography.labelMedium
                 ChipStyle.Large -> MaterialTheme.typography.titleLarge
             },

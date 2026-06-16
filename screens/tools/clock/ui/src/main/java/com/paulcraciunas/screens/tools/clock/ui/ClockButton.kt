@@ -3,12 +3,15 @@ package com.paulcraciunas.screens.tools.clock.ui
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Surface
@@ -90,14 +93,14 @@ internal fun ClockButton(
                 letterSpacing = 1.2.sp,
             )
             ChessGymSpacer(size = SpacerSize.LARGE)
-            Text(
-                text = if (isSetup) {
-                    stringResource(R.string.clock_tap_to_start)
-                } else {
-                    remainder
-                },
-                style = Design.textStyles.displayNumeric,
-            )
+            if (isSetup) {
+                Text(
+                    text = stringResource(R.string.clock_tap_to_start),
+                    style = Design.textStyles.displayNumeric,
+                )
+            } else {
+                JitterFreeClockText(remainder)
+            }
             if (isLoser) {
                 ChessGymSpacer()
                 Text(
@@ -105,6 +108,34 @@ internal fun ClockButton(
                     style = Design.typography.titleLarge,
                     fontWeight = FontWeight.ExtraBold,
                     color = Design.colors.danger,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun JitterFreeClockText(
+    formattedTime: String,
+    modifier: Modifier = Modifier
+) {
+    val characterColumnWidth = 30.dp
+    val separatorColumnWidth = 12.dp
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        formattedTime.forEach { char ->
+            val isSeparator = char == '.' || char == ':'
+            Box(
+                modifier = Modifier.width(if (isSeparator) separatorColumnWidth else characterColumnWidth),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = char.toString(),
+                    style = Design.textStyles.displayNumeric,
+                    softWrap = false,
+                    maxLines = 1,
                 )
             }
         }
