@@ -68,11 +68,17 @@ class FindTheSquareViewModel @Inject constructor(
         }
     }
 
-    fun onSquareClicked(locus: Locus) = _gameState.update {
-        when {
-            it.status != GameState.Status.Playing -> it // ignore
-            locus == it.currentSquare -> it.copy(currentSquare = generateRandomLoci(), score = it.score + 1, showError = false) // Good job
-            else -> it.copy(showError = true) // Wrong answer
+    fun onSquareClicked(locus: Locus) {
+        val state = _gameState.value
+        if (state.status != GameState.Status.Playing) return
+        if (locus != state.currentSquare) {
+            _gameState.update { it.copy(showError = true) } // Wrong answer
+        } else {
+            var newSquare = generateRandomLoci()
+            while (newSquare == state.currentSquare) { // prevent the same square from showing up twice in a row
+                newSquare = generateRandomLoci()
+            }
+            _gameState.update { it.copy(currentSquare = newSquare, score = it.score + 1, showError = false) } // Good job
         }
     }
 
