@@ -35,6 +35,7 @@ class SinglePlaySession(
 
     fun reset() {
         _state.update { SingleSessionState() }
+        intentChannel.flush()
     }
 
     fun reportError(message: String?) {
@@ -78,6 +79,7 @@ class SinglePlaySession(
                 }
             }
         } catch (e: CancellationException) {
+            _state.update { it.copy(status = SingleSessionState.Status.GameOver, boardState = session.clear(), isAnimating = false) }
             throw e
         } catch (e: Exception) {
             _state.update { it.copy(status = SingleSessionState.Status.Failed, isAnimating = false, errorMessage = e.message) }
@@ -92,7 +94,6 @@ class SinglePlaySession(
             return IntentOutcome.Continue
         }
         return when (intent) {
-            is PlayIntent.ExpireTime -> IntentOutcome.End
             is PlayIntent.SessionFinished -> IntentOutcome.GameOver
             is PlayIntent.SessionFailed -> IntentOutcome.GameOver
             is PlayIntent.SelectSquare -> onMove(session, session.onClick(intent.selection))

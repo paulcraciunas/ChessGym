@@ -31,7 +31,6 @@ class PlaySession(
     private val currentSession = createSingleSession()
     private val orchestrator = MutableStateFlow(OrchestratorState())
     private val resumeChannel = Channel<Unit>(capacity = Channel.CONFLATED)
-    private var timerExpired = false
 
     fun interface OnComplete {
         suspend operator fun invoke(onCompleteState: PlaySessionState)
@@ -76,16 +75,15 @@ class PlaySession(
 
     private suspend fun CoroutineScope.runSessions() {
         startRun()
-        val timerJob: Job = launchTimer()
-        try {
-            sessions().collect { boardSession ->
-                if (orchestrator.value.status != PlaySessionState.Status.Playing) {
-                    orchestrator.update { it.copy(status = PlaySessionState.Status.Playing) }
-                }
+        val sessionJob = launch {
+            try {
+                sessions().collect { boardSession ->
+                    if (orchestrator.value.status != PlaySessionState.Status.Playing) {
+                        orchestrator.update { it.copy(status = PlaySessionState.Status.Playing) }
+                    }
 
-                currentSession.run(boardSession)
+                    currentSession.run(boardSession)
 
-                if (!timerExpired) {
                     onSessionOver(boardSession)
                     if (shouldEndRun(currentSession.state.value.boardState.outcome)) {
                         throw EndSessions()
@@ -97,17 +95,13 @@ class PlaySession(
                         resumeChannel.receive()
                     }
                 }
-                if (timerExpired) { // this is NOT redundant! there are suspend calls in the previous check
-                    throw EndSessions()
-                }
-            }
-        } catch (_: EndSessions) { // No-Op. We set status to Ended in finally anyway
-        } finally {
-            timerJob.cancel()
-            // Natural loop completion (source exhausted) — only if we didn't already end via EndSessions signal
-            if (orchestrator.value.status != PlaySessionState.Status.Ended) {
-                orchestrator.update { it.copy(status = PlaySessionState.Status.Ended, showSummary = true) }
-            }
+            } catch (_: EndSessions) {} // No-Op. We set status to Ended anyway
+        }
+        val timerJob = launchTimer(sessionJob)
+        sessionJob.join()
+        timerJob.cancel()
+        if (orchestrator.value.status != PlaySessionState.Status.Ended) {
+            orchestrator.update { it.copy(status = PlaySessionState.Status.Ended, showSummary = true) }
         }
     }
 
@@ -116,11 +110,12 @@ class PlaySession(
     }
 
     private fun startRun() {
-        timerExpired = false
         currentSession.reset()
         orchestrator.value = OrchestratorState(
             status = PlaySessionState.Status.Loading,
+            showSummary = false,
             remainingTimeMs = config.timed?.durationInMs ?: 0L,
+            errorMessage = null,
         )
     }
 
@@ -140,7 +135,7 @@ class PlaySession(
         ),
     )
 
-    private fun CoroutineScope.launchTimer(): Job = launch {
+    private fun CoroutineScope.launchTimer(sessionJob: Job): Job = launch {
         val timed = config.timed ?: return@launch
         if (timed.mode == PlaySessionConfiguration.TimedMode.StartOnClick) {
             currentSession.state.first { it.status == SingleSessionState.Status.Playing }
@@ -150,9 +145,7 @@ class PlaySession(
                 val totalMs = (remainder.seconds * 1000L) + remainder.millis
                 orchestrator.update { it.copy(remainingTimeMs = totalMs) }
                 if (!remainder.isPositive) {
-                    timerExpired = true
-                    currentSession.accept(PlayIntent.ExpireTime)
-                    resumeChannel.trySend(Unit)
+                    sessionJob.cancel()
                 }
             }
     }

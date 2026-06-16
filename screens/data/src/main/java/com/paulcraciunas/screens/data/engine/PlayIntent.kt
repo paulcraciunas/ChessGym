@@ -17,7 +17,6 @@ sealed class PlayIntent(internal val blockedByAnimation: Boolean) {
         val phase: AnimationPhase,
     ) : PlayIntent(blockedByAnimation = false)
 
-    internal data object ExpireTime : PlayIntent(blockedByAnimation = false)
     internal data object SessionFinished : PlayIntent(blockedByAnimation = false)
     internal data object SessionFailed : PlayIntent(blockedByAnimation = false)
 
