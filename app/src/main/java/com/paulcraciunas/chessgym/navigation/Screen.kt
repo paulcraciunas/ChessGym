@@ -29,7 +29,7 @@ sealed class Screen {
     data object FindTheSquare : Screen()
 
     @Serializable
-    data object MoveThePiece : Screen()
+    data object KnightPath : Screen()
 
     @Serializable
     data object BlindMode : Screen()
@@ -41,7 +41,7 @@ sealed class Screen {
     data object Clock : Screen()
 
     @Serializable
-    data class Analysis(val fen: String? = null, val firstMove: String? = null) : Screen()
+    data class Analysis(val puzzleId: Int? = null) : Screen()
 
     @Serializable
     data object ImportGame : Screen()

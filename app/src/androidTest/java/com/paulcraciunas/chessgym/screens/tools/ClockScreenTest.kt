@@ -1,9 +1,6 @@
 package com.paulcraciunas.chessgym.screens.tools
 
 import com.paulcraciunas.chessgym.base.BaseUiTest
-import com.paulcraciunas.chessgym.dsl.Given
-import com.paulcraciunas.chessgym.dsl.Then
-import com.paulcraciunas.chessgym.dsl.When
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
 import org.junit.Test
@@ -104,8 +101,7 @@ internal class ClockScreenTest : BaseUiTest() {
         When.clockScreen.tapBlack()
         Then.clockScreen.isInPlayingPhase()
 
-        Given.clock.expireWhiteTimer()
-        When.compose.waitForIdle()
+        When.clock.advanceMinutes(DEFAULT_MINUTES)
 
         Then.clockScreen
             .isInFinishedPhase()
@@ -116,11 +112,9 @@ internal class ClockScreenTest : BaseUiTest() {
     fun GIVEN_playing_phase_WHEN_black_timer_expires_THEN_shows_finished() {
         navigateToClock()
         When.clockScreen.tapWhite()
-        When.clockScreen.tapWhite()
         Then.clockScreen.isInPlayingPhase()
 
-        Given.clock.expireBlackTimer()
-        When.compose.waitForIdle()
+        When.clock.advanceMinutes(DEFAULT_MINUTES)
 
         Then.clockScreen
             .isInFinishedPhase()
@@ -131,13 +125,11 @@ internal class ClockScreenTest : BaseUiTest() {
     fun GIVEN_finished_phase_WHEN_new_game_THEN_returns_to_setup() {
         navigateToClock()
         When.clockScreen.tapWhite()
-        When.clockScreen.tapBlack()
-        Given.clock.expireWhiteTimer()
-        When.compose.waitForIdle()
+        When.clock.advanceMinutes(DEFAULT_MINUTES)
+
         Then.clockScreen.isInFinishedPhase()
 
         When.clockScreen.newGame()
-
         Then.clockScreen.isInSetupPhase()
     }
 
@@ -172,8 +164,12 @@ internal class ClockScreenTest : BaseUiTest() {
     }
 
     private fun navigateToClock() {
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToTools()
         When.toolsDashboard.openClock()
+    }
+
+    companion object {
+        const val DEFAULT_MINUTES = 25 // big enough, just in case
     }
 }

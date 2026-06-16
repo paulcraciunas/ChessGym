@@ -120,7 +120,7 @@
     <string name="user_stat_high_score_blind_mode">Mejor modo ciego</string>
     <string name="user_stat_high_score_puzzle_streak">Mejor Puzzle Streak</string>
     <string name="user_stat_high_score_find_the_square">Mejor Encuentra la casilla</string>
-    <string name="user_stat_high_score_move_the_piece">Mejor Mueve la pieza</string>
+    <string name="user_stat_high_score_knight_path">Mejor Mueve la pieza</string>
     <!-- endregion -->
 
     <!-- region Loading -->
@@ -152,13 +152,12 @@
     <string name="loading_error_download_failed">Error de descarga. Por favor, comprueba tu conexión a internet e inténtalo de nuevo.</string>
     <string name="loading_error_decompression_failed">Error al descomprimir la base de datos. Por favor, inténtalo de nuevo.</string>
     <string name="loading_error_database_write_failed">Error al construir la base de datos. Por favor, inténtalo de nuevo.</string>
-    <string name="loading_error_permission">Permiso denegado. Por favor, activa las notificaciones para continuar.</string>
     <string name="loading_error_no_internet">Sin conexión a internet. Por favor, comprueba tu conexión e inténtalo de nuevo.</string>
     <string name="loading_error_not_enough_disk_space">No hay suficiente espacio en disco. Por favor, libera algo de espacio e inténtalo de nuevo.</string>
     <string name="loading_error_generic">Se ha producido un error. Por favor, inténtalo de nuevo.</string>
     <string name="loading_error_consent_required">Se requiere el consentimiento para informes de errores para continuar. Solo recopilamos datos técnicos de errores para mejorar la estabilidad de la app.</string>
     <string name="crash_consent_dialog_title">Ayúdanos a mejorar</string>
-    <string name="crash_consent_dialog_body">ChessGym utiliza informes de errores para detectar y corregir fallos de la aplicación. Estos datos se utilizan únicamente para identificar errores y mejorar la estabilidad de la app para todos los usuarios.\n\nNo se recopila información personal, datos de juego ni patrones de uso — solo detalles técnicos del error (como trazas de pila y modelo de dispositivo) cuando algo sale mal.\n\nPuedes cambiar esta configuración más adelante en la app.</string>
+    <string name="crash_consent_dialog_body">ChessGym utiliza informes de errores para detectar y corregir fallos de la aplicación. Estos datos se utilizan únicamente para identificar errores y mejorar la estabilidad de la app para todos los usuarios.\n\n&lt;b>No se recopila información personal, datos de juego ni patrones de uso&lt;/b> — solo detalles técnicos del error (como trazas de pila y modelo de dispositivo) cuando algo sale mal.\n\nPuedes cambiar esta configuración más adelante en la app.</string>
     <string name="loading_fact_eyebrow">¿Sabías que?</string>
     <string-array name="loading_fact_titles">
         <item>La Reina impotente</item>
@@ -310,18 +309,19 @@
     <!-- endregion -->
 
     <!-- region Move the Piece -->
-    <string name="boardvis_move_piece_title">Mueve la pieza</string>
-    <string name="boardvis_move_piece_description">Visualiza y realiza los movimientos correctos en el tablero</string>
-    <string name="boardvis_move_piece_training_mode">Modo entrenamiento</string>
-    <string name="boardvis_move_piece_moves_remaining">Movimientos restantes: %1$d</string>
-    <string name="boardvis_move_piece_rules">Mueve tu pieza sin aterrizar en una casilla atacada por el oponente. ¡Completa los movimientos requeridos para avanzar al siguiente nivel!</string>
-    <string name="boardvis_move_piece_captured">¡Capturada!</string>
+    <string name="boardvis_knight_path_title">Camino del Caballo</string>
+    <string name="boardvis_knight_path_description">Encuentra el camino más corto del Caballo hasta la casilla objetivo</string>
+    <string name="boardvis_knight_path_rules">Encuentra el camino más corto para que el Caballo llegue a la casilla objetivo. ¡Un error y se acaba el juego!</string>
+    <string name="boardvis_knight_path_captured">¡Capturada!</string>
+    <string name="boardvis_knight_path_wrong_move">¡Movimiento incorrecto!</string>
     <!-- endregion -->
 
     <!-- region Settings -->
     <string name="settings_title">Configuración</string>
     <string name="settings_section_general">General</string>
     <string name="settings_section_ui">Apariencia</string>
+    <string name="settings_sound">Sonido</string>
+    <string name="settings_sound_description">Reproducir sonidos durante los juegos</string>
     <string name="settings_haptic_feedback">Vibración táctil</string>
     <string name="settings_haptic_feedback_description">Vibrar al interactuar</string>
     <string name="settings_auto_promote">Promoción automática</string>
@@ -332,6 +332,7 @@
     <string name="settings_show_borders_description">Mostrar coordenadas alrededor del tablero</string>
     <string name="settings_highlight_legal_moves">Resaltar movimientos legales</string>
     <string name="settings_highlight_legal_moves_description">Mostrar casillas disponibles cuando se selecciona una pieza</string>
+    <string name="settings_language">Idioma</string>
     <string name="settings_light_mode">Tema</string>
     <string name="settings_light_mode_light">Claro</string>
     <string name="settings_light_mode_dark">Oscuro</string>
@@ -348,8 +349,9 @@
     <string name="about_title">Acerca de</string>
     <string name="about_general_title">General</string>
     <string name="about_legal_title">Legal</string>
-    <string name="about_creator_title">El creador</string>
-    <string name="about_creator_description">ChessGym fue creado por Paul Mihai Craciunas, un ingeniero de Android de Londres, apasionado por el ajedrez, con la esperanza de ayudar a las personas en su camino de mejora.</string>
+    <string name="about_app_title">La App</string>
+    <string name="about_app_description">Hecho con ❤\uFE0F por Paul Craciunas.\t</string>
+    <string name="about_dedication_danya">Esta aplicación está respetuosamente dedicada a la memoria del Gran Maestro &lt;b>Daniel Naroditsky&lt;/b> (1995–2025), cuya pasión contagiosa, claridad inigualable y brillantes videos instructivos inspiraron a cientos de miles de mentes y reavivaron una alegría universal por el juego del ajedrez.</string>
     <string name="about_contact_title">Contacto</string>
     <string name="about_contact_description">Para consultas legales, oportunidades comerciales o cualquier otra consulta, ponte en contacto por correo electrónico.</string>
     <string name="about_contact_email">contact@chessgym.app</string>
@@ -365,7 +367,7 @@
     <string name="about_donate_medium">Sándwich</string>
     <string name="about_donate_large">Pizza</string>
     <string name="about_rate_title">Valora la app</string>
-    <string name="about_rate_description">¿Disfrutas ChessGym? Deja una valoración en la Play Store</string>
+    <string name="about_rate_description">¿Disfrutas ChessGym? Deja una valoración</string>
     <string name="about_libraries_title">Bibliotecas de código abierto</string>
     <string name="about_libraries_description">ChessGym está construido con las siguientes bibliotecas de código abierto:</string>
     <string name="about_privacy_policy_title">Política de privacidad</string>
@@ -385,6 +387,7 @@
     <string name="tools_mode_start">Iniciar herramienta</string>
     <string name="tools_clock_description">Cronometra tus partidas con controles configurables</string>
     <string name="tools_analysis_title">Análisis</string>
+    <string name="tools_analysis_flip_board">Girar tablero</string>
     <string name="tools_analysis_description">Analiza posiciones con el motor</string>
     <string name="tools_import_description">Importa una partida desde notación FEN o PGN</string>
     <!-- endregion -->
@@ -405,10 +408,10 @@
 
     <!-- region Import Game Screen -->
     <string name="import_game_title">Importar partida</string>
-    <string name="import_fen">FEN</string>
-    <string name="import_pgn">PGN</string>
-    <string name="import_dialog_title_fen">Importar FEN</string>
-    <string name="import_dialog_title_pgn">Importar PGN</string>
+    <string name="import_fen">Posición</string>
+    <string name="import_pgn">Partida</string>
+    <string name="import_dialog_title_fen">Importar posición</string>
+    <string name="import_dialog_title_pgn">Importar partida</string>
     <string name="import_dialog_hint_fen">Pega la cadena FEN aquí…</string>
     <string name="import_dialog_hint_pgn">Pega el texto PGN aquí…</string>
     <string name="import_dialog_confirm">Importar</string>
@@ -424,6 +427,7 @@
     <string name="blind_mode_title">Modo ciego</string>
     <string name="blind_mode_training_mode">Modo entrenamiento</string>
     <string name="blind_mode_training_description">Las partidas no afectarán tu puntuación</string>
+    <string name="blind_mode_rated_description">Modo con puntuación</string>
     <string name="blind_mode_play">Jugar</string>
     <string name="blind_mode_resign">Rendirse</string>
     <string name="blind_mode_reveal">Revelar</string>
@@ -441,21 +445,21 @@
     <string name="achievement_category_streak_sessions">Sesiones de racha</string>
     <string name="achievement_category_failed_puzzles_redeemed">Puzzles fallados redimidos</string>
     <string name="achievement_category_find_square_sessions">Sesiones de Encuentra la casilla</string>
-    <string name="achievement_category_move_piece_sessions">Sesiones de Mueve la pieza</string>
-    <string name="achievement_category_blind_mode_wins">El legado de Homero</string>
+    <string name="achievement_category_knight_path_sessions">Sesiones de Camino del Caballo</string>
+    <string name="achievement_category_blind_mode_wins">Victorias en modo ciego</string>
     <string name="achievement_category_rated_win_streak">Racha de victorias puntuadas</string>
     <string name="achievement_category_rating_climber">Escalador de puntuación</string>
-    <string name="achievement_category_blind_strategist">Estratega ciego</string>
-    <string name="achievement_category_rush_champion">Campeón del Rush</string>
-    <string name="achievement_category_streak_legend">Leyenda de la racha</string>
-    <string name="achievement_category_eagle_eye">Ojo de águila</string>
-    <string name="achievement_category_knights_path">Camino del caballo</string>
-    <string name="achievement_category_puzzle_addict">Adicto a los puzzles</string>
+    <string name="achievement_category_blind_strategist">Puntuación del modo ciego</string>
+    <string name="achievement_category_rush_champion">Puntuación máxima del Rush</string>
+    <string name="achievement_category_streak_legend">Puntuación máxima de la racha</string>
+    <string name="achievement_category_eagle_eye">Puntuación máxima de Encuentra la casilla</string>
+    <string name="achievement_category_knights_path">Puntuación máxima de Camino del Caballo</string>
+    <string name="achievement_category_puzzle_addict">Puzzles resueltos</string>
     <string name="achievement_category_time_invested">Tiempo invertido</string>
-    <string name="achievement_category_daily_grinder">Constancia diaria</string>
-    <string name="achievement_category_consistency_king">Rey de la constancia</string>
+    <string name="achievement_category_daily_grinder">Días consecutivos jugados</string>
+    <string name="achievement_category_consistency_king">Mayor cantidad de días consecutivos</string>
     <string name="achievement_category_board_vision">Visión del tablero</string>
-    <string name="achievement_category_rush_solver">Resolvedor del Rush</string>
+    <string name="achievement_category_rush_solver">Puzzles de Rush resueltos</string>
 
     <!-- Tier names: RATED_PUZZLES_SOLVED -->
     <string name="achievement_rated_puzzles_solved_one">Entusiasta del puzzle</string>
@@ -492,12 +496,12 @@
     <string name="achievement_find_square_sessions_four">Maestro de casillas</string>
     <string name="achievement_find_square_sessions_five">Gran maestro de casillas</string>
 
-    <!-- Tier names: MOVE_PIECE_SESSIONS -->
-    <string name="achievement_move_piece_sessions_one">Principiante de piezas</string>
-    <string name="achievement_move_piece_sessions_two">Movedor de piezas</string>
-    <string name="achievement_move_piece_sessions_three">Navegador de piezas</string>
-    <string name="achievement_move_piece_sessions_four">Maestro de piezas</string>
-    <string name="achievement_move_piece_sessions_five">Gran maestro de piezas</string>
+    <!-- Tier names: KNIGHT_PATH_SESSIONS -->
+    <string name="achievement_knight_path_sessions_one">Principiante de piezas</string>
+    <string name="achievement_knight_path_sessions_two">Movedor de piezas</string>
+    <string name="achievement_knight_path_sessions_three">Navegador de piezas</string>
+    <string name="achievement_knight_path_sessions_four">Maestro de piezas</string>
+    <string name="achievement_knight_path_sessions_five">Gran maestro de piezas</string>
 
     <!-- Tier names: BLIND_MODE_WINS -->
     <string name="achievement_blind_mode_wins_one">El aprendiz de Odín</string>
@@ -603,7 +607,7 @@
     <string name="achievement_desc_streak_sessions">Completa sesiones de Puzzle Streak para conseguir este logro</string>
     <string name="achievement_desc_failed_puzzles_redeemed">Reintenta y resuelve puzzles que hayas fallado previamente</string>
     <string name="achievement_desc_find_square_sessions">Juega sesiones de Encuentra la casilla para conseguir este logro</string>
-    <string name="achievement_desc_move_piece_sessions">Juega sesiones de Mueve la pieza para conseguir este logro</string>
+    <string name="achievement_desc_knight_path_sessions">Juega sesiones de Camino del Caballo para conseguir este logro</string>
     <string name="achievement_desc_blind_mode_wins">Gana partidas puntuadas en Modo ciego para conseguir este logro</string>
     <string name="achievement_desc_rated_win_streak">Gana puzzles puntuados consecutivos sin fallar</string>
     <string name="achievement_desc_rating_climber">Aumenta tu puntuación de puzzles para alcanzar nuevas alturas</string>
@@ -611,12 +615,12 @@
     <string name="achievement_desc_rush_champion">Consigue una puntuación máxima en Puzzle Rush</string>
     <string name="achievement_desc_streak_legend">Consigue una puntuación máxima en Puzzle Streak</string>
     <string name="achievement_desc_eagle_eye">Consigue una puntuación máxima en Encuentra la casilla</string>
-    <string name="achievement_desc_knights_path">Consigue una puntuación máxima en Mueve la pieza</string>
+    <string name="achievement_desc_knights_path">Consigue una puntuación máxima en Camino del Caballo</string>
     <string name="achievement_desc_puzzle_addict">Resuelve puzzles en todos los modos de juego</string>
     <string name="achievement_desc_time_invested">Dedica tiempo practicando en todos los modos de juego</string>
     <string name="achievement_desc_daily_grinder">Juega en días consecutivos para construir tu racha</string>
     <string name="achievement_desc_consistency_king">Consigue tu mejor racha diaria consecutiva</string>
-    <string name="achievement_desc_board_vision">Completa sesiones de Encuentra la casilla y Mueve la pieza</string>
+    <string name="achievement_desc_board_vision">Completa sesiones de Encuentra la casilla y Camino del Caballo</string>
     <string name="achievement_desc_rush_solver">Resuelve puzzles durante las sesiones de Puzzle Rush</string>
 
     <!-- Achievement UI -->

@@ -14,14 +14,15 @@ import androidx.compose.ui.unit.dp
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.boardvis.squares.vm.FindTheSquareUiState
+import com.paulcraciunas.screens.common.AnimatedControls
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
-import com.paulcraciunas.screens.data.SideSelection
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.design.components.SpacerSize
 import com.paulcraciunas.screens.common.design.components.Title
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
+import com.paulcraciunas.screens.data.SideSelection
 
 @Composable
 internal fun FindTheSquareScreenContents(
@@ -49,24 +50,29 @@ internal fun FindTheSquareScreenContents(
             }
         }
         ChessGymSpacer(size = SpacerSize.XXLARGE)
-        when (state) {
-            is FindTheSquareUiState.Setup -> {
-                FindTheSquareControls(
-                    selectedSide = state.selectedSide,
-                    isPlaying = false,
-                    onSideSelected = onSideSelected,
-                    onPlayClicked = onPlayClicked
-                )
-            }
-            is FindTheSquareUiState.Playing -> PlayingControls(score = state.score)
-            is FindTheSquareUiState.GameOver -> {
-                GameSummary(
-                    score = state.score,
-                    isNewHighScore = state.isNewHighScore,
-                    previousHighScore = state.previousHighScore,
-                    onPlayAgain = onPlayAgain,
-                    modifier = Modifier.padding(Design.dimensions.spacing.xxl)
-                )
+        AnimatedControls(
+            targetState = state,
+            contentKey = { state -> state::class },
+        ) { uiState ->
+            when (uiState) {
+                is FindTheSquareUiState.Setup -> {
+                    FindTheSquareControls(
+                        selectedSide = uiState.selectedSide,
+                        isPlaying = false,
+                        onSideSelected = onSideSelected,
+                        onPlayClicked = onPlayClicked
+                    )
+                }
+                is FindTheSquareUiState.Playing -> PlayingControls(score = uiState.score)
+                is FindTheSquareUiState.GameOver -> {
+                    GameSummary(
+                        score = uiState.score,
+                        isNewHighScore = uiState.isNewHighScore,
+                        previousHighScore = uiState.previousHighScore,
+                        onPlayAgain = onPlayAgain,
+                        modifier = Modifier.padding(Design.dimensions.spacing.xxl)
+                    )
+                }
             }
         }
     }

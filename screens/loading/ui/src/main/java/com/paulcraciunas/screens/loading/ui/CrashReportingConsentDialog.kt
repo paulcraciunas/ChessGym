@@ -1,16 +1,14 @@
 package com.paulcraciunas.screens.loading.ui
 
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.design.components.ChessGymDialog
 import com.paulcraciunas.screens.common.design.components.DialogIconTone
-import com.paulcraciunas.screens.common.theme.ChessGymTheme
+import com.paulcraciunas.screens.common.design.components.annotatedTextResource
 
 @Composable
 fun CrashReportingConsentDialog(
@@ -29,7 +27,7 @@ fun CrashReportingConsentDialog(
             )
         },
         body = {
-            Message(text = stringResource(R.string.crash_consent_dialog_body))
+            Message(text = annotatedTextResource(R.string.crash_consent_dialog_body))
         },
         buttons = {
             Paired(
@@ -40,16 +38,4 @@ fun CrashReportingConsentDialog(
             )
         },
     )
-}
-
-@Preview("Crash Reporting Consent Dialog")
-@Preview("Crash Reporting Consent Dialog (dark)", uiMode = UI_MODE_NIGHT_YES)
-@Composable
-private fun CrashReportingConsentDialogPreview() {
-    ChessGymTheme {
-        CrashReportingConsentDialog(
-            onAccepted = {},
-            onDeclined = {}
-        )
-    }
 }

@@ -1,9 +1,6 @@
 package com.paulcraciunas.chessgym.screens.tools
 
 import com.paulcraciunas.chessgym.base.BaseUiTest
-import com.paulcraciunas.chessgym.dsl.Given
-import com.paulcraciunas.chessgym.dsl.Then
-import com.paulcraciunas.chessgym.dsl.When
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
 import org.junit.Test
@@ -17,7 +14,7 @@ internal class ImportGameScreenTest : BaseUiTest() {
         Given.settings.puzzlesDownloaded()
         Given.user.isDefault()
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToTools()
         When.toolsDashboard.openImportGame()
     }

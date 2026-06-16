@@ -1,5 +1,6 @@
 package com.paulcraciunas.screens.common.controls
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -7,39 +8,31 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.global.resources.R.drawable
 import com.paulcraciunas.screens.common.design.components.ChessGymChip
+import com.paulcraciunas.screens.common.design.components.ChipStyle
 import com.paulcraciunas.screens.common.design.components.ChipTone
+import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
+import com.paulcraciunas.screens.data.RemainingTime
 
 @Composable
 fun TimerDisplay(
-    seconds: Int,
-    modifier: Modifier = Modifier
+    remainingTime: RemainingTime,
+    modifier: Modifier = Modifier,
 ) {
-    val tone = when {
-        seconds <= 20 -> ChipTone.Failed
-        seconds <= 60 -> ChipTone.Accent
-        else -> ChipTone.Soft
-    }
-
     ChessGymChip(
-        text = formatTime(seconds),
-        tone = tone,
+        text = remainingTime.value,
+        tone = if (remainingTime.danger) ChipTone.Failed else ChipTone.Accent,
+        style = ChipStyle.Timer,
         leadingIcon = ImageVector.vectorResource(drawable.clock_icon),
-        modifier = modifier,
+        modifier = modifier.padding(Design.dimensions.spacing.xl),
     )
-}
-
-private fun formatTime(totalSeconds: Int): String {
-    val minutes = totalSeconds / 60
-    val seconds = totalSeconds % 60
-    return "%02d:%02d".format(minutes, seconds)
 }
 
 @Preview
 @Composable
 private fun TimerDisplayNormalPreview() {
     ChessGymTheme {
-        TimerDisplay(seconds = 45)
+        TimerDisplay(remainingTime = RemainingTime(value = "45.0", danger = false))
     }
 }
 
@@ -47,7 +40,7 @@ private fun TimerDisplayNormalPreview() {
 @Composable
 private fun TimerDisplayWarningPreview() {
     ChessGymTheme {
-        TimerDisplay(seconds = 25)
+        TimerDisplay(remainingTime = RemainingTime(value = "02:42", danger = false))
     }
 }
 
@@ -55,6 +48,6 @@ private fun TimerDisplayWarningPreview() {
 @Composable
 private fun TimerDisplayCriticalPreview() {
     ChessGymTheme {
-        TimerDisplay(seconds = 5)
+        TimerDisplay(remainingTime = RemainingTime(value = "15.2", danger = true))
     }
 }

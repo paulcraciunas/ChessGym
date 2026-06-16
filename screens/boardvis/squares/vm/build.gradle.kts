@@ -11,6 +11,8 @@ androidLibrary {
 dependencies {
     implementation(project(":domain:api"))
     implementation(project(":game:logic:api"))
+    implementation(project(":global:qualifiers"))
+    implementation(project(":global:sounds"))
     implementation(project(":user:api"))
     implementation(project(":screens:data"))
 

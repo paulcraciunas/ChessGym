@@ -7,5 +7,5 @@ data class BoardVisDashboardUiState(
 
 sealed class BoardVisMode {
     data object FindTheSquare : BoardVisMode()
-    data object MoveThePiece : BoardVisMode()
+    data object KnightPath : BoardVisMode()
 }

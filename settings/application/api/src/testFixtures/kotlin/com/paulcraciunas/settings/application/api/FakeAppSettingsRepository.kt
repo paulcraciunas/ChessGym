@@ -14,7 +14,7 @@ class FakeAppSettingsRepository : AppSettingsRepository {
             totalPuzzleCount = 0,
             maxPuzzleRating = 0,
             minPuzzleRating = 0,
-            playSoundOnMove = true,
+            playSounds = true,
             lightMode = AppSettings.LightMode.System,
             autoPromote = true,
             autoNextPuzzle = false,
@@ -45,8 +45,8 @@ class FakeAppSettingsRepository : AppSettingsRepository {
         _appSettings.value = _appSettings.value.copy(minPuzzleRating = minRating)
     }
 
-    override suspend fun updatePlaySoundOnMove(enabled: Boolean) {
-        _appSettings.value = _appSettings.value.copy(playSoundOnMove = enabled)
+    override suspend fun updatePlaySound(enabled: Boolean) {
+        _appSettings.value = _appSettings.value.copy(playSounds = enabled)
     }
 
     override suspend fun updateLightMode(mode: AppSettings.LightMode) {
@@ -109,7 +109,7 @@ class FakeAppSettingsRepository : AppSettingsRepository {
             totalPuzzleCount = 1000,
             maxPuzzleRating = 2500,
             minPuzzleRating = 400,
-            playSoundOnMove = true,
+            playSounds = true,
             lightMode = AppSettings.LightMode.System,
             autoPromote = true,
             autoNextPuzzle = false,

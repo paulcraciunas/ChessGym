@@ -23,7 +23,7 @@ internal class ScriptedOpponentTest {
             puzzle.playNextMove()
             puzzle.play(Locus.e7, Locus.e5)
 
-            val underTest = ScriptedOpponent().apply { load(puzzle) }
+            val underTest = ScriptedOpponent(puzzle)
 
             assertTrue(underTest.canPlay())
         }
@@ -35,7 +35,7 @@ internal class ScriptedOpponentTest {
             puzzle.playNextMove()
             puzzle.resign()
 
-            val underTest = ScriptedOpponent().apply { load(puzzle) }
+            val underTest = ScriptedOpponent(puzzle)
 
             assertFalse(underTest.canPlay())
         }
@@ -50,7 +50,7 @@ internal class ScriptedOpponentTest {
             puzzle.playNextMove()
             puzzle.play(Locus.e7, Locus.e5)
 
-            val underTest = ScriptedOpponent().apply { load(puzzle) }
+            val underTest = ScriptedOpponent(puzzle)
             val result = underTest.playNext()
 
             assertTrue(result)
@@ -64,7 +64,7 @@ internal class ScriptedOpponentTest {
             puzzle.playNextMove()
             puzzle.resign()
 
-            val underTest = ScriptedOpponent().apply { load(puzzle) }
+            val underTest = ScriptedOpponent(puzzle)
             val result = underTest.playNext()
 
             assertFalse(result)
@@ -77,7 +77,7 @@ internal class ScriptedOpponentTest {
             puzzle.playNextMove()
             puzzle.play(Locus.d7, Locus.d5)
 
-            val underTest = ScriptedOpponent().apply { load(puzzle) }
+            val underTest = ScriptedOpponent(puzzle)
             val result = underTest.playNext()
 
             assertFalse(result)
@@ -90,7 +90,7 @@ internal class ScriptedOpponentTest {
             puzzle.start()
             puzzle.playNextMove()
 
-            val underTest = ScriptedOpponent().apply { load(puzzle) }
+            val underTest = ScriptedOpponent(puzzle)
 
             puzzle.play(Locus.e7, Locus.e5)
             assertTrue(underTest.playNext())
@@ -105,13 +105,13 @@ internal class ScriptedOpponentTest {
     internal inner class Lifecycle {
         @Test
         fun `GIVEN ScriptedOpponent WHEN prepare THEN completes without error`() = runTest {
-            val underTest = ScriptedOpponent().apply { load(buildPuzzle().also { it.start(); it.playNextMove() }) }
-            underTest.prepare()
+            val underTest = ScriptedOpponent(buildPuzzle().also { it.start(); it.playNextMove() })
+            underTest.init()
         }
 
         @Test
         fun `GIVEN ScriptedOpponent WHEN shutdown THEN completes without error`() = runTest {
-            val underTest = ScriptedOpponent().apply { load(buildPuzzle().also { it.start(); it.playNextMove() }) }
+            val underTest = ScriptedOpponent(buildPuzzle().also { it.start(); it.playNextMove() })
             underTest.shutdown()
         }
     }
@@ -130,7 +130,7 @@ internal class ScriptedOpponentTest {
 
         @Test
         fun `GIVEN NoOpOpponent WHEN prepare THEN completes without error`() = runTest {
-            NoOpOpponent.prepare()
+            NoOpOpponent.init()
         }
 
         @Test

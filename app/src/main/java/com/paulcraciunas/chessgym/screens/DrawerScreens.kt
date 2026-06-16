@@ -33,6 +33,7 @@ import com.paulcraciunas.screens.signin.vm.SignInViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import com.paulcraciunas.global.resources.R as GlobalR
+import com.paulcraciunas.chessgym.BuildConfig
 
 @Composable
 internal fun SignIn(tabNavController: NavHostController) {
@@ -122,22 +123,13 @@ internal fun AboutDetail(
     AboutDetailScreen(
         section = section,
         onNavigateBack = onNavigateBack,
+        appVersion = BuildConfig.APP_VERSION,
         libraries = aboutState.libraries,
-        onEmailClicked = resolveEmailUri(section)?.let { emailUri ->
-            {
-                val intent = Intent(Intent.ACTION_SENDTO).apply {
-                    data = emailUri.toUri()
-                }
-                context.startActivity(intent)
-            }
+        onEmailClicked = { emailUri ->
+            val intent = Intent(Intent.ACTION_SENDTO).apply { data = emailUri.toUri() }
+            context.startActivity(intent)
         },
     )
-}
-
-private fun resolveEmailUri(section: AboutSection): String? = when (section) {
-    AboutSection.CONTACT -> "mailto:contact@chessgym.app"
-    AboutSection.FEEDBACK -> "mailto:feedback@chessgym.app"
-    else -> null
 }
 
 private fun openPlayStoreDirectly(context: Context) {

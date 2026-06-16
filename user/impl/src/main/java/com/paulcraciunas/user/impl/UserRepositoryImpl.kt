@@ -101,7 +101,7 @@ class UserRepositoryImpl @Inject constructor(
         puzzleRush = maxOf(local.puzzleRush, remote.puzzleRush),
         puzzleStreak = maxOf(local.puzzleStreak, remote.puzzleStreak),
         findTheSquare = maxOf(local.findTheSquare, remote.findTheSquare),
-        moveThePiece = maxOf(local.moveThePiece, remote.moveThePiece),
+        knightPath = maxOf(local.knightPath, remote.knightPath),
         blindMode = maxOf(local.blindMode, remote.blindMode),
     )
 
@@ -117,7 +117,7 @@ class UserRepositoryImpl @Inject constructor(
         streakSessions = maxOf(local.streakSessions, remote.streakSessions),
         failedPuzzlesRedeemed = maxOf(local.failedPuzzlesRedeemed, remote.failedPuzzlesRedeemed),
         findSquareSessions = maxOf(local.findSquareSessions, remote.findSquareSessions),
-        moveThePieceSessions = maxOf(local.moveThePieceSessions, remote.moveThePieceSessions),
+        knightPathSessions = maxOf(local.knightPathSessions, remote.knightPathSessions),
         blindModeWins = maxOf(local.blindModeWins, remote.blindModeWins),
         rushPuzzlesSolved = maxOf(local.rushPuzzlesSolved, remote.rushPuzzlesSolved),
     )

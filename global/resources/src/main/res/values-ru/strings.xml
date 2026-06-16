@@ -128,7 +128,7 @@
     <string name="user_stat_high_score_blind_mode">Лучший режим вслепую</string>
     <string name="user_stat_high_score_puzzle_streak">Лучшая серия задач</string>
     <string name="user_stat_high_score_find_the_square">Лучший поиск клетки</string>
-    <string name="user_stat_high_score_move_the_piece">Лучший ход фигурой</string>
+    <string name="user_stat_high_score_knight_path">Лучший ход фигурой</string>
     <!-- endregion -->
 
     <!-- region Loading -->
@@ -160,13 +160,12 @@
     <string name="loading_error_download_failed">Загрузка не удалась. Проверьте подключение к интернету и попробуйте снова.</string>
     <string name="loading_error_decompression_failed">Не удалось распаковать базу данных. Пожалуйста, попробуйте снова.</string>
     <string name="loading_error_database_write_failed">Не удалось создать базу данных. Пожалуйста, попробуйте снова.</string>
-    <string name="loading_error_permission">Отказано в разрешении. Пожалуйста, включите уведомления для продолжения.</string>
     <string name="loading_error_no_internet">Нет подключения к интернету. Проверьте соединение и попробуйте снова.</string>
     <string name="loading_error_not_enough_disk_space">Недостаточно места на диске. Освободите место и попробуйте снова.</string>
     <string name="loading_error_generic">Произошла ошибка. Пожалуйста, попробуйте снова.</string>
     <string name="loading_error_consent_required">Для продолжения необходимо согласие на отчёты об ошибках. Мы собираем только технические данные о сбоях для улучшения стабильности приложения.</string>
     <string name="crash_consent_dialog_title">Помогите нам улучшить приложение</string>
-    <string name="crash_consent_dialog_body">ChessGym использует отчёты об ошибках для обнаружения и исправления сбоев приложения. Эти данные используются исключительно для выявления сбоев и улучшения стабильности приложения для всех пользователей.\n\nЛичная информация, игровые данные и шаблоны использования не собираются — только технические данные о сбоях (такие как трассировки стека и модель устройства), когда что-то идёт не так.\n\nВы можете изменить этот параметр позже в приложении.</string>
+    <string name="crash_consent_dialog_body">ChessGym использует отчёты об ошибках для обнаружения и исправления сбоев приложения. Эти данные используются исключительно для выявления сбоев и улучшения стабильности приложения для всех пользователей.\n\n&lt;b>Личная информация, игровые данные и шаблоны использования не собираются&lt;/b> — только технические данные о сбоях (такие как трассировки стека и модель устройства), когда что-то идёт не так.\n\nВы можете изменить этот параметр позже в приложении.</string>
     <string name="loading_fact_eyebrow">Знаете ли вы?</string>
     <string-array name="loading_fact_titles">
         <item>Беспомощный ферзь</item>
@@ -320,18 +319,19 @@
     <!-- endregion -->
 
     <!-- region Move the Piece -->
-    <string name="boardvis_move_piece_title">Ходить фигурой</string>
-    <string name="boardvis_move_piece_description">Визуализируйте и делайте правильные ходы на доске</string>
-    <string name="boardvis_move_piece_training_mode">Режим тренировки</string>
-    <string name="boardvis_move_piece_moves_remaining">Осталось ходов: %1$d</string>
-    <string name="boardvis_move_piece_rules">Ходите фигурой, не попадая на поля, атакованные соперником. Выполните необходимые ходы для перехода на следующий уровень!</string>
-    <string name="boardvis_move_piece_captured">Захвачена!</string>
+    <string name="boardvis_knight_path_title">Путь коня</string>
+    <string name="boardvis_knight_path_description">Найдите кратчайший путь коня до целевого поля</string>
+    <string name="boardvis_knight_path_rules">Найдите кратчайший путь коня до целевого поля. Одна ошибка — и игра окончена!</string>
+    <string name="boardvis_knight_path_captured">Захвачена!</string>
+    <string name="boardvis_knight_path_wrong_move">Неверный ход!</string>
     <!-- endregion -->
 
     <!-- region Settings -->
     <string name="settings_title">Настройки</string>
     <string name="settings_section_general">Общее</string>
     <string name="settings_section_ui">Внешний вид</string>
+    <string name="settings_sound">Звук</string>
+    <string name="settings_sound_description">Воспроизводить звуки во время игр</string>
     <string name="settings_haptic_feedback">Тактильная отдача</string>
     <string name="settings_haptic_feedback_description">Вибрация при взаимодействии</string>
     <string name="settings_auto_promote">Автопревращение</string>
@@ -342,6 +342,7 @@
     <string name="settings_show_borders_description">Отображать координаты вокруг доски</string>
     <string name="settings_highlight_legal_moves">Подсвечивать допустимые ходы</string>
     <string name="settings_highlight_legal_moves_description">Показывать доступные клетки при выборе фигуры</string>
+    <string name="settings_language">Язык</string>
     <string name="settings_light_mode">Тема</string>
     <string name="settings_light_mode_light">Светлая</string>
     <string name="settings_light_mode_dark">Тёмная</string>
@@ -358,8 +359,9 @@
     <string name="about_title">О приложении</string>
     <string name="about_general_title">Общее</string>
     <string name="about_legal_title">Правовая информация</string>
-    <string name="about_creator_title">Создатель</string>
-    <string name="about_creator_description">ChessGym был создан Paul Mihai Craciunas, Android-инженером из Лондона, увлечённым шахматами, стремящимся помочь людям на пути к совершенствованию.</string>
+    <string name="about_app_title">Приложение</string>
+    <string name="about_app_description">Сделано с ❤\uFE0F — Paul Craciunas.\t</string>
+    <string name="about_dedication_danya">Это приложение с уважением посвящено памяти гроссмейстера &lt;b>Даниэля Народицкого&lt;/b> (1995–2025), чья заразительная страсть, непревзойдённая ясность и блестящие обучающие видео вдохновили сотни тысяч умов и возродили всеобщую радость от игры в шахматы.</string>
     <string name="about_contact_title">Контакты</string>
     <string name="about_contact_description">По юридическим вопросам, коммерческим предложениям или другим запросам, пожалуйста, свяжитесь с нами по электронной почте.</string>
     <string name="about_contact_email">contact@chessgym.app</string>
@@ -375,7 +377,7 @@
     <string name="about_donate_medium">Бутерброд</string>
     <string name="about_donate_large">Пицца</string>
     <string name="about_rate_title">Оценить приложение</string>
-    <string name="about_rate_description">Нравится ChessGym? Оставьте оценку в Play Store</string>
+    <string name="about_rate_description">Нравится ChessGym? Оставьте оценку</string>
     <string name="about_libraries_title">Библиотеки с открытым исходным кодом</string>
     <string name="about_libraries_description">ChessGym построен с использованием следующих библиотек с открытым исходным кодом:</string>
     <string name="about_privacy_policy_title">Политика конфиденциальности</string>
@@ -395,6 +397,7 @@
     <string name="tools_mode_start">Запустить инструмент</string>
     <string name="tools_clock_description">Отсчитывайте время партий с настраиваемыми параметрами</string>
     <string name="tools_analysis_title">Анализ</string>
+    <string name="tools_analysis_flip_board">Перевернуть доску</string>
     <string name="tools_analysis_description">Анализируйте позиции с помощью движка</string>
     <string name="tools_import_description">Импортировать партию из нотации FEN или PGN</string>
     <!-- endregion -->
@@ -415,10 +418,10 @@
 
     <!-- region Import Game Screen -->
     <string name="import_game_title">Импорт партии</string>
-    <string name="import_fen">FEN</string>
-    <string name="import_pgn">PGN</string>
-    <string name="import_dialog_title_fen">Импорт FEN</string>
-    <string name="import_dialog_title_pgn">Импорт PGN</string>
+    <string name="import_fen">Позиция</string>
+    <string name="import_pgn">Партия</string>
+    <string name="import_dialog_title_fen">Импорт Позиции</string>
+    <string name="import_dialog_title_pgn">Импорт партии</string>
     <string name="import_dialog_hint_fen">Вставьте строку FEN здесь…</string>
     <string name="import_dialog_hint_pgn">Вставьте текст PGN здесь…</string>
     <string name="import_dialog_confirm">Импортировать</string>
@@ -434,6 +437,7 @@
     <string name="blind_mode_title">Режим вслепую</string>
     <string name="blind_mode_training_mode">Режим тренировки</string>
     <string name="blind_mode_training_description">Партии не влияют на рейтинг</string>
+    <string name="blind_mode_rated_description">Рейтинговый режим</string>
     <string name="blind_mode_play">Играть</string>
     <string name="blind_mode_resign">Сдаться</string>
     <string name="blind_mode_reveal">Показать</string>
@@ -451,21 +455,21 @@
     <string name="achievement_category_streak_sessions">Сессии серий</string>
     <string name="achievement_category_failed_puzzles_redeemed">Исправленные нерешённые задачи</string>
     <string name="achievement_category_find_square_sessions">Сессии поиска клетки</string>
-    <string name="achievement_category_move_piece_sessions">Сессии хода фигурой</string>
-    <string name="achievement_category_blind_mode_wins">Наследие Гомера</string>
+    <string name="achievement_category_knight_path_sessions">Сессии «Путь коня»</string>
+    <string name="achievement_category_blind_mode_wins">Победы в режиме вслепую</string>
     <string name="achievement_category_rated_win_streak">Серия побед в рейтинге</string>
     <string name="achievement_category_rating_climber">Покоритель рейтинга</string>
-    <string name="achievement_category_blind_strategist">Слепой стратег</string>
-    <string name="achievement_category_rush_champion">Чемпион раша</string>
-    <string name="achievement_category_streak_legend">Легенда серий</string>
-    <string name="achievement_category_eagle_eye">Орлиный взор</string>
-    <string name="achievement_category_knights_path">Путь коня</string>
-    <string name="achievement_category_puzzle_addict">Поклонник задач</string>
+    <string name="achievement_category_blind_strategist">Рейтинг режима вслепую</string>
+    <string name="achievement_category_rush_champion">Рекорд раша</string>
+    <string name="achievement_category_streak_legend">Рекорд серий</string>
+    <string name="achievement_category_eagle_eye">Рекорд поиска клетки</string>
+    <string name="achievement_category_knights_path">Рекорд «Путь коня»</string>
+    <string name="achievement_category_puzzle_addict">Решённые задачи</string>
     <string name="achievement_category_time_invested">Вложенное время</string>
-    <string name="achievement_category_daily_grinder">Ежедневный игрок</string>
-    <string name="achievement_category_consistency_king">Король постоянства</string>
+    <string name="achievement_category_daily_grinder">Дней игры подряд</string>
+    <string name="achievement_category_consistency_king">Максимум дней подряд</string>
     <string name="achievement_category_board_vision">Видение доски</string>
-    <string name="achievement_category_rush_solver">Решатель раша</string>
+    <string name="achievement_category_rush_solver">Решённые задачи раша</string>
 
     <!-- Tier names: RATED_PUZZLES_SOLVED -->
     <string name="achievement_rated_puzzles_solved_one">Любитель задач</string>
@@ -502,12 +506,12 @@
     <string name="achievement_find_square_sessions_four">Мастер клеток</string>
     <string name="achievement_find_square_sessions_five">Гроссмейстер клеток</string>
 
-    <!-- Tier names: MOVE_PIECE_SESSIONS -->
-    <string name="achievement_move_piece_sessions_one">Начинающий ходок</string>
-    <string name="achievement_move_piece_sessions_two">Двигатель фигур</string>
-    <string name="achievement_move_piece_sessions_three">Навигатор фигур</string>
-    <string name="achievement_move_piece_sessions_four">Мастер фигур</string>
-    <string name="achievement_move_piece_sessions_five">Гроссмейстер фигур</string>
+    <!-- Tier names: KNIGHT_PATH_SESSIONS -->
+    <string name="achievement_knight_path_sessions_one">Начинающий ходок</string>
+    <string name="achievement_knight_path_sessions_two">Двигатель фигур</string>
+    <string name="achievement_knight_path_sessions_three">Навигатор фигур</string>
+    <string name="achievement_knight_path_sessions_four">Мастер фигур</string>
+    <string name="achievement_knight_path_sessions_five">Гроссмейстер фигур</string>
 
     <!-- Tier names: BLIND_MODE_WINS -->
     <string name="achievement_blind_mode_wins_one">Ученик Одина</string>
@@ -613,7 +617,7 @@
     <string name="achievement_desc_streak_sessions">Завершайте сессии серий задач для получения этого достижения</string>
     <string name="achievement_desc_failed_puzzles_redeemed">Повторите и решите ранее проваленные задачи</string>
     <string name="achievement_desc_find_square_sessions">Играйте в «Найти клетку» для получения этого достижения</string>
-    <string name="achievement_desc_move_piece_sessions">Играйте в «Ходить фигурой» для получения этого достижения</string>
+    <string name="achievement_desc_knight_path_sessions">Играйте в «Путь коня» для получения этого достижения</string>
     <string name="achievement_desc_blind_mode_wins">Побеждайте в рейтинговых играх вслепую для получения этого достижения</string>
     <string name="achievement_desc_rated_win_streak">Выигрывайте рейтинговые задачи подряд без ошибок</string>
     <string name="achievement_desc_rating_climber">Повышайте рейтинг задач для достижения новых высот</string>
@@ -621,12 +625,12 @@
     <string name="achievement_desc_rush_champion">Установите рекорд в раше задач</string>
     <string name="achievement_desc_streak_legend">Установите рекорд в серии задач</string>
     <string name="achievement_desc_eagle_eye">Установите рекорд в «Найти клетку»</string>
-    <string name="achievement_desc_knights_path">Установите рекорд в «Ходить фигурой»</string>
+    <string name="achievement_desc_knights_path">Установите рекорд в «Путь коня»</string>
     <string name="achievement_desc_puzzle_addict">Решайте задачи во всех игровых режимах</string>
     <string name="achievement_desc_time_invested">Тратьте время на тренировки во всех игровых режимах</string>
     <string name="achievement_desc_daily_grinder">Играйте в последовательные дни для создания серии</string>
     <string name="achievement_desc_consistency_king">Достигните лучшей непрерывной ежедневной серии</string>
-    <string name="achievement_desc_board_vision">Завершайте сессии «Найти клетку» и «Ходить фигурой»</string>
+    <string name="achievement_desc_board_vision">Завершайте сессии «Найти клетку» и «Путь коня»</string>
     <string name="achievement_desc_rush_solver">Решайте задачи во время сессий раша</string>
 
     <!-- Achievement UI -->

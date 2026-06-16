@@ -70,6 +70,7 @@ data class ChessGymDimensions(
         val trophyTile: Dp,
         val chessBoardBorder: Dp,
         val evaluationBar: Dp,
+        val timerChipWidth: Dp,
     )
 
     @Immutable

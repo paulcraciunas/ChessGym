@@ -12,8 +12,8 @@ class BoardVisDashboardActions(private val rule: ComposeTestRule) {
         BoardVisDashboardTags.Cards.FIND_THE_SQUARE
     )
 
-    fun openMoveThePiece(): BoardVisDashboardActions = clickCard(
-        BoardVisDashboardTags.Cards.MOVE_THE_PIECE
+    fun openKnightPath(): BoardVisDashboardActions = clickCard(
+        BoardVisDashboardTags.Cards.KNIGHT_PATH
     )
 
     private fun clickCard(tag: String): BoardVisDashboardActions = apply {

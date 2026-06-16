@@ -5,7 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface AnalyzePosition {
     suspend fun prepare()
-    operator fun invoke(fen: String): Flow<AnalysisResult>
-    suspend fun stopAnalysis()
+    fun analyze(fen: String): Flow<AnalysisResult>
     suspend fun shutdown()
 }

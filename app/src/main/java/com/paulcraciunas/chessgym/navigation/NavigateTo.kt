@@ -25,7 +25,7 @@ internal inline fun <reified T> NavHostController.navigateToDashChild(child: T) 
             is PuzzleMode.FailedPuzzles -> Screen.FailedPuzzles
             is PuzzleMode.PuzzleStreak -> Screen.PuzzleStreak
             is BoardVisMode.FindTheSquare -> Screen.FindTheSquare
-            is BoardVisMode.MoveThePiece -> Screen.MoveThePiece
+            is BoardVisMode.KnightPath -> Screen.KnightPath
             is ToolsMode.Clock -> Screen.Clock
             is ToolsMode.Analysis -> Screen.Analysis()
             is ToolsMode.ImportGame -> Screen.ImportGame

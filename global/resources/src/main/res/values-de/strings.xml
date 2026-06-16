@@ -120,7 +120,7 @@
     <string name="user_stat_high_score_blind_mode">Bester Blindmodus</string>
     <string name="user_stat_high_score_puzzle_streak">Beste Puzzle Streak</string>
     <string name="user_stat_high_score_find_the_square">Bestes Feld finden</string>
-    <string name="user_stat_high_score_move_the_piece">Bestes Figur bewegen</string>
+    <string name="user_stat_high_score_knight_path">Bestes Figur bewegen</string>
     <!-- endregion -->
 
     <!-- region Loading -->
@@ -152,13 +152,12 @@
     <string name="loading_error_download_failed">Download fehlgeschlagen. Bitte überprüfe deine Internetverbindung und versuche es erneut.</string>
     <string name="loading_error_decompression_failed">Entpacken der Datenbank fehlgeschlagen. Bitte versuche es erneut.</string>
     <string name="loading_error_database_write_failed">Erstellen der Datenbank fehlgeschlagen. Bitte versuche es erneut.</string>
-    <string name="loading_error_permission">Berechtigung verweigert. Bitte aktiviere Benachrichtigungen, um fortzufahren.</string>
     <string name="loading_error_no_internet">Keine Internetverbindung. Bitte überprüfe deine Verbindung und versuche es erneut.</string>
     <string name="loading_error_not_enough_disk_space">Nicht genug Speicherplatz. Bitte gib Speicherplatz frei und versuche es erneut.</string>
     <string name="loading_error_generic">Ein Fehler ist aufgetreten. Bitte versuche es erneut.</string>
     <string name="loading_error_consent_required">Die Zustimmung zur Absturzberichterstattung ist erforderlich, um fortzufahren. Wir erfassen nur technische Absturzdaten, um die App-Stabilität zu verbessern.</string>
     <string name="crash_consent_dialog_title">Hilf uns, uns zu verbessern</string>
-    <string name="crash_consent_dialog_body">ChessGym verwendet Absturzberichte, um Anwendungsfehler zu erkennen und zu beheben. Diese Daten werden ausschließlich zur Identifizierung von Abstürzen und zur Verbesserung der App-Stabilität für alle Benutzer verwendet.\n\nEs werden keine persönlichen Informationen, Spieldaten oder Nutzungsmuster erfasst — nur technische Absturzdetails (wie Stack-Traces und Gerätemodell), wenn etwas schiefgeht.\n\nDu kannst diese Einstellung später in der App ändern.</string>
+    <string name="crash_consent_dialog_body">ChessGym verwendet Absturzberichte, um Anwendungsfehler zu erkennen und zu beheben. Diese Daten werden ausschließlich zur Identifizierung von Abstürzen und zur Verbesserung der App-Stabilität für alle Benutzer verwendet.\n\n&lt;b>Es werden keine persönlichen Informationen, Spieldaten oder Nutzungsmuster erfasst&lt;/b> — nur technische Absturzdetails (wie Stack-Traces und Gerätemodell), wenn etwas schiefgeht.\n\nDu kannst diese Einstellung später in der App ändern.</string>
     <string name="loading_fact_eyebrow">Wusstest du das?</string>
     <string-array name="loading_fact_titles">
         <item>Die machtlose Dame</item>
@@ -310,18 +309,19 @@
     <!-- endregion -->
 
     <!-- region Move the Piece -->
-    <string name="boardvis_move_piece_title">Figur bewegen</string>
-    <string name="boardvis_move_piece_description">Visualisiere und mache die richtigen Züge auf dem Brett</string>
-    <string name="boardvis_move_piece_training_mode">Trainingsmodus</string>
-    <string name="boardvis_move_piece_moves_remaining">Verbleibende Züge: %1$d</string>
-    <string name="boardvis_move_piece_rules">Bewege deine Figur, ohne auf ein vom Gegner angegriffenes Feld zu landen. Führe die erforderlichen Züge aus, um das nächste Level zu erreichen!</string>
-    <string name="boardvis_move_piece_captured">Geschlagen!</string>
+    <string name="boardvis_knight_path_title">Springerweg</string>
+    <string name="boardvis_knight_path_description">Finde den kürzesten Weg des Springers zum Zielfeld</string>
+    <string name="boardvis_knight_path_rules">Finde den kürzesten Weg für den Springer zum Zielfeld. Ein Fehler und das Spiel ist vorbei!</string>
+    <string name="boardvis_knight_path_captured">Geschlagen!</string>
+    <string name="boardvis_knight_path_wrong_move">Falscher Zug!</string>
     <!-- endregion -->
 
     <!-- region Settings -->
     <string name="settings_title">Einstellungen</string>
     <string name="settings_section_general">Allgemein</string>
     <string name="settings_section_ui">Erscheinungsbild</string>
+    <string name="settings_sound">Sound</string>
+    <string name="settings_sound_description">Klangs bei Spielen abspielen</string>
     <string name="settings_haptic_feedback">Haptisches Feedback</string>
     <string name="settings_haptic_feedback_description">Vibrieren bei Interaktionen</string>
     <string name="settings_auto_promote">Automatische Umwandlung</string>
@@ -332,6 +332,7 @@
     <string name="settings_show_borders_description">Koordinaten um das Brett anzeigen</string>
     <string name="settings_highlight_legal_moves">Legale Züge hervorheben</string>
     <string name="settings_highlight_legal_moves_description">Verfügbare Felder anzeigen, wenn eine Figur ausgewählt ist</string>
+    <string name="settings_language">Sprache</string>
     <string name="settings_light_mode">Design</string>
     <string name="settings_light_mode_light">Hell</string>
     <string name="settings_light_mode_dark">Dunkel</string>
@@ -348,8 +349,9 @@
     <string name="about_title">Über</string>
     <string name="about_general_title">Allgemein</string>
     <string name="about_legal_title">Rechtliches</string>
-    <string name="about_creator_title">Der Entwickler</string>
-    <string name="about_creator_description">ChessGym wurde von Paul Mihai Craciunas erstellt, einem Android-Entwickler aus London, der leidenschaftlich Schach spielt und Menschen auf ihrem Weg zur Verbesserung helfen möchte.</string>
+    <string name="about_app_title">Die App</string>
+    <string name="about_app_description">Mit ❤\uFE0F von Paul Craciunas entwickelt.\t</string>
+    <string name="about_dedication_danya">Diese Anwendung ist dem Gedenken an Großmeister &lt;b>Daniel Naroditsky&lt;/b> (1995–2025) gewidmet, dessen ansteckende Leidenschaft, unübertroffene Klarheit und brillante Lehrvideos Hunderttausende inspiriert und eine universelle Freude am Schachspiel neu entfacht haben.</string>
     <string name="about_contact_title">Kontakt</string>
     <string name="about_contact_description">Bei rechtlichen Anliegen, Geschäftsmöglichkeiten oder anderen Anfragen wende dich bitte per E-Mail an uns.</string>
     <string name="about_contact_email">contact@chessgym.app</string>
@@ -365,7 +367,7 @@
     <string name="about_donate_medium">Sandwich</string>
     <string name="about_donate_large">Pizza</string>
     <string name="about_rate_title">App bewerten</string>
-    <string name="about_rate_description">Gefällt dir ChessGym? Hinterlasse eine Bewertung im Play Store</string>
+    <string name="about_rate_description">Gefällt dir ChessGym? Hinterlasse eine Bewertung</string>
     <string name="about_libraries_title">Open-Source-Bibliotheken</string>
     <string name="about_libraries_description">ChessGym wurde mit folgenden Open-Source-Bibliotheken erstellt:</string>
     <string name="about_privacy_policy_title">Datenschutzrichtlinie</string>
@@ -385,6 +387,7 @@
     <string name="tools_mode_start">Werkzeug starten</string>
     <string name="tools_clock_description">Messe die Zeit deiner Partien mit konfigurierbaren Kontrollen</string>
     <string name="tools_analysis_title">Analyse</string>
+    <string name="tools_analysis_flip_board">Brett drehen</string>
     <string name="tools_analysis_description">Positionen mit der Engine analysieren</string>
     <string name="tools_import_description">Partie in FEN- oder PGN-Notation importieren</string>
     <!-- endregion -->
@@ -405,10 +408,10 @@
 
     <!-- region Import Game Screen -->
     <string name="import_game_title">Partie importieren</string>
-    <string name="import_fen">FEN</string>
-    <string name="import_pgn">PGN</string>
-    <string name="import_dialog_title_fen">FEN importieren</string>
-    <string name="import_dialog_title_pgn">PGN importieren</string>
+    <string name="import_fen">Position</string>
+    <string name="import_pgn">Partie</string>
+    <string name="import_dialog_title_fen">Position importieren</string>
+    <string name="import_dialog_title_pgn">Partie importieren</string>
     <string name="import_dialog_hint_fen">FEN-String hier einfügen…</string>
     <string name="import_dialog_hint_pgn">PGN-Text hier einfügen…</string>
     <string name="import_dialog_confirm">Importieren</string>
@@ -424,6 +427,7 @@
     <string name="blind_mode_title">Blindmodus</string>
     <string name="blind_mode_training_mode">Trainingsmodus</string>
     <string name="blind_mode_training_description">Partien wirken sich nicht auf deine Bewertung aus</string>
+    <string name="blind_mode_rated_description">Gewerteter Modus</string>
     <string name="blind_mode_play">Spielen</string>
     <string name="blind_mode_resign">Aufgeben</string>
     <string name="blind_mode_reveal">Enthüllen</string>
@@ -441,21 +445,21 @@
     <string name="achievement_category_streak_sessions">Serien-Sitzungen</string>
     <string name="achievement_category_failed_puzzles_redeemed">Fehlgeschlagene Aufgaben wiedergutgemacht</string>
     <string name="achievement_category_find_square_sessions">Feld-finden-Sitzungen</string>
-    <string name="achievement_category_move_piece_sessions">Figur-bewegen-Sitzungen</string>
-    <string name="achievement_category_blind_mode_wins">Homers Erbe</string>
+    <string name="achievement_category_knight_path_sessions">Springerpfad-Sitzungen</string>
+    <string name="achievement_category_blind_mode_wins">Blindmodus-Siege</string>
     <string name="achievement_category_rated_win_streak">Bewertete Gewinnserie</string>
     <string name="achievement_category_rating_climber">Bewertungsaufsteiger</string>
-    <string name="achievement_category_blind_strategist">Blinder Stratege</string>
-    <string name="achievement_category_rush_champion">Rush-Champion</string>
-    <string name="achievement_category_streak_legend">Serien-Legende</string>
-    <string name="achievement_category_eagle_eye">Adlerauge</string>
-    <string name="achievement_category_knights_path">Springerpfad</string>
-    <string name="achievement_category_puzzle_addict">Aufgaben-Süchtiger</string>
+    <string name="achievement_category_blind_strategist">Blindmodus-Bewertung</string>
+    <string name="achievement_category_rush_champion">Rush-Bestleistung</string>
+    <string name="achievement_category_streak_legend">Serien-Bestleistung</string>
+    <string name="achievement_category_eagle_eye">Feld-finden-Bestleistung</string>
+    <string name="achievement_category_knights_path">Springerpfad-Bestleistung</string>
+    <string name="achievement_category_puzzle_addict">Gelöste Aufgaben</string>
     <string name="achievement_category_time_invested">Investierte Zeit</string>
-    <string name="achievement_category_daily_grinder">Täglicher Trainingsfleiß</string>
-    <string name="achievement_category_consistency_king">König der Beständigkeit</string>
+    <string name="achievement_category_daily_grinder">Aufeinanderfolgende Spieltage</string>
+    <string name="achievement_category_consistency_king">Meiste aufeinanderfolgende Tage</string>
     <string name="achievement_category_board_vision">Brettvision</string>
-    <string name="achievement_category_rush_solver">Rush-Löser</string>
+    <string name="achievement_category_rush_solver">Rush-Aufgaben gelöst</string>
 
     <!-- Tier names: RATED_PUZZLES_SOLVED -->
     <string name="achievement_rated_puzzles_solved_one">Aufgaben-Enthusiast</string>
@@ -492,12 +496,12 @@
     <string name="achievement_find_square_sessions_four">Feld-Meister</string>
     <string name="achievement_find_square_sessions_five">Feld-Großmeister</string>
 
-    <!-- Tier names: MOVE_PIECE_SESSIONS -->
-    <string name="achievement_move_piece_sessions_one">Figur-Anfänger</string>
-    <string name="achievement_move_piece_sessions_two">Figur-Beweger</string>
-    <string name="achievement_move_piece_sessions_three">Figur-Navigator</string>
-    <string name="achievement_move_piece_sessions_four">Figur-Meister</string>
-    <string name="achievement_move_piece_sessions_five">Figur-Großmeister</string>
+    <!-- Tier names: KNIGHT_PATH_SESSIONS -->
+    <string name="achievement_knight_path_sessions_one">Figur-Anfänger</string>
+    <string name="achievement_knight_path_sessions_two">Figur-Beweger</string>
+    <string name="achievement_knight_path_sessions_three">Figur-Navigator</string>
+    <string name="achievement_knight_path_sessions_four">Figur-Meister</string>
+    <string name="achievement_knight_path_sessions_five">Figur-Großmeister</string>
 
     <!-- Tier names: BLIND_MODE_WINS -->
     <string name="achievement_blind_mode_wins_one">Odins Lehrling</string>
@@ -603,7 +607,7 @@
     <string name="achievement_desc_streak_sessions">Absolviere Puzzle Streak Sitzungen, um diesen Erfolg zu verdienen</string>
     <string name="achievement_desc_failed_puzzles_redeemed">Versuche erneut und löse zuvor fehlgeschlagene Aufgaben</string>
     <string name="achievement_desc_find_square_sessions">Spiele Feld-finden-Sitzungen, um diesen Erfolg zu verdienen</string>
-    <string name="achievement_desc_move_piece_sessions">Spiele Figur-bewegen-Sitzungen, um diesen Erfolg zu verdienen</string>
+    <string name="achievement_desc_knight_path_sessions">Spiele Springerpfad-Sitzungen, um diesen Erfolg zu verdienen</string>
     <string name="achievement_desc_blind_mode_wins">Gewinne bewertete Blindmodus-Partien, um diesen Erfolg zu verdienen</string>
     <string name="achievement_desc_rated_win_streak">Gewinne aufeinanderfolgende bewertete Aufgaben ohne Fehler</string>
     <string name="achievement_desc_rating_climber">Erhöhe deine Aufgabenbewertung, um neue Höhen zu erreichen</string>
@@ -611,12 +615,12 @@
     <string name="achievement_desc_rush_champion">Setze eine Bestleistung in Puzzle Rush</string>
     <string name="achievement_desc_streak_legend">Setze eine Bestleistung in Puzzle Streak</string>
     <string name="achievement_desc_eagle_eye">Setze eine Bestleistung im Feld finden</string>
-    <string name="achievement_desc_knights_path">Setze eine Bestleistung in Figur bewegen</string>
+    <string name="achievement_desc_knights_path">Setze eine Bestleistung im Springerpfad</string>
     <string name="achievement_desc_puzzle_addict">Löse Aufgaben in allen Spielmodi</string>
     <string name="achievement_desc_time_invested">Bringe Zeit mit dem Üben in allen Spielmodi</string>
     <string name="achievement_desc_daily_grinder">Spiele an aufeinanderfolgenden Tagen, um deine Serie aufzubauen</string>
     <string name="achievement_desc_consistency_king">Erreiche deine beste je aufeinanderfolgende Tages-Serie</string>
-    <string name="achievement_desc_board_vision">Absolviere Feld-finden- und Figur-bewegen-Sitzungen</string>
+    <string name="achievement_desc_board_vision">Absolviere Feld-finden- und Springerpfad-Sitzungen</string>
     <string name="achievement_desc_rush_solver">Löse Aufgaben während Puzzle Rush Sitzungen</string>
 
     <!-- Achievement UI -->

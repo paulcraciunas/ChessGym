@@ -1,62 +1,54 @@
 package com.paulcraciunas.domain.api.general
 
-import com.paulcraciunas.domain.api.general.CountdownTimer.Remainder
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.consumeAsFlow
 
+/**
+ * Test fake for [CountdownTimer] that gives full control over emissions.
+ *
+ * Usage:
+ * ```
+ * val timer = FakeCountdownTimer()
+ * val flow = timer.start(durationMs = 5000)
+ * // In a coroutine collecting the flow:
+ * timer.emit(CountdownTimer.Remainder(4, 0))
+ * timer.emit(CountdownTimer.Remainder(3, 0))
+ * timer.complete() // terminates the flow
+ * ```
+ */
 class FakeCountdownTimer : CountdownTimer {
-    private val _remainingSeconds = MutableStateFlow(Remainder(seconds = 0, millis = 0))
-    override val remaining: StateFlow<Remainder> = _remainingSeconds.asStateFlow()
+    private var channel = Channel<CountdownTimer.Remainder>(Channel.UNLIMITED)
 
-    override val isExpired: Boolean
-        get() = !_remainingSeconds.value.isPositive()
-    var isRunning = false
+    var lastDurationMs: Long = 0L
+        private set
+    var lastIntervalMillis: Long = 0L
+        private set
+    var startCount: Int = 0
+        private set
+    var isRunning: Boolean = false
         private set
 
-    private var interval: Long = 1000L
-    private var elapsedSeconds: Int = 0
-
-    override fun setInterval(intervalMillis: Int) {
-        interval = intervalMillis.toLong().coerceIn(1, 10_000) // As specified in the interface
-    }
-
-    override fun set(durationSeconds: Int) {
-        if (!isRunning) {
-            _remainingSeconds.value = Remainder(seconds = durationSeconds, millis = 0)
-        }
-    }
-
-    override fun set(remainder: Remainder) {
-        if (!isRunning) {
-            _remainingSeconds.value = remainder
-        }
-    }
-
-    override fun start(scope: CoroutineScope) {
-        stop()
-        elapsedSeconds = 0
+    override fun start(durationMs: Long, intervalMillis: Long): Flow<CountdownTimer.Remainder> {
+        channel.cancel()
+        channel = Channel(Channel.UNLIMITED)
+        lastDurationMs = durationMs
+        lastIntervalMillis = intervalMillis
+        startCount++
         isRunning = true
+        return channel.consumeAsFlow()
     }
 
-    override fun stop() {
-        isRunning = false
-    }
-
-    override fun elapsedMillis(): Long = elapsedSeconds * 1000L
-
-    fun advanceTimeBy(seconds: Int, millis: Int = 0) {
-        if (isRunning) {
-            elapsedSeconds += seconds
-            _remainingSeconds.value -= Remainder(seconds = seconds, millis = millis)
-        }
-        if (!_remainingSeconds.value.isPositive()) {
-            stop()
-        }
+    suspend fun emit(remainder: CountdownTimer.Remainder) {
+        channel.send(remainder)
     }
 
     fun advanceUntilIdle() {
-        advanceTimeBy(_remainingSeconds.value.seconds, _remainingSeconds.value.millis)
+        complete()
+    }
+
+    fun complete() {
+        isRunning = false
+        channel.close()
     }
 }

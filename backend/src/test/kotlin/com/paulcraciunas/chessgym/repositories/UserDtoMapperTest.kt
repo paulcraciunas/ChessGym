@@ -30,12 +30,12 @@ class UserDtoMapperTest {
             ratings = RatingsDto(current = 1500, blindMode = 800),
             highScores = HighScoresDto(
                 ratedPuzzle = 1600, puzzleRush = 25, puzzleStreak = 40,
-                findTheSquare = 90, moveThePiece = 85, blindMode = 900,
+                findTheSquare = 90, knightPath = 85, blindMode = 900,
             ),
             statistics = StatisticsDto(
                 puzzlesPlayed = 1000, puzzlesSolved = 800, totalTimeSpent = 360000L,
                 ratedPuzzlesSolved = 500, puzzleRushSessions = 50, streakSessions = 30,
-                failedPuzzlesRedeemed = 100, findSquareSessions = 75, moveThePieceSessions = 40,
+                failedPuzzlesRedeemed = 100, findSquareSessions = 75, knightPathSessions = 40,
                 blindModeWins = 20, rushPuzzlesSolved = 350,
             ),
             achievements = AchievementsDto(

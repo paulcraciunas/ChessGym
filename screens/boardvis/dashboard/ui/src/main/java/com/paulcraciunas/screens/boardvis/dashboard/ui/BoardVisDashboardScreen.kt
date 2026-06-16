@@ -19,7 +19,7 @@ import com.paulcraciunas.screens.common.LoadingContent
 import com.paulcraciunas.screens.common.TopLevelAppBar
 import com.paulcraciunas.screens.common.controls.FindTheSquareCard
 import com.paulcraciunas.screens.common.controls.Header
-import com.paulcraciunas.screens.common.controls.MoveThePieceCard
+import com.paulcraciunas.screens.common.controls.KnightPathCard
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
@@ -80,9 +80,9 @@ private fun DashboardContent(
         }
 
         item {
-            MoveThePieceCard(
-                onClick = { onModeSelected(BoardVisMode.MoveThePiece) },
-                modifier = Modifier.testTag { BoardVisDashboardTags.Cards.MOVE_THE_PIECE },
+            KnightPathCard(
+                onClick = { onModeSelected(BoardVisMode.KnightPath) },
+                modifier = Modifier.testTag { BoardVisDashboardTags.Cards.KNIGHT_PATH },
             )
         }
     }

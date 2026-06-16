@@ -2,17 +2,21 @@ package com.paulcraciunas.domain.impl.puzzles
 
 import com.paulcraciunas.domain.api.achievements.UpdateAchievementProgress
 import com.paulcraciunas.domain.api.puzzles.OnStreakComplete
+import com.paulcraciunas.global.qualifiers.IoDispatcher
 import com.paulcraciunas.user.api.User
 import com.paulcraciunas.user.api.UserRepository
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import javax.inject.Inject
 
 class OnStreakCompleteImpl @Inject constructor(
     private val userRepository: UserRepository,
     private val updateAchievementProgress: UpdateAchievementProgress,
+    @param:IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) : OnStreakComplete {
 
-    override suspend fun invoke(timeSpentMillis: Long): OnStreakComplete.StreakCompleteResult {
+    override suspend fun invoke(timeSpentMillis: Long) = withContext(dispatcher) {
         val currentUser = userRepository.get()
         val finalStreakCount = currentUser.ratings.puzzleStreak.currentCount
         val previousHighScore = currentUser.highScores.puzzleStreak
@@ -41,10 +45,5 @@ class OnStreakCompleteImpl @Inject constructor(
 
         userRepository.update(withAchievements)
         userRepository.logHistory(listOf(historyItem))
-
-        return OnStreakComplete.StreakCompleteResult(
-            isNewHighScore = isNewHighScore,
-            finalStreakCount = finalStreakCount
-        )
     }
 }

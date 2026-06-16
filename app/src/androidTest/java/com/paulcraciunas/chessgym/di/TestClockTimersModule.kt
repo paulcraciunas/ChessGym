@@ -1,11 +1,7 @@
 package com.paulcraciunas.chessgym.di
 
-import com.paulcraciunas.domain.api.general.BlackTimer
-import com.paulcraciunas.domain.api.general.CountdownTimer
-import com.paulcraciunas.domain.api.general.DefaultTimer
-import com.paulcraciunas.domain.api.general.FakeCountdownTimer
-import com.paulcraciunas.domain.api.general.WhiteTimer
-import com.paulcraciunas.domain.di.ClockTimersModule
+import com.paulcraciunas.domain.api.general.ControllableClock
+import com.paulcraciunas.domain.di.ClockModule
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.components.SingletonComponent
@@ -16,26 +12,12 @@ import javax.inject.Singleton
 @Module
 @TestInstallIn(
     components = [SingletonComponent::class],
-    replaces = [ClockTimersModule::class]
+    replaces = [ClockModule::class]
 )
 internal object TestClockTimersModule {
-    val whiteTimer = FakeCountdownTimer()
-    val blackTimer = FakeCountdownTimer()
-    val defaultTimer = FakeCountdownTimer()
+    val clock = ControllableClock()
 
     @Provides
     @Singleton
-    fun provideClock(): Clock = Clock.systemUTC()
-
-    @Provides
-    @WhiteTimer
-    fun provideWhiteTimer(): CountdownTimer = whiteTimer
-
-    @Provides
-    @BlackTimer
-    fun provideBlackTimer(): CountdownTimer = blackTimer
-
-    @Provides
-    @DefaultTimer
-    fun provideDefaultTimer(): CountdownTimer = defaultTimer
+    fun provideClock(): Clock = clock
 }

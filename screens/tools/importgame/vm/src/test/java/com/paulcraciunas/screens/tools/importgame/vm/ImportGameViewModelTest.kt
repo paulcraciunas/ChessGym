@@ -9,7 +9,10 @@ import com.paulcraciunas.serializer.impl.PgnSerializer
 import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -32,12 +35,16 @@ internal class ImportGameViewModelTest {
 
     private lateinit var underTest: ImportGameViewModel
 
-    private val testDispatcher = StandardTestDispatcher()
+    private val testDispatcher = UnconfinedTestDispatcher()
 
     @BeforeEach
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
+        appSettingsRepository.setAppSettings(
+            appSettingsRepository.getCurrentSettings().copy(enableAnimations = false)
+        )
         underTest = ImportGameViewModel(
+            dispatcher = testDispatcher,
             fenSerializer = fenSerializer,
             pgnSerializer = pgnSerializer,
             appSettingsRepository = appSettingsRepository,
@@ -52,7 +59,7 @@ internal class ImportGameViewModelTest {
     @Nested
     internal inner class Initialization {
         @Test
-        fun `WHEN viewModel initialized THEN game is not loaded`() = runTest {
+        fun `WHEN viewModel initialized THEN game is not loaded`() = importTest {
             assertFalse(underTest.uiState.value.isGameLoaded)
             assertNull(underTest.uiState.value.importType)
             assertNavigation(back = false, forward = false)
@@ -62,26 +69,26 @@ internal class ImportGameViewModelTest {
     @Nested
     internal inner class DialogManagement {
         @Test
-        fun `GIVEN no dialog WHEN onFenClicked THEN FEN dialog shown`() = runTest {
+        fun `GIVEN no dialog WHEN onFenClicked THEN FEN dialog shown`() = importTest {
             underTest.onFenClicked()
             assertEquals(ImportType.FEN, underTest.uiState.value.showImportDialog)
         }
 
         @Test
-        fun `GIVEN no dialog WHEN onPgnClicked THEN PGN dialog shown`() = runTest {
+        fun `GIVEN no dialog WHEN onPgnClicked THEN PGN dialog shown`() = importTest {
             underTest.onPgnClicked()
             assertEquals(ImportType.PGN, underTest.uiState.value.showImportDialog)
         }
 
         @Test
-        fun `GIVEN FEN dialog shown WHEN onDismissDialog THEN dialog hidden`() = runTest {
+        fun `GIVEN FEN dialog shown WHEN onDismissDialog THEN dialog hidden`() = importTest {
             underTest.onFenClicked()
             underTest.onDismissDialog()
             assertNull(underTest.uiState.value.showImportDialog)
         }
 
         @Test
-        fun `GIVEN error shown WHEN dialog dismissed and reopened THEN error cleared`() = runTest {
+        fun `GIVEN error shown WHEN dialog dismissed and reopened THEN error cleared`() = importTest {
             underTest.onFenClicked()
             underTest.onImport("invalid")
             assertNotNull(underTest.uiState.value.importError)
@@ -95,7 +102,7 @@ internal class ImportGameViewModelTest {
     @Nested
     internal inner class FenImport {
         @Test
-        fun `GIVEN FEN dialog WHEN valid FEN imported THEN game loaded with correct state`() = runTest {
+        fun `GIVEN FEN dialog WHEN valid FEN imported THEN game loaded with correct state`() = importTest {
             importStartingPosition()
 
             val state = underTest.uiState.value
@@ -107,7 +114,7 @@ internal class ImportGameViewModelTest {
         }
 
         @Test
-        fun `GIVEN FEN dialog WHEN invalid FEN imported THEN error shown`() = runTest {
+        fun `GIVEN FEN dialog WHEN invalid FEN imported THEN error shown`() = importTest {
             underTest.onFenClicked()
             underTest.onImport("not a valid fen string")
 
@@ -121,7 +128,7 @@ internal class ImportGameViewModelTest {
     @Nested
     internal inner class PgnImport {
         @Test
-        fun `GIVEN PGN dialog WHEN valid PGN imported THEN game loaded at last move`() = runTest {
+        fun `GIVEN PGN dialog WHEN valid PGN imported THEN game loaded at last move`() = importTest {
             importPgn("1.e4 e5 2.Nf3 Nc6")
 
             val state = underTest.uiState.value
@@ -132,7 +139,7 @@ internal class ImportGameViewModelTest {
         }
 
         @Test
-        fun `GIVEN PGN with result WHEN imported THEN game loaded at last move`() = runTest {
+        fun `GIVEN PGN with result WHEN imported THEN game loaded at last move`() = importTest {
             importPgn("1.e4 e5 2.Nf3 Nc6 1-0")
 
             val state = underTest.uiState.value
@@ -141,7 +148,7 @@ internal class ImportGameViewModelTest {
         }
 
         @Test
-        fun `GIVEN PGN imported WHEN square clicked THEN ignored`() = runTest {
+        fun `GIVEN PGN imported WHEN square clicked THEN ignored`() = importTest {
             importPgn("1.e4 e5 2.Nf3 Nc6")
 
             underTest.onSquareClicked(Locus.e2)
@@ -153,7 +160,7 @@ internal class ImportGameViewModelTest {
     @Nested
     internal inner class PgnNavigation {
         @Test
-        fun `GIVEN PGN at last move WHEN jump to start THEN shows initial position`() = runTest {
+        fun `GIVEN PGN at last move WHEN jump to start THEN shows initial position`() = importTest {
             importPgn("1.e4 e5 2.Nf3 Nc6")
             assertNavigation(back = true, forward = false)
 
@@ -163,7 +170,7 @@ internal class ImportGameViewModelTest {
         }
 
         @Test
-        fun `GIVEN PGN at last move WHEN previous move THEN shows one move back`() = runTest {
+        fun `GIVEN PGN at last move WHEN previous move THEN shows one move back`() = importTest {
             importPgn("1.e4 e5 2.Nf3 Nc6")
 
             underTest.onPreviousMove()
@@ -172,7 +179,7 @@ internal class ImportGameViewModelTest {
         }
 
         @Test
-        fun `GIVEN PGN at start WHEN next move THEN shows first move`() = runTest {
+        fun `GIVEN PGN at start WHEN next move THEN shows first move`() = importTest {
             importPgn("1.e4 e5 2.Nf3 Nc6")
             underTest.onJumpToStart()
 
@@ -182,7 +189,7 @@ internal class ImportGameViewModelTest {
         }
 
         @Test
-        fun `GIVEN PGN at middle WHEN jump to end THEN shows last move`() = runTest {
+        fun `GIVEN PGN at middle WHEN jump to end THEN shows last move`() = importTest {
             importPgn("1.e4 e5 2.Nf3 Nc6")
             underTest.onJumpToStart()
 
@@ -192,7 +199,7 @@ internal class ImportGameViewModelTest {
         }
 
         @Test
-        fun `GIVEN PGN at start WHEN previous move THEN stays at start`() = runTest {
+        fun `GIVEN PGN at start WHEN previous move THEN stays at start`() = importTest {
             importPgn("1.e4 e5 2.Nf3 Nc6")
             underTest.onJumpToStart()
 
@@ -202,7 +209,7 @@ internal class ImportGameViewModelTest {
         }
 
         @Test
-        fun `GIVEN PGN at end WHEN next move THEN stays at end`() = runTest {
+        fun `GIVEN PGN at end WHEN next move THEN stays at end`() = importTest {
             importPgn("1.e4 e5 2.Nf3 Nc6")
 
             underTest.onNextMove()
@@ -211,7 +218,7 @@ internal class ImportGameViewModelTest {
         }
 
         @Test
-        fun `GIVEN PGN navigation WHEN stepping through THEN each position has different board`() = runTest {
+        fun `GIVEN PGN navigation WHEN stepping through THEN each position has different board`() = importTest {
             importPgn("1.e4 e5 2.Nf3 Nc6")
             underTest.onJumpToStart()
 
@@ -225,7 +232,7 @@ internal class ImportGameViewModelTest {
         }
 
         @Test
-        fun `GIVEN PGN navigation WHEN navigating THEN clears selection`() = runTest {
+        fun `GIVEN PGN navigation WHEN navigating THEN clears selection`() = importTest {
             importPgn("1.e4 e5 2.Nf3 Nc6")
 
             underTest.onPreviousMove()
@@ -237,7 +244,7 @@ internal class ImportGameViewModelTest {
     @Nested
     internal inner class FenPlayAndNavigation {
         @Test
-        fun `GIVEN FEN imported WHEN square with piece clicked THEN square selected`() = runTest {
+        fun `GIVEN FEN imported WHEN square with piece clicked THEN square selected`() = importTest {
             importStartingPosition()
 
             underTest.onSquareClicked(Locus.e2)
@@ -246,7 +253,7 @@ internal class ImportGameViewModelTest {
         }
 
         @Test
-        fun `GIVEN piece selected WHEN legal target clicked THEN move made and history updated`() = runTest {
+        fun `GIVEN piece selected WHEN legal target clicked THEN move made and history updated`() = importTest {
             importStartingPosition()
 
             underTest.onSquareClicked(Locus.e2)
@@ -259,7 +266,7 @@ internal class ImportGameViewModelTest {
         }
 
         @Test
-        fun `GIVEN multiple moves played WHEN navigate back THEN shows previous position`() = runTest {
+        fun `GIVEN multiple moves played WHEN navigate back THEN shows previous position`() = importTest {
             importStartingPosition()
             playMove(Locus.e2, Locus.e4)
             playMove(Locus.e7, Locus.e5)
@@ -270,7 +277,7 @@ internal class ImportGameViewModelTest {
         }
 
         @Test
-        fun `GIVEN navigated back WHEN new move played THEN forward history truncated`() = runTest {
+        fun `GIVEN navigated back WHEN new move played THEN forward history truncated`() = importTest {
             importStartingPosition()
             playMove(Locus.e2, Locus.e4)
             playMove(Locus.e7, Locus.e5)
@@ -282,7 +289,7 @@ internal class ImportGameViewModelTest {
         }
 
         @Test
-        fun `GIVEN FEN with no moves WHEN navigation attempted THEN stays at start`() = runTest {
+        fun `GIVEN FEN with no moves WHEN navigation attempted THEN stays at start`() = importTest {
             importStartingPosition()
 
             underTest.onPreviousMove()
@@ -293,7 +300,7 @@ internal class ImportGameViewModelTest {
         }
 
         @Test
-        fun `GIVEN FEN navigated back WHEN next and jump to end work THEN navigates forward`() = runTest {
+        fun `GIVEN FEN navigated back WHEN next and jump to end work THEN navigates forward`() = importTest {
             importStartingPosition()
             playMove(Locus.e2, Locus.e4)
             playMove(Locus.e7, Locus.e5)
@@ -307,13 +314,13 @@ internal class ImportGameViewModelTest {
         }
 
         @Test
-        fun `GIVEN no game loaded WHEN square clicked THEN nothing happens`() = runTest {
+        fun `GIVEN no game loaded WHEN square clicked THEN nothing happens`() = importTest {
             underTest.onSquareClicked(Locus.e4)
             assertNull(underTest.uiState.value.data.boardData.at(Locus.e4).piece?.isSelected)
         }
 
         @Test
-        fun `GIVEN FEN navigated back WHEN playing from history THEN game reconstructed correctly`() = runTest {
+        fun `GIVEN FEN navigated back WHEN playing from history THEN game reconstructed correctly`() = importTest {
             importStartingPosition()
             playMove(Locus.e2, Locus.e4)
             playMove(Locus.e7, Locus.e5)
@@ -330,16 +337,21 @@ internal class ImportGameViewModelTest {
         }
     }
 
-    private fun importStartingPosition() {
-        underTest.onFenClicked()
-        underTest.onImport(Serializer.STARTING_FEN)
-        testDispatcher.scheduler.advanceUntilIdle()
+    private fun importTest(block: suspend TestScope.() -> Unit) = runTest(testDispatcher) {
+        backgroundScope.launch(testDispatcher) { underTest.uiState.collect {} }
+        block()
     }
 
-    private fun importPgn(pgn: String) {
+    private fun TestScope.importStartingPosition() {
+        underTest.onFenClicked()
+        underTest.onImport(Serializer.STARTING_FEN)
+        advanceUntilIdle()
+    }
+
+    private fun TestScope.importPgn(pgn: String) {
         underTest.onPgnClicked()
         underTest.onImport(pgn)
-        testDispatcher.scheduler.advanceUntilIdle()
+        advanceUntilIdle()
     }
 
     private fun playMove(from: Locus, to: Locus) {

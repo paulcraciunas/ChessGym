@@ -2,10 +2,13 @@ package com.paulcraciunas.screens.puzzles.rush.ui
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -32,10 +35,12 @@ import com.paulcraciunas.screens.common.controls.TimerDisplay
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.design.components.SpacerSize
 import com.paulcraciunas.screens.common.design.theme.Design
+import com.paulcraciunas.screens.common.dialogs.AbandonConfirmationDialog
 import com.paulcraciunas.screens.common.dialogs.PromotionDialog
 import com.paulcraciunas.screens.common.previews.PreviewData
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
+import com.paulcraciunas.screens.data.RemainingTime
 import com.paulcraciunas.screens.puzzles.rush.vm.PuzzleRushUiState
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,24 +53,20 @@ fun PuzzleRushScreen(
     onPromote: (to: Piece) -> Unit = {},
     onPlayAgain: () -> Unit = {},
     onDismissSummary: () -> Unit = {},
+    onAbandonConfirmed: () -> Unit = {},
+    onAbandonDismissed: () -> Unit = {},
     onAnalyzeFailedPuzzle: (puzzleId: Int) -> Unit = {},
 ) {
-    val timeRemainingSeconds = when (uiState) {
-        is PuzzleRushUiState.WithBoard -> uiState.timeRemainingSeconds
-        else -> 180 // Default 3 minutes
+    BackHandler(enabled = uiState is PuzzleRushUiState.Playing) {
+        onNavigateBack()
     }
+
     Scaffold(
         topBar = {
             ChildAppBar(
                 title = stringResource(R.string.puzzle_mode_rush_title),
                 onBack = onNavigateBack,
-                actions = {
-                    TimerDisplay(
-                        seconds = timeRemainingSeconds,
-                        modifier = Modifier.padding(end = Design.dimensions.spacing.xxl)
-                    )
-                }
-            )
+            ) { TimerDisplay(remainingTime = uiState.time) }
         },
         containerColor = Design.colors.primarySoft,
         modifier = modifier.testTag { PuzzleRushScreenTags.SCREEN },
@@ -83,6 +84,8 @@ fun PuzzleRushScreen(
                     onPromote = onPromote,
                     onPlayAgain = onPlayAgain,
                     onDismissSummary = onDismissSummary,
+                    onAbandonConfirmed = onAbandonConfirmed,
+                    onAbandonDismissed = onAbandonDismissed,
                     onAnalyzeFailedPuzzle = onAnalyzeFailedPuzzle,
                     modifier = defaultModifier,
                 )
@@ -99,6 +102,8 @@ private fun PuzzleRushContent(
     onPromote: (to: Piece) -> Unit,
     onPlayAgain: () -> Unit,
     onDismissSummary: () -> Unit,
+    onAbandonConfirmed: () -> Unit,
+    onAbandonDismissed: () -> Unit,
     onAnalyzeFailedPuzzle: (puzzleId: Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -121,38 +126,49 @@ private fun PuzzleRushContent(
         }
         CapturedPieces(capturedPieces = data.captured.byPlayer, side = data.player.other(), modifier = Modifier.fillMaxWidth())
         ChessGymSpacer()
-        AnimatedControls(targetState = uiState) { state ->
+        AnimatedControls(
+            targetState = uiState,
+            contentKey = { state -> state::class },
+        ) { state ->
             when (state) {
-                is PuzzleRushUiState.Ready -> {
-                    ReadyControls(modifier = Modifier.fillMaxWidth())
-                }
-                is PuzzleRushUiState.Playing -> {
-                    // Empty space while playing - no controls needed
-                    ChessGymSpacer(size = SpacerSize.SECTION)
-                }
-                is PuzzleRushUiState.Finished -> {
-                    FinishedRushControls(
-                        onPlayAgain = onPlayAgain,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
+                is PuzzleRushUiState.Ready -> ReadyControls(modifier = Modifier.fillMaxWidth())
+                is PuzzleRushUiState.ReLoad, // Empty space while playing/loading - no controls needed
+                is PuzzleRushUiState.Playing -> ChessGymSpacer(size = SpacerSize.SECTION)
+                is PuzzleRushUiState.Finished -> FinishedRushControls(
+                    onPlayAgain = onPlayAgain,
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
         }
         ChessGymSpacer(size = SpacerSize.XXLARGE)
         if (uiState.results.isNotEmpty()) {
-            PuzzleResultsGrid(
-                results = uiState.results,
-                onFailedPuzzleClicked = onAnalyzeFailedPuzzle,
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = Design.dimensions.spacing.xxl)
-            )
+                    .weight(1f)
+                    .verticalScroll(rememberScrollState())
+            ) {
+                PuzzleResultsGrid(
+                    results = uiState.results,
+                    onFailedPuzzleClicked = onAnalyzeFailedPuzzle,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = Design.dimensions.spacing.xxl)
+                )
+            }
         }
-        if (uiState is PuzzleRushUiState.Playing && uiState.data.promotion != null) {
-            PromotionDialog(
-                side = data.player,
-                onPieceChosen = onPromote
-            )
+        if (uiState is PuzzleRushUiState.Playing) {
+            if (uiState.data.promotion != null) {
+                PromotionDialog(
+                    side = data.player,
+                    onPieceChosen = onPromote
+                )
+            }
+            if (uiState.showAbandonDialog) {
+                AbandonConfirmationDialog(
+                    onConfirm = onAbandonConfirmed,
+                    onDismiss = onAbandonDismissed
+                )
+            }
         }
         if (uiState is PuzzleRushUiState.Finished && uiState.showSummaryDialog) {
             RushSummaryDialog(
@@ -172,8 +188,8 @@ private fun ReadyPreview() {
         CompositionLocalProvider(LocalUiSettings provides UiSettings.default()) {
             PuzzleRushScreen(
                 uiState = PuzzleRushUiState.Ready(
+                    time = RemainingTime(),
                     data = PreviewData().blackPuzzleData(),
-                    timeRemainingSeconds = 180,
                 ),
             )
         }
@@ -188,9 +204,10 @@ private fun PlayingPreview() {
         CompositionLocalProvider(LocalUiSettings provides UiSettings.default()) {
             PuzzleRushScreen(
                 uiState = PuzzleRushUiState.Playing(
+                    time = RemainingTime("01:42"),
                     data = PreviewData().blackPuzzleData(),
-                    timeRemainingSeconds = 142,
                     results = PreviewData().fewResults(),
+                    showAbandonDialog = false,
                 ),
             )
         }
@@ -205,8 +222,8 @@ private fun FinishedPreview() {
         CompositionLocalProvider(LocalUiSettings provides UiSettings.default()) {
             PuzzleRushScreen(
                 uiState = PuzzleRushUiState.Finished(
+                    time = RemainingTime(value = "00:00"),
                     data = PreviewData().whitePuzzleData(),
-                    timeRemainingSeconds = 0,
                     results = PreviewData().manyResults(),
                     showSummaryDialog = false,
                     isNewHighScore = false,
@@ -224,9 +241,10 @@ private fun ManyResultsPreview() {
         CompositionLocalProvider(LocalUiSettings provides UiSettings.default()) {
             PuzzleRushScreen(
                 uiState = PuzzleRushUiState.Playing(
+                    time = RemainingTime(value = "00:14", danger = true),
                     data = PreviewData().whitePuzzleData(),
-                    timeRemainingSeconds = 45,
                     results = PreviewData().manyResults(),
+                    showAbandonDialog = false,
                 ),
             )
         }

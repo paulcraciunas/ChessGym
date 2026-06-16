@@ -2,16 +2,20 @@ package com.paulcraciunas.domain.impl.puzzles
 
 import com.paulcraciunas.domain.api.general.FixedRandomFactory
 import com.paulcraciunas.domain.api.puzzles.GetPuzzleByRating
+import com.paulcraciunas.domain.api.puzzles.PuzzleGenerationException
 import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.puzzles.api.FakePuzzleRepository
 import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.channels.ClosedReceiveChannelException
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
@@ -27,219 +31,263 @@ internal class GetBufferedPuzzleSeriesImplTest {
         ioDispatcher = testDispatcher,
     )
 
-    @Test
-    fun `GIVEN initialized WHEN next without start THEN returns null`() = runTest(testDispatcher) {
-        // Given - no start called
+    @Nested
+    internal inner class BasicEmissions {
+        @Test
+        fun `GIVEN valid puzzles WHEN collecting execute THEN emits first puzzle at starting rating`() = runTest(testDispatcher) {
+            // When
+            val puzzles = underTest.execute(
+                bufferSize = BATCH_SIZE,
+                ratingStart = RATING_START,
+                increment = INCREMENT,
+            ).take(1).toList()
 
-        // Then
-        assertThrows<ClosedReceiveChannelException> { underTest.next() }
+            // Then
+            assertEquals(1, puzzles.size)
+            assertEquals(RATING_START, puzzles.first().rating)
+        }
+
+        @Test
+        fun `GIVEN valid puzzles WHEN collecting multiple THEN emits puzzles with increasing ratings`() = runTest(testDispatcher) {
+            // When
+            val puzzles = underTest.execute(
+                bufferSize = BATCH_SIZE,
+                ratingStart = RATING_START,
+                increment = INCREMENT,
+            ).take(5).toList()
+
+            // Then
+            assertEquals(5, puzzles.size)
+            puzzles.forEachIndexed { index, puzzle ->
+                assertEquals(RATING_START + index * INCREMENT, puzzle.rating)
+            }
+        }
+
+        @Test
+        fun `GIVEN valid puzzles WHEN collecting beyond buffer THEN continues emitting`() = runTest(testDispatcher) {
+            // When - collect more than buffer size
+            val puzzles = underTest.execute(
+                bufferSize = 3,
+                ratingStart = RATING_START,
+                increment = INCREMENT,
+            ).take(7).toList()
+
+            // Then
+            assertEquals(7, puzzles.size)
+        }
     }
 
-    @Test
-    fun `GIVEN start called WHEN next THEN returns first puzzle`() = runTest(testDispatcher) {
-        // Given
-        val job = backgroundScope.launch {
-            underTest.start(scope = this, batchSize = BATCH_SIZE, ratingStart = RATING_START, increment = INCREMENT)
+    @Nested
+    internal inner class RatingIncrement {
+        @Test
+        fun `GIVEN custom increment WHEN collecting THEN uses randomFactory for rating steps`() = runTest(testDispatcher) {
+            // Given
+            val customIncrement = 100
+            fakeRandom.returnValue = customIncrement
+            val customRepository = FakePuzzleRepository.default(ratingStart = RATING_START, increment = customIncrement)
+            val customUnderTest = GetBufferedPuzzleSeriesImpl(
+                getPuzzleByRating = GetPuzzleByRatingImpl(customRepository, FakeAppSettingsRepository.default()),
+                randomFactory = fakeRandom,
+                ioDispatcher = testDispatcher,
+            )
+
+            // When
+            val puzzles = customUnderTest.execute(
+                bufferSize = BATCH_SIZE,
+                ratingStart = RATING_START,
+                increment = customIncrement,
+            ).take(3).toList()
+
+            // Then
+            assertEquals(RATING_START, puzzles[0].rating)
+            assertEquals(RATING_START + customIncrement, puzzles[1].rating)
+            assertEquals(RATING_START + 2 * customIncrement, puzzles[2].rating)
         }
-        // When
-        val puzzle = underTest.next()
 
-        // Then
-        assertNotNull(puzzle)
-        assertEquals(RATING_START, puzzle.rating)
+        @Test
+        fun `GIVEN different ratingStart WHEN collecting THEN starts from specified rating`() = runTest(testDispatcher) {
+            // Given
+            val newRatingStart = 1500
 
-        job.cancel()
+            // When
+            val puzzles = underTest.execute(
+                bufferSize = BATCH_SIZE,
+                ratingStart = newRatingStart,
+                increment = INCREMENT,
+            ).take(1).toList()
+
+            // Then
+            assertEquals(newRatingStart, puzzles.first().rating)
+        }
     }
 
-    @Test
-    fun `GIVEN start called WHEN next multiple times THEN returns puzzles with increasing ratings`() = runTest(testDispatcher) {
-        // Given
-        val job = backgroundScope.launch {
-            underTest.start(scope = this, batchSize = BATCH_SIZE, ratingStart = RATING_START, increment = INCREMENT)
+    @Nested
+    internal inner class ErrorRecovery {
+        @Test
+        fun `GIVEN transient error WHEN collecting THEN recovers and continues producing`() = runTest(testDispatcher) {
+            // Given
+            val failingPuzzleByRating = FailOnceGetPuzzleByRating(
+                delegate = GetPuzzleByRatingImpl(repository, FakeAppSettingsRepository.default()),
+                failAtCallIndex = 2,
+            )
+            val transientUnderTest = GetBufferedPuzzleSeriesImpl(
+                getPuzzleByRating = failingPuzzleByRating,
+                randomFactory = fakeRandom,
+                ioDispatcher = testDispatcher,
+            )
+
+            // When
+            val puzzles = transientUnderTest.execute(
+                bufferSize = BATCH_SIZE,
+                ratingStart = RATING_START,
+                increment = INCREMENT,
+            ).take(4).toList()
+
+            // Then - should have recovered from the single failure
+            assertEquals(4, puzzles.size)
         }
 
-        // When
-        val puzzles = (1..5).mapNotNull { underTest.next() }
+        @Test
+        fun `GIVEN 3 consecutive failures WHEN collecting THEN throws PuzzleGenerationException`() = runTest(testDispatcher) {
+            // Given
+            val failingUnderTest = GetBufferedPuzzleSeriesImpl(
+                getPuzzleByRating = FailAlwaysGetPuzzleByRating(),
+                randomFactory = fakeRandom,
+                ioDispatcher = testDispatcher,
+            )
 
-        // Then
-        assertEquals(5, puzzles.size)
-        puzzles.forEachIndexed { index, puzzle ->
-            assertEquals(RATING_START + index * INCREMENT, puzzle.rating)
+            // Then
+            assertThrows<PuzzleGenerationException> {
+                failingUnderTest.execute(
+                    bufferSize = BATCH_SIZE,
+                    ratingStart = RATING_START,
+                    increment = INCREMENT,
+                ).take(1).toList()
+            }
         }
 
-        job.cancel()
+        @Test
+        fun `GIVEN 2 consecutive failures before success WHEN collecting THEN recovers`() = runTest(testDispatcher) {
+            // Given - fails on calls 1 and 2, succeeds on 3+
+            val failingPuzzleByRating = FailNTimesGetPuzzleByRating(
+                delegate = GetPuzzleByRatingImpl(repository, FakeAppSettingsRepository.default()),
+                failCount = 2,
+            )
+            val recoveryUnderTest = GetBufferedPuzzleSeriesImpl(
+                getPuzzleByRating = failingPuzzleByRating,
+                randomFactory = fakeRandom,
+                ioDispatcher = testDispatcher,
+            )
+
+            // When
+            val puzzles = recoveryUnderTest.execute(
+                bufferSize = BATCH_SIZE,
+                ratingStart = RATING_START,
+                increment = INCREMENT,
+            ).take(2).toList()
+
+            // Then
+            assertEquals(2, puzzles.size)
+        }
+
+        @Test
+        fun `GIVEN intermittent failures WHEN collecting THEN resets failure counter on success`() = runTest(testDispatcher) {
+            // Given - fails on every 3rd call but recovers
+            val failingPuzzleByRating = FailEveryNthGetPuzzleByRating(
+                delegate = GetPuzzleByRatingImpl(repository, FakeAppSettingsRepository.default()),
+                failEveryN = 3,
+            )
+            val intermittentUnderTest = GetBufferedPuzzleSeriesImpl(
+                getPuzzleByRating = failingPuzzleByRating,
+                randomFactory = fakeRandom,
+                ioDispatcher = testDispatcher,
+            )
+
+            // When - collect enough to trigger multiple failures
+            val puzzles = intermittentUnderTest.execute(
+                bufferSize = BATCH_SIZE,
+                ratingStart = RATING_START,
+                increment = INCREMENT,
+            ).take(5).toList()
+
+            // Then - consecutive failure count resets on success, so no crash
+            assertEquals(5, puzzles.size)
+        }
     }
 
-    @Test
-    fun `GIVEN batchSize puzzles consumed WHEN next THEN loads next batch`() = runTest(testDispatcher) {
-        // Given
-        val batchSize = 3
-        val job = backgroundScope.launch {
-            underTest.start(scope = this, batchSize = batchSize, ratingStart = RATING_START, increment = INCREMENT)
+    @Nested
+    internal inner class Cancellation {
+        @Test
+        fun `GIVEN collecting flow WHEN cancelled THEN stops producing`() = runTest(testDispatcher) {
+            // Given
+            val emissions = mutableListOf<Puzzle>()
+
+            val job = backgroundScope.launch {
+                underTest.execute(
+                    bufferSize = BATCH_SIZE,
+                    ratingStart = RATING_START,
+                    increment = INCREMENT,
+                ).collect { emissions.add(it) }
+            }
+
+            runCurrent()
+            val countBeforeCancel = emissions.size
+            assertTrue(countBeforeCancel > 0)
+
+            // When
+            job.cancel()
+            runCurrent()
+
+            // Then - no further growth
+            assertEquals(countBeforeCancel, emissions.size)
         }
-
-        // Consume first batch
-        repeat(batchSize) { underTest.next() }
-
-        // When - request one more (triggers next batch load)
-        val puzzle = underTest.next()
-
-        // Then
-        assertNotNull(puzzle)
-        assertEquals(RATING_START + batchSize * INCREMENT, puzzle.rating)
-
-        job.cancel()
     }
 
-    @Test
-    fun `GIVEN no more puzzles available WHEN next THEN returns null`() = runTest(testDispatcher) {
-        // Given
-        repository.clear()
-        val job = backgroundScope.launch {
-            underTest.start(scope = this, batchSize = BATCH_SIZE, ratingStart = RATING_START, increment = INCREMENT)
+    @Nested
+    internal inner class BufferBehavior {
+        @Test
+        fun `GIVEN small buffer WHEN collecting THEN still produces all requested items`() = runTest(testDispatcher) {
+            // When
+            val puzzles = underTest.execute(
+                bufferSize = 2,
+                ratingStart = RATING_START,
+                increment = INCREMENT,
+            ).take(10).toList()
+
+            // Then
+            assertEquals(10, puzzles.size)
         }
 
-        // Then
-        assertThrows<IllegalArgumentException> {  underTest.next() }
+        @Test
+        fun `GIVEN large buffer WHEN collecting THEN still produces correctly`() = runTest(testDispatcher) {
+            // When
+            val puzzles = underTest.execute(
+                bufferSize = 20,
+                ratingStart = RATING_START,
+                increment = INCREMENT,
+            ).take(5).toList()
 
-        job.cancel()
+            // Then
+            assertEquals(5, puzzles.size)
+        }
     }
 
-    @Test
-    fun `GIVEN start called WHEN start called again THEN resets and returns from beginning`() = runTest(testDispatcher) {
-        // Given
-        val job1 = backgroundScope.launch {
-            underTest.start(scope = this, batchSize = BATCH_SIZE, ratingStart = RATING_START, increment = INCREMENT)
+    @Nested
+    internal inner class EmptyRepository {
+        @Test
+        fun `GIVEN no puzzles in repository WHEN collecting THEN throws PuzzleGenerationException`() = runTest(testDispatcher) {
+            // Given
+            repository.clear()
+
+            // Then
+            assertThrows<PuzzleGenerationException> {
+                underTest.execute(
+                    bufferSize = BATCH_SIZE,
+                    ratingStart = RATING_START,
+                    increment = INCREMENT,
+                ).take(1).toList()
+            }
         }
-        repeat(5) { underTest.next() } // Consume some puzzles
-
-        // When - start again
-        val job2 = backgroundScope.launch {
-            underTest.start(scope = this, batchSize = BATCH_SIZE, ratingStart = RATING_START, increment = INCREMENT)
-        }
-        val puzzle = underTest.next()
-
-        // Then - should be back at the start
-        assertNotNull(puzzle)
-        assertEquals(RATING_START, puzzle.rating)
-
-        job1.cancel()
-        job2.cancel()
-    }
-
-    @Test
-    fun `GIVEN start with different ratingStart WHEN next THEN returns puzzles from new rating`() = runTest(testDispatcher) {
-        // Given
-        val newRatingStart = 1500
-        val job = backgroundScope.launch {
-            underTest.start(scope = this, batchSize = BATCH_SIZE, ratingStart = newRatingStart, increment = INCREMENT)
-        }
-
-        // When
-        val puzzle = underTest.next()
-
-        // Then
-        assertNotNull(puzzle)
-        assertEquals(newRatingStart, puzzle.rating)
-
-        job.cancel()
-    }
-
-    @Test
-    fun `GIVEN start with custom increment WHEN next multiple THEN uses custom increment`() = runTest(testDispatcher) {
-        // Given
-        val customIncrement = 100
-        fakeRandom.returnValue = customIncrement
-        val job = backgroundScope.launch {
-            underTest.start(scope = this, batchSize = BATCH_SIZE, ratingStart = RATING_START, increment = customIncrement)
-        }
-
-        // When
-        val first = underTest.next()
-        val second = underTest.next()
-
-        // Then
-        assertNotNull(first)
-        assertNotNull(second)
-        assertEquals(RATING_START, first.rating)
-        assertEquals(RATING_START + customIncrement, second.rating)
-
-        job.cancel()
-    }
-
-    @Test
-    fun `GIVEN empty repository WHEN next THEN returns null`() = runTest(testDispatcher) {
-        // Given
-        repository.clear()
-        val job = backgroundScope.launch {
-            underTest.start(scope = this, batchSize = BATCH_SIZE, ratingStart = RATING_START, increment = INCREMENT)
-        }
-
-        // Then
-        assertThrows<IllegalArgumentException> { underTest.next() }
-
-        job.cancel()
-    }
-
-    @Test
-    fun `GIVEN small batchSize WHEN next beyond batch THEN loads multiple batches`() = runTest(testDispatcher) {
-        // Given
-        val batchSize = 2
-        val job = backgroundScope.launch {
-            underTest.start(scope = this, batchSize = batchSize, ratingStart = RATING_START, increment = INCREMENT)
-        }
-
-        // When - get 5 puzzles (3 batches)
-        val puzzles = (1..5).mapNotNull { underTest.next() }
-
-        // Then
-        assertEquals(5, puzzles.size)
-
-        job.cancel()
-    }
-
-    @Test
-    fun `GIVEN transient error WHEN next THEN recovers and continues producing`() = runTest(testDispatcher) {
-        // Given - repository that fails once then succeeds
-        val failingPuzzleByRating = FailOnceGetPuzzleByRating(
-            delegate = GetPuzzleByRatingImpl(repository, FakeAppSettingsRepository.default()),
-            failAtCallIndex = 2,
-        )
-        val transientUnderTest = GetBufferedPuzzleSeriesImpl(
-            getPuzzleByRating = failingPuzzleByRating,
-            randomFactory = fakeRandom,
-            ioDispatcher = testDispatcher,
-        )
-        val job = backgroundScope.launch {
-            transientUnderTest.start(scope = this, batchSize = BATCH_SIZE, ratingStart = RATING_START, increment = INCREMENT)
-        }
-
-        // When - get puzzles (should skip the failed one and continue)
-        val puzzles = (1..4).mapNotNull { transientUnderTest.next() }
-
-        // Then - should have recovered from the single failure
-        assertEquals(4, puzzles.size)
-
-        job.cancel()
-    }
-
-    @Test
-    fun `GIVEN 3 consecutive errors WHEN next THEN channel closes and returns null`() = runTest(testDispatcher) {
-        // Given - repository that fails persistently
-        val failingPuzzleByRating = FailAlwaysGetPuzzleByRating()
-        val failingUnderTest = GetBufferedPuzzleSeriesImpl(
-            getPuzzleByRating = failingPuzzleByRating,
-            randomFactory = fakeRandom,
-            ioDispatcher = testDispatcher,
-        )
-        val job = backgroundScope.launch {
-            failingUnderTest.start(scope = this, batchSize = BATCH_SIZE, ratingStart = RATING_START, increment = INCREMENT)
-        }
-
-        // Then
-        assertThrows<RuntimeException>("Persistent failure") { failingUnderTest.next() }
-
-        job.cancel()
     }
 
     private companion object {
@@ -267,5 +315,35 @@ private class FailOnceGetPuzzleByRating(
 private class FailAlwaysGetPuzzleByRating : GetPuzzleByRating {
     override suspend fun invoke(targetRating: Int): Puzzle {
         throw RuntimeException("Persistent failure")
+    }
+}
+
+private class FailNTimesGetPuzzleByRating(
+    private val delegate: GetPuzzleByRating,
+    private val failCount: Int,
+) : GetPuzzleByRating {
+    private var callCount = 0
+
+    override suspend fun invoke(targetRating: Int): Puzzle {
+        callCount++
+        if (callCount <= failCount) {
+            throw RuntimeException("Failure #$callCount")
+        }
+        return delegate(targetRating)
+    }
+}
+
+private class FailEveryNthGetPuzzleByRating(
+    private val delegate: GetPuzzleByRating,
+    private val failEveryN: Int,
+) : GetPuzzleByRating {
+    private var callCount = 0
+
+    override suspend fun invoke(targetRating: Int): Puzzle {
+        callCount++
+        if (callCount % failEveryN == 0) {
+            throw RuntimeException("Intermittent failure at call #$callCount")
+        }
+        return delegate(targetRating)
     }
 }

@@ -58,7 +58,7 @@ class UserDtoMapper @Inject constructor() {
         puzzleRush = highScores.puzzleRush,
         puzzleStreak = highScores.puzzleStreak,
         findTheSquare = highScores.findTheSquare,
-        moveThePiece = highScores.moveThePiece,
+        knightPath = highScores.knightPath,
         blindMode = highScores.blindMode,
     )
 
@@ -67,7 +67,7 @@ class UserDtoMapper @Inject constructor() {
         puzzleRush = dto.puzzleRush,
         puzzleStreak = dto.puzzleStreak,
         findTheSquare = dto.findTheSquare,
-        moveThePiece = dto.moveThePiece,
+        knightPath = dto.knightPath,
         blindMode = dto.blindMode,
     )
 
@@ -80,7 +80,7 @@ class UserDtoMapper @Inject constructor() {
         streakSessions = stats.streakSessions,
         failedPuzzlesRedeemed = stats.failedPuzzlesRedeemed,
         findSquareSessions = stats.findSquareSessions,
-        moveThePieceSessions = stats.moveThePieceSessions,
+        knightPathSessions = stats.knightPathSessions,
         blindModeWins = stats.blindModeWins,
         rushPuzzlesSolved = stats.rushPuzzlesSolved,
     )
@@ -94,7 +94,7 @@ class UserDtoMapper @Inject constructor() {
         streakSessions = dto.streakSessions,
         failedPuzzlesRedeemed = dto.failedPuzzlesRedeemed,
         findSquareSessions = dto.findSquareSessions,
-        moveThePieceSessions = dto.moveThePieceSessions,
+        knightPathSessions = dto.knightPathSessions,
         blindModeWins = dto.blindModeWins,
         rushPuzzlesSolved = dto.rushPuzzlesSolved,
     )

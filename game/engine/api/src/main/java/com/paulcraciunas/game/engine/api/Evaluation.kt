@@ -28,7 +28,7 @@ sealed class Evaluation {
 
     companion object {
         private const val MAX_EVAL_PAWNS = 10f
-        const val MIN_FRACTION = 0.03f
-        const val MAX_FRACTION = 0.97f
+        const val MIN_FRACTION = 0.0f
+        const val MAX_FRACTION = 1.0f
     }
 }

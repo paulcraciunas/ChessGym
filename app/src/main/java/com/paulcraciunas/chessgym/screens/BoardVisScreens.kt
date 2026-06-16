@@ -9,8 +9,8 @@ import com.paulcraciunas.chessgym.navigation.Screen
 import com.paulcraciunas.chessgym.navigation.navigateToDashChild
 import com.paulcraciunas.screens.boardvis.dashboard.ui.BoardVisDashboardScreen
 import com.paulcraciunas.screens.boardvis.dashboard.vm.BoardVisDashboardViewModel
-import com.paulcraciunas.screens.boardvis.pieces.ui.MoveThePieceScreen
-import com.paulcraciunas.screens.boardvis.pieces.vm.MoveThePieceViewModel
+import com.paulcraciunas.screens.boardvis.pieces.ui.KnightPathScreen
+import com.paulcraciunas.screens.boardvis.pieces.vm.KnightPathViewModel
 import com.paulcraciunas.screens.boardvis.squares.ui.FindTheSquareScreen
 import com.paulcraciunas.screens.boardvis.squares.vm.FindTheSquareViewModel
 
@@ -45,17 +45,21 @@ internal fun FindTheSquare(tabNavController: NavHostController) {
 }
 
 @Composable
-internal fun MoveThePiece(tabNavController: NavHostController) {
-    val vm: MoveThePieceViewModel = hiltViewModel()
-    val moveThePieceState by vm.uiState.collectAsStateWithLifecycle()
+internal fun KnightPath(tabNavController: NavHostController) {
+    val vm: KnightPathViewModel = hiltViewModel()
+    val knightPathState by vm.uiState.collectAsStateWithLifecycle()
 
-    MoveThePieceScreen(
-        uiState = moveThePieceState,
-        onNavigateBack = { tabNavController.popBackStack(Screen.BoardVisualization, inclusive = false) },
-        onTrainingModeToggled = vm::onTrainingModeToggled,
-        onPieceSelected = vm::onPieceSelected,
+    KnightPathScreen(
+        uiState = knightPathState,
+        onNavigateBack = {
+            if (!vm.onNavigateBackPressed()) {
+                tabNavController.popBackStack(Screen.BoardVisualization, inclusive = false)
+            }
+        },
         onPlayClicked = vm::onPlayClicked,
         onSquareClicked = vm::onSquareClicked,
         onPlayAgain = vm::onPlayAgain,
+        onAbandonConfirmed = vm::onAbandonConfirmed,
+        onAbandonDismissed = vm::onAbandonDismissed,
     )
 }

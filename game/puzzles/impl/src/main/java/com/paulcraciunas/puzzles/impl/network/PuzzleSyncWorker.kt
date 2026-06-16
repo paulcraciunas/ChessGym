@@ -61,7 +61,7 @@ class PuzzleSyncWorker @AssistedInject constructor(
 
         try {
             downloadPuzzleDatabase(tierSegment, zstFile, dbFile)?.let { return@withContext it }
-            decompressPuzzleDatabase(zstFile, dbFile)?.let { return@withContext it }
+            decompressPuzzleDatabase(zstFile, dbFile, tierSegment)?.let { return@withContext it }
             return@withContext placePuzzleDatabase(dbFile)
         } catch (e: Exception) {
             Timber.e(e, "Unexpected error during puzzle database sync")
@@ -93,11 +93,11 @@ class PuzzleSyncWorker @AssistedInject constructor(
         return null
     }
 
-    private suspend fun decompressPuzzleDatabase(source: File, destination: File): Result? {
+    private suspend fun decompressPuzzleDatabase(source: File, destination: File, tierSegment: String): Result? {
         step = Step.Unpack
         if (!destination.exists()) {
             try {
-                fileWriter.onBegin((source.length() * COMPRESS_FACTOR).toLong())
+                fileWriter.onBegin((source.length() * compressionFactor(tierSegment)).toLong())
                 fileWriter.write(decompressor.decompress(source.inputStream()), destination)
                 source.delete() // Only delete download file after successful decompression
                 Timber.i("Download file deleted after successful decompression")
@@ -187,7 +187,6 @@ class PuzzleSyncWorker @AssistedInject constructor(
     }
 
     companion object {
-        private const val COMPRESS_FACTOR = 3.7f
         private const val DOWNLOAD_FILENAME = "puzzles.db.zst"
         private const val UNPACK_FILENAME = "puzzles.db"
 
@@ -202,5 +201,11 @@ class PuzzleSyncWorker @AssistedInject constructor(
         const val ERROR_DECOMPRESSION_FAILED = "decompression_failed"
         const val ERROR_DATABASE_WRITE_FAILED = "database_write_failed"
         const val ERROR_UNKNOWN = "unknown_error"
+
+        private fun compressionFactor(tierSegment: String): Float = when (tierSegment) {
+            PuzzleDatabaseContract.Tier.FULL -> 1.88f
+            PuzzleDatabaseContract.Tier.COMPACT -> 1.73f
+            else -> 1.0f
+        }
     }
 }

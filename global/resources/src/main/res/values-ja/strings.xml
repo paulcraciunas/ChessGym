@@ -116,7 +116,7 @@
     <string name="user_stat_high_score_blind_mode">ベストブラインドモード</string>
     <string name="user_stat_high_score_puzzle_streak">ベストパズルストリーク</string>
     <string name="user_stat_high_score_find_the_square">ベストマス探し</string>
-    <string name="user_stat_high_score_move_the_piece">ベスト駒移動</string>
+    <string name="user_stat_high_score_knight_path">ベスト駒移動</string>
     <!-- endregion -->
 
     <!-- region Loading -->
@@ -148,13 +148,12 @@
     <string name="loading_error_download_failed">ダウンロードに失敗しました。インターネット接続を確認してもう一度お試しください。</string>
     <string name="loading_error_decompression_failed">データベースの展開に失敗しました。もう一度お試しください。</string>
     <string name="loading_error_database_write_failed">データベースの構築に失敗しました。もう一度お試しください。</string>
-    <string name="loading_error_permission">権限が拒否されました。続行するには通知を有効にしてください。</string>
     <string name="loading_error_no_internet">インターネット接続がありません。接続を確認してもう一度お試しください。</string>
     <string name="loading_error_not_enough_disk_space">ディスク容量が不足しています。空き容量を確保してもう一度お試しください。</string>
     <string name="loading_error_generic">エラーが発生しました。もう一度お試しください。</string>
     <string name="loading_error_consent_required">続行するにはクラッシュレポートへの同意が必要です。アプリの安定性向上のために技術的なクラッシュデータのみを収集します。</string>
     <string name="crash_consent_dialog_title">改善にご協力ください</string>
-    <string name="crash_consent_dialog_body">ChessGymはクラッシュレポートを使用してアプリのエラーを検出・修正しています。このデータはクラッシュを特定し、すべてのユーザーのアプリ安定性を向上させるためだけに使用されます。\n\n個人情報、ゲームデータ、使用パターンは収集されません。問題が発生した場合にのみ、技術的なクラッシュの詳細（スタックトレースやデバイスモデルなど）が収集されます。\n\nこの設定は後でアプリ内で変更できます。</string>
+    <string name="crash_consent_dialog_body">ChessGymはクラッシュレポートを使用してアプリのエラーを検出・修正しています。このデータはクラッシュを特定し、すべてのユーザーのアプリ安定性を向上させるためだけに使用されます。\n\n&lt;b>個人情報、ゲームデータ、使用パターンは収集されません&lt;/b>。問題が発生した場合にのみ、技術的なクラッシュの詳細（スタックトレースやデバイスモデルなど）が収集されます。\n\nこの設定は後でアプリ内で変更できます。</string>
     <string name="loading_fact_eyebrow">ご存知ですか？</string>
     <string-array name="loading_fact_titles">
         <item>無力なクイーン</item>
@@ -305,18 +304,19 @@
     <!-- endregion -->
 
     <!-- region Move the Piece -->
-    <string name="boardvis_move_piece_title">駒を動かせ</string>
-    <string name="boardvis_move_piece_description">ボード上で正しい手を可視化して実行</string>
-    <string name="boardvis_move_piece_training_mode">トレーニングモード</string>
-    <string name="boardvis_move_piece_moves_remaining">残り手数: %1$d</string>
-    <string name="boardvis_move_piece_rules">相手に攻撃されるマスに止まらずに駒を動かしてください。必要な手数を達成して次のレベルに進みましょう！</string>
-    <string name="boardvis_move_piece_captured">取られた！</string>
+    <string name="boardvis_knight_path_title">ナイトの道</string>
+    <string name="boardvis_knight_path_description">ナイトが目的のマスに到達する最短ルートを見つけよう</string>
+    <string name="boardvis_knight_path_rules">ナイトが目的のマスに到達する最短ルートを見つけてください。一手でも間違えたらゲームオーバー！</string>
+    <string name="boardvis_knight_path_captured">取られた！</string>
+    <string name="boardvis_knight_path_wrong_move">間違った手！</string>
     <!-- endregion -->
 
     <!-- region Settings -->
     <string name="settings_title">設定</string>
     <string name="settings_section_general">一般</string>
     <string name="settings_section_ui">外観</string>
+    <string name="settings_sound">サウンド</string>
+    <string name="settings_sound_description">ゲーム中にサウンドを再生</string>
     <string name="settings_haptic_feedback">触覚フィードバック</string>
     <string name="settings_haptic_feedback_description">操作時に振動</string>
     <string name="settings_auto_promote">自動プロモーション</string>
@@ -327,6 +327,7 @@
     <string name="settings_show_borders_description">ボード周辺に座標を表示</string>
     <string name="settings_highlight_legal_moves">合法手をハイライト</string>
     <string name="settings_highlight_legal_moves_description">駒を選択したときに使用可能なマスを表示</string>
+    <string name="settings_language">言語</string>
     <string name="settings_light_mode">テーマ</string>
     <string name="settings_light_mode_light">ライト</string>
     <string name="settings_light_mode_dark">ダーク</string>
@@ -343,8 +344,9 @@
     <string name="about_title">アプリについて</string>
     <string name="about_general_title">一般</string>
     <string name="about_legal_title">法的情報</string>
-    <string name="about_creator_title">制作者</string>
-    <string name="about_creator_description">ChessGymはPaul Mihai Craciunasによって制作されました。ロンドン出身のAndroidエンジニアで、チェスに情熱を持ち、人々が上達の旅を歩む手助けをしたいと願っています。</string>
+    <string name="about_app_title">アプリ</string>
+    <string name="about_app_description">Paul Craciunas が ❤\uFE0F を込めて制作。\t</string>
+    <string name="about_dedication_danya">このアプリケーションは、グランドマスター&lt;b>Daniel Naroditsky&lt;/b>（1995–2025）の思い出に心を込めて捧げます。その感染力のある情熱、比類なき明晰さ、そして素晴らしい教育動画は数十万人の心を刺激し、チェスへの普遍的な喜びを再び灯しました。</string>
     <string name="about_contact_title">お問い合わせ</string>
     <string name="about_contact_description">法的問題、ビジネス機会、その他のお問い合わせは、メールにてご連絡ください。</string>
     <string name="about_contact_email">contact@chessgym.app</string>
@@ -360,7 +362,7 @@
     <string name="about_donate_medium">サンドイッチ</string>
     <string name="about_donate_large">ピザ</string>
     <string name="about_rate_title">アプリを評価</string>
-    <string name="about_rate_description">ChessGymをお楽しみですか？Playストアで評価をお願いします</string>
+    <string name="about_rate_description">ChessGymをお楽しみですか？評価をお願いします</string>
     <string name="about_libraries_title">オープンソースライブラリ</string>
     <string name="about_libraries_description">ChessGymは以下のオープンソースライブラリを使用して構築されています：</string>
     <string name="about_privacy_policy_title">プライバシーポリシー</string>
@@ -380,6 +382,7 @@
     <string name="tools_mode_start">ツールを開始</string>
     <string name="tools_clock_description">設定可能なコントロールでゲームを計時</string>
     <string name="tools_analysis_title">分析</string>
+    <string name="tools_analysis_flip_board">ボードを反転</string>
     <string name="tools_analysis_description">エンジンで局面を分析</string>
     <string name="tools_import_description">FENまたはPGN表記からゲームをインポート</string>
     <!-- endregion -->
@@ -400,8 +403,8 @@
 
     <!-- region Import Game Screen -->
     <string name="import_game_title">ゲームをインポート</string>
-    <string name="import_fen">FEN</string>
-    <string name="import_pgn">PGN</string>
+    <string name="import_fen">局面</string>
+    <string name="import_pgn">ゲーム</string>
     <string name="import_dialog_title_fen">FENをインポート</string>
     <string name="import_dialog_title_pgn">PGNをインポート</string>
     <string name="import_dialog_hint_fen">ここにFEN文字列を貼り付け…</string>
@@ -419,6 +422,7 @@
     <string name="blind_mode_title">ブラインドモード</string>
     <string name="blind_mode_training_mode">トレーニングモード</string>
     <string name="blind_mode_training_description">ゲームはレーティングに影響しません</string>
+    <string name="blind_mode_rated_description">レーティングモード</string>
     <string name="blind_mode_play">プレイ</string>
     <string name="blind_mode_resign">投了</string>
     <string name="blind_mode_reveal">ボードを表示</string>
@@ -436,21 +440,21 @@
     <string name="achievement_category_streak_sessions">ストリークセッション</string>
     <string name="achievement_category_failed_puzzles_redeemed">失敗パズル挽回</string>
     <string name="achievement_category_find_square_sessions">マス探しセッション</string>
-    <string name="achievement_category_move_piece_sessions">駒移動セッション</string>
-    <string name="achievement_category_blind_mode_wins">ホメロスの遺産</string>
+    <string name="achievement_category_knight_path_sessions">ナイトの道セッション</string>
+    <string name="achievement_category_blind_mode_wins">ブラインドモード勝利</string>
     <string name="achievement_category_rated_win_streak">レーティング連勝</string>
     <string name="achievement_category_rating_climber">レーティング上昇者</string>
-    <string name="achievement_category_blind_strategist">ブラインド戦略家</string>
-    <string name="achievement_category_rush_champion">ラッシュチャンピオン</string>
-    <string name="achievement_category_streak_legend">ストリーク伝説</string>
-    <string name="achievement_category_eagle_eye">鷹の目</string>
-    <string name="achievement_category_knights_path">ナイトの道</string>
-    <string name="achievement_category_puzzle_addict">パズル中毒</string>
+    <string name="achievement_category_blind_strategist">ブラインドモードレーティング</string>
+    <string name="achievement_category_rush_champion">ラッシュハイスコア</string>
+    <string name="achievement_category_streak_legend">ストリークハイスコア</string>
+    <string name="achievement_category_eagle_eye">マス探しハイスコア</string>
+    <string name="achievement_category_knights_path">ナイトの道ハイスコア</string>
+    <string name="achievement_category_puzzle_addict">解いたパズル</string>
     <string name="achievement_category_time_invested">投資した時間</string>
-    <string name="achievement_category_daily_grinder">日課の鍛錬</string>
-    <string name="achievement_category_consistency_king">継続の王</string>
+    <string name="achievement_category_daily_grinder">連続プレイ日数</string>
+    <string name="achievement_category_consistency_king">最長連続日数</string>
     <string name="achievement_category_board_vision">ボードビジョン</string>
-    <string name="achievement_category_rush_solver">ラッシュソルバー</string>
+    <string name="achievement_category_rush_solver">ラッシュ解答数</string>
 
     <!-- Tier names: RATED_PUZZLES_SOLVED -->
     <string name="achievement_rated_puzzles_solved_one">パズル愛好者</string>
@@ -487,12 +491,12 @@
     <string name="achievement_find_square_sessions_four">マスマスター</string>
     <string name="achievement_find_square_sessions_five">マスグランドマスター</string>
 
-    <!-- Tier names: MOVE_PIECE_SESSIONS -->
-    <string name="achievement_move_piece_sessions_one">駒初心者</string>
-    <string name="achievement_move_piece_sessions_two">駒を動かす人</string>
-    <string name="achievement_move_piece_sessions_three">駒ナビゲーター</string>
-    <string name="achievement_move_piece_sessions_four">駒マスター</string>
-    <string name="achievement_move_piece_sessions_five">駒グランドマスター</string>
+    <!-- Tier names: KNIGHT_PATH_SESSIONS -->
+    <string name="achievement_knight_path_sessions_one">駒初心者</string>
+    <string name="achievement_knight_path_sessions_two">駒を動かす人</string>
+    <string name="achievement_knight_path_sessions_three">駒ナビゲーター</string>
+    <string name="achievement_knight_path_sessions_four">駒マスター</string>
+    <string name="achievement_knight_path_sessions_five">駒グランドマスター</string>
 
     <!-- Tier names: BLIND_MODE_WINS -->
     <string name="achievement_blind_mode_wins_one">オーディンの弟子</string>
@@ -598,7 +602,7 @@
     <string name="achievement_desc_streak_sessions">この実績を獲得するためにパズルストリークセッションを完了する</string>
     <string name="achievement_desc_failed_puzzles_redeemed">以前失敗したパズルを再挑戦して解く</string>
     <string name="achievement_desc_find_square_sessions">この実績を獲得するためにマス探しセッションをプレイする</string>
-    <string name="achievement_desc_move_piece_sessions">この実績を獲得するために駒移動セッションをプレイする</string>
+    <string name="achievement_desc_knight_path_sessions">この実績を獲得するためにナイトの道のセッションをプレイしてください</string>
     <string name="achievement_desc_blind_mode_wins">この実績を獲得するためにレーティングブラインドモードの試合に勝つ</string>
     <string name="achievement_desc_rated_win_streak">失敗せずに連続してレーティングパズルに勝つ</string>
     <string name="achievement_desc_rating_climber">新たな高みに到達するためにパズルレーティングを上げる</string>
@@ -606,12 +610,12 @@
     <string name="achievement_desc_rush_champion">パズルラッシュでハイスコアを出す</string>
     <string name="achievement_desc_streak_legend">パズルストリークでハイスコアを出す</string>
     <string name="achievement_desc_eagle_eye">マス探しでハイスコアを出す</string>
-    <string name="achievement_desc_knights_path">駒移動でハイスコアを出す</string>
+    <string name="achievement_desc_knights_path">ナイトの道でハイスコアを出す</string>
     <string name="achievement_desc_puzzle_addict">すべてのゲームモードでパズルを解く</string>
     <string name="achievement_desc_time_invested">すべてのゲームモードで練習に時間を費やす</string>
     <string name="achievement_desc_daily_grinder">連続する日数プレイしてストリークを作る</string>
     <string name="achievement_desc_consistency_king">最高の連続毎日ストリークを達成する</string>
-    <string name="achievement_desc_board_vision">マス探しと駒移動セッションを完了する</string>
+    <string name="achievement_desc_board_vision">マス探しとナイトの道のセッションを完了する</string>
     <string name="achievement_desc_rush_solver">パズルラッシュセッション中にパズルを解く</string>
 
     <!-- Achievement UI -->

@@ -24,7 +24,7 @@ private val Achievement.displayNameRes: Int
         Achievement.STREAK_SESSIONS -> R.string.achievement_category_streak_sessions
         Achievement.FAILED_PUZZLES_REDEEMED -> R.string.achievement_category_failed_puzzles_redeemed
         Achievement.FIND_SQUARE_SESSIONS -> R.string.achievement_category_find_square_sessions
-        Achievement.MOVE_PIECE_SESSIONS -> R.string.achievement_category_move_piece_sessions
+        Achievement.KNIGHT_PATH_SESSIONS -> R.string.achievement_category_knight_path_sessions
         Achievement.BLIND_MODE_WINS -> R.string.achievement_category_blind_mode_wins
         Achievement.RATED_WIN_STREAK -> R.string.achievement_category_rated_win_streak
         Achievement.RATING_CLIMBER -> R.string.achievement_category_rating_climber
@@ -49,7 +49,7 @@ private val Achievement.descriptionRes: Int
         Achievement.STREAK_SESSIONS -> R.string.achievement_desc_streak_sessions
         Achievement.FAILED_PUZZLES_REDEEMED -> R.string.achievement_desc_failed_puzzles_redeemed
         Achievement.FIND_SQUARE_SESSIONS -> R.string.achievement_desc_find_square_sessions
-        Achievement.MOVE_PIECE_SESSIONS -> R.string.achievement_desc_move_piece_sessions
+        Achievement.KNIGHT_PATH_SESSIONS -> R.string.achievement_desc_knight_path_sessions
         Achievement.BLIND_MODE_WINS -> R.string.achievement_desc_blind_mode_wins
         Achievement.RATED_WIN_STREAK -> R.string.achievement_desc_rated_win_streak
         Achievement.RATING_CLIMBER -> R.string.achievement_desc_rating_climber
@@ -103,12 +103,12 @@ private fun tierNameRes(achievement: Achievement, tier: Achievement.Tier): Int =
         Achievement.Tier.FOUR -> R.string.achievement_find_square_sessions_four
         Achievement.Tier.FIVE -> R.string.achievement_find_square_sessions_five
     }
-    Achievement.MOVE_PIECE_SESSIONS -> when (tier) {
-        Achievement.Tier.ONE -> R.string.achievement_move_piece_sessions_one
-        Achievement.Tier.TWO -> R.string.achievement_move_piece_sessions_two
-        Achievement.Tier.THREE -> R.string.achievement_move_piece_sessions_three
-        Achievement.Tier.FOUR -> R.string.achievement_move_piece_sessions_four
-        Achievement.Tier.FIVE -> R.string.achievement_move_piece_sessions_five
+    Achievement.KNIGHT_PATH_SESSIONS -> when (tier) {
+        Achievement.Tier.ONE -> R.string.achievement_knight_path_sessions_one
+        Achievement.Tier.TWO -> R.string.achievement_knight_path_sessions_two
+        Achievement.Tier.THREE -> R.string.achievement_knight_path_sessions_three
+        Achievement.Tier.FOUR -> R.string.achievement_knight_path_sessions_four
+        Achievement.Tier.FIVE -> R.string.achievement_knight_path_sessions_five
     }
     Achievement.BLIND_MODE_WINS -> when (tier) {
         Achievement.Tier.ONE -> R.string.achievement_blind_mode_wins_one

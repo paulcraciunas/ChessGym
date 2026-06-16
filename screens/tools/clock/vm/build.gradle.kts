@@ -9,8 +9,9 @@ androidLibrary {
 }
 
 dependencies {
-    implementation(project(":game:logic:api"))
     implementation(project(":domain:api"))
+    implementation(project(":game:logic:api"))
+    implementation(project(":global:qualifiers"))
 
     implementation(libs.androidx.lifecycle.runtime.ktx)
 

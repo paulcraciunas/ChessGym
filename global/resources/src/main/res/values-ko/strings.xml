@@ -116,7 +116,7 @@
     <string name="user_stat_high_score_blind_mode">최고 블라인드 모드</string>
     <string name="user_stat_high_score_puzzle_streak">최고 퍼즐 스트릭</string>
     <string name="user_stat_high_score_find_the_square">최고 칸 찾기</string>
-    <string name="user_stat_high_score_move_the_piece">최고 기물 이동</string>
+    <string name="user_stat_high_score_knight_path">최고 기물 이동</string>
     <!-- endregion -->
 
     <!-- region Loading -->
@@ -148,13 +148,12 @@
     <string name="loading_error_download_failed">다운로드 실패. 인터넷 연결을 확인하고 다시 시도해 주세요.</string>
     <string name="loading_error_decompression_failed">데이터베이스 압축 해제 실패. 다시 시도해 주세요.</string>
     <string name="loading_error_database_write_failed">데이터베이스 구축 실패. 다시 시도해 주세요.</string>
-    <string name="loading_error_permission">권한이 거부되었습니다. 계속하려면 알림을 활성화해 주세요.</string>
     <string name="loading_error_no_internet">인터넷 연결 없음. 연결을 확인하고 다시 시도해 주세요.</string>
     <string name="loading_error_not_enough_disk_space">디스크 공간이 부족합니다. 공간을 확보하고 다시 시도해 주세요.</string>
     <string name="loading_error_generic">오류가 발생했습니다. 다시 시도해 주세요.</string>
     <string name="loading_error_consent_required">진행하려면 충돌 보고에 동의해야 합니다. 앱 안정성을 개선하기 위해 기술적인 충돌 데이터만 수집합니다.</string>
     <string name="crash_consent_dialog_title">개선에 도움 주세요</string>
-    <string name="crash_consent_dialog_body">ChessGym은 앱 오류를 감지하고 수정하기 위해 충돌 보고를 사용합니다. 이 데이터는 모든 사용자를 위한 충돌 감지 및 앱 안정성 개선에만 사용됩니다.\n\n개인 정보, 게임 데이터 또는 사용 패턴은 수집되지 않으며, 문제가 발생했을 때만 기술적인 충돌 세부 정보(스택 트레이스 및 기기 모델 등)가 수집됩니다.\n\n이 설정은 나중에 앱에서 변경할 수 있습니다.</string>
+    <string name="crash_consent_dialog_body">ChessGym은 앱 오류를 감지하고 수정하기 위해 충돌 보고를 사용합니다. 이 데이터는 모든 사용자를 위한 충돌 감지 및 앱 안정성 개선에만 사용됩니다.\n\n&lt;b>개인 정보, 게임 데이터 또는 사용 패턴은 수집되지 않으며&lt;/b>, 문제가 발생했을 때만 기술적인 충돌 세부 정보(스택 트레이스 및 기기 모델 등)가 수집됩니다.\n\n이 설정은 나중에 앱에서 변경할 수 있습니다.</string>
     <string name="loading_fact_eyebrow">알고 계셨나요?</string>
     <string-array name="loading_fact_titles">
         <item>무력한 퀸</item>
@@ -305,18 +304,19 @@
     <!-- endregion -->
 
     <!-- region Move the Piece -->
-    <string name="boardvis_move_piece_title">기물 이동</string>
-    <string name="boardvis_move_piece_description">보드에서 올바른 수를 시각화하고 이동하세요</string>
-    <string name="boardvis_move_piece_training_mode">훈련 모드</string>
-    <string name="boardvis_move_piece_moves_remaining">남은 수: %1$d</string>
-    <string name="boardvis_move_piece_rules">상대방이 공격하는 칸에 착지하지 않고 기물을 이동하세요. 다음 레벨로 진행하려면 필요한 수를 완료하세요!</string>
-    <string name="boardvis_move_piece_captured">잡혔습니다!</string>
+    <string name="boardvis_knight_path_title">나이트의 경로</string>
+    <string name="boardvis_knight_path_description">나이트가 목표 칸까지 가는 최단 경로를 찾으세요</string>
+    <string name="boardvis_knight_path_rules">나이트가 목표 칸까지 가는 최단 경로를 찾으세요. 한 번 틀리면 게임 오버!</string>
+    <string name="boardvis_knight_path_captured">잡혔습니다!</string>
+    <string name="boardvis_knight_path_wrong_move">잘못된 수!</string>
     <!-- endregion -->
 
     <!-- region Settings -->
     <string name="settings_title">설정</string>
     <string name="settings_section_general">일반</string>
     <string name="settings_section_ui">외관</string>
+    <string name="settings_sound">소리</string>
+    <string name="settings_sound_description">게임 중 소리 재생</string>
     <string name="settings_haptic_feedback">햅틱 피드백</string>
     <string name="settings_haptic_feedback_description">상호작용 시 진동</string>
     <string name="settings_auto_promote">자동 승진</string>
@@ -327,6 +327,7 @@
     <string name="settings_show_borders_description">보드 주위에 좌표 표시</string>
     <string name="settings_highlight_legal_moves">합법적인 수 강조</string>
     <string name="settings_highlight_legal_moves_description">기물 선택 시 이동 가능한 칸 표시</string>
+    <string name="settings_language">언어</string>
     <string name="settings_light_mode">테마</string>
     <string name="settings_light_mode_light">라이트</string>
     <string name="settings_light_mode_dark">다크</string>
@@ -343,8 +344,9 @@
     <string name="about_title">정보</string>
     <string name="about_general_title">일반</string>
     <string name="about_legal_title">법적 고지</string>
-    <string name="about_creator_title">개발자</string>
-    <string name="about_creator_description">ChessGym은 런던의 Android 엔지니어이자 체스 열정가인 Paul Mihai Craciunas가 개발했으며, 사람들의 실력 향상 여정을 돕고자 합니다.</string>
+    <string name="about_app_title">앱</string>
+    <string name="about_app_description">Paul Craciunas가 ❤\uFE0F로 만들었습니다.\t</string>
+    <string name="about_dedication_danya">이 애플리케이션은 그랜드마스터 &lt;b>Daniel Naroditsky&lt;/b> (1995–2025)의 기억에 경의를 표하며 바칩니다. 그의 전염성 있는 열정, 비할 데 없는 명확함, 그리고 뛰어난 교육 영상은 수십만 명의 마음에 영감을 주었고 체스에 대한 보편적인 기쁨을 되살렸습니다.</string>
     <string name="about_contact_title">연락처</string>
     <string name="about_contact_description">법적 문제, 사업적 기회 또는 기타 문의는 이메일로 연락해 주세요.</string>
     <string name="about_contact_email">contact@chessgym.app</string>
@@ -360,7 +362,7 @@
     <string name="about_donate_medium">샌드위치</string>
     <string name="about_donate_large">피자</string>
     <string name="about_rate_title">앱 평가</string>
-    <string name="about_rate_description">ChessGym이 마음에 드시나요? Play Store에서 평점을 남겨주세요</string>
+    <string name="about_rate_description">ChessGym이 마음에 드시나요? 평점을 남겨주세요</string>
     <string name="about_libraries_title">오픈 소스 라이브러리</string>
     <string name="about_libraries_description">ChessGym은 다음 오픈 소스 라이브러리로 구축되었습니다:</string>
     <string name="about_privacy_policy_title">개인정보 처리방침</string>
@@ -380,6 +382,7 @@
     <string name="tools_mode_start">도구 시작</string>
     <string name="tools_clock_description">설정 가능한 컨트롤로 게임 시간을 재세요</string>
     <string name="tools_analysis_title">분석</string>
+    <string name="tools_analysis_flip_board">보드 뒤집기</string>
     <string name="tools_analysis_description">엔진으로 포지션을 분석하세요</string>
     <string name="tools_import_description">FEN 또는 PGN 표기법에서 게임 가져오기</string>
     <!-- endregion -->
@@ -400,8 +403,8 @@
 
     <!-- region Import Game Screen -->
     <string name="import_game_title">게임 가져오기</string>
-    <string name="import_fen">FEN</string>
-    <string name="import_pgn">PGN</string>
+    <string name="import_fen">포지션</string>
+    <string name="import_pgn">게임</string>
     <string name="import_dialog_title_fen">FEN 가져오기</string>
     <string name="import_dialog_title_pgn">PGN 가져오기</string>
     <string name="import_dialog_hint_fen">FEN 문자열을 여기에 붙여넣기…</string>
@@ -419,6 +422,7 @@
     <string name="blind_mode_title">블라인드 모드</string>
     <string name="blind_mode_training_mode">훈련 모드</string>
     <string name="blind_mode_training_description">게임이 레이팅에 영향을 주지 않습니다</string>
+    <string name="blind_mode_rated_description">레이티드 모드</string>
     <string name="blind_mode_play">플레이</string>
     <string name="blind_mode_resign">기권</string>
     <string name="blind_mode_reveal">공개</string>
@@ -436,21 +440,21 @@
     <string name="achievement_category_streak_sessions">스트릭 세션</string>
     <string name="achievement_category_failed_puzzles_redeemed">실패 퍼즐 만회</string>
     <string name="achievement_category_find_square_sessions">칸 찾기 세션</string>
-    <string name="achievement_category_move_piece_sessions">기물 이동 세션</string>
-    <string name="achievement_category_blind_mode_wins">호머의 유산</string>
+    <string name="achievement_category_knight_path_sessions">나이트 경로 세션</string>
+    <string name="achievement_category_blind_mode_wins">블라인드 모드 승리</string>
     <string name="achievement_category_rated_win_streak">레이티드 연승</string>
     <string name="achievement_category_rating_climber">레이팅 클라이머</string>
-    <string name="achievement_category_blind_strategist">블라인드 전략가</string>
-    <string name="achievement_category_rush_champion">러시 챔피언</string>
-    <string name="achievement_category_streak_legend">스트릭 레전드</string>
-    <string name="achievement_category_eagle_eye">매의 눈</string>
-    <string name="achievement_category_knights_path">나이트의 길</string>
-    <string name="achievement_category_puzzle_addict">퍼즐 중독자</string>
+    <string name="achievement_category_blind_strategist">블라인드 모드 레이팅</string>
+    <string name="achievement_category_rush_champion">러시 최고 점수</string>
+    <string name="achievement_category_streak_legend">스트릭 최고 점수</string>
+    <string name="achievement_category_eagle_eye">칸 찾기 최고 점수</string>
+    <string name="achievement_category_knights_path">나이트 경로 최고 점수</string>
+    <string name="achievement_category_puzzle_addict">해결한 퍼즐</string>
     <string name="achievement_category_time_invested">투자 시간</string>
-    <string name="achievement_category_daily_grinder">일일 연습가</string>
-    <string name="achievement_category_consistency_king">꾸준함의 왕</string>
+    <string name="achievement_category_daily_grinder">연속 플레이 일수</string>
+    <string name="achievement_category_consistency_king">최대 연속 일수</string>
     <string name="achievement_category_board_vision">보드 비전</string>
-    <string name="achievement_category_rush_solver">러시 해결사</string>
+    <string name="achievement_category_rush_solver">러시 퍼즐 해결</string>
 
     <!-- Tier names: RATED_PUZZLES_SOLVED -->
     <string name="achievement_rated_puzzles_solved_one">퍼즐 애호가</string>
@@ -487,12 +491,12 @@
     <string name="achievement_find_square_sessions_four">칸 찾기 마스터</string>
     <string name="achievement_find_square_sessions_five">칸 찾기 그랜드마스터</string>
 
-    <!-- Tier names: MOVE_PIECE_SESSIONS -->
-    <string name="achievement_move_piece_sessions_one">기물 초보자</string>
-    <string name="achievement_move_piece_sessions_two">기물 이동자</string>
-    <string name="achievement_move_piece_sessions_three">기물 항법사</string>
-    <string name="achievement_move_piece_sessions_four">기물 마스터</string>
-    <string name="achievement_move_piece_sessions_five">기물 그랜드마스터</string>
+    <!-- Tier names: KNIGHT_PATH_SESSIONS -->
+    <string name="achievement_knight_path_sessions_one">기물 초보자</string>
+    <string name="achievement_knight_path_sessions_two">기물 이동자</string>
+    <string name="achievement_knight_path_sessions_three">기물 항법사</string>
+    <string name="achievement_knight_path_sessions_four">기물 마스터</string>
+    <string name="achievement_knight_path_sessions_five">기물 그랜드마스터</string>
 
     <!-- Tier names: BLIND_MODE_WINS -->
     <string name="achievement_blind_mode_wins_one">오딘의 제자</string>
@@ -598,7 +602,7 @@
     <string name="achievement_desc_streak_sessions">이 업적을 획득하려면 퍼즐 스트릭 세션을 완료하세요</string>
     <string name="achievement_desc_failed_puzzles_redeemed">이전에 실패한 퍼즐을 재도전하여 해결하세요</string>
     <string name="achievement_desc_find_square_sessions">이 업적을 획득하려면 칸 찾기 세션을 플레이하세요</string>
-    <string name="achievement_desc_move_piece_sessions">이 업적을 획득하려면 기물 이동 세션을 플레이하세요</string>
+    <string name="achievement_desc_knight_path_sessions">이 업적을 획득하려면 나이트 경로 세션을 플레이하세요</string>
     <string name="achievement_desc_blind_mode_wins">이 업적을 획득하려면 레이티드 블라인드 모드 게임을 이기세요</string>
     <string name="achievement_desc_rated_win_streak">실패 없이 연속으로 레이티드 퍼즐을 이기세요</string>
     <string name="achievement_desc_rating_climber">새로운 높이에 도달하기 위해 퍼즐 레이팅을 높이세요</string>
@@ -606,12 +610,12 @@
     <string name="achievement_desc_rush_champion">퍼즐 러시에서 최고 점수를 세우세요</string>
     <string name="achievement_desc_streak_legend">퍼즐 스트릭에서 최고 점수를 세우세요</string>
     <string name="achievement_desc_eagle_eye">칸 찾기에서 최고 점수를 세우세요</string>
-    <string name="achievement_desc_knights_path">기물 이동에서 최고 점수를 세우세요</string>
+    <string name="achievement_desc_knights_path">나이트 경로에서 최고 점수를 세우세요</string>
     <string name="achievement_desc_puzzle_addict">모든 게임 모드에서 퍼즐을 해결하세요</string>
     <string name="achievement_desc_time_invested">모든 게임 모드에서 연습하며 시간을 보내세요</string>
     <string name="achievement_desc_daily_grinder">스트릭을 쌓기 위해 연속된 날에 플레이하세요</string>
     <string name="achievement_desc_consistency_king">역대 최고 연속 일일 스트릭을 달성하세요</string>
-    <string name="achievement_desc_board_vision">칸 찾기와 기물 이동 세션을 완료하세요</string>
+    <string name="achievement_desc_board_vision">칸 찾기와 나이트 경로 세션을 완료하세요</string>
     <string name="achievement_desc_rush_solver">퍼즐 러시 세션에서 퍼즐을 해결하세요</string>
 
     <!-- Achievement UI -->

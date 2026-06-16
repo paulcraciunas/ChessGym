@@ -51,7 +51,7 @@ class UserSetup(private val repository: FakeUserRepository) {
         puzzleRush: Int = 0,
         puzzleStreak: Int = 0,
         findTheSquare: Int = 0,
-        moveThePiece: Int = 0,
+        knightPath: Int = 0,
         blindMode: Int = 400,
     ): UserSetup = apply {
         runBlocking {
@@ -63,7 +63,7 @@ class UserSetup(private val repository: FakeUserRepository) {
                         puzzleRush = puzzleRush,
                         puzzleStreak = puzzleStreak,
                         findTheSquare = findTheSquare,
-                        moveThePiece = moveThePiece,
+                        knightPath = knightPath,
                         blindMode = blindMode,
                     )
                 )

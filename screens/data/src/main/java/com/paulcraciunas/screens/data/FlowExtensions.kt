@@ -1,14 +1,26 @@
 package com.paulcraciunas.screens.data
 
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.update
+import com.paulcraciunas.domain.api.puzzles.NoPuzzleException
+import com.paulcraciunas.domain.api.puzzles.PuzzleGenerationException
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import timber.log.Timber
 
-inline fun <Base, reified Specific: Base> MutableStateFlow<Base>.updateAs(crossinline function: (Specific) -> Base) = update {
-    if (it is Specific) function(it) else it
-}
-
-inline fun <reified Specific> MutableStateFlow<*>.runAs(block: (Specific) -> Unit) {
-    val state = value
-    if (state !is Specific) return
-    block(state)
+/**
+ * Catches [PuzzleGenerationException] caused by [NoPuzzleException] and completes gracefully.
+ * All other exceptions are rethrown so they surface as [com.paulcraciunas.screens.data.engine.PlaySessionState.Status.Failed].
+ *
+ * Use this on any puzzle session source Flow to handle the "no more puzzles" scenario
+ * without crashing the session.
+ */
+fun <T> Flow<T>.catchPuzzleExhausted(screenName: String): Flow<T> = catch { up ->
+    if (up is PuzzleGenerationException) {
+        Timber.w(up, "Failed to retrieve puzzle from DB")
+        if (up.cause !is NoPuzzleException) {
+            throw up
+        }
+    } else {
+        Timber.e(up, "Unexpected exception while playing $screenName")
+        throw up
+    }
 }

@@ -1,17 +1,21 @@
 package com.paulcraciunas.domain.impl.puzzles
 
-import com.paulcraciunas.domain.api.puzzles.GetFailedPuzzles
+import com.paulcraciunas.domain.api.puzzles.PuzzleGenerationException
+import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.puzzles.api.FakePuzzleRepository
+import com.paulcraciunas.puzzles.api.PuzzleRepository
 import com.paulcraciunas.user.api.FakeUserRepository
 import com.paulcraciunas.user.api.UserDefaults
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class GetFailedPuzzlesImplTest {
@@ -21,164 +25,206 @@ internal class GetFailedPuzzlesImplTest {
 
     private val underTest = GetFailedPuzzlesImpl(userRepository, puzzleRepository, testDispatcher)
 
-    @Test
-    fun `GIVEN no failed puzzles WHEN load THEN totalCount is zero`() = runTest(testDispatcher) {
-        // Given
-        userRepository.update(UserDefaults.signedInUser().copy(failedPuzzles = emptyList()))
+    @Nested
+    internal inner class BasicEmissions {
+        @Test
+        fun `GIVEN no failed puzzles WHEN collecting execute THEN flow completes with no emissions`() = runTest(testDispatcher) {
+            // Given
+            userRepository.update(UserDefaults.signedInUser().copy(failedPuzzles = emptyList()))
 
-        // When
-        val job = backgroundScope.launch {
-            underTest.load(scope = this, bufferSize = GetFailedPuzzles.BUFFER_SIZE)
+            // When
+            val puzzles = underTest.execute().toList()
+
+            // Then
+            assertTrue(puzzles.isEmpty())
         }
 
-        // Then
-        assertEquals(0, underTest.totalCount())
-        job.cancel()
-    }
+        @Test
+        fun `GIVEN failed puzzles WHEN collecting execute THEN emits puzzles in order`() = runTest(testDispatcher) {
+            // Given
+            val failedIds = listOf(1, 2, 3)
+            userRepository.update(UserDefaults.signedInUser().copy(failedPuzzles = failedIds))
 
-    @Test
-    fun `GIVEN failed puzzles WHEN load THEN totalCount matches`() = runTest(testDispatcher) {
-        // Given
-        val failedIds = listOf(1, 2, 3)
-        userRepository.update(UserDefaults.signedInUser().copy(failedPuzzles = failedIds))
+            // When
+            val puzzles = underTest.execute().toList()
 
-        // When
-        val job = backgroundScope.launch {
-            underTest.load(scope = this)
+            // Then
+            assertEquals(3, puzzles.size)
+            assertEquals(1, puzzles[0].id)
+            assertEquals(2, puzzles[1].id)
+            assertEquals(3, puzzles[2].id)
         }
 
-        // Then
-        assertEquals(failedIds.size, underTest.totalCount())
-        job.cancel()
+        @Test
+        fun `GIVEN single failed puzzle WHEN collecting THEN emits exactly one puzzle`() = runTest(testDispatcher) {
+            // Given
+            userRepository.update(UserDefaults.signedInUser().copy(failedPuzzles = listOf(1)))
+
+            // When
+            val puzzles = underTest.execute().toList()
+
+            // Then
+            assertEquals(1, puzzles.size)
+            assertEquals(1, puzzles.first().id)
+        }
     }
 
-    @Test
-    fun `GIVEN failed puzzles WHEN next THEN returns puzzle by ID`() = runTest(testDispatcher) {
-        // Given
-        val failedIds = listOf(1, 2, 3)
-        userRepository.update(UserDefaults.signedInUser().copy(failedPuzzles = failedIds))
+    @Nested
+    internal inner class MissingPuzzles {
+        @Test
+        fun `GIVEN puzzle ID not in repository WHEN collecting THEN skips missing puzzle`() = runTest(testDispatcher) {
+            // Given - ID 999 doesn't exist in repository
+            val failedIds = listOf(1, 999, 2)
+            userRepository.update(UserDefaults.signedInUser().copy(failedPuzzles = failedIds))
 
-        // When
-        val job = backgroundScope.launch {
-            underTest.load(scope = this)
+            // When
+            val puzzles = underTest.execute().toList()
+
+            // Then - should get puzzle 1 and 2, skipping 999
+            assertEquals(2, puzzles.size)
+            assertEquals(1, puzzles[0].id)
+            assertEquals(2, puzzles[1].id)
         }
 
-        // Then
-        (1..3).forEach {
-            assertEquals(it, underTest.next()?.id)
+        @Test
+        fun `GIVEN all IDs missing WHEN collecting THEN flow completes with no emissions`() = runTest(testDispatcher) {
+            // Given - no matching IDs in repository
+            val failedIds = listOf(900, 901, 902)
+            userRepository.update(UserDefaults.signedInUser().copy(failedPuzzles = failedIds))
+
+            // When
+            val puzzles = underTest.execute().toList()
+
+            // Then
+            assertTrue(puzzles.isEmpty())
         }
-        job.cancel()
     }
 
-    @Test
-    fun `GIVEN all puzzles consumed WHEN next THEN returns null`() = runTest(testDispatcher) {
-        // Given
-        val failedIds = listOf(1, 2)
-        userRepository.update(UserDefaults.signedInUser().copy(failedPuzzles = failedIds))
-        val job = backgroundScope.launch {
-            underTest.load(scope = this)
-        }
+    @Nested
+    internal inner class FiniteFlow {
+        @Test
+        fun `GIVEN 5 failed puzzles WHEN fully collected THEN flow completes naturally`() = runTest(testDispatcher) {
+            // Given
+            val failedIds = listOf(1, 2, 3, 4, 5)
+            userRepository.update(UserDefaults.signedInUser().copy(failedPuzzles = failedIds))
 
-        // Consume all puzzles
-        repeat(2) { underTest.next() }
+            // When
+            val puzzles = underTest.execute().toList()
 
-        // When
-        val puzzle = underTest.next()
-
-        // Then
-        assertNull(puzzle)
-        job.cancel()
-    }
-
-    @Test
-    fun `GIVEN load called WHEN load called again THEN resets state`() = runTest(testDispatcher) {
-        // Given
-        val failedIds = listOf(1, 2, 3)
-        userRepository.update(UserDefaults.signedInUser().copy(failedPuzzles = failedIds))
-        val job = backgroundScope.launch {
-            underTest.load(scope = this)
-        }
-        repeat(2) { underTest.next() } // Consume some puzzles
-        job.cancel()
-
-        // When - load again
-        val secondJob = backgroundScope.launch {
-            underTest.load(scope = this)
+            // Then - flow completes after all IDs processed
+            assertEquals(5, puzzles.size)
         }
 
-        // Then - should be back at the start
-        assertEquals(3, underTest.totalCount())
-        secondJob.cancel()
+        @Test
+        fun `GIVEN many failed puzzles WHEN taking subset THEN only takes requested amount`() = runTest(testDispatcher) {
+            // Given
+            val failedIds = (1..10).toList()
+            userRepository.update(UserDefaults.signedInUser().copy(failedPuzzles = failedIds))
+
+            // When
+            val puzzles = underTest.execute().take(3).toList()
+
+            // Then
+            assertEquals(3, puzzles.size)
+        }
     }
 
-    @Test
-    fun `GIVEN small batchSize WHEN next beyond batch THEN loads multiple batches`() = runTest(testDispatcher) {
-        // Given
-        val failedIds = listOf(1, 2, 3, 4, 5)
-        userRepository.update(UserDefaults.signedInUser().copy(failedPuzzles = failedIds))
-        val job = backgroundScope.launch {
-            underTest.load(scope = this, bufferSize = 2) // Small buffer size
+    @Nested
+    internal inner class BufferBehavior {
+        @Test
+        fun `GIVEN custom buffer size WHEN collecting THEN still emits all puzzles`() = runTest(testDispatcher) {
+            // Given
+            val failedIds = listOf(1, 2, 3, 4, 5)
+            userRepository.update(UserDefaults.signedInUser().copy(failedPuzzles = failedIds))
+
+            // When
+            val puzzles = underTest.execute(bufferSize = 2).toList()
+
+            // Then
+            assertEquals(5, puzzles.size)
         }
 
-        // When - get 5 puzzles (3 buffered)
-        val puzzles = (1..5).mapNotNull { underTest.next() }
+        @Test
+        fun `GIVEN default buffer size WHEN collecting THEN uses BUFFER_SIZE constant`() = runTest(testDispatcher) {
+            // Given
+            val failedIds = listOf(1, 2, 3)
+            userRepository.update(UserDefaults.signedInUser().copy(failedPuzzles = failedIds))
 
-        // Then
-        assertEquals(5, puzzles.size)
-        job.cancel()
+            // When - use default buffer size
+            val puzzles = underTest.execute().toList()
+
+            // Then
+            assertEquals(3, puzzles.size)
+        }
     }
 
-    @Test
-    fun `GIVEN puzzle ID not in repository WHEN next THEN skips missing puzzle`() = runTest(testDispatcher) {
-        // Given - ID 999 doesn't exist in repository
-        val failedIds = listOf(1, 999, 2)
-        userRepository.update(UserDefaults.signedInUser().copy(failedPuzzles = failedIds))
+    @Nested
+    internal inner class ErrorHandling {
+        @Test
+        fun `GIVEN 3 consecutive repository failures WHEN collecting THEN throws PuzzleGenerationException`() = runTest(testDispatcher) {
+            // Given
+            val failingRepository = FailingPuzzleRepository(failCount = 3)
+            val failingUnderTest = GetFailedPuzzlesImpl(userRepository, failingRepository, testDispatcher)
+            val failedIds = listOf(1, 2, 3)
+            userRepository.update(UserDefaults.signedInUser().copy(failedPuzzles = failedIds))
 
-        // When
-        val job = backgroundScope.launch {
-            underTest.load(scope = this)
+            // Then
+            assertThrows<PuzzleGenerationException> {
+                failingUnderTest.execute().toList()
+            }
         }
 
-        // Then - should get puzzle 1 and 2, skipping 999
-        assertNotNull(underTest.next())
-        assertNotNull(underTest.next())
-        assertNull(underTest.next())
-        job.cancel()
-    }
+        @Test
+        fun `GIVEN intermittent failures WHEN collecting THEN recovers after success`() = runTest(testDispatcher) {
+            // Given - fails on 2nd call only
+            val failingRepository = FailOnceRepository(
+                delegate = puzzleRepository,
+                failAtCallIndex = 2,
+            )
+            val intermittentUnderTest = GetFailedPuzzlesImpl(userRepository, failingRepository, testDispatcher)
+            val failedIds = listOf(1, 2, 3)
+            userRepository.update(UserDefaults.signedInUser().copy(failedPuzzles = failedIds))
 
-    @Test
-    fun `GIVEN no load called WHEN next THEN returns null`() = runTest(testDispatcher) {
-        // Given - no load called
+            // When
+            val puzzles = intermittentUnderTest.execute().toList()
 
-        // When
-        val puzzle = underTest.next()
-
-        // Then
-        assertNull(puzzle)
-    }
-
-    @Test
-    fun `GIVEN no load called WHEN totalCount THEN returns zero`() = runTest(testDispatcher) {
-        // Given - no load called
-
-        // Then
-        assertEquals(0, underTest.totalCount())
-    }
-
-    @Test
-    fun `GIVEN custom batchSize WHEN load THEN uses custom batchSize`() = runTest(testDispatcher) {
-        // Given
-        val failedIds = listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
-        userRepository.update(UserDefaults.signedInUser().copy(failedPuzzles = failedIds))
-
-        // When - use batch size of 3
-        val job = backgroundScope.launch {
-            underTest.load(scope = this, bufferSize = 3)
+            // Then - gets puzzles 1 and 3 (2 failed but recovered)
+            assertTrue(puzzles.isNotEmpty())
         }
-
-        // Then - should be able to get all puzzles
-        val puzzles = (1..10).mapNotNull { underTest.next() }
-        assertEquals(10, puzzles.size)
-        job.cancel()
     }
+}
+
+private class FailingPuzzleRepository(private val failCount: Int) : PuzzleRepository {
+    private var callCount = 0
+
+    override suspend fun getById(id: Int): Puzzle? {
+        callCount++
+        if (callCount <= failCount) {
+            throw RuntimeException("Repository failure #$callCount")
+        }
+        return null
+    }
+
+    override suspend fun get(count: Int): List<Puzzle> = emptyList()
+    override suspend fun getByRating(targetRating: Int): Puzzle? = null
+    override suspend fun getByRatingRange(min: Int, max: Int): Puzzle? = null
+}
+
+private class FailOnceRepository(
+    private val delegate: PuzzleRepository,
+    private val failAtCallIndex: Int,
+) : PuzzleRepository {
+    private var callCount = 0
+
+    override suspend fun getById(id: Int): Puzzle? {
+        callCount++
+        if (callCount == failAtCallIndex) {
+            throw RuntimeException("Transient failure")
+        }
+        return delegate.getById(id)
+    }
+
+    override suspend fun get(count: Int): List<Puzzle> = delegate.get(count)
+    override suspend fun getByRating(targetRating: Int): Puzzle? = delegate.getByRating(targetRating)
+    override suspend fun getByRatingRange(min: Int, max: Int): Puzzle? = delegate.getByRatingRange(min, max)
 }

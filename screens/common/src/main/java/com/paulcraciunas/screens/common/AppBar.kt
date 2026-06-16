@@ -35,6 +35,7 @@ import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.controls.TimerDisplay
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
+import com.paulcraciunas.screens.data.RemainingTime
 
 object AppBarTags {
     const val BACK_BUTTON = "app_bar_back_button"
@@ -187,7 +188,7 @@ internal fun Preview_Center() {
         ChildAppBar(
             title = "ChessGym",
             onBack = {},
-            actions = { TimerDisplay(seconds = 30) }
+            actions = { TimerDisplay(remainingTime = RemainingTime(value = "22.4", danger = false)) }
         )
     }
 }

@@ -23,12 +23,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
-import com.paulcraciunas.screens.data.PuzzleResult
+import com.paulcraciunas.screens.data.Outcome
+import com.paulcraciunas.screens.data.SessionResult
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun PuzzleResultsGrid(
-    results: List<PuzzleResult>,
+    results: List<SessionResult>,
     modifier: Modifier = Modifier,
     onFailedPuzzleClicked: (Int) -> Unit = {},
 ) {
@@ -48,7 +49,7 @@ fun PuzzleResultsGrid(
 
 @Composable
 private fun PuzzleResultItem(
-    result: PuzzleResult,
+    result: SessionResult,
     onClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -98,11 +99,11 @@ private fun PuzzleResultsGridPreview() {
     ChessGymTheme {
         PuzzleResultsGrid(
             results = listOf(
-                PuzzleResult(id = 1, rating = 1200, success = true),
-                PuzzleResult(id = 2, rating = 1250, success = true),
-                PuzzleResult(id = 3, rating = 1300, success = false),
-                PuzzleResult(id = 4, rating = 1280, success = true),
-                PuzzleResult(id = 5, rating = 1320, success = true),
+                SessionResult(id = 1, rating = 1200, outcome = Outcome.Won),
+                SessionResult(id = 2, rating = 1250, outcome = Outcome.Won),
+                SessionResult(id = 3, rating = 1300, outcome = Outcome.Won),
+                SessionResult(id = 4, rating = 1280, outcome = Outcome.Won),
+                SessionResult(id = 5, rating = 1320, outcome = Outcome.Lost),
             ),
             modifier = Modifier.padding(16.dp)
         )
@@ -116,7 +117,10 @@ private fun PuzzleResultsGridManyPreview() {
     ChessGymTheme {
         PuzzleResultsGrid(
             results = (1..15).map { i ->
-                PuzzleResult(id = i, rating = 1100 + i * 25, success = i % 4 != 0)
+                SessionResult(
+                    id = i,
+                    rating = 1100 + i * 25,
+                    outcome = if (i % 4 != 0) Outcome.Won else Outcome.Lost)
             },
             modifier = Modifier.padding(16.dp)
         )
@@ -128,7 +132,7 @@ private fun PuzzleResultsGridManyPreview() {
 private fun PuzzleResultItemSuccessPreview() {
     ChessGymTheme {
         PuzzleResultItem(
-            result = PuzzleResult(id = 1, rating = 1350, success = true),
+            result = SessionResult(id = 1, rating = 1350, outcome = Outcome.Won),
             onClick = {},
         )
     }
@@ -139,7 +143,7 @@ private fun PuzzleResultItemSuccessPreview() {
 private fun PuzzleResultItemFailedPreview() {
     ChessGymTheme {
         PuzzleResultItem(
-            result = PuzzleResult(id = 2, rating = 1400, success = false),
+            result = SessionResult(id = 2, rating = 1400, Outcome.Lost),
             onClick = {},
         )
     }

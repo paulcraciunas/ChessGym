@@ -6,8 +6,8 @@ import javax.inject.Inject
 class WorkerProgressReporter @Inject constructor() : ProgressReporter {
     private lateinit var report: Reporter
 
-    private var total: Int = 0
-    private var current: Int = 0
+    private var total: Long = 0
+    private var current: Long = 0
 
     private var progress: Int = 0
 
@@ -18,7 +18,7 @@ class WorkerProgressReporter @Inject constructor() : ProgressReporter {
     override fun onBegin(total: Long) {
         progress = 0
         current = 0
-        this.total = if (total != 0L) total.toInt() else 1
+        this.total = if (total != 0L) total else 1L
     }
 
     override suspend fun onCompleted(amount: Int) {

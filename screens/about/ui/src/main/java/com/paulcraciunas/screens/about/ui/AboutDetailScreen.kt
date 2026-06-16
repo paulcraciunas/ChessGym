@@ -5,7 +5,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -16,22 +18,33 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.PlatformTextStyle
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.about.vm.AboutSection
 import com.paulcraciunas.screens.about.vm.LibraryInfo
 import com.paulcraciunas.screens.common.ChildAppBar
 import com.paulcraciunas.screens.common.Footer
+import com.paulcraciunas.screens.common.design.components.ChessGymColumnCard
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.design.components.SpacerSize
+import com.paulcraciunas.screens.common.design.components.annotatedTextResource
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
@@ -41,8 +54,9 @@ fun AboutDetailScreen(
     section: AboutSection,
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier,
+    appVersion: String = "1.0",
     libraries: List<LibraryInfo> = emptyList(),
-    onEmailClicked: (() -> Unit)? = null,
+    onEmailClicked: (String) -> Unit = {},
 ) {
     Scaffold(
         topBar = { ChildAppBar(onBack = onNavigateBack, title = resolveTitle(section)) },
@@ -51,6 +65,7 @@ fun AboutDetailScreen(
         DetailContent(
             section = section,
             libraries = libraries,
+            appVersion = appVersion,
             onEmailClicked = onEmailClicked,
             modifier = Modifier
                 .fillMaxSize()
@@ -64,8 +79,9 @@ fun AboutDetailScreen(
 private fun DetailContent(
     section: AboutSection,
     libraries: List<LibraryInfo>,
-    onEmailClicked: (() -> Unit)?,
+    appVersion: String,
     modifier: Modifier = Modifier,
+    onEmailClicked: (String) -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -74,60 +90,97 @@ private fun DetailContent(
                 horizontal = Design.dimensions.spacing.xgut,
                 vertical = Design.dimensions.spacing.xxl,
             ),
+        verticalArrangement = Arrangement.SpaceBetween,
     ) {
         when (section) {
-            AboutSection.CREATOR -> CreatorContent()
-            AboutSection.CONTACT -> ContactContent(onEmailClicked = onEmailClicked)
-            AboutSection.FEEDBACK -> FeedbackContent(onEmailClicked = onEmailClicked)
-            AboutSection.LIBRARIES -> LibrariesContent(libraries = libraries)
-            AboutSection.PRIVACY_POLICY -> PrivacyPolicyContent()
-            AboutSection.TERMS_OF_USE -> TermsOfUseContent()
-            AboutSection.TERMS_AND_CONDITIONS -> TermsAndConditionsContent()
+            AboutSection.App -> AppContent(onEmailClicked = onEmailClicked, appVersion = appVersion)
+            AboutSection.Feedback -> FeedbackContent(onEmailClicked = onEmailClicked)
+            AboutSection.Libraries -> LibrariesContent(libraries = libraries)
+            AboutSection.PrivacyPolicy -> PrivacyPolicyContent()
+            AboutSection.TermsOfUse -> TermsOfUseContent()
+            AboutSection.TermsAndConditions -> TermsAndConditionsContent()
         }
-        ChessGymSpacer(size = SpacerSize.SECTION)
         Footer()
-        ChessGymSpacer(size = SpacerSize.HUGE)
     }
 }
 
 @Composable
-private fun CreatorContent(modifier: Modifier = Modifier) {
-    Column(modifier = modifier) {
-        DetailDescription(text = stringResource(R.string.about_creator_description))
-    }
-}
-
-@Composable
-private fun ContactContent(
-    onEmailClicked: (() -> Unit)?,
+private fun AppContent(
     modifier: Modifier = Modifier,
+    appVersion: String = "1.0",
+    onEmailClicked: (String) -> Unit = {},
 ) {
-    Column(modifier = modifier) {
-        DetailDescription(text = stringResource(R.string.about_contact_description))
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.xs)
+    ) {
+        val appNameAndVersion = stringResource(R.string.app_name) + " V${appVersion}"
+        Text(appNameAndVersion, style = MaterialTheme.typography.titleLarge)
+        Text(
+            text = appDescriptionString(),
+            style = Design.typography.bodyMedium.copy(
+                platformStyle = PlatformTextStyle(includeFontPadding = false)
+            )
+        )
+        EmailRow(
+            email = stringResource(R.string.about_contact_email),
+            onClick = { onEmailClicked("mailto:contact@chessgym.app") },
+        )
         ChessGymSpacer(size = SpacerSize.XXLARGE)
-        onEmailClicked?.let {
-            EmailRow(
-                email = stringResource(R.string.about_contact_email),
-                onClick = it,
+        Icon(
+            painter = painterResource(R.drawable.danya_outline),
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(1f),
+            tint = Design.colors.primary,
+            contentDescription = null,
+        )
+        ChessGymSpacer(size = SpacerSize.XXLARGE)
+        ChessGymColumnCard(
+            contentPadding = PaddingValues(
+                horizontal = Design.dimensions.spacing.xxl,
+                vertical = Design.dimensions.spacing.xl,
+            ),
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text(
+                text = annotatedTextResource(R.string.about_dedication_danya),
+                style = MaterialTheme.typography.bodyLarge,
             )
         }
+    }
+}
+
+@Composable
+private fun appDescriptionString() = buildAnnotatedString {
+    append(stringResource(R.string.about_app_description))
+    withLink(
+        LinkAnnotation.Url(
+            url = "https://github.com/paulcraciunas",
+            styles = TextLinkStyles(
+                style = SpanStyle(
+                    color = Design.colors.primary,
+                    textDecoration = TextDecoration.Underline
+                )
+            )
+        )
+    ) {
+        append("(GitHub)")
     }
 }
 
 @Composable
 private fun FeedbackContent(
-    onEmailClicked: (() -> Unit)?,
+    onEmailClicked: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
         DetailDescription(text = stringResource(R.string.about_feedback_description))
         ChessGymSpacer(size = SpacerSize.XXLARGE)
-        onEmailClicked?.let {
-            EmailRow(
-                email = stringResource(R.string.about_feedback_email),
-                onClick = it,
-            )
-        }
+        EmailRow(
+            email = stringResource(R.string.about_feedback_email),
+            onClick = { onEmailClicked("mailto:feedback@chessgym.app") },
+        )
     }
 }
 
@@ -148,7 +201,7 @@ private fun LibrariesContent(
 @Composable
 private fun PrivacyPolicyContent(modifier: Modifier = Modifier) {
     Column(modifier = modifier) {
-        DetailDescription(text = stringResource(R.string.about_privacy_policy_content))
+        DetailDescription(text = annotatedTextResource(R.string.about_privacy_policy_content))
     }
 }
 
@@ -180,6 +233,19 @@ private fun DetailDescription(
 }
 
 @Composable
+private fun DetailDescription(
+    text: AnnotatedString,
+    modifier: Modifier = Modifier,
+) {
+    Text(
+        text = text,
+        style = Design.typography.bodyLarge,
+        color = Design.colors.ink,
+        modifier = modifier,
+    )
+}
+
+@Composable
 private fun EmailRow(
     email: String,
     onClick: () -> Unit,
@@ -188,21 +254,24 @@ private fun EmailRow(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
-            .clickable { onClick() }
-            .padding(vertical = Design.dimensions.spacing.sm),
+            .clickable { onClick() },
     ) {
         Icon(
             imageVector = Icons.Outlined.Email,
             contentDescription = null,
             tint = Design.colors.primary,
-            modifier = Modifier.size(Design.dimensions.sizes.icon),
+            modifier = Modifier
+                .size(Design.dimensions.sizes.icon)
+                .alignByBaseline(),
         )
         Text(
             text = email,
             style = Design.typography.bodyMedium,
             color = Design.colors.primary,
             textDecoration = TextDecoration.Underline,
-            modifier = Modifier.padding(start = Design.dimensions.spacing.sm),
+            modifier = Modifier
+                .padding(start = Design.dimensions.spacing.sm)
+                .alignByBaseline(),
         )
     }
 }
@@ -212,45 +281,46 @@ private fun LibraryRow(
     library: LibraryInfo,
     modifier: Modifier = Modifier,
 ) {
-    Row(
+    Column(
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = Design.dimensions.spacing.s),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Column(modifier = Modifier.weight(1f)) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
             Text(
                 text = library.name,
                 style = Design.typography.bodyMedium,
                 fontWeight = FontWeight.Medium,
             )
-            if (library.url.isNotBlank()) {
-                Text(
-                    text = library.url,
-                    style = Design.typography.bodySmall,
-                    color = Design.colors.primary,
-                    textDecoration = TextDecoration.Underline,
-                )
-            }
+            Text(
+                text = library.license,
+                style = Design.typography.bodySmall,
+                color = Design.colors.inkSoft,
+            )
         }
-        Text(
-            text = library.license,
-            style = Design.typography.bodySmall,
-            color = Design.colors.inkSoft,
-        )
+        if (library.url.isNotBlank()) {
+            Text(
+                text = library.url,
+                style = Design.typography.bodySmall,
+                color = Design.colors.primary,
+                textDecoration = TextDecoration.Underline,
+            )
+        }
     }
 }
 
 @Composable
 private fun resolveTitle(section: AboutSection): String = when (section) {
-    AboutSection.CREATOR -> stringResource(R.string.about_creator_title)
-    AboutSection.CONTACT -> stringResource(R.string.about_contact_title)
-    AboutSection.FEEDBACK -> stringResource(R.string.about_feedback_title)
-    AboutSection.LIBRARIES -> stringResource(R.string.about_libraries_title)
-    AboutSection.PRIVACY_POLICY -> stringResource(R.string.about_privacy_policy_title)
-    AboutSection.TERMS_OF_USE -> stringResource(R.string.about_terms_title)
-    AboutSection.TERMS_AND_CONDITIONS -> stringResource(R.string.about_terms_and_conditions_title)
+    AboutSection.App -> stringResource(R.string.about_app_title)
+    AboutSection.Feedback -> stringResource(R.string.about_feedback_title)
+    AboutSection.Libraries -> stringResource(R.string.about_libraries_title)
+    AboutSection.PrivacyPolicy -> stringResource(R.string.about_privacy_policy_title)
+    AboutSection.TermsOfUse -> stringResource(R.string.about_terms_title)
+    AboutSection.TermsAndConditions -> stringResource(R.string.about_terms_and_conditions_title)
 }
 
 @Preview("Detail - Creator")
@@ -259,7 +329,7 @@ private fun resolveTitle(section: AboutSection): String = when (section) {
 private fun CreatorDetailPreview() {
     ChessGymTheme {
         AboutDetailScreen(
-            section = AboutSection.CREATOR,
+            section = AboutSection.App,
             onNavigateBack = {},
         )
     }
@@ -271,7 +341,7 @@ private fun CreatorDetailPreview() {
 private fun LibrariesDetailPreview() {
     ChessGymTheme {
         AboutDetailScreen(
-            section = AboutSection.LIBRARIES,
+            section = AboutSection.Libraries,
             onNavigateBack = {},
             libraries = listOf(
                 LibraryInfo("Kotlin", "https://kotlinlang.org", "Apache License 2.0"),
@@ -287,7 +357,7 @@ private fun LibrariesDetailPreview() {
 private fun TermsAndConditionsDetailPreview() {
     ChessGymTheme {
         AboutDetailScreen(
-            section = AboutSection.TERMS_AND_CONDITIONS,
+            section = AboutSection.TermsAndConditions,
             onNavigateBack = {},
         )
     }

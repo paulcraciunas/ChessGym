@@ -37,7 +37,7 @@ data class HighScoresDto(
     val puzzleRush: Int = 0,
     val puzzleStreak: Int = 0,
     val findTheSquare: Int = 0,
-    val moveThePiece: Int = 0,
+    val knightPath: Int = 0,
     val blindMode: Int = RatingsDto.DEFAULT_BLIND_MODE_RATING,
 )
 
@@ -51,7 +51,7 @@ data class StatisticsDto(
     val streakSessions: Int = 0,
     val failedPuzzlesRedeemed: Int = 0,
     val findSquareSessions: Int = 0,
-    val moveThePieceSessions: Int = 0,
+    val knightPathSessions: Int = 0,
     val blindModeWins: Int = 0,
     val rushPuzzlesSolved: Int = 0,
 )

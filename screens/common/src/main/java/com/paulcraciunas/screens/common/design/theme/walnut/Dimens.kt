@@ -58,6 +58,7 @@ internal val WalnutDimensions = ChessGymDimensions(
         trophyTile = 138.dp,
         chessBoardBorder = 14.dp,
         evaluationBar = 30.dp,
+        timerChipWidth = 72.dp,
     ),
     blur = ChessGymDimensions.Blur(
         default = 0.dp,

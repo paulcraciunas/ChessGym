@@ -97,11 +97,13 @@ dependencies {
     implementation(project(":domain:di"))
     implementation(project(":domain:api"))
     implementation(project(":global:device:di"))
-    implementation(project(":global:notifications"))
     implementation(project(":global:billing"))
-    implementation(project(":global:resources"))
-    implementation(project(":global:utils"))
+    implementation(project(":global:navigation"))
+    implementation(project(":global:notifications"))
     implementation(project(":global:qualifiers"))
+    implementation(project(":global:resources"))
+    implementation(project(":global:sounds"))
+    implementation(project(":global:utils"))
     implementation(project(":settings:application:impl"))
     implementation(project(":screens:common"))
     implementation(project(":screens:data"))
@@ -137,6 +139,7 @@ dependencies {
 
     // Splash Screen
     implementation(libs.androidx.core.splashscreen)
+    implementation(libs.androidx.appcompat)
 
     // Edge-to-edge
     implementation(libs.androidx.activity.ktx)
@@ -175,6 +178,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     androidTestImplementation(libs.hilt.android.testing)
     androidTestImplementation(project(":domain:api"))
+    androidTestImplementation(project(":domain:impl"))
     androidTestImplementation(project(":game:logic:api"))
     androidTestImplementation(project(":user:api"))
     androidTestImplementation(testFixtures(project(":user:api")))

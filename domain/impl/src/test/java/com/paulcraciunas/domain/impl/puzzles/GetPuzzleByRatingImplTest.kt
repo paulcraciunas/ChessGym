@@ -1,5 +1,6 @@
 package com.paulcraciunas.domain.impl.puzzles
 
+import com.paulcraciunas.domain.api.puzzles.NoPuzzleException
 import com.paulcraciunas.puzzles.api.FakePuzzleRepository
 import com.paulcraciunas.serializer.api.Serializer
 import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
@@ -166,7 +167,7 @@ internal class GetPuzzleByRatingImplTest {
         val targetRating = 1500
 
         // WHEN & THEN
-        assertThrows<IllegalArgumentException> {
+        assertThrows<NoPuzzleException> {
             underTest(targetRating)
         }
     }
@@ -213,7 +214,7 @@ internal class GetPuzzleByRatingImplTest {
         val targetRating = 300 // Below min rating of 400
 
         // WHEN & THEN
-        assertThrows<IllegalArgumentException> {
+        assertThrows<NoPuzzleException> {
             underTest(targetRating)
         }
     }
@@ -224,7 +225,7 @@ internal class GetPuzzleByRatingImplTest {
         val targetRating = 2600 // Above max rating of 2500
 
         // WHEN & THEN
-        assertThrows<IllegalArgumentException> {
+        assertThrows<NoPuzzleException> {
             underTest(targetRating)
         }
     }
@@ -286,7 +287,7 @@ internal class GetPuzzleByRatingImplTest {
         fakeAppSettingsRepository.updateMinPuzzleRating(1498) // Close to target
 
         // WHEN & THEN
-        assertThrows<IllegalArgumentException> {
+        assertThrows<NoPuzzleException> {
             underTest(targetRating)
         }
     }

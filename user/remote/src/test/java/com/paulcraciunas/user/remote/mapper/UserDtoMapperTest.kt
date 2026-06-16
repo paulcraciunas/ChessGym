@@ -65,7 +65,7 @@ internal class UserDtoMapperTest {
                 puzzleRush = 42,
                 puzzleStreak = 10,
                 findTheSquare = 99,
-                moveThePiece = 88,
+                knightPath = 88,
                 blindMode = 600,
             ),
             statistics = User.Statistics(
@@ -77,7 +77,7 @@ internal class UserDtoMapperTest {
                 streakSessions = 3,
                 failedPuzzlesRedeemed = 10,
                 findSquareSessions = 7,
-                moveThePieceSessions = 4,
+                knightPathSessions = 4,
                 blindModeWins = 12,
                 rushPuzzlesSolved = 20,
             ),

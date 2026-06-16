@@ -38,7 +38,7 @@ data class HomeUiState(
         val bestPuzzleRushScore: Int = 0,
         val bestPuzzleStreakScore: Int = 0,
         val bestFindTheSquareScore: Int = 0,
-        val bestMoveThePieceScore: Int = 0,
+        val bestKnightPathScore: Int = 0,
         val bestBlindModeScore: Int = 0,
     )
 

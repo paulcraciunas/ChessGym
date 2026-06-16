@@ -20,11 +20,12 @@ import com.paulcraciunas.screens.boardvis.squares.vm.FindTheSquareUiState
 import com.paulcraciunas.screens.common.ChildAppBar
 import com.paulcraciunas.screens.common.LocalUiSettings
 import com.paulcraciunas.screens.common.UiSettings
-import com.paulcraciunas.screens.data.SideSelection
 import com.paulcraciunas.screens.common.controls.TimerDisplay
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
+import com.paulcraciunas.screens.data.RemainingTime
+import com.paulcraciunas.screens.data.SideSelection
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,15 +57,7 @@ fun FindTheSquareScreen(
             ChildAppBar(
                 title = stringResource(R.string.boardvis_find_square_title),
                 onBack = onNavigateBack,
-                actions = {
-                    if (uiState is FindTheSquareUiState.Playing) {
-                        TimerDisplay(
-                            seconds = uiState.timeRemainingSeconds,
-                            modifier = Modifier.padding(Design.dimensions.spacing.xxl)
-                        )
-                    }
-                }
-            )
+            ) { TimerDisplay(remainingTime = uiState.timeRemaining) }
         },
         containerColor = Design.colors.primarySoft,
         modifier = modifier.testTag { FindTheSquareTags.SCREEN },
@@ -89,10 +82,7 @@ private fun FindTheSquareScreenSetupPreview() {
     ChessGymTheme {
         CompositionLocalProvider(LocalUiSettings provides UiSettings.default()) {
             FindTheSquareScreen(
-                uiState = FindTheSquareUiState.Setup(
-                    selectedSide = SideSelection.WHITE,
-                    timeRemainingSeconds = 30
-                ),
+                uiState = FindTheSquareUiState.Setup(selectedSide = SideSelection.WHITE),
             )
         }
     }
@@ -108,7 +98,7 @@ private fun FindTheSquareScreenPlayingPreview() {
                     orientation = Side.WHITE,
                     currentSquare = Locus.e4,
                     score = 5,
-                    timeRemainingSeconds = 22,
+                    timeRemaining = RemainingTime(value = "22.4", danger = false),
                     showError = false
                 ),
             )

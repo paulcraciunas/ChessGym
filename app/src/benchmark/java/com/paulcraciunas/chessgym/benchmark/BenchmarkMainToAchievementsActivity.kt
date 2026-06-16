@@ -85,7 +85,7 @@ private fun benchmarkHomeState(): HomeUiState = remember {
             bestPuzzleRushScore = 23,
             bestPuzzleStreakScore = 15,
             bestFindTheSquareScore = 42,
-            bestMoveThePieceScore = 18,
+            bestKnightPathScore = 18,
             bestBlindModeScore = 8,
         ),
         history = listOf(

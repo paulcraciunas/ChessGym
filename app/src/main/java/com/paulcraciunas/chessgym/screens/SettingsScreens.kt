@@ -21,6 +21,15 @@ internal fun Settings(
         uiState = settingsState,
         buildVersion = buildVersion,
         onNavigateBack = onNavigateBack,
-        interactions = vm,
+        onSoundToggled = vm::onSoundToggled,
+        onHapticFeedbackToggled = vm::onHapticFeedbackToggled,
+        onAutoPromoteToggled = vm::onAutoPromoteToggled,
+        onAutoNextPuzzleToggled = vm::onAutoNextPuzzleToggled,
+        onShowBordersToggled = vm::onShowBordersToggled,
+        onHighlightLegalMovesToggled = vm::onHighlightLegalMovesToggled,
+        onLightModeSelected = vm::onLightModeSelected,
+        onLanguageSelected = vm::onLanguageSelected,
+        onAnimationsToggled = vm::onAnimationsToggled,
+        onCrashReportingToggled = vm::onCrashReportingToggled,
     )
 }

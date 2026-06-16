@@ -1,14 +1,23 @@
 package com.paulcraciunas.domain.di
 
+import com.paulcraciunas.domain.api.GenerateRandomLoci
+import com.paulcraciunas.domain.api.achievements.AchievementNotificationManager
+import com.paulcraciunas.domain.api.achievements.GetAchievementState
+import com.paulcraciunas.domain.api.achievements.MarkAchievementsSeen
+import com.paulcraciunas.domain.api.achievements.UpdateAchievementProgress
 import com.paulcraciunas.domain.api.analysis.AnalyzePosition
 import com.paulcraciunas.domain.api.auth.AuthenticateUseCase
 import com.paulcraciunas.domain.api.auth.DeleteAccountUseCase
 import com.paulcraciunas.domain.api.auth.ResetPasswordUseCase
 import com.paulcraciunas.domain.api.auth.SignOutUseCase
+import com.paulcraciunas.domain.api.billing.BillingUseCase
+import com.paulcraciunas.domain.api.blindmode.OnBlindModeGameComplete
+import com.paulcraciunas.domain.api.boardvis.GenerateKnightPathExercise
+import com.paulcraciunas.domain.api.boardvis.GetKnightPathBufferedSeries
+import com.paulcraciunas.domain.api.boardvis.OnFindSquareComplete
+import com.paulcraciunas.domain.api.boardvis.OnKnightPathComplete
 import com.paulcraciunas.domain.api.general.CalculateElo
-import com.paulcraciunas.domain.api.boardvis.GenerateMoveThePieceBoard
-import com.paulcraciunas.domain.api.GenerateRandomLoci
-import com.paulcraciunas.domain.api.boardvis.MoveThePieceGameEngine
+import com.paulcraciunas.domain.api.general.Timer
 import com.paulcraciunas.domain.api.puzzles.GetBufferedPuzzleSeries
 import com.paulcraciunas.domain.api.puzzles.GetFailedPuzzles
 import com.paulcraciunas.domain.api.puzzles.GetPuzzleByRating
@@ -16,28 +25,28 @@ import com.paulcraciunas.domain.api.puzzles.GetPuzzleSeries
 import com.paulcraciunas.domain.api.puzzles.GetRatedPuzzle
 import com.paulcraciunas.domain.api.puzzles.GetStreakPuzzle
 import com.paulcraciunas.domain.api.puzzles.OnFailedPuzzleComplete
-import com.paulcraciunas.domain.api.boardvis.OnFindSquareComplete
-import com.paulcraciunas.domain.api.blindmode.OnBlindModeGameComplete
-import com.paulcraciunas.domain.api.boardvis.OnMoveThePieceComplete
 import com.paulcraciunas.domain.api.puzzles.OnPuzzleComplete
 import com.paulcraciunas.domain.api.puzzles.OnPuzzleRushComplete
 import com.paulcraciunas.domain.api.puzzles.OnStreakComplete
 import com.paulcraciunas.domain.api.puzzles.OnStreakPuzzleComplete
-import com.paulcraciunas.domain.api.general.Timer
-import com.paulcraciunas.domain.api.achievements.AchievementNotificationManager
-import com.paulcraciunas.domain.api.achievements.GetAchievementState
-import com.paulcraciunas.domain.api.achievements.MarkAchievementsSeen
-import com.paulcraciunas.domain.api.achievements.UpdateAchievementProgress
-import com.paulcraciunas.domain.api.billing.BillingUseCase
+import com.paulcraciunas.domain.impl.GenerateRandomLociImpl
+import com.paulcraciunas.domain.impl.achievements.AchievementNotificationManagerImpl
+import com.paulcraciunas.domain.impl.achievements.GetAchievementStateImpl
+import com.paulcraciunas.domain.impl.achievements.MarkAchievementsSeenImpl
+import com.paulcraciunas.domain.impl.achievements.UpdateAchievementProgressImpl
 import com.paulcraciunas.domain.impl.analysis.AnalyzePositionImpl
 import com.paulcraciunas.domain.impl.auth.AuthenticateUseCaseImpl
 import com.paulcraciunas.domain.impl.auth.DeleteAccountUseCaseImpl
 import com.paulcraciunas.domain.impl.auth.ResetPasswordUseCaseImpl
 import com.paulcraciunas.domain.impl.auth.SignOutUseCaseImpl
+import com.paulcraciunas.domain.impl.billing.BillingUseCaseImpl
+import com.paulcraciunas.domain.impl.blindmode.OnBlindModeGameCompleteImpl
+import com.paulcraciunas.domain.impl.boardvis.GenerateKnightPathExerciseImpl
+import com.paulcraciunas.domain.impl.boardvis.GetKnightPathBufferedSeriesImpl
+import com.paulcraciunas.domain.impl.boardvis.OnFindSquareCompleteImpl
+import com.paulcraciunas.domain.impl.boardvis.OnKnightPathCompleteImpl
 import com.paulcraciunas.domain.impl.general.CalculateEloImpl
-import com.paulcraciunas.domain.impl.boardvis.GenerateMoveThePieceBoardImpl
-import com.paulcraciunas.domain.impl.GenerateRandomLociImpl
-import com.paulcraciunas.domain.impl.boardvis.MoveThePieceGameEngineImpl
+import com.paulcraciunas.domain.impl.general.SimpleTimer
 import com.paulcraciunas.domain.impl.puzzles.GetBufferedPuzzleSeriesImpl
 import com.paulcraciunas.domain.impl.puzzles.GetFailedPuzzlesImpl
 import com.paulcraciunas.domain.impl.puzzles.GetPuzzleByRatingImpl
@@ -45,19 +54,10 @@ import com.paulcraciunas.domain.impl.puzzles.GetPuzzleSeriesImpl
 import com.paulcraciunas.domain.impl.puzzles.GetRatedPuzzleImpl
 import com.paulcraciunas.domain.impl.puzzles.GetStreakPuzzleImpl
 import com.paulcraciunas.domain.impl.puzzles.OnFailedPuzzleCompleteImpl
-import com.paulcraciunas.domain.impl.boardvis.OnFindSquareCompleteImpl
-import com.paulcraciunas.domain.impl.blindmode.OnBlindModeGameCompleteImpl
-import com.paulcraciunas.domain.impl.boardvis.OnMoveThePieceCompleteImpl
 import com.paulcraciunas.domain.impl.puzzles.OnPuzzleCompleteImpl
 import com.paulcraciunas.domain.impl.puzzles.OnPuzzleRushCompleteImpl
 import com.paulcraciunas.domain.impl.puzzles.OnStreakCompleteImpl
 import com.paulcraciunas.domain.impl.puzzles.OnStreakPuzzleCompleteImpl
-import com.paulcraciunas.domain.impl.general.SimpleTimer
-import com.paulcraciunas.domain.impl.achievements.AchievementNotificationManagerImpl
-import com.paulcraciunas.domain.impl.achievements.GetAchievementStateImpl
-import com.paulcraciunas.domain.impl.achievements.MarkAchievementsSeenImpl
-import com.paulcraciunas.domain.impl.achievements.UpdateAchievementProgressImpl
-import com.paulcraciunas.domain.impl.billing.BillingUseCaseImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -130,14 +130,15 @@ internal abstract class DomainModule {
 
     @Binds
     @Singleton
-    abstract fun bindGenerateMoveThePieceBoard(impl: GenerateMoveThePieceBoardImpl): GenerateMoveThePieceBoard
+    abstract fun bindGenerateKnightPathExercise(impl: GenerateKnightPathExerciseImpl): GenerateKnightPathExercise
 
     @Binds
     @Singleton
-    abstract fun bindOnMoveThePieceComplete(impl: OnMoveThePieceCompleteImpl): OnMoveThePieceComplete
+    abstract fun bindGetKnightPathBufferedSeries(impl: GetKnightPathBufferedSeriesImpl): GetKnightPathBufferedSeries
 
     @Binds
-    abstract fun bindMoveThePieceGameEngine(impl: MoveThePieceGameEngineImpl): MoveThePieceGameEngine
+    @Singleton
+    abstract fun bindOnKnightPathComplete(impl: OnKnightPathCompleteImpl): OnKnightPathComplete
 
     @Binds
     @Singleton

@@ -32,7 +32,7 @@ class DataStoreAppSettingsRepository @Inject constructor(
     override suspend fun updateTotalPuzzleCount(count: Int) = dataStore.update(TOTAL_PUZZLE_COUNT, count)
     override suspend fun updateMaxPuzzleRating(maxRating: Int) = dataStore.update(PUZZLES_MAX_RATING, maxRating)
     override suspend fun updateMinPuzzleRating(minRating: Int) = dataStore.update(PUZZLES_MIN_RATING, minRating)
-    override suspend fun updatePlaySoundOnMove(enabled: Boolean) = dataStore.update(PLAY_SOUND_ON_MOVE, enabled)
+    override suspend fun updatePlaySound(enabled: Boolean) = dataStore.update(PLAY_SOUNDS, enabled)
     override suspend fun updateLightMode(mode: AppSettings.LightMode) = dataStore.update(LIGHT_MODE, mode.name)
     override suspend fun updateAutoPromote(enabled: Boolean) = dataStore.update(AUTO_PROMOTE, enabled)
     override suspend fun updateAutoNextPuzzle(enabled: Boolean) = dataStore.update(AUTO_NEXT_PUZZLE, enabled)
@@ -50,7 +50,7 @@ class DataStoreAppSettingsRepository @Inject constructor(
             totalPuzzleCount = this[TOTAL_PUZZLE_COUNT] ?: 0,
             maxPuzzleRating = this[PUZZLES_MAX_RATING] ?: 0,
             minPuzzleRating = this[PUZZLES_MIN_RATING] ?: 0,
-            playSoundOnMove = this[PLAY_SOUND_ON_MOVE] ?: true,
+            playSounds = this[PLAY_SOUNDS] ?: true,
             lightMode = this[LIGHT_MODE].toEnumOrDefault(AppSettings.LightMode.System),
             autoPromote = this[AUTO_PROMOTE] ?: true,
             autoNextPuzzle = this[AUTO_NEXT_PUZZLE] ?: false,
@@ -69,7 +69,7 @@ class DataStoreAppSettingsRepository @Inject constructor(
         private val TOTAL_PUZZLE_COUNT = intPreferencesKey("total_puzzle_count")
         private val PUZZLES_MAX_RATING = intPreferencesKey("max_puzzle_rating")
         private val PUZZLES_MIN_RATING = intPreferencesKey("min_puzzle_rating")
-        private val PLAY_SOUND_ON_MOVE = booleanPreferencesKey("play_sound_on_move")
+        private val PLAY_SOUNDS = booleanPreferencesKey("play_sound_on_move")
         private val LIGHT_MODE = stringPreferencesKey("light_mode")
         private val AUTO_PROMOTE = booleanPreferencesKey("auto_promote")
         private val AUTO_NEXT_PUZZLE = booleanPreferencesKey("auto_next_puzzle")

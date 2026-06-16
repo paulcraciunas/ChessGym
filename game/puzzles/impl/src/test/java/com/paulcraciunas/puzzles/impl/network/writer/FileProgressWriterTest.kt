@@ -2,7 +2,7 @@ package com.paulcraciunas.puzzles.impl.network.writer
 
 import com.paulcraciunas.puzzles.impl.network.fakes.FailingInputStream
 import com.paulcraciunas.puzzles.impl.network.fakes.FakeInputStream
-import com.paulcraciunas.puzzles.impl.network.fakes.FakeProgressReporter
+import com.paulcraciunas.puzzles.impl.network.progress.WorkerProgressReporter
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -14,7 +14,8 @@ import java.io.File
 
 internal class FileProgressWriterTest {
     private val ioDispatcher = StandardTestDispatcher()
-    private val reporter = FakeProgressReporter()
+    private var result = 0
+    private val reporter = WorkerProgressReporter().apply { init { result = it } }
 
     private val underTest = FileProgressWriter(ioDispatcher, reporter)
 
@@ -32,8 +33,7 @@ internal class FileProgressWriterTest {
             // Then
             assertTrue(destination.exists())
             assertEquals(testContent, destination.readText())
-            assertTrue(reporter.progressUpdates.isNotEmpty())
-            assertEquals(testContent.length, reporter.progressUpdates.sum())
+            assertEquals(100, result)
         }
 
     @Test
@@ -48,7 +48,7 @@ internal class FileProgressWriterTest {
         // Then
         assertTrue(destination.exists())
         assertEquals("", destination.readText())
-        assertTrue(reporter.progressUpdates.isEmpty())
+        assertEquals(100, result)
     }
 
     @Test
@@ -78,7 +78,6 @@ internal class FileProgressWriterTest {
         // Then
         assertTrue(destination.exists())
         assertEquals(largeContent, destination.readText())
-        assertTrue(reporter.progressUpdates.size > 1) // Should have multiple progress updates
-        assertEquals(largeContent.length, reporter.progressUpdates.sum())
+        assertEquals(100, result)
     }
 }

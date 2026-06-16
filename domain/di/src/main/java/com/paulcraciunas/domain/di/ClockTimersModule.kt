@@ -1,33 +1,20 @@
 package com.paulcraciunas.domain.di
 
-import com.paulcraciunas.domain.api.general.BlackTimer
 import com.paulcraciunas.domain.api.general.CountdownTimer
-import com.paulcraciunas.domain.api.general.DefaultTimer
-import com.paulcraciunas.domain.api.general.WhiteTimer
+import com.paulcraciunas.domain.api.general.PulseTimer
 import com.paulcraciunas.domain.impl.general.RealCountdownTimer
+import com.paulcraciunas.domain.impl.general.RealPulseTimer
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import java.time.Clock
-import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object ClockTimersModule {
-    @Provides
-    @Singleton
-    fun provideClock(): Clock = Clock.systemUTC()
+abstract class ClockTimersModule {
+    @Binds
+    abstract fun bindCountdownTimer(impl: RealCountdownTimer): CountdownTimer
 
-    @Provides
-    @WhiteTimer
-    fun whiteCountdownTimer(clock: Clock): CountdownTimer = RealCountdownTimer(clock)
-
-    @Provides
-    @BlackTimer
-    fun blackCountdownTimer(clock: Clock): CountdownTimer = RealCountdownTimer(clock)
-
-    @Provides
-    @DefaultTimer
-    fun defaultCountdownTimer(clock: Clock): CountdownTimer = RealCountdownTimer(clock)
+    @Binds
+    abstract fun bindPulseTimer(impl: RealPulseTimer): PulseTimer
 }

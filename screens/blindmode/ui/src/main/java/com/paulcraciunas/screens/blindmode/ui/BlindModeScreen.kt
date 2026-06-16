@@ -42,6 +42,7 @@ import com.paulcraciunas.screens.common.dialogs.PromotionDialog
 import com.paulcraciunas.screens.common.previews.PreviewData
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
+import com.paulcraciunas.screens.data.Outcome
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -122,9 +123,8 @@ private fun PlayingContent(
         },
         label = "revealAlpha",
     )
-    val isThinking = !state.data.interactive
     val controlsAlpha by animateFloatAsState(
-        targetValue = if (isThinking) 0f else 1f,
+        targetValue = if (state.isThinking) 0f else 1f,
         animationSpec = tween(durationMillis = 200),
         label = "controlsAlpha"
     )
@@ -137,11 +137,11 @@ private fun PlayingContent(
     )
     ChessGymSpacer()
     DefaultPuzzleControls(
-        hintEnabled = !isThinking && !state.isRevealing && state.isRevealAvailable,
+        hintEnabled = !state.isThinking && !state.isRevealing && state.isRevealAvailable,
         toMove = state.data.player,
         onHintRequested = onReveal,
         onAbandonRequested = onResign,
-        abandonEnabled = !isThinking && !state.isRevealing,
+        abandonEnabled = !state.isThinking && !state.isRevealing,
         moveIndicatorTextRes = R.string.blind_mode_your_turn,
         modifier = Modifier.alpha(controlsAlpha),
     )
@@ -149,7 +149,7 @@ private fun PlayingContent(
     if (state.moveHistory.isNotEmpty()) {
         MoveHistoryDisplay(moveHistory = state.moveHistory)
     }
-    if (isThinking) {
+    if (state.isThinking) {
         ThinkingIndicator()
     }
     if (state.data.promotion != null) {
@@ -225,9 +225,10 @@ private fun BlindModeThinkingPreview() {
             BlindModeScreen(
                 uiState = BlindModeUiState.Playing(
                     isTrainingMode = true,
-                    data = PreviewData().whiteGameData().copy(interactive = false),
+                    data = PreviewData().whiteGameData(),
                     moveHistory = "1. e4 e5 2. Nf3 Nc6",
                     isRevealAvailable = true,
+                    isThinking = false,
                 ),
                 onDrawerToggle = {},
             )
@@ -262,7 +263,7 @@ private fun BlindModeGameOverPreview() {
             BlindModeScreen(
                 uiState = BlindModeUiState.GameOver(
                     isTrainingMode = true,
-                    data = PreviewData().whiteGameData(),
+                    data = PreviewData().whiteGameData().copy(outcome = Outcome.Lost),
                     moveHistory = "1. e4 e5 2. Nf3 Nc6 3. Bb5",
                 ),
                 onDrawerToggle = {},

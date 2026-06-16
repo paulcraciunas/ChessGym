@@ -53,25 +53,25 @@ internal fun ChessClock(
 @Composable
 internal fun AnalysisBoard(
     tabNavController: NavHostController,
-    fen: String?,
-    firstMove: String? = null,
+    puzzleId: Int?,
 ) {
     val vm: AnalysisViewModel = hiltViewModel()
     val analysisState by vm.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        vm.loadPosition(fen, firstMove)
+        vm.loadPosition(puzzleId)
     }
 
     AnalysisScreen(
         uiState = analysisState,
-        onNavigateBack = { tabNavController.popBackStack(Screen.ToolsDashboard, inclusive = false) },
+        onNavigateBack = { tabNavController.popBackStack() },
         onSquareClicked = vm::onSquareClicked,
         onPromote = vm::onPromote,
         onJumpToStart = vm::onJumpToStart,
         onPreviousMove = vm::onPreviousMove,
         onNextMove = vm::onNextMove,
         onJumpToEnd = vm::onJumpToEnd,
+        onFlipBoard = vm::onFlipBoard,
     )
 }
 

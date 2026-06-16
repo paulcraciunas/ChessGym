@@ -6,11 +6,10 @@ import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.state.GameInfo
 
-internal interface PlayableBoard {
+interface PlayableBoard {
     val board: IBoard
     val info: GameInfo
     val player: Side
-    val playerSide: Side
     val rating: Int?
     val id: Int?
     val lastMovePly: Ply?
@@ -20,6 +19,7 @@ internal interface PlayableBoard {
     fun play(from: Locus, to: Locus)
     fun play(ply: Ply)
     fun resign()
+    fun isPlayerTurn(): Boolean
     fun isOver(): Boolean
     fun outcome(): Outcome?
 }

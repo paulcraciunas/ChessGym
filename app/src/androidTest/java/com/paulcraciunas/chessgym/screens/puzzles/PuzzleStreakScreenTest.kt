@@ -2,9 +2,6 @@ package com.paulcraciunas.chessgym.screens.puzzles
 
 import com.paulcraciunas.chessgym.base.BaseUiTest
 import com.paulcraciunas.chessgym.di.TestPuzzleInterceptor
-import com.paulcraciunas.chessgym.dsl.Given
-import com.paulcraciunas.chessgym.dsl.Then
-import com.paulcraciunas.chessgym.dsl.When
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
 import org.junit.Test
@@ -25,7 +22,7 @@ internal class PuzzleStreakScreenTest : BaseUiTest() {
     fun GIVEN_existing_streak_WHEN_opened_THEN_shows_streak_screen() {
         Given.user.withPuzzleStreak(currentCount = STREAK_COUNT, lastPuzzleId = PUZZLE_ID)
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         When.puzzleStreak.open()
 
@@ -40,7 +37,7 @@ internal class PuzzleStreakScreenTest : BaseUiTest() {
         Given.settings.lightMode()
         Given.user.withPuzzleStreak(currentCount = STREAK_COUNT, lastPuzzleId = PUZZLE_ID)
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         When.puzzleStreak.open()
 
@@ -53,7 +50,7 @@ internal class PuzzleStreakScreenTest : BaseUiTest() {
         Given.settings.darkMode()
         Given.user.withPuzzleStreak(currentCount = STREAK_COUNT, lastPuzzleId = PUZZLE_ID)
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         When.puzzleStreak.open()
 
@@ -65,7 +62,7 @@ internal class PuzzleStreakScreenTest : BaseUiTest() {
     fun GIVEN_existing_streak_WHEN_opened_THEN_shows_correct_streak_count() {
         Given.user.withPuzzleStreak(currentCount = STREAK_COUNT, lastPuzzleId = PUZZLE_ID)
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         When.puzzleStreak.open()
 
@@ -76,7 +73,7 @@ internal class PuzzleStreakScreenTest : BaseUiTest() {
     fun GIVEN_new_streak_WHEN_opened_THEN_shows_no_counter() {
         Given.user.withPuzzleStreak(currentCount = 0, lastPuzzleId = PUZZLE_ID)
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         When.puzzleStreak.open()
 
@@ -90,7 +87,7 @@ internal class PuzzleStreakScreenTest : BaseUiTest() {
         Given.settings.autoNext()
         Given.user.withPuzzleStreak(currentCount = STREAK_FOR_NEXT, lastPuzzleId = PUZZLE_ID)
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         When.puzzleStreak.open()
         Then.puzzleStreak.hasStreakCount(STREAK_FOR_NEXT)
@@ -111,7 +108,7 @@ internal class PuzzleStreakScreenTest : BaseUiTest() {
     fun WHEN_playing_wrong_move_THEN_streak_ends_with_summary() {
         Given.user.withPuzzleStreak(currentCount = STREAK_COUNT, lastPuzzleId = PUZZLE_ID)
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         When.puzzleStreak
             .open()
@@ -126,7 +123,7 @@ internal class PuzzleStreakScreenTest : BaseUiTest() {
     fun WHEN_requesting_hint_THEN_stays_in_play() {
         Given.user.withPuzzleStreak(currentCount = STREAK_COUNT, lastPuzzleId = PUZZLE_ID)
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         When.puzzleStreak
             .open()
@@ -139,7 +136,7 @@ internal class PuzzleStreakScreenTest : BaseUiTest() {
     fun WHEN_abandoning_and_confirming_THEN_streak_ends() {
         Given.user.withPuzzleStreak(currentCount = STREAK_COUNT, lastPuzzleId = PUZZLE_ID)
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         When.puzzleStreak
             .open()
@@ -157,7 +154,7 @@ internal class PuzzleStreakScreenTest : BaseUiTest() {
     fun WHEN_abandoning_and_dismissing_THEN_continues_playing() {
         Given.user.withPuzzleStreak(currentCount = STREAK_COUNT, lastPuzzleId = PUZZLE_ID)
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         When.puzzleStreak
             .open()
@@ -174,7 +171,7 @@ internal class PuzzleStreakScreenTest : BaseUiTest() {
     fun GIVEN_summary_shown_WHEN_dismissing_THEN_dialog_dismissed_and_ended_controls_shown() {
         Given.user.withPuzzleStreak(currentCount = STREAK_COUNT, lastPuzzleId = PUZZLE_ID)
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         When.puzzleStreak
             .open()
@@ -193,7 +190,7 @@ internal class PuzzleStreakScreenTest : BaseUiTest() {
             .withHighScores(puzzleStreak = 0)
             .withPuzzleStreak(currentCount = STREAK_COUNT, lastPuzzleId = PUZZLE_ID)
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         When.puzzleStreak
             .open()
@@ -210,7 +207,7 @@ internal class PuzzleStreakScreenTest : BaseUiTest() {
             .withHighScores(puzzleStreak = 100)
             .withPuzzleStreak(currentCount = STREAK_COUNT, lastPuzzleId = PUZZLE_ID)
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         When.puzzleStreak
             .open()
@@ -225,7 +222,7 @@ internal class PuzzleStreakScreenTest : BaseUiTest() {
     fun GIVEN_streak_ended_WHEN_starting_new_streak_THEN_new_game_starts() {
         Given.user.withPuzzleStreak(currentCount = STREAK_COUNT, lastPuzzleId = PUZZLE_ID)
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         When.puzzleStreak
             .open()
@@ -248,7 +245,7 @@ internal class PuzzleStreakScreenTest : BaseUiTest() {
     fun GIVEN_playing_WHEN_pressing_back_THEN_returns_to_dashboard() {
         Given.user.withPuzzleStreak(currentCount = STREAK_COUNT, lastPuzzleId = PUZZLE_ID)
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         When.puzzleStreak.open()
         Then.puzzleStreak.isPlaying()
@@ -262,7 +259,7 @@ internal class PuzzleStreakScreenTest : BaseUiTest() {
     fun GIVEN_streak_ended_WHEN_pressing_back_THEN_returns_to_dashboard() {
         Given.user.withPuzzleStreak(currentCount = STREAK_COUNT, lastPuzzleId = PUZZLE_ID)
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         When.puzzleStreak
             .open()

@@ -2,7 +2,9 @@ package com.paulcraciunas.chessgym.dsl
 
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import com.paulcraciunas.chessgym.dsl.actions.AnalysisScreenActions
+import com.paulcraciunas.chessgym.dsl.actions.AppActions
 import com.paulcraciunas.chessgym.dsl.actions.BoardVisDashboardActions
+import com.paulcraciunas.chessgym.dsl.actions.ClockActions
 import com.paulcraciunas.chessgym.dsl.actions.ClockScreenActions
 import com.paulcraciunas.chessgym.dsl.actions.FailedPuzzlesScreenActions
 import com.paulcraciunas.chessgym.dsl.actions.FindTheSquareScreenActions
@@ -15,43 +17,20 @@ import com.paulcraciunas.chessgym.dsl.actions.RatedPuzzleScreenActions
 import com.paulcraciunas.chessgym.dsl.actions.SignInScreenActions
 import com.paulcraciunas.chessgym.dsl.actions.ToolsDashboardActions
 
-object When {
-    lateinit var compose: ComposeTestRule
-    lateinit var activityLauncher: () -> Unit
-    lateinit var navigation: NavigationActions
-    lateinit var homeScreen: HomeScreenActions
-    lateinit var puzzleDashboard: PuzzleDashboardActions
-    lateinit var ratedPuzzle: RatedPuzzleScreenActions
-    lateinit var failedPuzzles: FailedPuzzlesScreenActions
-    lateinit var puzzleStreak: PuzzleStreakScreenActions
-    lateinit var boardVisDashboard: BoardVisDashboardActions
-    lateinit var findTheSquare: FindTheSquareScreenActions
-    lateinit var toolsDashboard: ToolsDashboardActions
-    lateinit var clockScreen: ClockScreenActions
-    lateinit var importGame: ImportGameScreenActions
-    lateinit var analysisScreen: AnalysisScreenActions
-    lateinit var signInScreen: SignInScreenActions
-
-    fun init(rule: ComposeTestRule, launcher: () -> Unit) {
-        compose = rule
-        activityLauncher = launcher
-        navigation = NavigationActions(rule)
-        homeScreen = HomeScreenActions(rule)
-        puzzleDashboard = PuzzleDashboardActions(rule)
-        ratedPuzzle = RatedPuzzleScreenActions(rule)
-        failedPuzzles = FailedPuzzlesScreenActions(rule)
-        puzzleStreak = PuzzleStreakScreenActions(rule)
-        boardVisDashboard = BoardVisDashboardActions(rule)
-        findTheSquare = FindTheSquareScreenActions(rule)
-        toolsDashboard = ToolsDashboardActions(rule)
-        clockScreen = ClockScreenActions(rule)
-        importGame = ImportGameScreenActions(rule)
-        analysisScreen = AnalysisScreenActions(rule)
-        signInScreen = SignInScreenActions(rule)
-    }
-
-    fun appIsLaunched(): When = apply {
-        activityLauncher()
-        compose.waitForIdle()
-    }
+class When(rule: ComposeTestRule) {
+    val app: AppActions = AppActions(rule)
+    val clock: ClockActions = ClockActions(rule)
+    val navigation: NavigationActions = NavigationActions(rule)
+    val homeScreen: HomeScreenActions = HomeScreenActions(rule)
+    val puzzleDashboard: PuzzleDashboardActions = PuzzleDashboardActions(rule)
+    val ratedPuzzle: RatedPuzzleScreenActions = RatedPuzzleScreenActions(rule)
+    val failedPuzzles: FailedPuzzlesScreenActions = FailedPuzzlesScreenActions(rule)
+    val puzzleStreak: PuzzleStreakScreenActions = PuzzleStreakScreenActions(rule)
+    val boardVisDashboard: BoardVisDashboardActions = BoardVisDashboardActions(rule)
+    val findTheSquare: FindTheSquareScreenActions = FindTheSquareScreenActions(rule)
+    val toolsDashboard: ToolsDashboardActions = ToolsDashboardActions(rule)
+    val clockScreen: ClockScreenActions = ClockScreenActions(rule)
+    val importGame: ImportGameScreenActions = ImportGameScreenActions(rule)
+    val analysisScreen: AnalysisScreenActions = AnalysisScreenActions(rule)
+    val signInScreen: SignInScreenActions = SignInScreenActions(rule)
 }

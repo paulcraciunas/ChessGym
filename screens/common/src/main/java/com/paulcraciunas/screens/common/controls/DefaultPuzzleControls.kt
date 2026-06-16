@@ -36,7 +36,6 @@ fun DefaultPuzzleControls(
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Playing state: hint and abandon buttons + your move indicator
         OutlinedIconButton(
             onClick = onHintRequested,
             enabled = hintEnabled,
@@ -46,9 +45,9 @@ fun DefaultPuzzleControls(
                 painter = painterResource(R.drawable.lightbulb_icon),
                 contentDescription = stringResource(R.string.puzzle_hint),
                 tint = if (!hintEnabled) {
-                    Design.colors.border
+                    Design.colors.primaryDisabled
                 } else {
-                    Design.colors.primary
+                    Design.colors.pieceLight
                 },
                 modifier = Modifier.size(Design.dimensions.sizes.navBarIconHeight)
             )
@@ -62,9 +61,9 @@ fun DefaultPuzzleControls(
                 painter = painterResource(R.drawable.flag_icon),
                 contentDescription = stringResource(R.string.puzzle_abandon),
                 tint = if (!abandonEnabled) {
-                    Design.colors.border
+                    Design.colors.primaryDisabled
                 } else {
-                    Design.colors.danger
+                    Design.colors.pieceLight
                 },
                 modifier = Modifier.size(Design.dimensions.sizes.navBarIconHeight)
             )

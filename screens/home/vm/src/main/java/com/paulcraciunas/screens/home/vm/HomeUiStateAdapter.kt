@@ -36,7 +36,7 @@ class HomeUiStateAdapter @Inject constructor() {
         bestPuzzleRushScore = user.highScores.puzzleRush,
         bestPuzzleStreakScore = user.highScores.puzzleStreak,
         bestFindTheSquareScore = user.highScores.findTheSquare,
-        bestMoveThePieceScore = user.highScores.moveThePiece,
+        bestKnightPathScore = user.highScores.knightPath,
         bestBlindModeScore = user.highScores.blindMode,
     )
 

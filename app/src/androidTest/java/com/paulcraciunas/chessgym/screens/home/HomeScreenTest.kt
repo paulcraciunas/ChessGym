@@ -1,9 +1,6 @@
 package com.paulcraciunas.chessgym.screens.home
 
 import com.paulcraciunas.chessgym.base.BaseUiTest
-import com.paulcraciunas.chessgym.dsl.Given
-import com.paulcraciunas.chessgym.dsl.Then
-import com.paulcraciunas.chessgym.dsl.When
 import com.paulcraciunas.chessgym.dsl.setup.Puzzles
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
@@ -23,7 +20,7 @@ internal class HomeScreenTest : BaseUiTest() {
     fun GIVEN_default_user_WHEN_app_launched_THEN_shows_home_with_defaults() {
         Given.user.isDefault()
 
-        When.appIsLaunched()
+        When.app.launch()
 
         Then.homeScreen
             .isDisplayed()
@@ -35,7 +32,7 @@ internal class HomeScreenTest : BaseUiTest() {
     fun GIVEN_empty_user_WHEN_app_launched_THEN_shows_home_with_defaults() {
         Given.user.isEmpty()
 
-        When.appIsLaunched()
+        When.app.launch()
 
         Then.homeScreen
             .isDisplayed()
@@ -51,7 +48,7 @@ internal class HomeScreenTest : BaseUiTest() {
             joinDate = LocalDate.of(2024, 1, 15),
         )
 
-        When.appIsLaunched()
+        When.app.launch()
 
         Then.homeScreen
             .isDisplayed()
@@ -60,7 +57,7 @@ internal class HomeScreenTest : BaseUiTest() {
 
     @Test
     fun GIVEN_default_user_WHEN_app_launched_THEN_shows_empty_timeline() {
-        When.appIsLaunched()
+        When.app.launch()
 
         Then.homeScreen
             .isDisplayed()
@@ -74,7 +71,7 @@ internal class HomeScreenTest : BaseUiTest() {
             Puzzles.ratedItem(played = 12, solved = 10)
         )
 
-        When.appIsLaunched()
+        When.app.launch()
 
         Then.homeScreen
             .isDisplayed()
@@ -88,7 +85,7 @@ internal class HomeScreenTest : BaseUiTest() {
             puzzlesSolved = 108,
         )
 
-        When.appIsLaunched()
+        When.app.launch()
 
         Then.homeScreen
             .isDisplayed()
@@ -103,7 +100,7 @@ internal class HomeScreenTest : BaseUiTest() {
             puzzleStreak = 15,
         )
 
-        When.appIsLaunched()
+        When.app.launch()
 
         Then.homeScreen
             .isDisplayed()
@@ -112,7 +109,7 @@ internal class HomeScreenTest : BaseUiTest() {
 
     @Test
     fun WHEN_expanding_stats_THEN_shows_detailed_stats() {
-        When.appIsLaunched()
+        When.app.launch()
 
         Then.homeScreen.hasStatsCollapsed()
 
@@ -125,7 +122,7 @@ internal class HomeScreenTest : BaseUiTest() {
 
     @Test
     fun WHEN_expanding_high_scores_THEN_shows_detailed_high_scores() {
-        When.appIsLaunched()
+        When.app.launch()
 
         Then.homeScreen.hasHighScoresCollapsed()
 
@@ -140,7 +137,7 @@ internal class HomeScreenTest : BaseUiTest() {
     fun WHEN_user_rating_updates_THEN_ui_reflects_change() {
         Given.user.isLoaded(rating = 1200)
 
-        When.appIsLaunched()
+        When.app.launch()
 
         Then.homeScreen.hasProfileRating(1200)
 
@@ -154,7 +151,7 @@ internal class HomeScreenTest : BaseUiTest() {
     fun WHEN_loading_dark_mode_THEN_ui_shows_correctly() {
         Given.settings.darkMode()
 
-        When.appIsLaunched()
+        When.app.launch()
         Then.theme.isDarkMode()
     }
 
@@ -162,13 +159,13 @@ internal class HomeScreenTest : BaseUiTest() {
     fun WHEN_loading_light_mode_THEN_ui_shows_correctly() {
         Given.settings.lightMode()
 
-        When.appIsLaunched()
+        When.app.launch()
         Then.theme.isLightMode()
     }
 
     @Test
     fun WHEN_navigating_to_puzzles_THEN_shows_puzzle_dashboard() {
-        When.appIsLaunched()
+        When.app.launch()
 
         When.navigation.navigateToPuzzles()
 

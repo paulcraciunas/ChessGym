@@ -16,7 +16,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Lock
@@ -99,20 +98,14 @@ private fun AboutContent(
         ChessGymColumnCard {
             NavigationRow(
                 icon = Icons.Outlined.Person,
-                title = stringResource(R.string.about_creator_title),
-                onClick = { onSectionClicked(AboutSection.CREATOR) },
-            )
-            HairlineDivider(modifier = Modifier.fillMaxWidth())
-            NavigationRow(
-                icon = Icons.Outlined.Email,
-                title = stringResource(R.string.about_contact_title),
-                onClick = { onSectionClicked(AboutSection.CONTACT) },
+                title = stringResource(R.string.about_app_title),
+                onClick = { onSectionClicked(AboutSection.App) },
             )
             HairlineDivider(modifier = Modifier.fillMaxWidth())
             NavigationRow(
                 icon = Icons.Outlined.Edit,
                 title = stringResource(R.string.about_feedback_title),
-                onClick = { onSectionClicked(AboutSection.FEEDBACK) },
+                onClick = { onSectionClicked(AboutSection.Feedback) },
             )
         }
         SectionHeader(title = stringResource(R.string.about_support_title))
@@ -138,25 +131,25 @@ private fun AboutContent(
             NavigationRow(
                 icon = ImageVector.vectorResource(id = R.drawable.icon_shield),
                 title = stringResource(R.string.about_privacy_policy_title),
-                onClick = { onSectionClicked(AboutSection.PRIVACY_POLICY) },
+                onClick = { onSectionClicked(AboutSection.PrivacyPolicy) },
             )
             HairlineDivider(modifier = Modifier.fillMaxWidth())
             NavigationRow(
                 icon = Icons.Outlined.CheckCircle,
                 title = stringResource(R.string.about_terms_and_conditions_title),
-                onClick = { onSectionClicked(AboutSection.TERMS_AND_CONDITIONS) },
+                onClick = { onSectionClicked(AboutSection.TermsAndConditions) },
             )
             HairlineDivider(modifier = Modifier.fillMaxWidth())
             NavigationRow(
                 icon = Icons.Outlined.Lock,
                 title = stringResource(R.string.about_terms_title),
-                onClick = { onSectionClicked(AboutSection.TERMS_OF_USE) },
+                onClick = { onSectionClicked(AboutSection.TermsOfUse) },
             )
             HairlineDivider(modifier = Modifier.fillMaxWidth())
             NavigationRow(
                 icon = Icons.Outlined.Info,
                 title = stringResource(R.string.about_libraries_title),
-                onClick = { onSectionClicked(AboutSection.LIBRARIES) },
+                onClick = { onSectionClicked(AboutSection.Libraries) },
             )
         }
     }

@@ -11,7 +11,6 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.platform.app.InstrumentationRegistry
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.dialogs.AbandonConfirmationDialogTags
-import com.paulcraciunas.screens.common.dialogs.PromotionDialogTags
 import com.paulcraciunas.screens.puzzles.rated.ui.RatedPuzzleScreenTags
 
 class RatedPuzzleScreenAssertions(private val rule: ComposeTestRule) {
@@ -55,16 +54,8 @@ class RatedPuzzleScreenAssertions(private val rule: ComposeTestRule) {
         rule.onNodeWithTag(AbandonConfirmationDialogTags.DIALOG).assertIsDisplayed()
     }
 
-    fun abandonDialogIsDismissed(): RatedPuzzleScreenAssertions = apply {
-        rule.onAllNodes(hasTestTag(AbandonConfirmationDialogTags.DIALOG)).assertCountEquals(0)
-    }
-
-    fun promotionDialogIsShown(): RatedPuzzleScreenAssertions = apply {
-        rule.onNodeWithTag(PromotionDialogTags.DIALOG).assertIsDisplayed()
-    }
-
-    fun promotionDialogIsDismissed(): RatedPuzzleScreenAssertions = apply {
-        rule.onAllNodes(hasTestTag(PromotionDialogTags.DIALOG)).assertCountEquals(0)
+    fun abandonDialogIsNotShown(): RatedPuzzleScreenAssertions = apply {
+        rule.onNodeWithTag(AbandonConfirmationDialogTags.DIALOG).assertDoesNotExist()
     }
 
     fun hasBackButton(): RatedPuzzleScreenAssertions = apply {

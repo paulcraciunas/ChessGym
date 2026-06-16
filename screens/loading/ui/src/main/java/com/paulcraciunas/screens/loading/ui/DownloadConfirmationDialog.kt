@@ -1,16 +1,13 @@
 package com.paulcraciunas.screens.loading.ui
 
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.design.components.ChessGymDialog
 import com.paulcraciunas.screens.common.design.components.DialogIconTone
-import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
 fun DownloadConfirmationDialog(
@@ -33,23 +30,11 @@ fun DownloadConfirmationDialog(
         },
         buttons = {
             Paired(
-                confirmText = stringResource(R.string.landing_download_button),
+                confirmText = stringResource(R.string.generic_download),
                 onConfirm = onConfirmed,
                 dismissText = stringResource(android.R.string.cancel),
                 onDismiss = onCancelled,
             )
         },
     )
-}
-
-@Preview("Download Confirmation Dialog")
-@Preview("Download Confirmation Dialog (dark)", uiMode = UI_MODE_NIGHT_YES)
-@Composable
-private fun DownloadConfirmationDialogPreview() {
-    ChessGymTheme {
-        DownloadConfirmationDialog(
-            onCancelled = {},
-            onConfirmed = {}
-        )
-    }
 }

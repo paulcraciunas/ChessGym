@@ -7,13 +7,13 @@ import com.paulcraciunas.global.resources.R
 @get:DrawableRes
 val Achievement.iconRes: Int
     get() = when (this) {
-        Achievement.RATED_PUZZLES_SOLVED -> R.drawable.military_medal_icon
-        Achievement.PUZZLE_RUSH_SESSIONS -> R.drawable.military_medal_icon
+        Achievement.RATED_PUZZLES_SOLVED -> R.drawable.achievement_icon_01
+        Achievement.PUZZLE_RUSH_SESSIONS -> R.drawable.achievement_icon_02
         Achievement.STREAK_SESSIONS -> R.drawable.achievement_icon_03
         Achievement.FAILED_PUZZLES_REDEEMED -> R.drawable.achievement_icon_04
         Achievement.FIND_SQUARE_SESSIONS -> R.drawable.achievement_icon_05
-        Achievement.MOVE_PIECE_SESSIONS -> R.drawable.military_medal_icon
-        Achievement.BLIND_MODE_WINS -> R.drawable.military_medal_icon
+        Achievement.KNIGHT_PATH_SESSIONS -> R.drawable.achievement_icon_06
+        Achievement.BLIND_MODE_WINS -> R.drawable.achievement_icon_07
         Achievement.RATED_WIN_STREAK -> R.drawable.achievement_icon_08
         Achievement.RATING_CLIMBER -> R.drawable.achievement_icon_09
         Achievement.BLIND_STRATEGIST -> R.drawable.achievement_icon_10

@@ -58,7 +58,7 @@ import com.paulcraciunas.chessgym.screens.FailedPuzzles
 import com.paulcraciunas.chessgym.screens.FindTheSquare
 import com.paulcraciunas.chessgym.screens.Home
 import com.paulcraciunas.chessgym.screens.ImportGame
-import com.paulcraciunas.chessgym.screens.MoveThePiece
+import com.paulcraciunas.chessgym.screens.KnightPath
 import com.paulcraciunas.chessgym.screens.PuzzleDashboard
 import com.paulcraciunas.chessgym.screens.PuzzleRush
 import com.paulcraciunas.chessgym.screens.PuzzleStreak
@@ -66,6 +66,8 @@ import com.paulcraciunas.chessgym.screens.RatedPuzzle
 import com.paulcraciunas.chessgym.screens.Settings
 import com.paulcraciunas.chessgym.screens.SignIn
 import com.paulcraciunas.chessgym.screens.ToolsDashboard
+import com.paulcraciunas.chessgym.sounds.GameSoundEffects
+import com.paulcraciunas.global.navigation.NavigationDispatcher
 import com.paulcraciunas.screens.about.vm.AboutSection
 import com.paulcraciunas.screens.achievements.ui.AchievementBannerHost
 import com.paulcraciunas.screens.common.AppDrawer
@@ -81,10 +83,10 @@ import com.paulcraciunas.global.resources.R as GlobalR
 fun MainScreen(
     modifier: Modifier = Modifier,
 ) {
-    val mainScreenViewModel: MainScreenViewModel = hiltViewModel()
-    val mainScreenState by mainScreenViewModel.uiState.collectAsStateWithLifecycle()
-    val debugMenuProvider: DebugMenuProvider = mainScreenViewModel.debugMenuProvider
-    val notificationManager = mainScreenViewModel.achievementNotificationManager
+    val vm: MainScreenViewModel = hiltViewModel()
+    val mainScreenState by vm.uiState.collectAsStateWithLifecycle()
+    val debugMenuProvider: DebugMenuProvider = vm.debugMenuProvider
+    val notificationManager = vm.achievementNotificationManager
 
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -106,6 +108,14 @@ fun MainScreen(
         onDispose { navController.removeOnDestinationChangedListener(NavigationLogger) }
     }
 
+    LaunchedEffect(Unit) {
+        vm.navigationDispatcher.navigationEvents.collect { event ->
+            when (event) {
+                is NavigationDispatcher.Destination.Analysis -> navController.navigate(Screen.Analysis(puzzleId = event.puzzleId))
+            }
+        }
+    }
+
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val onDrawerToggle: () -> Unit = { scope.launch { drawerState.toggle() } }
@@ -114,20 +124,25 @@ fun MainScreen(
     val snackbarHostState = remember { SnackbarHostState() }
 
     HandleAccountEvents(
-        events = { mainScreenViewModel.accountEvent },
+        events = { vm.accountEvent },
         snackbarHostState = snackbarHostState
     )
     HandleDialogs(
         activeDialog = mainScreenState.activeDialog,
-        dismissDialog = mainScreenViewModel::dismissDialog,
-        signOut = mainScreenViewModel::signOut,
-        deleteAccount = mainScreenViewModel::deleteAccount,
+        dismissDialog = vm::dismissDialog,
+        signOut = vm::signOut,
+        deleteAccount = vm::deleteAccount,
     )
 
     CompositionLocalProvider(LocalUiSettings provides mainScreenState.appSettings) {
         if (mainScreenState.isLoading) {
             LoadingContent()
         } else {
+            GameSoundEffects(
+                soundManager = vm.soundManager,
+                soundEvents = vm.soundCoordinator,
+            )
+
             Box {
                 ModalNavigationDrawer(
                     drawerContent = {
@@ -138,7 +153,7 @@ fun MainScreen(
                                 closeDrawer()
                                 navController.navigate(Screen.SignUp)
                             },
-                            onSignOut = mainScreenViewModel::showSignOutDialog,
+                            onSignOut = vm::showSignOutDialog,
                             onHome = {
                                 scope.launch {
                                     navController.navigate(Screen.Home) {
@@ -154,7 +169,7 @@ fun MainScreen(
                                 closeDrawer()
                                 navController.navigate(Screen.About)
                             },
-                            onDeleteAccount = mainScreenViewModel::showDeleteAccountDialog,
+                            onDeleteAccount = vm::showDeleteAccountDialog,
                             closeDrawer = closeDrawer,
                             trailingContent = {
                                 with(debugMenuProvider) {
@@ -209,30 +224,22 @@ fun MainScreen(
                                 BoardVisDashboard(tabNavController = navController, onDrawerToggle = onDrawerToggle)
                             }
                             animatedComposable<Screen.FindTheSquare> { FindTheSquare(tabNavController = navController) }
-                            animatedComposable<Screen.MoveThePiece> { MoveThePiece(tabNavController = navController) }
+                            animatedComposable<Screen.KnightPath> { KnightPath(tabNavController = navController) }
                             animatedComposable<Screen.BlindMode> { BlindMode(onDrawerToggle = onDrawerToggle) }
                             animatedComposable<Screen.ToolsDashboard> {
                                 ToolsDashboard(tabNavController = navController, onDrawerToggle = onDrawerToggle)
                             }
                             animatedComposable<Screen.Clock> { ChessClock(tabNavController = navController) }
-                            animatedComposable<Screen.Analysis> { backStackEntry ->
-                                val route = backStackEntry.toRoute<Screen.Analysis>()
-                                AnalysisBoard(
-                                    tabNavController = navController,
-                                    fen = route.fen,
-                                    firstMove = route.firstMove,
-                                )
+                            animatedComposable<Screen.Analysis> {
+                                AnalysisBoard(tabNavController = navController, puzzleId = it.toRoute<Screen.Analysis>().puzzleId)
                             }
                             animatedComposable<Screen.ImportGame> { ImportGame(tabNavController = navController) }
                             animatedComposable<Screen.Settings> { Settings(onNavigateBack = navController::popBackStack) }
                             animatedComposable<Screen.SignUp> { SignIn(tabNavController = navController) }
                             animatedComposable<Screen.About> { About(tabNavController = navController) }
-                            animatedComposable<Screen.AboutDetail> { backStackEntry ->
-                                val section = AboutSection.valueOf(backStackEntry.toRoute<Screen.AboutDetail>().section)
-                                AboutDetail(
-                                    section = section,
-                                    onNavigateBack = navController::popBackStack,
-                                )
+                            animatedComposable<Screen.AboutDetail> {
+                                val section = AboutSection.valueOf(it.toRoute<Screen.AboutDetail>().section)
+                                AboutDetail(section = section, onNavigateBack = navController::popBackStack)
                             }
                             with(debugMenuProvider) {
                                 registerDebugScreens(navController = navController)

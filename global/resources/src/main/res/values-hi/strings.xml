@@ -120,7 +120,7 @@
     <string name="user_stat_high_score_blind_mode">सर्वश्रेष्ठ ब्लाइंड मोड</string>
     <string name="user_stat_high_score_puzzle_streak">सर्वश्रेष्ठ पहेली स्ट्रीक</string>
     <string name="user_stat_high_score_find_the_square">सर्वश्रेष्ठ चौक ढूंढें</string>
-    <string name="user_stat_high_score_move_the_piece">सर्वश्रेष्ठ मोहरा चलाएं</string>
+    <string name="user_stat_high_score_knight_path">सर्वश्रेष्ठ मोहरा चलाएं</string>
     <!-- endregion -->
 
     <!-- region Loading -->
@@ -152,13 +152,12 @@
     <string name="loading_error_download_failed">डाउनलोड विफल। कृपया अपना इंटरनेट कनेक्शन जांचें और पुनः प्रयास करें।</string>
     <string name="loading_error_decompression_failed">डेटाबेस अनपैक करने में विफल। कृपया पुनः प्रयास करें।</string>
     <string name="loading_error_database_write_failed">डेटाबेस बनाने में विफल। कृपया पुनः प्रयास करें।</string>
-    <string name="loading_error_permission">अनुमति अस्वीकृत। जारी रखने के लिए कृपया सूचनाएं सक्षम करें।</string>
     <string name="loading_error_no_internet">कोई इंटरनेट कनेक्शन नहीं। कृपया अपना कनेक्शन जांचें और पुनः प्रयास करें।</string>
     <string name="loading_error_not_enough_disk_space">पर्याप्त डिस्क स्थान नहीं है। कृपया कुछ स्थान खाली करें और पुनः प्रयास करें।</string>
     <string name="loading_error_generic">एक त्रुटि हुई। कृपया पुनः प्रयास करें।</string>
     <string name="loading_error_consent_required">आगे बढ़ने के लिए क्रैश रिपोर्टिंग की सहमति आवश्यक है। हम केवल ऐप की स्थिरता बेहतर करने के लिए तकनीकी क्रैश डेटा एकत्र करते हैं।</string>
     <string name="crash_consent_dialog_title">हमें बेहतर बनाने में मदद करें</string>
-    <string name="crash_consent_dialog_body">ChessGym एप्लिकेशन त्रुटियों को पहचानने और ठीक करने के लिए क्रैश रिपोर्टिंग का उपयोग करता है। यह डेटा केवल क्रैश पहचानने और सभी उपयोगकर्ताओं के लिए ऐप की स्थिरता बेहतर करने के लिए उपयोग किया जाता है।\n\nकोई भी व्यक्तिगत जानकारी, गेम डेटा, या उपयोग पैटर्न एकत्र नहीं किए जाते — केवल तकनीकी क्रैश विवरण (जैसे स्टैक ट्रेस और डिवाइस मॉडल) जब कुछ गलत हो जाता है।\n\nआप इस सेटिंग को बाद में ऐप में बदल सकते हैं।</string>
+    <string name="crash_consent_dialog_body">ChessGym एप्लिकेशन त्रुटियों को पहचानने और ठीक करने के लिए क्रैश रिपोर्टिंग का उपयोग करता है। यह डेटा केवल क्रैश पहचानने और सभी उपयोगकर्ताओं के लिए ऐप की स्थिरता बेहतर करने के लिए उपयोग किया जाता है।\n\n&lt;b>कोई भी व्यक्तिगत जानकारी, गेम डेटा, या उपयोग पैटर्न एकत्र नहीं किए जाते&lt;/b> — केवल तकनीकी क्रैश विवरण (जैसे स्टैक ट्रेस और डिवाइस मॉडल) जब कुछ गलत हो जाता है।\n\nआप इस सेटिंग को बाद में ऐप में बदल सकते हैं।</string>
     <string name="loading_fact_eyebrow">क्या आप जानते हैं?</string>
     <string-array name="loading_fact_titles">
         <item>शक्तिहीन रानी</item>
@@ -310,18 +309,19 @@
     <!-- endregion -->
 
     <!-- region Move the Piece -->
-    <string name="boardvis_move_piece_title">मोहरा चलाएं</string>
-    <string name="boardvis_move_piece_description">बोर्ड पर सही चालें विज़ुअलाइज़ करें और चलाएं</string>
-    <string name="boardvis_move_piece_training_mode">प्रशिक्षण मोड</string>
-    <string name="boardvis_move_piece_moves_remaining">शेष चालें: %1$d</string>
-    <string name="boardvis_move_piece_rules">प्रतिद्वंद्वी द्वारा आक्रमण किए गए वर्ग पर उतरे बिना अपना मोहरा चलाएं। अगले स्तर पर जाने के लिए आवश्यक चालें पूरी करें!</string>
-    <string name="boardvis_move_piece_captured">पकड़ा गया!</string>
+    <string name="boardvis_knight_path_title">घोड़े का रास्ता</string>
+    <string name="boardvis_knight_path_description">घोड़े का लक्ष्य वर्ग तक सबसे छोटा रास्ता खोजें</string>
+    <string name="boardvis_knight_path_rules">घोड़े का लक्ष्य वर्ग तक सबसे छोटा रास्ता खोजें। एक गलती और खेल समाप्त!</string>
+    <string name="boardvis_knight_path_captured">पकड़ा गया!</string>
+    <string name="boardvis_knight_path_wrong_move">गलत चाल!</string>
     <!-- endregion -->
 
     <!-- region Settings -->
     <string name="settings_title">सेटिंग्स</string>
     <string name="settings_section_general">सामान्य</string>
     <string name="settings_section_ui">दिखावट</string>
+    <string name="settings_sound">ध्वनि</string>
+    <string name="settings_sound_description">खेलों के दौरान ध्वनि बजाएं</string>
     <string name="settings_haptic_feedback">हैप्टिक फ़ीडबैक</string>
     <string name="settings_haptic_feedback_description">इंटरैक्शन पर कंपन</string>
     <string name="settings_auto_promote">स्वतः पदोन्नति</string>
@@ -332,6 +332,7 @@
     <string name="settings_show_borders_description">बोर्ड के चारों ओर निर्देशांक प्रदर्शित करें</string>
     <string name="settings_highlight_legal_moves">वैध चालें हाइलाइट करें</string>
     <string name="settings_highlight_legal_moves_description">मोहरा चुनने पर उपलब्ध वर्ग दिखाएं</string>
+    <string name="settings_language">भाषा</string>
     <string name="settings_light_mode">थीम</string>
     <string name="settings_light_mode_light">हल्का</string>
     <string name="settings_light_mode_dark">गहरा</string>
@@ -348,8 +349,9 @@
     <string name="about_title">के बारे में</string>
     <string name="about_general_title">सामान्य</string>
     <string name="about_legal_title">कानूनी</string>
-    <string name="about_creator_title">निर्माता</string>
-    <string name="about_creator_description">ChessGym को Paul Mihai Craciunas ने बनाया है, जो लंदन से एक Android इंजीनियर हैं, शतरंज के प्रति जुनूनी हैं, और लोगों की सुधार की यात्रा में मदद करने की उम्मीद रखते हैं।</string>
+    <string name="about_app_title">ऐप</string>
+    <string name="about_app_description">Paul Craciunas द्वारा ❤\uFE0F से बनाया गया।\t</string>
+    <string name="about_dedication_danya">यह एप्लिकेशन ग्रैंडमास्टर &lt;b>Daniel Naroditsky&lt;/b> (1995–2025) की स्मृति को सम्मानपूर्वक समर्पित है, जिनके संक्रामक जुनून, अद्वितीय स्पष्टता और शानदार शिक्षण वीडियो ने लाखों दिमागों को प्रेरित किया और शतरंज के खेल के प्रति एक सार्वभौमिक आनंद को पुनर्जीवित किया।</string>
     <string name="about_contact_title">संपर्क</string>
     <string name="about_contact_description">कानूनी चिंताओं, व्यावसायिक अवसरों, या किसी अन्य पूछताछ के लिए, कृपया ईमेल के माध्यम से संपर्क करें।</string>
     <string name="about_contact_email">contact@chessgym.app</string>
@@ -365,7 +367,7 @@
     <string name="about_donate_medium">सैंडविच</string>
     <string name="about_donate_large">पिज़्ज़ा</string>
     <string name="about_rate_title">ऐप को रेट करें</string>
-    <string name="about_rate_description">ChessGym का आनंद ले रहे हैं? Play Store पर रेटिंग दें</string>
+    <string name="about_rate_description">ChessGym का आनंद ले रहे हैं? रेटिंग दें</string>
     <string name="about_libraries_title">ओपन सोर्स लाइब्रेरी</string>
     <string name="about_libraries_description">ChessGym निम्नलिखित ओपन सोर्स लाइब्रेरी के साथ बना है:</string>
     <string name="about_privacy_policy_title">गोपनीयता नीति</string>
@@ -385,6 +387,7 @@
     <string name="tools_mode_start">टूल शुरू करें</string>
     <string name="tools_clock_description">कॉन्फ़िगर करने योग्य नियंत्रणों के साथ अपने खेलों को समय दें</string>
     <string name="tools_analysis_title">विश्लेषण</string>
+    <string name="tools_analysis_flip_board">बोर्ड पलटें</string>
     <string name="tools_analysis_description">इंजन के साथ स्थितियों का विश्लेषण करें</string>
     <string name="tools_import_description">FEN या PGN नोटेशन से गेम आयात करें</string>
     <!-- endregion -->
@@ -405,8 +408,8 @@
 
     <!-- region Import Game Screen -->
     <string name="import_game_title">गेम आयात करें</string>
-    <string name="import_fen">FEN</string>
-    <string name="import_pgn">PGN</string>
+    <string name="import_fen">स्थिति</string>
+    <string name="import_pgn">खेल</string>
     <string name="import_dialog_title_fen">FEN आयात करें</string>
     <string name="import_dialog_title_pgn">PGN आयात करें</string>
     <string name="import_dialog_hint_fen">FEN स्ट्रिंग यहाँ पेस्ट करें…</string>
@@ -424,6 +427,7 @@
     <string name="blind_mode_title">ब्लाइंड मोड</string>
     <string name="blind_mode_training_mode">प्रशिक्षण मोड</string>
     <string name="blind_mode_training_description">खेल आपकी रेटिंग को प्रभावित नहीं करेंगे</string>
+    <string name="blind_mode_rated_description">रेटेड मोड</string>
     <string name="blind_mode_play">खेलें</string>
     <string name="blind_mode_resign">हार मानें</string>
     <string name="blind_mode_reveal">प्रकट करें</string>
@@ -441,21 +445,21 @@
     <string name="achievement_category_streak_sessions">स्ट्रीक सत्र</string>
     <string name="achievement_category_failed_puzzles_redeemed">असफल पहेलियाँ सुधारी गईं</string>
     <string name="achievement_category_find_square_sessions">चौक ढूंढें सत्र</string>
-    <string name="achievement_category_move_piece_sessions">मोहरा चलाएं सत्र</string>
-    <string name="achievement_category_blind_mode_wins">होमर की विरासत</string>
+    <string name="achievement_category_knight_path_sessions">घोड़े का रास्ता सत्र</string>
+    <string name="achievement_category_blind_mode_wins">ब्लाइंड मोड जीत</string>
     <string name="achievement_category_rated_win_streak">रेटेड जीत स्ट्रीक</string>
     <string name="achievement_category_rating_climber">रेटिंग पर्वतारोही</string>
-    <string name="achievement_category_blind_strategist">ब्लाइंड रणनीतिकार</string>
-    <string name="achievement_category_rush_champion">रश चैम्पियन</string>
-    <string name="achievement_category_streak_legend">स्ट्रीक लीजेंड</string>
-    <string name="achievement_category_eagle_eye">बाज की नज़र</string>
-    <string name="achievement_category_knights_path">घोड़े का पथ</string>
-    <string name="achievement_category_puzzle_addict">पहेली प्रेमी</string>
+    <string name="achievement_category_blind_strategist">ब्लाइंड मोड रेटिंग</string>
+    <string name="achievement_category_rush_champion">रश उच्च स्कोर</string>
+    <string name="achievement_category_streak_legend">स्ट्रीक उच्च स्कोर</string>
+    <string name="achievement_category_eagle_eye">चौक ढूंढें उच्च स्कोर</string>
+    <string name="achievement_category_knights_path">घोड़े का रास्ता उच्च स्कोर</string>
+    <string name="achievement_category_puzzle_addict">हल की गई पहेलियाँ</string>
     <string name="achievement_category_time_invested">समय निवेश</string>
-    <string name="achievement_category_daily_grinder">दैनिक अभ्यासकर्ता</string>
-    <string name="achievement_category_consistency_king">निरंतरता का राजा</string>
+    <string name="achievement_category_daily_grinder">लगातार दिन खेले</string>
+    <string name="achievement_category_consistency_king">सबसे अधिक लगातार दिन</string>
     <string name="achievement_category_board_vision">बोर्ड दृष्टि</string>
-    <string name="achievement_category_rush_solver">रश हल करने वाला</string>
+    <string name="achievement_category_rush_solver">रश पहेलियाँ हल की गईं</string>
 
     <!-- Tier names: RATED_PUZZLES_SOLVED -->
     <string name="achievement_rated_puzzles_solved_one">पहेली उत्साही</string>
@@ -492,12 +496,12 @@
     <string name="achievement_find_square_sessions_four">चौक उस्ताद</string>
     <string name="achievement_find_square_sessions_five">चौक ग्रैंडमास्टर</string>
 
-    <!-- Tier names: MOVE_PIECE_SESSIONS -->
-    <string name="achievement_move_piece_sessions_one">मोहरा शुरुआती</string>
-    <string name="achievement_move_piece_sessions_two">मोहरा चलाने वाला</string>
-    <string name="achievement_move_piece_sessions_three">मोहरा नाविक</string>
-    <string name="achievement_move_piece_sessions_four">मोहरा उस्ताद</string>
-    <string name="achievement_move_piece_sessions_five">मोहरा ग्रैंडमास्टर</string>
+    <!-- Tier names: KNIGHT_PATH_SESSIONS -->
+    <string name="achievement_knight_path_sessions_one">मोहरा शुरुआती</string>
+    <string name="achievement_knight_path_sessions_two">मोहरा चलाने वाला</string>
+    <string name="achievement_knight_path_sessions_three">मोहरा नाविक</string>
+    <string name="achievement_knight_path_sessions_four">मोहरा उस्ताद</string>
+    <string name="achievement_knight_path_sessions_five">मोहरा ग्रैंडमास्टर</string>
 
     <!-- Tier names: BLIND_MODE_WINS -->
     <string name="achievement_blind_mode_wins_one">ओडिन का शिष्य</string>
@@ -603,7 +607,7 @@
     <string name="achievement_desc_streak_sessions">यह उपलब्धि अर्जित करने के लिए पहेली स्ट्रीक सत्र पूरे करें</string>
     <string name="achievement_desc_failed_puzzles_redeemed">पहले असफल पहेलियों को पुनः प्रयास करें और हल करें</string>
     <string name="achievement_desc_find_square_sessions">यह उपलब्धि अर्जित करने के लिए चौक ढूंढें सत्र खेलें</string>
-    <string name="achievement_desc_move_piece_sessions">यह उपलब्धि अर्जित करने के लिए मोहरा चलाएं सत्र खेलें</string>
+    <string name="achievement_desc_knight_path_sessions">यह उपलब्धि अर्जित करने के लिए घोड़े का रास्ता सत्र खेलें</string>
     <string name="achievement_desc_blind_mode_wins">यह उपलब्धि अर्जित करने के लिए रेटेड ब्लाइंड मोड खेल जीतें</string>
     <string name="achievement_desc_rated_win_streak">बिना हारे लगातार रेटेड पहेलियाँ जीतें</string>
     <string name="achievement_desc_rating_climber">नई ऊंचाइयों तक पहुंचने के लिए अपनी पहेली रेटिंग बढ़ाएं</string>
@@ -611,12 +615,12 @@
     <string name="achievement_desc_rush_champion">पज़ल रश में उच्च स्कोर बनाएं</string>
     <string name="achievement_desc_streak_legend">पहेली स्ट्रीक में उच्च स्कोर बनाएं</string>
     <string name="achievement_desc_eagle_eye">चौक ढूंढें में उच्च स्कोर बनाएं</string>
-    <string name="achievement_desc_knights_path">मोहरा चलाएं में उच्च स्कोर बनाएं</string>
+    <string name="achievement_desc_knights_path">घोड़े का रास्ता में उच्च स्कोर बनाएं</string>
     <string name="achievement_desc_puzzle_addict">सभी गेम मोड में पहेलियाँ हल करें</string>
     <string name="achievement_desc_time_invested">सभी गेम मोड में अभ्यास करते हुए समय बिताएं</string>
     <string name="achievement_desc_daily_grinder">अपनी स्ट्रीक बनाने के लिए लगातार दिन खेलें</string>
     <string name="achievement_desc_consistency_king">अपनी सर्वश्रेष्ठ लगातार दैनिक स्ट्रीक हासिल करें</string>
-    <string name="achievement_desc_board_vision">चौक ढूंढें और मोहरा चलाएं सत्र पूरे करें</string>
+    <string name="achievement_desc_board_vision">चौक ढूंढें और घोड़े का रास्ता सत्र पूरे करें</string>
     <string name="achievement_desc_rush_solver">पज़ल रश सत्र में पहेलियाँ हल करें</string>
 
     <!-- Achievement UI -->

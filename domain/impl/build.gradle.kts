@@ -17,10 +17,10 @@ dependencies {
 
     testImplementation(project(":game:logic:impl"))
     testImplementation(project(":game:serializer:impl"))
+    testImplementation(testFixtures(project(":domain:api")))
     testImplementation(testFixtures(project(":settings:application:api")))
     testImplementation(testFixtures(project(":game:engine:api")))
     testImplementation(testFixtures(project(":game:puzzles:api")))
-    testImplementation(testFixtures(project(":domain:api")))
     testImplementation(testFixtures(project(":user:api")))
     testImplementation(testFixtures(project(":global:device:api")))
 }

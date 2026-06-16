@@ -2,50 +2,61 @@ package com.paulcraciunas.screens.tools.clock.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.paulcraciunas.domain.api.general.BlackTimer
-import com.paulcraciunas.domain.api.general.CountdownTimer
-import com.paulcraciunas.domain.api.general.CountdownTimer.Remainder
-import com.paulcraciunas.domain.api.general.WhiteTimer
+import com.paulcraciunas.domain.api.general.PulseTimer
 import com.paulcraciunas.game.logic.api.Side
+import com.paulcraciunas.global.qualifiers.DefaultDispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.minutes
+
+private data class VmState(
+    val status: Status = Status.Setup,
+    val selectedMinutes: Int = DEFAULT_MINUTES,
+    val selectedIncrement: Int = DEFAULT_INCREMENT,
+    val whiteTimeMs: Long = selectedMinutes.minutes.inWholeMilliseconds,
+    val blackTimeMs: Long = selectedMinutes.minutes.inWholeMilliseconds,
+    val activePlayer: Side? = null,
+) {
+    enum class Status { Setup, Running, Finished }
+
+    companion object {
+        const val DEFAULT_MINUTES = 5
+        const val DEFAULT_INCREMENT = 1
+    }
+}
 
 @HiltViewModel
 class ClockViewModel @Inject constructor(
-    @param:WhiteTimer private val whiteTimer: CountdownTimer,
-    @param:BlackTimer private val blackTimer: CountdownTimer,
+    @param:DefaultDispatcher private val dispatcher: CoroutineDispatcher,
+    private val pulseTimer: PulseTimer,
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow<ClockUiState>(ClockUiState.Setup())
-    val uiState: StateFlow<ClockUiState> = _uiState.asStateFlow()
-
-    private var selectedMinutes: Int = ClockUiState.DEFAULT_MINUTES
-    private var selectedIncrement: Int = ClockUiState.DEFAULT_INCREMENT
-
-    init {
-        whiteTimer.setInterval(TICK_INTERVAL_MS.toInt())
-        blackTimer.setInterval(TICK_INTERVAL_MS.toInt())
-
-        combine(whiteTimer.remaining, blackTimer.remaining) { white, black ->
-            updateFromTimers(white, black)
-        }.launchIn(viewModelScope)
-    }
+    private var pulseJob: Job? = null
+    private val vmState = MutableStateFlow(VmState())
+    val uiState: StateFlow<ClockUiState> = vmState
+        .map { it.toUiState() }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = VmState().toUiState()
+        )
 
     fun onWhiteTapped() = onPlayerTapped(Side.WHITE)
     fun onBlackTapped() = onPlayerTapped(Side.BLACK)
 
     private fun onPlayerTapped(side: Side) {
-        _uiState.update { state ->
-            when (state) {
-                is ClockUiState.Setup -> if (side == Side.WHITE) startPlaying(state) else state
-                is ClockUiState.Playing -> updatePlayingState(state, side)
-                else -> state
-            }
+        when (vmState.value.status) {
+            VmState.Status.Setup -> if (side == Side.WHITE) startPlaying()
+            VmState.Status.Running -> onClockTapped(side)
+            VmState.Status.Finished -> {}
         }
     }
 
@@ -53,64 +64,101 @@ class ClockViewModel @Inject constructor(
     fun onNewGame() = resetToSetup()
 
     fun onTimeSelected(minutes: Int) {
-        selectedMinutes = minutes
-        _uiState.update { state ->
-            if (state is ClockUiState.Setup) state.copy(selectedMinutes = minutes) else state
+        vmState.update {
+            if (it.status == VmState.Status.Setup) {
+                val timeMs = minutes.minutes.inWholeMilliseconds
+                it.copy(selectedMinutes = minutes, whiteTimeMs = timeMs, blackTimeMs = timeMs)
+            } else it
         }
     }
 
     fun onIncrementSelected(increment: Int) {
-        selectedIncrement = increment
-        _uiState.update { state ->
-            if (state is ClockUiState.Setup) state.copy(selectedIncrement = increment) else state
-        }
+        vmState.update { if (it.status == VmState.Status.Setup) it.copy(selectedIncrement = increment) else it }
     }
 
-    private fun updatePlayingState(state: ClockUiState.Playing, side: Side): ClockUiState.Playing = if (state.activePlayer == side) {
-        val activeTimer = if (side == Side.WHITE) whiteTimer else blackTimer
-        val nextTimer = if (side == Side.WHITE) blackTimer else whiteTimer
+    fun onClockTapped(playerTapping: Side) {
+        if (vmState.value.activePlayer != playerTapping) return
 
-        activeTimer.stop()
-        val newTime = activeTimer.remaining.value + selectedIncrement
-        activeTimer.set(newTime)
+        stopPulse()
+        vmState.update {
+            val incrementMs = it.selectedIncrement * 1000L
+            it.copy(
+                whiteTimeMs = it.whiteTimeMs + if (playerTapping == Side.WHITE) incrementMs else 0L,
+                blackTimeMs = it.blackTimeMs + if (playerTapping == Side.BLACK) incrementMs else 0L,
+                activePlayer = playerTapping.other(),
+            )
+        }
+        startPulse()
+    }
 
-        nextTimer.start(viewModelScope)
-
-        state.copy(
-            whiteTime = whiteTimer.remaining.value,
-            blackTime = blackTimer.remaining.value,
-            activePlayer = side.other()
-        )
-    } else state
-
-    private fun startPlaying(state: ClockUiState.Setup): ClockUiState.Playing {
-        selectedMinutes = state.selectedMinutes
-        selectedIncrement = state.selectedIncrement
-
-        whiteTimer.set(state.whiteTime)
-        blackTimer.set(state.blackTime)
-
-        blackTimer.start(viewModelScope)
-        return ClockUiState.Playing(state.whiteTime, state.blackTime, activePlayer = Side.BLACK)
+    private fun startPlaying() {
+        vmState.update { it.copy(status = VmState.Status.Running, activePlayer = Side.BLACK) }
+        startPulse()
     }
 
     private fun resetToSetup() {
-        whiteTimer.stop()
-        blackTimer.stop()
-        _uiState.value = ClockUiState.Setup(selectedMinutes, selectedIncrement)
+        stopPulse()
+        vmState.update { VmState(selectedMinutes = it.selectedMinutes, selectedIncrement = it.selectedIncrement) }
     }
 
-    private fun updateFromTimers(white: Remainder, black: Remainder) {
-        _uiState.update { state ->
-            if (state is ClockUiState.Playing) {
-                if (!white.isPositive() || !black.isPositive()) {
-                    whiteTimer.stop()
-                    blackTimer.stop()
-                    ClockUiState.Finished(white, black, loser = state.activePlayer)
-                } else {
-                    state.copy(whiteTime = white, blackTime = black)
+    private fun startPulse() {
+        pulseJob?.cancel()
+        pulseJob = viewModelScope.launch(dispatcher) {
+            pulseTimer.start(intervalMillis = TICK_INTERVAL_MS).collect { elapsedMs ->
+                vmState.update { current ->
+                    when (current.activePlayer) {
+                        Side.WHITE -> {
+                            val newTime = (current.whiteTimeMs - elapsedMs).coerceAtLeast(0L)
+                            current.copy(whiteTimeMs = newTime, status = newTime.toState())
+                        }
+                        Side.BLACK -> {
+                            val newTime = (current.blackTimeMs - elapsedMs).coerceAtLeast(0L)
+                            current.copy(blackTimeMs = newTime, status = newTime.toState())
+                        }
+                        null -> current
+                    }
                 }
-            } else state
+                if (vmState.value.status == VmState.Status.Finished) {
+                    stopPulse()
+                }
+            }
+        }
+    }
+
+    private fun stopPulse() {
+        pulseJob?.cancel()
+        pulseJob = null
+    }
+
+    private fun VmState.toUiState(): ClockUiState = when (status) {
+        VmState.Status.Setup -> ClockUiState.Setup(
+            whiteTime = formatTime(whiteTimeMs),
+            blackTime = formatTime(blackTimeMs),
+            selectedMinutes = selectedMinutes,
+            selectedIncrement = selectedIncrement,
+        )
+        VmState.Status.Running -> ClockUiState.Playing(
+            whiteTime = formatTime(whiteTimeMs),
+            blackTime = formatTime(blackTimeMs),
+            activePlayer = activePlayer ?: Side.WHITE,
+        )
+        VmState.Status.Finished -> ClockUiState.Finished(
+            whiteTime = formatTime(whiteTimeMs),
+            blackTime = formatTime(blackTimeMs),
+            loser = activePlayer ?: Side.WHITE,
+        )
+    }
+
+    private fun Long.toState(): VmState.Status = if (this == 0L) VmState.Status.Finished else VmState.Status.Running
+
+    private fun formatTime(millis: Long): String {
+        val minutes = (millis / 1000) / 60
+        val seconds = (millis / 1000) % 60
+        val tenths = (millis % 1000) / 100
+
+        return when {
+            minutes > 0 -> "%d:%02d".format(minutes, seconds)
+            else -> "%d.%d".format(seconds, tenths) // Show tenths only when under a minute
         }
     }
 

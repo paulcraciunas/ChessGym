@@ -1,9 +1,6 @@
 package com.paulcraciunas.chessgym.screens.puzzles
 
 import com.paulcraciunas.chessgym.base.BaseUiTest
-import com.paulcraciunas.chessgym.dsl.Given
-import com.paulcraciunas.chessgym.dsl.Then
-import com.paulcraciunas.chessgym.dsl.When
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
 import org.junit.Test
@@ -27,7 +24,7 @@ internal class RatedPuzzleScreenTest : BaseUiTest() {
 
     @Test
     fun GIVEN_puzzle_loaded_WHEN_opened_THEN_shows_rated_puzzle_screen() {
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         When.ratedPuzzle.open()
 
@@ -41,7 +38,7 @@ internal class RatedPuzzleScreenTest : BaseUiTest() {
     fun GIVEN_light_mode_WHEN_opened_THEN_shows_light_background() {
         Given.settings.lightMode()
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         When.ratedPuzzle.open()
 
@@ -53,7 +50,7 @@ internal class RatedPuzzleScreenTest : BaseUiTest() {
     fun GIVEN_dark_mode_WHEN_opened_THEN_shows_dark_background() {
         Given.settings.darkMode()
 
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         When.ratedPuzzle.open()
 
@@ -63,7 +60,7 @@ internal class RatedPuzzleScreenTest : BaseUiTest() {
 
     @Test
     fun WHEN_playing_all_expected_moves_THEN_puzzle_is_solved() {
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
 
         When.ratedPuzzle.open()
@@ -75,7 +72,7 @@ internal class RatedPuzzleScreenTest : BaseUiTest() {
 
     @Test
     fun WHEN_playing_a_wrong_first_move_THEN_puzzle_fails() {
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         When.ratedPuzzle
             .open()
@@ -86,7 +83,7 @@ internal class RatedPuzzleScreenTest : BaseUiTest() {
 
     @Test
     fun WHEN_requesting_hint_THEN_puzzle_stays_in_play_until_moves_exhausted() {
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
         When.ratedPuzzle.open()
             .requestHint()
@@ -99,7 +96,7 @@ internal class RatedPuzzleScreenTest : BaseUiTest() {
 
     @Test
     fun WHEN_abandoning_and_confirming_THEN_puzzle_fails() {
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
 
         When.ratedPuzzle
@@ -109,13 +106,13 @@ internal class RatedPuzzleScreenTest : BaseUiTest() {
 
         When.ratedPuzzle.confirmAbandon()
         Then.ratedPuzzle
-            .abandonDialogIsDismissed()
+            .abandonDialogIsNotShown()
             .isFinishedWithFailure()
     }
 
     @Test
     fun WHEN_abandoning_and_dismissing_THEN_puzzle_continues() {
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
 
         When.ratedPuzzle.open()
@@ -124,16 +121,30 @@ internal class RatedPuzzleScreenTest : BaseUiTest() {
 
         When.ratedPuzzle.dismissAbandon()
         Then.ratedPuzzle
-            .abandonDialogIsDismissed()
+            .abandonDialogIsNotShown()
             .isPlaying()
     }
 
     @Test
-    fun GIVEN_playing_WHEN_pressing_back_THEN_shows_abandon_dialog() {
-        When.appIsLaunched()
+    fun GIVEN_playing_WHEN_pressing_back_THEN_does_not_show_abandon_dialog_and_goes_back() {
+        When.app.launch()
         When.navigation.navigateToPuzzles()
 
         When.ratedPuzzle.open()
+        When.navigation.goBack()
+
+        Then.ratedPuzzle
+            .abandonDialogIsNotShown()
+        Then.puzzleDashboard.isDisplayed()
+    }
+
+    @Test
+    fun GIVEN_playing_WHEN_making_a_move_and_pressing_back_THEN_shows_abandon_dialog() {
+        When.app.launch()
+        When.navigation.navigateToPuzzles()
+
+        When.ratedPuzzle.open()
+            .playCorrectMove()
         When.navigation.goBack()
 
         Then.ratedPuzzle
@@ -143,7 +154,7 @@ internal class RatedPuzzleScreenTest : BaseUiTest() {
 
     @Test
     fun GIVEN_finished_puzzle_WHEN_pressing_back_THEN_navigates_to_dashboard() {
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
 
         When.ratedPuzzle.open()
@@ -156,7 +167,7 @@ internal class RatedPuzzleScreenTest : BaseUiTest() {
 
     @Test
     fun GIVEN_finished_puzzle_WHEN_play_next_THEN_loads_a_new_puzzle() {
-        When.appIsLaunched()
+        When.app.launch()
         When.navigation.navigateToPuzzles()
 
         When.ratedPuzzle.open()
@@ -171,9 +182,8 @@ internal class RatedPuzzleScreenTest : BaseUiTest() {
 
     private companion object {
         /**
-         * Rating at which one puzzle exists in `test_puzzles.db` and which matches the default
-         * user rating of 1200 (so `GetRatedPuzzle` can load it without expanding its search).
+         * Rating at which one puzzle exists in `test_puzzles.db` and has multiple moves.
          */
-        const val PUZZLE_RATING: Int = 1200
+        const val PUZZLE_RATING: Int = 1250
     }
 }

@@ -30,6 +30,7 @@ class FileProgressWriter @Inject constructor(
                     }
                 }
             }
+            progressReporter.onCompleted(Int.MAX_VALUE)
         }
     }
 }

@@ -7,7 +7,7 @@ enum class DatabaseTier(
     val tierSegment: String,
     val isBundled: Boolean,
 ) {
-    Full("~ 185 MB", PuzzleDatabaseContract.Tier.FULL, false),
+    Full("~ 125 MB", PuzzleDatabaseContract.Tier.FULL, false),
     Compact("~ 76 MB", PuzzleDatabaseContract.Tier.COMPACT, false),
     Lite("0", PuzzleDatabaseContract.Tier.LITE, true);
 
@@ -35,7 +35,6 @@ sealed class LoadingState {
     data class Ready(
         val selectedTier: DatabaseTier = DatabaseTier.DEFAULT,
         val requiresConfirmation: Boolean = true,
-        val requiresPermission: Boolean = true,
         val dialog: Dialog = Dialog.None,
         val error: Error = Error.None,
     ) : LoadingState()
@@ -43,7 +42,6 @@ sealed class LoadingState {
     enum class Error {
         NoInternet,
         NotEnoughDiskSpace,
-        NoPermission,
         ConsentRequired,
         DownloadFailed,
         DecompressionFailed,
@@ -55,7 +53,6 @@ sealed class LoadingState {
     enum class Dialog {
         CrashConsent,
         Download,
-        Permission,
         None
     }
 }

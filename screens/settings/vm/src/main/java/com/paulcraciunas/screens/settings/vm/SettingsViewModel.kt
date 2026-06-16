@@ -1,5 +1,7 @@
 package com.paulcraciunas.screens.settings.vm
 
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.paulcraciunas.settings.application.api.AppSettings
@@ -15,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val appSettingsRepository: AppSettingsRepository,
-) : ViewModel(), SettingsScreenInteractor {
+) : ViewModel() {
     val uiState: StateFlow<SettingsUiState> = appSettingsRepository.appSettings
         .map { mapToUiState(it) }
         .stateIn(
@@ -24,14 +26,23 @@ class SettingsViewModel @Inject constructor(
             initialValue = SettingsUiState()
         )
 
-    override fun onHapticFeedbackToggled(isEnabled: Boolean) = update { updateEnableVibrations(isEnabled) }
-    override fun onAutoPromoteToggled(isEnabled: Boolean) = update { updateAutoPromote(isEnabled) }
-    override fun onAutoNextPuzzleToggled(isEnabled: Boolean) = update { updateAutoNextPuzzle(isEnabled) }
-    override fun onShowBordersToggled(isEnabled: Boolean) = update { updateShowBorders(isEnabled) }
-    override fun onHighlightLegalMovesToggled(isEnabled: Boolean) = update { updateHighlightLegalMoves(isEnabled) }
-    override fun onLightModeSelected(mode: AppSettings.LightMode) = update { updateLightMode(mode) }
-    override fun onAnimationsToggled(isEnabled: Boolean) = update { updateEnableAnimations(isEnabled) }
-    override fun onCrashReportingToggled(isEnabled: Boolean) = update { updateCrashReportingConsent(isEnabled) }
+    fun onSoundToggled(isEnabled: Boolean) = update { updatePlaySound(isEnabled) }
+    fun onHapticFeedbackToggled(isEnabled: Boolean) = update { updateEnableVibrations(isEnabled) }
+    fun onAutoPromoteToggled(isEnabled: Boolean) = update { updateAutoPromote(isEnabled) }
+    fun onAutoNextPuzzleToggled(isEnabled: Boolean) = update { updateAutoNextPuzzle(isEnabled) }
+    fun onShowBordersToggled(isEnabled: Boolean) = update { updateShowBorders(isEnabled) }
+    fun onHighlightLegalMovesToggled(isEnabled: Boolean) = update { updateHighlightLegalMoves(isEnabled) }
+    fun onLightModeSelected(mode: AppSettings.LightMode) = update { updateLightMode(mode) }
+    fun onLanguageSelected(language: SettingsUiState.AppLanguage) {
+        if (language == SettingsUiState.AppLanguage.System) {
+            AppCompatDelegate.setApplicationLocales(LocaleListCompat.getEmptyLocaleList())
+        } else {
+            AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(language.tag))
+        }
+    }
+
+    fun onAnimationsToggled(isEnabled: Boolean) = update { updateEnableAnimations(isEnabled) }
+    fun onCrashReportingToggled(isEnabled: Boolean) = update { updateCrashReportingConsent(isEnabled) }
 
     private fun update(block: suspend AppSettingsRepository.() -> Unit) {
         viewModelScope.launch {
@@ -40,14 +51,19 @@ class SettingsViewModel @Inject constructor(
     }
 
     private fun mapToUiState(settings: AppSettings): SettingsUiState = SettingsUiState(
+        isSoundEnabled = settings.playSounds,
         isHapticFeedbackEnabled = settings.enableVibrations,
         isAutoPromoteEnabled = settings.autoPromote,
         isAutoNextPuzzleEnabled = settings.autoNextPuzzle,
         isShowBordersEnabled = settings.showBorders,
         isHighlightLegalMovesEnabled = settings.highlightLegalMoves,
         lightMode = settings.lightMode,
+        language = SettingsUiState.AppLanguage.fromTag(currentLanguageTag),
         isAnimationsEnabled = settings.enableAnimations,
         isCrashReportingEnabled = settings.crashReportingConsent,
         isLoading = false,
     )
+
+    private val currentLanguageTag: String
+        get() = AppCompatDelegate.getApplicationLocales()[0]?.toLanguageTag() ?: ""
 }

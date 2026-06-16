@@ -18,7 +18,7 @@ object UserDefaults {
             puzzleRush = HIGH_SCORE_RUSH,
             puzzleStreak = HIGH_SCORE_STREAK,
             findTheSquare = HIGH_SCORE_FIND_SQUARE,
-            moveThePiece = HIGH_SCORE_MOVE_PIECE,
+            knightPath = HIGH_SCORE_KNIGHT_PATH,
             blindMode = RATING_BLIND_MODE
         ),
         statistics = User.Statistics(
@@ -39,7 +39,7 @@ object UserDefaults {
     const val HIGH_SCORE_RUSH = 85
     const val HIGH_SCORE_STREAK = 42
     const val HIGH_SCORE_FIND_SQUARE = 25
-    const val HIGH_SCORE_MOVE_PIECE = 15
+    const val HIGH_SCORE_KNIGHT_PATH = 15
     const val STATISTICS_PLAYED = 5
     const val STATISTICS_SOLVED = 2
     const val STATISTICS_TIME_PLAYED = 1_000L

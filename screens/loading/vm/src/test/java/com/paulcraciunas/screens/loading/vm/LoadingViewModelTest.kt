@@ -53,7 +53,7 @@ internal class LoadingViewModelTest {
     }
 
     @Test
-    fun given_readyStateWithNoInternet_WHEN_onDownloadAfterConfirmationAndPermission_THEN_showsNoInternetError() = runTest {
+    fun given_readyStateWithNoInternet_WHEN_onDownloadAfterConfirmation_THEN_showsNoInternetError() = runTest {
         // Given
         fakeGetNetworkState.setState(GetNetworkState.NetworkState.Disconnected)
         underTest = createViewModel()
@@ -61,13 +61,11 @@ internal class LoadingViewModelTest {
 
         // When
         underTest.onDownloadConfirmation(true)
-        underTest.onPermissionReceived(true)
         advanceUntilIdle()
 
         // Then
         val expectedState = LoadingState.Ready(
             requiresConfirmation = false,
-            requiresPermission = false,
             dialog = LoadingState.Dialog.None,
             error = LoadingState.Error.NoInternet
         )
@@ -75,7 +73,7 @@ internal class LoadingViewModelTest {
     }
 
     @Test
-    fun given_readyStateWithInsufficientDiskSpace_WHEN_onDownloadAfterConfirmationAndPermission_THEN_showsNotEnoughDiskSpaceError() =
+    fun given_readyStateWithInsufficientDiskSpace_WHEN_onDownloadAfterConfirmation_THEN_showsNotEnoughDiskSpaceError() =
         runTest {
             // Given
             fakeGetNetworkState.setState(GetNetworkState.NetworkState.Connected)
@@ -90,13 +88,11 @@ internal class LoadingViewModelTest {
 
             // When
             underTest.onDownloadConfirmation(true)
-            underTest.onPermissionReceived(true)
             advanceUntilIdle()
 
             // Then
             val expectedState = LoadingState.Ready(
                 requiresConfirmation = false,
-                requiresPermission = false,
                 dialog = LoadingState.Dialog.None,
                 error = LoadingState.Error.NotEnoughDiskSpace
             )
@@ -104,7 +100,7 @@ internal class LoadingViewModelTest {
         }
 
     @Test
-    fun given_readyStateWithGoodConditions_WHEN_onDownloadAfterConfirmationAndPermission_THEN_startDownloading() = runTest {
+    fun given_readyStateWithGoodConditions_WHEN_onDownloadAfterConfirmation_THEN_startDownloading() = runTest {
         // Given
         fakeGetNetworkState.setState(GetNetworkState.NetworkState.Connected)
         fakeGetFreeDiskSpace.setDiskSpace(
@@ -118,7 +114,6 @@ internal class LoadingViewModelTest {
 
         // When
         underTest.onDownloadConfirmation(true)
-        underTest.onPermissionReceived(true)
         advanceUntilIdle()
 
         // Then - should be Complete since fake returns 100% progress immediately
@@ -134,7 +129,6 @@ internal class LoadingViewModelTest {
         advanceUntilIdle()
 
         underTest.onDownloadConfirmation(true)
-        underTest.onPermissionReceived(true)
         advanceUntilIdle()
 
         // Verify error state
@@ -165,7 +159,6 @@ internal class LoadingViewModelTest {
 
         // Trigger the error state
         underTest.onDownloadConfirmation(true)
-        underTest.onPermissionReceived(true)
         advanceUntilIdle()
 
         // Verify error state

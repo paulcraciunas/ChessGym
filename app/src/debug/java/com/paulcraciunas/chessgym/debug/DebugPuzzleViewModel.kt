@@ -6,66 +6,81 @@ import androidx.lifecycle.viewModelScope
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.puzzles.api.PuzzleRepository
+import com.paulcraciunas.screens.data.BoardSession
 import com.paulcraciunas.screens.data.BoardState
-import com.paulcraciunas.screens.data.PuzzleSessionFactory
-import com.paulcraciunas.screens.data.runAs
-import com.paulcraciunas.screens.data.updateAs
+import com.paulcraciunas.screens.data.NoOpNavigation
+import com.paulcraciunas.screens.data.NoOpSolution
+import com.paulcraciunas.screens.data.PuzzlePlayableBoard
+import com.paulcraciunas.screens.data.ScriptedOpponent
+import com.paulcraciunas.screens.data.engine.PlayIntent
+import com.paulcraciunas.screens.data.engine.PlaySession
+import com.paulcraciunas.screens.data.engine.PlaySessionConfiguration
+import com.paulcraciunas.screens.data.engine.PlaySessionState
+import com.paulcraciunas.settings.application.api.AppSettingsRepository
+import com.paulcraciunas.utils.DefaultDispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import timber.log.Timber
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
 class DebugPuzzleViewModel @Inject constructor(
-    private val puzzleRepository: PuzzleRepository,
+    @param:DefaultDispatcher private val dispatcher: CoroutineDispatcher,
+    appSettingsRepository: AppSettingsRepository,
+    puzzleRepository: PuzzleRepository,
 ) : ViewModel() {
-    private val factory = PuzzleSessionFactory(withSolution = false)
-    private val session = factory.get()
-
-    private val _uiState = MutableStateFlow<DebugPuzzleUiState>(DebugPuzzleUiState.Idle)
-    val uiState: StateFlow<DebugPuzzleUiState> = _uiState.asStateFlow()
-
-    init {
-        observeBoardState()
-    }
-
-    private fun observeBoardState() {
-        viewModelScope.launch {
-            session.data.collect { boardState ->
-                _uiState.updateAs { it: DebugPuzzleUiState.Playing -> it.copy(data = boardState) }
-                _uiState.runAs<DebugPuzzleUiState.Playing> {
-                    if (boardState.isOver) {
-                        _uiState.update { DebugPuzzleUiState.Finished(data = boardState, isSuccess = boardState.won) }
-                    }
-                }
+    private val puzzleId = MutableStateFlow(0)
+    private val playSession = PlaySession(
+        settingsRepository = appSettingsRepository,
+        config = PlaySessionConfiguration(),
+        sessions = {
+            puzzleId.map { id ->
+                puzzleRepository.getById(id)?.let {
+                    BoardSession(
+                        navigation = NoOpNavigation,
+                        solution = NoOpSolution,
+                        opponent = ScriptedOpponent(it),
+                    ).load(PuzzlePlayableBoard(it))
+                } ?: throw Exception("Puzzle #$id not found")
             }
         }
-    }
+    )
+
+    val uiState: StateFlow<DebugPuzzleUiState> = playSession.state
+        .map { it.toUiState() }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = DebugPuzzleUiState.Idle
+        )
+
+    private var runJob: Job? = null
 
     fun loadPuzzle(id: Int) {
-        _uiState.update { DebugPuzzleUiState.Loading }
-        viewModelScope.launch {
-            try {
-                val puzzle = puzzleRepository.getById(id)
-                if (puzzle == null) {
-                    _uiState.update { DebugPuzzleUiState.Error("Puzzle #$id not found") }
-                } else {
-                    factory.load(viewModelScope, puzzle)
-                    _uiState.update { DebugPuzzleUiState.Playing(data = session.currentState) }
-                }
-            } catch (e: Exception) {
-                Timber.w(e, "Failed to load debug puzzle #%d", id)
-                _uiState.update { DebugPuzzleUiState.Error("Failed to load puzzle: ${e.message}") }
-            }
-        }
+        puzzleId.update { id }
+        runJob?.cancel()
+        runJob = viewModelScope.launch(dispatcher) { playSession.run() }
     }
 
-    fun onSquareClicked(selection: Locus) = _uiState.runAs<DebugPuzzleUiState.Playing> { session.onClick(selection) }
-    fun onPromote(to: Piece) = session.promoteIfPending(to)
+    fun onSquareClicked(selection: Locus) = playSession.accept(PlayIntent.SelectSquare(selection = selection))
+    fun onPromote(to: Piece) = playSession.accept(PlayIntent.Promote(to = to))
+}
+
+private fun PlaySessionState.toUiState(): DebugPuzzleUiState = when (status) {
+    PlaySessionState.Status.Failed -> DebugPuzzleUiState.Error(message = errorMessage ?: "")
+    PlaySessionState.Status.Loading -> DebugPuzzleUiState.Loading
+    PlaySessionState.Status.Ended -> DebugPuzzleUiState.Finished(
+        data = boardState,
+        isSuccess = boardState.won,
+    )
+    else -> DebugPuzzleUiState.Playing(data = boardState)
 }
 
 sealed class DebugPuzzleUiState {

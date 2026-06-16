@@ -116,7 +116,7 @@
     <string name="user_stat_high_score_blind_mode">Mode Buta Terbaik</string>
     <string name="user_stat_high_score_puzzle_streak">Rangkaian Teka-teki Terbaik</string>
     <string name="user_stat_high_score_find_the_square">Temukan Kotak Terbaik</string>
-    <string name="user_stat_high_score_move_the_piece">Gerakkan Bidak Terbaik</string>
+    <string name="user_stat_high_score_knight_path">Gerakkan Bidak Terbaik</string>
     <!-- endregion -->
 
     <!-- region Loading -->
@@ -148,13 +148,12 @@
     <string name="loading_error_download_failed">Unduhan gagal. Silakan periksa koneksi internetmu dan coba lagi.</string>
     <string name="loading_error_decompression_failed">Gagal membongkar basis data. Silakan coba lagi.</string>
     <string name="loading_error_database_write_failed">Gagal membangun basis data. Silakan coba lagi.</string>
-    <string name="loading_error_permission">Izin ditolak. Silakan aktifkan notifikasi untuk melanjutkan.</string>
     <string name="loading_error_no_internet">Tidak ada koneksi internet. Silakan periksa koneksimu dan coba lagi.</string>
     <string name="loading_error_not_enough_disk_space">Ruang disk tidak cukup. Silakan bebaskan ruang dan coba lagi.</string>
     <string name="loading_error_generic">Terjadi kesalahan. Silakan coba lagi.</string>
     <string name="loading_error_consent_required">Persetujuan pelaporan kerusakan diperlukan untuk melanjutkan. Kami hanya mengumpulkan data kerusakan teknis untuk meningkatkan stabilitas aplikasi.</string>
     <string name="crash_consent_dialog_title">Bantu Kami Berkembang</string>
-    <string name="crash_consent_dialog_body">ChessGym menggunakan pelaporan kerusakan untuk mendeteksi dan memperbaiki kesalahan aplikasi. Data ini digunakan semata-mata untuk mengidentifikasi kerusakan dan meningkatkan stabilitas aplikasi bagi semua pengguna.\n\nTidak ada informasi pribadi, data permainan, atau pola penggunaan yang dikumpulkan — hanya detail kerusakan teknis (seperti jejak tumpukan dan model perangkat) ketika sesuatu berjalan salah.\n\nKamu dapat mengubah pengaturan ini nanti di aplikasi.</string>
+    <string name="crash_consent_dialog_body">ChessGym menggunakan pelaporan kerusakan untuk mendeteksi dan memperbaiki kesalahan aplikasi. Data ini digunakan semata-mata untuk mengidentifikasi kerusakan dan meningkatkan stabilitas aplikasi bagi semua pengguna.\n\n&lt;b>Tidak ada informasi pribadi, data permainan, atau pola penggunaan yang dikumpulkan&lt;/b> — hanya detail kerusakan teknis (seperti jejak tumpukan dan model perangkat) ketika sesuatu berjalan salah.\n\nKamu dapat mengubah pengaturan ini nanti di aplikasi.</string>
     <string name="loading_fact_eyebrow">Tahukah kamu?</string>
     <string-array name="loading_fact_titles">
         <item>Ratu yang Lemah</item>
@@ -305,18 +304,19 @@
     <!-- endregion -->
 
     <!-- region Move the Piece -->
-    <string name="boardvis_move_piece_title">Gerakkan Bidak</string>
-    <string name="boardvis_move_piece_description">Visualisasikan dan buat langkah yang benar di papan</string>
-    <string name="boardvis_move_piece_training_mode">Mode Latihan</string>
-    <string name="boardvis_move_piece_moves_remaining">Langkah Tersisa: %1$d</string>
-    <string name="boardvis_move_piece_rules">Gerakkan bidakmu tanpa mendarat di kotak yang diserang lawan. Selesaikan langkah yang diperlukan untuk maju ke level berikutnya!</string>
-    <string name="boardvis_move_piece_captured">Ditangkap!</string>
+    <string name="boardvis_knight_path_title">Jalur Kuda</string>
+    <string name="boardvis_knight_path_description">Temukan jalur terpendek Kuda menuju kotak tujuan</string>
+    <string name="boardvis_knight_path_rules">Temukan jalur terpendek Kuda menuju kotak tujuan. Satu kesalahan dan permainan berakhir!</string>
+    <string name="boardvis_knight_path_captured">Ditangkap!</string>
+    <string name="boardvis_knight_path_wrong_move">Langkah salah!</string>
     <!-- endregion -->
 
     <!-- region Settings -->
     <string name="settings_title">Pengaturan</string>
     <string name="settings_section_general">Umum</string>
     <string name="settings_section_ui">Tampilan</string>
+    <string name="settings_sound">Suara</string>
+    <string name="settings_sound_description">Mainkan suara selama permainan</string>
     <string name="settings_haptic_feedback">Umpan balik haptic</string>
     <string name="settings_haptic_feedback_description">Getar saat interaksi</string>
     <string name="settings_auto_promote">Promosi otomatis</string>
@@ -327,6 +327,7 @@
     <string name="settings_show_borders_description">Tampilkan koordinat di sekitar papan</string>
     <string name="settings_highlight_legal_moves">Sorot langkah yang sah</string>
     <string name="settings_highlight_legal_moves_description">Tampilkan kotak yang tersedia saat bidak dipilih</string>
+    <string name="settings_language">Bahasa</string>
     <string name="settings_light_mode">Tema</string>
     <string name="settings_light_mode_light">Terang</string>
     <string name="settings_light_mode_dark">Gelap</string>
@@ -343,8 +344,9 @@
     <string name="about_title">Tentang</string>
     <string name="about_general_title">Umum</string>
     <string name="about_legal_title">Hukum</string>
-    <string name="about_creator_title">Sang Pencipta</string>
-    <string name="about_creator_description">ChessGym dibuat oleh Paul Mihai Craciunas, seorang insinyur Android dari London, yang bersemangat tentang Catur dan berharap dapat membantu orang dalam perjalanan mereka menuju peningkatan.</string>
+    <string name="about_app_title">Aplikasi</string>
+    <string name="about_app_description">Dibuat dengan ❤\uFE0F oleh Paul Craciunas.\t</string>
+    <string name="about_dedication_danya">Aplikasi ini dengan penuh hormat didedikasikan untuk mengenang Grandmaster &lt;b>Daniel Naroditsky&lt;/b> (1995–2025), yang semangat menularnya, kejelasan tak tertandingi, dan video instruksional brilian telah menginspirasi ratusan ribu pikiran dan menyalakan kembali kegembiraan universal untuk permainan catur.</string>
     <string name="about_contact_title">Kontak</string>
     <string name="about_contact_description">Untuk masalah hukum, peluang komersial, atau pertanyaan lainnya, silakan hubungi kami melalui email.</string>
     <string name="about_contact_email">contact@chessgym.app</string>
@@ -360,7 +362,7 @@
     <string name="about_donate_medium">Sandwich</string>
     <string name="about_donate_large">Pizza</string>
     <string name="about_rate_title">Beri Nilai Aplikasi</string>
-    <string name="about_rate_description">Menikmati ChessGym? Tinggalkan penilaian di Play Store</string>
+    <string name="about_rate_description">Menikmati ChessGym? Tinggalkan penilaian</string>
     <string name="about_libraries_title">Pustaka Sumber Terbuka</string>
     <string name="about_libraries_description">ChessGym dibangun dengan pustaka sumber terbuka berikut:</string>
     <string name="about_privacy_policy_title">Kebijakan Privasi</string>
@@ -380,6 +382,7 @@
     <string name="tools_mode_start">Mulai alat</string>
     <string name="tools_clock_description">Hitung waktu permainanmu dengan kontrol yang dapat dikonfigurasi</string>
     <string name="tools_analysis_title">Analisis</string>
+    <string name="tools_analysis_flip_board">Balik papan</string>
     <string name="tools_analysis_description">Analisis posisi dengan mesin</string>
     <string name="tools_import_description">Impor permainan dari notasi FEN atau PGN</string>
     <!-- endregion -->
@@ -400,10 +403,10 @@
 
     <!-- region Import Game Screen -->
     <string name="import_game_title">Impor Permainan</string>
-    <string name="import_fen">FEN</string>
-    <string name="import_pgn">PGN</string>
-    <string name="import_dialog_title_fen">Impor FEN</string>
-    <string name="import_dialog_title_pgn">Impor PGN</string>
+    <string name="import_fen">Posisi</string>
+    <string name="import_pgn">Permainan</string>
+    <string name="import_dialog_title_fen">Impor Posisi</string>
+    <string name="import_dialog_title_pgn">Impor Permainan</string>
     <string name="import_dialog_hint_fen">Tempelkan string FEN di sini…</string>
     <string name="import_dialog_hint_pgn">Tempelkan teks PGN di sini…</string>
     <string name="import_dialog_confirm">Impor</string>
@@ -419,6 +422,7 @@
     <string name="blind_mode_title">Mode Buta</string>
     <string name="blind_mode_training_mode">Mode Latihan</string>
     <string name="blind_mode_training_description">Permainan tidak akan memengaruhi peringkatmu</string>
+    <string name="blind_mode_rated_description">Mode berperingkat</string>
     <string name="blind_mode_play">Bermain</string>
     <string name="blind_mode_resign">Menyerah</string>
     <string name="blind_mode_reveal">Tampilkan</string>
@@ -436,21 +440,21 @@
     <string name="achievement_category_streak_sessions">Sesi Rangkaian</string>
     <string name="achievement_category_failed_puzzles_redeemed">Teka-teki Gagal Ditebus</string>
     <string name="achievement_category_find_square_sessions">Sesi Temukan Kotak</string>
-    <string name="achievement_category_move_piece_sessions">Sesi Gerakkan Bidak</string>
-    <string name="achievement_category_blind_mode_wins">Warisan Homer</string>
+    <string name="achievement_category_knight_path_sessions">Sesi Jalur Kuda</string>
+    <string name="achievement_category_blind_mode_wins">Kemenangan Mode Buta</string>
     <string name="achievement_category_rated_win_streak">Rangkaian Kemenangan Berperingkat</string>
     <string name="achievement_category_rating_climber">Pendaki Peringkat</string>
-    <string name="achievement_category_blind_strategist">Ahli Strategi Buta</string>
-    <string name="achievement_category_rush_champion">Juara Rush</string>
-    <string name="achievement_category_streak_legend">Legenda Rangkaian</string>
-    <string name="achievement_category_eagle_eye">Mata Elang</string>
-    <string name="achievement_category_knights_path">Jalur Kuda</string>
-    <string name="achievement_category_puzzle_addict">Penggemar Teka-teki</string>
+    <string name="achievement_category_blind_strategist">Peringkat Mode Buta</string>
+    <string name="achievement_category_rush_champion">Skor Tertinggi Rush</string>
+    <string name="achievement_category_streak_legend">Skor Tertinggi Rangkaian</string>
+    <string name="achievement_category_eagle_eye">Skor Tertinggi Temukan Kotak</string>
+    <string name="achievement_category_knights_path">Skor Tertinggi Jalur Kuda</string>
+    <string name="achievement_category_puzzle_addict">Teka-teki Diselesaikan</string>
     <string name="achievement_category_time_invested">Waktu Diinvestasikan</string>
-    <string name="achievement_category_daily_grinder">Pemain Harian</string>
-    <string name="achievement_category_consistency_king">Raja Konsistensi</string>
+    <string name="achievement_category_daily_grinder">Hari Bermain Berturut-turut</string>
+    <string name="achievement_category_consistency_king">Hari Berturut-turut Terbanyak</string>
     <string name="achievement_category_board_vision">Visi Papan</string>
-    <string name="achievement_category_rush_solver">Pemecah Rush</string>
+    <string name="achievement_category_rush_solver">Teka-teki Rush Diselesaikan</string>
 
     <!-- Tier names: RATED_PUZZLES_SOLVED -->
     <string name="achievement_rated_puzzles_solved_one">Penggemar Teka-teki</string>
@@ -487,12 +491,12 @@
     <string name="achievement_find_square_sessions_four">Master Kotak</string>
     <string name="achievement_find_square_sessions_five">Grandmaster Kotak</string>
 
-    <!-- Tier names: MOVE_PIECE_SESSIONS -->
-    <string name="achievement_move_piece_sessions_one">Pemula Bidak</string>
-    <string name="achievement_move_piece_sessions_two">Penggerak Bidak</string>
-    <string name="achievement_move_piece_sessions_three">Navigator Bidak</string>
-    <string name="achievement_move_piece_sessions_four">Master Bidak</string>
-    <string name="achievement_move_piece_sessions_five">Grandmaster Bidak</string>
+    <!-- Tier names: KNIGHT_PATH_SESSIONS -->
+    <string name="achievement_knight_path_sessions_one">Pemula Bidak</string>
+    <string name="achievement_knight_path_sessions_two">Penggerak Bidak</string>
+    <string name="achievement_knight_path_sessions_three">Navigator Bidak</string>
+    <string name="achievement_knight_path_sessions_four">Master Bidak</string>
+    <string name="achievement_knight_path_sessions_five">Grandmaster Bidak</string>
 
     <!-- Tier names: BLIND_MODE_WINS -->
     <string name="achievement_blind_mode_wins_one">Murid Odin</string>
@@ -598,7 +602,7 @@
     <string name="achievement_desc_streak_sessions">Selesaikan sesi Rangkaian Teka-teki untuk mendapatkan pencapaian ini</string>
     <string name="achievement_desc_failed_puzzles_redeemed">Coba kembali dan selesaikan teka-teki yang sebelumnya gagal</string>
     <string name="achievement_desc_find_square_sessions">Mainkan sesi Temukan Kotak untuk mendapatkan pencapaian ini</string>
-    <string name="achievement_desc_move_piece_sessions">Mainkan sesi Gerakkan Bidak untuk mendapatkan pencapaian ini</string>
+    <string name="achievement_desc_knight_path_sessions">Mainkan sesi Jalur Kuda untuk mendapatkan pencapaian ini</string>
     <string name="achievement_desc_blind_mode_wins">Menangkan permainan Mode Buta berperingkat untuk mendapatkan pencapaian ini</string>
     <string name="achievement_desc_rated_win_streak">Menangkan teka-teki berperingkat berturut-turut tanpa gagal</string>
     <string name="achievement_desc_rating_climber">Tingkatkan peringkat teka-tekimu untuk mencapai ketinggian baru</string>
@@ -606,12 +610,12 @@
     <string name="achievement_desc_rush_champion">Tetapkan skor tertinggi di Puzzle Rush</string>
     <string name="achievement_desc_streak_legend">Tetapkan skor tertinggi di Rangkaian Teka-teki</string>
     <string name="achievement_desc_eagle_eye">Tetapkan skor tertinggi di Temukan Kotak</string>
-    <string name="achievement_desc_knights_path">Tetapkan skor tertinggi di Gerakkan Bidak</string>
+    <string name="achievement_desc_knights_path">Tetapkan skor tertinggi di Jalur Kuda</string>
     <string name="achievement_desc_puzzle_addict">Selesaikan teka-teki di semua mode permainan</string>
     <string name="achievement_desc_time_invested">Habiskan waktu berlatih di semua mode permainan</string>
     <string name="achievement_desc_daily_grinder">Bermain pada hari-hari berturut-turut untuk membangun rangkaianmu</string>
     <string name="achievement_desc_consistency_king">Capai rangkaian harian berturut-turut terbaikmu</string>
-    <string name="achievement_desc_board_vision">Selesaikan sesi Temukan Kotak dan Gerakkan Bidak</string>
+    <string name="achievement_desc_board_vision">Selesaikan sesi Temukan Kotak dan Jalur Kuda</string>
     <string name="achievement_desc_rush_solver">Selesaikan teka-teki selama sesi Puzzle Rush</string>
 
     <!-- Achievement UI -->

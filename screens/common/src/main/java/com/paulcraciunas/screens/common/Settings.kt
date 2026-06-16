@@ -12,6 +12,7 @@ data class UiSettings(
     val enableVibrations: Boolean,
     val highlightLegalMoves: Boolean,
     val enableAnimations: Boolean,
+    val playSounds: Boolean,
 ) {
     enum class Mode {
         Light,
@@ -28,6 +29,7 @@ data class UiSettings(
             enableVibrations = true,
             highlightLegalMoves = true,
             enableAnimations = true,
+            playSounds = true,
         )
     }
 }
