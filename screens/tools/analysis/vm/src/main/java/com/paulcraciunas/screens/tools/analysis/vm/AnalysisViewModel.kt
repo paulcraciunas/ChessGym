@@ -27,7 +27,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.NonCancellable
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -40,7 +39,6 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.sample
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -67,7 +65,6 @@ class AnalysisViewModel @Inject constructor(
     private val vmState = MutableStateFlow<VmState>(VmState())
     private var runJob = SequentialJob(viewModelScope)
     private var analysisJob = SequentialJob(viewModelScope)
-    private var enableThrottling: Boolean = true
 
     val uiState: StateFlow<AnalysisUiState> = combine(
         vmState,
@@ -78,10 +75,6 @@ class AnalysisViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = AnalysisUiState()
         )
-
-    internal fun disableThrottling() {
-        enableThrottling = false
-    }
 
     init {
         playSession.state
@@ -134,7 +127,6 @@ class AnalysisViewModel @Inject constructor(
                     analyzePosition.analyze(session.fen)
                         .map { fen -> adapter.from(fen, session.turn) }
                 }
-                .throttle()
                 .catch { Timber.e(it, "Analysis error") }
                 .collect { result -> vmState.update { it.copy(engineData = result) } }
         }
@@ -174,17 +166,12 @@ class AnalysisViewModel @Inject constructor(
         )
     }
 
-    @OptIn(FlowPreview::class)
-    private fun <T> Flow<T>.throttle(): Flow<T> =
-        if (enableThrottling) sample(ANALYSIS_SAMPLE_PERIOD_MS) else this
-
     private data class VmState(
         val orientation: Side = Side.WHITE,
         val engineData: AnalysisUiState.EngineData? = null,
     )
 
     companion object {
-        private const val ANALYSIS_SAMPLE_PERIOD_MS = 200L
         private const val ANALYSIS_DEBOUNCE_MS = 200L
     }
 }

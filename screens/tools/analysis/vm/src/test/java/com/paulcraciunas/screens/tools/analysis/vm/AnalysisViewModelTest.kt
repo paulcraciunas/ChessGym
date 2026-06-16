@@ -60,7 +60,7 @@ internal class AnalysisViewModelTest {
             fenSerializer = fenSerializer,
             getPuzzleFen = fakeGetPuzzleFen,
             appSettingsRepository = appSettingsRepository,
-        ).also { it.disableThrottling() }
+        )
     }
 
     @AfterEach
