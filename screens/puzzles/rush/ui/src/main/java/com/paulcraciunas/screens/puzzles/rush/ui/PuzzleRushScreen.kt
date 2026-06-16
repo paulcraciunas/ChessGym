@@ -2,6 +2,7 @@ package com.paulcraciunas.screens.puzzles.rush.ui
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -56,6 +57,10 @@ fun PuzzleRushScreen(
     onAbandonDismissed: () -> Unit = {},
     onAnalyzeFailedPuzzle: (puzzleId: Int) -> Unit = {},
 ) {
+    BackHandler(enabled = uiState is PuzzleRushUiState.Playing) {
+        onNavigateBack()
+    }
+
     Scaffold(
         topBar = {
             ChildAppBar(

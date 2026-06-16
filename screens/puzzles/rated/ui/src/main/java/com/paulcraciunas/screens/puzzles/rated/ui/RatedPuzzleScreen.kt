@@ -1,6 +1,7 @@
 package com.paulcraciunas.screens.puzzles.rated.ui
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -47,6 +48,10 @@ fun RatedPuzzleScreen(
     onAbandonDismissed: () -> Unit = {},
     onNextPuzzle: () -> Unit = {},
 ) {
+    BackHandler(enabled = uiState is RatedPuzzleUiState.Playing) {
+        onNavigateBack()
+    }
+
     val title = when (uiState) {
         is RatedPuzzleUiState.WithBoard -> stringResource(R.string.rated_puzzle_title, uiState.rating)
         else -> stringResource(R.string.puzzle_mode_rated_title)

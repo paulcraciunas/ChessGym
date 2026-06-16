@@ -1,6 +1,7 @@
 package com.paulcraciunas.screens.puzzles.streak.ui
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
@@ -68,6 +69,10 @@ fun PuzzleStreakScreen(
     onAutoNext: (Boolean) -> Unit = {},
     onDismissSummary: () -> Unit = {},
 ) {
+    BackHandler(enabled = uiState is PuzzleStreakUiState.Playing) {
+        onNavigateBack()
+    }
+
     val streakCount = when (uiState) {
         is PuzzleStreakUiState.Playing -> uiState.streakCount
         is PuzzleStreakUiState.StreakEnded -> 0
