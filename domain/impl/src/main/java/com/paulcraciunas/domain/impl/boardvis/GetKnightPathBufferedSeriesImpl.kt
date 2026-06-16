@@ -24,7 +24,7 @@ class GetKnightPathBufferedSeriesImpl @Inject constructor(
     }.buffer(capacity = bufferSize, onBufferOverflow = BufferOverflow.SUSPEND)
 
     companion object {
-        private const val EXERCISES_PER_DIFFICULTY = 3
+        private const val EXERCISES_PER_DIFFICULTY = 4
         private const val EXHAUSTION_LIMIT = 100
     }
 }

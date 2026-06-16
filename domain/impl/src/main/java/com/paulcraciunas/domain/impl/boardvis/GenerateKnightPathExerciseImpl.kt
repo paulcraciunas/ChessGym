@@ -10,6 +10,9 @@ import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.global.qualifiers.DefaultDispatcher
 import com.paulcraciunas.logic.builders.Builders
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import java.util.LinkedList
 import javax.inject.Inject
@@ -22,7 +25,8 @@ class GenerateKnightPathExerciseImpl @Inject constructor(
     override suspend fun invoke(movesRequired: Int): KnightPathExercise = withContext(dispatcher) {
         val moves = movesRequired.coerceIn(MIN_MOVES, MAX_MOVES)
         // Generate a valid start/end pair deterministically
-        val (startLocus, endLocus, allPaths) = findValidExercise(moves)
+        val (startLocus, endLocus, allPaths) = findValidExercise(this, moves)
+        ensureActive()
 
         // Select the "Golden Path" using our deterministic random engine
         val goldenPath = allPaths.chooseRandomElement(randomFactory)
@@ -40,7 +44,7 @@ class GenerateKnightPathExerciseImpl @Inject constructor(
                 path.filter { locus -> locus != startLocus && locus != endLocus }
             }
             val candidates = alternativePaths.flatten().toSet() - goldenSet - startLocus - endLocus
-            findMinimalBlockers(intermediateAlternativePaths, candidates.toList())
+            findMinimalBlockers(this, intermediateAlternativePaths, candidates.toList())
         }
 
         return@withContext KnightPathExercise(
@@ -50,13 +54,14 @@ class GenerateKnightPathExerciseImpl @Inject constructor(
         )
     }
 
-    private fun findValidExercise(movesRequired: Int): Triple<Locus, Locus, List<List<Locus>>> {
+    private fun findValidExercise(scope: CoroutineScope, movesRequired: Int): Triple<Locus, Locus, List<List<Locus>>> {
         val capableTargets = Locus.entries.filter { locus ->
             MAX_DISTANCE_MAP[locus]!! >= movesRequired
         }
         // Use a continuous loop instead of a single blind pick.
         // This acts as a self-correcting filter without throwing exceptions.
         while (true) {
+            scope.ensureActive()
             val target = capableTargets.chooseRandomElement(randomFactory)
 
             // Run a quick distance-only BFS to map out valid starting boundaries
@@ -104,7 +109,11 @@ class GenerateKnightPathExerciseImpl @Inject constructor(
         return resultMap
     }
 
-    private fun findMinimalBlockers(alternativePaths: List<List<Locus>>, candidates: List<Locus>): List<Locus> {
+    private fun findMinimalBlockers(
+        scope: CoroutineScope,
+        alternativePaths: List<List<Locus>>,
+        candidates: List<Locus>
+    ): List<Locus> {
         // Pre-convert each alternative path into a 64-bit mask for instant bitwise evaluation
         val pathMasks = alternativePaths.map { path ->
             var mask = 0L
@@ -126,6 +135,7 @@ class GenerateKnightPathExerciseImpl @Inject constructor(
          * @param currentMask A 64-bit representation of our active blockers.
          */
         fun backtrack(index: Int, currentCount: Int, currentMask: Long) {
+            if (!scope.isActive) return  // Cooperative cancellation
             if (currentCount >= bestBlockerCount) return // Prune branches early
 
             // Check if ALL path masks share at least one overlapping bit with our current mask
@@ -162,7 +172,7 @@ class GenerateKnightPathExerciseImpl @Inject constructor(
 
     companion object {
         private const val MIN_MOVES = 2
-        private const val MAX_MOVES = 6
+        private const val MAX_MOVES = 5
 
         // A static map of [Locus -> Max Shortest Path Distance achievable from this Locus]
         // This stops us from blindly picking squares that can't support 6 moves

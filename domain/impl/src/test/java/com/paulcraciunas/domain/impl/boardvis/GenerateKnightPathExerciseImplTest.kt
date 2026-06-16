@@ -57,7 +57,7 @@ internal class GenerateKnightPathExerciseImplTest {
     fun `GIVEN movesRequired above maximum WHEN invoke THEN exercise has correct path length`() = runTest(testDispatcher) {
         val exercise = underTest(10)
 
-        assertEquals(7, exercise.path.size)
+        assertEquals(6, exercise.path.size)
     }
 
     @Test
@@ -106,11 +106,11 @@ internal class GenerateKnightPathExerciseImplTest {
 
     @Test
     fun `GIVEN longest movesRequired WHEN invoke THEN success`() = runTest(testDispatcher) {
-        // 6-move puzzles yield the highest numbers of overlapping paths.
+        // 5-move puzzles yield the highest numbers of overlapping paths.
         // This test acts as a regression/performance guard against backtracking execution loops.
-        val exercise = underTest.invoke(6)
+        val exercise = underTest.invoke(5)
 
-        assertEquals(7, exercise.path.size)
+        assertEquals(6, exercise.path.size)
     }
 
     @Test
