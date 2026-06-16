@@ -61,7 +61,7 @@ class BoardSession(
                             boardData = promote(from = current, to = selection, result = Piece.Queen),
                             movePlayed = true,
                             captured = updateCaptured(),
-                            outcome = playable.outcome(),
+                            outcome = outcome(),
                         )
                     } else {
                         state.copy(promotion = Promotion(showChooser = true, at = selection))
@@ -71,7 +71,7 @@ class BoardSession(
                     boardData = play(current, selection),
                     movePlayed = true,
                     captured = updateCaptured(),
-                    outcome = playable.outcome(),
+                    outcome = outcome(),
                 )
             }
         } else if (playable.board.has(playable.info.turn, selection)) {
@@ -93,7 +93,7 @@ class BoardSession(
             promotion = null,
             movePlayed = true,
             captured = updateCaptured(),
-            outcome = playable.outcome(),
+            outcome = outcome(),
         )
         return state
     }
@@ -102,13 +102,14 @@ class BoardSession(
         state.promotion?.at?.let { promote(to, it) } ?: state
 
     override fun resign(): BoardState {
+        markAbandoned()
         playable.resign()
         return refresh()
     }
 
     override fun result(): SessionResult {
         assert(playable.outcome() != null)
-        return SessionResult(id = playable.id, rating = playable.rating, outcome = playable.outcome()!!)
+        return SessionResult(id = playable.id, rating = playable.rating, outcome = outcome()!!)
     }
 
     override fun canPlayOpponentMove(): Boolean = opponent.canPlay() && !playable.isPlayerTurn()
@@ -124,7 +125,7 @@ class BoardSession(
             movePlayed = true,
             promotion = null,
             captured = updateCaptured(),
-            outcome = playable.outcome(),
+            outcome = outcome(),
         )
         return true
     }
@@ -148,7 +149,7 @@ class BoardSession(
             ),
             movePlayed = false,
             captured = updateCaptured(),
-            outcome = playable.outcome(),
+            outcome = outcome(),
         )
         return state
     }
@@ -189,6 +190,8 @@ class BoardSession(
             byOpponent = otherCaptured.joinToString(separator = "") { it.unicode },
         )
     }
+
+    private fun outcome(): Outcome? = if (wasAbandoned()) Outcome.Lost else playable.outcome()
 }
 
 private fun Ply?.asPair(): Pair<Locus, Locus>? = if (this != null) from to to else null

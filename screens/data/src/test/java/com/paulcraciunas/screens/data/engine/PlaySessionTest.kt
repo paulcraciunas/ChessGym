@@ -475,6 +475,75 @@ internal class PlaySessionTest {
 
             assertEquals(0L, playSession.stateValue.remainingTimeMs)
         }
+
+        @Test
+        fun `GIVEN timer expires WHEN waiting for next session THEN game ends without waiting`() = runTest {
+            val sessionFlow = MutableSharedFlow<BoardSession>()
+            val config = noAnimationsConfig().copy(
+                endMode = PlaySessionConfiguration.EndMode.OnSourceExhausted,
+                autoNextOverride = true,
+                timed = PlaySessionConfiguration.Timed(durationInMs = 1000, mode = PlaySessionConfiguration.TimedMode.StartOnClick),
+            )
+            val playSession = buildPlaySession(config = config, sessions = controllableSessionSource(sessionFlow), timer = timer)
+
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession.run() }
+            advanceUntilIdle()
+
+            sessionFlow.emit(buildSession(buildPuzzle()))
+            advanceUntilIdle()
+            makeMove(playSession, from = Locus.e7, to = Locus.e5)
+            makeMove(playSession, from = Locus.b8, to = Locus.c6)
+
+            assertEquals(PlaySessionState.Status.Playing, playSession.stateValue.status)
+
+            timer.emit(CountdownTimer.Remainder(0, 0))
+            advanceUntilIdle()
+
+            assertEquals(PlaySessionState.Status.Ended, playSession.stateValue.status)
+            assertTrue(playSession.stateValue.showSummary)
+        }
+
+        @Test
+        fun `GIVEN timer expires WHEN game ends THEN onPlayComplete callback fires`() = runTest {
+            var callbackState: PlaySessionState? = null
+            val config = timedConfig(durationMs = 300, mode = PlaySessionConfiguration.TimedMode.StartImmediately)
+            val playSession = buildPlaySession(
+                config = config,
+                sessions = singleSessionSource(),
+                timer = timer,
+                onPlayComplete = { callbackState = it },
+            )
+
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession.run() }
+            advanceUntilIdle()
+            timer.emit(CountdownTimer.Remainder(0, 0))
+            advanceUntilIdle()
+
+            assertNotNull(callbackState)
+            assertEquals(PlaySessionState.Status.Ended, callbackState!!.status)
+        }
+
+        @Test
+        fun `GIVEN puzzles solved WHEN timer expires on next puzzle THEN previous results preserved`() = runTest {
+            val config = noAnimationsConfig().copy(
+                endMode = PlaySessionConfiguration.EndMode.OnSourceExhausted,
+                autoNextOverride = true,
+                timed = PlaySessionConfiguration.Timed(durationInMs = 5000, mode = PlaySessionConfiguration.TimedMode.StartOnClick),
+            )
+            val playSession = buildPlaySession(config = config, sessions = multiSessionSource(3), timer = timer)
+
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession.run() }
+            advanceUntilIdle()
+
+            makeMove(playSession, from = Locus.e7, to = Locus.e5)
+            makeMove(playSession, from = Locus.b8, to = Locus.c6)
+
+            timer.emit(CountdownTimer.Remainder(0, 0))
+            advanceUntilIdle()
+
+            assertEquals(1, playSession.stateValue.results.size)
+            assertTrue(playSession.stateValue.results.first().success)
+        }
     }
 
     @Nested
@@ -716,6 +785,79 @@ internal class PlaySessionTest {
             advanceUntilIdle()
             playSession.accept(PlayIntent.ConfirmAbandon)
             advanceTimeBy(500)
+
+            assertEquals(PlaySessionState.Status.Ended, playSession.stateValue.status)
+        }
+
+        @Test
+        fun `GIVEN abandon confirmed WHEN solution fully animated THEN result outcome is Lost`() = runTest {
+            val session = buildSessionWithSolution(buildPuzzle(id = 99, rating = 1600))
+            val config = animationsConfig(solutionMs = 50).copy(
+                endMode = PlaySessionConfiguration.EndMode.OnSourceExhausted,
+            )
+            val playSession = buildPlaySession(config = config, sessions = singleSessionSource(session))
+
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession.run() }
+            advanceUntilIdle()
+
+            playSession.accept(PlayIntent.SelectSquare(Locus.e7))
+            advanceUntilIdle()
+            playSession.accept(PlayIntent.ConfirmAbandon)
+            advanceTimeBy(500)
+
+            val result = playSession.stateValue.results.first()
+            assertEquals(Outcome.Lost, result.outcome)
+            assertFalse(result.success)
+        }
+
+        @Test
+        fun `GIVEN abandon confirmed WHEN no animations THEN result outcome is Lost`() = runTest {
+            val puzzle = buildPuzzle(id = 42, rating = 1200)
+            val session = buildSession(puzzle)
+            val config = noAnimationsConfig().copy(endMode = PlaySessionConfiguration.EndMode.OnSourceExhausted)
+            val playSession = buildPlaySession(config = config, sessions = singleSessionSource(session))
+
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession.run() }
+            advanceUntilIdle()
+
+            playSession.accept(PlayIntent.SelectSquare(Locus.e7))
+            advanceUntilIdle()
+            playSession.accept(PlayIntent.ConfirmAbandon)
+            advanceUntilIdle()
+
+            val result = playSession.stateValue.results.first()
+            assertEquals(Outcome.Lost, result.outcome)
+        }
+
+        @Test
+        fun `GIVEN abandon confirmed WHEN solution animating THEN boardState outcome is Lost`() = runTest {
+            val session = buildSessionWithSolution(buildPuzzle())
+            val config = animationsConfig(solutionMs = 100)
+            val playSession = buildPlaySession(config = config, sessions = singleSessionSource(session))
+
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession.run() }
+            advanceUntilIdle()
+
+            playSession.accept(PlayIntent.SelectSquare(Locus.e7))
+            advanceUntilIdle()
+            playSession.accept(PlayIntent.ConfirmAbandon)
+            advanceTimeBy(10)
+
+            assertEquals(Outcome.Lost, playSession.stateValue.boardState.outcome)
+        }
+
+        @Test
+        fun `GIVEN OnFirstFailure WHEN puzzle abandoned THEN game ends`() = runTest {
+            val config = noAnimationsConfig().copy(endMode = PlaySessionConfiguration.EndMode.OnFirstFailure)
+            val playSession = buildPlaySession(config = config, sessions = multiSessionSource(2))
+
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { playSession.run() }
+            advanceUntilIdle()
+
+            playSession.accept(PlayIntent.SelectSquare(Locus.e7))
+            advanceUntilIdle()
+            playSession.accept(PlayIntent.ConfirmAbandon)
+            advanceUntilIdle()
 
             assertEquals(PlaySessionState.Status.Ended, playSession.stateValue.status)
         }
@@ -1106,7 +1248,7 @@ internal class PlaySessionTest {
     @Nested
     internal inner class IntentBlocking {
         @Test
-        fun `GIVEN animating WHEN ExpireTime arrives THEN it is NOT blocked`() = runTest {
+        fun `GIVEN animating WHEN timer expires THEN game ends immediately`() = runTest {
             val config = animationsConfig(moveMs = 500).copy(
                 timed = PlaySessionConfiguration.Timed(durationInMs = 200, mode = PlaySessionConfiguration.TimedMode.StartImmediately),
             )
@@ -1898,7 +2040,7 @@ internal class PlaySessionTest {
         }
 
         @Test
-        fun `GIVEN ExpireTime WHEN animation ongoing THEN animation is cancelled and session ends`() = runTest {
+        fun `GIVEN timer expires WHEN animation ongoing THEN animation is cancelled and session ends`() = runTest {
             val config = animationsConfig(moveMs = 500L).copy(
                 timed = PlaySessionConfiguration.Timed(
                     durationInMs = 800,
@@ -1999,7 +2141,7 @@ internal class PlaySessionTest {
         }
 
         @Test
-        fun `GIVEN paused session WHEN ExpireTime sent THEN timer still ends session`() = runTest {
+        fun `GIVEN paused session WHEN timer expires THEN session ends`() = runTest {
             val config = noAnimationsConfig().copy(
                 endMode = PlaySessionConfiguration.EndMode.OnSourceExhausted,
                 autoNextOverride = false,

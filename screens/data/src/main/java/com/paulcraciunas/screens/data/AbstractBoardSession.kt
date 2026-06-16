@@ -8,6 +8,10 @@ abstract class AbstractBoardSession {
     abstract val solution: SolutionStrategy
     abstract val opponent: OpponentStrategy
 
+    private var abandoned = false
+    fun markAbandoned() { abandoned = true }
+    fun wasAbandoned(): Boolean = abandoned
+
     // Main API
     abstract fun current(): BoardState
     abstract fun clear(): BoardState

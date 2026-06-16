@@ -232,6 +232,7 @@ class SinglePlaySession(
 
     private fun CoroutineScope.onConfirmAbandon(session: AbstractBoardSession): IntentOutcome {
         _state.update { it.copy(abandonRequested = false) }
+        session.markAbandoned()
         if (uiSettings.waitForAnimations && session.hasSolutionMoves()) {
             _state.update { it.copy(boardState = session.current(), isAnimating = true) }
             if (session.playNextSolutionMove()) {

@@ -684,6 +684,52 @@ internal class SinglePlaySessionTest {
         }
     }
 
+    @Nested
+    internal inner class Cancellation {
+        @Test
+        fun `GIVEN session running WHEN run is cancelled THEN state is GameOver with no animation`() = runTest {
+            val session = buildSinglePlaySession()
+            val boardSession = buildPuzzleSession()
+
+            val job = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+                session.run(boardSession)
+            }
+            advanceUntilIdle()
+
+            assertEquals(SingleSessionState.Status.Ready, session.state.value.status)
+
+            job.cancel()
+            advanceUntilIdle()
+
+            assertEquals(SingleSessionState.Status.GameOver, session.state.value.status)
+            assertFalse(session.state.value.isAnimating)
+        }
+
+        @Test
+        fun `GIVEN animation in progress WHEN run is cancelled THEN isAnimating is false`() = runTest {
+            val session = buildSinglePlaySession(config = animationsConfig(moveMs = 200))
+            val boardSession = buildPuzzleSession()
+
+            val job = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+                session.run(boardSession)
+            }
+            advanceUntilIdle()
+
+            session.accept(PlayIntent.SelectSquare(Locus.e7))
+            advanceUntilIdle()
+            session.accept(PlayIntent.SelectSquare(Locus.e5))
+            advanceTimeBy(10)
+
+            assertTrue(session.state.value.isAnimating)
+
+            job.cancel()
+            advanceUntilIdle()
+
+            assertEquals(SingleSessionState.Status.GameOver, session.state.value.status)
+            assertFalse(session.state.value.isAnimating)
+        }
+    }
+
     // -- Helpers --
 
     private fun buildCheckmateSession(): BoardSession {
