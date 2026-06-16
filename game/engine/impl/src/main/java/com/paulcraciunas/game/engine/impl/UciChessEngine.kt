@@ -15,6 +15,8 @@ import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -28,9 +30,9 @@ internal class UciChessEngine @Inject constructor(
     @param:DefaultDispatcher private val dispatcher: CoroutineDispatcher,
     private val uci: UciFacade,
 ) : ChessEngine {
-
     @Volatile
     private var isEngineRunning: Boolean = false
+    private val analysisLock = Mutex()
 
     override suspend fun initialize(): Unit = withContext(dispatcher) {
         if (isEngineRunning) return@withContext
@@ -64,19 +66,22 @@ internal class UciChessEngine @Inject constructor(
 
     override fun analyzePosition(fen: String, multiPvCount: Int): Flow<AnalysisResult> = flow {
         uci.sendCommand(UciCommand.Stop)
-        uci.execute<UciResponse.Ready>(UciCommand.IsReady)
 
-        uci.execute<UciResponse.Done>(UciCommand.SetMultiPV(multiPvCount))
-        uci.execute<UciResponse.Done>(UciCommand.SetPosition(fen))
-        uci.sendCommand(UciCommand.GoInfinite)
+        analysisLock.withLock {
+            uci.execute<UciResponse.Ready>(UciCommand.IsReady)
 
-        val accumulator = AnalysisAccumulator(multiPvCount)
-        while (currentCoroutineContext().isActive) {
-            val line = uci.readLine()
-            if (line.startsWith(BEST_MOVE_PREFIX)) break
+            uci.execute<UciResponse.Done>(UciCommand.SetMultiPV(multiPvCount))
+            uci.execute<UciResponse.Done>(UciCommand.SetPosition(fen))
+            uci.sendCommand(UciCommand.GoInfinite)
 
-            val parsed = InfoLineParser.parse(line) ?: continue
-            accumulator.process(parsed)?.let { emit(it) }
+            val accumulator = AnalysisAccumulator(multiPvCount)
+            while (currentCoroutineContext().isActive) {
+                val line = uci.readLine()
+                if (line.startsWith(BEST_MOVE_PREFIX)) break
+
+                val parsed = InfoLineParser.parse(line) ?: continue
+                accumulator.process(parsed)?.let { emit(it) }
+            }
         }
     }.conflate().flowOn(dispatcher)
 

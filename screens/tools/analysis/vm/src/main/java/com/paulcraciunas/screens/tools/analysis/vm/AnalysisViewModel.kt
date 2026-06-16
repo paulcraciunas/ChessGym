@@ -126,8 +126,8 @@ class AnalysisViewModel @Inject constructor(
                     vmState.update { it.copy(engineData = null) }
                     analyzePosition.analyze(session.fen)
                         .map { fen -> adapter.from(fen, session.turn) }
+                        .catch { Timber.e(it, "Analysis error") }
                 }
-                .catch { Timber.e(it, "Analysis error") }
                 .collect { result -> vmState.update { it.copy(engineData = result) } }
         }
     }
