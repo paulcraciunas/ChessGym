@@ -35,8 +35,12 @@ class GenerateKnightPathExerciseImpl @Inject constructor(
         val blockers = if (alternativePaths.isEmpty()) {
             emptyList()
         } else {
+            // Strip the start and end (destination) squares entirely out of the alternative path evaluation list
+            val intermediateAlternativePaths = alternativePaths.map { path ->
+                path.filter { locus -> locus != startLocus && locus != endLocus }
+            }
             val candidates = alternativePaths.flatten().toSet() - goldenSet - startLocus - endLocus
-            findMinimalBlockers(alternativePaths, candidates.toList())
+            findMinimalBlockers(intermediateAlternativePaths, candidates.toList())
         }
 
         return@withContext KnightPathExercise(
@@ -112,6 +116,9 @@ class GenerateKnightPathExerciseImpl @Inject constructor(
 
         var bestBlockerCount = candidates.size
         var bestBlockerMask = 0L
+        for (locus in candidates) {
+            bestBlockerMask = bestBlockerMask or (1L shl locus.ordinal)
+        }
 
         /**
          * @param index The current candidate from candidates
@@ -190,6 +197,4 @@ class GenerateKnightPathExerciseImpl @Inject constructor(
     }
 }
 
-private fun <T> List<T>.chooseRandomElement(factory: RandomFactory): T =
-    if (isEmpty()) throw IllegalArgumentException("Can't get a random element from an empty list")
-    else this[factory.nextInt(0, this.size)]
+private fun <T> List<T>.chooseRandomElement(factory: RandomFactory): T = this[factory.nextInt(0, this.size)]

@@ -1,8 +1,10 @@
 package com.paulcraciunas.domain.impl.boardvis
 
 import com.paulcraciunas.domain.api.general.FixedRandomFactory
+import com.paulcraciunas.domain.api.general.RandomFactory
 import com.paulcraciunas.domain.api.general.SequentialRandomFactory
 import com.paulcraciunas.game.logic.api.Side
+import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -109,5 +111,33 @@ internal class GenerateKnightPathExerciseImplTest {
         val exercise = underTest.invoke(6)
 
         assertEquals(7, exercise.path.size)
+    }
+
+    @Test
+    fun `GIVEN 2-move exercise with multiple paths WHEN invoke THEN intermediate alternative steps are strictly blocked`() = runTest(testDispatcher) {
+        val configurationFactory = object : RandomFactory {
+            private var callCount = 0
+            override fun nextInt(from: Int, to: Int): Int {
+                callCount++
+                return when (callCount) {
+                    1 -> Locus.entries.indexOf(Locus.b2) // First call: Choose Locus.b2 as the target destination
+                    2 -> 7 // This will correspond to e5
+                    else -> 0 // Third call: Choose the first path as the Golden Path (e5 -> c4 -> b2)
+                }
+            }
+        }
+
+        val underTest = GenerateKnightPathExerciseImpl(
+            dispatcher = testDispatcher,
+            randomFactory = configurationFactory
+        )
+
+        val exercise = underTest.invoke(2)
+
+        // Assert the structural setup matched our intended test profile
+        assertEquals(Locus.e5, exercise.from)
+        assertEquals(Locus.c4, exercise.path[1]) // Golden Path step
+
+        assertTrue(exercise.board.has(Piece.Pawn, Side.WHITE, Locus.d3))
     }
 }
