@@ -6,6 +6,7 @@ import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.IBoard
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
+import com.paulcraciunas.logic.builders.Builders
 import com.paulcraciunas.screens.data.AbstractBoardSession
 import com.paulcraciunas.screens.data.BoardState
 import com.paulcraciunas.screens.data.BoardViewData
@@ -33,10 +34,8 @@ internal class KnightPathBoardSession : AbstractBoardSession() {
     private lateinit var state: BoardState
     private lateinit var board: IBoard
     private lateinit var path: Queue<Locus>
-    private val completedMoves: Queue<Locus> = ArrayDeque(GetKnightPathBufferedSeries.MAX_MOVES)
 
     fun load(exercise: KnightPathExercise, id: Int) = apply {
-        completedMoves.clear()
         board = exercise.board
         state = BoardState(
             rating = null,
@@ -61,11 +60,11 @@ internal class KnightPathBoardSession : AbstractBoardSession() {
     override fun refresh(withAnimation: Boolean): BoardState = state
     override fun onClick(selection: Locus): BoardState {
         if (state.outcome != null) return state
-        val expectedMove = path.peek()
 
         return when {
-            selection == expectedMove -> moveTo(expectedMove)
+            selection == path.peek() -> moveNext()
             board.at(selection) != null -> state // Can't move there
+            state.boardData.selection?.isValidKnightMove(selection) == false -> state // Can't move there
             else -> applyMove(selection, Outcome.Lost)
         }
     }
@@ -88,8 +87,8 @@ internal class KnightPathBoardSession : AbstractBoardSession() {
     override suspend fun close() {}
     override fun hint(): BoardState = state
 
-    private fun moveTo(to: Locus): BoardState {
-        completedMoves.add(path.poll())
+    private fun moveNext(): BoardState {
+        val to = path.poll()!!
         return applyMove(to, if (path.isEmpty()) Outcome.Won else null)
     }
 
@@ -108,6 +107,8 @@ internal class KnightPathBoardSession : AbstractBoardSession() {
         return state
     }
 }
+
+private fun Locus.isValidKnightMove(to: Locus): Boolean = Builders.allKnightMoves().mapNotNull { it(this) }.contains(to)
 
 internal const val DURATION_MS = 30_000L
 internal const val DANGER_THRESHOLD = 5_000L
