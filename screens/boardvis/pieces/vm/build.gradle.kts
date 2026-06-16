@@ -15,11 +15,14 @@ dependencies {
     implementation(project(":global:sounds"))
     implementation(project(":user:api"))
     implementation(project(":screens:data"))
+    implementation(project(":settings:application:api"))
 
+    implementation(libs.public.timber)
     implementation(libs.androidx.lifecycle.runtime.ktx)
 
     testImplementation(project(":game:logic:impl"))
     testImplementation(project(":domain:impl"))
-    testImplementation(testFixtures(project(":user:api")))
+    testImplementation(testFixtures(project(":settings:application:api")))
     testImplementation(testFixtures(project(":domain:api")))
+    testImplementation(testFixtures(project(":user:api")))
 }

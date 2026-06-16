@@ -2,208 +2,94 @@ package com.paulcraciunas.screens.boardvis.pieces.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.paulcraciunas.domain.api.boardvis.GenerateKnightPathExercise
-import com.paulcraciunas.domain.api.boardvis.KnightPathExercise
+import com.paulcraciunas.domain.api.boardvis.GetKnightPathBufferedSeries
 import com.paulcraciunas.domain.api.boardvis.KnightPathResult
 import com.paulcraciunas.domain.api.boardvis.OnKnightPathComplete
 import com.paulcraciunas.domain.api.general.CountdownTimer
-import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.global.qualifiers.DefaultDispatcher
 import com.paulcraciunas.global.sounds.SoundCoordinator
-import com.paulcraciunas.screens.data.BoardViewData
-import com.paulcraciunas.screens.data.RemainingTime
+import com.paulcraciunas.screens.data.engine.PlayIntent
+import com.paulcraciunas.screens.data.engine.PlaySession
+import com.paulcraciunas.screens.data.engine.toSoundEvents
 import com.paulcraciunas.screens.data.utils.SequentialJob
+import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import com.paulcraciunas.user.api.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
 class KnightPathViewModel @Inject constructor(
     @param:DefaultDispatcher private val dispatcher: CoroutineDispatcher,
-    private val generateExercise: GenerateKnightPathExercise,
-    private val onKnightPathComplete: OnKnightPathComplete,
-    private val countdownTimer: CountdownTimer,
     private val userRepository: UserRepository,
-    private val sounds: SoundCoordinator,
+    sounds: SoundCoordinator,
+    appSettingsRepository: AppSettingsRepository,
+    exercises: GetKnightPathBufferedSeries,
+    onKnightPathComplete: OnKnightPathComplete,
+    countdownTimer: CountdownTimer,
 ) : ViewModel() {
-    private val _gameState = MutableStateFlow(GameState())
-    private val gameJob = SequentialJob(viewModelScope)
+    private val adapter = KnightPathUiStateAdapter()
+    private val sessions = KnightPathSessions(exercises)
+    private val playSession = PlaySession(
+        settingsRepository = appSettingsRepository,
+        config = knightPathConfiguration(),
+        sessions = sessions,
+        timer = countdownTimer,
+        onPlayComplete = { state ->
+            val successCount = state.results.count { it.success }
+            val timeSpent = DURATION_MS - (state.remainingTimeMs ?: 0)
+            onKnightPathComplete(KnightPathResult(score = successCount, timeSpentMillis = timeSpent))
+        },
+    )
 
-    val uiState: StateFlow<KnightPathUiState> = _gameState
-        .map { it.toUiState() }
+    private var runJob = SequentialJob(viewModelScope)
+    private val highScore = MutableStateFlow(0)
+
+    val uiState: StateFlow<KnightPathUiState> = combine(
+        playSession.state,
+        highScore,
+    ) { state, score -> adapter.toUiState(state, score) }
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
+            started = SharingStarted.WhileSubscribed(5000),
             initialValue = KnightPathUiState.Setup
         )
 
+    init {
+        playSession.state
+            .toSoundEvents(DANGER_THRESHOLD)
+            .onEach { sounds.trigger(it) }
+            .launchIn(viewModelScope)
+    }
+
+    fun onNavigateBackPressed(): Boolean {
+        if (uiState.value is KnightPathUiState.Playing) {
+            playSession.accept(intent = PlayIntent.RequestAbandon)
+        }
+        return uiState.value is KnightPathUiState.Playing
+    }
+
     fun onPlayClicked() {
-        if (_gameState.value.status != GameState.Status.Setup) return
-        gameJob.launch(dispatcher) {
-            val exercise = generateExercise(INITIAL_MOVES_REQUIRED)
-            _gameState.update {
-                GameState(
-                    status = GameState.Status.Playing,
-                    exercise = exercise,
-                    pathIndex = 0,
-                    score = 0,
-                    exercisesAtCurrentDifficulty = 0,
-                    currentDifficulty = INITIAL_MOVES_REQUIRED,
-                    previousHighScore = userRepository.get().highScores.knightPath,
-                    timeRemaining = KnightPathUiState.DEFAULT_DURATION_SECONDS.asRemainder(),
-                )
-            }
-            runTimer()
+        runJob.launch(dispatcher) {
+            highScore.update { userRepository.get().highScores.knightPath }
+            playSession.run()
         }
     }
 
-    fun onSquareClicked(locus: Locus) {
-        val state = _gameState.value
-        if (state.status != GameState.Status.Playing) return
-        val exercise = state.exercise ?: return
-
-        val expectedNext = exercise.path[state.pathIndex + 1]
-        when {
-            locus == expectedNext -> _gameState.update { advanceToNextStep(it, it.exercise!!) }
-            !exercise.board.isEmpty(locus) -> return
-            else -> onWrongMove()
-        }
-    }
-
+    fun onSquareClicked(selection: Locus) = playSession.accept(intent = PlayIntent.SelectSquare(selection))
+    fun onAbandonDismissed() = playSession.accept(intent = PlayIntent.DismissAbandon)
+    fun onAbandonConfirmed() = playSession.accept(intent = PlayIntent.ConfirmAbandon)
     fun onPlayAgain() {
-        gameJob.cancel()
-        _gameState.update { GameState() }
-    }
-
-    private fun advanceToNextStep(state: GameState, exercise: KnightPathExercise): GameState {
-        val currentPos = exercise.path[state.pathIndex]
-        val newPathIndex = state.pathIndex + 1
-        val nextPos = exercise.path[newPathIndex]
-
-        exercise.board.move(from = currentPos, to = nextPos, turn = Side.WHITE)
-
-        if (nextPos == exercise.destination) {
-            val newScore = state.score + 1
-            val newExercisesAtDifficulty = state.exercisesAtCurrentDifficulty + 1
-            val newDifficulty = nextDifficulty(state.currentDifficulty, newExercisesAtDifficulty)
-            val adjustedCount = if (newDifficulty != state.currentDifficulty) 0 else newExercisesAtDifficulty
-
-            val nextExercise = generateExercise(newDifficulty)
-
-            return state.copy(
-                exercise = nextExercise,
-                pathIndex = 0,
-                score = newScore,
-                currentDifficulty = newDifficulty,
-                exercisesAtCurrentDifficulty = adjustedCount,
-            )
-        }
-        return state.copy(pathIndex = newPathIndex)
-    }
-
-    private fun onWrongMove() {
-        gameJob.cancel()
-        viewModelScope.launch(dispatcher) {
-            onGameOver(wasWrongMove = true)
-        }
-    }
-
-    private suspend fun runTimer() {
-        var isTicking = false
-        countdownTimer.start(durationMs = DURATION_MS, intervalMillis = INTERVAL_MS).collect { remainder ->
-            _gameState.update { it.copy(timeRemaining = remainder) }
-            if (remainder.seconds < KnightPathUiState.DANGER_DURATION_SECONDS && !isTicking) {
-                isTicking = true
-                sounds.trigger(SoundCoordinator.SoundEvent.Tick(KnightPathUiState.DANGER_DURATION_SECONDS))
-            }
-        }
-        onGameOver(wasWrongMove = false)
-    }
-
-    private suspend fun onGameOver(wasWrongMove: Boolean) {
-        val timeSpent = DURATION_MS - _gameState.value.timeRemaining.ms
-        _gameState.update {
-            it.copy(
-                status = GameState.Status.Finished,
-                wasWrongMove = wasWrongMove,
-                isNewHighScore = it.score > it.previousHighScore,
-            )
-        }
-        onKnightPathComplete(
-            KnightPathResult(
-                score = _gameState.value.score,
-                timeSpentMillis = timeSpent
-            )
-        )
-    }
-
-    private fun nextDifficulty(current: Int, exercisesCompleted: Int): Int {
-        if (exercisesCompleted >= EXERCISES_PER_DIFFICULTY && current < MAX_MOVES) {
-            return current + 1
-        }
-        return current
-    }
-
-    private data class GameState(
-        val status: Status = Status.Setup,
-        val exercise: KnightPathExercise? = null,
-        val pathIndex: Int = 0,
-        val score: Int = 0,
-        val exercisesAtCurrentDifficulty: Int = 0,
-        val currentDifficulty: Int = INITIAL_MOVES_REQUIRED,
-        val wasWrongMove: Boolean = false,
-        val isNewHighScore: Boolean = false,
-        val previousHighScore: Int = 0,
-        val timeRemaining: CountdownTimer.Remainder = CountdownTimer.Remainder(
-            seconds = KnightPathUiState.DEFAULT_DURATION_SECONDS,
-            millis = 0
-        ),
-    ) {
-        enum class Status { Setup, Playing, Finished }
-
-        fun toUiState(): KnightPathUiState = when (status) {
-            Status.Setup -> KnightPathUiState.Setup
-            Status.Playing -> KnightPathUiState.Playing(
-                boardData = BoardViewData.from(board = exercise!!.board),
-                destination = exercise.destination,
-                score = score,
-                timeRemaining = timeRemaining.toRemainingTime(),
-            )
-            Status.Finished -> KnightPathUiState.GameOver(
-                boardData = BoardViewData.from(board = exercise!!.board),
-                timeRemaining = timeRemaining.toRemainingTime(),
-                score = score,
-                isNewHighScore = isNewHighScore,
-                wasWrongMove = wasWrongMove,
-            )
-        }
-    }
-
-    companion object {
-        private const val INITIAL_MOVES_REQUIRED = 2
-        private const val EXERCISES_PER_DIFFICULTY = 3
-        private const val MAX_MOVES = 6
-        private const val INTERVAL_MS = 100L
-        private const val DURATION_MS = KnightPathUiState.DEFAULT_DURATION_SECONDS * 1000L
+        if (uiState.value !is KnightPathUiState.GameOver) return
+        playSession.reset()
     }
 }
-
-internal fun CountdownTimer.Remainder.toRemainingTime(): RemainingTime = RemainingTime(
-    value = format(),
-    danger = this.seconds <= KnightPathUiState.DANGER_DURATION_SECONDS,
-)
-
-private fun Int.asRemainder() = CountdownTimer.Remainder(seconds = this, millis = 0)
-
-private fun CountdownTimer.Remainder.format(): String =
-    String.format(Locale.getDefault(), "%d.%d", seconds, millis / 100)

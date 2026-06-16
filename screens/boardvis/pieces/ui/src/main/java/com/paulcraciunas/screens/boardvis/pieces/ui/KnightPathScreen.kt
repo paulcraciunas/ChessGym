@@ -1,6 +1,7 @@
 package com.paulcraciunas.screens.boardvis.pieces.ui
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -21,6 +22,7 @@ import com.paulcraciunas.screens.common.controls.TimerDisplay
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
+import com.paulcraciunas.screens.data.BoardState
 import com.paulcraciunas.screens.data.BoardViewData
 import com.paulcraciunas.screens.data.RemainingTime
 
@@ -33,7 +35,13 @@ fun KnightPathScreen(
     onPlayClicked: () -> Unit = {},
     onSquareClicked: (locus: Locus) -> Unit = {},
     onPlayAgain: () -> Unit = {},
+    onAbandonConfirmed: () -> Unit = {},
+    onAbandonDismissed: () -> Unit = {},
 ) {
+    BackHandler(enabled = uiState is KnightPathUiState.Playing) {
+        onNavigateBack()
+    }
+
     Scaffold(
         topBar = {
             ChildAppBar(
@@ -51,10 +59,12 @@ fun KnightPathScreen(
         ) {
             KnightPathScreenContents(
                 state = uiState,
+                modifier = Modifier.fillMaxSize(),
                 onPlayClicked = onPlayClicked,
                 onSquareClicked = onSquareClicked,
                 onPlayAgain = onPlayAgain,
-                modifier = Modifier.fillMaxSize()
+                onAbandonConfirmed = onAbandonConfirmed,
+                onAbandonDismissed = onAbandonDismissed,
             )
         }
     }
@@ -78,9 +88,9 @@ private fun KnightPathScreenPlayingPreview() {
         CompositionLocalProvider(LocalUiSettings provides UiSettings.default()) {
             KnightPathScreen(
                 uiState = KnightPathUiState.Playing(
-                    boardData = BoardViewData.default(),
+                    boardState = BoardState.empty.copy(boardData = BoardViewData.singleKnight()),
                     timeRemaining = RemainingTime(value = "22.4", danger = false),
-                    destination = Locus.e6,
+                    showAbandonDialog = false,
                     score = 3,
                 ),
             )
@@ -95,7 +105,7 @@ private fun KnightPathScreenGameOverPreview() {
         CompositionLocalProvider(LocalUiSettings provides UiSettings.default()) {
             KnightPathScreen(
                 uiState = KnightPathUiState.GameOver(
-                    boardData = BoardViewData.default(),
+                    boardState = BoardState.empty.copy(boardData = BoardViewData.singleKnight()),
                     timeRemaining = RemainingTime(value = "4.6", danger = true),
                     score = 8,
                     isNewHighScore = true,

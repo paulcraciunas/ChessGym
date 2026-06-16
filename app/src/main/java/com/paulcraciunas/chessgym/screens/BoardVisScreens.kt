@@ -51,9 +51,15 @@ internal fun KnightPath(tabNavController: NavHostController) {
 
     KnightPathScreen(
         uiState = knightPathState,
-        onNavigateBack = { tabNavController.popBackStack(Screen.BoardVisualization, inclusive = false) },
+        onNavigateBack = {
+            if (!vm.onNavigateBackPressed()) {
+                tabNavController.popBackStack(Screen.BoardVisualization, inclusive = false)
+            }
+        },
         onPlayClicked = vm::onPlayClicked,
         onSquareClicked = vm::onSquareClicked,
         onPlayAgain = vm::onPlayAgain,
+        onAbandonConfirmed = vm::onAbandonConfirmed,
+        onAbandonDismissed = vm::onAbandonDismissed,
     )
 }

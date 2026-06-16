@@ -68,6 +68,12 @@ class PlaySession(
         }
     }
 
+    fun reset() {
+        if (orchestrator.value.status == PlaySessionState.Status.Ended) {
+            orchestrator.update { OrchestratorState() }
+        }
+    }
+
     private suspend fun CoroutineScope.runSessions() {
         startRun()
         val timerJob: Job = launchTimer()

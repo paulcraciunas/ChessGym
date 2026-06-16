@@ -1,6 +1,6 @@
 package com.paulcraciunas.screens.boardvis.pieces.vm
 
-import com.paulcraciunas.domain.api.boardvis.GenerateKnightPathExercise
+import com.paulcraciunas.domain.api.boardvis.GetKnightPathBufferedSeries
 import com.paulcraciunas.domain.api.boardvis.KnightPathExercise
 import com.paulcraciunas.domain.api.boardvis.KnightPathResult
 import com.paulcraciunas.domain.api.boardvis.OnKnightPathComplete
@@ -11,10 +11,13 @@ import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.impl.board.Board
 import com.paulcraciunas.global.sounds.SoundCoordinator
+import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
 import com.paulcraciunas.user.api.FakeUserRepository
 import com.paulcraciunas.user.api.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
@@ -35,7 +38,7 @@ internal class KnightPathViewModelTest {
     private val testDispatcher = StandardTestDispatcher()
 
     private val userRepository = FakeUserRepository()
-    private val fakeGenerateExercise = FakeGenerateKnightPathExercise()
+    private val fakeExerciseSeries = FakeGetKnightPathBufferedSeries()
     private val fakeOnComplete = FakeOnKnightPathComplete()
 
     private lateinit var underTest: KnightPathViewModel
@@ -45,11 +48,12 @@ internal class KnightPathViewModelTest {
         Dispatchers.setMain(testDispatcher)
         underTest = KnightPathViewModel(
             dispatcher = testDispatcher,
-            generateExercise = fakeGenerateExercise,
-            onKnightPathComplete = fakeOnComplete,
-            countdownTimer = RealCountdownTimer(SchedulerBackedTestClock(testDispatcher.scheduler)),
             userRepository = userRepository,
             sounds = SoundCoordinator(),
+            appSettingsRepository = FakeAppSettingsRepository(),
+            exercises = fakeExerciseSeries,
+            onKnightPathComplete = fakeOnComplete,
+            countdownTimer = RealCountdownTimer(SchedulerBackedTestClock(testDispatcher.scheduler)),
         )
     }
 
@@ -65,7 +69,7 @@ internal class KnightPathViewModelTest {
 
     @Test
     fun `GIVEN setup state WHEN onPlayClicked THEN game starts`() = knightPathTest {
-        fakeGenerateExercise.nextExercise = twoMoveExercise()
+        fakeExerciseSeries.with(twoMoveExercise())
 
         underTest.onPlayClicked()
         advanceTimeBy(1001L)
@@ -74,14 +78,13 @@ internal class KnightPathViewModelTest {
         assertTrue(uiState is KnightPathUiState.Playing)
         val playing = uiState as KnightPathUiState.Playing
         assertEquals(0, playing.score)
-        assertEquals(Locus.d4, playing.destination)
         assertEquals("29.0", playing.timeRemaining.value)
     }
 
     @Test
     fun `GIVEN playing state WHEN correct intermediate move made THEN position advances`() = knightPathTest {
         val exercise = twoMoveExercise()
-        fakeGenerateExercise.nextExercise = exercise
+        fakeExerciseSeries.with(exercise)
 
         underTest.onPlayClicked()
         advanceTimeBy(1000L)
@@ -97,17 +100,14 @@ internal class KnightPathViewModelTest {
     @Test
     fun `GIVEN playing state WHEN exercise completed THEN score increments and new exercise loads`() = knightPathTest {
         val exercise = twoMoveExercise()
-        fakeGenerateExercise.nextExercise = exercise
-
-        underTest.onPlayClicked()
-        advanceTimeBy(1000L)
-
-        val secondExercise = twoMoveExercise(
+        fakeExerciseSeries.with(exercise, twoMoveExercise(
             start = Locus.a1,
             destination = Locus.c2,
             path = listOf(Locus.a1, Locus.b3, Locus.c2),
-        )
-        fakeGenerateExercise.nextExercise = secondExercise
+        ))
+
+        underTest.onPlayClicked()
+        advanceTimeBy(1000L)
 
         underTest.onSquareClicked(exercise.path[1])
         advanceTimeBy(1000L)
@@ -118,12 +118,11 @@ internal class KnightPathViewModelTest {
         assertTrue(uiState is KnightPathUiState.Playing)
         val playing = uiState as KnightPathUiState.Playing
         assertEquals(1, playing.score)
-        assertEquals(Locus.c2, playing.destination)
     }
 
     @Test
     fun `GIVEN playing state WHEN wrong empty square clicked THEN game ends and timer stops`() = knightPathTest {
-        fakeGenerateExercise.nextExercise = twoMoveExercise()
+        fakeExerciseSeries.with(twoMoveExercise())
 
         underTest.onPlayClicked()
         advanceTimeBy(1000L)
@@ -139,7 +138,7 @@ internal class KnightPathViewModelTest {
 
     @Test
     fun `GIVEN playing state WHEN occupied square clicked THEN state unchanged`() = knightPathTest {
-        fakeGenerateExercise.nextExercise = twoMoveExercise()
+        fakeExerciseSeries.with(twoMoveExercise())
 
         underTest.onPlayClicked()
         advanceTimeBy(1000L)
@@ -154,7 +153,7 @@ internal class KnightPathViewModelTest {
 
     @Test
     fun `GIVEN playing state WHEN timer expires THEN game over without wrong move`() = knightPathTest {
-        fakeGenerateExercise.nextExercise = twoMoveExercise()
+        fakeExerciseSeries.with(twoMoveExercise())
 
         underTest.onPlayClicked()
         advanceToEnd()
@@ -169,18 +168,17 @@ internal class KnightPathViewModelTest {
     fun `GIVEN score above high score WHEN game ends THEN isNewHighScore true`() = knightPathTest {
         saveUser(User(highScores = User.HighScores(knightPath = 0)))
         val exercise = twoMoveExercise()
-        fakeGenerateExercise.nextExercise = exercise
+        fakeExerciseSeries.with(exercise, twoMoveExercise(
+            start = Locus.a1,
+            destination = Locus.c2,
+            path = listOf(Locus.a1, Locus.b3, Locus.c2),
+        ))
 
         underTest.onPlayClicked()
         advanceTimeBy(1000L)
 
-        fakeGenerateExercise.nextExercise = twoMoveExercise(
-            start = Locus.a1,
-            destination = Locus.c2,
-            path = listOf(Locus.a1, Locus.b3, Locus.c2),
-        )
-
         underTest.onSquareClicked(exercise.path[1])
+        advanceTimeBy(1000L)
         underTest.onSquareClicked(exercise.path[2])
         advanceToEnd()
 
@@ -192,7 +190,7 @@ internal class KnightPathViewModelTest {
     @Test
     fun `GIVEN score below high score WHEN game ends THEN isNewHighScore false`() = knightPathTest {
         saveUser(User(highScores = User.HighScores(knightPath = 100)))
-        fakeGenerateExercise.nextExercise = twoMoveExercise()
+        fakeExerciseSeries.with(twoMoveExercise())
 
         underTest.onPlayClicked()
         advanceToEnd()
@@ -204,7 +202,7 @@ internal class KnightPathViewModelTest {
 
     @Test
     fun `GIVEN game over WHEN onPlayAgain called THEN returns to setup state`() = knightPathTest {
-        fakeGenerateExercise.nextExercise = twoMoveExercise()
+        fakeExerciseSeries.with(twoMoveExercise())
         underTest.onPlayClicked()
         advanceToEnd()
 
@@ -217,18 +215,17 @@ internal class KnightPathViewModelTest {
     @Test
     fun `GIVEN timer ends WHEN onComplete called THEN result has correct score`() = knightPathTest {
         val exercise = twoMoveExercise()
-        fakeGenerateExercise.nextExercise = exercise
+        fakeExerciseSeries.with(exercise, twoMoveExercise(
+            start = Locus.a1,
+            destination = Locus.c2,
+            path = listOf(Locus.a1, Locus.b3, Locus.c2),
+        ))
 
         underTest.onPlayClicked()
         advanceTimeBy(1000L)
 
-        fakeGenerateExercise.nextExercise = twoMoveExercise(
-            start = Locus.a1,
-            destination = Locus.c2,
-            path = listOf(Locus.a1, Locus.b3, Locus.c2),
-        )
-
         underTest.onSquareClicked(exercise.path[1])
+        advanceTimeBy(1000L)
         underTest.onSquareClicked(exercise.path[2])
         advanceToEnd()
 
@@ -237,15 +234,15 @@ internal class KnightPathViewModelTest {
     }
 
     @Test
-    fun `GIVEN playing WHEN onPlayAgain called mid-game THEN returns to setup`() = knightPathTest {
-        fakeGenerateExercise.nextExercise = twoMoveExercise()
+    fun `GIVEN playing WHEN onPlayAgain called mid-game THEN continue playing`() = knightPathTest {
+        fakeExerciseSeries.with(twoMoveExercise())
         underTest.onPlayClicked()
         advanceTimeBy(1000L)
 
         underTest.onPlayAgain()
         advanceTimeBy(1000L)
 
-        assertTrue(underTest.uiState.value is KnightPathUiState.Setup)
+        assertTrue(underTest.uiState.value is KnightPathUiState.Playing)
         assertFalse(fakeOnComplete.invoked)
     }
 
@@ -274,17 +271,24 @@ internal class KnightPathViewModelTest {
             add(Piece.Knight, Side.WHITE, start)
             add(Piece.Pawn, Side.BLACK, destination)
         },
-        destination = destination,
+        from = start,
         path = path,
-        movesRequired = path.size - 1,
     )
 }
 
-private class FakeGenerateKnightPathExercise : GenerateKnightPathExercise {
-    var nextExercise: KnightPathExercise? = null
+private class FakeGetKnightPathBufferedSeries : GetKnightPathBufferedSeries {
+    private val exercises = mutableListOf<KnightPathExercise>()
 
-    override fun invoke(movesRequired: Int): KnightPathExercise =
-        nextExercise ?: throw IllegalStateException("No exercise configured")
+    fun with(vararg exercises: KnightPathExercise) {
+        this.exercises.addAll(exercises)
+    }
+
+    override fun invoke(bufferSize: Int): Flow<KnightPathExercise> = flow {
+        if (exercises.isEmpty()) throw IllegalStateException("No exercise configured")
+        exercises.forEach {
+            emit(it)
+        }
+    }
 }
 
 private class FakeOnKnightPathComplete : OnKnightPathComplete {

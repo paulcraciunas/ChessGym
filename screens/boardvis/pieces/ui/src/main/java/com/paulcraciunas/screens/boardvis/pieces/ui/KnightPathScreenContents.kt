@@ -11,9 +11,12 @@ import androidx.compose.ui.unit.dp
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.screens.boardvis.pieces.vm.KnightPathUiState
+import com.paulcraciunas.screens.common.AnimatedBoard
 import com.paulcraciunas.screens.common.AnimatedControls
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
+import com.paulcraciunas.screens.common.dialogs.AbandonConfirmationDialog
+import com.paulcraciunas.screens.common.dialogs.AbandonConfirmationType
 
 @Composable
 internal fun KnightPathScreenContents(
@@ -22,16 +25,23 @@ internal fun KnightPathScreenContents(
     onPlayClicked: () -> Unit = {},
     onSquareClicked: (Locus) -> Unit = {},
     onPlayAgain: () -> Unit = {},
+    onAbandonConfirmed: () -> Unit = {},
+    onAbandonDismissed: () -> Unit = {},
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
     ) {
-        ChessBoard(
-            board = state.boardData,
-            orientation = BoardOrientation.fromSide(Side.WHITE),
-            onClick = onSquareClicked,
-            modifier = Modifier.fillMaxWidth()
-        )
+        AnimatedBoard(
+            targetState = state.boardState,
+            contentKey = { it.id },
+        ) { boardState ->
+            ChessBoard(
+                board = boardState.boardData,
+                orientation = BoardOrientation.fromSide(Side.WHITE),
+                onClick = onSquareClicked,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
         Spacer(modifier = Modifier.height(16.dp))
         AnimatedControls(
             targetState = state,
@@ -60,6 +70,13 @@ internal fun KnightPathScreenContents(
                     )
                 }
             }
+        }
+        if (state is KnightPathUiState.Playing && state.showAbandonDialog) {
+            AbandonConfirmationDialog(
+                onConfirm = onAbandonConfirmed,
+                onDismiss = onAbandonDismissed,
+                type = AbandonConfirmationType.Game,
+            )
         }
     }
 }
