@@ -19,12 +19,14 @@ import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import com.paulcraciunas.user.api.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.scan
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -41,6 +43,7 @@ class PuzzleStreakViewModel @Inject constructor(
     sounds: SoundCoordinator,
 ) : ViewModel() {
     private val sessions = PuzzleStreakSessions(getStreakPuzzle)
+    private val adapter = PuzzleStreakUiStateAdapter(sessions)
     private val playSession = PlaySession(
         settingsRepository = appSettingsRepository,
         config = streakConfiguration(),
@@ -55,7 +58,8 @@ class PuzzleStreakViewModel @Inject constructor(
     val uiState: StateFlow<PuzzleStreakUiState> = combine(
         playSession.state,
         highScore,
-    ) { state, score -> state.toUiState(score) }
+    ) { state, score -> adapter.toUiState(state, score) }
+        .antiFlicker()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
@@ -63,7 +67,7 @@ class PuzzleStreakViewModel @Inject constructor(
         )
 
     init {
-        onNewStreak()
+        startNewStreak()
         playSession.state
             .toSoundEvents()
             .onEach { sounds.trigger(it) }
@@ -90,40 +94,31 @@ class PuzzleStreakViewModel @Inject constructor(
     fun onDismissSummary() = playSession.clearSummary()
     fun onNextPuzzle() = playSession.accept(intent = PlayIntent.Resume)
     fun onNewStreak() {
-        timer.start()
-        runJob.launch(defaultDispatcher) {
-            highScore.value = userRepository.get().highScores.puzzleStreak
-            playSession.run()
+        if (uiState.value is PuzzleStreakUiState.StreakEnded) {
+            startNewStreak()
         }
     }
+
     fun onAutoNext(enabled: Boolean) {
         viewModelScope.launch {
             appSettingsRepository.updateAutoNextPuzzle(enabled)
         }
     }
 
-    private fun PlaySessionState.toUiState(currentHighScore: Int): PuzzleStreakUiState = when (this.status) {
-        PlaySessionState.Status.Failed -> PuzzleStreakUiState.Failed
-        PlaySessionState.Status.Loading -> PuzzleStreakUiState.Loading
-        PlaySessionState.Status.Ended -> PuzzleStreakUiState.StreakEnded(
-            data = this.boardState,
-            streakCount = sessions.streakCount,
-            showSummary = this.showSummary,
-            isNewHighScore = sessions.streakCount > currentHighScore,
-        )
-        PlaySessionState.Status.Paused -> PuzzleStreakUiState.Playing(
-            data = this.boardState,
-            streakCount = sessions.streakCount + 1, // we just completed a puzzle
-            hintEnabled = hintAvailable,
-            showAbandonDialog = abandonRequested,
-            isAwaitingNextPuzzle = true,
-        )
-        else -> PuzzleStreakUiState.Playing(
-            data = this.boardState,
-            streakCount = sessions.streakCount,
-            hintEnabled = hintAvailable,
-            showAbandonDialog = abandonRequested,
-            isAwaitingNextPuzzle = false,
-        )
+    private fun startNewStreak() {
+        timer.start()
+        runJob.launch(defaultDispatcher) {
+            highScore.value = userRepository.get().highScores.puzzleStreak
+            playSession.run()
+        }
     }
 }
+
+private fun Flow<PuzzleStreakUiState>.antiFlicker(): Flow<PuzzleStreakUiState> =
+    scan(PuzzleStreakUiState.Loading as PuzzleStreakUiState) { prev, current ->
+        if (current is PuzzleStreakUiState.Loading && prev is PuzzleStreakUiState.WithBoard) {
+            PuzzleStreakUiState.ReLoad(data = prev.data, streakCount = prev.streakCount)
+        } else {
+            current
+        }
+    }

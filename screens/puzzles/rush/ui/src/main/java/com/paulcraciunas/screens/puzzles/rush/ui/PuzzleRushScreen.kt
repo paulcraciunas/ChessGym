@@ -131,19 +131,13 @@ private fun PuzzleRushContent(
             contentKey = { state -> state::class },
         ) { state ->
             when (state) {
-                is PuzzleRushUiState.Ready -> {
-                    ReadyControls(modifier = Modifier.fillMaxWidth())
-                }
-                is PuzzleRushUiState.Playing -> {
-                    // Empty space while playing - no controls needed
-                    ChessGymSpacer(size = SpacerSize.SECTION)
-                }
-                is PuzzleRushUiState.Finished -> {
-                    FinishedRushControls(
-                        onPlayAgain = onPlayAgain,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
+                is PuzzleRushUiState.Ready -> ReadyControls(modifier = Modifier.fillMaxWidth())
+                is PuzzleRushUiState.ReLoad, // Empty space while playing/loading - no controls needed
+                is PuzzleRushUiState.Playing -> ChessGymSpacer(size = SpacerSize.SECTION)
+                is PuzzleRushUiState.Finished -> FinishedRushControls(
+                    onPlayAgain = onPlayAgain,
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
         }
         ChessGymSpacer(size = SpacerSize.XXLARGE)

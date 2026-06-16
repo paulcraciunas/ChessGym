@@ -74,8 +74,7 @@ fun PuzzleStreakScreen(
     }
 
     val streakCount = when (uiState) {
-        is PuzzleStreakUiState.Playing -> uiState.streakCount
-        is PuzzleStreakUiState.StreakEnded -> 0
+        is PuzzleStreakUiState.WithBoard -> uiState.streakCount
         else -> 0
     }
     val countAlpha by animateFloatAsState(
@@ -154,18 +153,20 @@ private fun PuzzleStreakContent(
             )
         }
         CapturedPieces(capturedPieces = data.captured.byPlayer, side = data.player.other(), modifier = Modifier.fillMaxWidth())
-        AnimatedControls(targetState = uiState is PuzzleStreakUiState.StreakEnded) { isEnded ->
+        AnimatedControls(
+            targetState = uiState,
+            contentKey = { uiState.controls },
+        ) { state ->
             val controlsModifier = Modifier
                 .fillMaxWidth()
                 .padding(top = Design.dimensions.spacing.sm)
-            if (isEnded && uiState is PuzzleStreakUiState.StreakEnded) {
-                StreakEndedControls(
-                    finalStreakCount = uiState.streakCount,
+            when (state) {
+                is PuzzleStreakUiState.StreakEnded -> StreakEndedControls(
+                    finalStreakCount = state.streakCount,
                     onNewStreak = onNewStreak,
                     modifier = controlsModifier,
                 )
-            } else if (uiState is PuzzleStreakUiState.Playing) {
-                if (uiState.isAwaitingNextPuzzle) {
+                is PuzzleStreakUiState.Playing -> if (state.isAwaitingNextPuzzle) {
                     NextPuzzleControls(
                         onNextPuzzle = onNextPuzzle,
                         onAutoNext = onAutoNext,
@@ -173,8 +174,8 @@ private fun PuzzleStreakContent(
                     )
                 } else {
                     DefaultPuzzleControls(
-                        hintEnabled = uiState.hintEnabled,
-                        toMove = uiState.data.player,
+                        hintEnabled = state.hintEnabled,
+                        toMove = state.data.player,
                         onHintRequested = onHintRequested,
                         onAbandonRequested = onAbandon,
                         modifier = controlsModifier,

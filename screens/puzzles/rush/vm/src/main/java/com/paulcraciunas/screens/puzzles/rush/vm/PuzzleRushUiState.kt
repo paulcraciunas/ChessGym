@@ -24,6 +24,14 @@ sealed class PuzzleRushUiState {
     }
 
     @Immutable
+    data class ReLoad(
+        override val time: RemainingTime = RemainingTime(),
+        override val data: BoardState,
+    ) : WithBoard() {
+        override val results: List<SessionResult> = emptyList()
+    }
+
+    @Immutable
     data class Ready(
         override val time: RemainingTime = RemainingTime(),
         override val data: BoardState,

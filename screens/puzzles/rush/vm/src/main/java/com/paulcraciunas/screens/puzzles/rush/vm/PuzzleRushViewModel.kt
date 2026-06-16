@@ -19,12 +19,14 @@ import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import com.paulcraciunas.user.api.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.scan
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
@@ -56,6 +58,7 @@ class PuzzleRushViewModel @Inject constructor(
         playSession.state,
         highScore,
     ) { state, score -> adapter.toUiState(state, score) }
+        .antiFlicker()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
@@ -93,3 +96,12 @@ class PuzzleRushViewModel @Inject constructor(
         }
     }
 }
+
+private fun Flow<PuzzleRushUiState>.antiFlicker(): Flow<PuzzleRushUiState> =
+    scan(PuzzleRushUiState.Loading as PuzzleRushUiState) { prev, current ->
+        if (current is PuzzleRushUiState.Loading && prev is PuzzleRushUiState.WithBoard) {
+            PuzzleRushUiState.ReLoad(data = prev.data, time = prev.time)
+        } else {
+            current
+        }
+    }

@@ -14,6 +14,15 @@ sealed class PuzzleStreakUiState {
     abstract class WithBoard : PuzzleStreakUiState() {
         abstract val data: BoardState
         abstract val streakCount: Int
+        abstract val controls: Controls
+    }
+
+    @Immutable
+    data class ReLoad(
+        override val data: BoardState,
+        override val streakCount: Int,
+    ) : WithBoard() {
+        override val controls = Controls.None
     }
 
     @Immutable
@@ -23,7 +32,9 @@ sealed class PuzzleStreakUiState {
         val hintEnabled: Boolean = true,
         val showAbandonDialog: Boolean = false,
         val isAwaitingNextPuzzle: Boolean = false,
-    ) : WithBoard()
+    ) : WithBoard() {
+        override val controls = if (isAwaitingNextPuzzle) Controls.WaitingForNext else Controls.Playing
+    }
 
     @Immutable
     data class StreakEnded(
@@ -31,5 +42,14 @@ sealed class PuzzleStreakUiState {
         override val streakCount: Int,
         val isNewHighScore: Boolean,
         val showSummary: Boolean,
-    ) : WithBoard()
+    ) : WithBoard() {
+        override val controls = Controls.Ended
+    }
+
+    enum class Controls {
+        Playing,
+        WaitingForNext,
+        Ended,
+        None,
+    }
 }
