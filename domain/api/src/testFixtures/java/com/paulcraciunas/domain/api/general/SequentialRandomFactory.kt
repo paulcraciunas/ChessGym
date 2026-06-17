@@ -14,8 +14,4 @@ class SequentialRandomFactory : RandomFactory {
         counter++
         return result
     }
-
-    fun reset() {
-        counter = 0
-    }
 }

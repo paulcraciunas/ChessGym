@@ -1,6 +1,5 @@
 package com.paulcraciunas.domain.di
 
-import com.paulcraciunas.domain.api.GenerateRandomLoci
 import com.paulcraciunas.domain.api.achievements.AchievementNotificationManager
 import com.paulcraciunas.domain.api.achievements.GetAchievementState
 import com.paulcraciunas.domain.api.achievements.MarkAchievementsSeen

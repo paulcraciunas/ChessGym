@@ -3,7 +3,6 @@ package com.paulcraciunas.domain.di
 import com.paulcraciunas.domain.api.GenerateRandomLoci
 import com.paulcraciunas.domain.api.general.RandomFactory
 import com.paulcraciunas.domain.impl.GenerateRandomLociImpl
-import com.paulcraciunas.domain.impl.general.TLRandomFactory
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
