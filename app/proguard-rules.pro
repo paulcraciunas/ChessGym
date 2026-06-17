@@ -20,3 +20,9 @@
 
 # Play Core / GMS compile-time annotations not shipped in runtime
 -dontwarn com.google.android.gms.common.annotation.NoNullnessRewrite
+
+# Prevent R8 from renaming or stripping the generated resource pre-warmer file
+-keep class com.paulcraciunas.global.resources.PreWarmDrawables {
+    public static final com.paulcraciunas.global.resources.PreWarmDrawables INSTANCE;
+    public final int[] getList();
+}
