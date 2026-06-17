@@ -2,6 +2,7 @@ package com.paulcraciunas.chessgym.di
 
 import com.paulcraciunas.domain.api.general.FixedRandomFactory
 import com.paulcraciunas.domain.api.general.RandomFactory
+import com.paulcraciunas.domain.api.general.SequentialRandomFactory
 import com.paulcraciunas.domain.di.RandomFactoryModule
 import dagger.Module
 import dagger.Provides
@@ -21,10 +22,6 @@ import javax.inject.Singleton
 )
 internal object TestRandomFactoryModule {
     val randomFactory: FixedRandomFactory = FixedRandomFactory()
-
-    @Provides
-    @Singleton
-    fun provideFixedRandomFactory(): FixedRandomFactory = randomFactory
 
     @Provides
     @Singleton

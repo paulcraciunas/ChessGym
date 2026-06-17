@@ -29,7 +29,6 @@ import com.paulcraciunas.domain.api.puzzles.OnPuzzleComplete
 import com.paulcraciunas.domain.api.puzzles.OnPuzzleRushComplete
 import com.paulcraciunas.domain.api.puzzles.OnStreakComplete
 import com.paulcraciunas.domain.api.puzzles.OnStreakPuzzleComplete
-import com.paulcraciunas.domain.impl.GenerateRandomLociImpl
 import com.paulcraciunas.domain.impl.achievements.AchievementNotificationManagerImpl
 import com.paulcraciunas.domain.impl.achievements.GetAchievementStateImpl
 import com.paulcraciunas.domain.impl.achievements.MarkAchievementsSeenImpl
@@ -119,10 +118,6 @@ internal abstract class DomainModule {
     @Binds
     @Singleton
     abstract fun bindOnStreakComplete(impl: OnStreakCompleteImpl): OnStreakComplete
-
-    @Binds
-    @Singleton
-    abstract fun bindGenerateRandomLoci(impl: GenerateRandomLociImpl): GenerateRandomLoci
 
     @Binds
     @Singleton
