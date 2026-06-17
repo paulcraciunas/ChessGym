@@ -3,17 +3,20 @@
    See https://developer.android.com/about/versions/12/backup-restore#xml-changes
    for details.
 -->
-<data-extraction-rules>
+<data-extraction-rules xmlns:tools="http://schemas.android.com/tools">
     <cloud-backup>
-        <!-- TODO: Use <include> and <exclude> to control what is backed up.
-        <include .../>
-        <exclude .../>
-        -->
+        <include domain="sharedpref" path="user_data.json" />
+        <include domain="sharedpref" path="app_settings.preferences.pb" />
+
+        <exclude domain="database" path="puzzle_database" tools:ignore="FullBackupContent" />
+        <exclude domain="database" path="puzzle_database-shm" tools:ignore="FullBackupContent" />
+        <exclude domain="database" path="puzzle_database-wal" tools:ignore="FullBackupContent" />
     </cloud-backup>
-    <!--
     <device-transfer>
-        <include .../>
-        <exclude .../>
+        <include domain="sharedpref" path="user_data.json" />
+        <include domain="sharedpref" path="app_settings.preferences.pb" />
+        <include domain="database" path="puzzle_database" tools:ignore="FullBackupContent" />
+        <include domain="database" path="puzzle_database-shm" tools:ignore="FullBackupContent" />
+        <include domain="database" path="puzzle_database-wal" tools:ignore="FullBackupContent" />
     </device-transfer>
-    -->
 </data-extraction-rules>
