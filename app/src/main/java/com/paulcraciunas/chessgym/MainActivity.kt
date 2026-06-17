@@ -9,6 +9,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -18,6 +19,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.paulcraciunas.chessgym.navigation.NavGraph
 import com.paulcraciunas.chessgym.navigation.NavGraphViewModel
+import com.paulcraciunas.screens.common.LocalUiSettings
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.settings.application.api.AppSettings
 import dagger.hilt.android.AndroidEntryPoint
@@ -55,7 +57,9 @@ class MainActivity : ComponentActivity() {
                 )
             }
             ChessGymTheme(darkMode = isDarkTheme) {
-                NavGraph(Modifier.fillMaxSize())
+                CompositionLocalProvider(LocalUiSettings provides navState.appSettings) {
+                    NavGraph(Modifier.fillMaxSize())
+                }
             }
         }
     }
