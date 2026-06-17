@@ -1,5 +1,6 @@
 package com.paulcraciunas.chessgym.navigation
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -41,7 +42,9 @@ sealed class Screen {
     data object Clock : Screen()
 
     @Serializable
-    data class Analysis(val puzzleId: Int? = null) : Screen()
+    data class Analysis(
+        @SerialName("puzzle_id") val puzzleId: Int? = null,
+    ) : Screen()
 
     @Serializable
     data object ImportGame : Screen()
@@ -56,7 +59,9 @@ sealed class Screen {
     data object About : Screen()
 
     @Serializable
-    data class AboutDetail(val section: String) : Screen()
+    data class AboutDetail(
+        @SerialName("section") val section: String,
+    ) : Screen()
 
     @Serializable
     data object Achievements : Screen()
