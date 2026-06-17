@@ -3,17 +3,9 @@ package com.paulcraciunas.chessgym.main
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.paulcraciunas.chessgym.debug.DebugMenuProvider
-import com.paulcraciunas.domain.api.achievements.AchievementNotificationManager
 import com.paulcraciunas.domain.api.auth.DeleteAccountResult
 import com.paulcraciunas.domain.api.auth.DeleteAccountUseCase
 import com.paulcraciunas.domain.api.auth.SignOutUseCase
-import com.paulcraciunas.global.navigation.NavigationDispatcher
-import com.paulcraciunas.global.sounds.SoundCoordinator
-import com.paulcraciunas.global.sounds.SoundManager
-import com.paulcraciunas.screens.common.UiSettings
-import com.paulcraciunas.settings.application.api.AppSettings
-import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import com.paulcraciunas.user.api.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -30,9 +22,7 @@ import javax.inject.Inject
 
 @Immutable
 data class MainScreenUiState(
-    val appSettings: UiSettings = UiSettings.default(),
     val isSignedIn: Boolean = false,
-    val isLoading: Boolean = true,
     val activeDialog: MainScreenDialog? = null,
 )
 
@@ -56,32 +46,23 @@ sealed interface MainScreenDialog {
 class MainScreenViewModel @Inject constructor(
     private val signOutUseCase: SignOutUseCase,
     private val deleteAccountUseCase: DeleteAccountUseCase,
-    val debugMenuProvider: DebugMenuProvider,
-    val navigationDispatcher: NavigationDispatcher,
-    val soundCoordinator: SoundCoordinator,
-    val soundManager: SoundManager,
-    val achievementNotificationManager: AchievementNotificationManager,
-    appSettingsRepository: AppSettingsRepository,
     userRepository: UserRepository,
 ) : ViewModel() {
     private val _dialogState = MutableStateFlow<MainScreenDialog?>(null)
     private val _accountEvent = Channel<AccountEvent>(Channel.BUFFERED)
 
     val uiState: StateFlow<MainScreenUiState> = combine(
-        appSettingsRepository.appSettings,
         userRepository.userUpdates().map { it.isSignedIn() },
         _dialogState
-    ) { appSettings, isSignedIn, activeDialog ->
+    ) { isSignedIn, activeDialog ->
         MainScreenUiState(
-            appSettings = appSettings.uiSettings(),
             isSignedIn = isSignedIn,
-            isLoading = false,
             activeDialog = activeDialog
         )
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.Eagerly,
-        initialValue = MainScreenUiState(isLoading = true)
+        initialValue = MainScreenUiState()
     )
     val accountEvent = _accountEvent.receiveAsFlow()
 
@@ -123,18 +104,3 @@ class MainScreenViewModel @Inject constructor(
         _dialogState.value = null
     }
 }
-
-private fun AppSettings.uiSettings(): UiSettings = UiSettings(
-    lightMode = when (this.lightMode) {
-        AppSettings.LightMode.System -> UiSettings.Mode.System
-        AppSettings.LightMode.Light -> UiSettings.Mode.Light
-        AppSettings.LightMode.Dark -> UiSettings.Mode.Dark
-    },
-    autoPromote = this.autoPromote,
-    autoNextPuzzle = this.autoNextPuzzle,
-    showBorders = this.showBorders,
-    enableVibrations = this.enableVibrations,
-    highlightLegalMoves = this.highlightLegalMoves,
-    enableAnimations = this.enableAnimations,
-    playSounds = this.playSounds,
-)

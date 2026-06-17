@@ -1,24 +1,14 @@
 package com.paulcraciunas.chessgym
 
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.runtime.Composable
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
-import com.paulcraciunas.chessgym.debug.DebugMenuProvider
 import com.paulcraciunas.chessgym.main.AccountEvent
 import com.paulcraciunas.chessgym.main.MainScreenDialog
 import com.paulcraciunas.chessgym.main.MainScreenViewModel
-import com.paulcraciunas.domain.api.achievements.FakeAchievementNotificationManager
 import com.paulcraciunas.domain.api.auth.DeleteAccountUseCase
 import com.paulcraciunas.domain.api.auth.SignOutUseCase
 import com.paulcraciunas.domain.impl.auth.DeleteAccountUseCaseImpl
 import com.paulcraciunas.domain.impl.auth.SignOutUseCaseImpl
 import com.paulcraciunas.global.device.api.fakes.FakeGetNetworkState
 import com.paulcraciunas.global.device.api.usecases.GetNetworkState.NetworkState
-import com.paulcraciunas.global.navigation.NavigationDispatcher
-import com.paulcraciunas.global.sounds.FakeSoundManager
-import com.paulcraciunas.global.sounds.SoundCoordinator
-import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
 import com.paulcraciunas.user.api.AuthResult
 import com.paulcraciunas.user.api.FakeAuthService
 import com.paulcraciunas.user.api.FakeSyncScheduler
@@ -49,7 +39,6 @@ import org.junit.jupiter.api.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class MainScreenViewModelTest {
     private val testDispatcher = StandardTestDispatcher()
-    private val fakeAppSettingsRepository = FakeAppSettingsRepository()
     private val fakeUserRepository = FakeUserRepository()
     private val fakeTokenProvider = FakeTokenProvider()
     private val fakeSyncState = FakeSyncState()
@@ -87,20 +76,6 @@ internal class MainScreenViewModelTest {
 
     @Nested
     internal inner class UiState {
-        @Test
-        fun `GIVEN initial state WHEN observed THEN isLoading is true`() = runTest {
-            assertTrue(underTest.uiState.value.isLoading)
-        }
-
-        @Test
-        fun `GIVEN app settings emitted WHEN observed THEN isLoading becomes false`() = runTest {
-            observeUiState()
-            fakeAppSettingsRepository.setAppSettings(FakeAppSettingsRepository.defaultSettings())
-            advanceUntilIdle()
-
-            assertFalse(underTest.uiState.value.isLoading)
-        }
-
         @Test
         fun `GIVEN no authentication WHEN observed THEN isSignedIn is false`() = runTest {
             observeUiState()
@@ -289,12 +264,6 @@ internal class MainScreenViewModelTest {
     ): MainScreenViewModel = MainScreenViewModel(
         signOutUseCase = signOutUseCase,
         deleteAccountUseCase = deleteAccountUseCase,
-        debugMenuProvider = NoOpDebugMenuProvider(),
-        navigationDispatcher = NavigationDispatcher(),
-        soundCoordinator = SoundCoordinator(),
-        soundManager = FakeSoundManager(),
-        achievementNotificationManager = FakeAchievementNotificationManager(),
-        appSettingsRepository = fakeAppSettingsRepository,
         userRepository = fakeUserRepository,
     )
 
@@ -321,15 +290,5 @@ internal class MainScreenViewModelTest {
             displayName = null,
         )
         fakeUserRepository.signIn(authResult)
-    }
-
-    private class NoOpDebugMenuProvider : DebugMenuProvider {
-        @Composable
-        override fun ColumnScope.DrawerContent(
-            closeDrawer: () -> Unit,
-            onNavigate: (Any) -> Unit,
-        ) {}
-
-        override fun NavGraphBuilder.registerDebugScreens(navController: NavHostController) {}
     }
 }
