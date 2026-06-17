@@ -30,7 +30,7 @@ abstract class BaseUiTest {
     }
 
     @After
-    fun tearDown() {
+    open fun tearDown() {
         When.app.close()
     }
 }

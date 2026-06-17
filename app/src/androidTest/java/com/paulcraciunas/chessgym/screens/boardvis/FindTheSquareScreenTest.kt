@@ -2,8 +2,12 @@ package com.paulcraciunas.chessgym.screens.boardvis
 
 import com.paulcraciunas.chessgym.base.BaseUiTest
 import com.paulcraciunas.chessgym.di.TestFindTheSquareModule
+import com.paulcraciunas.domain.api.GenerateRandomLoci
+import com.paulcraciunas.domain.di.RandomLociModule
 import com.paulcraciunas.game.logic.api.board.Locus
+import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import org.junit.Before
 import org.junit.Test
 
@@ -14,8 +18,12 @@ import org.junit.Test
  * for fast test execution. The [com.paulcraciunas.domain.api.general.FixedRandomFactory]
  * (returnValue = 0) makes the target square deterministic: always a1.
  */
+@UninstallModules(RandomLociModule::class)
 @HiltAndroidTest
 internal class FindTheSquareScreenTest : BaseUiTest() {
+
+    @BindValue
+    val fakeRandomLoci: GenerateRandomLoci = FakeRandomLoci()
 
     @Before
     override fun setUp() {
@@ -76,7 +84,7 @@ internal class FindTheSquareScreenTest : BaseUiTest() {
             .isDisplayed()
             .isInPlayingPhase()
             .hasScore(0)
-            .showsSquareName(DETERMINISTIC_SQUARE_NAME)
+            .showsSquareName(fakeRandomLoci.currentSquareName)
     }
 
     @Test
@@ -84,7 +92,7 @@ internal class FindTheSquareScreenTest : BaseUiTest() {
         navigateToFindTheSquare()
         When.findTheSquare.clickPlay()
 
-        When.findTheSquare.clickSquare(DETERMINISTIC_SQUARE)
+        When.findTheSquare.clickSquare(fakeRandomLoci.currentSquare)
 
         Then.findTheSquare
             .isInPlayingPhase()
@@ -96,9 +104,9 @@ internal class FindTheSquareScreenTest : BaseUiTest() {
         navigateToFindTheSquare()
         When.findTheSquare.clickPlay()
 
-        When.findTheSquare.clickSquare(DETERMINISTIC_SQUARE)
-        When.findTheSquare.clickSquare(DETERMINISTIC_SQUARE)
-        When.findTheSquare.clickSquare(DETERMINISTIC_SQUARE)
+        When.findTheSquare.clickSquare(fakeRandomLoci.currentSquare)
+        When.findTheSquare.clickSquare(fakeRandomLoci.currentSquare)
+        When.findTheSquare.clickSquare(fakeRandomLoci.currentSquare)
 
         Then.findTheSquare
             .isInPlayingPhase()
@@ -110,7 +118,7 @@ internal class FindTheSquareScreenTest : BaseUiTest() {
         navigateToFindTheSquare()
         When.findTheSquare.clickPlay()
 
-        When.findTheSquare.clickSquare(WRONG_SQUARE)
+        When.findTheSquare.clickSquare(fakeRandomLoci.wrongSquare)
 
         Then.findTheSquare
             .isInPlayingPhase()
@@ -122,8 +130,8 @@ internal class FindTheSquareScreenTest : BaseUiTest() {
         navigateToFindTheSquare()
         When.findTheSquare.clickPlay()
 
-        When.findTheSquare.clickSquare(DETERMINISTIC_SQUARE)
-        When.findTheSquare.clickSquare(WRONG_SQUARE)
+        When.findTheSquare.clickSquare(fakeRandomLoci.currentSquare)
+        When.findTheSquare.clickSquare(fakeRandomLoci.wrongSquare)
 
         Then.findTheSquare
             .isInPlayingPhase()
@@ -148,8 +156,8 @@ internal class FindTheSquareScreenTest : BaseUiTest() {
         navigateToFindTheSquare()
         When.findTheSquare.clickPlay()
 
-        When.findTheSquare.clickSquare(DETERMINISTIC_SQUARE)
-        When.findTheSquare.clickSquare(DETERMINISTIC_SQUARE)
+        When.findTheSquare.clickSquare(fakeRandomLoci.currentSquare)
+        When.findTheSquare.clickSquare(fakeRandomLoci.currentSquare)
         When.clock.advanceSeconds(GAME_TIMEOUT_SECONDS)
 
         Then.findTheSquare
@@ -164,7 +172,7 @@ internal class FindTheSquareScreenTest : BaseUiTest() {
 
         navigateToFindTheSquare()
         When.findTheSquare.clickPlay()
-        When.findTheSquare.clickSquare(DETERMINISTIC_SQUARE)
+        When.findTheSquare.clickSquare(fakeRandomLoci.currentSquare)
         When.clock.advanceSeconds(GAME_TIMEOUT_SECONDS)
 
         Then.findTheSquare
@@ -296,10 +304,27 @@ internal class FindTheSquareScreenTest : BaseUiTest() {
         When.boardVisDashboard.openFindTheSquare()
     }
 
+    private val GenerateRandomLoci.currentSquare: Locus
+        get() = (this as FakeRandomLoci).lastGenerated
+    private val GenerateRandomLoci.wrongSquare: Locus
+        get() = (this as FakeRandomLoci).wrong
+    private val GenerateRandomLoci.currentSquareName: String
+        get() = (this as FakeRandomLoci).lastGenerated.toString().uppercase()
+
     private companion object {
-        val DETERMINISTIC_SQUARE = Locus.a1
-        const val DETERMINISTIC_SQUARE_NAME = "A1"
-        val WRONG_SQUARE = Locus.e4
         const val GAME_TIMEOUT_SECONDS = 31
+    }
+
+    private class FakeRandomLoci : GenerateRandomLoci {
+        private var currentIndex = 0
+
+        var lastGenerated: Locus = Locus.a1
+            private set
+        val wrong: Locus
+            get() = Locus.entries[(currentIndex + 6) % 64]
+
+        override fun invoke(): Locus = next().also { lastGenerated = it }
+
+        private fun next(): Locus = Locus.entries[currentIndex++ % 64]
     }
 }

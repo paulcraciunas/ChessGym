@@ -150,16 +150,25 @@ class PuzzleSyncWorker @AssistedInject constructor(
         }
     }
 
-    private fun updateDatabaseStats(dbFile: File) {
-        SQLiteDatabase.openDatabase(dbFile.path, null, SQLiteDatabase.OPEN_READONLY).use { db ->
+    private suspend fun updateDatabaseStats(dbFile: File) {
+        val settingsData = SQLiteDatabase.openDatabase(dbFile.path, null, SQLiteDatabase.OPEN_READONLY).use { db ->
             db.rawQuery("SELECT COUNT(*), MIN(rating), MAX(rating) FROM Puzzle", null).use { cursor ->
                 if (cursor.moveToFirst()) {
                     val count = cursor.getInt(0)
                     val minRating = cursor.getInt(1)
                     val maxRating = cursor.getInt(2)
                     Timber.i("Database stats: count=$count, minRating=$minRating, maxRating=$maxRating")
+                    Triple(count, minRating, maxRating)
+                } else {
+                    null
                 }
             }
+        }
+
+        settingsData?.let { (count, minRating, maxRating) ->
+            appSettingsRepository.updateTotalPuzzleCount(count)
+            appSettingsRepository.updateMinPuzzleRating(minRating)
+            appSettingsRepository.updateMaxPuzzleRating(maxRating)
         }
     }
 

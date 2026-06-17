@@ -24,9 +24,5 @@ internal object TestRandomFactoryModule {
 
     @Provides
     @Singleton
-    fun provideFixedRandomFactory(): FixedRandomFactory = randomFactory
-
-    @Provides
-    @Singleton
     fun provideRandomFactory(): RandomFactory = randomFactory
 }

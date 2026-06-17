@@ -40,8 +40,8 @@ class PuzzleStreakScreenAssertions(private val rule: ComposeTestRule) {
     }
 
     fun hasNoStreakCounter(): PuzzleStreakScreenAssertions = apply {
-        rule.onAllNodes(hasTestTag(PuzzleStreakScreenTags.STREAK_COUNTER))
-            .assertCountEquals(0)
+        rule.onNodeWithTag(PuzzleStreakScreenTags.STREAK_COUNTER)
+            .assertTextEquals("0")
     }
 
     fun isStreakEnded(): PuzzleStreakScreenAssertions = apply {
