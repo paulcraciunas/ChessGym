@@ -1,57 +1,59 @@
 package com.paulcraciunas.chessgym.startup
 
 import com.paulcraciunas.global.qualifiers.ApplicationScope
+import com.paulcraciunas.screens.common.UiSettings
 import com.paulcraciunas.settings.application.api.AppSettings
-import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import com.paulcraciunas.user.api.UserRepository
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 
+data class ReadinessState(
+    val appSettings: UiSettings = UiSettings.default(),
+    val isReady: Boolean = false,
+    val puzzlesDownloaded: Boolean = false,
+)
+
 @Singleton
 class AppReadinessCoordinator @Inject constructor(
-    appSettingsRepository: AppSettingsRepository,
     userRepository: UserRepository,
     resourcePreWarmer: ResourcePreWarmer,
-    checkDeviceRestore: IDeviceRestoreCheck,
+    settingsProvisioning: AppSettingsProvisioning,
     @ApplicationScope scope: CoroutineScope,
 ) {
-    private val isIntegrityCheckComplete = MutableStateFlow(false)
-
     val uiState: StateFlow<ReadinessState> = combine(
-        appSettingsRepository.appSettings,
+        settingsProvisioning(),
         userRepository.userUpdates().map { true },
         resourcePreWarmer.isComplete,
-        isIntegrityCheckComplete,
-    ) { appSettings, _, preWarmed, integrityCheck ->
+    ) { appSettings, _, preWarmed ->
         ReadinessState(
-            isReady = preWarmed && integrityCheck,
+            appSettings = appSettings.uiSettings(),
+            isReady = preWarmed,
             puzzlesDownloaded = appSettings.puzzlesDownloaded,
-            lightMode = appSettings.lightMode,
         )
     }.stateIn(
         scope = scope,
         started = SharingStarted.Eagerly,
         initialValue = ReadinessState()
     )
-
-    init {
-        scope.launch {
-            checkDeviceRestore()
-            isIntegrityCheckComplete.value = true
-        }
-    }
 }
 
-data class ReadinessState(
-    val isReady: Boolean = false,
-    val puzzlesDownloaded: Boolean = false,
-    val lightMode: AppSettings.LightMode = AppSettings.LightMode.System,
+private fun AppSettings.uiSettings(): UiSettings = UiSettings(
+    lightMode = when (this.lightMode) {
+        AppSettings.LightMode.System -> UiSettings.Mode.System
+        AppSettings.LightMode.Light -> UiSettings.Mode.Light
+        AppSettings.LightMode.Dark -> UiSettings.Mode.Dark
+    },
+    autoPromote = this.autoPromote,
+    autoNextPuzzle = this.autoNextPuzzle,
+    showBorders = this.showBorders,
+    enableVibrations = this.enableVibrations,
+    highlightLegalMoves = this.highlightLegalMoves,
+    enableAnimations = this.enableAnimations,
+    playSounds = this.playSounds,
 )
