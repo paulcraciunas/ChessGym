@@ -32,6 +32,7 @@ import com.paulcraciunas.screens.common.ChildAppBar
 import com.paulcraciunas.screens.common.FailedContent
 import com.paulcraciunas.screens.common.LoadingContent
 import com.paulcraciunas.screens.common.design.theme.Design
+import com.paulcraciunas.screens.common.testTag
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -54,7 +55,9 @@ fun AchievementsScreen(
             )
         },
         contentWindowInsets = WindowInsets(),
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = modifier
+            .testTag { AchievementsScreenTags.SCREEN }
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
     ) { innerPadding ->
         val contentsModifier = Modifier
             .fillMaxSize()
