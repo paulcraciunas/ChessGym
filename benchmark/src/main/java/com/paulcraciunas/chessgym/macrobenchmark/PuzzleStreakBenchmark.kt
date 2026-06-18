@@ -1,6 +1,5 @@
 package com.paulcraciunas.chessgym.macrobenchmark
 
-import android.content.Intent
 import androidx.benchmark.macro.CompilationMode
 import androidx.benchmark.macro.FrameTimingMetric
 import androidx.benchmark.macro.MacrobenchmarkScope
@@ -19,35 +18,28 @@ class PuzzleStreakBenchmark {
     val benchmarkRule: MacrobenchmarkRule = MacrobenchmarkRule()
 
     @Test
-    fun puzzleStreakV1_frameTimings() = measurePuzzleStreak(version = VERSION_1)
-
-    @Test
-    fun puzzleStreakV2_frameTimings() = measurePuzzleStreak(version = VERSION_2)
-
-    private fun measurePuzzleStreak(version: Int) {
+    fun puzzleStreak_frameTimings() {
         benchmarkRule.measureRepeated(
             packageName = TARGET_PACKAGE,
             metrics = listOf(FrameTimingMetric()),
             compilationMode = CompilationMode.DEFAULT,
             startupMode = StartupMode.WARM,
             iterations = 10,
-            setupBlock = { startBenchmarkActivity(version) },
+            setupBlock = { launchAndNavigateToPuzzleStreak() },
             measureBlock = { playBlackMoves() },
         )
     }
 
-    private fun MacrobenchmarkScope.startBenchmarkActivity(version: Int) {
+    private fun MacrobenchmarkScope.launchAndNavigateToPuzzleStreak() {
         pressHome()
-        startActivityAndWait(
-            Intent(ACTION_BENCHMARK).apply {
-                setPackage(TARGET_PACKAGE)
-                putExtra(EXTRA_VERSION, version)
-            },
-        )
-        device.wait(
-            Until.hasObject(By.res(SCREEN_TAG)),
-            SCREEN_READY_TIMEOUT_MS,
-        )
+        startActivityAndWait()
+        device.wait(Until.hasObject(By.res(HOME_SCREEN_TAG)), SCREEN_READY_TIMEOUT_MS)
+
+        device.findObject(By.desc(PUZZLE_DASHBOARD_DESCRIPTION)).click()
+        device.wait(Until.hasObject(By.res(PUZZLE_DASHBOARD_SCREEN_TAG)), SCREEN_READY_TIMEOUT_MS)
+
+        device.findObject(By.res(PUZZLE_STREAK_CARD_TAG)).click()
+        device.wait(Until.hasObject(By.res(PUZZLE_STREAK_SCREEN_TAG)), SCREEN_READY_TIMEOUT_MS)
     }
 
     private fun MacrobenchmarkScope.playBlackMoves() {
@@ -68,17 +60,17 @@ class PuzzleStreakBenchmark {
 
     companion object {
         private const val TARGET_PACKAGE = "com.paulcraciunas.chessgym.benchmark"
-        private const val ACTION_BENCHMARK = "com.paulcraciunas.chessgym.BENCHMARK_PUZZLE_STREAK"
-        private const val EXTRA_VERSION = "version"
-        private const val VERSION_1 = 1
-        private const val VERSION_2 = 2
 
-        private const val SCREEN_TAG = "puzzle_streak_screen"
+        private const val HOME_SCREEN_TAG = "home_screen"
+        private const val PUZZLE_DASHBOARD_DESCRIPTION = "Puzzle Dashboard"
+        private const val PUZZLE_DASHBOARD_SCREEN_TAG = "puzzle_dashboard_screen"
+        private const val PUZZLE_STREAK_CARD_TAG = "puzzle_dashboard_card_puzzle_streak"
+        private const val PUZZLE_STREAK_SCREEN_TAG = "puzzle_streak_screen"
         private const val SQUARE_TAG_PREFIX = "square_"
 
         /**
-         * 5 Black moves matching [BenchmarkGetStreakPuzzle.BLACK_PLAYER_MOVES].
-         * Each tap-pair triggers: selection recomposition → move animation → opponent auto-move.
+         * 5 Black moves matching BenchmarkPuzzleRepository.MOVE_LINE.
+         * Each tap-pair triggers: selection recomposition, move animation, opponent auto-move.
          */
         private val BLACK_PLAYER_MOVES: List<Pair<String, String>> = listOf(
             "e7" to "e5",
@@ -88,7 +80,7 @@ class PuzzleStreakBenchmark {
             "e5" to "d4",
         )
 
-        private const val SCREEN_READY_TIMEOUT_MS = 10_000L
+        private const val SCREEN_READY_TIMEOUT_MS = 30_000L
         private const val SQUARE_TIMEOUT_MS = 5_000L
         private const val MOVE_SETTLE_MS = 400L
     }

@@ -1,6 +1,5 @@
 package com.paulcraciunas.chessgym.macrobenchmark
 
-import android.content.Intent
 import androidx.benchmark.macro.CompilationMode
 import androidx.benchmark.macro.FrameTimingMetric
 import androidx.benchmark.macro.MacrobenchmarkScope
@@ -26,43 +25,41 @@ class PuzzleRushBenchmark {
             compilationMode = CompilationMode.DEFAULT,
             startupMode = StartupMode.WARM,
             iterations = 10,
-            setupBlock = { startBenchmarkActivity() },
+            setupBlock = { launchAndNavigateToPuzzleRush() },
             measureBlock = { playTenPuzzlesWithFinalFailure() },
         )
     }
 
-    private fun MacrobenchmarkScope.startBenchmarkActivity() {
+    private fun MacrobenchmarkScope.launchAndNavigateToPuzzleRush() {
         pressHome()
-        startActivityAndWait(
-            Intent(ACTION_BENCHMARK).apply {
-                setPackage(TARGET_PACKAGE)
-            },
-        )
-        device.wait(
-            Until.hasObject(By.res(SCREEN_TAG)),
-            SCREEN_READY_TIMEOUT_MS,
-        )
+        startActivityAndWait()
+        device.wait(Until.hasObject(By.res(HOME_SCREEN_TAG)), SCREEN_READY_TIMEOUT_MS)
+
+        device.findObject(By.text("Puzzles")).parent?.parent?.click()
+        device.wait(Until.hasObject(By.res(PUZZLE_DASHBOARD_SCREEN_TAG)), SCREEN_READY_TIMEOUT_MS)
+
+        device.findObject(By.text("Puzzle Rush")).parent?.click()
+        device.wait(Until.hasObject(By.res(PUZZLE_RUSH_SCREEN_TAG)), SCREEN_READY_TIMEOUT_MS)
     }
 
     private fun MacrobenchmarkScope.playTenPuzzlesWithFinalFailure() {
-        CORRECT_MOVES.forEachIndexed { puzzleIndex, moves ->
-            moves.forEach { (from, to) ->
-                tapSquare(from)
-                device.waitForIdle()
-                tapSquare(to)
-                device.waitForIdle()
-                Thread.sleep(MOVE_SETTLE_MS)
-            }
-            if (puzzleIndex < CORRECT_MOVES.size - 1) {
-                Thread.sleep(PUZZLE_TRANSITION_MS)
-            }
+        repeat(CORRECT_PLAY_COUNT) {
+            moveLine.forEach { move(it.first, it.second) }
+            Thread.sleep(PUZZLE_TRANSITION_MS)
         }
-        // Final wrong move on puzzle 10 to end the rush
-        val (wrongFrom, wrongTo) = WRONG_FINAL_MOVE
-        tapSquare(wrongFrom)
+        // fail final puzzle
+        for (i in 0 until moveLine.size - 1) {
+            move(moveLine[i].first, moveLine[i].second)
+        }
+        move(wrongFinalMove.first, wrongFinalMove.second)
+    }
+
+    private fun MacrobenchmarkScope.move(from: String, to: String) {
+        tapSquare(from)
         device.waitForIdle()
-        tapSquare(wrongTo)
+        tapSquare(to)
         device.waitForIdle()
+        Thread.sleep(MOVE_SETTLE_MS)
     }
 
     private fun MacrobenchmarkScope.tapSquare(square: String) {
@@ -73,35 +70,36 @@ class PuzzleRushBenchmark {
 
     companion object {
         private const val TARGET_PACKAGE = "com.paulcraciunas.chessgym.benchmark"
-        private const val ACTION_BENCHMARK = "com.paulcraciunas.chessgym.BENCHMARK_PUZZLE_RUSH"
 
-        private const val SCREEN_TAG = "puzzle_rush_screen"
+        private const val HOME_SCREEN_TAG = "home_screen"
+        private const val PUZZLE_DASHBOARD_SCREEN_TAG = "puzzle_dashboard_screen"
+        private const val PUZZLE_RUSH_SCREEN_TAG = "puzzle_rush_screen"
         private const val SQUARE_TAG_PREFIX = "square_"
 
         /**
-         * Correct Black moves for puzzles 1–9 (each puzzle has 2 player moves).
-         * Puzzle 10 only gets its first correct move here; the second is [WRONG_FINAL_MOVE].
-         * Must be kept in sync with BenchmarkGetBufferedPuzzleSeries.BLACK_PLAYER_MOVES.
+         * Correct Black moves for all puzzles.
+         * Must stay in sync with BenchmarkPuzzleRepository.MOVE_LINE.
          */
-        private val CORRECT_MOVES: List<List<Pair<String, String>>> = listOf(
-            listOf("e7" to "e5", "b8" to "c6"), // Puzzle 1
-            listOf("d7" to "d5", "e7" to "e6"), // Puzzle 2
-            listOf("e7" to "e5", "g8" to "f6"), // Puzzle 3
-            listOf("d7" to "d5", "g8" to "f6"), // Puzzle 4
-            listOf("c7" to "c5", "d7" to "d6"), // Puzzle 5
-            listOf("g8" to "f6", "e7" to "e6"), // Puzzle 6
-            listOf("e7" to "e6", "d7" to "d5"), // Puzzle 7
-            listOf("f7" to "f5", "g8" to "f6"), // Puzzle 8
-            listOf("c7" to "c5", "g8" to "f6"), // Puzzle 9
-            listOf("e7" to "e5"),                // Puzzle 10 — first move only
+        private val moveLine: List<Pair<String, String>> = listOf(
+            // "e2" to "e4", // White 1. e4 (setup -- auto-played before puzzle starts)
+            "e7" to "e5", // Black 1... e5
+            // "g1" to "f3", // White 2. Nf3
+            "b8" to "c6", // Black 2... Nc6
+            // "f1" to "c4", // White 3. Bc4
+            "f8" to "c5", // Black 3... Bc5
+            // "c2" to "c3", // White 4. c3
+            "g8" to "f6", // Black 4... Nf6
+            // "d2" to "d4", // White 5. d4
+            "e5" to "d4", // Black 5... exd4
         )
+        private const val CORRECT_PLAY_COUNT = 9
 
-        /** Wrong move for puzzle 10. Correct is d7→d5; we play a7→a6. */
-        private val WRONG_FINAL_MOVE: Pair<String, String> = "a7" to "a6"
+        /** Wrong move for puzzle 10 to end the rush. Correct would be e5->d4. */
+        private val wrongFinalMove: Pair<String, String> = "a7" to "a6"
 
         private const val SCREEN_READY_TIMEOUT_MS = 10_000L
-        private const val SQUARE_TIMEOUT_MS = 5_000L
-        private const val MOVE_SETTLE_MS = 400L
+        private const val SQUARE_TIMEOUT_MS = 3_000L
+        private const val MOVE_SETTLE_MS = 1000L
         private const val PUZZLE_TRANSITION_MS = 600L
     }
 }

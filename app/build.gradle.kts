@@ -62,16 +62,17 @@ android {
                 "proguard-benchmark.pro",
             )
             val benchmarkBuildNumber = "1"
+            buildConfigField("boolean", "ENABLE_TEST_TAGS", "true")
             buildConfigField("String", "BUILD_NUMBER", "\"$benchmarkBuildNumber\"")
             buildConfigField("String", "BACKEND_URL", "\"https://chessgym-backend.run.app\"")
             configure<CrashlyticsExtension> {
                 mappingFileUploadEnabled = false
             }
+
+            @Suppress("UnstableApiUsage")
+            experimentalProperties["android.experimental.enableTestTagsAsResourceId"] = true
         }
     }
-
-    @Suppress("UnstableApiUsage")
-    experimentalProperties["android.experimental.enableTestTagsAsResourceId"] = true
 
     sourceSets {
         named("uitest") {
@@ -185,10 +186,6 @@ dependencies {
     androidTestImplementation(testFixtures(project(":settings:application:api")))
     androidTestImplementation(testFixtures(project(":domain:api")))
 
-    "benchmarkImplementation"(project(":game:logic:impl"))
-    "benchmarkImplementation"(project(":domain:impl"))
-    "benchmarkImplementation"(testFixtures(project(":domain:api")))
-    "benchmarkImplementation"(testFixtures(project(":settings:application:api")))
     "benchmarkImplementation"(libs.androidx.tracing)
     "benchmarkImplementation"(libs.androidx.tracing.binary)
 }

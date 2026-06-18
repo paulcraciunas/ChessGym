@@ -1,6 +1,5 @@
 package com.paulcraciunas.chessgym.macrobenchmark
 
-import android.content.Intent
 import androidx.benchmark.macro.CompilationMode
 import androidx.benchmark.macro.FrameTimingMetric
 import androidx.benchmark.macro.MacrobenchmarkScope
@@ -27,22 +26,15 @@ class MainToAchievementsBenchmark {
             compilationMode = CompilationMode.DEFAULT,
             startupMode = StartupMode.WARM,
             iterations = 10,
-            setupBlock = { startBenchmarkActivity() },
+            setupBlock = { launchToHomeScreen() },
             measureBlock = { navigateToAchievementsAndScroll() },
         )
     }
 
-    private fun MacrobenchmarkScope.startBenchmarkActivity() {
+    private fun MacrobenchmarkScope.launchToHomeScreen() {
         pressHome()
-        startActivityAndWait(
-            Intent(ACTION_BENCHMARK).apply {
-                setPackage(TARGET_PACKAGE)
-            },
-        )
-        device.wait(
-            Until.hasObject(By.res(HOME_SCREEN_TAG)),
-            SCREEN_READY_TIMEOUT_MS,
-        )
+        startActivityAndWait()
+        device.wait(Until.hasObject(By.res(HOME_SCREEN_TAG)), SCREEN_READY_TIMEOUT_MS)
     }
 
     private fun MacrobenchmarkScope.navigateToAchievementsAndScroll() {
@@ -74,14 +66,12 @@ class MainToAchievementsBenchmark {
 
     companion object {
         private const val TARGET_PACKAGE = "com.paulcraciunas.chessgym.benchmark"
-        private const val ACTION_BENCHMARK =
-            "com.paulcraciunas.chessgym.BENCHMARK_MAIN_TO_ACHIEVEMENTS"
 
         private const val HOME_SCREEN_TAG = "home_screen"
-        private const val ACHIEVEMENTS_SCREEN_TAG = "benchmark_achievements_screen"
+        private const val ACHIEVEMENTS_SCREEN_TAG = "achievements_screen"
         private const val ACHIEVEMENTS_BUTTON_DESCRIPTION = "Achievements"
 
-        private const val SCREEN_READY_TIMEOUT_MS = 10_000L
+        private const val SCREEN_READY_TIMEOUT_MS = 30_000L
         private const val BUTTON_TIMEOUT_MS = 5_000L
         private const val SCROLL_TIMEOUT_MS = 5_000L
         private const val SETTLE_DELAY_MS = 1_000L

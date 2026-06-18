@@ -15,18 +15,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.paulcraciunas.chessgym.navigation.NavGraph
 import com.paulcraciunas.chessgym.navigation.NavGraphViewModel
 import com.paulcraciunas.screens.common.LocalUiSettings
+import com.paulcraciunas.screens.common.UiSettings
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
-import com.paulcraciunas.settings.application.api.AppSettings
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
     private val navGraphViewModel: NavGraphViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,10 +46,10 @@ class MainActivity : ComponentActivity() {
         }
         setContent {
             val navState by navGraphViewModel.uiState.collectAsStateWithLifecycle()
-            val isDarkTheme = when (navState.lightMode) {
-                AppSettings.LightMode.Light -> false
-                AppSettings.LightMode.Dark -> true
-                AppSettings.LightMode.System -> isSystemInDarkTheme()
+            val isDarkTheme = when (navState.appSettings.lightMode) {
+                UiSettings.Mode.Light -> false
+                UiSettings.Mode.Dark -> true
+                UiSettings.Mode.System -> isSystemInDarkTheme()
             }
             LaunchedEffect(isDarkTheme) {
                 enableEdgeToEdge(
@@ -58,7 +59,7 @@ class MainActivity : ComponentActivity() {
             }
             ChessGymTheme(darkMode = isDarkTheme) {
                 CompositionLocalProvider(LocalUiSettings provides navState.appSettings) {
-                    NavGraph(Modifier.fillMaxSize())
+                    NavGraph(modifier = Modifier.root())
                 }
             }
         }
@@ -69,4 +70,9 @@ class MainActivity : ComponentActivity() {
     } else {
         SystemBarStyle.light(Color.Transparent.toArgb(), Color.Transparent.toArgb())
     }
+
+    @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
+    private fun Modifier.root(): Modifier = if (BuildConfig.BUILD_TYPE == "benchmark") {
+        this.fillMaxSize().semantics { testTagsAsResourceId = true }
+    } else this.fillMaxSize()
 }
