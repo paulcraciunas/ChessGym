@@ -1,7 +1,6 @@
 package com.paulcraciunas.screens.common.board
 
 import com.paulcraciunas.game.logic.api.board.File
-import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Rank
 
 /**
@@ -15,6 +14,4 @@ object ChessBoardTags {
     const val BORDER = "board_border"
 
     fun square(file: File, rank: Rank): String = "$SQUARE_PREFIX${file.name}${rank.name}"
-
-    fun square(locus: Locus): String = square(locus.file, locus.rank)
 }
