@@ -5,6 +5,7 @@ plugins {
 androidLibrary {
     namespace = "com.paulcraciunas.screens.common"
     compose = true
+    benchmark = true
 }
 
 android {
@@ -15,9 +16,7 @@ android {
         buildConfigField("boolean", "ENABLE_TEST_TAGS", "false")
     }
     buildTypes {
-        create("benchmark") {
-            initWith(getByName("release"))
-            matchingFallbacks += listOf("release")
+        getByName("benchmark") {
             buildConfigField("boolean", "ENABLE_TEST_TAGS", "true")
         }
     }

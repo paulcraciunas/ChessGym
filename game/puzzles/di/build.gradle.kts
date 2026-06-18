@@ -5,6 +5,7 @@ plugins {
 androidLibrary {
     namespace = "com.paulcraciunas.puzzles.di"
     di = true
+    benchmark = true
 }
 
 dependencies {
@@ -18,4 +19,6 @@ dependencies {
 
     // Dependency injection
     implementation(libs.androidx.hilt.work)
+
+    "benchmarkImplementation"(project(":game:logic:impl"))
 }
