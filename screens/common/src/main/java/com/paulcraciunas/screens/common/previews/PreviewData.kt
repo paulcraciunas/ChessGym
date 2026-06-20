@@ -1,7 +1,12 @@
 package com.paulcraciunas.screens.common.previews
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Piece
+import com.paulcraciunas.screens.common.LocalUiSettings
+import com.paulcraciunas.screens.common.UiSettings
+import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import com.paulcraciunas.screens.data.BoardState
 import com.paulcraciunas.screens.data.BoardViewData
 import com.paulcraciunas.screens.data.CapturedPieces
@@ -83,4 +88,16 @@ class PreviewData {
         SessionResult(id = 9, rating = 1449, outcome = Outcome.Won),
         SessionResult(id = 10, rating = 1488, outcome = Outcome.Lost),
     )
+}
+
+@Composable
+fun ChessBoardPreviewRoot(
+    uiSettings: UiSettings = UiSettings.default(),
+    contents: @Composable () -> Unit,
+) {
+    ChessGymTheme {
+        CompositionLocalProvider(LocalUiSettings provides uiSettings) {
+            contents()
+        }
+    }
 }
