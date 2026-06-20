@@ -7,6 +7,7 @@ import androidx.benchmark.macro.StartupMode
 import androidx.benchmark.macro.junit4.MacrobenchmarkRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.uiautomator.By
+import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.Until
 import org.junit.Rule
 import org.junit.Test
@@ -55,17 +56,16 @@ class PuzzleRushBenchmark {
     }
 
     private fun MacrobenchmarkScope.move(from: String, to: String) {
-        tapSquare(from)
+        device.tap(from)
+        device.tap(to)
+        Thread.sleep(SETTLE_MS)
         device.waitForIdle()
-        tapSquare(to)
-        device.waitForIdle()
-        Thread.sleep(MOVE_SETTLE_MS)
     }
 
-    private fun MacrobenchmarkScope.tapSquare(square: String) {
-        val selector = By.res("$SQUARE_TAG_PREFIX$square")
-        val squareObject = device.wait(Until.findObject(selector), SQUARE_TIMEOUT_MS)
-        squareObject.click()
+    fun UiDevice.tap(square: String) {
+        waitForIdle()
+        findObject(By.res("$SQUARE_TAG_PREFIX$square")).click()
+        Thread.sleep(SETTLE_MS)
     }
 
     companion object {
@@ -97,9 +97,8 @@ class PuzzleRushBenchmark {
         /** Wrong move for puzzle 10 to end the rush. Correct would be e5->d4. */
         private val wrongFinalMove: Pair<String, String> = "a7" to "a6"
 
-        private const val SCREEN_READY_TIMEOUT_MS = 10_000L
-        private const val SQUARE_TIMEOUT_MS = 3_000L
-        private const val MOVE_SETTLE_MS = 1000L
+        private const val SCREEN_READY_TIMEOUT_MS = 3_000L
+        private const val SETTLE_MS = 750L
         private const val PUZZLE_TRANSITION_MS = 600L
     }
 }
