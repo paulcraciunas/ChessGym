@@ -299,7 +299,7 @@ internal class AnalysisViewModelTest {
             advanceUntilIdle()
 
             val state = underTest.uiState.value
-            assertTrue(state.data.boardData.at(Locus.e2).piece?.isSelected == true)
+            assertEquals(Locus.e2, state.data.boardData.selection)
         }
 
         @Test
@@ -599,10 +599,8 @@ internal class AnalysisViewModelTest {
             advanceUntilIdle()
 
             val boardData = underTest.uiState.value.data.boardData
-            val e2 = boardData.at(Locus.e2)
-            val e4 = boardData.at(Locus.e4)
-            assertFalse(e2.lastMove)
-            assertFalse(e4.lastMove)
+            assertFalse(boardData.lastMove?.first == Locus.e2)
+            assertFalse(boardData.lastMove?.second == Locus.e4)
         }
 
         @Test
@@ -620,10 +618,8 @@ internal class AnalysisViewModelTest {
             advanceUntilIdle()
 
             val boardData = underTest.uiState.value.data.boardData
-            val e2 = boardData.at(Locus.e2)
-            val e4 = boardData.at(Locus.e4)
-            assertTrue(e2.lastMove)
-            assertTrue(e4.lastMove)
+            assertTrue(boardData.lastMove?.first == Locus.e2)
+            assertTrue(boardData.lastMove?.second == Locus.e4)
         }
     }
 

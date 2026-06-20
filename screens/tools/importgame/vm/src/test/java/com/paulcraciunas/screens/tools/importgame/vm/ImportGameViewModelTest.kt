@@ -153,7 +153,7 @@ internal class ImportGameViewModelTest {
 
             underTest.onSquareClicked(Locus.e2)
 
-            assertNull(underTest.uiState.value.data.boardData.at(Locus.e2).piece?.isSelected)
+            assertNull(underTest.uiState.value.data.boardData.selection)
         }
     }
 
@@ -237,7 +237,7 @@ internal class ImportGameViewModelTest {
 
             underTest.onPreviousMove()
 
-            assertNull(underTest.uiState.value.data.boardData.at(Locus.e2).piece?.isSelected)
+            assertNull(underTest.uiState.value.data.boardData.selection)
         }
     }
 
@@ -249,7 +249,7 @@ internal class ImportGameViewModelTest {
 
             underTest.onSquareClicked(Locus.e2)
 
-            assertEquals(true, underTest.uiState.value.data.boardData.at(Locus.e2).piece?.isSelected)
+            assertEquals(Locus.e2, underTest.uiState.value.data.boardData.selection)
         }
 
         @Test
@@ -259,9 +259,7 @@ internal class ImportGameViewModelTest {
             underTest.onSquareClicked(Locus.e2)
             underTest.onSquareClicked(Locus.e4)
 
-            val data = underTest.uiState.value.data.boardData
-            assertNull(data.at(Locus.e2).piece?.isSelected)
-            assertEquals(false, data.at(Locus.e4).piece?.isSelected)
+            assertFalse(underTest.uiState.value.data.boardData.selection == Locus.e4)
             assertNavigation(back = true, forward = false)
         }
 
@@ -316,7 +314,7 @@ internal class ImportGameViewModelTest {
         @Test
         fun `GIVEN no game loaded WHEN square clicked THEN nothing happens`() = importTest {
             underTest.onSquareClicked(Locus.e4)
-            assertNull(underTest.uiState.value.data.boardData.at(Locus.e4).piece?.isSelected)
+            assertNull(underTest.uiState.value.data.boardData.selection)
         }
 
         @Test

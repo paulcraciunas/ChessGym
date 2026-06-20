@@ -9,6 +9,7 @@ import com.paulcraciunas.game.logic.api.Puzzle
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
+import com.paulcraciunas.game.logic.api.board.SidedPiece
 import com.paulcraciunas.game.logic.impl.RealGameFactory
 import com.paulcraciunas.global.sounds.SoundCoordinator
 import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
@@ -95,7 +96,7 @@ internal class RatedPuzzleViewModelTest {
             val underTest = buildVm(buildStandardPuzzle())
 
             val state = underTest.uiState.value as RatedPuzzleUiState.Playing
-            assertNotNull(state.data.boardData.at(Locus.e4).piece)
+            assertNotNull(state.data.boardData.at(Locus.e4))
         }
     }
 
@@ -109,8 +110,8 @@ internal class RatedPuzzleViewModelTest {
             testDispatcher.scheduler.runCurrent()
 
             val state = underTest.uiState.value as RatedPuzzleUiState.Playing
-            assertEquals(true, state.data.boardData.at(Locus.e7).piece?.isSelected)
-            assertTrue(state.data.boardData.at(Locus.e5).canMoveTo)
+            assertEquals(Locus.e7, state.data.boardData.selection)
+            assertTrue(state.data.boardData.availableMoves.contains(Locus.e5))
         }
 
         @Test
@@ -123,8 +124,8 @@ internal class RatedPuzzleViewModelTest {
             testDispatcher.scheduler.runCurrent()
 
             val state = underTest.uiState.value as RatedPuzzleUiState.Playing
-            assertEquals(false, state.data.boardData.at(Locus.e7).piece?.isSelected)
-            assertFalse(state.data.boardData.at(Locus.e5).canMoveTo)
+            assertFalse(state.data.boardData.selection == Locus.e7)
+            assertFalse(state.data.boardData.availableMoves.contains(Locus.e5))
         }
 
         @Test
@@ -134,7 +135,7 @@ internal class RatedPuzzleViewModelTest {
             makeMove(underTest, from = Locus.e7, to = Locus.e5)
 
             val state = underTest.uiState.value as RatedPuzzleUiState.Playing
-            assertNotNull(state.data.boardData.at(Locus.f3).piece)
+            assertNotNull(state.data.boardData.at(Locus.f3))
         }
 
         @Test
@@ -188,9 +189,7 @@ internal class RatedPuzzleViewModelTest {
 
             val state = underTest.uiState.value as RatedPuzzleUiState.Finished
             assertTrue(state.success)
-            val promotedSquare = state.data.boardData.at(Locus.a1)
-            assertEquals(Piece.Queen, promotedSquare.piece?.piece?.piece)
-            assertEquals(Side.BLACK, promotedSquare.piece?.piece?.side)
+            assertEquals(SidedPiece.BlackQueen, state.data.boardData.at(Locus.a1))
         }
 
         @Test
@@ -215,8 +214,8 @@ internal class RatedPuzzleViewModelTest {
             testDispatcher.scheduler.runCurrent()
 
             val state = underTest.uiState.value as RatedPuzzleUiState.Playing
-            assertEquals(true, state.data.boardData.at(Locus.e7).piece?.isSelected)
-            assertTrue(state.data.boardData.at(Locus.e5).canMoveTo)
+            assertEquals(Locus.e7, state.data.boardData.selection)
+            assertTrue(state.data.boardData.availableMoves.contains(Locus.e5))
         }
 
         @Test
