@@ -117,9 +117,8 @@ internal class PuzzleStreakViewModelTest {
             advanceUntilIdle()
 
             val playing = underTest.uiState.value as PuzzleStreakUiState.Playing
-            val selectedSquare = playing.data.boardData.at(Locus.e7)
-            assertEquals(true, selectedSquare.piece?.isSelected)
-            assertTrue(playing.data.boardData.at(Locus.e5).canMoveTo)
+            assertEquals(Locus.e7, playing.data.boardData.selection)
+            assertTrue(playing.data.boardData.availableMoves.contains(Locus.e5))
         }
 
         @Test
@@ -132,9 +131,8 @@ internal class PuzzleStreakViewModelTest {
             advanceUntilIdle()
 
             val playing = underTest.uiState.value as PuzzleStreakUiState.Playing
-            val selectedSquare = playing.data.boardData.at(Locus.e7)
-            assertEquals(false, selectedSquare.piece?.isSelected)
-            assertFalse(playing.data.boardData.at(Locus.e5).canMoveTo)
+            assertEquals(null, playing.data.boardData.selection)
+            assertFalse(playing.data.boardData.availableMoves.contains(Locus.e5))
         }
 
         @Test
@@ -144,7 +142,7 @@ internal class PuzzleStreakViewModelTest {
             makeMove(from = Locus.e7, to = Locus.e5)
 
             val playing = underTest.uiState.value as PuzzleStreakUiState.Playing
-            assertNotNull(playing.data.boardData.at(Locus.f3).piece)
+            assertNotNull(playing.data.boardData.at(Locus.f3))
         }
 
         @Test
@@ -358,9 +356,8 @@ internal class PuzzleStreakViewModelTest {
             advanceUntilIdle()
 
             val playing = underTest.uiState.value as PuzzleStreakUiState.Playing
-            val selectedSquare = playing.data.boardData.at(Locus.e7)
-            assertEquals(true, selectedSquare.piece?.isSelected)
-            assertTrue(playing.data.boardData.at(Locus.e5).canMoveTo)
+            assertEquals(Locus.e7, playing.data.boardData.selection)
+            assertTrue(playing.data.boardData.availableMoves.contains(Locus.e5))
         }
 
         @Test

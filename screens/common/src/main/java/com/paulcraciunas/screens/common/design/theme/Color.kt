@@ -58,7 +58,8 @@ data class ChessGymColors(
     val boardText: Color,
     val boardSquareSelected: Color,
     val boardMoveAvailable: Color,
-    val boardMovePrevious: Color,
+    val boardMovePreviousFrom: Color,
+    val boardMovePreviousTo: Color,
 
     // Chips & misc
     val chipSolvedBg: Color,

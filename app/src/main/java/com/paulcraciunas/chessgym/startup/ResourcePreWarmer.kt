@@ -9,6 +9,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,6 +18,7 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.coroutines.cancellation.CancellationException
 
 @Singleton
 class ResourcePreWarmer @Inject constructor(
@@ -29,24 +31,26 @@ class ResourcePreWarmer @Inject constructor(
     val isComplete: StateFlow<Boolean> = _isComplete.asStateFlow()
 
     init {
-        start()
-    }
-
-    private fun start() {
         scope.launch {
             try {
-                withContext(io) { // Offload heavy font parsing to the I/O thread
-                    fonts.forEach { fontRes ->
-                        runCatching {
-                            ResourcesCompat.getFont(context, fontRes)
-                        }.onFailure { Timber.w(it, "Failed to pre-warm font: $fontRes") }
+                coroutineScope {
+                    withContext(io) { // Offload heavy font parsing to the I/O thread
+                        fonts.forEach { fontRes ->
+                            runCatching {
+                                ResourcesCompat.getFont(context, fontRes)
+                            }.onFailure { Timber.w(it, "Failed to pre-warm font: $fontRes") }
+                        }
+                    }
+                    withContext(main) {
+                        drawables.forEach { drawableRes -> // Process lightweight drawables sequentially on the Main thread
+                            runCatching {
+                                ResourcesCompat.getDrawable(context.resources, drawableRes, context.theme)
+                            }.onFailure { Timber.w(it, "Failed to pre-warm drawable: $drawableRes") }
+                        }
                     }
                 }
-                drawables.forEach { drawableRes -> // Process lightweight drawables sequentially on the Main thread
-                    runCatching {
-                        ResourcesCompat.getDrawable(context.resources, drawableRes, context.theme)
-                    }.onFailure { Timber.w(it, "Failed to pre-warm drawable: $drawableRes") }
-                }
+            } catch (coOp: CancellationException) {
+                throw coOp
             } catch (e: Exception) {
                 Timber.w(e, "Resource pre-warming failed or was cancelled")
             } finally {

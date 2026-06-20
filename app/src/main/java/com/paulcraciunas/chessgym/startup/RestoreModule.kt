@@ -9,5 +9,5 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 abstract class RestoreModule {
     @Binds
-    abstract fun provideDeviceRestore(impl: DeviceRestoreCheck): IDeviceRestoreCheck
+    abstract fun bindDeviceRestore(impl: AppSettingsProvisioningImpl): AppSettingsProvisioning
 }

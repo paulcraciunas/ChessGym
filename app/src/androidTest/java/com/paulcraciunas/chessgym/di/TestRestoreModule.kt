@@ -1,11 +1,13 @@
 package com.paulcraciunas.chessgym.di
 
-import com.paulcraciunas.chessgym.startup.IDeviceRestoreCheck
+import com.paulcraciunas.chessgym.startup.AppSettingsProvisioning
 import com.paulcraciunas.chessgym.startup.RestoreModule
+import com.paulcraciunas.settings.application.api.AppSettings
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
+import kotlinx.coroutines.flow.Flow
 
 @Module
 @TestInstallIn(
@@ -14,7 +16,7 @@ import dagger.hilt.testing.TestInstallIn
 )
 object TestRestoreModule {
     @Provides
-    fun provideRestoreCheck(): IDeviceRestoreCheck = object : IDeviceRestoreCheck {
-        override suspend fun invoke() {}
+    fun provideRestoreCheck(): AppSettingsProvisioning = object : AppSettingsProvisioning {
+        override operator fun invoke(): Flow<AppSettings> = TestApplicationSettingsModule.appSettingsRepository.appSettings
     }
 }

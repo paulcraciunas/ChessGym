@@ -102,7 +102,7 @@ internal class FailedPuzzlesViewModelTest {
             val underTest = buildVm()
 
             val state = underTest.uiState.value as FailedPuzzlesUiState.Playing
-            assertTrue(state.data.boardData.at(Locus.e4).piece != null)
+            assertTrue(state.data.boardData.at(Locus.e4) != null)
         }
     }
 
@@ -117,7 +117,7 @@ internal class FailedPuzzlesViewModelTest {
             testDispatcher.scheduler.runCurrent()
 
             val state = underTest.uiState.value as FailedPuzzlesUiState.Playing
-            assertEquals(true, state.data.boardData.at(Locus.e7).piece?.isSelected)
+            assertEquals(Locus.e7, state.data.boardData.selection)
         }
 
         @Test
@@ -131,7 +131,7 @@ internal class FailedPuzzlesViewModelTest {
             testDispatcher.scheduler.runCurrent()
 
             val state = underTest.uiState.value as FailedPuzzlesUiState.Playing
-            assertEquals(false, state.data.boardData.at(Locus.e7).piece?.isSelected)
+            assertEquals(null, state.data.boardData.selection)
         }
 
         @Test
@@ -142,7 +142,7 @@ internal class FailedPuzzlesViewModelTest {
             makeMove(underTest, from = Locus.e7, to = Locus.e5)
 
             val state = underTest.uiState.value as FailedPuzzlesUiState.Playing
-            assertTrue(state.data.boardData.at(Locus.f3).piece != null)
+            assertTrue(state.data.boardData.at(Locus.f3) != null)
         }
 
         @Test
@@ -333,7 +333,7 @@ internal class FailedPuzzlesViewModelTest {
             testDispatcher.scheduler.runCurrent()
 
             val state = underTest.uiState.value as FailedPuzzlesUiState.Playing
-            assertEquals(true, state.data.boardData.at(Locus.e7).piece?.isSelected)
+            assertEquals(Locus.e7, state.data.boardData.selection)
         }
     }
 

@@ -14,6 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Piece
+import com.paulcraciunas.game.logic.api.board.SidedPiece
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.board.ChessPiece
 import com.paulcraciunas.screens.common.design.theme.Design
@@ -40,8 +41,7 @@ fun YourMoveIndicator(
         verticalAlignment = Alignment.CenterVertically
     ) {
         ChessPiece(
-            piece = Piece.King,
-            side = toMove,
+            piece = SidedPiece.of(side = toMove, piece = Piece.King),
             modifier = Modifier.size(Design.dimensions.sizes.iconButton)
         )
 

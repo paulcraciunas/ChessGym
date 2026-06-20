@@ -83,7 +83,7 @@ internal class PlaySessionTest {
             advanceUntilIdle()
 
             val board = playSession.stateValue.boardState
-            assertNotNull(board.boardData.at(Locus.e4).piece)
+            assertNotNull(board.boardData.at(Locus.e4))
         }
 
         @Test
@@ -193,7 +193,7 @@ internal class PlaySessionTest {
 
             makeMove(playSession, from = Locus.e7, to = Locus.e5)
 
-            assertNotNull(playSession.stateValue.boardState.boardData.at(Locus.f3).piece)
+            assertNotNull(playSession.stateValue.boardState.boardData.at(Locus.f3))
         }
 
         @Test
