@@ -1,7 +1,5 @@
 package com.paulcraciunas.screens.settings.vm
 
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.paulcraciunas.settings.application.api.AppSettings
@@ -33,14 +31,6 @@ class SettingsViewModel @Inject constructor(
     fun onShowBordersToggled(isEnabled: Boolean) = update { updateShowBorders(isEnabled) }
     fun onHighlightLegalMovesToggled(isEnabled: Boolean) = update { updateHighlightLegalMoves(isEnabled) }
     fun onLightModeSelected(mode: AppSettings.LightMode) = update { updateLightMode(mode) }
-    fun onLanguageSelected(language: SettingsUiState.AppLanguage) {
-        if (language == SettingsUiState.AppLanguage.System) {
-            AppCompatDelegate.setApplicationLocales(LocaleListCompat.getEmptyLocaleList())
-        } else {
-            AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(language.tag))
-        }
-    }
-
     fun onAnimationsToggled(isEnabled: Boolean) = update { updateEnableAnimations(isEnabled) }
     fun onCrashReportingToggled(isEnabled: Boolean) = update { updateCrashReportingConsent(isEnabled) }
 
@@ -58,12 +48,8 @@ class SettingsViewModel @Inject constructor(
         isShowBordersEnabled = settings.showBorders,
         isHighlightLegalMovesEnabled = settings.highlightLegalMoves,
         lightMode = settings.lightMode,
-        language = SettingsUiState.AppLanguage.fromTag(currentLanguageTag),
         isAnimationsEnabled = settings.enableAnimations,
         isCrashReportingEnabled = settings.crashReportingConsent,
         isLoading = false,
     )
-
-    private val currentLanguageTag: String
-        get() = AppCompatDelegate.getApplicationLocales()[0]?.toLanguageTag() ?: ""
 }

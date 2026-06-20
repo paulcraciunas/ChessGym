@@ -28,7 +28,6 @@ internal fun Settings(
         onShowBordersToggled = vm::onShowBordersToggled,
         onHighlightLegalMovesToggled = vm::onHighlightLegalMovesToggled,
         onLightModeSelected = vm::onLightModeSelected,
-        onLanguageSelected = vm::onLanguageSelected,
         onAnimationsToggled = vm::onAnimationsToggled,
         onCrashReportingToggled = vm::onCrashReportingToggled,
     )
