@@ -27,6 +27,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Piece
+import com.paulcraciunas.game.logic.api.board.SidedPiece
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.board.ChessPiece
 import com.paulcraciunas.screens.common.testTag
@@ -72,8 +73,7 @@ fun PromotionDialog(
                                 .testTag { PromotionDialogTags.choice(piece) }
                         ) {
                             ChessPiece(
-                                piece = piece,
-                                side = side,
+                                piece = SidedPiece.of(side = side, piece = piece),
                                 modifier = Modifier.size(48.dp)
                             )
                         }

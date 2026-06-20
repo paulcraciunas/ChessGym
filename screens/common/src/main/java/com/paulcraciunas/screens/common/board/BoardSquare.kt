@@ -1,99 +1,81 @@
 package com.paulcraciunas.screens.common.board
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.PathFillType
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.game.logic.api.Side
-import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.SidedPiece
-import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
-fun BoardSquare(
+internal fun BoardSquare(
     side: Side,
-    selected: Boolean,
-    highlight: Boolean,
+    piece: SidedPiece?,
+    isLastMoveFrom: Boolean,
+    isLastMoveTo: Boolean,
+    isSelected: Boolean,
+    colors: BoardColors,
+    piecesAlpha: Float,
     modifier: Modifier = Modifier,
-    content: (@Composable SquareScope.(Modifier) -> Unit) = {},
 ) {
-    val backgroundColor = if (highlight) Design.colors.boardMovePrevious else side.backgroundColor()
     Box(
-        modifier = modifier
-            .background(backgroundColor)
-            .then(
-                if (selected) Modifier.drawSelectionIndicator(Design.colors.boardSquareSelected)
-                else Modifier
-            )
-            .aspectRatio(1f),
         contentAlignment = Alignment.Center,
+        modifier = modifier
+            .drawBehind {
+                val selectionStrokeWidth = 4.dp.toPx()
+                val halfStroke = selectionStrokeWidth / 2
+                val selectedRectSize = Size(size.width - selectionStrokeWidth, size.width - selectionStrokeWidth)
+
+                val hasPiece = piece != null
+
+                val bgColor = if (side == Side.WHITE) colors.light else colors.dark
+                drawRect(color = bgColor)
+                if (isLastMoveFrom) {
+                    drawRect(color = colors.movePreviousFrom)
+                }
+                if (isLastMoveTo) {
+                    drawRect(color = colors.movePreviousTo)
+                }
+
+                if (isSelected) {
+                    if (hasPiece) {
+                        // Option A: Selected piece OR capturable piece (selected rect underneath)
+                        drawRect(
+                            color = colors.squareSelected,
+                            topLeft = Offset(halfStroke, halfStroke),
+                            size = selectedRectSize,
+                            style = Stroke(width = selectionStrokeWidth)
+                        )
+                    } else {
+                        // Option B: Available move space with no piece (small circle)
+                        drawCircle(
+                            color = colors.moveAvailable,
+                            radius = size.width * 0.15f,
+                            center = center
+                        )
+                    }
+                }
+            }
     ) {
-        content(SquareScope, Modifier.align(Alignment.Center))
+        piece?.let {
+            ChessPiece(
+                piece = it,
+                alpha = piecesAlpha,
+            )
+        }
     }
-}
-
-@Immutable
-object SquareScope {
-    @Composable
-    fun Piece(
-        piece: SidedPiece,
-        alpha: Float = 1f,
-    ) {
-        ChessPiece(
-            piece = piece.piece,
-            side = piece.side,
-            modifier = Modifier.graphicsLayer(alpha = alpha)
-        )
-    }
-
-    @Composable
-    fun MoveIndicator() {
-        Image(
-            painter = painterResource(id = R.drawable.move_available),
-            colorFilter = ColorFilter.tint(Design.colors.boardMoveAvailable),
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxSize(0.4f)
-                .aspectRatio(1f)
-        )
-    }
-}
-
-private fun Modifier.drawSelectionIndicator(color: Color): Modifier = this.drawBehind {
-    val path = Path().apply {
-        addRect(Rect(Offset.Zero, size))
-        addOval(Rect(center = center, radius = size.width / 2f))
-        fillType = PathFillType.EvenOdd
-    }
-    drawPath(path = path, color = color)
-}
-
-@Composable
-private fun Side.backgroundColor(): Color = when (this) {
-    Side.WHITE -> Design.colors.boardLight
-    Side.BLACK -> Design.colors.boardDark
 }
 
 @Preview(showBackground = true)
@@ -105,12 +87,16 @@ private fun PlainSquarePreview() {
             modifier = Modifier.padding(8.dp)
         ) {
             Side.entries.forEach { side ->
-                listOf(false, true).forEach { highlight ->
+                listOf(true, false).forEach { selection ->
                     BoardSquare(
                         side = side,
-                        selected = false,
-                        highlight = highlight,
-                        modifier = Modifier.size(60.dp)
+                        piece = null,
+                        isLastMoveFrom = false,
+                        isLastMoveTo = false,
+                        isSelected = selection,
+                        colors = boardColors(),
+                        piecesAlpha = 1f,
+                        modifier = Modifier.size(60.dp),
                     )
                 }
             }
@@ -127,21 +113,19 @@ private fun PieceSquarePreview() {
             modifier = Modifier.padding(8.dp)
         ) {
             Side.entries.forEach { side ->
-                listOf(false, true).forEach { highlight ->
-                    BoardSquare(
-                        side = side,
-                        selected = false,
-                        highlight = highlight,
-                        content = { Piece(piece = SidedPiece.of(side = side, piece = Piece.Queen)) },
-                        modifier = Modifier.size(60.dp)
-                    )
-                    BoardSquare(
-                        side = side,
-                        selected = true,
-                        highlight = highlight,
-                        content = { Piece(piece = SidedPiece.of(side = side, piece = Piece.King)) },
-                        modifier = Modifier.size(60.dp)
-                    )
+                listOf(false, true).forEach { selection ->
+                    listOf(SidedPiece.WhiteQueen, SidedPiece.BlackKing).forEach { piece ->
+                        BoardSquare(
+                            side = side,
+                            piece = piece,
+                            isLastMoveFrom = false,
+                            isLastMoveTo = false,
+                            isSelected = selection,
+                            colors = boardColors(),
+                            piecesAlpha = 1f,
+                            modifier = Modifier.size(60.dp),
+                        )
+                    }
                 }
             }
         }
@@ -157,16 +141,32 @@ private fun MoveAvailablePreview() {
             modifier = Modifier.padding(8.dp)
         ) {
             Side.entries.forEach { side ->
-                listOf(false, true).forEach { highlight ->
-                    BoardSquare(
-                        side = side,
-                        selected = false,
-                        highlight = highlight,
-                        content = { MoveIndicator() },
-                        modifier = Modifier.size(60.dp)
-                    )
+                listOf(false, true).forEach { selected ->
+                    listOf(false, true).forEach { lastMoveFrom ->
+                        BoardSquare(
+                            side = side,
+                            piece = null,
+                            isLastMoveFrom = lastMoveFrom,
+                            isLastMoveTo = !lastMoveFrom,
+                            isSelected = selected,
+                            colors = boardColors(),
+                            piecesAlpha = 1f,
+                            modifier = Modifier.size(60.dp),
+                        )
+                    }
                 }
             }
         }
     }
 }
+
+@Composable
+private fun boardColors(): BoardColors = BoardColors(
+    edge = Design.colors.boardEdge,
+    light = Design.colors.boardLight,
+    dark = Design.colors.boardDark,
+    movePreviousFrom = Design.colors.boardMovePreviousFrom,
+    movePreviousTo = Design.colors.boardMovePreviousTo,
+    moveAvailable = Design.colors.boardMoveAvailable,
+    squareSelected = Design.colors.boardSquareSelected,
+)

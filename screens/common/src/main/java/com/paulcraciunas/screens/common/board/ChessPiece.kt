@@ -7,18 +7,19 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Piece
+import com.paulcraciunas.game.logic.api.board.SidedPiece
 import com.paulcraciunas.global.resources.R
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.design.theme.pieces.ChessGymPieceSet
@@ -26,21 +27,18 @@ import com.paulcraciunas.screens.common.theme.ChessGymTheme
 
 @Composable
 fun ChessPiece(
-    piece: Piece,
-    side: Side,
+    piece: SidedPiece,
     modifier: Modifier = Modifier,
+    alpha: Float = 1f,
 ) {
-    val scale = piece.scaleFactor()
+    val scale = if (piece.piece == Piece.Pawn) 0.65f else 0.8f
+    val piecePainter: Painter = painterResource(piece.piece.resource(piece.side))
 
     Image(
-        painter = painterResource(piece.resource(side)),
-        contentDescription = stringResource(id = piece.contentDescription()),
-        modifier = modifier
-            .aspectRatio(1f)
-            .graphicsLayer {
-                scaleX = scale
-                scaleY = scale
-            }
+        painter = piecePainter,
+        contentDescription = stringResource(piece.piece.contentDescription()),
+        alpha = alpha,
+        modifier = modifier.fillMaxSize(scale),
     )
 }
 
@@ -52,12 +50,6 @@ private fun Piece.contentDescription(): Int = when (this) {
     Piece.Bishop -> R.string.bishop
     Piece.Queen -> R.string.queen
     Piece.King -> R.string.king
-}
-
-@Composable
-private fun Piece.scaleFactor(): Float = when (this) {
-    Piece.Pawn -> Design.dimensions.scales.piecePawn
-    else -> Design.dimensions.scales.pieceDefault
 }
 
 @Composable
@@ -81,17 +73,15 @@ private fun PiecePreview() {
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Side.entries.forEach { side ->
-                Piece.entries.forEach { piece ->
-                    Box(
-                        modifier = Modifier.size(60.dp),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        ChessPiece(
-                            piece = piece,
-                            side = side,
-                        )
-                    }
+            SidedPiece.entries.forEach { piece ->
+                Box(
+                    modifier = Modifier.size(60.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    ChessPiece(
+                        piece = piece,
+                        alpha = 1f,
+                    )
                 }
             }
         }
