@@ -6,19 +6,18 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.paulcraciunas.domain.api.achievements.Achievement
@@ -28,12 +27,13 @@ import com.paulcraciunas.screens.common.achievements.description
 import com.paulcraciunas.screens.common.achievements.displayName
 import com.paulcraciunas.screens.common.achievements.tierColor
 import com.paulcraciunas.screens.common.achievements.tierName
-import com.paulcraciunas.screens.common.design.components.AchievementMedallion
 import com.paulcraciunas.screens.common.design.components.ChessGymDialog
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.design.components.Eyebrow
+import com.paulcraciunas.screens.common.design.components.EyebrowType
 import com.paulcraciunas.screens.common.design.components.LinearProgress
 import com.paulcraciunas.screens.common.design.components.SpacerSize
+import com.paulcraciunas.screens.common.design.components.TieredAchievement
 import com.paulcraciunas.screens.common.design.theme.Design
 
 @Composable
@@ -62,7 +62,7 @@ private fun DialogContent(
     modifier: Modifier = Modifier,
 ) {
     val density = LocalDensity.current
-    val itemWidth = Design.dimensions.sizes.medallionLg
+    val itemWidth = Design.dimensions.sizes.achievementIcon
     val focusIndex = computeFocusIndex(achievementState).coerceAtLeast(0)
     val listState = rememberLazyListState()
 
@@ -91,22 +91,25 @@ private fun DialogContent(
                 state = listState,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(Design.dimensions.sizes.medallionLg * 1.5f), // Fixed height so LazyRow doesn't jump when scrolling
+                    .height(Design.dimensions.sizes.achievementIcon * 1.1f), // Fixed height so LazyRow doesn't jump when scrolling
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(
-                    space = Design.dimensions.spacing.xgut,
+                    space = Design.dimensions.spacing.xxs,
                     alignment = Alignment.CenterHorizontally,
                 ),
             ) {
                 itemsIndexed(fullTierList) { index, tier ->
                     if (tier != null) {
-                        TierBadge(
-                            tier = tier,
-                            isEarned = isTierEarned(achievementState, tier),
-                            isFocused = index == focusIndex,
+                        val size = Design.dimensions.sizes.achievementIcon * if (index == focusIndex) 1f else 0.8f
+                        val isEarned = isTierEarned(achievementState, tier)
+                        TieredAchievement(
+                            achievement = achievementState.achievement,
+                            currentTier = tier,
+                            tint = if (isEarned) Design.colors.achievementTierBronze else Design.colors.inkSubtle,
+                            modifier = Modifier.size(size),
                         )
                     } else {
-                        Box(modifier = Modifier.size(Design.dimensions.sizes.medallionContainer)) {} // placeholder
+                        Box(modifier = Modifier.size(Design.dimensions.sizes.achievementIcon)) {} // placeholder
                     }
                 }
             }
@@ -116,58 +119,38 @@ private fun DialogContent(
 }
 
 @Composable
-private fun TierBadge(
-    tier: Achievement.Tier,
-    isEarned: Boolean,
-    isFocused: Boolean,
-    modifier: Modifier = Modifier,
-) {
-    val scale = Design.dimensions.scales.achievementDetail(isFocused)
-    Column(
-        modifier = modifier.graphicsLayer {
-            scaleX = scale
-            scaleY = scale
-        },
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        AchievementMedallion(
-            hue = if (isEarned) tier.tierColor() else Design.colors.inkSubtle,
-            size = Design.dimensions.sizes.medallionLg,
-            earned = isEarned,
-            locked = !isEarned,
-            icon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.military_medal_icon),
-                    contentDescription = null,
-                    modifier = Modifier.size(Design.dimensions.sizes.medallionLg * 0.5f),
-                    tint = if (isEarned) Design.colors.primary else Design.colors.inkMuted,
-                )
-            },
-        )
-        ChessGymSpacer(size = SpacerSize.SMALL)
-    }
-}
-
-@Composable
 private fun FocusTierDetail(
     achievementState: AchievementState,
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .padding(top = Design.dimensions.spacing.md)
+            .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(
+            space = Design.dimensions.spacing.xs,
+            alignment = Alignment.Bottom,
+        ),
     ) {
         Text(
             text = achievementState.achievement.tierName(achievementState.displayTier()),
-            style = Design.typography.bodyMedium,
-            color = Design.colors.accent,
+            color = Design.colors.ink,
             textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.titleSmall,
         )
-        ChessGymSpacer(size = SpacerSize.DEFAULT)
         if (achievementState !is AchievementState.Unearned) {
-            Eyebrow(text = stringResource(R.string.achievement_earned_label))
-            ChessGymSpacer(size = SpacerSize.DEFAULT)
+            Eyebrow(
+                text = stringResource(R.string.achievement_earned_label),
+                type = EyebrowType.Muted,
+            )
         }
+        LinearProgress(
+            progress = achievementState.progress(),
+            color = achievementState.currentTier.tierColor(),
+            modifier = Modifier.padding(horizontal = Design.dimensions.spacing.lg)
+                .fillMaxWidth(),
+        )
         Text(
             text = stringResource(
                 R.string.achievement_detail_progress,
@@ -178,13 +161,9 @@ private fun FocusTierDetail(
                     (achievementState as AchievementState.Incomplete).nextThreshold
                 },
             ),
-            style = Design.textStyles.monoSmall,
-            color = Design.colors.inkMuted,
-        )
-        ChessGymSpacer(size = SpacerSize.SMALL)
-        LinearProgress(
-            progress = achievementState.progress(),
             color = achievementState.currentTier.tierColor(),
+            style = Design.textStyles.monoSmall,
+            modifier = Modifier.padding(bottom = Design.dimensions.spacing.lg),
         )
     }
 }
