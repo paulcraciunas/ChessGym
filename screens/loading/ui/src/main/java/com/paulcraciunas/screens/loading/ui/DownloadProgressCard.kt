@@ -153,6 +153,7 @@ private fun ProgressStep(
         LinearProgress(
             progress = progress / 100f,
             color = if (progress == 100) Design.colors.success else Design.colors.primary,
+            modifier = Modifier.fillMaxWidth(),
         )
 
         if (progress < 100) {
