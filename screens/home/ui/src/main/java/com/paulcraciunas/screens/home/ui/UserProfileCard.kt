@@ -3,8 +3,6 @@ package com.paulcraciunas.screens.home.ui
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,7 +20,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.domain.api.achievements.Achievement
 import com.paulcraciunas.global.resources.R
-import com.paulcraciunas.screens.common.achievements.tierName
 import com.paulcraciunas.screens.common.design.components.ChessGymElevatedCard
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.design.components.Eyebrow
@@ -150,25 +147,29 @@ internal fun Property(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
+// Paul: add a ticket to implement proper ribbons
 @Composable
 private fun RibbonRow(
     ribbons: List<HomeUiState.Ribbon>,
     modifier: Modifier = Modifier,
 ) {
-    FlowRow(
-        modifier = modifier.fillMaxWidth(),
+    Row(
+        modifier = modifier
+            .padding(horizontal = Design.dimensions.spacing.xxl)
+            .fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.xs),
-        verticalArrangement = Arrangement.spacedBy(Design.dimensions.spacing.xs),
     ) {
-        ribbons.forEach { ribbon ->
-            Icon(
-                painter = painterResource(id = R.drawable.military_medal_icon),
-                contentDescription = ribbon.achievement.tierName(ribbon.tier),
-                modifier = Modifier.size(Design.dimensions.sizes.icon),
-                tint = Design.colors.accent,
-            )
-        }
+        Icon(
+            painter = painterResource(id = R.drawable.military_medal_icon),
+            contentDescription = null,
+            modifier = Modifier.size(Design.dimensions.sizes.icon),
+            tint = Design.colors.accent,
+        )
+        Text(
+            text = ribbons.count().toString(),
+            style = Design.textStyles.title,
+            color = Design.colors.ink,
+        )
     }
 }
 
