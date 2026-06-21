@@ -362,3 +362,15 @@ private fun TermsAndConditionsDetailPreview() {
         )
     }
 }
+
+
+@Preview("Detail - Terms and Conditions")
+@Composable
+private fun PrivacyPolicyPreview() {
+    ChessGymTheme {
+        AboutDetailScreen(
+            section = AboutSection.PrivacyPolicy,
+            onNavigateBack = {},
+        )
+    }
+}

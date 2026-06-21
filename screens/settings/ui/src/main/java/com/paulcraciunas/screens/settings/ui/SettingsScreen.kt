@@ -9,19 +9,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuAnchorType
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -53,7 +44,6 @@ fun SettingsScreen(
     onShowBordersToggled: (Boolean) -> Unit = {},
     onHighlightLegalMovesToggled: (Boolean) -> Unit = {},
     onLightModeSelected: (AppSettings.LightMode) -> Unit = {},
-    onLanguageSelected: (SettingsUiState.AppLanguage) -> Unit = {},
     onAnimationsToggled: (Boolean) -> Unit = {},
     onCrashReportingToggled: (Boolean) -> Unit = {},
 ) {
@@ -75,7 +65,6 @@ fun SettingsScreen(
                 onShowBordersToggled = onShowBordersToggled,
                 onHighlightLegalMovesToggled = onHighlightLegalMovesToggled,
                 onLightModeSelected = onLightModeSelected,
-                onLanguageSelected = onLanguageSelected,
                 onAnimationsToggled = onAnimationsToggled,
                 onCrashReportingToggled = onCrashReportingToggled,
             )
@@ -96,7 +85,6 @@ private fun SettingsContent(
     onShowBordersToggled: (Boolean) -> Unit = {},
     onHighlightLegalMovesToggled: (Boolean) -> Unit = {},
     onLightModeSelected: (AppSettings.LightMode) -> Unit = {},
-    onLanguageSelected: (SettingsUiState.AppLanguage) -> Unit = {},
     onAnimationsToggled: (Boolean) -> Unit = {},
     onCrashReportingToggled: (Boolean) -> Unit = {},
 ) {
@@ -125,7 +113,6 @@ private fun SettingsContent(
             AppearanceSection(
                 uiState = uiState,
                 onLightModeSelected = onLightModeSelected,
-                onLanguageSelected = onLanguageSelected,
                 onAnimationsToggled = onAnimationsToggled,
             )
         }
@@ -194,7 +181,6 @@ private fun GeneralSection(
 private fun AppearanceSection(
     uiState: SettingsUiState,
     onLightModeSelected: (AppSettings.LightMode) -> Unit = {},
-    onLanguageSelected: (SettingsUiState.AppLanguage) -> Unit = {},
     onAnimationsToggled: (Boolean) -> Unit = {},
 ) {
     SectionHeader(title = stringResource(R.string.settings_section_ui))
@@ -235,11 +221,6 @@ private fun AppearanceSection(
             )
         }
         HairlineDivider(modifier = Modifier.fillMaxWidth())
-        LanguagePicker(
-            selectedLanguage = uiState.language,
-            onLanguageSelected = onLanguageSelected,
-        )
-        HairlineDivider(modifier = Modifier.fillMaxWidth())
         ToggleRow(
             title = stringResource(R.string.settings_enable_animations),
             subtitle = stringResource(R.string.settings_enable_animations_description),
@@ -248,61 +229,6 @@ private fun AppearanceSection(
             last = true,
             contentPadding = PaddingValues.Zero,
         )
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun LanguagePicker(
-    selectedLanguage: SettingsUiState.AppLanguage,
-    onLanguageSelected: (SettingsUiState.AppLanguage) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    var isExpanded by remember { mutableStateOf(false) }
-
-    ExposedDropdownMenuBox(
-        expanded = isExpanded,
-        onExpandedChange = { isExpanded = !isExpanded },
-        modifier = modifier
-    ) {
-        OutlinedTextField(
-            value = selectedLanguage.fullName(),
-            onValueChange = {},
-            readOnly = true,
-            label = {
-                Text(
-                    text = stringResource(R.string.settings_language),
-                    style = Design.typography.titleSmall,
-                    color = Design.colors.ink,
-                )
-            },
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) },
-            colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
-            modifier = Modifier
-                .fillMaxWidth()
-                .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
-        )
-        ExposedDropdownMenu(
-            expanded = isExpanded,
-            onDismissRequest = { isExpanded = false }
-        ) {
-            SettingsUiState.AppLanguage.entries.forEach { language ->
-                DropdownMenuItem(
-                    text = {
-                        Text(
-                            text = language.fullName(),
-                            style = Design.typography.bodyMedium,
-                            color = if (language == selectedLanguage) Design.colors.primary else Design.colors.ink,
-                        )
-                    },
-                    onClick = {
-                        onLanguageSelected(language)
-                        isExpanded = false
-                    },
-                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
-                )
-            }
-        }
     }
 }
 
@@ -321,40 +247,6 @@ private fun PrivacySection(
             last = true,
         )
     }
-}
-
-@Composable
-private fun SettingsUiState.AppLanguage.fullName(): String = "${flag()} ${displayName()}"
-
-private fun SettingsUiState.AppLanguage.flag(): String = when (this) {
-    SettingsUiState.AppLanguage.System -> "🌐"
-    SettingsUiState.AppLanguage.English -> "🇬🇧"
-    SettingsUiState.AppLanguage.German -> "🇩🇪"
-    SettingsUiState.AppLanguage.Spanish -> "🇪🇸"
-    SettingsUiState.AppLanguage.French -> "🇫🇷"
-    SettingsUiState.AppLanguage.Hindi -> "🇮🇳"
-    SettingsUiState.AppLanguage.Indonesian -> "🇮🇩"
-    SettingsUiState.AppLanguage.Japanese -> "🇯🇵"
-    SettingsUiState.AppLanguage.Korean -> "🇰🇷"
-    SettingsUiState.AppLanguage.BrazilianPortuguese -> "🇧🇷"
-    SettingsUiState.AppLanguage.Russian -> "🇷🇺"
-    SettingsUiState.AppLanguage.SimplifiedChinese -> "🇨🇳"
-}
-
-@Composable
-private fun SettingsUiState.AppLanguage.displayName(): String = when (this) {
-    SettingsUiState.AppLanguage.System -> stringResource(R.string.settings_light_mode_system)
-    SettingsUiState.AppLanguage.English -> "English"
-    SettingsUiState.AppLanguage.German -> "Deutsch"
-    SettingsUiState.AppLanguage.Spanish -> "Español"
-    SettingsUiState.AppLanguage.French -> "Français"
-    SettingsUiState.AppLanguage.Hindi -> "हिन्दी"
-    SettingsUiState.AppLanguage.Indonesian -> "Bahasa Indonesia"
-    SettingsUiState.AppLanguage.Japanese -> "日本語"
-    SettingsUiState.AppLanguage.Korean -> "한국어"
-    SettingsUiState.AppLanguage.BrazilianPortuguese -> "Português (Brasil)"
-    SettingsUiState.AppLanguage.Russian -> "Русский"
-    SettingsUiState.AppLanguage.SimplifiedChinese -> "中文(简体)"
 }
 
 @Composable
@@ -381,7 +273,6 @@ private fun SettingsScreenPreview() {
         SettingsScreen(
             uiState = SettingsUiState(
                 isLoading = false,
-                language = SettingsUiState.AppLanguage.English,
             ),
             buildVersion = "Version 1.0-100",
         )

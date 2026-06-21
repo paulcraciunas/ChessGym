@@ -20,7 +20,6 @@ import com.paulcraciunas.domain.api.general.Timer
 import com.paulcraciunas.domain.api.puzzles.GetBufferedPuzzleSeries
 import com.paulcraciunas.domain.api.puzzles.GetFailedPuzzles
 import com.paulcraciunas.domain.api.puzzles.GetPuzzleByRating
-import com.paulcraciunas.domain.api.puzzles.GetPuzzleSeries
 import com.paulcraciunas.domain.api.puzzles.GetRatedPuzzle
 import com.paulcraciunas.domain.api.puzzles.GetStreakPuzzle
 import com.paulcraciunas.domain.api.puzzles.OnFailedPuzzleComplete
@@ -48,7 +47,6 @@ import com.paulcraciunas.domain.impl.general.SimpleTimer
 import com.paulcraciunas.domain.impl.puzzles.GetBufferedPuzzleSeriesImpl
 import com.paulcraciunas.domain.impl.puzzles.GetFailedPuzzlesImpl
 import com.paulcraciunas.domain.impl.puzzles.GetPuzzleByRatingImpl
-import com.paulcraciunas.domain.impl.puzzles.GetPuzzleSeriesImpl
 import com.paulcraciunas.domain.impl.puzzles.GetRatedPuzzleImpl
 import com.paulcraciunas.domain.impl.puzzles.GetStreakPuzzleImpl
 import com.paulcraciunas.domain.impl.puzzles.OnFailedPuzzleCompleteImpl
@@ -73,10 +71,6 @@ internal abstract class DomainModule {
     @Binds
     @Singleton
     abstract fun bindCalculateEloUseCase(impl: CalculateEloImpl): CalculateElo
-
-    @Binds
-    @Singleton
-    abstract fun bindGetPuzzleSeries(impl: GetPuzzleSeriesImpl): GetPuzzleSeries
 
     @Binds
     abstract fun bindGetBufferedPuzzleSeries(impl: GetBufferedPuzzleSeriesImpl): GetBufferedPuzzleSeries

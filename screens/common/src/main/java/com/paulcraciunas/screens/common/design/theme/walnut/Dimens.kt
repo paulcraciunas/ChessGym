@@ -41,10 +41,7 @@ internal val WalnutDimensions = ChessGymDimensions(
         icon = 20.dp,
         iconSmall = 12.dp,
         avatar = 56.dp,
-        medallion = 50.dp,
-        medallionText = 36.dp,
-        medallionLg = 90.dp,
-        medallionContainer = 92.dp,
+        achievementIcon = 170.dp,
         navBarHeight = 64.dp,
         navBarIconHeight = 24.dp,
         appBarHeight = 64.dp,
@@ -67,7 +64,5 @@ internal val WalnutDimensions = ChessGymDimensions(
     scales = ChessGymDimensions.Scales(
         piecePawn = 0.65f,
         pieceDefault = 0.8f,
-        achievementDetail = 1f,
-        achievementDetailFocused = 1.2f,
     )
 )

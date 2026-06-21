@@ -68,7 +68,6 @@ android {
             configure<CrashlyticsExtension> {
                 mappingFileUploadEnabled = false
             }
-
             @Suppress("UnstableApiUsage")
             experimentalProperties["android.experimental.enableTestTagsAsResourceId"] = true
         }

@@ -1,12 +1,11 @@
 package com.paulcraciunas.screens.common.design.components
 
-import android.annotation.SuppressLint
 import androidx.annotation.StringRes
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.fromHtml
 import com.paulcraciunas.screens.common.design.theme.Design
@@ -68,9 +67,9 @@ fun SectionHeaderTitle(
 }
 
 /** Loads a string resource with escaped HTML (e.g. `&lt;b>bold&lt;/b>`) as [AnnotatedString]. */
-@SuppressLint("LocalContextGetResourceValueCall")
 @Composable
 fun annotatedTextResource(@StringRes id: Int): AnnotatedString {
-    val rawString = LocalContext.current.getString(id)
-    return AnnotatedString.fromHtml(htmlString = rawString)
+    val rawString = LocalResources.current.getString(id)
+    val htmlReadyString = rawString.replace("\n", "<br/>")
+    return AnnotatedString.fromHtml(htmlString = htmlReadyString)
 }
