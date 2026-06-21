@@ -36,7 +36,7 @@ data class AchievementsUiState(
 
         abstract fun hasProgress(): Boolean
         abstract fun progress(): Float
-        abstract fun displayTier(): Achievement.Tier
+        fun displayTier(): Achievement.Tier = currentTier ?: Achievement.Tier.ONE
 
         fun isCompleted(): Boolean = this is Complete
 
@@ -62,8 +62,6 @@ data class AchievementsUiState(
             init {
                 require(nextThreshold != 0L)
             }
-
-            override fun displayTier(): Achievement.Tier = Achievement.Tier.ONE
         }
 
         @Immutable
@@ -77,8 +75,6 @@ data class AchievementsUiState(
             init {
                 require(nextThreshold != 0L)
             }
-
-            override fun displayTier(): Achievement.Tier = currentTier
         }
 
         @Immutable
@@ -91,7 +87,6 @@ data class AchievementsUiState(
 
             override fun progress(): Float = 1f
             override fun hasProgress(): Boolean = true
-            override fun displayTier(): Achievement.Tier = currentTier
         }
     }
 }
