@@ -56,7 +56,7 @@ internal val WalnutDimensions = ChessGymDimensions(
         chessBoardBorder = 14.dp,
         evaluationBar = 30.dp,
         timerChipWidth = 72.dp,
-        moveHistoryNumber = 20.dp,
+        moveHistoryNumber = 30.dp,
     ),
     blur = ChessGymDimensions.Blur(
         default = 0.dp,

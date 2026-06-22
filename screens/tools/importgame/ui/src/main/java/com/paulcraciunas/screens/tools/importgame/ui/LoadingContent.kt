@@ -53,7 +53,7 @@ internal fun LoadingContent(
             color = Design.colors.ink,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = Design.dimensions.spacing.lg),
+                .padding(horizontal = Design.dimensions.spacing.lg, vertical = Design.dimensions.spacing.xxs),
         )
         ChessBoard(
             board = state.boardState.boardData,
@@ -68,12 +68,12 @@ internal fun LoadingContent(
             color = Design.colors.ink,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = Design.dimensions.spacing.lg),
+                .padding(horizontal = Design.dimensions.spacing.lg, vertical = Design.dimensions.spacing.xxs),
         )
         ChessGymSpacer(size = SpacerSize.SECTION)
         Text(
             text = stringResource(R.string.import_game_analyzing, state.progressPercent),
-            style = Design.typography.bodySmall,
+            style = Design.typography.headlineLarge,
             color = Design.colors.inkSoft,
         )
         ChessGymSpacer(size = SpacerSize.LARGE)

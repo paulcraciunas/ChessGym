@@ -51,7 +51,7 @@ internal fun CompleteContent(
             color = Design.colors.ink,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = Design.dimensions.spacing.lg),
+                .padding(horizontal = Design.dimensions.spacing.lg, vertical = Design.dimensions.spacing.xxs),
         )
         ChessBoard(
             board = state.boardState.boardData,
@@ -75,7 +75,7 @@ internal fun CompleteContent(
             color = Design.colors.ink,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = Design.dimensions.spacing.lg),
+                .padding(horizontal = Design.dimensions.spacing.lg, vertical = Design.dimensions.spacing.xxs),
         )
 
         MoveNavigationControls(
@@ -93,7 +93,7 @@ internal fun CompleteContent(
             onMoveSelected = onMoveSelected,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = Design.dimensions.spacing.xgut),
+                .padding(horizontal = Design.dimensions.spacing.lg),
         )
         ChessGymSpacer(size = SpacerSize.XXLARGE)
     }
