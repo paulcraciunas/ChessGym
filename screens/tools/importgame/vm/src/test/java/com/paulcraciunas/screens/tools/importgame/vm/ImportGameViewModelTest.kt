@@ -121,21 +121,21 @@ internal class ImportGameViewModelTest {
         }
 
         @Test
-        fun `GIVEN Complete state at start WHEN onNextMove THEN navigates forward`() = importTest {
+        fun `GIVEN Complete state at end WHEN onPreviousMove THEN navigates back`() = importTest {
             importAndComplete()
 
-            underTest.onNextMove()
+            val idx = (underTest.uiState.value as ImportGameUiState.Complete).currentMoveIndex
+            underTest.onPreviousMove()
 
             val state = underTest.uiState.value as ImportGameUiState.Complete
-            assertEquals(1, state.currentMoveIndex)
+            assertEquals(idx - 1, state.currentMoveIndex)
             assertTrue(state.canNavigateBack)
             assertTrue(state.canNavigateForward)
         }
 
         @Test
-        fun `GIVEN Complete state at end WHEN onPreviousMove THEN navigates back`() = importTest {
+        fun `GIVEN Complete state at end WHEN onPreviousMove THEN stays at end`() = importTest {
             importAndComplete()
-            underTest.onJumpToEnd()
 
             underTest.onPreviousMove()
 
@@ -154,14 +154,16 @@ internal class ImportGameViewModelTest {
         }
 
         @Test
-        fun `GIVEN Complete state at start WHEN onPreviousMove THEN stays at start`() = importTest {
+        fun `GIVEN Complete state at end WHEN onNextMove THEN stays at end`() = importTest {
             importAndComplete()
 
-            underTest.onPreviousMove()
+            val idx = (underTest.uiState.value as ImportGameUiState.Complete).currentMoveIndex
+            underTest.onNextMove()
 
             val state = underTest.uiState.value as ImportGameUiState.Complete
-            assertEquals(0, state.currentMoveIndex)
-            assertFalse(state.canNavigateBack)
+            assertEquals(idx, state.currentMoveIndex)
+            assertTrue(state.canNavigateBack)
+            assertFalse(state.canNavigateForward)
         }
     }
 

@@ -131,9 +131,9 @@ internal class AnalyzeFullGameImplTest {
             PositionEvaluation(depth = 18, evaluation = Evaluation.Centipawns(-20), bestMove = null)
         )
         // Position 2 (White to move after Black's blunder): White sees +200
-        // Black's CPL = (-20) + 200 = 180
+        // Black's CPL = (-20) + 300 = 280
         fakeEngine.enqueuePositionEvaluation(
-            PositionEvaluation(depth = 18, evaluation = Evaluation.Centipawns(200), bestMove = null)
+            PositionEvaluation(depth = 18, evaluation = Evaluation.Centipawns(300), bestMove = null)
         )
 
         val results = underTest.analyze(positions, depth = 18).toList()
@@ -143,7 +143,7 @@ internal class AnalyzeFullGameImplTest {
         assertEquals(0, whiteMove.centipawnLoss)
 
         val blackMove = completed.analysis.moves[1]
-        assertEquals(180, blackMove.centipawnLoss)
+        assertEquals(280, blackMove.centipawnLoss)
         assertEquals(MoveClassification.Blunder, blackMove.classification)
         assertEquals(listOf(2), completed.analysis.blunders)
     }
