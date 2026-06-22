@@ -135,19 +135,35 @@ private inline fun tokenizeMoves(movetext: String, onToken: (String) -> Unit) {
     var i = 0
     val len = movetext.length
     while (i < len) {
-        while (i < len && movetext[i].isWhitespace()) i++
+        // Skip whitespace and brace comments
+        while (i < len) {
+            val c = movetext[i]
+            if (c.isWhitespace()) {
+                i++
+            } else if (c == '{') {
+                while (i < len && movetext[i] != '}') i++
+                if (i < len) i++ // skip the closing '}'
+            } else {
+                break
+            }
+        }
         if (i >= len) break
 
         val start = i
-        while (i < len && !movetext[i].isWhitespace()) i++
+        // Find end of token, but stop if we hit a comment start
+        while (i < len && !movetext[i].isWhitespace() && movetext[i] != '{') i++
 
+        // Extract move from potential move number (e.g., "1.e4" or "1...e5")
         var j = start
         while (j < i && movetext[j].isDigit()) j++
-        if (j in (start + 1)..<i && movetext[j] == '.') {
-            val moveStart = j + 1
-            if (moveStart < i) onToken(movetext.substring(moveStart, i))
+        if (j > start && j < i && movetext[j] == '.') {
+            while (j < i && movetext[j] == '.') j++
+            if (j < i) onToken(movetext.substring(j, i))
         } else {
-            onToken(movetext.substring(start, i))
+            // Handle leading dots (e.g., "...Nf6")
+            var k = start
+            while (k < i && movetext[k] == '.') k++
+            if (k < i) onToken(movetext.substring(k, i))
         }
     }
 }
@@ -159,15 +175,14 @@ private fun Game.loadPly(token: String) = when {
 }
 
 private fun isKingSideCastle(token: String): Boolean =
-    (token.length == 3 || (token.length == 4 && token[3].isCheckMarker())) &&
-        token[0] == 'O' && token[1] == '-' && token[2] == 'O'
+    token.startsWith("O-O") && !token.startsWith("O-O-O") &&
+        token.drop(3).all { it.isPgnSuffix() }
 
 private fun isQueenSideCastle(token: String): Boolean =
-    (token.length == 5 || (token.length == 6 && token[5].isCheckMarker())) &&
-        token[0] == 'O' && token[1] == '-' && token[2] == 'O' &&
-        token[3] == '-' && token[4] == 'O'
+    token.startsWith("O-O-O") &&
+        token.drop(5).all { it.isPgnSuffix() }
 
-private fun Char.isCheckMarker(): Boolean = this == '+' || this == '#'
+private fun Char.isPgnSuffix(): Boolean = this == '+' || this == '#' || this == '!' || this == '?'
 
 private fun Game.findCastlePly(side: Side, castle: CastleType): Ply {
     val kingLoc = this.board.king(side)
@@ -183,7 +198,7 @@ private fun Game.findCastlePly(side: Side, castle: CastleType): Ply {
  */
 private fun Game.findPly(token: String): Ply {
     var end = token.length
-    while (end > 0 && token[end - 1].isCheckMarker()) end--
+    while (end > 0 && token[end - 1].isPgnSuffix()) end--
 
     var promotion: Piece? = null
     if (end >= 2 && token[end - 2] == '=') {

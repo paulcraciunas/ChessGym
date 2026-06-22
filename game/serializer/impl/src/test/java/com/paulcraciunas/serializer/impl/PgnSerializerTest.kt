@@ -58,6 +58,8 @@ internal class PgnSerializerTest {
                 Arguments.of("Kasparov_Karpov_87WC_Round22.pgn"),
                 Arguments.of("Kasparov_Karpov_87WC_Round23.pgn"),
                 Arguments.of("Kasparov_Karpov_87WC_Round24.pgn"),
+                Arguments.of("FischerSpassky1992.pgn"),
+                Arguments.of("LichessGame.pgn"),
             )
     }
 }
