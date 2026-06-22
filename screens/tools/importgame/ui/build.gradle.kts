@@ -8,6 +8,7 @@ androidLibrary {
 }
 
 dependencies {
+    implementation(project(":domain:api"))
     implementation(project(":game:logic:api"))
     implementation(project(":global:resources"))
     implementation(project(":screens:common"))
