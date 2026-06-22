@@ -5,7 +5,7 @@ import com.paulcraciunas.game.engine.api.Evaluation
 
 data class MoveAnalysis(
     val moveIndex: Int,
-    val fen: String,
+    val moveAlgebraic: String?,
     val evaluation: Evaluation,
     val centipawnLoss: Int,
     val classification: MoveClassification,

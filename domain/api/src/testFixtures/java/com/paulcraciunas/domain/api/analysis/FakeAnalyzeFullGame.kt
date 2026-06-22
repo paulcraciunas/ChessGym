@@ -11,10 +11,6 @@ class FakeAnalyzeFullGame : AnalyzeFullGame {
         result = progress.toList()
     }
 
-    override fun analyze(positions: List<String>, depth: Int): Flow<GameAnalysisProgress> = flow {
-        result.forEach { emit(it) }
-    }
-
     override fun analyze(game: Game, depth: Int): Flow<GameAnalysisProgress> = flow {
         result.forEach { emit(it) }
     }

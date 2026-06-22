@@ -28,7 +28,7 @@ class AnalyzeFullGameImpl(
         return analyze(positions, depth)
     }
 
-    override fun analyze(positions: List<String>, depth: Int): Flow<GameAnalysisProgress> = flow {
+    internal fun analyze(positions: List<Pair<String, String?>>, depth: Int): Flow<GameAnalysisProgress> = flow {
         require(positions.size >= 2) { "A game must have at least 2 positions (start + 1 move)" }
 
         engine.prepareForAnalysis()
@@ -37,21 +37,24 @@ class AnalyzeFullGameImpl(
         val moveAnalyses = mutableListOf<MoveAnalysis>()
         val totalMoves = positions.size - 1
 
-        val startingEval = engine.evaluatePosition(positions.first(), depth)
+        val startingEval = engine.evaluatePosition(positions.first().first, depth)
         evaluations.add(startingEval)
 
         for (moveIndex in 1..totalMoves) {
             if (!currentCoroutineContext().isActive) return@flow
 
-            val fen = positions[moveIndex]
+            val fen = positions[moveIndex].first
             val positionEval = engine.evaluatePosition(fen, depth)
             evaluations.add(positionEval)
 
-            val moveAnalysis = buildMoveAnalysis(
+            val centipawnLoss = computeCentipawnLoss(evaluations[moveIndex - 1], positionEval)
+            val moveAnalysis = MoveAnalysis(
                 moveIndex = moveIndex,
-                fen = fen,
-                previousEval = evaluations[moveIndex - 1],
-                currentEval = positionEval,
+                moveAlgebraic = positions[moveIndex].second,
+                evaluation = positionEval.evaluation,
+                centipawnLoss = centipawnLoss,
+                classification = MoveClassifier.classify(centipawnLoss),
+                bestMove = evaluations[moveIndex - 1].bestMove,
             )
             moveAnalyses.add(moveAnalysis)
 
@@ -66,23 +69,6 @@ class AnalyzeFullGameImpl(
 
         emit(GameAnalysisProgress.Completed(analysis = buildGameAnalysis(moveAnalyses)))
     }.flowOn(dispatcher)
-
-    private fun buildMoveAnalysis(
-        moveIndex: Int,
-        fen: String,
-        previousEval: PositionEvaluation,
-        currentEval: PositionEvaluation,
-    ): MoveAnalysis {
-        val centipawnLoss = computeCentipawnLoss(previousEval, currentEval)
-        return MoveAnalysis(
-            moveIndex = moveIndex,
-            fen = fen,
-            evaluation = currentEval.evaluation,
-            centipawnLoss = centipawnLoss,
-            classification = MoveClassifier.classify(centipawnLoss),
-            bestMove = previousEval.bestMove,
-        )
-    }
 
     /**
      * Engine eval is always from the side-to-move's perspective.
@@ -122,16 +108,16 @@ class AnalyzeFullGameImpl(
         classification: MoveClassification,
     ): List<Int> = filter { it.classification == classification }.map { it.moveIndex }
 
-    private fun extractPositions(game: Game): List<String> {
+    private fun extractPositions(game: Game): List<Pair<String, String?>> { // returns position -> move
         val originalIndex = game.currentMoveIndex
-        val positions = mutableListOf<String>()
+        val positions = mutableListOf<Pair<String, String?>>()
 
         game.undoAll()
-        positions.add(serializer.of(game))
+        positions.add(serializer.of(game) to null)
 
-        while (game.canReplay()) {
+        game.history.forEach {
             game.replayNext()
-            positions.add(serializer.of(game))
+            positions.add(serializer.of(game) to it.algebraic())
         }
 
         // Restore original position

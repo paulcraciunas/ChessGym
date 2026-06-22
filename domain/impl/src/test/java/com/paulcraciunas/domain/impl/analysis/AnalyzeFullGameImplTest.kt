@@ -35,16 +35,16 @@ internal class AnalyzeFullGameImplTest {
     @Test
     fun `GIVEN fewer than 2 positions WHEN analyze THEN throws`() = runTest(testDispatcher) {
         assertThrows<IllegalArgumentException> {
-            underTest.analyze(listOf("fen1")).toList()
+            underTest.analyze(positions = listOf("fen1" to null), depth = 15).toList()
         }
     }
 
     @Test
     fun `GIVEN 3 positions WHEN analyze THEN emits 2 progress updates and 1 completed`() = runTest(testDispatcher) {
         val positions = listOf(
-            "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-            "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1",
-            "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2",
+            "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" to null,
+            "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1" to "e4",
+            "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2" to "e5",
         )
 
         val results = underTest.analyze(positions, depth = 15).toList()
@@ -57,7 +57,11 @@ internal class AnalyzeFullGameImplTest {
 
     @Test
     fun `GIVEN positions WHEN analyze THEN progress reports correct move indices`() = runTest(testDispatcher) {
-        val positions = listOf("start", "after_move_1", "after_move_2")
+        val positions = listOf(
+            "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" to null,
+            "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1" to "e4",
+            "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2" to "e5",
+        )
 
         val results = underTest.analyze(positions, depth = 15).toList()
 
@@ -72,7 +76,7 @@ internal class AnalyzeFullGameImplTest {
 
     @Test
     fun `GIVEN equal evaluations WHEN analyze THEN centipawn loss is computed correctly`() = runTest(testDispatcher) {
-        val positions = listOf("start", "after_move_1")
+        val positions = listOf("start" to null, "after_move_1" to null)
         // Starting position: mover sees +30
         fakeEngine.enqueuePositionEvaluation(
             PositionEvaluation(depth = 18, evaluation = Evaluation.Centipawns(30), bestMove = null)
@@ -95,7 +99,7 @@ internal class AnalyzeFullGameImplTest {
 
     @Test
     fun `GIVEN white blunder WHEN analyze THEN detects blunder correctly`() = runTest(testDispatcher) {
-        val positions = listOf("start", "after_white_blunder")
+        val positions = listOf("start" to null, "after_white_blunder" to null)
         // Before move: mover (White) sees +100
         fakeEngine.enqueuePositionEvaluation(
             PositionEvaluation(depth = 18, evaluation = Evaluation.Centipawns(100), bestMove = null)
@@ -116,7 +120,7 @@ internal class AnalyzeFullGameImplTest {
 
     @Test
     fun `GIVEN black blunder WHEN analyze THEN detects blunder correctly`() = runTest(testDispatcher) {
-        val positions = listOf("start", "after_white_move", "after_black_blunder")
+        val positions = listOf("start" to null, "after_white_move" to null, "after_black_blunder" to null)
         // Position 0 (White to move): White sees 0
         fakeEngine.enqueuePositionEvaluation(
             PositionEvaluation(depth = 18, evaluation = Evaluation.Centipawns(0), bestMove = null)
@@ -146,7 +150,7 @@ internal class AnalyzeFullGameImplTest {
 
     @Test
     fun `GIVEN completed analysis WHEN checking game analysis THEN computes average CPL`() = runTest(testDispatcher) {
-        val positions = listOf("start", "move1", "move2", "move3")
+        val positions = listOf("start" to null, "move1" to null, "move2" to null, "move3" to null)
         // Position 0 (White to move): +30
         fakeEngine.enqueuePositionEvaluation(
             PositionEvaluation(depth = 18, evaluation = Evaluation.Centipawns(30), bestMove = null)
@@ -178,7 +182,7 @@ internal class AnalyzeFullGameImplTest {
 
     @Test
     fun `GIVEN all positions evaluated WHEN analyze THEN engine receives all FENs`() = runTest(testDispatcher) {
-        val positions = listOf("fen_start", "fen_1", "fen_2")
+        val positions = listOf("fen_start" to null, "fen_1" to null, "fen_2" to null)
 
         underTest.analyze(positions, depth = 15).toList()
 
@@ -190,7 +194,7 @@ internal class AnalyzeFullGameImplTest {
 
     @Test
     fun `GIVEN mate evaluation WHEN analyze THEN handles large centipawn equivalent`() = runTest(testDispatcher) {
-        val positions = listOf("start", "after_mate_blunder")
+        val positions = listOf("start" to null, "after_mate_blunder" to null)
         // White sees 0 before their move
         fakeEngine.enqueuePositionEvaluation(
             PositionEvaluation(depth = 18, evaluation = Evaluation.Centipawns(0), bestMove = null)
