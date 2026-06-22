@@ -9,12 +9,12 @@ androidLibrary {
 }
 
 dependencies {
+    implementation(project(":domain:api"))
+    implementation(project(":global:qualifiers"))
+    implementation(project(":game:engine:api"))
     implementation(project(":game:logic:api"))
-    implementation(project(":game:logic:builders"))
     implementation(project(":game:serializer:api"))
     implementation(project(":game:serializer:di"))
-    implementation(project(":global:qualifiers"))
-    implementation(project(":settings:application:api"))
     implementation(project(":screens:data"))
 
     implementation(libs.public.timber)
@@ -22,5 +22,5 @@ dependencies {
 
     testImplementation(project(":game:logic:impl"))
     testImplementation(project(":game:serializer:impl"))
-    testImplementation(testFixtures(project(":settings:application:api")))
+    testImplementation(testFixtures(project(":domain:api")))
 }
