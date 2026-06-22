@@ -82,16 +82,17 @@ internal fun ImportGame(tabNavController: NavHostController) {
 
     ImportGameScreen(
         uiState = importState,
-        onNavigateBack = { tabNavController.popBackStack(Screen.ToolsDashboard, inclusive = false) },
-        onFenClicked = vm::onFenClicked,
-        onPgnClicked = vm::onPgnClicked,
+        onNavigateBack = { if (!vm.onNavigateBackPressed())
+            tabNavController.popBackStack(Screen.ToolsDashboard, inclusive = false)
+        },
         onImport = vm::onImport,
-        onDismissDialog = vm::onDismissDialog,
-        onSquareClicked = vm::onSquareClicked,
-        onPromote = vm::onPromote,
+        onFlipBoard = vm::onFlipBoard,
+        onMoveSelected = vm::onMoveSelected,
         onJumpToStart = vm::onJumpToStart,
         onPreviousMove = vm::onPreviousMove,
         onNextMove = vm::onNextMove,
         onJumpToEnd = vm::onJumpToEnd,
+        onAbandonConfirmed = vm::onAbandonConfirmed,
+        onAbandonDismissed = vm::onAbandonDismissed,
     )
 }
