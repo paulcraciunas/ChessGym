@@ -11,22 +11,25 @@ import com.paulcraciunas.game.engine.api.PositionEvaluation
 import com.paulcraciunas.game.logic.api.Game
 import com.paulcraciunas.serializer.api.Serializer
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.isActive
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class AnalyzeFullGameImpl(
     private val engine: ChessEngine,
     private val serializer: Serializer,
     private val dispatcher: CoroutineDispatcher,
 ) : AnalyzeFullGame {
 
-    override fun analyze(game: Game, depth: Int): Flow<GameAnalysisProgress> {
-        val positions = extractPositions(game)
-        return analyze(positions, depth)
-    }
+    override fun analyze(game: Game, depth: Int): Flow<GameAnalysisProgress> = flow {
+        emit(extractPositions(game))
+    }.flowOn(dispatcher)
+        .flatMapLatest { analyze(it, depth) }
 
     internal fun analyze(positions: List<Pair<String, String?>>, depth: Int): Flow<GameAnalysisProgress> = flow {
         require(positions.size >= 2) { "A game must have at least 2 positions (start + 1 move)" }
@@ -112,10 +115,11 @@ class AnalyzeFullGameImpl(
         val originalIndex = game.currentMoveIndex
         val positions = mutableListOf<Pair<String, String?>>()
 
+        val history = game.history
         game.undoAll()
         positions.add(serializer.of(game) to null)
 
-        game.history.forEach {
+        history.forEach {
             game.replayNext()
             positions.add(serializer.of(game) to it.algebraic())
         }
