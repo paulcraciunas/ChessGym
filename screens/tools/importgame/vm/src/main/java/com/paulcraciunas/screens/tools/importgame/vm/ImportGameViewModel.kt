@@ -35,12 +35,7 @@ class ImportGameViewModel @Inject constructor(
         viewModelScope.launch(defaultDispatcher) {
             try {
                 game = pgnSerializer.from(pgn)
-                game.undoAll()
-
-                _uiState.update {
-                    adapter.adapt(game)
-                }
-
+                _uiState.update { adapter.adapt(game) }
                 analysisJob.launch {
                     analysisUseCase.analyze(game).collect { progress ->
                         _uiState.update {

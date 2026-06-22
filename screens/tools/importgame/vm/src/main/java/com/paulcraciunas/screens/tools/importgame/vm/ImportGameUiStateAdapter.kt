@@ -56,9 +56,9 @@ internal class ImportGameUiStateAdapter {
             orientation = currentState.orientation,
             playerInfo = currentState.playerInfo,
             analysedMoves = currentState.analysedMoves,
-            currentMoveIndex = 0,
-            canNavigateBack = false,
-            canNavigateForward = true,
+            currentMoveIndex = currentState.analysedMoves.size,
+            canNavigateBack = true,
+            canNavigateForward = false,
         )
 
     private fun blunderOverlay(state: ImportGameUiState.Complete, at: Int): ImportGameUiState.BlunderOverlay? {
