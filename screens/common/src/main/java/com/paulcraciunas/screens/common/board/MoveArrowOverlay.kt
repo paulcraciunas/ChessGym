@@ -1,4 +1,4 @@
-package com.paulcraciunas.screens.tools.analysis.ui
+package com.paulcraciunas.screens.common.board
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
@@ -22,33 +22,30 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.global.resources.R
-import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.theme.ChessGymTheme
-import com.paulcraciunas.screens.tools.analysis.vm.AnalysisUiState
 import kotlin.math.atan2
+import kotlin.math.cos
 import kotlin.math.hypot
+import kotlin.math.sin
 
 @Composable
-internal fun MoveArrowOverlay(
-    move: AnalysisUiState.EngineData.SuggestedMove?,
+fun MoveArrowOverlay(
+    from: Locus,
+    to: Locus,
     orientation: BoardOrientation,
     modifier: Modifier = Modifier,
     color: Color = Design.colors.ink,
 ) {
-    if (move == null) return
+    val tipPainter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.line_end_tip))
+    val bodyPainter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.line_body))
 
-    val tipVector = ImageVector.vectorResource(id = R.drawable.line_end_tip)
-    val bodyVector = ImageVector.vectorResource(id = R.drawable.line_body)
-    val tipPainter = rememberVectorPainter(image = tipVector)
-    val bodyPainter = rememberVectorPainter(image = bodyVector)
-
-    val indices = remember(move, orientation) {
+    val indices = remember(from, to,orientation) {
         object {
-            val fromFile = fileIndex(move.from.file.ordinal, orientation)
-            val fromRank = rankIndex(move.from.rank.ordinal, orientation)
-            val toFile = fileIndex(move.to.file.ordinal, orientation)
-            val toRank = rankIndex(move.to.rank.ordinal, orientation)
+            val fromFile = fileIndex(from.file.ordinal, orientation)
+            val fromRank = rankIndex(from.rank.ordinal, orientation)
+            val toFile = fileIndex(to.file.ordinal, orientation)
+            val toRank = rankIndex(to.rank.ordinal, orientation)
         }
     }
 
@@ -131,8 +128,8 @@ private fun DrawScope.drawMoveArrow(
     // We must shift the drawing so the vector's tip (at 783) lands exactly on 'to'
     val tipToCenterDist = (viewportTipX - viewportCenterX) * tipScale
     val shiftedTo = Offset(
-        x = to.x - tipToCenterDist * kotlin.math.cos(angleRad),
-        y = to.y - tipToCenterDist * kotlin.math.sin(angleRad)
+        x = to.x - tipToCenterDist * cos(angleRad),
+        y = to.y - tipToCenterDist * sin(angleRad)
     )
 
     translate(left = shiftedTo.x - arrowheadSize / 2, top = shiftedTo.y - arrowheadSize / 2) {
@@ -156,7 +153,8 @@ private fun MoveArrowWhitePreview() {
     ChessGymTheme {
         Box(modifier = Modifier.size(300.dp)) {
             MoveArrowOverlay(
-                move = AnalysisUiState.EngineData.SuggestedMove(from = Locus.e2, to = Locus.e4),
+                from = Locus.e2,
+                to = Locus.e4,
                 orientation = BoardOrientation.White
             )
         }
@@ -169,7 +167,8 @@ private fun MoveArrowKnightPreview() {
     ChessGymTheme {
         Box(modifier = Modifier.size(300.dp)) {
             MoveArrowOverlay(
-                move = AnalysisUiState.EngineData.SuggestedMove(from = Locus.g1, to = Locus.f3),
+                from = Locus.g1,
+                to = Locus.f3,
                 orientation = BoardOrientation.White,
                 color = Color.Green
             )

@@ -23,6 +23,7 @@ import com.paulcraciunas.screens.common.LocalUiSettings
 import com.paulcraciunas.screens.common.UiSettings
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
+import com.paulcraciunas.screens.common.board.MoveArrowOverlay
 import com.paulcraciunas.screens.common.controls.CapturedPieces
 import com.paulcraciunas.screens.common.controls.FlipBoardButton
 import com.paulcraciunas.screens.common.controls.MoveNavigationControls
@@ -75,11 +76,14 @@ fun AnalysisScreen(
                 onClick = onSquareClicked,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                MoveArrowOverlay(
-                    move = uiState.engineData?.topMove,
-                    orientation = orientation,
-                    modifier = Modifier.matchParentSize(),
-                )
+                uiState.engineData?.topMove?.let {
+                    MoveArrowOverlay(
+                        from = it.from,
+                        to = it.to,
+                        orientation = orientation,
+                        modifier = Modifier.matchParentSize(),
+                    )
+                }
             }
             CapturedPieces(
                 capturedPieces = uiState.data.captured.byPlayer,

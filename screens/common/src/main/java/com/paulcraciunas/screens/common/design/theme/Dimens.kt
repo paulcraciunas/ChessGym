@@ -68,6 +68,7 @@ data class ChessGymDimensions(
         val chessBoardBorder: Dp,
         val evaluationBar: Dp,
         val timerChipWidth: Dp,
+        val moveHistoryNumber: Dp,
     )
 
     @Immutable
