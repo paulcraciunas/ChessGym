@@ -187,6 +187,47 @@ internal class UciChessEngineTest {
 
             assertEquals("stop", fakeFacade.sentCommands[0].protocol())
         }
+
+        @Test
+        fun `GIVEN engine WHEN evaluatePosition THEN sends position and go depth and returns evaluation`() = runTest(testDispatcher) {
+            val fen = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1"
+            fakeFacade.analysisLines = listOf(
+                "info depth 10 seldepth 10 multipv 1 score cp 25 nodes 5000 nps 100000 time 50 pv e7e5",
+                "info depth 18 seldepth 20 multipv 1 score cp 30 nodes 50000 nps 100000 time 500 pv e7e5 d2d4",
+                "bestmove e7e5",
+            )
+
+            val result = underTest.evaluatePosition(fen, depth = 18)
+
+            assertEquals(18, result.depth)
+            assertEquals(30, (result.evaluation as com.paulcraciunas.game.engine.api.Evaluation.Centipawns).value)
+            assertEquals(Locus.e7, result.bestMove?.from)
+            assertEquals(Locus.e5, result.bestMove?.to)
+
+            val commandTypes = fakeFacade.executedCommands.map { it::class }
+            assertEquals(UciCommand.IsReady::class, commandTypes[0])
+            assertEquals(UciCommand.SetMultiPV::class, commandTypes[1])
+            assertEquals(UciCommand.SetPosition::class, commandTypes[2])
+            assertEquals(UciCommand.GoDepth::class, commandTypes[3])
+
+            assertEquals("stop", fakeFacade.sentCommands[0].protocol())
+        }
+
+        @Test
+        fun `GIVEN engine WHEN evaluatePosition with mate score THEN returns mate evaluation`() = runTest(testDispatcher) {
+            val fen = "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4"
+            fakeFacade.analysisLines = listOf(
+                "info depth 5 seldepth 5 multipv 1 score mate 1 nodes 100 nps 100000 time 1 pv h5f7",
+                "bestmove h5f7",
+            )
+
+            val result = underTest.evaluatePosition(fen, depth = 18)
+
+            assertEquals(5, result.depth)
+            assertEquals(1, (result.evaluation as com.paulcraciunas.game.engine.api.Evaluation.Mate).movesToMate)
+            assertEquals(Locus.h5, result.bestMove?.from)
+            assertEquals(Locus.f7, result.bestMove?.to)
+        }
     }
 }
 
@@ -217,9 +258,19 @@ private class FakeUciFacade : UciFacade {
                 engineMove = bestMoveResponse
                     ?: throw IllegalStateException("No bestMoveResponse configured"),
             )
+            is UciCommand.GoDepth -> buildEvaluatedResponse(uciCommand)
             else -> UciResponse.Done
         }
         return response as T
+    }
+
+    private fun buildEvaluatedResponse(command: UciCommand): UciResponse {
+        val factory = command.responseFactory()
+        for (line in analysisLines) {
+            val response = factory.construct(line)
+            if (response != null) return response
+        }
+        return factory.construct("bestmove e2e4")!!
     }
 
     override fun sendCommand(command: UciCommand) {
