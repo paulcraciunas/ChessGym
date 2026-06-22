@@ -399,7 +399,7 @@
     <string name="tools_analysis_title">Анализ</string>
     <string name="tools_analysis_flip_board">Перевернуть доску</string>
     <string name="tools_analysis_description">Анализируйте позиции с помощью движка</string>
-    <string name="tools_import_description">Импортировать партию из нотации FEN или PGN</string>
+    <string name="tools_import_description">Импортировать партию из нотации PGN</string>
     <!-- endregion -->
 
     <!-- region Clock Screen -->
@@ -418,15 +418,12 @@
 
     <!-- region Import Game Screen -->
     <string name="import_game_title">Импорт партии</string>
-    <string name="import_fen">Позиция</string>
-    <string name="import_pgn">Партия</string>
-    <string name="import_dialog_title_fen">Импорт Позиции</string>
-    <string name="import_dialog_title_pgn">Импорт партии</string>
-    <string name="import_dialog_hint_fen">Вставьте строку FEN здесь…</string>
     <string name="import_dialog_hint_pgn">Вставьте текст PGN здесь…</string>
     <string name="import_dialog_confirm">Импортировать</string>
     <string name="import_error_invalid_fen">Неверная нотация FEN. Проверьте и попробуйте снова.</string>
     <string name="import_error_invalid_pgn">Неверная нотация PGN. Проверьте и попробуйте снова.</string>
+    <string name="import_game_setup_description">Вставьте PGN, чтобы импортировать и проанализировать партию.</string>
+    <string name="import_game_analyzing">Анализ партии… %1$d%%</string>
     <string name="import_game_jump_to_start">Перейти к началу</string>
     <string name="import_game_previous_move">Предыдущий ход</string>
     <string name="import_game_next_move">Следующий ход</string>

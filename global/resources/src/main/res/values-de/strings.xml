@@ -389,7 +389,7 @@
     <string name="tools_analysis_title">Analyse</string>
     <string name="tools_analysis_flip_board">Brett drehen</string>
     <string name="tools_analysis_description">Positionen mit der Engine analysieren</string>
-    <string name="tools_import_description">Partie in FEN- oder PGN-Notation importieren</string>
+    <string name="tools_import_description">Partie in PGN-Notation importieren</string>
     <!-- endregion -->
 
     <!-- region Clock Screen -->
@@ -408,15 +408,12 @@
 
     <!-- region Import Game Screen -->
     <string name="import_game_title">Partie importieren</string>
-    <string name="import_fen">Position</string>
-    <string name="import_pgn">Partie</string>
-    <string name="import_dialog_title_fen">Position importieren</string>
-    <string name="import_dialog_title_pgn">Partie importieren</string>
-    <string name="import_dialog_hint_fen">FEN-String hier einfügen…</string>
     <string name="import_dialog_hint_pgn">PGN-Text hier einfügen…</string>
     <string name="import_dialog_confirm">Importieren</string>
     <string name="import_error_invalid_fen">Ungültige FEN-Notation. Bitte überprüfen und erneut versuchen.</string>
     <string name="import_error_invalid_pgn">Ungültige PGN-Notation. Bitte überprüfen und erneut versuchen.</string>
+    <string name="import_game_setup_description">PGN einfügen, um ein Spiel zu importieren und zu analysieren.</string>
+    <string name="import_game_analyzing">Spiel wird analysiert… %1$d%%</string>
     <string name="import_game_jump_to_start">Zum Anfang springen</string>
     <string name="import_game_previous_move">Vorheriger Zug</string>
     <string name="import_game_next_move">Nächster Zug</string>
