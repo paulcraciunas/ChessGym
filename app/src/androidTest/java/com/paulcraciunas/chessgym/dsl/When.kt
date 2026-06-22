@@ -9,7 +9,6 @@ import com.paulcraciunas.chessgym.dsl.actions.ClockScreenActions
 import com.paulcraciunas.chessgym.dsl.actions.FailedPuzzlesScreenActions
 import com.paulcraciunas.chessgym.dsl.actions.FindTheSquareScreenActions
 import com.paulcraciunas.chessgym.dsl.actions.HomeScreenActions
-import com.paulcraciunas.chessgym.dsl.actions.ImportGameScreenActions
 import com.paulcraciunas.chessgym.dsl.actions.NavigationActions
 import com.paulcraciunas.chessgym.dsl.actions.PuzzleDashboardActions
 import com.paulcraciunas.chessgym.dsl.actions.PuzzleStreakScreenActions
@@ -30,7 +29,6 @@ class When(rule: ComposeTestRule) {
     val findTheSquare: FindTheSquareScreenActions = FindTheSquareScreenActions(rule)
     val toolsDashboard: ToolsDashboardActions = ToolsDashboardActions(rule)
     val clockScreen: ClockScreenActions = ClockScreenActions(rule)
-    val importGame: ImportGameScreenActions = ImportGameScreenActions(rule)
     val analysisScreen: AnalysisScreenActions = AnalysisScreenActions(rule)
     val signInScreen: SignInScreenActions = SignInScreenActions(rule)
 }

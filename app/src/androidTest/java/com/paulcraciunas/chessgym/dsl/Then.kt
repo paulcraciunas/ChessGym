@@ -8,7 +8,6 @@ import com.paulcraciunas.chessgym.dsl.assertions.ClockScreenAssertions
 import com.paulcraciunas.chessgym.dsl.assertions.FailedPuzzlesScreenAssertions
 import com.paulcraciunas.chessgym.dsl.assertions.FindTheSquareScreenAssertions
 import com.paulcraciunas.chessgym.dsl.assertions.HomeScreenAssertions
-import com.paulcraciunas.chessgym.dsl.assertions.ImportGameScreenAssertions
 import com.paulcraciunas.chessgym.dsl.assertions.KnightPathScreenAssertions
 import com.paulcraciunas.chessgym.dsl.assertions.NavigationAssertions
 import com.paulcraciunas.chessgym.dsl.assertions.PuzzleDashboardAssertions
@@ -34,7 +33,6 @@ class Then(rule: ComposeTestRule) {
     val knightPath: KnightPathScreenAssertions = KnightPathScreenAssertions(rule)
     val toolsDashboard: ToolsDashboardAssertions = ToolsDashboardAssertions(rule)
     val clockScreen: ClockScreenAssertions = ClockScreenAssertions(rule)
-    val importGame: ImportGameScreenAssertions = ImportGameScreenAssertions(rule)
     val analysisScreen: AnalysisScreenAssertions = AnalysisScreenAssertions(rule)
     val signInScreen: SignInScreenAssertions = SignInScreenAssertions(rule)
 }
