@@ -384,7 +384,7 @@
     <string name="tools_analysis_title">分析</string>
     <string name="tools_analysis_flip_board">翻转棋盘</string>
     <string name="tools_analysis_description">使用引擎分析局面</string>
-    <string name="tools_import_description">从 FEN 或 PGN 导入对局</string>
+    <string name="tools_import_description">从 PGN 导入对局</string>
     <!-- endregion -->
 
     <!-- region Clock Screen -->
@@ -403,15 +403,12 @@
 
     <!-- region Import Game Screen -->
     <string name="import_game_title">导入对局</string>
-    <string name="import_fen">局面</string>
-    <string name="import_pgn">对局</string>
-    <string name="import_dialog_title_fen">导入 FEN</string>
-    <string name="import_dialog_title_pgn">导入 PGN</string>
-    <string name="import_dialog_hint_fen">在此粘贴 FEN 字符串…</string>
     <string name="import_dialog_hint_pgn">在此粘贴 PGN 文本…</string>
     <string name="import_dialog_confirm">导入</string>
     <string name="import_error_invalid_fen">无效的 FEN 符号，请检查后重试。</string>
     <string name="import_error_invalid_pgn">无效的 PGN 符号，请检查后重试。</string>
+    <string name="import_game_setup_description">粘贴 PGN 以导入并分析棋局。</string>
+    <string name="import_game_analyzing">正在分析棋局… %1$d%%</string>
     <string name="import_game_jump_to_start">跳到开始</string>
     <string name="import_game_previous_move">上一步</string>
     <string name="import_game_next_move">下一步</string>

@@ -36,8 +36,6 @@ import com.paulcraciunas.screens.loading.ui.DownloadConfirmationDialog
 import com.paulcraciunas.screens.puzzles.failed.ui.FailedPuzzlesCompletionDialog
 import com.paulcraciunas.screens.puzzles.rush.ui.RushSummaryDialog
 import com.paulcraciunas.screens.puzzles.streak.ui.StreakSummaryDialog
-import com.paulcraciunas.screens.tools.importgame.ui.ImportGameDialog
-import com.paulcraciunas.screens.tools.importgame.vm.ImportType
 
 private enum class DialogEntry(val label: String, val section: String) {
     SignOut("Sign Out", "Common"),
@@ -59,10 +57,6 @@ private enum class DialogEntry(val label: String, val section: String) {
     StreakSummary("Streak Summary", "Puzzles"),
     StreakSummaryHighScore("Streak Summary (High Score)", "Puzzles"),
     FailedPuzzlesCompletion("Failed Puzzles Completion", "Puzzles"),
-
-    ImportFen("Import FEN", "Tools"),
-    ImportPgn("Import PGN", "Tools"),
-    ImportWithError("Import (With Error)", "Tools"),
 }
 
 @Composable
@@ -80,7 +74,10 @@ fun DialogPreviewScreen() {
     }
 
     activeDialog?.let { entry ->
-        val onDismiss = { activeDialog = null }
+        val onDismiss = {
+            @Suppress("AssignedValueIsNeverRead") // yes it is. You're drunk
+            activeDialog = null
+        }
         DialogContent(entry = entry, onDismiss = onDismiss)
     }
 }
@@ -215,24 +212,6 @@ private fun DialogContent(
         )
         DialogEntry.FailedPuzzlesCompletion -> FailedPuzzlesCompletionDialog(
             puzzlesSolved = 8,
-            onDismiss = onDismiss,
-        )
-        DialogEntry.ImportFen -> ImportGameDialog(
-            type = ImportType.FEN,
-            error = null,
-            onImport = { onDismiss() },
-            onDismiss = onDismiss,
-        )
-        DialogEntry.ImportPgn -> ImportGameDialog(
-            type = ImportType.PGN,
-            error = null,
-            onImport = { onDismiss() },
-            onDismiss = onDismiss,
-        )
-        DialogEntry.ImportWithError -> ImportGameDialog(
-            type = ImportType.FEN,
-            error = "Invalid FEN string. Please check the format and try again.",
-            onImport = { onDismiss() },
             onDismiss = onDismiss,
         )
     }

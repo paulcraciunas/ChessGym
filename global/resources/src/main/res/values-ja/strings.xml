@@ -384,7 +384,7 @@
     <string name="tools_analysis_title">分析</string>
     <string name="tools_analysis_flip_board">ボードを反転</string>
     <string name="tools_analysis_description">エンジンで局面を分析</string>
-    <string name="tools_import_description">FENまたはPGN表記からゲームをインポート</string>
+    <string name="tools_import_description">PGN表記からゲームをインポート</string>
     <!-- endregion -->
 
     <!-- region Clock Screen -->
@@ -403,15 +403,12 @@
 
     <!-- region Import Game Screen -->
     <string name="import_game_title">ゲームをインポート</string>
-    <string name="import_fen">局面</string>
-    <string name="import_pgn">ゲーム</string>
-    <string name="import_dialog_title_fen">FENをインポート</string>
-    <string name="import_dialog_title_pgn">PGNをインポート</string>
-    <string name="import_dialog_hint_fen">ここにFEN文字列を貼り付け…</string>
     <string name="import_dialog_hint_pgn">ここにPGNテキストを貼り付け…</string>
     <string name="import_dialog_confirm">インポート</string>
     <string name="import_error_invalid_fen">無効なFEN表記です。確認してもう一度お試しください。</string>
     <string name="import_error_invalid_pgn">無効なPGN表記です。確認してもう一度お試しください。</string>
+    <string name="import_game_setup_description">PGNを貼り付けて対局をインポートし、分析します。</string>
+    <string name="import_game_analyzing">対局を分析中… %1$d%%</string>
     <string name="import_game_jump_to_start">最初へ移動</string>
     <string name="import_game_previous_move">前の手</string>
     <string name="import_game_next_move">次の手</string>

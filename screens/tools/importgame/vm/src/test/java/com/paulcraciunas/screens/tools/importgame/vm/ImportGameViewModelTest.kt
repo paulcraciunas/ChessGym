@@ -1,12 +1,13 @@
 package com.paulcraciunas.screens.tools.importgame.vm
 
-import com.paulcraciunas.game.logic.api.Side
-import com.paulcraciunas.game.logic.api.board.Locus
+import com.paulcraciunas.domain.api.analysis.FakeAnalyzeFullGame
+import com.paulcraciunas.domain.api.analysis.GameAnalysis
+import com.paulcraciunas.domain.api.analysis.GameAnalysisProgress
+import com.paulcraciunas.domain.api.analysis.MoveAnalysis
+import com.paulcraciunas.domain.api.analysis.MoveClassification
+import com.paulcraciunas.game.engine.api.Evaluation
 import com.paulcraciunas.game.logic.impl.RealGameFactory
-import com.paulcraciunas.serializer.api.Serializer
-import com.paulcraciunas.serializer.impl.FenSerializer
 import com.paulcraciunas.serializer.impl.PgnSerializer
-import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
@@ -19,7 +20,6 @@ import kotlinx.coroutines.test.setMain
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -29,9 +29,8 @@ import org.junit.jupiter.api.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class ImportGameViewModelTest {
     private val gameFactory = RealGameFactory()
-    private val fenSerializer = FenSerializer(gameFactory)
     private val pgnSerializer = PgnSerializer(gameFactory)
-    private val appSettingsRepository = FakeAppSettingsRepository()
+    private val fakeAnalyzeFullGame = FakeAnalyzeFullGame()
 
     private lateinit var underTest: ImportGameViewModel
 
@@ -40,14 +39,10 @@ internal class ImportGameViewModelTest {
     @BeforeEach
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
-        appSettingsRepository.setAppSettings(
-            appSettingsRepository.getCurrentSettings().copy(enableAnimations = false)
-        )
         underTest = ImportGameViewModel(
-            dispatcher = testDispatcher,
-            fenSerializer = fenSerializer,
+            defaultDispatcher = testDispatcher,
             pgnSerializer = pgnSerializer,
-            appSettingsRepository = appSettingsRepository,
+            analysisUseCase = fakeAnalyzeFullGame,
         )
     }
 
@@ -59,279 +54,143 @@ internal class ImportGameViewModelTest {
     @Nested
     internal inner class Initialization {
         @Test
-        fun `WHEN viewModel initialized THEN game is not loaded`() = importTest {
-            assertFalse(underTest.uiState.value.isGameLoaded)
-            assertNull(underTest.uiState.value.importType)
-            assertNavigation(back = false, forward = false)
+        fun `WHEN viewModel initialized THEN state is Setup`() = importTest {
+            val state = underTest.uiState.value
+            assertTrue(state is ImportGameUiState.Setup)
+            assertFalse((state as ImportGameUiState.Setup).hasImportError)
         }
     }
 
     @Nested
-    internal inner class DialogManagement {
+    internal inner class Import {
         @Test
-        fun `GIVEN no dialog WHEN onFenClicked THEN FEN dialog shown`() = importTest {
-            underTest.onFenClicked()
-            assertEquals(ImportType.FEN, underTest.uiState.value.showImportDialog)
+        fun `GIVEN valid PGN WHEN imported and analysis completes THEN state is Complete`() = importTest {
+            setupAnalysisResult()
+            underTest.onImport("1.e4 e5 2.Nf3 Nc6")
+            advanceUntilIdle()
+
+            val state = underTest.uiState.value
+            assertTrue(state is ImportGameUiState.Complete)
         }
 
         @Test
-        fun `GIVEN no dialog WHEN onPgnClicked THEN PGN dialog shown`() = importTest {
-            underTest.onPgnClicked()
-            assertEquals(ImportType.PGN, underTest.uiState.value.showImportDialog)
+        fun `GIVEN invalid PGN WHEN imported THEN state is Setup with error`() = importTest {
+            underTest.onImport("not a valid pgn")
+            advanceUntilIdle()
+
+            val state = underTest.uiState.value
+            assertTrue(state is ImportGameUiState.Setup)
+            assertTrue((state as ImportGameUiState.Setup).hasImportError)
         }
 
         @Test
-        fun `GIVEN FEN dialog shown WHEN onDismissDialog THEN dialog hidden`() = importTest {
-            underTest.onFenClicked()
-            underTest.onDismissDialog()
-            assertNull(underTest.uiState.value.showImportDialog)
+        fun `GIVEN valid PGN WHEN imported THEN player info extracted from metadata`() = importTest {
+            setupAnalysisResult()
+            underTest.onImport("[White \"Magnus\"]\n[Black \"Hikaru\"]\n1.e4 e5 2.Nf3 Nc6")
+            advanceUntilIdle()
+
+            val state = underTest.uiState.value as ImportGameUiState.Complete
+            assertEquals("Magnus", state.playerInfo.whiteName)
+            assertEquals("Hikaru", state.playerInfo.blackName)
         }
 
         @Test
-        fun `GIVEN error shown WHEN dialog dismissed and reopened THEN error cleared`() = importTest {
-            underTest.onFenClicked()
-            underTest.onImport("invalid")
-            assertNotNull(underTest.uiState.value.importError)
+        fun `GIVEN analysis in progress WHEN abandon THEN state returns to Setup`() = importTest {
+            underTest.onImport("1.e4 e5 2.Nf3 Nc6")
 
-            underTest.onDismissDialog()
-            underTest.onFenClicked()
-            assertNull(underTest.uiState.value.importError)
+            underTest.onAbandonConfirmed()
+
+            val state = underTest.uiState.value
+            assertTrue(state is ImportGameUiState.Setup)
         }
     }
 
     @Nested
-    internal inner class FenImport {
+    internal inner class Navigation {
         @Test
-        fun `GIVEN FEN dialog WHEN valid FEN imported THEN game loaded with correct state`() = importTest {
-            importStartingPosition()
-
-            val state = underTest.uiState.value
-            assertTrue(state.isGameLoaded)
-            assertNull(state.showImportDialog)
-            assertNull(state.importError)
-            assertEquals(ImportType.FEN, state.importType)
-            assertNavigation(back = false, forward = false)
-        }
-
-        @Test
-        fun `GIVEN FEN dialog WHEN invalid FEN imported THEN error shown`() = importTest {
-            underTest.onFenClicked()
-            underTest.onImport("not a valid fen string")
-
-            val state = underTest.uiState.value
-            assertFalse(state.isGameLoaded)
-            assertNotNull(state.importError)
-            assertEquals(ImportType.FEN, state.showImportDialog)
-        }
-    }
-
-    @Nested
-    internal inner class PgnImport {
-        @Test
-        fun `GIVEN PGN dialog WHEN valid PGN imported THEN game loaded at last move`() = importTest {
-            importPgn("1.e4 e5 2.Nf3 Nc6")
-
-            val state = underTest.uiState.value
-            assertTrue(state.isGameLoaded)
-            assertNull(state.showImportDialog)
-            assertEquals(ImportType.PGN, state.importType)
-            assertNavigation(back = true, forward = false)
-        }
-
-        @Test
-        fun `GIVEN PGN with result WHEN imported THEN game loaded at last move`() = importTest {
-            importPgn("1.e4 e5 2.Nf3 Nc6 1-0")
-
-            val state = underTest.uiState.value
-            assertTrue(state.isGameLoaded)
-            assertNavigation(back = true, forward = false)
-        }
-
-        @Test
-        fun `GIVEN PGN imported WHEN square clicked THEN ignored`() = importTest {
-            importPgn("1.e4 e5 2.Nf3 Nc6")
-
-            underTest.onSquareClicked(Locus.e2)
-
-            assertNull(underTest.uiState.value.data.boardData.selection)
-        }
-    }
-
-    @Nested
-    internal inner class PgnNavigation {
-        @Test
-        fun `GIVEN PGN at last move WHEN jump to start THEN shows initial position`() = importTest {
-            importPgn("1.e4 e5 2.Nf3 Nc6")
-            assertNavigation(back = true, forward = false)
-
-            underTest.onJumpToStart()
-
-            assertNavigation(back = false, forward = true)
-        }
-
-        @Test
-        fun `GIVEN PGN at last move WHEN previous move THEN shows one move back`() = importTest {
-            importPgn("1.e4 e5 2.Nf3 Nc6")
-
-            underTest.onPreviousMove()
-
-            assertNavigation(back = true, forward = true)
-        }
-
-        @Test
-        fun `GIVEN PGN at start WHEN next move THEN shows first move`() = importTest {
-            importPgn("1.e4 e5 2.Nf3 Nc6")
-            underTest.onJumpToStart()
-
-            underTest.onNextMove()
-
-            assertNavigation(back = true, forward = true)
-        }
-
-        @Test
-        fun `GIVEN PGN at middle WHEN jump to end THEN shows last move`() = importTest {
-            importPgn("1.e4 e5 2.Nf3 Nc6")
-            underTest.onJumpToStart()
-
+        fun `GIVEN Complete state WHEN onJumpToStart THEN at first position`() = importTest {
+            importAndComplete()
             underTest.onJumpToEnd()
 
-            assertNavigation(back = true, forward = false)
+            underTest.onJumpToStart()
+
+            val state = underTest.uiState.value as ImportGameUiState.Complete
+            assertEquals(0, state.currentMoveIndex)
+            assertFalse(state.canNavigateBack)
+            assertTrue(state.canNavigateForward)
         }
 
         @Test
-        fun `GIVEN PGN at start WHEN previous move THEN stays at start`() = importTest {
-            importPgn("1.e4 e5 2.Nf3 Nc6")
-            underTest.onJumpToStart()
+        fun `GIVEN Complete state at end WHEN onPreviousMove THEN navigates back`() = importTest {
+            importAndComplete()
+
+            val idx = (underTest.uiState.value as ImportGameUiState.Complete).currentMoveIndex
+            underTest.onPreviousMove()
+
+            val state = underTest.uiState.value as ImportGameUiState.Complete
+            assertEquals(idx - 1, state.currentMoveIndex)
+            assertTrue(state.canNavigateBack)
+            assertTrue(state.canNavigateForward)
+        }
+
+        @Test
+        fun `GIVEN Complete state at end WHEN onPreviousMove THEN stays at end`() = importTest {
+            importAndComplete()
 
             underTest.onPreviousMove()
 
-            assertNavigation(back = false, forward = true)
+            val state = underTest.uiState.value as ImportGameUiState.Complete
+            assertTrue(state.canNavigateForward)
         }
 
         @Test
-        fun `GIVEN PGN at end WHEN next move THEN stays at end`() = importTest {
-            importPgn("1.e4 e5 2.Nf3 Nc6")
+        fun `GIVEN Complete state WHEN onMoveSelected THEN navigates to that move`() = importTest {
+            importAndComplete()
 
+            underTest.onMoveSelected(3)
+
+            val state = underTest.uiState.value as ImportGameUiState.Complete
+            assertEquals(3, state.currentMoveIndex)
+        }
+
+        @Test
+        fun `GIVEN Complete state at end WHEN onNextMove THEN stays at end`() = importTest {
+            importAndComplete()
+
+            val idx = (underTest.uiState.value as ImportGameUiState.Complete).currentMoveIndex
             underTest.onNextMove()
 
-            assertNavigation(back = true, forward = false)
-        }
-
-        @Test
-        fun `GIVEN PGN navigation WHEN stepping through THEN each position has different board`() = importTest {
-            importPgn("1.e4 e5 2.Nf3 Nc6")
-            underTest.onJumpToStart()
-
-            val boards = mutableListOf(underTest.uiState.value.data.boardData)
-            repeat(4) {
-                underTest.onNextMove()
-                boards.add(underTest.uiState.value.data.boardData)
-            }
-
-            assertEquals(5, boards.toSet().size)
-        }
-
-        @Test
-        fun `GIVEN PGN navigation WHEN navigating THEN clears selection`() = importTest {
-            importPgn("1.e4 e5 2.Nf3 Nc6")
-
-            underTest.onPreviousMove()
-
-            assertNull(underTest.uiState.value.data.boardData.selection)
+            val state = underTest.uiState.value as ImportGameUiState.Complete
+            assertEquals(idx, state.currentMoveIndex)
+            assertTrue(state.canNavigateBack)
+            assertFalse(state.canNavigateForward)
         }
     }
 
     @Nested
-    internal inner class FenPlayAndNavigation {
+    internal inner class FlipBoard {
         @Test
-        fun `GIVEN FEN imported WHEN square with piece clicked THEN square selected`() = importTest {
-            importStartingPosition()
+        fun `GIVEN Complete state WHEN onFlipBoard THEN orientation changes`() = importTest {
+            importAndComplete()
 
-            underTest.onSquareClicked(Locus.e2)
+            val orientationBefore = (underTest.uiState.value as ImportGameUiState.Complete).orientation
+            underTest.onFlipBoard()
+            val orientationAfter = (underTest.uiState.value as ImportGameUiState.Complete).orientation
 
-            assertEquals(Locus.e2, underTest.uiState.value.data.boardData.selection)
+            assertFalse(orientationBefore == orientationAfter)
         }
+    }
 
+    @Nested
+    internal inner class BlunderOverlay {
         @Test
-        fun `GIVEN piece selected WHEN legal target clicked THEN move made and history updated`() = importTest {
-            importStartingPosition()
+        fun `GIVEN no blunder WHEN move selected THEN no overlay`() = importTest {
+            importAndComplete()
 
-            underTest.onSquareClicked(Locus.e2)
-            underTest.onSquareClicked(Locus.e4)
+            underTest.onMoveSelected(1)
 
-            assertFalse(underTest.uiState.value.data.boardData.selection == Locus.e4)
-            assertNavigation(back = true, forward = false)
-        }
-
-        @Test
-        fun `GIVEN multiple moves played WHEN navigate back THEN shows previous position`() = importTest {
-            importStartingPosition()
-            playMove(Locus.e2, Locus.e4)
-            playMove(Locus.e7, Locus.e5)
-
-            underTest.onPreviousMove()
-
-            assertNavigation(back = true, forward = true)
-        }
-
-        @Test
-        fun `GIVEN navigated back WHEN new move played THEN forward history truncated`() = importTest {
-            importStartingPosition()
-            playMove(Locus.e2, Locus.e4)
-            playMove(Locus.e7, Locus.e5)
-
-            underTest.onJumpToStart()
-            playMove(Locus.d2, Locus.d4)
-
-            assertNavigation(back = true, forward = false)
-        }
-
-        @Test
-        fun `GIVEN FEN with no moves WHEN navigation attempted THEN stays at start`() = importTest {
-            importStartingPosition()
-
-            underTest.onPreviousMove()
-            assertNavigation(back = false, forward = false)
-
-            underTest.onJumpToStart()
-            assertNavigation(back = false, forward = false)
-        }
-
-        @Test
-        fun `GIVEN FEN navigated back WHEN next and jump to end work THEN navigates forward`() = importTest {
-            importStartingPosition()
-            playMove(Locus.e2, Locus.e4)
-            playMove(Locus.e7, Locus.e5)
-            underTest.onJumpToStart()
-
-            underTest.onNextMove()
-            assertNavigation(back = true, forward = true)
-
-            underTest.onJumpToEnd()
-            assertNavigation(back = true, forward = false)
-        }
-
-        @Test
-        fun `GIVEN no game loaded WHEN square clicked THEN nothing happens`() = importTest {
-            underTest.onSquareClicked(Locus.e4)
-            assertNull(underTest.uiState.value.data.boardData.selection)
-        }
-
-        @Test
-        fun `GIVEN FEN navigated back WHEN playing from history THEN game reconstructed correctly`() = importTest {
-            importStartingPosition()
-            playMove(Locus.e2, Locus.e4)
-            playMove(Locus.e7, Locus.e5)
-            playMove(Locus.g1, Locus.f3)
-
-            underTest.onPreviousMove()
-            underTest.onPreviousMove()
-            assertNavigation(back = true, forward = true)
-
-            playMove(Locus.d7, Locus.d5)
-
-            assertNavigation(back = true, forward = false)
-            assertEquals(Side.WHITE, underTest.uiState.value.data.player)
+            val state = underTest.uiState.value as ImportGameUiState.Complete
+            assertNull(state.blunderOverlay)
         }
     }
 
@@ -340,25 +199,44 @@ internal class ImportGameViewModelTest {
         block()
     }
 
-    private fun TestScope.importStartingPosition() {
-        underTest.onFenClicked()
-        underTest.onImport(Serializer.STARTING_FEN)
+    private fun TestScope.importAndComplete() {
+        setupAnalysisResult()
+        underTest.onImport("1.e4 e5 2.Nf3 Nc6")
         advanceUntilIdle()
     }
 
-    private fun TestScope.importPgn(pgn: String) {
-        underTest.onPgnClicked()
-        underTest.onImport(pgn)
-        advanceUntilIdle()
+    private fun setupAnalysisResult() {
+        val moves = listOf(
+            moveAnalysis(1, "e4", MoveClassification.Good),
+            moveAnalysis(2, "e5", MoveClassification.Good),
+            moveAnalysis(3, "Nf3", MoveClassification.Great),
+            moveAnalysis(4, "Nc6", MoveClassification.Good),
+        )
+        fakeAnalyzeFullGame.setResult(
+            GameAnalysisProgress.Analyzing(1, 4, moves[0]),
+            GameAnalysisProgress.Analyzing(2, 4, moves[1]),
+            GameAnalysisProgress.Analyzing(3, 4, moves[2]),
+            GameAnalysisProgress.Analyzing(4, 4, moves[3]),
+            GameAnalysisProgress.Completed(
+                GameAnalysis(
+                    moves = moves,
+                    averageCentipawnLoss = 5f,
+                    blunders = emptyList(),
+                    mistakes = emptyList(),
+                    inaccuracies = emptyList(),
+                    brilliancies = emptyList(),
+                )
+            ),
+        )
     }
 
-    private fun playMove(from: Locus, to: Locus) {
-        underTest.onSquareClicked(from)
-        underTest.onSquareClicked(to)
-    }
-
-    private fun assertNavigation(back: Boolean, forward: Boolean) {
-        assertEquals(back, underTest.uiState.value.canNavigateBack)
-        assertEquals(forward, underTest.uiState.value.canNavigateForward)
-    }
+    private fun moveAnalysis(index: Int, algebraic: String, classification: MoveClassification): MoveAnalysis =
+        MoveAnalysis(
+            moveIndex = index,
+            moveAlgebraic = algebraic,
+            evaluation = Evaluation.Centipawns(10),
+            centipawnLoss = 5,
+            classification = classification,
+            bestMove = null,
+        )
 }

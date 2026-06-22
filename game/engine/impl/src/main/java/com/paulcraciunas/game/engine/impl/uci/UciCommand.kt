@@ -52,6 +52,11 @@ internal sealed class UciCommand {
         override fun responseFactory(): ResponseFactory = ResponseFactory.BestMoveFactory
     }
 
+    class GoDepth(val depth: Int) : UciCommand() {
+        override fun protocol(): String = "go depth $depth"
+        override fun responseFactory(): ResponseFactory = ResponseFactory.EvaluatedBestMoveFactory()
+    }
+
     object GoInfinite : UciCommand() {
         override fun protocol(): String = "go infinite"
     }

@@ -12,6 +12,7 @@ interface ChessEngine {
     suspend fun calculateBestMove(fen: String): EngineMove
     suspend fun prepareForAnalysis()
     fun analyzePosition(fen: String, multiPvCount: Int = DEFAULT_MULTI_PV): Flow<AnalysisResult>
+    suspend fun evaluatePosition(fen: String, depth: Int = DEFAULT_ANALYSIS_DEPTH): PositionEvaluation
     suspend fun stopAnalysis()
     suspend fun stop()
     suspend fun shutdown()
@@ -19,5 +20,6 @@ interface ChessEngine {
     companion object {
         const val DEFAULT_ELO: Int = 1350
         const val DEFAULT_MULTI_PV: Int = 3
+        const val DEFAULT_ANALYSIS_DEPTH: Int = 18
     }
 }

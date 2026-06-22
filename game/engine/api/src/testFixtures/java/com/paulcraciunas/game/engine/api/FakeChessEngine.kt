@@ -15,6 +15,7 @@ import java.util.LinkedList
 class FakeChessEngine : ChessEngine {
     private val moveQueue: LinkedList<EngineMove> = LinkedList()
     private val analysisResults: LinkedList<List<AnalysisResult>> = LinkedList()
+    private val positionEvaluations: LinkedList<PositionEvaluation> = LinkedList()
     var isInitialized: Boolean = false
         private set
     var isPreparedForAnalysis: Boolean = false
@@ -29,6 +30,8 @@ class FakeChessEngine : ChessEngine {
         private set
     var lastReceivedFen: String? = null
         private set
+    var evaluatedFens: MutableList<String> = mutableListOf()
+        private set
 
     init {
         loadItalianGameDefense()
@@ -40,6 +43,10 @@ class FakeChessEngine : ChessEngine {
 
     fun enqueueAnalysisResults(results: List<AnalysisResult>) {
         analysisResults.add(results)
+    }
+
+    fun enqueuePositionEvaluation(evaluation: PositionEvaluation) {
+        positionEvaluations.add(evaluation)
     }
 
     override suspend fun initialize() {
@@ -64,6 +71,12 @@ class FakeChessEngine : ChessEngine {
         lastReceivedFen = fen
         val results = analysisResults.poll() ?: listOf(defaultAnalysisResult())
         results.forEach { emit(it) }
+    }
+
+    override suspend fun evaluatePosition(fen: String, depth: Int): PositionEvaluation {
+        lastReceivedFen = fen
+        evaluatedFens.add(fen)
+        return positionEvaluations.poll() ?: defaultPositionEvaluation(depth)
     }
 
     override suspend fun stopAnalysis() {
@@ -99,5 +112,11 @@ class FakeChessEngine : ChessEngine {
                 ),
             ),
         ),
+    )
+
+    private fun defaultPositionEvaluation(depth: Int): PositionEvaluation = PositionEvaluation(
+        depth = depth,
+        evaluation = Evaluation.Centipawns(30),
+        bestMove = EngineMove(from = Locus.e2, to = Locus.e4),
     )
 }

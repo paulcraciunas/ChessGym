@@ -8,7 +8,8 @@ import com.paulcraciunas.game.logic.impl.plies.Playable
 internal class DrawByRepetitionStrategy : GameOverStrategy {
 
     override fun invoke(of: Game): Game.GameState {
-        if (of.history.size < DRAW_BY_REPETITION_COUNT * 2) {
+        val history = of.history
+        if (history.size < DRAW_BY_REPETITION_COUNT * 2) {
             return of.state
         }
         var count = 1

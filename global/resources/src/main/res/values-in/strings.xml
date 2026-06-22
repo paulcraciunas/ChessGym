@@ -384,7 +384,7 @@
     <string name="tools_analysis_title">Analisis</string>
     <string name="tools_analysis_flip_board">Balik papan</string>
     <string name="tools_analysis_description">Analisis posisi dengan mesin</string>
-    <string name="tools_import_description">Impor permainan dari notasi FEN atau PGN</string>
+    <string name="tools_import_description">Impor permainan dari notasi PGN</string>
     <!-- endregion -->
 
     <!-- region Clock Screen -->
@@ -403,15 +403,12 @@
 
     <!-- region Import Game Screen -->
     <string name="import_game_title">Impor Permainan</string>
-    <string name="import_fen">Posisi</string>
-    <string name="import_pgn">Permainan</string>
-    <string name="import_dialog_title_fen">Impor Posisi</string>
-    <string name="import_dialog_title_pgn">Impor Permainan</string>
-    <string name="import_dialog_hint_fen">Tempelkan string FEN di sini…</string>
     <string name="import_dialog_hint_pgn">Tempelkan teks PGN di sini…</string>
     <string name="import_dialog_confirm">Impor</string>
     <string name="import_error_invalid_fen">Notasi FEN tidak valid. Silakan periksa dan coba lagi.</string>
     <string name="import_error_invalid_pgn">Notasi PGN tidak valid. Silakan periksa dan coba lagi.</string>
+    <string name="import_game_setup_description">Tempel PGN untuk mengimpor dan menganalisis permainan.</string>
+    <string name="import_game_analyzing">Menganalisis permainan… %1$d%%</string>
     <string name="import_game_jump_to_start">Lompat ke awal</string>
     <string name="import_game_previous_move">Langkah sebelumnya</string>
     <string name="import_game_next_move">Langkah berikutnya</string>

@@ -3,7 +3,9 @@ package com.paulcraciunas.screens.tools.importgame.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -25,71 +27,57 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.paulcraciunas.global.resources.R
-import com.paulcraciunas.screens.common.design.components.ChessGymDialog
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
+import com.paulcraciunas.screens.common.design.components.PrimaryButton
 import com.paulcraciunas.screens.common.design.components.SpacerSize
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.testTag
-import com.paulcraciunas.screens.tools.importgame.vm.ImportType
 
 @Composable
-fun ImportGameDialog(
-    type: ImportType,
-    error: String?,
+internal fun SetupContent(
+    hasError: Boolean,
     onImport: (String) -> Unit,
-    onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var text by rememberSaveable { mutableStateOf("") }
-
-    val dialogTitle = when (type) {
-        ImportType.FEN -> stringResource(R.string.import_dialog_title_fen)
-        ImportType.PGN -> stringResource(R.string.import_dialog_title_pgn)
-    }
-    val hint = when (type) {
-        ImportType.FEN -> stringResource(R.string.import_dialog_hint_fen)
-        ImportType.PGN -> stringResource(R.string.import_dialog_hint_pgn)
-    }
-
-    ChessGymDialog(
-        onDismissRequest = onDismiss,
-        title = { SimpleTitle(title = dialogTitle) },
-        buttons = {
-            Paired(
-                confirmText = stringResource(R.string.import_dialog_confirm),
-                onConfirm = { onImport(text) },
-                dismissText = stringResource(R.string.dialog_cancel),
-                onDismiss = onDismiss,
-                confirmEnabled = text.isNotBlank(),
-            )
-        },
-        modifier = modifier.testTag { ImportGameScreenTags.IMPORT_DIALOG },
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = Design.dimensions.spacing.xgut),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
     ) {
-        Custom {
-            OutlinedTextField(
-                value = text,
-                onValueChange = { text = it },
-                label = { Text(hint) },
-                minLines = 3,
-                maxLines = 6,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .testTag { ImportGameScreenTags.IMPORT_TEXT_FIELD },
-            )
+        OutlinedTextField(
+            value = text,
+            onValueChange = { text = it },
+            label = { Text(stringResource(R.string.import_dialog_hint_pgn)) },
+            minLines = 3,
+            maxLines = 6,
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag { ImportGameScreenTags.IMPORT_TEXT_FIELD },
+        )
 
-            if (error != null) {
-                ChessGymSpacer(size = SpacerSize.LARGE)
-                ErrorInDialog(
-                    message = error,
-                    modifier = Modifier.testTag { ImportGameScreenTags.IMPORT_ERROR },
-                )
-            }
+        if (hasError) {
+            ChessGymSpacer(size = SpacerSize.LARGE)
+            ErrorOutline(
+                message = stringResource(R.string.import_error_invalid_pgn),
+                modifier = Modifier.testTag { ImportGameScreenTags.IMPORT_ERROR },
+            )
         }
+        PrimaryButton(
+            text = stringResource(R.string.import_dialog_confirm),
+            onClick = { onImport(text) },
+            enabled = text.isNotBlank(),
+            modifier = Modifier
+                .padding(Design.dimensions.spacing.xgut)
+                .testTag { ImportGameScreenTags.PGN_BUTTON },
+        )
     }
 }
 
 @Composable
-private fun ErrorInDialog(
+private fun ErrorOutline(
     message: String,
     modifier: Modifier = Modifier,
 ) {

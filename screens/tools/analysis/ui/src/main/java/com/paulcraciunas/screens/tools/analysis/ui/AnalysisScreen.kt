@@ -8,14 +8,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulcraciunas.game.logic.api.board.Locus
@@ -26,7 +23,9 @@ import com.paulcraciunas.screens.common.LocalUiSettings
 import com.paulcraciunas.screens.common.UiSettings
 import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
+import com.paulcraciunas.screens.common.board.MoveArrowOverlay
 import com.paulcraciunas.screens.common.controls.CapturedPieces
+import com.paulcraciunas.screens.common.controls.FlipBoardButton
 import com.paulcraciunas.screens.common.controls.MoveNavigationControls
 import com.paulcraciunas.screens.common.design.theme.Design
 import com.paulcraciunas.screens.common.dialogs.PromotionDialog
@@ -77,11 +76,14 @@ fun AnalysisScreen(
                 onClick = onSquareClicked,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                MoveArrowOverlay(
-                    move = uiState.engineData?.topMove,
-                    orientation = orientation,
-                    modifier = Modifier.matchParentSize(),
-                )
+                uiState.engineData?.topMove?.let {
+                    MoveArrowOverlay(
+                        from = it.from,
+                        to = it.to,
+                        orientation = orientation,
+                        modifier = Modifier.matchParentSize(),
+                    )
+                }
             }
             CapturedPieces(
                 capturedPieces = uiState.data.captured.byPlayer,
@@ -123,20 +125,6 @@ fun AnalysisScreen(
         PromotionDialog(
             side = uiState.data.player,
             onPieceChosen = onPromote,
-        )
-    }
-}
-
-@Composable
-private fun FlipBoardButton(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    IconButton(onClick = onClick, modifier = modifier) {
-        Icon(
-            painter = painterResource(R.drawable.swap_vert_icon),
-            contentDescription = stringResource(R.string.tools_analysis_flip_board),
-            tint = Design.colors.accent,
         )
     }
 }

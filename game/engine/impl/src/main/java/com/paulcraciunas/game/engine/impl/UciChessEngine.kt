@@ -3,6 +3,7 @@ package com.paulcraciunas.game.engine.impl
 import com.paulcraciunas.game.engine.api.AnalysisResult
 import com.paulcraciunas.game.engine.api.ChessEngine
 import com.paulcraciunas.game.engine.api.EngineMove
+import com.paulcraciunas.game.engine.api.PositionEvaluation
 import com.paulcraciunas.game.engine.impl.uci.AnalysisAccumulator
 import com.paulcraciunas.game.engine.impl.uci.InfoLineParser
 import com.paulcraciunas.game.engine.impl.uci.UciCommand
@@ -50,12 +51,11 @@ internal class UciChessEngine @Inject constructor(
         uci.execute<UciResponse.Ready>(UciCommand.IsReady)
     }
 
-    override suspend fun calculateBestMove(fen: String): EngineMove =
-        withContext(dispatcher) {
-            uci.execute<UciResponse.Done>(UciCommand.SetPosition(fen))
-            val bestMove = uci.execute<UciResponse.BestMove>(UciCommand.SetMoveTime())
-            bestMove.engineMove
-        }
+    override suspend fun calculateBestMove(fen: String): EngineMove = withContext(dispatcher) {
+        uci.execute<UciResponse.Done>(UciCommand.SetPosition(fen))
+        val bestMove = uci.execute<UciResponse.BestMove>(UciCommand.SetMoveTime())
+        bestMove.engineMove
+    }
 
     override suspend fun prepareForAnalysis(): Unit = withContext(dispatcher) {
         initialize()
@@ -69,11 +69,10 @@ internal class UciChessEngine @Inject constructor(
 
         analysisLock.withLock {
             uci.execute<UciResponse.Ready>(UciCommand.IsReady)
-
             uci.execute<UciResponse.Done>(UciCommand.SetMultiPV(multiPvCount))
             uci.execute<UciResponse.Done>(UciCommand.SetPosition(fen))
-            uci.sendCommand(UciCommand.GoInfinite)
 
+            uci.sendCommand(UciCommand.GoInfinite)
             val accumulator = AnalysisAccumulator(multiPvCount)
             while (currentCoroutineContext().isActive) {
                 val line = uci.readLine()
@@ -84,6 +83,23 @@ internal class UciChessEngine @Inject constructor(
             }
         }
     }.conflate().flowOn(dispatcher)
+
+    override suspend fun evaluatePosition(fen: String, depth: Int): PositionEvaluation = withContext(dispatcher) {
+        uci.sendCommand(UciCommand.Stop)
+
+        analysisLock.withLock {
+            uci.execute<UciResponse.Ready>(UciCommand.IsReady)
+            uci.execute<UciResponse.Done>(UciCommand.SetMultiPV(1))
+            uci.execute<UciResponse.Done>(UciCommand.SetPosition(fen))
+
+            val result = uci.execute<UciResponse.EvaluatedBestMove>(UciCommand.GoDepth(depth))
+            PositionEvaluation(
+                depth = result.depth,
+                evaluation = result.evaluation,
+                bestMove = result.engineMove,
+            )
+        }
+    }
 
     override suspend fun stopAnalysis(): Unit = withContext(dispatcher) {
         uci.sendCommand(UciCommand.Stop)

@@ -388,7 +388,7 @@
     <string name="tools_analysis_title">Analysis</string>
     <string name="tools_analysis_flip_board">Flip board</string>
     <string name="tools_analysis_description">Analyze positions with the engine</string>
-    <string name="tools_import_description">Import a game from FEN or PGN notation</string>
+    <string name="tools_import_description">Import a game from PGN notation</string>
     <!-- endregion -->
 
     <!-- region Clock Screen -->
@@ -407,15 +407,12 @@
 
     <!-- region Import Game Screen -->
     <string name="import_game_title">Import Game</string>
-    <string name="import_fen">Position</string>
-    <string name="import_pgn">Game</string>
-    <string name="import_dialog_title_fen">Import Position</string>
-    <string name="import_dialog_title_pgn">Import Game</string>
-    <string name="import_dialog_hint_fen">Paste FEN string here…</string>
     <string name="import_dialog_hint_pgn">Paste PGN text here…</string>
     <string name="import_dialog_confirm">Import</string>
     <string name="import_error_invalid_fen">Invalid FEN notation. Please check and try again.</string>
     <string name="import_error_invalid_pgn">Invalid PGN notation. Please check and try again.</string>
+    <string name="import_game_setup_description">Paste a PGN to import and analyse a game.</string>
+    <string name="import_game_analyzing">Analysing game… %1$d%%</string>
     <string name="import_game_jump_to_start">Jump to start</string>
     <string name="import_game_previous_move">Previous move</string>
     <string name="import_game_next_move">Next move</string>

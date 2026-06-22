@@ -2,112 +2,108 @@ package com.paulcraciunas.screens.tools.importgame.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.paulcraciunas.game.logic.api.board.Locus
-import com.paulcraciunas.game.logic.api.board.Piece
+import com.paulcraciunas.domain.api.analysis.AnalyzeFullGame
+import com.paulcraciunas.game.logic.api.Game
 import com.paulcraciunas.global.qualifiers.DefaultDispatcher
-import com.paulcraciunas.screens.data.engine.PlayIntent
-import com.paulcraciunas.screens.data.engine.SinglePlaySession
-import com.paulcraciunas.screens.data.engine.SingleSessionConfiguration
-import com.paulcraciunas.screens.data.engine.SingleSessionState
-import com.paulcraciunas.serializer.api.SerializeException
+import com.paulcraciunas.screens.data.utils.SequentialJob
 import com.paulcraciunas.serializer.api.Serializer
-import com.paulcraciunas.serializer.di.SerializerFen
 import com.paulcraciunas.serializer.di.SerializerPgn
-import com.paulcraciunas.settings.application.api.AppSettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
-internal data class VmState(
-    val showImportDialog: ImportType? = null,
-    val importType: ImportType? = null,
-    val importError: String? = null,
-)
-
 @HiltViewModel
 class ImportGameViewModel @Inject constructor(
-    @param:DefaultDispatcher private val dispatcher: CoroutineDispatcher,
-    @SerializerFen fenSerializer: Serializer,
-    @SerializerPgn pgnSerializer: Serializer,
-    appSettingsRepository: AppSettingsRepository,
+    @param:DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher,
+    @param:SerializerPgn private val pgnSerializer: Serializer,
+    private val analysisUseCase: AnalyzeFullGame,
 ) : ViewModel() {
-    private val vmState = MutableStateFlow(VmState())
-    private val session = ImportSession(fenSerializer, pgnSerializer)
-    private val playSession = SinglePlaySession(
-        settingsRepository = appSettingsRepository,
-        config = SingleSessionConfiguration(gameOverBehavior = SingleSessionConfiguration.GameOverBehavior.AllowNavigation),
-    )
+    private val adapter = ImportGameUiStateAdapter()
+    private val analysisJob = SequentialJob(viewModelScope)
+    private lateinit var game: Game
 
-    val uiState: StateFlow<ImportGameUiState> = combine(
-        playSession.state,
-        vmState
-    ) { state, vmState -> state.toUiState(vmState) }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = ImportGameUiState()
-        )
+    private val _uiState = MutableStateFlow<ImportGameUiState>(ImportGameUiState.Setup())
+    val uiState: StateFlow<ImportGameUiState> = _uiState.asStateFlow()
 
-    fun onFenClicked() = vmState.update { it.copy(showImportDialog = ImportType.FEN, importError = null) }
-    fun onPgnClicked() = vmState.update { it.copy(showImportDialog = ImportType.PGN, importError = null) }
-    fun onDismissDialog() = vmState.update { it.copy(showImportDialog = null, importError = null) }
-
-    fun onImport(gameString: String) {
-        val importType = vmState.value.showImportDialog ?: return
-
-        viewModelScope.launch(dispatcher) {
+    fun onImport(pgn: String) {
+        viewModelScope.launch(defaultDispatcher) {
             try {
-                session.import(gameString = gameString, of = importType)
-                vmState.update { it.copy(showImportDialog = null, importType = importType, importError = null) }
-                playSession.run(session.createSession())
-            } catch (e: SerializeException) {
-                Timber.w(e, "Failed to import game from: $gameString")
-                vmState.update { it.copy(importError = e.message) }
-            } catch (e: IllegalArgumentException) {
-                Timber.w(e, "Failed to import game from: $gameString")
-                vmState.update { it.copy(importError = e.message) }
+                game = pgnSerializer.from(pgn)
+                _uiState.update { adapter.adapt(game) }
+                analysisJob.launch {
+                    analysisUseCase.analyze(game).collect { progress ->
+                        _uiState.update {
+                            adapter.adapt(currentState = _uiState.value, progress = progress)
+                        }
+                    }
+                }
+            } catch (e: Throwable) {
+                Timber.w(e, "Failed to import PGN")
+                _uiState.update { ImportGameUiState.Setup(hasImportError = true) }
             }
         }
     }
 
-    fun onSquareClicked(locus: Locus) {
-        if (vmState.value.importType == ImportType.PGN) return // can't play through full imported games
-        playSession.accept(intent = PlayIntent.SelectSquare(locus))
+    fun onNavigateBackPressed(): Boolean {
+        _uiState.update {
+            if (it is ImportGameUiState.Loading) it.copy(showAbandonDialog = true)
+            else it
+        }
+        return _uiState.value is ImportGameUiState.Loading
     }
 
-    fun onPromote(to: Piece) = playSession.accept(intent = PlayIntent.Promote(to))
-    fun onJumpToStart() = playSession.accept(intent = PlayIntent.Navigate(PlayIntent.Navigation.ToStart))
-    fun onPreviousMove() = playSession.accept(intent = PlayIntent.Navigate(PlayIntent.Navigation.Back))
-    fun onNextMove() = playSession.accept(intent = PlayIntent.Navigate(PlayIntent.Navigation.Forward))
-    fun onJumpToEnd() = playSession.accept(intent = PlayIntent.Navigate(PlayIntent.Navigation.ToEnd))
+    fun onAbandonConfirmed() {
+        analysisJob.cancel()
+        _uiState.value = ImportGameUiState.Setup()
+    }
 
-    private fun SingleSessionState.toUiState(vmState: VmState): ImportGameUiState = when (status) {
-        SingleSessionState.Status.Loading -> ImportGameUiState(
-            showImportDialog = vmState.showImportDialog,
-            importType = vmState.importType,
-            importError = vmState.importError,
-        )
-        SingleSessionState.Status.Ready,
-        SingleSessionState.Status.Playing,
-        SingleSessionState.Status.GameOver -> ImportGameUiState(
-            data = this.boardState,
-            importType = vmState.importType,
-            isGameLoaded = true,
-            canNavigateBack = this.navigation?.canGoBack == true,
-            canNavigateForward = this.navigation?.canGoForward == true,
-        )
-        SingleSessionState.Status.Failed -> ImportGameUiState(
-            data = this.boardState,
-            importType = vmState.importType,
-            isGameLoaded = false,
-        )
+    fun onAbandonDismissed() = _uiState.update {
+        if (it is ImportGameUiState.Loading) it.copy(showAbandonDialog = false)
+        else it
+    }
+
+    fun onFlipBoard() = _uiState.update {
+        if (it is ImportGameUiState.Complete) it.copy(orientation = it.orientation.other())
+        else it
+    }
+
+    fun onMoveSelected(moveIndex: Int) {
+        val state = _uiState.value
+        if (state !is ImportGameUiState.Complete) return
+
+        game.undoAll()
+        repeat(moveIndex) { game.replayNext() }
+
+        _uiState.update {
+            adapter.update(state, game)
+        }
+    }
+
+    fun onJumpToStart() = navigate(game::canUndo, game::undoAll)
+    fun onPreviousMove() = navigate(game::canUndo, game::undoLast)
+    fun onNextMove() = navigate(game::canReplay, game::replayNext)
+    fun onJumpToEnd() = navigate(game::canReplay, game::replayAll)
+
+    override fun onCleared() {
+        super.onCleared()
+        analysisJob.cancel()
+    }
+
+    private fun navigate(guard: () -> Boolean, action: () -> Unit) {
+        val state = _uiState.value
+        if (state !is ImportGameUiState.Complete) return
+
+        if (guard()) {
+            action()
+            _uiState.update {
+                adapter.update(state, game)
+            }
+        }
     }
 }

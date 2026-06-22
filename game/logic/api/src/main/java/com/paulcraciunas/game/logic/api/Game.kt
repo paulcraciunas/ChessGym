@@ -12,7 +12,7 @@ interface Game {
     val info: GameInfo
     val board: IBoard
     val state: GameState
-    val history: List<Ply>
+    val history: List<Ply> // builds a new list each time!
     val historySize: Int
     val currentMoveIndex: Int
 

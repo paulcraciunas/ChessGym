@@ -389,7 +389,7 @@
     <string name="tools_analysis_title">Analyse</string>
     <string name="tools_analysis_flip_board">Retourner le plateau</string>
     <string name="tools_analysis_description">Analyser des positions avec le moteur</string>
-    <string name="tools_import_description">Importer une partie en notation FEN ou PGN</string>
+    <string name="tools_import_description">Importer une partie en notation PGN</string>
     <!-- endregion -->
 
     <!-- region Clock Screen -->
@@ -408,15 +408,12 @@
 
     <!-- region Import Game Screen -->
     <string name="import_game_title">Importer une partie</string>
-    <string name="import_fen">Position</string>
-    <string name="import_pgn">Partie</string>
-    <string name="import_dialog_title_fen">Importer une position</string>
-    <string name="import_dialog_title_pgn">Importer une partie</string>
-    <string name="import_dialog_hint_fen">Collez la chaîne FEN ici…</string>
     <string name="import_dialog_hint_pgn">Collez le texte PGN ici…</string>
     <string name="import_dialog_confirm">Importer</string>
     <string name="import_error_invalid_fen">Notation FEN invalide. Veuillez vérifier et réessayer.</string>
     <string name="import_error_invalid_pgn">Notation PGN invalide. Veuillez vérifier et réessayer.</string>
+    <string name="import_game_setup_description">Collez un PGN pour importer et analyser une partie.</string>
+    <string name="import_game_analyzing">Analyse en cours… %1$d%%</string>
     <string name="import_game_jump_to_start">Aller au début</string>
     <string name="import_game_previous_move">Coup précédent</string>
     <string name="import_game_next_move">Coup suivant</string>

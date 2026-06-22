@@ -384,7 +384,7 @@
     <string name="tools_analysis_title">분석</string>
     <string name="tools_analysis_flip_board">보드 뒤집기</string>
     <string name="tools_analysis_description">엔진으로 포지션을 분석하세요</string>
-    <string name="tools_import_description">FEN 또는 PGN 표기법에서 게임 가져오기</string>
+    <string name="tools_import_description">PGN 표기법에서 게임 가져오기</string>
     <!-- endregion -->
 
     <!-- region Clock Screen -->
@@ -403,15 +403,12 @@
 
     <!-- region Import Game Screen -->
     <string name="import_game_title">게임 가져오기</string>
-    <string name="import_fen">포지션</string>
-    <string name="import_pgn">게임</string>
-    <string name="import_dialog_title_fen">FEN 가져오기</string>
-    <string name="import_dialog_title_pgn">PGN 가져오기</string>
-    <string name="import_dialog_hint_fen">FEN 문자열을 여기에 붙여넣기…</string>
     <string name="import_dialog_hint_pgn">PGN 텍스트를 여기에 붙여넣기…</string>
     <string name="import_dialog_confirm">가져오기</string>
     <string name="import_error_invalid_fen">잘못된 FEN 표기법입니다. 확인 후 다시 시도해 주세요.</string>
     <string name="import_error_invalid_pgn">잘못된 PGN 표기법입니다. 확인 후 다시 시도해 주세요.</string>
+    <string name="import_game_setup_description">PGN을 붙여넣어 게임을 가져오고 분석하세요.</string>
+    <string name="import_game_analyzing">게임 분석 중… %1$d%%</string>
     <string name="import_game_jump_to_start">시작으로 이동</string>
     <string name="import_game_previous_move">이전 수</string>
     <string name="import_game_next_move">다음 수</string>

@@ -1,6 +1,7 @@
 package com.paulcraciunas.game.engine.impl.uci
 
 import com.paulcraciunas.game.engine.api.EngineMove
+import com.paulcraciunas.game.engine.api.Evaluation
 import com.paulcraciunas.game.engine.api.UciMoveParser
 
 private const val BEST_MOVE_TOKEN = "bestmove"
@@ -12,6 +13,11 @@ internal sealed class UciResponse {
     object Initialized : UciResponse()
     object Ready : UciResponse()
     class BestMove(val engineMove: EngineMove) : UciResponse()
+    class EvaluatedBestMove(
+        val engineMove: EngineMove,
+        val evaluation: Evaluation,
+        val depth: Int,
+    ) : UciResponse()
 }
 
 internal sealed class ResponseValidator {
@@ -53,14 +59,38 @@ internal sealed class ResponseFactory(val validator: ResponseValidator) {
         override fun construct(from: String?): UciResponse? =
             if (validator.validate(from)) UciResponse.BestMove(engineMove = parseBestMove(from!!))
             else null
+    }
 
-        private fun parseBestMove(from: String): EngineMove {
-            val parts = from.trim().split(" ")
-            require(parts.size >= 2 && parts[0] == BEST_MOVE_TOKEN) {
-                "Invalid bestmove line: $from"
+    class EvaluatedBestMoveFactory : ResponseFactory(ResponseValidator.BestMove) {
+        private var lastEvaluation: Evaluation = Evaluation.Centipawns(0)
+        private var lastDepth: Int = 0
+
+        override fun construct(from: String?): UciResponse? {
+            if (from == null) return null
+
+            val parsed = InfoLineParser.parse(from)
+            if (parsed != null) {
+                lastEvaluation = parsed.evaluation
+                lastDepth = parsed.depth
+                return null
             }
-            return UciMoveParser.parse(parts[1])
-                ?: throw IllegalArgumentException("Invalid UCI move: ${parts[1]}")
+
+            if (!validator.validate(from)) return null
+
+            return UciResponse.EvaluatedBestMove(
+                engineMove = parseBestMove(from),
+                evaluation = lastEvaluation,
+                depth = lastDepth,
+            )
         }
     }
+}
+
+private fun parseBestMove(from: String): EngineMove {
+    val parts = from.trim().split(" ")
+    require(parts.size >= 2 && parts[0] == BEST_MOVE_TOKEN) {
+        "Invalid bestmove line: $from"
+    }
+    return UciMoveParser.parse(parts[1])
+        ?: throw IllegalArgumentException("Invalid UCI move: ${parts[1]}")
 }
