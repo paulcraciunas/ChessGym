@@ -71,6 +71,19 @@ android {
             @Suppress("UnstableApiUsage")
             experimentalProperties["android.experimental.enableTestTagsAsResourceId"] = true
         }
+        getByName("baselineProfile") {
+            signingConfig = signingConfigs.getByName("debug")
+            applicationIdSuffix = ".benchmark"
+            versionNameSuffix = "-baselineProfile"
+            buildConfigField("boolean", "ENABLE_TEST_TAGS", "true")
+            buildConfigField("String", "BUILD_NUMBER", "\"1\"")
+            buildConfigField("String", "BACKEND_URL", "\"https://chessgym-backend.run.app\"")
+            configure<CrashlyticsExtension> {
+                mappingFileUploadEnabled = false
+            }
+            @Suppress("UnstableApiUsage")
+            experimentalProperties["android.experimental.enableTestTagsAsResourceId"] = true
+        }
     }
 
     sourceSets {
@@ -85,6 +98,11 @@ android {
         named("benchmark") {
             java.directories.add("src/release/java")
             kotlin.directories.add("src/release/java")
+        }
+        named("baselineProfile") {
+            java.directories.add("src/release/java")
+            kotlin.directories.add("src/release/java")
+            assets.directories.add("src/benchmark/assets")
         }
     }
 }
@@ -150,6 +168,9 @@ dependencies {
 
     // Logging
     implementation(libs.public.timber)
+
+    // Profile Installer
+    implementation(libs.androidx.profileinstaller)
 
     // Firebase
     implementation(platform(libs.firebase.bom))

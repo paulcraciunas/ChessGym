@@ -72,7 +72,10 @@ class MainActivity : ComponentActivity() {
     }
 
     @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
-    private fun Modifier.root(): Modifier = if (BuildConfig.BUILD_TYPE == "benchmark") {
-        this.fillMaxSize().semantics { testTagsAsResourceId = true }
-    } else this.fillMaxSize()
+    private fun Modifier.root(): Modifier =
+        if (BuildConfig.BUILD_TYPE == "benchmark" ||
+            BuildConfig.BUILD_TYPE == "baselineProfile"
+        ) {
+            this.fillMaxSize().semantics { testTagsAsResourceId = true }
+        } else this.fillMaxSize()
 }

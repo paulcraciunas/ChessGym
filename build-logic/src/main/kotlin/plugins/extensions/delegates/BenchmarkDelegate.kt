@@ -23,6 +23,10 @@ internal class BenchmarkDelegate(private val project: Project) {
                             matchingFallbacks += listOf("release")
                             isMinifyEnabled = false
                         }
+                        create("baselineProfile") {
+                            initWith(getByName("benchmark"))
+                            matchingFallbacks += listOf("benchmark", "release")
+                        }
                     }
                 }
             }

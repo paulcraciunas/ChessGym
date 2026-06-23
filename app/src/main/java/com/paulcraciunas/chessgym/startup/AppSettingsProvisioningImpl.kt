@@ -26,11 +26,13 @@ class AppSettingsProvisioningImpl @Inject constructor(
     override operator fun invoke(): Flow<AppSettings> = flow {
         try {
             @Suppress("KotlinConstantConditions", "SimplifyBooleanWithConstants")
-            if (BuildConfig.BUILD_TYPE == "benchmark") {
-                appSettingsRepository.updatePuzzlesDownloaded(true) // bypass puzzle DB provisioning
+            if (BuildConfig.BUILD_TYPE == "benchmark" ||
+                BuildConfig.BUILD_TYPE == "baselineProfile"
+            ) {
+                appSettingsRepository.updatePuzzlesDownloaded(true)
                 appSettingsRepository.updateMinPuzzleRating(400)
-                appSettingsRepository.updateMaxPuzzleRating(2700)
-                appSettingsRepository.updateTotalPuzzleCount(1_000_000)
+                appSettingsRepository.updateMaxPuzzleRating(3000)
+                appSettingsRepository.updateTotalPuzzleCount(26_010)
             } else {
                 val settings = appSettingsRepository.appSettings.first()
                 if (settings.puzzlesDownloaded) {
