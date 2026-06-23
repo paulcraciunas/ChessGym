@@ -19,6 +19,9 @@ android {
         getByName("benchmark") {
             buildConfigField("boolean", "ENABLE_TEST_TAGS", "true")
         }
+        getByName("baselineProfile") {
+            buildConfigField("boolean", "ENABLE_TEST_TAGS", "true")
+        }
     }
 }
 

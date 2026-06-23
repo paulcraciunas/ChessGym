@@ -35,9 +35,10 @@ credentials = "1.6.0"
 googleid = "1.1.1"
 googlePlayReview = "2.0.2"
 billing = "9.0.0"
-androidx-benchmark = "1.4.0"
+androidx-benchmark = "1.4.1"
 uiautomator = "2.3.0"
 perfetto = "1.0.0"
+profileInstaller = "1.4.1"
 
 [libraries]
 ## Unit testing
@@ -58,6 +59,7 @@ androidx-compose-runtime-tracing = { module = "androidx.compose.runtime:runtime-
 androidx-tracing = { module = "androidx.tracing:tracing-perfetto", version.ref = "perfetto" }
 #noinspection Aligned16KB
 androidx-tracing-binary = { module = "androidx.tracing:tracing-perfetto-binary", version.ref = "perfetto" }
+androidx-profileinstaller = { group = "androidx.profileinstaller", name = "profileinstaller", version.ref = "profileInstaller" }
 
 ## Gradle plugins
 android-tools-build-gradle = { module = "com.android.tools.build:gradle", version.ref = "agp" }

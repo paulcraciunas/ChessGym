@@ -80,6 +80,12 @@ class AndroidApplicationPlugin : ConventionPlugin() {
                     matchingFallbacks += listOf("release")
                     isDebuggable = false
                 }
+                create("baselineProfile") {
+                    initWith(getByName("benchmark"))
+                    matchingFallbacks += listOf("benchmark", "release")
+                    isMinifyEnabled = false
+                    isShrinkResources = false
+                }
             }
             buildFeatures {
                 compose = true
