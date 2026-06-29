@@ -12,7 +12,6 @@ import com.paulcraciunas.global.qualifiers.DefaultDispatcher
 import com.paulcraciunas.global.sounds.SoundCoordinator
 import com.paulcraciunas.screens.data.engine.PlayIntent
 import com.paulcraciunas.screens.data.engine.PlaySession
-import com.paulcraciunas.screens.data.engine.PlaySessionState
 import com.paulcraciunas.screens.data.engine.toSoundEvents
 import com.paulcraciunas.screens.data.utils.SequentialJob
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
