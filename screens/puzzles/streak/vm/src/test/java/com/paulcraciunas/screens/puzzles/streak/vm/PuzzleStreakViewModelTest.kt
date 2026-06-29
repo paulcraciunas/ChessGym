@@ -414,33 +414,6 @@ internal class PuzzleStreakViewModelTest {
 
             assertTrue(underTest.uiState.value is PuzzleStreakUiState.StreakEnded)
         }
-
-        @Test
-        fun `GIVEN playing WHEN onNavigateBackPressed THEN shows abandon dialog and returns true`() = runTest(testDispatcher) {
-            buildVm(buildStandardPuzzle())
-
-            underTest.onSquareClicked(Locus.e7)
-            advanceUntilIdle()
-
-            val consumed = underTest.onNavigateBackPressed()
-            advanceUntilIdle()
-
-            assertTrue(consumed)
-            val playing = underTest.uiState.value as PuzzleStreakUiState.Playing
-            assertTrue(playing.showAbandonDialog)
-        }
-
-        @Test
-        fun `GIVEN streak ended WHEN onNavigateBackPressed THEN returns false`() = runTest(testDispatcher) {
-            buildVm(buildStandardPuzzle())
-
-            makeMove(from = Locus.d7, to = Locus.d5)
-            assertTrue(underTest.uiState.value is PuzzleStreakUiState.StreakEnded)
-
-            val consumed = underTest.onNavigateBackPressed()
-
-            assertFalse(consumed)
-        }
     }
 
     @Nested

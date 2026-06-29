@@ -77,14 +77,6 @@ class PuzzleStreakViewModel @Inject constructor(
     fun onStop() { timer.pause() }
     fun onStart() { timer.resume() }
 
-    fun onNavigateBackPressed(): Boolean {
-        val state = playSession.stateValue
-        if (state.status == PlaySessionState.Status.Playing) {
-            playSession.accept(intent = PlayIntent.RequestAbandon)
-        }
-        return state.status == PlaySessionState.Status.Playing
-    }
-
     fun onSquareClicked(selection: Locus) = playSession.accept(intent = PlayIntent.SelectSquare(selection))
     fun onPromote(to: Piece) = playSession.accept(intent = PlayIntent.Promote(to))
     fun onHintRequested() = playSession.accept(intent = PlayIntent.Hint)

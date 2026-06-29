@@ -109,11 +109,7 @@ internal fun PuzzleStreak(tabNavController: NavHostController) {
 
     PuzzleStreakScreen(
         uiState = puzzleStreakState,
-        onNavigateBack = {
-            if (!vm.onNavigateBackPressed()) {
-                tabNavController.popBackStack(Screen.PuzzleDashboard, inclusive = false)
-            }
-        },
+        onNavigateBack = { tabNavController.popBackStack(Screen.PuzzleDashboard, inclusive = false) },
         onSquareClicked = vm::onSquareClicked,
         onPromote = vm::onPromote,
         onHintRequested = vm::onHintRequested,
