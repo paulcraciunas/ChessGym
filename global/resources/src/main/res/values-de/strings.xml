@@ -144,7 +144,7 @@
     <string name="landing_write_to_db_progress">Datenbank wird erstellt</string>
     <string name="landing_write_to_db_subtitle">Aufgabendatenbank wird erstellt. Dies kann einige Minuten dauern.</string>
     <string name="database_download_dialog_title">Datenbank herunterladen</string>
-    <string name="database_download_dialog_body">Dabei werden etwa 50 MB Aufgabendaten heruntergeladen. Stelle sicher, dass du eine stabile Internetverbindung hast.</string>
+    <string name="database_download_dialog_body">Dabei werden %s Aufgabendaten heruntergeladen. Stelle sicher, dass du eine stabile Internetverbindung hast.</string>
     <string name="enable_notifications_dialog_title">Benachrichtigungen aktivieren</string>
     <string name="enable_notifications_dialog_body">Erhalte Benachrichtigungen über deinen Fortschritt und deine Erfolge.</string>
     <string name="enable_notifications_dialog_accept">Aktivieren</string>

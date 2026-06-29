@@ -145,6 +145,12 @@ class LoadingViewModel @Inject constructor(
     private fun provisionBundledTier() {
         provisioningJob = viewModelScope.launch {
             appSettingsRepository.updatePuzzlesDownloaded(true)
+            // Values taken from latest puzzle DB release, found here
+            // https://github.com/paulcraciunas/ChessGym/actions/runs/25991924449/job/76399531244
+            // At some point, it might be worth automating these values, if we re-release the puzzle DB
+            appSettingsRepository.updateTotalPuzzleCount(606248)
+            appSettingsRepository.updateMinPuzzleRating(399)
+            appSettingsRepository.updateMaxPuzzleRating(3318)
         }
     }
 

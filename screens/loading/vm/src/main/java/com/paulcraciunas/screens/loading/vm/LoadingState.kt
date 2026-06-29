@@ -7,7 +7,7 @@ enum class DatabaseTier(
     val tierSegment: String,
     val isBundled: Boolean,
 ) {
-    Full("~ 125 MB", PuzzleDatabaseContract.Tier.FULL, false),
+    Full("~ 185 MB", PuzzleDatabaseContract.Tier.FULL, false),
     Compact("~ 76 MB", PuzzleDatabaseContract.Tier.COMPACT, false),
     Lite("0", PuzzleDatabaseContract.Tier.LITE, true);
 

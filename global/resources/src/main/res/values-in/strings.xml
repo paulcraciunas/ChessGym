@@ -140,7 +140,7 @@
     <string name="landing_write_to_db_progress">Membangun basis data</string>
     <string name="landing_write_to_db_subtitle">Membangun basis data teka-teki. Ini mungkin memakan beberapa menit.</string>
     <string name="database_download_dialog_title">Unduh Basis Data</string>
-    <string name="database_download_dialog_body">Ini akan mengunduh sekitar 50MB data teka-teki. Pastikan kamu memiliki koneksi internet yang stabil.</string>
+    <string name="database_download_dialog_body">Ini akan mengunduh %s data teka-teki. Pastikan kamu memiliki koneksi internet yang stabil.</string>
     <string name="enable_notifications_dialog_title">Aktifkan Notifikasi</string>
     <string name="enable_notifications_dialog_body">Dapatkan pemberitahuan tentang progres dan pencapaianmu.</string>
     <string name="enable_notifications_dialog_accept">Aktifkan</string>

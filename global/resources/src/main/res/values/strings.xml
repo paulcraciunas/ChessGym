@@ -143,7 +143,7 @@
     <string name="landing_write_to_db_progress">Building database</string>
     <string name="landing_write_to_db_subtitle">Building puzzle database. This may take a few minutes.</string>
     <string name="database_download_dialog_title">Download Database</string>
-    <string name="database_download_dialog_body">This will download about 50MB of puzzle data. Make sure you have a stable internet connection.</string>
+    <string name="database_download_dialog_body">This will download %s of puzzle data. Make sure you have a stable internet connection.</string>
     <string name="enable_notifications_dialog_title">Enable Notifications</string>
     <string name="enable_notifications_dialog_body">Get notified about your progress and achievements.</string>
     <string name="enable_notifications_dialog_accept">Enable</string>

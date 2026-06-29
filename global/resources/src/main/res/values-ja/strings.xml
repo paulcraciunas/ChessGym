@@ -140,7 +140,7 @@
     <string name="landing_write_to_db_progress">データベースを構築中</string>
     <string name="landing_write_to_db_subtitle">パズルデータベースを構築中です。数分かかる場合があります。</string>
     <string name="database_download_dialog_title">データベースをダウンロード</string>
-    <string name="database_download_dialog_body">約50MBのパズルデータをダウンロードします。安定したインターネット接続を確認してください。</string>
+    <string name="database_download_dialog_body">%sのパズルデータをダウンロードします。安定したインターネット接続を確認してください。</string>
     <string name="enable_notifications_dialog_title">通知を有効にする</string>
     <string name="enable_notifications_dialog_body">進捗や実績について通知を受け取ります。</string>
     <string name="enable_notifications_dialog_accept">有効にする</string>

@@ -144,7 +144,7 @@
     <string name="landing_write_to_db_progress">डेटाबेस बन रहा है</string>
     <string name="landing_write_to_db_subtitle">पहेली डेटाबेस बन रहा है। इसमें कुछ मिनट लग सकते हैं।</string>
     <string name="database_download_dialog_title">डेटाबेस डाउनलोड करें</string>
-    <string name="database_download_dialog_body">यह लगभग 50MB पहेली डेटा डाउनलोड करेगा। सुनिश्चित करें कि आपके पास एक स्थिर इंटरनेट कनेक्शन है।</string>
+    <string name="database_download_dialog_body">यह %s पहेली डेटा डाउनलोड करेगा। सुनिश्चित करें कि आपके पास एक स्थिर इंटरनेट कनेक्शन है।</string>
     <string name="enable_notifications_dialog_title">सूचनाएं सक्षम करें</string>
     <string name="enable_notifications_dialog_body">अपनी प्रगति और उपलब्धियों के बारे में सूचित रहें।</string>
     <string name="enable_notifications_dialog_accept">सक्षम करें</string>

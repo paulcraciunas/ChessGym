@@ -144,7 +144,7 @@
     <string name="landing_write_to_db_progress">Construindo banco de dados</string>
     <string name="landing_write_to_db_subtitle">Construindo banco de dados de puzzles. Isso pode levar alguns minutos.</string>
     <string name="database_download_dialog_title">Baixar banco de dados</string>
-    <string name="database_download_dialog_body">Isso vai baixar cerca de 50 MB de dados de puzzles. Certifique-se de ter uma conexão estável com a internet.</string>
+    <string name="database_download_dialog_body">Isso vai baixar %s de dados de puzzles. Certifique-se de ter uma conexão estável com a internet.</string>
     <string name="enable_notifications_dialog_title">Ativar notificações</string>
     <string name="enable_notifications_dialog_body">Receba notificações sobre seu progresso e conquistas.</string>
     <string name="enable_notifications_dialog_accept">Ativar</string>

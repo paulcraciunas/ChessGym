@@ -11,6 +11,7 @@ import com.paulcraciunas.screens.common.design.components.DialogIconTone
 
 @Composable
 fun DownloadConfirmationDialog(
+    approximateSize: String,
     onCancelled: () -> Unit,
     onConfirmed: () -> Unit,
     modifier: Modifier = Modifier,
@@ -26,7 +27,7 @@ fun DownloadConfirmationDialog(
             )
         },
         body = {
-            Message(text = stringResource(R.string.database_download_dialog_body))
+            Message(text = stringResource(R.string.database_download_dialog_body, approximateSize))
         },
         buttons = {
             Paired(

@@ -140,7 +140,7 @@
     <string name="landing_write_to_db_progress">构建数据库中</string>
     <string name="landing_write_to_db_subtitle">正在构建棋谜数据库，可能需要几分钟。</string>
     <string name="database_download_dialog_title">下载数据库</string>
-    <string name="database_download_dialog_body">此操作将下载约50MB的棋谜数据，请确保网络连接稳定。</string>
+    <string name="database_download_dialog_body">此操作将下载%s的棋谜数据，请确保网络连接稳定。</string>
     <string name="enable_notifications_dialog_title">启用通知</string>
     <string name="enable_notifications_dialog_body">接收关于进度和成就的通知。</string>
     <string name="enable_notifications_dialog_accept">启用</string>
