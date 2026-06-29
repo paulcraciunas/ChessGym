@@ -1,20 +1,26 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-   Sample data extraction rules file; uncomment and customize as necessary.
-   See https://developer.android.com/about/versions/12/backup-restore#xml-changes
-   for details.
--->
+<?xml version="1.0" encoding="utf-8"?>
 <data-extraction-rules xmlns:tools="http://schemas.android.com/tools">
     <cloud-backup>
-        <include domain="sharedpref" path="user_data.json" />
-        <include domain="sharedpref" path="app_settings.preferences.pb" />
+        <!-- Include general shared preferences if any -->
+        <include domain="sharedpref" path="." />
 
+        <!-- DataStore files (stored in files/datastore/) -->
+        <!-- We include the directory but specifically exclude app_settings -->
+        <include domain="file" path="datastore/" />
+        <exclude domain="file" path="datastore/app_settings.preferences_pb" />
+
+        <!-- Exclude large puzzle database from cloud backup to save space.
+             This can be re-downloaded upon first launch. -->
         <exclude domain="database" path="puzzle_database" tools:ignore="FullBackupContent" />
         <exclude domain="database" path="puzzle_database-shm" tools:ignore="FullBackupContent" />
         <exclude domain="database" path="puzzle_database-wal" tools:ignore="FullBackupContent" />
     </cloud-backup>
+
     <device-transfer>
-        <include domain="sharedpref" path="user_data.json" />
-        <include domain="sharedpref" path="app_settings.preferences.pb" />
+        <!-- Device-to-device transfer should include everything for a seamless transition -->
+        <include domain="sharedpref" path="." />
+        <include domain="file" path="datastore/" />
+
         <include domain="database" path="puzzle_database" tools:ignore="FullBackupContent" />
         <include domain="database" path="puzzle_database-shm" tools:ignore="FullBackupContent" />
         <include domain="database" path="puzzle_database-wal" tools:ignore="FullBackupContent" />
