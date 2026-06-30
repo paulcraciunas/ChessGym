@@ -16,5 +16,6 @@ class NavigationDispatcher @Inject constructor() {
 
     sealed class Destination {
         data class Analysis(val puzzleId: Int) : Destination()
+        data object Achievements : Destination()
     }
 }
