@@ -54,8 +54,8 @@ private fun DrawScope.drawIcon(
     tier: Achievement.Tier,
     tint: Color,
 ) {
-    val scaleX = size.width / painter.intrinsicSize.width * iconScale
-    val scaleY = size.width / painter.intrinsicSize.width * iconScale
+    val scaleX = size.height / painter.intrinsicSize.height * iconScale
+    val scaleY = size.height / painter.intrinsicSize.height * iconScale
 
     val offsetX = (size.width - (painter.intrinsicSize.width * scaleX)) / 2
     val offsetY = (size.height - (painter.intrinsicSize.height * scaleY)) / 2 + tier.iconOffsetY
@@ -97,7 +97,7 @@ private val Achievement.Tier.shieldScaleX: Float
 private val Achievement.Tier.shieldScaleY: Float
     get() = if (this == Achievement.Tier.FIVE) 1f else 0.9f
 
-private const val iconScale: Float = 0.45f
+private const val iconScale: Float = 0.40f
 
 private val Achievement.Tier.iconOffsetY: Float
     get() = if (this >= Achievement.Tier.FOUR) -10f else 0f
@@ -165,7 +165,7 @@ private fun TieredAchievementPreview() {
                     .padding(Design.dimensions.spacing.md),
             ) {
                 TieredAchievement(
-                    achievement = Achievement.BLIND_STRATEGIST,
+                    achievement = Achievement.RUSH_SOLVER,
                     currentTier = Achievement.Tier.TWO,
                     modifier = Modifier.size(Design.dimensions.sizes.achievementIcon),
                 )
