@@ -16,8 +16,6 @@ import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -33,7 +31,6 @@ internal class UciChessEngine @Inject constructor(
 ) : ChessEngine {
     @Volatile
     private var isEngineRunning: Boolean = false
-    private val analysisLock = Mutex()
 
     override suspend fun initialize(): Unit = withContext(dispatcher) {
         if (isEngineRunning) return@withContext
@@ -67,38 +64,34 @@ internal class UciChessEngine @Inject constructor(
     override fun analyzePosition(fen: String, multiPvCount: Int): Flow<AnalysisResult> = flow {
         uci.sendCommand(UciCommand.Stop)
 
-        analysisLock.withLock {
-            uci.execute<UciResponse.Ready>(UciCommand.IsReady)
-            uci.execute<UciResponse.Done>(UciCommand.SetMultiPV(multiPvCount))
-            uci.execute<UciResponse.Done>(UciCommand.SetPosition(fen))
+        uci.execute<UciResponse.Ready>(UciCommand.IsReady)
+        uci.execute<UciResponse.Done>(UciCommand.SetMultiPV(multiPvCount))
+        uci.execute<UciResponse.Done>(UciCommand.SetPosition(fen))
 
-            uci.sendCommand(UciCommand.GoInfinite)
-            val accumulator = AnalysisAccumulator(multiPvCount)
-            while (currentCoroutineContext().isActive) {
-                val line = uci.readLine()
-                if (line.startsWith(BEST_MOVE_PREFIX)) break
+        uci.sendCommand(UciCommand.GoInfinite)
+        val accumulator = AnalysisAccumulator(multiPvCount)
+        while (currentCoroutineContext().isActive) {
+            val line = uci.readLine()
+            if (line.startsWith(BEST_MOVE_PREFIX)) break
 
-                val parsed = InfoLineParser.parse(line) ?: continue
-                accumulator.process(parsed)?.let { emit(it) }
-            }
+            val parsed = InfoLineParser.parse(line) ?: continue
+            accumulator.process(parsed)?.let { emit(it) }
         }
     }.conflate().flowOn(dispatcher)
 
     override suspend fun evaluatePosition(fen: String, depth: Int): PositionEvaluation = withContext(dispatcher) {
         uci.sendCommand(UciCommand.Stop)
 
-        analysisLock.withLock {
-            uci.execute<UciResponse.Ready>(UciCommand.IsReady)
-            uci.execute<UciResponse.Done>(UciCommand.SetMultiPV(1))
-            uci.execute<UciResponse.Done>(UciCommand.SetPosition(fen))
+        uci.execute<UciResponse.Ready>(UciCommand.IsReady)
+        uci.execute<UciResponse.Done>(UciCommand.SetMultiPV(1))
+        uci.execute<UciResponse.Done>(UciCommand.SetPosition(fen))
 
-            val result = uci.execute<UciResponse.EvaluatedBestMove>(UciCommand.GoDepth(depth))
-            PositionEvaluation(
-                depth = result.depth,
-                evaluation = result.evaluation,
-                bestMove = result.engineMove,
-            )
-        }
+        val result = uci.execute<UciResponse.EvaluatedBestMove>(UciCommand.GoDepth(depth))
+        PositionEvaluation(
+            depth = result.depth,
+            evaluation = result.evaluation,
+            bestMove = result.engineMove,
+        )
     }
 
     override suspend fun stopAnalysis(): Unit = withContext(dispatcher) {

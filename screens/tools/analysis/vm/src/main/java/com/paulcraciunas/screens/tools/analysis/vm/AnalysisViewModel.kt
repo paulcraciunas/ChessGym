@@ -26,6 +26,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -35,7 +36,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -63,8 +63,9 @@ class AnalysisViewModel @Inject constructor(
         config = SingleSessionConfiguration(gameOverBehavior = SingleSessionConfiguration.GameOverBehavior.AllowNavigation),
     )
     private val vmState = MutableStateFlow<VmState>(VmState())
-    private var runJob = SequentialJob(viewModelScope)
-    private var analysisJob = SequentialJob(viewModelScope)
+    private val runJob = SequentialJob(viewModelScope)
+    private val observeJob = SequentialJob(viewModelScope)
+    private var analysisJob: Job? = null
 
     val uiState: StateFlow<AnalysisUiState> = combine(
         vmState,
@@ -100,7 +101,9 @@ class AnalysisViewModel @Inject constructor(
     fun onFlipBoard() = vmState.update { it.copy(orientation = it.orientation.other()) }
 
     override fun onCleared() {
-        analysisJob.cancel()
+        analysisJob?.cancel()
+        analysisJob = null
+        observeJob.cancel()
         appScope.launch {
             withContext(NonCancellable) {
                 runCatching { analyzePosition.shutdown() }
@@ -115,19 +118,29 @@ class AnalysisViewModel @Inject constructor(
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     private fun observePositionChanges() {
-        analysisJob.launch(dispatcher) {
+        observeJob.launch(dispatcher) {
             analyzePosition.prepare()
             playSession.state
                 .filter { it.status == SingleSessionState.Status.Ready || it.status == SingleSessionState.Status.Playing }
                 .map { session.moveIndex }
                 .distinctUntilChanged()
                 .debounce(ANALYSIS_DEBOUNCE_MS)
-                .flatMapLatest {
-                    vmState.update { it.copy(engineData = null) }
-                    analyzePosition.analyze(session.fen)
-                        .map { fen -> adapter.from(fen, session.turn) }
-                        .catch { Timber.e(it, "Analysis error") }
-                }
+                .collect { updateAnalysis(fen = session.fen, turn = session.turn) }
+        }
+    }
+
+    private fun updateAnalysis(fen: String, turn: Side) {
+        val previousJob = analysisJob
+        analysisJob = viewModelScope.launch(dispatcher) {
+            if (previousJob != null) {
+                previousJob.cancel()
+                analyzePosition.stop()
+                previousJob.join()
+            }
+            vmState.update { it.copy(engineData = null) }
+            analyzePosition.analyze(fen)
+                .map { fen -> adapter.from(fen, turn) }
+                .catch { Timber.e(it, "Analysis error") }
                 .collect { result -> vmState.update { it.copy(engineData = result) } }
         }
     }

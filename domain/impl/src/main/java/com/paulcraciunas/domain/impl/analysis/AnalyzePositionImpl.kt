@@ -18,6 +18,10 @@ class AnalyzePositionImpl @Inject constructor(
         return engine.analyzePosition(fen)
     }
 
+    override suspend fun stop() {
+        engine.stopAnalysis()
+    }
+
     override suspend fun shutdown() {
         engine.stopAnalysis()
         engine.shutdown()
