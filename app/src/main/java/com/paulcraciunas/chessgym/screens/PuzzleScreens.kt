@@ -56,6 +56,7 @@ internal fun RatedPuzzle(tabNavController: NavHostController) {
         onAbandonConfirmed = vm::onAbandonConfirmed,
         onAbandonDismissed = vm::onAbandonDismissed,
         onNextPuzzle = vm::onNextPuzzle,
+        onAnalyze = vm::onAnalyze,
     )
 }
 
