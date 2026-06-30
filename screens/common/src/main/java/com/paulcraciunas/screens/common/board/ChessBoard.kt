@@ -227,7 +227,7 @@ private fun AnimatedPieceOverlay(
     val toOffset = to.toOffset(orientation, squareSizePx)
 
     val animatedOffset = remember(from, to) { Animatable(fromOffset, Offset.VectorConverter) }
-    LaunchedEffect(animatingPiece) {
+    LaunchedEffect(animatingPiece, orientation) {
         animatedOffset.snapTo(fromOffset)
         animatedOffset.animateTo(
             targetValue = toOffset,
