@@ -109,6 +109,7 @@ private fun KnightPathScreenGameOverPreview() {
                     timeRemaining = RemainingTime(value = "4.6", danger = true),
                     score = 8,
                     isNewHighScore = true,
+                    previousHighScore = 7,
                     wasWrongMove = false,
                 ),
             )
