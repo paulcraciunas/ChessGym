@@ -64,14 +64,12 @@ class ChessGymApplication : Application(), Configuration.Provider {
                     emit(User())
                 }
             ) { settings, user ->
-                Timber.e("Updating crash reporting values with settings = $settings")
                 val enabled = settings.crashReportingConsent && !BuildConfig.DEBUG
                 val userId = if (enabled) user.deviceId else ""
                 enabled to userId
             }.distinctUntilChanged()
                 .catch { e -> Timber.e(e, "Crash reporting setup failed") }
                 .collect { (enabled, userId) ->
-                    Timber.e("Updating crash reporting values with enabled = $enabled")
                     FirebaseCrashlytics.getInstance().isCrashlyticsCollectionEnabled = enabled
                     FirebaseCrashlytics.getInstance().setUserId(userId)
                 }
