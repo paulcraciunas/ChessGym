@@ -19,6 +19,18 @@
     ],
     "rewrites": [
       {
+        "source": "/privacy",
+        "destination": "/privacy.html"
+      },
+      {
+        "source": "/terms",
+        "destination": "/terms.html"
+      },
+      {
+        "source": "/donations",
+        "destination": "/donations.html"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
