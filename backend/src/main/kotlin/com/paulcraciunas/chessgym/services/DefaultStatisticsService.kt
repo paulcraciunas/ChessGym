@@ -2,14 +2,37 @@ package com.paulcraciunas.chessgym.services
 
 import com.paulcraciunas.chessgym.models.AchievementStatistic
 import com.paulcraciunas.chessgym.models.AchievementStatisticsResponse
+import com.paulcraciunas.chessgym.models.UserDto
 import com.paulcraciunas.chessgym.repositories.UserRepository
+import java.time.Instant
 
 class DefaultStatisticsService(
     private val userRepository: UserRepository,
+    private val cacheTtlSeconds: Long = DEFAULT_CACHE_TTL_SECONDS,
 ) : StatisticsService {
 
+    @Volatile
+    private var cachedResponse: AchievementStatisticsResponse? = null
+
+    @Volatile
+    private var cacheTimestamp: Instant = Instant.EPOCH
+
     override suspend fun computeAchievementStatistics(): AchievementStatisticsResponse {
+        val cached = cachedResponse
+        if (cached != null && Instant.now().isBefore(cacheTimestamp.plusSeconds(cacheTtlSeconds))) {
+            return cached
+        }
+
         val allUsers = userRepository.findAll()
+        val result = computeFrom(allUsers)
+
+        cachedResponse = result
+        cacheTimestamp = Instant.now()
+
+        return result
+    }
+
+    private fun computeFrom(allUsers: List<UserDto>): AchievementStatisticsResponse {
         val totalUsers = allUsers.size.toLong()
 
         if (totalUsers == 0L) {
@@ -18,8 +41,6 @@ class DefaultStatisticsService(
                 achievements = emptyList(),
             )
         }
-
-        val statistics = mutableListOf<AchievementStatistic>()
 
         val achievementCounts = mutableMapOf<String, MutableMap<Int, Int>>()
         for (user in allUsers) {
@@ -35,6 +56,7 @@ class DefaultStatisticsService(
             }
         }
 
+        val statistics = mutableListOf<AchievementStatistic>()
         for ((achievementId, tiers) in achievementCounts) {
             for ((tier, count) in tiers) {
                 statistics.add(
@@ -56,6 +78,8 @@ class DefaultStatisticsService(
     }
 
     companion object {
+        private const val DEFAULT_CACHE_TTL_SECONDS: Long = 3600 // 1 hour
+
         // Mirrors Achievement enum thresholds from the Android domain layer
         val ACHIEVEMENT_TIERS: Map<String, List<Long>> = mapOf(
             "RATED_PUZZLES_SOLVED" to listOf(5, 25, 100, 250, 1000),
