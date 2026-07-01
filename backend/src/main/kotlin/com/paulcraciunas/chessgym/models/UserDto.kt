@@ -1,29 +1,30 @@
 package com.paulcraciunas.chessgym.models
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class UserDto(
-    val deviceId: String = "",
-    val profile: ProfileDto = ProfileDto(),
-    val ratings: RatingsDto = RatingsDto(),
-    val highScores: HighScoresDto = HighScoresDto(),
-    val statistics: StatisticsDto = StatisticsDto(),
-    val achievements: AchievementsDto = AchievementsDto(),
+    @SerialName("deviceId") val deviceId: String = "",
+    @SerialName("profile") val profile: ProfileDto = ProfileDto(),
+    @SerialName("ratings") val ratings: RatingsDto = RatingsDto(),
+    @SerialName("highScores") val highScores: HighScoresDto = HighScoresDto(),
+    @SerialName("statistics") val statistics: StatisticsDto = StatisticsDto(),
+    @SerialName("achievements") val achievements: AchievementsDto = AchievementsDto(),
 )
 
 @Serializable
 data class ProfileDto(
-    val displayName: String = "",
-    val joinDate: String? = null,
-    val isSupporter: Boolean = false,
-    val lastModified: Long = 0L,
+    @SerialName("displayName") val displayName: String = "",
+    @SerialName("joinDate") val joinDate: String? = null,
+    @SerialName("isSupporter") val isSupporter: Boolean = false,
+    @SerialName("lastModified") val lastModified: Long = 0L,
 )
 
 @Serializable
 data class RatingsDto(
-    val current: Int = DEFAULT_RATED_PUZZLE_RATING,
-    val blindMode: Int = DEFAULT_BLIND_MODE_RATING,
+    @SerialName("current") val current: Int = DEFAULT_RATED_PUZZLE_RATING,
+    @SerialName("blindMode") val blindMode: Int = DEFAULT_BLIND_MODE_RATING,
 ) {
     companion object {
         const val DEFAULT_RATED_PUZZLE_RATING: Int = 1000
@@ -33,35 +34,35 @@ data class RatingsDto(
 
 @Serializable
 data class HighScoresDto(
-    val ratedPuzzle: Int = RatingsDto.DEFAULT_RATED_PUZZLE_RATING,
-    val puzzleRush: Int = 0,
-    val puzzleStreak: Int = 0,
-    val findTheSquare: Int = 0,
-    val knightPath: Int = 0,
-    val blindMode: Int = RatingsDto.DEFAULT_BLIND_MODE_RATING,
+    @SerialName("ratedPuzzle") val ratedPuzzle: Int = RatingsDto.DEFAULT_RATED_PUZZLE_RATING,
+    @SerialName("puzzleRush") val puzzleRush: Int = 0,
+    @SerialName("puzzleStreak") val puzzleStreak: Int = 0,
+    @SerialName("findTheSquare") val findTheSquare: Int = 0,
+    @SerialName("knightPath") val knightPath: Int = 0,
+    @SerialName("blindMode") val blindMode: Int = RatingsDto.DEFAULT_BLIND_MODE_RATING,
 )
 
 @Serializable
 data class StatisticsDto(
-    val puzzlesPlayed: Int = 0,
-    val puzzlesSolved: Int = 0,
-    val totalTimeSpent: Long = 0L,
-    val ratedPuzzlesSolved: Int = 0,
-    val puzzleRushSessions: Int = 0,
-    val streakSessions: Int = 0,
-    val failedPuzzlesRedeemed: Int = 0,
-    val findSquareSessions: Int = 0,
-    val knightPathSessions: Int = 0,
-    val blindModeWins: Int = 0,
-    val rushPuzzlesSolved: Int = 0,
+    @SerialName("puzzlesPlayed") val puzzlesPlayed: Int = 0,
+    @SerialName("puzzlesSolved") val puzzlesSolved: Int = 0,
+    @SerialName("totalTimeSpent") val totalTimeSpent: Long = 0L,
+    @SerialName("ratedPuzzlesSolved") val ratedPuzzlesSolved: Int = 0,
+    @SerialName("puzzleRushSessions") val puzzleRushSessions: Int = 0,
+    @SerialName("streakSessions") val streakSessions: Int = 0,
+    @SerialName("failedPuzzlesRedeemed") val failedPuzzlesRedeemed: Int = 0,
+    @SerialName("findSquareSessions") val findSquareSessions: Int = 0,
+    @SerialName("knightPathSessions") val knightPathSessions: Int = 0,
+    @SerialName("blindModeWins") val blindModeWins: Int = 0,
+    @SerialName("rushPuzzlesSolved") val rushPuzzlesSolved: Int = 0,
 )
 
 @Serializable
 data class AchievementsDto(
-    val progress: Map<String, Long> = emptyMap(),
-    val lastActiveDate: String? = null,
-    val consecutiveDaysStreak: Int = 0,
-    val bestConsecutiveDaysStreak: Int = 0,
-    val currentRatedWinStreak: Int = 0,
-    val bestRatedWinStreak: Int = 0,
+    @SerialName("progress") val progress: Map<String, Long> = emptyMap(),
+    @SerialName("lastActiveDate") val lastActiveDate: String? = null,
+    @SerialName("consecutiveDaysStreak") val consecutiveDaysStreak: Int = 0,
+    @SerialName("bestConsecutiveDaysStreak") val bestConsecutiveDaysStreak: Int = 0,
+    @SerialName("currentRatedWinStreak") val currentRatedWinStreak: Int = 0,
+    @SerialName("bestRatedWinStreak") val bestRatedWinStreak: Int = 0,
 )

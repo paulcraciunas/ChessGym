@@ -39,3 +39,19 @@
     *** srcPos;
     *** dstPos;
 }
+
+# kotlinx.serialization - keep serializer infrastructure
+-keepattributes RuntimeVisibleAnnotations,AnnotationDefault
+-keepclassmembers class kotlinx.serialization.json.** {
+    *** Companion;
+}
+-keepclasseswithmembers class kotlinx.serialization.json.** {
+    kotlinx.serialization.KSerializer serializer(...);
+}
+-keep,includedescriptorclasses class com.paulcraciunas.**$$serializer { *; }
+-keepclassmembers class com.paulcraciunas.** {
+    *** Companion;
+}
+-keepclasseswithmembers class com.paulcraciunas.** {
+    kotlinx.serialization.KSerializer serializer(...);
+}
