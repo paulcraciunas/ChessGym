@@ -21,11 +21,12 @@ fun testApplication(
 ) {
     io.ktor.server.testing.testApplication {
         val userService = DefaultUserService(repository)
-        val statisticsService = DefaultStatisticsService(repository)
+        val statisticsService = DefaultStatisticsService(repository, cacheTtlSeconds = 0)
 
         application {
             configureSerialization()
             configureStatusPages()
+            configureRateLimiting()
             configureAuthentication(fakeAuth)
             routing {
                 healthRoutes()
