@@ -49,8 +49,7 @@ class ChessGymApplication : Application(), Configuration.Provider {
         // Set static metadata immediately
         runCatching {
             FirebaseCrashlytics.getInstance().apply {
-                setCustomKey("app_version", BuildConfig.APP_VERSION)
-                setCustomKey("build_number", BuildConfig.BUILD_NUMBER)
+                setCustomKey("app_version", BuildConfig.VERSION_NAME)
             }
         }
         // Reactively handle consent and user ID

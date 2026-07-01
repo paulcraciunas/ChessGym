@@ -18,8 +18,8 @@ abstract class ConventionPlugin : Plugin<Project> {
             override val minSdk: Int = 27
         }
         override val version: Version = object : Version {
-            override val code: Int = 1
-            override val name: String = "1.0.0"
+            override val major: Int = 1
+            override val minor: Int = 0
         }
     }
 }

@@ -16,7 +16,7 @@ interface ProjectConfig {
     }
 
     interface Version {
-        val code: Int
-        val name: String
+        val major: Int
+        val minor: Int
     }
 }

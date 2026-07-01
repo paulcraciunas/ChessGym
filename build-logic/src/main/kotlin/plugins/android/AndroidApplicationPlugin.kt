@@ -51,14 +51,18 @@ class AndroidApplicationPlugin : ConventionPlugin() {
     internal fun Project.configureAndroid(extension: ApplicationExtension) {
         configureJava(projectConfig.jvm)
         configureKotlin(projectConfig.jvm)
+        val buildNumber = (findProperty("buildNumber") as? String)?.toIntOrNull() ?: 100
+        val major = projectConfig.version.major
+        val minor = projectConfig.version.minor
+
         extension.apply {
             compileSdk = projectConfig.android.compileSdk
 
             defaultConfig {
                 minSdk = projectConfig.android.minSdk
                 targetSdk = projectConfig.android.targetSdk
-                versionCode = projectConfig.version.code
-                versionName = projectConfig.version.name
+                versionCode = buildNumber
+                versionName = "$major.$minor.$buildNumber"
 
                 testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
                 vectorDrawables {
