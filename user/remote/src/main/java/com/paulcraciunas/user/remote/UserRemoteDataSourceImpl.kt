@@ -7,6 +7,7 @@ import com.paulcraciunas.user.api.UserApiException
 import com.paulcraciunas.user.api.UserRemoteDataSource
 import com.paulcraciunas.user.remote.mapper.UserDtoMapper
 import com.paulcraciunas.user.remote.model.SignInRequest
+import com.paulcraciunas.user.remote.model.SignInResponse
 import com.paulcraciunas.user.remote.model.UserDto
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -31,13 +32,13 @@ class UserRemoteDataSourceImpl @Inject constructor(
 ) : UserRemoteDataSource {
 
     override suspend fun signIn(authResult: AuthResult, deviceId: String): User = withContext(ioDispatcher) {
-        val apiUser: UserDto = httpClient.post(api.v1.signIn) {
+        val response: SignInResponse = httpClient.post(api.v1.signIn) {
             setBody(SignInRequest(
                 deviceId = deviceId,
                 displayName = authResult.displayName,
             ))
         }.safeBody()
-        mapper.fromDto(apiUser).copy(authentication = authResult.authState)
+        mapper.fromDto(response.user).copy(authentication = authResult.authState)
     }
 
     override suspend fun getUser(userId: String): User = withContext(ioDispatcher) {
