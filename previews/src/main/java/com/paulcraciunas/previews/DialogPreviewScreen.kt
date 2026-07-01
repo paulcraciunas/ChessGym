@@ -169,6 +169,7 @@ private fun DialogContent(
             onPieceChosen = { onDismiss() },
         )
         DialogEntry.DownloadConfirmation -> DownloadConfirmationDialog(
+            approximateSize = "~ 50 MB",
             onCancelled = onDismiss,
             onConfirmed = onDismiss,
         )
