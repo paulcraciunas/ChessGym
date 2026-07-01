@@ -3,6 +3,7 @@ import jetbrains.buildServer.configs.kotlin.project
 import jetbrains.buildServer.configs.kotlin.version
 
 import buildTypes.BuildDebug
+import buildTypes.BuildRelease
 import buildTypes.LintDebug
 import buildTypes.PuzzleVerification
 import buildTypes.UnitTests
@@ -18,6 +19,7 @@ project {
     }
 
     buildType(BuildDebug)
+    buildType(BuildRelease)
     buildType(LintDebug)
     buildType(UnitTests)
     buildType(PuzzleVerification)
