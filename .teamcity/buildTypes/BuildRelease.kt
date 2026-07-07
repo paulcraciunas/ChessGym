@@ -15,9 +15,9 @@ object BuildRelease : BuildType({
     artifactRules = "app/build/outputs/bundle/release/*.aab => release/"
 
     params {
-        password("env.KEYSTORE_PASSWORD", "credentialsJSON:keystore-password-id", display = ParameterDisplay.HIDDEN)
-        password("env.KEY_PASSWORD", "credentialsJSON:key-password-id", display = ParameterDisplay.HIDDEN)
-        password("env.KEYSTORE_BASE64", "credentialsJSON:keystore-base64-id", display = ParameterDisplay.HIDDEN)
+        password("env.KEYSTORE_PASSWORD", "", label = "Keystore Password", display = ParameterDisplay.HIDDEN)
+        password("env.KEY_PASSWORD", "", label = "Key Password", display = ParameterDisplay.HIDDEN)
+        password("env.KEYSTORE_BASE64", "", label = "Keystore (base64)", display = ParameterDisplay.HIDDEN)
         param("env.KEY_ALIAS", "chessgym-upload")
         param("env.KEYSTORE_PATH", "%system.teamcity.build.checkoutDir%/chessgym-upload.keystore")
     }
