@@ -14,7 +14,7 @@ changeBuildType(RelativeId("BuildRelease")) {
             password("env.KEYSTORE_BASE64", "", label = "Keystore (base64)", display = ParameterDisplay.HIDDEN)
         }
         update {
-            password("env.KEYSTORE_BASE64", "credentialsJSON:d8ec7d85-67c6-489c-924a-a56c6b12a58d", label = "Keystore (base64)", display = ParameterDisplay.HIDDEN)
+            password("env.KEYSTORE_BASE64", "credentialsJSON:8e68a413-5648-4432-9a02-aca550f54e13", label = "Keystore (base64)", display = ParameterDisplay.HIDDEN)
         }
         expect {
             password("env.KEYSTORE_PASSWORD", "", label = "Keystore Password", display = ParameterDisplay.HIDDEN)
