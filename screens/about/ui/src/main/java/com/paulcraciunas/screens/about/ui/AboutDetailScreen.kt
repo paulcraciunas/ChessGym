@@ -124,7 +124,7 @@ private fun AppContent(
         )
         EmailRow(
             email = stringResource(R.string.about_contact_email),
-            onClick = { onEmailClicked("mailto:contact@chessgym.app") },
+            onClick = { onEmailClicked("mailto:contact@chessgym.uk") },
         )
         ChessGymSpacer(size = SpacerSize.XXLARGE)
         Icon(
@@ -179,7 +179,7 @@ private fun FeedbackContent(
         ChessGymSpacer(size = SpacerSize.XXLARGE)
         EmailRow(
             email = stringResource(R.string.about_feedback_email),
-            onClick = { onEmailClicked("mailto:feedback@chessgym.app") },
+            onClick = { onEmailClicked("mailto:feedback@chessgym.uk") },
         )
     }
 }

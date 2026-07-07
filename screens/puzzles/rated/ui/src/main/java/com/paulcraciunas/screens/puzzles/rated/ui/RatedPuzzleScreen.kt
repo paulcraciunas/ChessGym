@@ -47,17 +47,14 @@ fun RatedPuzzleScreen(
     onAbandonConfirmed: () -> Unit = {},
     onAbandonDismissed: () -> Unit = {},
     onNextPuzzle: () -> Unit = {},
+    onAnalyze: () -> Unit = {},
 ) {
     BackHandler(enabled = uiState is RatedPuzzleUiState.Playing) {
         onNavigateBack()
     }
 
-    val title = when (uiState) {
-        is RatedPuzzleUiState.WithBoard -> stringResource(R.string.rated_puzzle_title, uiState.rating)
-        else -> stringResource(R.string.puzzle_mode_rated_title)
-    }
     Scaffold(
-        topBar = { ChildAppBar(title = title, onBack = onNavigateBack) },
+        topBar = { ChildAppBar(title = stringResource(R.string.puzzle_mode_rated_title), onBack = onNavigateBack) },
         containerColor = Design.colors.primarySoft,
         modifier = modifier.testTag { RatedPuzzleScreenTags.SCREEN },
     ) { innerPadding ->
@@ -77,6 +74,7 @@ fun RatedPuzzleScreen(
                     onAbandonConfirmed = onAbandonConfirmed,
                     onAbandonDismissed = onAbandonDismissed,
                     onNextPuzzle = onNextPuzzle,
+                    onAnalyze = onAnalyze,
                     modifier = defaultModifier,
                 )
             }
@@ -94,6 +92,7 @@ private fun RatedPuzzleContent(
     onAbandonConfirmed: () -> Unit,
     onAbandonDismissed: () -> Unit,
     onNextPuzzle: () -> Unit,
+    onAnalyze: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val data = uiState.data
@@ -108,20 +107,23 @@ private fun RatedPuzzleContent(
             modifier = Modifier.fillMaxWidth()
         )
         CapturedPieces(capturedPieces = data.captured.byPlayer, side = data.player.other(), modifier = Modifier.fillMaxWidth())
-        AnimatedControls(targetState = uiState is RatedPuzzleUiState.Finished) { isEnded ->
-            if (isEnded && uiState is RatedPuzzleUiState.Finished) {
-                FinishedPuzzleControls(
-                    success = uiState.success,
-                    ratingChange = uiState.ratingChange,
+        AnimatedControls(
+            targetState = uiState,
+            contentKey = { state -> state::class },
+        ) { state ->
+            when (state) {
+                is RatedPuzzleUiState.Finished -> FinishedPuzzleControls(
+                    success = state.success,
+                    ratingChange = state.ratingChange,
                     modifier = Modifier
                         .fillMaxWidth()
                         .testTag { RatedPuzzleScreenTags.Finished.CONTROLS },
                     onPlayNext = onNextPuzzle,
+                    onAnalyze = onAnalyze,
                 )
-            } else if (uiState is RatedPuzzleUiState.Playing) {
-                DefaultPuzzleControls(
-                    hintEnabled = uiState.hintEnabled,
-                    toMove = data.player,
+                is RatedPuzzleUiState.Playing -> DefaultPuzzleControls(
+                    hintEnabled = state.hintEnabled,
+                    toMove = state.data.player,
                     onHintRequested = onHintRequested,
                     onAbandonRequested = onAbandon,
                     modifier = Modifier.fillMaxWidth(),
@@ -129,6 +131,7 @@ private fun RatedPuzzleContent(
                 )
             }
         }
+
         if (uiState is RatedPuzzleUiState.Playing) {
             if (uiState.showAbandonDialog) {
                 AbandonConfirmationDialog(
@@ -154,7 +157,6 @@ private fun WhitePlayingPreview() {
         CompositionLocalProvider(LocalUiSettings provides UiSettings.default()) {
             RatedPuzzleScreen(
                 uiState = RatedPuzzleUiState.Playing(
-                    rating = 1442,
                     data = PreviewData().whitePuzzleData(),
                     hintEnabled = true,
                     showAbandonDialog = false,
@@ -172,7 +174,6 @@ private fun BlackPlayingPreview() {
         CompositionLocalProvider(LocalUiSettings provides UiSettings.default()) {
             RatedPuzzleScreen(
                 uiState = RatedPuzzleUiState.Finished(
-                    rating = 1442,
                     data = PreviewData().blackPuzzleData(),
                     success = true,
                     ratingChange = 42,

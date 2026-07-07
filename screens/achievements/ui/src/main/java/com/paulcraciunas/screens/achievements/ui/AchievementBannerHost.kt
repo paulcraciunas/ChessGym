@@ -5,6 +5,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -35,11 +36,12 @@ import com.paulcraciunas.screens.common.theme.ChessGymTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 
-private const val BANNER_DISPLAY_MILLIS = 3000L
+private const val BANNER_DISPLAY_MILLIS = 2000L
 
 @Composable
 fun AchievementBannerHost(
     notifications: () -> Flow<AchievementNotification>,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var activeNotification by remember { mutableStateOf<AchievementNotification?>(null) }
@@ -62,7 +64,7 @@ fun AchievementBannerHost(
             enter = slideInVertically { -it },
             exit = slideOutVertically { -it } + fadeOut(),
         ) {
-            lastNotification?.let { AchievementBanner(notification = it) }
+            lastNotification?.let { AchievementBanner(notification = it, onClick = onClick) }
         }
     }
 }
@@ -70,6 +72,7 @@ fun AchievementBannerHost(
 @Composable
 private fun AchievementBanner(
     notification: AchievementNotification,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val shape = Design.shapes.cardCompact
@@ -77,6 +80,7 @@ private fun AchievementBanner(
     Box(
         modifier = modifier
             .fillMaxWidth()
+            .clickable { onClick() }
             .padding(
                 horizontal = Design.dimensions.spacing.xxl,
                 vertical = Design.dimensions.spacing.sm,
@@ -117,7 +121,8 @@ private fun AchievementBannerPreview() {
             notification = AchievementNotification(
                 achievement = Achievement.RATED_PUZZLES_SOLVED,
                 tier = Achievement.Tier.ONE
-            )
+            ),
+            onClick = {},
         )
     }
 }

@@ -15,7 +15,7 @@ internal fun Settings(
     val vm: SettingsViewModel = hiltViewModel()
     val settingsState by vm.uiState.collectAsStateWithLifecycle()
 
-    val buildVersion = "Version ${BuildConfig.APP_VERSION}-${BuildConfig.BUILD_NUMBER}"
+    val buildVersion = "Version ${BuildConfig.VERSION_NAME}"
 
     SettingsScreen(
         uiState = settingsState,

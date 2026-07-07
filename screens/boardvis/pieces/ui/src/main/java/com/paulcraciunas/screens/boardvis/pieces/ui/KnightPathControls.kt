@@ -71,6 +71,7 @@ internal fun KnightPathPlayingControls(
 internal fun KnightPathGameOverControls(
     finalScore: Int,
     isNewHighScore: Boolean,
+    previousHighScore: Int,
     wasWrongMove: Boolean,
     onPlayAgain: () -> Unit,
     modifier: Modifier = Modifier,
@@ -100,6 +101,8 @@ internal fun KnightPathGameOverControls(
                 style = ChipStyle.Default,
                 leadingIcon = Icons.Default.Star,
             )
+        } else {
+            Eyebrow(text = stringResource(R.string.boardvis_high_score, previousHighScore))
         }
         RefreshButton(onClick = onPlayAgain)
     }
@@ -135,6 +138,7 @@ private fun KnightPathGameOverNewHighScorePreview() {
         KnightPathGameOverControls(
             finalScore = 15,
             isNewHighScore = true,
+            previousHighScore = 42,
             wasWrongMove = false,
             onPlayAgain = {},
             modifier = Modifier.padding(16.dp)
@@ -149,6 +153,7 @@ private fun KnightPathGameOverWrongMovePreview() {
         KnightPathGameOverControls(
             finalScore = 8,
             isNewHighScore = false,
+            previousHighScore = 9,
             wasWrongMove = true,
             onPlayAgain = {},
             modifier = Modifier.padding(16.dp)

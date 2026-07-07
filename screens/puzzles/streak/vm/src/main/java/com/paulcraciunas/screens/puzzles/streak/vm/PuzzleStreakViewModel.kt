@@ -12,7 +12,6 @@ import com.paulcraciunas.global.qualifiers.DefaultDispatcher
 import com.paulcraciunas.global.sounds.SoundCoordinator
 import com.paulcraciunas.screens.data.engine.PlayIntent
 import com.paulcraciunas.screens.data.engine.PlaySession
-import com.paulcraciunas.screens.data.engine.PlaySessionState
 import com.paulcraciunas.screens.data.engine.toSoundEvents
 import com.paulcraciunas.screens.data.utils.SequentialJob
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
@@ -76,14 +75,6 @@ class PuzzleStreakViewModel @Inject constructor(
 
     fun onStop() { timer.pause() }
     fun onStart() { timer.resume() }
-
-    fun onNavigateBackPressed(): Boolean {
-        val state = playSession.stateValue
-        if (state.status == PlaySessionState.Status.Playing) {
-            playSession.accept(intent = PlayIntent.RequestAbandon)
-        }
-        return state.status == PlaySessionState.Status.Playing
-    }
 
     fun onSquareClicked(selection: Locus) = playSession.accept(intent = PlayIntent.SelectSquare(selection))
     fun onPromote(to: Piece) = playSession.accept(intent = PlayIntent.Promote(to))

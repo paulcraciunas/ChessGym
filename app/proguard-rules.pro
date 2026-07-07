@@ -18,6 +18,9 @@
 # Hide the original source file name (Crashlytics uses mapping file to restore it)
 -renamesourcefileattribute SourceFile
 
+# Prevent R8 from optimizing out public exception classes
+-keep public class * extends java.lang.Exception
+
 # Play Core / GMS compile-time annotations not shipped in runtime
 -dontwarn com.google.android.gms.common.annotation.NoNullnessRewrite
 
@@ -25,4 +28,30 @@
 -keep class com.paulcraciunas.global.resources.PreWarmDrawables {
     public static final com.paulcraciunas.global.resources.PreWarmDrawables INSTANCE;
     public final int[] getList();
+}
+
+# Prevent R8 from renaming or stripping out zstd-jni classes and fields
+-keep class com.github.luben.zstd.** { *; }
+
+# Prevent R8 from renaming methods and fields used by JNI
+-keepclassmembers class com.github.luben.zstd.** {
+    native <methods>;
+    *** srcPos;
+    *** dstPos;
+}
+
+# kotlinx.serialization - keep serializer infrastructure
+-keepattributes RuntimeVisibleAnnotations,AnnotationDefault
+-keepclassmembers class kotlinx.serialization.json.** {
+    *** Companion;
+}
+-keepclasseswithmembers class kotlinx.serialization.json.** {
+    kotlinx.serialization.KSerializer serializer(...);
+}
+-keep,includedescriptorclasses class com.paulcraciunas.**$$serializer { *; }
+-keepclassmembers class com.paulcraciunas.** {
+    *** Companion;
+}
+-keepclasseswithmembers class com.paulcraciunas.** {
+    kotlinx.serialization.KSerializer serializer(...);
 }

@@ -27,7 +27,7 @@ internal class GlobalExceptionHandler : Thread.UncaughtExceptionHandler {
     }
 
     private fun logDetailedCrash(thread: Thread, throwable: Throwable) {
-        val crashlytics = FirebaseCrashlytics.getInstance()
+        val crashlytics = runCatching { FirebaseCrashlytics.getInstance() }.getOrNull() ?: return
         val puzzleSummary = runCatching { LastLoadedPuzzleLog.summary() }.getOrDefault("Unavailable")
         val movesSummary = runCatching { PlayedMovesLog.summary() }.getOrDefault("Unavailable")
 

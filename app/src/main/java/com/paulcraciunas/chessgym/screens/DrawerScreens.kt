@@ -123,7 +123,7 @@ internal fun AboutDetail(
     AboutDetailScreen(
         section = section,
         onNavigateBack = onNavigateBack,
-        appVersion = BuildConfig.APP_VERSION,
+        appVersion = BuildConfig.VERSION_NAME,
         libraries = aboutState.libraries,
         onEmailClicked = { emailUri ->
             val intent = Intent(Intent.ACTION_SENDTO).apply { data = emailUri.toUri() }

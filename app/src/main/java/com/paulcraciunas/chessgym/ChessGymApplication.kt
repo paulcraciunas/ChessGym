@@ -7,18 +7,18 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.paulcraciunas.chessgym.error_reporting.CrashReportTree
 import com.paulcraciunas.chessgym.error_reporting.GlobalExceptionHandler
 import com.paulcraciunas.global.device.api.usecases.GetNetworkState
+import com.paulcraciunas.global.qualifiers.ApplicationScope
+import com.paulcraciunas.settings.application.api.AppSettings
 import com.paulcraciunas.settings.application.api.AppSettingsRepository
+import com.paulcraciunas.user.api.User
 import com.paulcraciunas.user.api.UserRepository
-import com.paulcraciunas.utils.DefaultDispatcher
-import com.paulcraciunas.utils.MainDispatcher
 import dagger.hilt.android.HiltAndroidApp
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -28,11 +28,7 @@ class ChessGymApplication : Application(), Configuration.Provider {
     @Inject lateinit var getNetworkState: GetNetworkState
     @Inject lateinit var appSettingsRepository: AppSettingsRepository
     @Inject lateinit var userRepository: UserRepository
-    @Inject @DefaultDispatcher lateinit var defaultDispatcher: CoroutineDispatcher
-    @Inject @MainDispatcher lateinit var mainDispatcher: CoroutineDispatcher
-
-    // Use a dedicated scope for application-level background tasks
-    private val applicationScope by lazy { CoroutineScope(SupervisorJob() + defaultDispatcher) }
+    @Inject @ApplicationScope lateinit var applicationScope: CoroutineScope
 
     override fun onCreate() {
         super.onCreate()
@@ -51,33 +47,38 @@ class ChessGymApplication : Application(), Configuration.Provider {
         // Set handler immediately
         Thread.setDefaultUncaughtExceptionHandler(GlobalExceptionHandler())
         // Set static metadata immediately
-        FirebaseCrashlytics.getInstance().apply {
-            setCustomKey("app_version", BuildConfig.APP_VERSION)
-            setCustomKey("build_number", BuildConfig.BUILD_NUMBER)
+        runCatching {
+            FirebaseCrashlytics.getInstance().apply {
+                setCustomKey("app_version", BuildConfig.VERSION_NAME)
+            }
         }
         // Reactively handle consent and user ID
         applicationScope.launch {
             // Combine flows to react to both settings and user changes
             combine(
-                appSettingsRepository.appSettings,
-                userRepository.userUpdates()
-            ) { settings, user ->
-                settings to user
-            }.catch { e -> Timber.e(e, "Crash reporting setup failed") }
-            .collect { (settings, user) ->
-                withContext(mainDispatcher) {
-                    val enabled = settings.crashReportingConsent && !BuildConfig.DEBUG
-                    FirebaseCrashlytics.getInstance().isCrashlyticsCollectionEnabled = enabled
-                    FirebaseCrashlytics.getInstance().setUserId(if (enabled) user.deviceId else "")
+                appSettingsRepository.appSettings.onStart {
+                    emit(AppSettings.default())
+                },
+                userRepository.userUpdates().onStart {
+                    emit(User())
                 }
-            }
+            ) { settings, user ->
+                val enabled = settings.crashReportingConsent && !BuildConfig.DEBUG
+                val userId = if (enabled) user.deviceId else ""
+                enabled to userId
+            }.distinctUntilChanged()
+                .catch { e -> Timber.e(e, "Crash reporting setup failed") }
+                .collect { (enabled, userId) ->
+                    FirebaseCrashlytics.getInstance().isCrashlyticsCollectionEnabled = enabled
+                    FirebaseCrashlytics.getInstance().setUserId(userId)
+                }
         }
     }
 
     override val workManagerConfiguration: Configuration
         get() = Configuration.Builder()
-        .setWorkerFactory(workerFactory)
-        .build()
+            .setWorkerFactory(workerFactory)
+            .build()
 
     private fun syncUserData() {
         applicationScope.launch {

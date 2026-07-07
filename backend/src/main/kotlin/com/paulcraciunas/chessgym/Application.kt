@@ -23,6 +23,7 @@ fun Application.module() {
     configureSerialization()
     configureCallLogging()
     configureStatusPages()
+    configureRateLimiting()
     configureAuthentication(authService)
     configureRouting(userService, statisticsService)
     configureOpenApi()

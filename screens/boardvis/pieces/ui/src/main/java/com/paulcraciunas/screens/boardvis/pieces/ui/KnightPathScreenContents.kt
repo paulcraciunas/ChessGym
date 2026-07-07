@@ -64,6 +64,7 @@ internal fun KnightPathScreenContents(
                     KnightPathGameOverControls(
                         finalScore = uiState.score,
                         isNewHighScore = uiState.isNewHighScore,
+                        previousHighScore = uiState.previousHighScore,
                         wasWrongMove = uiState.wasWrongMove,
                         onPlayAgain = onPlayAgain,
                         modifier = Modifier.padding(16.dp)

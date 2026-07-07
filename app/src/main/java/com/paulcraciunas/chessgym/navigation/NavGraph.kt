@@ -1,7 +1,5 @@
 package com.paulcraciunas.chessgym.navigation
 
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -23,53 +21,56 @@ fun NavGraph(
     viewModel: NavGraphViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
     if (uiState.isLoading) {
         return
     }
 
-    val isFirstTimeUser = remember { !uiState.puzzlesDownloaded }
-    if (!isFirstTimeUser) {
+    // short circuit
+    val isProvisioned = remember { uiState.puzzlesDownloaded }
+    if (isProvisioned) {
         MainScreen(modifier = modifier)
         return
     }
 
-    val transitionProgress = remember { Animatable(0f) }
-    var showMainScreen by remember { mutableStateOf(false) }
-    var isTransitioning by remember { mutableStateOf(false) }
-
+    var phase by remember { mutableStateOf(TransitionPhase.Loading) }
     LaunchedEffect(uiState.puzzlesDownloaded) {
-        if (uiState.puzzlesDownloaded) {
-            isTransitioning = true
-            transitionProgress.animateTo(1f, tween(durationMillis = CLOSE_DURATION_MS))
-            showMainScreen = true
-            transitionProgress.animateTo(2f, tween(durationMillis = OPEN_DURATION_MS))
-            transitionProgress.snapTo(0f)
+        if (uiState.puzzlesDownloaded && phase == TransitionPhase.Loading) {
+            phase = TransitionPhase.FadingIn
         }
     }
 
     Box(modifier = modifier.fillMaxSize()) {
-        if (isTransitioning || showMainScreen) {
-            MainScreen(modifier = Modifier)
+        when (phase) {
+            TransitionPhase.Loading,
+            TransitionPhase.FadingIn -> ShowLoadingScreen()
+            TransitionPhase.FadingOut,
+            TransitionPhase.Complete -> MainScreen(modifier = Modifier.fillMaxSize())
         }
-
-        if (!showMainScreen) {
-            val vm: LoadingViewModel = hiltViewModel()
-            val loadingState by vm.uiState.collectAsStateWithLifecycle()
-            LoadingScreen(
-                onDownload = vm::onDownload,
-                onTierSelected = vm::onTierSelected,
-                onDownloadConfirmation = vm::onDownloadConfirmation,
-                onCrashConsentResponse = vm::onCrashConsentResponse,
-                uiState = loadingState,
+        if (phase == TransitionPhase.FadingIn || phase == TransitionPhase.FadingOut) {
+            ChessboardOverlay(
+                onFullCoverageReached = { phase = TransitionPhase.FadingOut },
+                onAnimationComplete = { phase = TransitionPhase.Complete }
             )
-        }
-
-        if (transitionProgress.value > 0f) {
-            FadeSplashOverlay(progress = transitionProgress.value)
         }
     }
 }
 
-private const val CLOSE_DURATION_MS = 800
-private const val OPEN_DURATION_MS = 1000
+@Composable
+private fun ShowLoadingScreen() {
+    val vm: LoadingViewModel = hiltViewModel()
+    val loadingState by vm.uiState.collectAsStateWithLifecycle()
+    LoadingScreen(
+        onDownload = vm::onDownload,
+        onTierSelected = vm::onTierSelected,
+        onDownloadConfirmation = vm::onDownloadConfirmation,
+        onCrashConsentResponse = vm::onCrashConsentResponse,
+        uiState = loadingState,
+    )
+}
+
+private enum class TransitionPhase {
+    Loading,
+    FadingIn,
+    FadingOut,
+    Complete,
+}

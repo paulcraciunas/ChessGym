@@ -123,6 +123,7 @@ internal fun LandingCard(
             onDeclined = { onCrashConsentResponse(false) },
         )
         LoadingState.Dialog.Download -> DownloadConfirmationDialog(
+            state.selectedTier.approximateSize,
             onCancelled = { onDownloadConfirmation(false) },
             onConfirmed = { onDownloadConfirmation(true) },
         )

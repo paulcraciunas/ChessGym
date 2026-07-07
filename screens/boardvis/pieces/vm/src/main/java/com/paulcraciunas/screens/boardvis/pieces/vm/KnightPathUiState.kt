@@ -30,6 +30,7 @@ sealed class KnightPathUiState {
         override val timeRemaining: RemainingTime,
         val score: Int,
         val isNewHighScore: Boolean,
+        val previousHighScore: Int,
         val wasWrongMove: Boolean,
     ) : KnightPathUiState()
 

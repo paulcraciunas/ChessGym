@@ -140,7 +140,7 @@
     <string name="landing_write_to_db_progress">构建数据库中</string>
     <string name="landing_write_to_db_subtitle">正在构建棋谜数据库，可能需要几分钟。</string>
     <string name="database_download_dialog_title">下载数据库</string>
-    <string name="database_download_dialog_body">此操作将下载约50MB的棋谜数据，请确保网络连接稳定。</string>
+    <string name="database_download_dialog_body">此操作将下载%s的棋谜数据，请确保网络连接稳定。</string>
     <string name="enable_notifications_dialog_title">启用通知</string>
     <string name="enable_notifications_dialog_body">接收关于进度和成就的通知。</string>
     <string name="enable_notifications_dialog_accept">启用</string>
@@ -349,10 +349,10 @@
     <string name="about_dedication_danya">本应用谨以崇敬之心献给国际象棋特级大师&lt;b>Daniel Naroditsky&lt;/b>（1995–2025）的纪念。他富有感染力的热情、无与伦比的清晰讲解和精彩的教学视频激励了数十万人，重新点燃了人们对国际象棋的热爱。</string>
     <string name="about_contact_title">联系方式</string>
     <string name="about_contact_description">如有法律问题、商业机会或其他咨询，请通过电子邮件联系。</string>
-    <string name="about_contact_email">contact@chessgym.app</string>
+    <string name="about_contact_email">contact@chessgym.uk</string>
     <string name="about_feedback_title">反馈</string>
     <string name="about_feedback_description">发现了漏洞？有新功能或改进建议？欢迎告诉我们。</string>
-    <string name="about_feedback_email">feedback@chessgym.app</string>
+    <string name="about_feedback_email">feedback@chessgym.uk</string>
     <string name="about_support_title">支持</string>
     <string name="about_donate_title">捐赠</string>
     <string name="about_donate_description">支持 ChessGym 的开发</string>
@@ -366,11 +366,11 @@
     <string name="about_libraries_title">开源库</string>
     <string name="about_libraries_description">ChessGym 使用以下开源库构建：</string>
     <string name="about_privacy_policy_title">隐私政策</string>
-    <string name="about_privacy_policy_content">生效日期：2026年5月\n\nChessGym（&quot;本应用&quot;）由 Paul Mihai Craciunas 开发。本隐私政策说明所收集的数据、使用方式及您对该数据的权利。\n\n&lt;b>1. 我们收集的数据&lt;/b>\n\n• &lt;b>账户信息：&lt;/b>如果您登录，我们将通过 Firebase Authentication 存储您的显示名称、电子邮件地址和唯一用户标识符。\n• &lt;b>游戏数据：&lt;/b>棋谜等级分、统计数据和成就进度将被存储，以提供个性化体验。\n• &lt;b>崩溃与诊断：&lt;/b>Firebase Crashlytics 自动收集设备型号、操作系统版本和崩溃堆栈跟踪，以帮助我们修复漏洞。\n• &lt;b>账单：&lt;/b>捐款交易完全由 Google Play 处理，我们不存储支付详情。\n\n&lt;b>2. 我们如何使用您的数据&lt;/b>\n\n• 提供和个性化应用体验（等级分、成就、进度同步）。\n• 诊断和修复崩溃及性能问题。\n• 登录时启用进度云备份。\n\n&lt;b>3. 数据存储与安全&lt;/b>\n\n数据存储在 Google Cloud Firestore 中，传输时使用 TLS 加密，静态数据也经过加密。仅允许经过身份验证的请求访问。\n\n&lt;b>4. 第三方服务&lt;/b>\n\n• Firebase Authentication（Google）\n• Firebase Crashlytics（Google）\n• Google Play Billing\n\n我们不出售、共享或向任何其他第三方转让您的个人数据。\n\n&lt;b>5. 您的权利&lt;/b>\n\n根据 GDPR 及类似法规，您有权：\n• 访问您的个人数据\n• 要求更正不准确的数据\n• 要求删除您的数据\n• 导出您的数据（数据可携性）\n• 随时撤回同意\n\n如需行使上述任何权利，请通过 contact@chessgym.app 联系我们。我们将在30天内回复。\n\n&lt;b>6. 数据保留&lt;/b>\n\n您的数据将在账户存在期间保留。如果您删除账户，所有相关数据将在30天内永久删除。\n\n&lt;b>7. 儿童隐私&lt;/b>\n\n本应用不会主动收集13岁以下儿童的数据。如果您认为我们收集了此类数据，请立即联系我们。\n\n&lt;b>8. 本政策的变更&lt;/b>\n\n我们可能会不时更新本隐私政策。变更将在应用中以更新的生效日期反映。\n\n&lt;b>9. 联系方式&lt;/b>\n\n如有疑问或数据请求：\ncontact@chessgym.app</string>
+    <string name="about_privacy_policy_content">生效日期：2026年5月\n\nChessGym（&quot;本应用&quot;）由 Paul Mihai Craciunas 开发。本隐私政策说明所收集的数据、使用方式及您对该数据的权利。\n\n&lt;b>1. 我们收集的数据&lt;/b>\n\n• &lt;b>账户信息：&lt;/b>如果您登录，我们将通过 Firebase Authentication 存储您的显示名称、电子邮件地址和唯一用户标识符。\n• &lt;b>游戏数据：&lt;/b>棋谜等级分、统计数据和成就进度将被存储，以提供个性化体验。\n• &lt;b>崩溃与诊断：&lt;/b>Firebase Crashlytics 自动收集设备型号、操作系统版本和崩溃堆栈跟踪，以帮助我们修复漏洞。\n• &lt;b>账单：&lt;/b>捐款交易完全由 Google Play 处理，我们不存储支付详情。\n\n&lt;b>2. 我们如何使用您的数据&lt;/b>\n\n• 提供和个性化应用体验（等级分、成就、进度同步）。\n• 诊断和修复崩溃及性能问题。\n• 登录时启用进度云备份。\n\n&lt;b>3. 数据存储与安全&lt;/b>\n\n数据存储在 Google Cloud Firestore 中，传输时使用 TLS 加密，静态数据也经过加密。仅允许经过身份验证的请求访问。\n\n&lt;b>4. 第三方服务&lt;/b>\n\n• Firebase Authentication（Google）\n• Firebase Crashlytics（Google）\n• Google Play Billing\n\n我们不出售、共享或向任何其他第三方转让您的个人数据。\n\n&lt;b>5. 您的权利&lt;/b>\n\n根据 GDPR 及类似法规，您有权：\n• 访问您的个人数据\n• 要求更正不准确的数据\n• 要求删除您的数据\n• 导出您的数据（数据可携性）\n• 随时撤回同意\n\n如需行使上述任何权利，请通过 contact@chessgym.uk 联系我们。我们将在30天内回复。\n\n&lt;b>6. 数据保留&lt;/b>\n\n您的数据将在账户存在期间保留。如果您删除账户，所有相关数据将在30天内永久删除。\n\n&lt;b>7. 儿童隐私&lt;/b>\n\n本应用不会主动收集13岁以下儿童的数据。如果您认为我们收集了此类数据，请立即联系我们。\n\n&lt;b>8. 本政策的变更&lt;/b>\n\n我们可能会不时更新本隐私政策。变更将在应用中以更新的生效日期反映。\n\n&lt;b>9. 联系方式&lt;/b>\n\n如有疑问或数据请求：\ncontact@chessgym.uk</string>
     <string name="about_terms_title">使用条款</string>
     <string name="about_terms_content">ChessGym 是自由软件：您可以根据自由软件基金会发布的 GNU 通用公共许可证（版本3或更高版本）的条款重新发布和/或修改它。\n\nChessGym 以希望其有用为目的发布，但不提供任何担保；甚至不包含对适销性或特定用途适用性的默示担保。详情请参阅 GNU 通用公共许可证。\n\n您应该已经随本程序收到一份 GNU 通用公共许可证副本。如未收到，请访问 https://www.gnu.org/licenses/。\n\nChessGym 的完整源代码可在以下地址获取：https://github.com/paulcraciunas/ChessGym\n\nChessGym 集成了 Stockfish，这是一款根据 GNU 通用公共许可证 v3.0 授权的免费开源国际象棋引擎。Stockfish 源代码可在以下地址获取：https://github.com/official-stockfish/Stockfish\n\n所有国际象棋棋谜数据均来源于公开可用的数据库。ChessGym 及其标志是 Paul Mihai Craciunas 的知识产权。\n\n© 2025–2026 Paul Mihai Craciunas。</string>
     <string name="about_terms_and_conditions_title">条款和条件</string>
-    <string name="about_terms_and_conditions_content">下载、安装或使用 ChessGym（&quot;本应用&quot;），即表示您同意以下条款和条件。如果您不同意，请立即停止使用本应用。\n\n本应用按 &quot;现状&quot; 和 &quot;可用状态&quot; 提供，不提供任何明示或暗示的担保，包括但不限于适销性、特定用途适用性和非侵权的暗示担保。\n\n在任何情况下，开发者均不对因使用或无法使用本应用而产生的任何直接、间接、附带、特殊、后果性或惩罚性损害承担责任，即使开发者已被告知此类损害的可能性。\n\n本应用可能包含指向第三方网站或服务的链接，这些网站或服务并非由开发者拥有或控制。开发者对任何第三方网站或服务的内容、隐私政策或做法不承担任何责任。\n\n开发者保留随时修改、暂停或终止本应用的权利，恕不另行通知。开发者对因修改、暂停或终止本应用而造成的损失不承担责任。\n\n您使用本应用还受 GNU 通用公共许可证 v3.0 的约束，该许可证全文可在"使用条款"部分查看。\n\n本条款和条件自您首次使用本应用之日起生效。开发者保留随时更新这些条款的权利。继续使用本应用即表示接受任何变更。\n\n如对这些条款有任何疑问，请通过 contact@chessgym.app 联系我们。</string>
+    <string name="about_terms_and_conditions_content">下载、安装或使用 ChessGym（&quot;本应用&quot;），即表示您同意以下条款和条件。如果您不同意，请立即停止使用本应用。\n\n本应用按 &quot;现状&quot; 和 &quot;可用状态&quot; 提供，不提供任何明示或暗示的担保，包括但不限于适销性、特定用途适用性和非侵权的暗示担保。\n\n在任何情况下，开发者均不对因使用或无法使用本应用而产生的任何直接、间接、附带、特殊、后果性或惩罚性损害承担责任，即使开发者已被告知此类损害的可能性。\n\n本应用可能包含指向第三方网站或服务的链接，这些网站或服务并非由开发者拥有或控制。开发者对任何第三方网站或服务的内容、隐私政策或做法不承担任何责任。\n\n开发者保留随时修改、暂停或终止本应用的权利，恕不另行通知。开发者对因修改、暂停或终止本应用而造成的损失不承担责任。\n\n您使用本应用还受 GNU 通用公共许可证 v3.0 的约束，该许可证全文可在"使用条款"部分查看。\n\n本条款和条件自您首次使用本应用之日起生效。开发者保留随时更新这些条款的权利。继续使用本应用即表示接受任何变更。\n\n如对这些条款有任何疑问，请通过 contact@chessgym.uk 联系我们。</string>
     <!-- endregion -->
 
     <!-- region Tools -->

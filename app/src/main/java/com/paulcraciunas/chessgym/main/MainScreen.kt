@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
@@ -89,9 +90,15 @@ fun MainScreen(
 
     LaunchedEffect(Unit) {
         navigationDispatcher.navigationEvents.collect { event ->
-            when (event) {
-                is NavigationDispatcher.Destination.Analysis ->
-                    navController.navigate(Screen.Analysis(puzzleId = event.puzzleId))
+            if (navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED) {
+                navController.navigate(
+                    when (event) {
+                        is NavigationDispatcher.Destination.Analysis -> Screen.Analysis(puzzleId = event.puzzleId)
+                        is NavigationDispatcher.Destination.Achievements -> Screen.Achievements
+                    }
+                ) {
+                    launchSingleTop = true
+                }
             }
         }
     }
@@ -175,6 +182,7 @@ fun MainScreen(
 
         AchievementBannerHost(
             notifications = { notificationManager.notifications },
+            onClick = { navigationDispatcher.navigate(NavigationDispatcher.Destination.Achievements) },
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .statusBarsPadding(),

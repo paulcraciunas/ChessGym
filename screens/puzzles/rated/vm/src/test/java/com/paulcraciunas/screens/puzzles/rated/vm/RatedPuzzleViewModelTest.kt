@@ -11,6 +11,7 @@ import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.api.board.SidedPiece
 import com.paulcraciunas.game.logic.impl.RealGameFactory
+import com.paulcraciunas.global.navigation.NavigationDispatcher
 import com.paulcraciunas.global.sounds.SoundCoordinator
 import com.paulcraciunas.settings.application.api.FakeAppSettingsRepository
 import com.paulcraciunas.user.api.FakeUserRepository
@@ -68,7 +69,6 @@ internal class RatedPuzzleViewModelTest {
             val underTest = buildVm(buildStandardPuzzle())
 
             val state = underTest.uiState.value as RatedPuzzleUiState.Playing
-            assertEquals(DEFAULT_RATING, state.rating)
             assertEquals(Side.BLACK, state.data.player)
             assertTrue(state.hintEnabled)
             assertFalse(state.showAbandonDialog)
@@ -147,7 +147,6 @@ internal class RatedPuzzleViewModelTest {
 
             val state = underTest.uiState.value as RatedPuzzleUiState.Finished
             assertTrue(state.success)
-            assertEquals(DEFAULT_RATING, state.rating)
             assertEquals(DEFAULT_GAIN, state.ratingChange)
         }
 
@@ -314,8 +313,7 @@ internal class RatedPuzzleViewModelTest {
             underTest.onNextPuzzle()
             testDispatcher.scheduler.advanceUntilIdle()
 
-            val state = underTest.uiState.value as RatedPuzzleUiState.Playing
-            assertEquals(1250, state.rating)
+            assertTrue(underTest.uiState.value is RatedPuzzleUiState.Playing)
         }
     }
 
@@ -395,6 +393,7 @@ internal class RatedPuzzleViewModelTest {
             timer = timer,
             getRatedPuzzle = getRatedPuzzle,
             onPuzzleComplete = onPuzzleComplete,
+            navDispatcher = NavigationDispatcher(),
             sounds = SoundCoordinator(),
             appSettingsRepository = appSettingsRepository,
         )

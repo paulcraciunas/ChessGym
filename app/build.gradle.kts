@@ -17,20 +17,25 @@ android {
         buildConfig = true
     }
     defaultConfig {
-        val majorVersion = "1"
-        val minorVersion = "0"
-        buildConfigField("String", "APP_VERSION", "\"$majorVersion.$minorVersion\"")
         testInstrumentationRunner = "com.paulcraciunas.chessgym.runner.HiltTestRunner"
+    }
+
+    val keystorePath = System.getenv("KEYSTORE_PATH")
+    if (keystorePath != null) {
+        signingConfigs {
+            create("release") {
+                storeFile = file(keystorePath)
+                storePassword = System.getenv("KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("KEY_ALIAS")
+                keyPassword = System.getenv("KEY_PASSWORD")
+            }
+        }
     }
 
     testBuildType = "uitest"
     buildTypes {
         debug {
-            applicationIdSuffix = ".debug" // This makes it "com.paulcraciunas.chessgym.debug"
-            versionNameSuffix = "-debug"
-
-            val debugBuildNumber = "100"
-            buildConfigField("String", "BUILD_NUMBER", "\"$debugBuildNumber\"")
+            applicationIdSuffix = ".debug"
             buildConfigField("String", "BACKEND_URL", "\"http://10.0.2.2:8080\"")
             configure<CrashlyticsExtension> {
                 mappingFileUploadEnabled = false
@@ -39,21 +44,21 @@ android {
         create("uitest") {
             initWith(getByName("debug"))
             applicationIdSuffix = ".uitest"
-            versionNameSuffix = "-uitest"
             matchingFallbacks += listOf("debug")
             configure<CrashlyticsExtension> {
                 mappingFileUploadEnabled = false
             }
         }
         release {
-            val releaseBuildNumber: String = project.findProperty("buildNumber") as? String ?: "0"
-            buildConfigField("String", "BUILD_NUMBER", "\"$releaseBuildNumber\"")
+            signingConfig = signingConfigs.getByName(if (keystorePath != null) "release" else "debug")
+
+            isMinifyEnabled = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             buildConfigField("String", "BACKEND_URL", "\"https://chessgym-backend.run.app\"")
         }
         getByName("benchmark") {
             signingConfig = signingConfigs.getByName("debug")
             applicationIdSuffix = ".benchmark"
-            versionNameSuffix = "-benchmark"
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
@@ -61,9 +66,7 @@ android {
                 "proguard-rules.pro",
                 "proguard-benchmark.pro",
             )
-            val benchmarkBuildNumber = "1"
             buildConfigField("boolean", "ENABLE_TEST_TAGS", "true")
-            buildConfigField("String", "BUILD_NUMBER", "\"$benchmarkBuildNumber\"")
             buildConfigField("String", "BACKEND_URL", "\"https://chessgym-backend.run.app\"")
             configure<CrashlyticsExtension> {
                 mappingFileUploadEnabled = false
@@ -74,9 +77,7 @@ android {
         getByName("baselineProfile") {
             signingConfig = signingConfigs.getByName("debug")
             applicationIdSuffix = ".benchmark"
-            versionNameSuffix = "-baselineProfile"
             buildConfigField("boolean", "ENABLE_TEST_TAGS", "true")
-            buildConfigField("String", "BUILD_NUMBER", "\"1\"")
             buildConfigField("String", "BACKEND_URL", "\"https://chessgym-backend.run.app\"")
             configure<CrashlyticsExtension> {
                 mappingFileUploadEnabled = false

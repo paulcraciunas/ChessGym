@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy — ChessGym</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        chess: {
+                            dark: '#1a1a2e',
+                            medium: '#16213e',
+                            accent: '#e94560',
+                            light: '#eee2dc',
+                            gold: '#f5a623',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-chess-dark text-white min-h-screen flex flex-col">
+    <header class="max-w-3xl mx-auto px-6 py-16 text-center">
+        <a href="/" class="text-2xl font-bold">
+            Chess<span class="text-chess-accent">Gym</span>
+        </a>
+    </header>
+
+    <main class="max-w-3xl mx-auto px-6 pb-20 flex-1">
+        <h1 class="text-4xl font-bold text-center mb-4">Privacy Policy</h1>
+        <p class="text-gray-400 text-center text-sm mb-12">Last updated: July 1, 2026</p>
+
+        <div class="space-y-8 text-gray-300 leading-relaxed">
+            <section>
+                <h2 class="text-xl font-semibold text-white mb-3">1. Introduction</h2>
+                <p>
+                    ChessGym ("we", "our", or "the app") is a chess training application built by Paul Mihai Craciunas.
+                    This privacy policy explains what data we collect, why we collect it, and how we handle it.
+                    We are committed to protecting your privacy and being transparent about our practices.
+                </p>
+            </section>
+
+            <section>
+                <h2 class="text-xl font-semibold text-white mb-3">2. Data We Collect</h2>
+                <p class="mb-3">When you use ChessGym, we may collect the following information:</p>
+                <div class="bg-chess-medium rounded-xl p-6 border border-gray-700/30 space-y-3">
+                    <p><span class="text-chess-accent font-medium">Account information:</span> If you sign in with Google or email, we store your user ID, display name, and authentication provider. We do not store your password — authentication is handled securely by Firebase Authentication.</p>
+                    <p><span class="text-chess-accent font-medium">Gameplay data:</span> Your puzzle ratings, game statistics, achievements, and training progress are stored to provide a personalized experience.</p>
+                    <p><span class="text-chess-accent font-medium">Device information:</span> A device identifier is stored to associate your account with your device.</p>
+                    <p><span class="text-chess-accent font-medium">Crash reports:</span> We use Firebase Crashlytics to collect anonymous crash reports, which help us identify and fix bugs. These reports may include device model, OS version, and stack traces. They do not contain personal information.</p>
+                </div>
+            </section>
+
+            <section>
+                <h2 class="text-xl font-semibold text-white mb-3">3. Data We Do Not Collect</h2>
+                <p>
+                    We do not collect your location, contacts, photos, browsing history, or any data unrelated to the app's functionality.
+                    We do not serve ads and do not share your data with advertising networks.
+                </p>
+            </section>
+
+            <section>
+                <h2 class="text-xl font-semibold text-white mb-3">4. How We Use Your Data</h2>
+                <p>Your data is used solely to provide and improve the ChessGym experience:</p>
+                <div class="bg-chess-medium rounded-xl p-6 border border-gray-700/30 mt-3 space-y-2">
+                    <p>— To save your progress and ratings across sessions</p>
+                    <p>— To compute achievement statistics and leaderboards</p>
+                    <p>— To identify and fix crashes and bugs</p>
+                    <p>— To improve the app based on aggregated, anonymized usage patterns</p>
+                </div>
+            </section>
+
+            <section>
+                <h2 class="text-xl font-semibold text-white mb-3">5. Data Storage and Security</h2>
+                <p>
+                    Your data is stored in Google Cloud Firestore and protected by Firebase security rules.
+                    All communication between the app and our servers is encrypted using HTTPS/TLS.
+                    We follow industry-standard practices to protect your information.
+                </p>
+            </section>
+
+            <section>
+                <h2 class="text-xl font-semibold text-white mb-3">6. Third-Party Services</h2>
+                <p>ChessGym uses the following third-party services, each governed by their own privacy policies:</p>
+                <div class="bg-chess-medium rounded-xl p-6 border border-gray-700/30 mt-3 space-y-2">
+                    <p><a href="https://firebase.google.com/support/privacy" class="text-chess-accent hover:underline">Firebase Authentication</a> — for secure sign-in</p>
+                    <p><a href="https://firebase.google.com/support/privacy" class="text-chess-accent hover:underline">Cloud Firestore</a> — for data storage</p>
+                    <p><a href="https://firebase.google.com/support/privacy" class="text-chess-accent hover:underline">Firebase Crashlytics</a> — for crash reporting</p>
+                </div>
+            </section>
+
+            <section>
+                <h2 class="text-xl font-semibold text-white mb-3">7. Data Retention and Deletion</h2>
+                <p>
+                    Your data is retained as long as your account is active. You can request deletion of your account
+                    and all associated data at any time by contacting us at the email below. Upon request, we will
+                    delete your data from our servers within 30 days.
+                </p>
+            </section>
+
+            <section>
+                <h2 class="text-xl font-semibold text-white mb-3">8. Children's Privacy</h2>
+                <p>
+                    ChessGym is not directed at children under the age of 13. We do not knowingly collect personal
+                    information from children under 13. If you believe a child has provided us with personal data,
+                    please contact us and we will promptly delete it.
+                </p>
+            </section>
+
+            <section>
+                <h2 class="text-xl font-semibold text-white mb-3">9. Changes to This Policy</h2>
+                <p>
+                    We may update this privacy policy from time to time. Changes will be posted on this page with
+                    an updated "Last updated" date. Continued use of the app after changes constitutes acceptance
+                    of the revised policy.
+                </p>
+            </section>
+
+            <section>
+                <h2 class="text-xl font-semibold text-white mb-3">10. Contact</h2>
+                <p>
+                    If you have questions about this privacy policy or want to request data deletion, contact us at
+                    <a href="mailto:contact@chessgym.uk" class="text-chess-accent hover:underline">contact@chessgym.uk</a>.
+                </p>
+            </section>
+        </div>
+    </main>
+
+    <footer class="bg-chess-medium border-t border-gray-700/30 py-8">
+        <div class="max-w-3xl mx-auto px-6 text-center text-sm text-gray-400">
+            <a href="/" class="hover:text-white transition-colors">&larr; Back to home</a>
+        </div>
+    </footer>
+</body>
+</html>

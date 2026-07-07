@@ -5,6 +5,7 @@ import com.paulcraciunas.user.api.User
 import com.paulcraciunas.user.api.UserApiException
 import com.paulcraciunas.user.remote.mapper.UserDtoMapper
 import com.paulcraciunas.user.remote.model.SignInRequest
+import com.paulcraciunas.user.remote.model.SignInResponse
 import com.paulcraciunas.user.remote.model.UserDto
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
@@ -42,7 +43,11 @@ internal class UserRemoteDataSourceImplTest {
     @Test
     fun `GIVEN auth result WHEN signIn THEN POSTs to auth endpoint with body and returns user`() = runBlocking {
         // Given
-        val responseDto = UserDto()
+        val responseDto = SignInResponse(
+            userId = "uid_123",
+            user = UserDto(),
+            isNewUser = true,
+        )
         val engine = MockEngine { request ->
             assertEquals("$baseUrl/api/v1/auth/signin", request.url.toString())
             assertEquals(HttpMethod.Post, request.method)
@@ -74,7 +79,11 @@ internal class UserRemoteDataSourceImplTest {
     @Test
     fun `GIVEN auth result without display name WHEN signIn THEN sends null displayName`() = runBlocking {
         // Given
-        val responseDto = UserDto()
+        val responseDto = SignInResponse(
+            userId = "uid_123",
+            user = UserDto(),
+            isNewUser = false,
+        )
         val engine = MockEngine { request ->
             val body = json.decodeFromString<SignInRequest>(request.body.toByteArray().decodeToString())
             assertEquals("device_abc", body.deviceId)

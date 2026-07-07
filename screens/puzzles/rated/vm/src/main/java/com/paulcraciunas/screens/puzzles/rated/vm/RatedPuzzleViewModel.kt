@@ -9,6 +9,7 @@ import com.paulcraciunas.domain.api.puzzles.OnPuzzleComplete
 import com.paulcraciunas.domain.api.puzzles.PuzzleCompletionResult
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
+import com.paulcraciunas.global.navigation.NavigationDispatcher
 import com.paulcraciunas.global.qualifiers.DefaultDispatcher
 import com.paulcraciunas.global.sounds.SoundCoordinator
 import com.paulcraciunas.screens.data.BoardSession
@@ -41,6 +42,7 @@ class RatedPuzzleViewModel @Inject constructor(
     private val timer: Timer,
     private val getRatedPuzzle: GetRatedPuzzle,
     private val onPuzzleComplete: OnPuzzleComplete,
+    private val navDispatcher: NavigationDispatcher,
     sounds: SoundCoordinator,
     appSettingsRepository: AppSettingsRepository,
 ) : ViewModel() {
@@ -80,6 +82,12 @@ class RatedPuzzleViewModel @Inject constructor(
     fun onAbandonDismissed() = playSession.accept(PlayIntent.DismissAbandon)
     fun onAbandonConfirmed() = playSession.accept(PlayIntent.ConfirmAbandon)
     fun onNextPuzzle() { loadNextPuzzle() }
+    fun onAnalyze() {
+        val boardState = uiState.value as? RatedPuzzleUiState.Finished ?: return
+        boardState.data.id?.let {
+            navDispatcher.navigate(NavigationDispatcher.Destination.Analysis(it))
+        }
+    }
 
     fun onNavigateBackPressed(): Boolean {
         val isPlaying = playSession.state.value.status == SingleSessionState.Status.Playing
@@ -125,14 +133,12 @@ class RatedPuzzleViewModel @Inject constructor(
         SingleSessionState.Status.Failed -> RatedPuzzleUiState.Failed
         SingleSessionState.Status.Loading -> RatedPuzzleUiState.Loading
         SingleSessionState.Status.GameOver -> RatedPuzzleUiState.Finished(
-            rating = boardState.rating ?: 0,
             data = boardState,
             success = boardState.won,
             ratingChange = elo.get(success = boardState.won),
         )
         SingleSessionState.Status.Ready,
         SingleSessionState.Status.Playing -> RatedPuzzleUiState.Playing(
-            rating = boardState.rating ?: 0,
             data = boardState,
             hintEnabled = hintAvailable,
             showAbandonDialog = abandonRequested,

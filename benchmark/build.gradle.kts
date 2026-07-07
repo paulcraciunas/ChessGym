@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace = "com.paulcraciunas.chessgym.macrobenchmark"
-    compileSdk = 36
+    compileSdk = 37
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         minSdk = 27
-        targetSdk = 36
+        targetSdk = 37
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments["androidx.benchmark.fullTracing.enable"] = "true"
     }
@@ -35,6 +35,7 @@ android {
 
     experimentalProperties["android.experimental.self-instrumenting"] = true
 
+    @Suppress("UnstableApiUsage")
     testOptions {
         managedDevices {
             localDevices {

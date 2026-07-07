@@ -24,6 +24,7 @@ internal class KnightPathUiStateAdapter {
                 timeRemaining = time,
                 score = successCount,
                 isNewHighScore = successCount > highScore,
+                previousHighScore = highScore,
                 wasWrongMove = state.remainingTimeMs != 0L,
             )
         }

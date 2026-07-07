@@ -30,6 +30,7 @@ data class HomeUiState(
         fun initial(): String = name.first().uppercase()
     }
 
+    @Immutable
     data class Stats(
         val puzzlesPlayed: Int = 0,
         val puzzlesSolved: Int = 0,
