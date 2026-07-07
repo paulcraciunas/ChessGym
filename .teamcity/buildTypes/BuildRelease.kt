@@ -52,7 +52,7 @@ object BuildRelease : BuildType({
             name = "Bundle Release"
             tasks = "clean :app:bundleRelease"
             useGradleWrapper = true
-            gradleParams = "-PbuildNumber=%dep.BuildDebug.build.counter%"
+            gradleParams = "-PbuildNumber=%build.counter%"
         }
     }
 
