@@ -54,7 +54,7 @@ android {
 
             isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            buildConfigField("String", "BACKEND_URL", "\"https://chessgym-backend.run.app\"")
+            buildConfigField("String", "BACKEND_URL", "\"https://api.chessgym.uk\"")
         }
         getByName("benchmark") {
             signingConfig = signingConfigs.getByName("debug")
@@ -67,7 +67,7 @@ android {
                 "proguard-benchmark.pro",
             )
             buildConfigField("boolean", "ENABLE_TEST_TAGS", "true")
-            buildConfigField("String", "BACKEND_URL", "\"https://chessgym-backend.run.app\"")
+            buildConfigField("String", "BACKEND_URL", "\"https://api.chessgym.uk\"")
             configure<CrashlyticsExtension> {
                 mappingFileUploadEnabled = false
             }
@@ -78,7 +78,7 @@ android {
             signingConfig = signingConfigs.getByName("debug")
             applicationIdSuffix = ".benchmark"
             buildConfigField("boolean", "ENABLE_TEST_TAGS", "true")
-            buildConfigField("String", "BACKEND_URL", "\"https://chessgym-backend.run.app\"")
+            buildConfigField("String", "BACKEND_URL", "\"https://api.chessgym.uk\"")
             configure<CrashlyticsExtension> {
                 mappingFileUploadEnabled = false
             }
