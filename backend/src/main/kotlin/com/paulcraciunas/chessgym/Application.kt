@@ -20,6 +20,7 @@ fun Application.module() {
     val userService = DefaultUserService(userRepository)
     val statisticsService = DefaultStatisticsService(userRepository)
 
+    configureCORS()
     configureSerialization()
     configureCallLogging()
     configureStatusPages()
