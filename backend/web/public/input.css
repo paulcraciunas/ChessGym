@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+@source "./**/*.html";
+
+@theme {
+  --color-chess-dark: #1a1a2e;
+  --color-chess-medium: #16213e;
+  --color-chess-accent: #e94560;
+  --color-chess-light: #eee2dc;
+  --color-chess-gold: #f5a623;
+}

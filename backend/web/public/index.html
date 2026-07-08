@@ -4,24 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ChessGym — Chess Improvement Through Practice</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        chess: {
-                            dark: '#1a1a2e',
-                            medium: '#16213e',
-                            accent: '#e94560',
-                            light: '#eee2dc',
-                            gold: '#f5a623',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body class="bg-chess-dark text-white min-h-screen">
     <!-- Hero -->
@@ -36,14 +19,13 @@
             <p class="text-xl text-gray-300 max-w-2xl mx-auto mb-8">
                 Improve your chess with nearly 6 million puzzles, board visualization training, and blind mode challenges. Fully offline.
             </p>
-            <a href="#"
+            <a href="https://play.google.com/store/apps/details?id=com.paulcraciunas.chessgym"
                class="inline-flex items-center gap-3 bg-chess-accent hover:bg-chess-accent/90 text-white font-semibold px-8 py-4 rounded-xl transition-colors text-lg">
                 <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M3,20.5V3.5C3,2.91 3.34,2.39 3.84,2.15L13.69,12L3.84,21.85C3.34,21.61 3,21.09 3,20.5M16.81,15.12L6.05,21.34L14.54,12.85L16.81,15.12M20.16,10.81C20.5,11.08 20.75,11.5 20.75,12C20.75,12.5 20.53,12.9 20.18,13.18L17.89,14.5L15.39,12L17.89,9.5L20.16,10.81M6.05,2.66L16.81,8.88L14.54,11.15L6.05,2.66Z"/>
                 </svg>
                 Get it on Google Play
             </a>
-            <p class="text-sm text-gray-500 mt-3">Coming soon to the Play Store</p>
         </div>
     </header>
 
@@ -92,16 +74,16 @@
             <h2 class="text-3xl font-bold mb-8">Screenshots</h2>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div class="bg-chess-medium rounded-xl aspect-[9/16] flex items-center justify-center border border-gray-700/30">
-                    <span class="text-gray-500 text-sm">Coming soon</span>
+                    <img src="/assets/images/01_home.png" alt="App screenshot showing the main dashboard" class="w-full h-full object-cover">
                 </div>
                 <div class="bg-chess-medium rounded-xl aspect-[9/16] flex items-center justify-center border border-gray-700/30">
-                    <span class="text-gray-500 text-sm">Coming soon</span>
+                    <img src="/assets/images/02_rated_puzzle.png" alt="App screenshot showing playing a Rated Puzzle" class="w-full h-full object-cover">
                 </div>
                 <div class="bg-chess-medium rounded-xl aspect-[9/16] flex items-center justify-center border border-gray-700/30">
-                    <span class="text-gray-500 text-sm">Coming soon</span>
+                    <img src="/assets/images/04_analysis_board.png" alt="App screenshot showing the Analysis board" class="w-full h-full object-cover">
                 </div>
                 <div class="bg-chess-medium rounded-xl aspect-[9/16] flex items-center justify-center border border-gray-700/30">
-                    <span class="text-gray-500 text-sm">Coming soon</span>
+                    <img src="/assets/images/06_board_visualization.png" alt="App screenshot showing a Find The Square game" class="w-full h-full object-cover">
                 </div>
             </div>
         </div>
