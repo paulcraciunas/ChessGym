@@ -125,7 +125,7 @@ Key capabilities:
 - Achievement and statistics synchronization
 - Health and OpenAPI/Swagger endpoints
 
-The backend is a separate Gradle project located in [`backend/`](backend). See [`backend/README.md`](backend/README.md) for setup and deployment documentation.
+The backend is a separate Gradle project located in [`backend/`](backend).
 
 ## Getting Started
 
