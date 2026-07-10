@@ -12,7 +12,13 @@ application {
     mainClass.set("com.paulcraciunas.chessgym.ApplicationKt")
 }
 
+// Remove the ktor { fatJar { ... } } block entirely
+tasks.jar {
+    enabled = false
+}
+
 tasks.shadowJar {
+    archiveClassifier.set("")
     archiveFileName.set("chessgym-backend.jar")
     mergeServiceFiles()
 }
