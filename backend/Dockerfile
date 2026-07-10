@@ -3,7 +3,7 @@ WORKDIR /app
 COPY build.gradle.kts settings.gradle.kts gradle.properties ./
 COPY gradle ./gradle
 COPY src ./src
-RUN gradle buildFatJar --no-daemon
+RUN gradle shadowJar --no-daemon
 
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app

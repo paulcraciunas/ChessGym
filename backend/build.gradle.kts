@@ -2,6 +2,7 @@ plugins {
     kotlin("jvm") version "2.3.0"
     kotlin("plugin.serialization") version "2.3.0"
     id("io.ktor.plugin") version "3.4.3"
+    id("com.gradleup.shadow") version "8.3.11"
 }
 
 group = "com.paulcraciunas.chessgym"
@@ -11,10 +12,9 @@ application {
     mainClass.set("com.paulcraciunas.chessgym.ApplicationKt")
 }
 
-ktor {
-    fatJar {
-        archiveFileName.set("chessgym-backend.jar")
-    }
+tasks.shadowJar {
+    archiveFileName.set("chessgym-backend.jar")
+    mergeServiceFiles()
 }
 
 repositories {
