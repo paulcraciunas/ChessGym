@@ -257,7 +257,7 @@ internal class PuzzleStreakScreenTest : BaseUiTest() {
 
     @Test
     fun GIVEN_streak_ended_WHEN_pressing_back_THEN_returns_to_dashboard() {
-        Given.user.withPuzzleStreak(currentCount = STREAK_COUNT, lastPuzzleId = PUZZLE_ID)
+        Given.user.withPuzzleStreak(currentCount = 0, lastPuzzleId = PUZZLE_ID)
 
         When.app.launch()
         When.navigation.navigateToPuzzles()
