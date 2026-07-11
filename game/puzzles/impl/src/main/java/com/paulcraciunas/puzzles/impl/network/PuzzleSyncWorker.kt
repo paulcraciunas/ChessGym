@@ -4,11 +4,7 @@ package com.paulcraciunas.puzzles.impl.network
 //noinspection PureDomain
 import android.content.Context
 //noinspection PureDomain
-import android.content.pm.ServiceInfo
-//noinspection PureDomain
 import android.database.sqlite.SQLiteDatabase
-//noinspection PureDomain
-import android.os.Build
 //noinspection PureDomain
 import androidx.hilt.work.HiltWorker
 //noinspection PureDomain
@@ -49,8 +45,13 @@ class PuzzleSyncWorker @AssistedInject constructor(
     private val ioDispatcher = dispatcher
     private var step: Step = Step.Download
 
+    override suspend fun getForegroundInfo(): ForegroundInfo {
+        notificationFactory.createChannel(applicationContext)
+        val notification = notificationFactory.createForegroundNotification(applicationContext)
+        return ForegroundInfo(NotificationFactory.DOWNLOAD_NOTIFICATION_ID, notification)
+    }
+
     override suspend fun doWork(): Result = withContext(ioDispatcher) {
-        setForegroundAsync(createForegroundInfo())
         progressReporter.init { progress ->
             setProgress(workDataOf(STEP to step.toString(), PROGRESS_NAME to progress))
         }
@@ -172,15 +173,6 @@ class PuzzleSyncWorker @AssistedInject constructor(
         }
     }
 
-    private fun createForegroundInfo(): ForegroundInfo {
-        notificationFactory.createChannel(applicationContext)
-        val notification = notificationFactory.createForegroundNotification(applicationContext)
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            ForegroundInfo(NotificationFactory.DOWNLOAD_NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
-        } else {
-            ForegroundInfo(NotificationFactory.DOWNLOAD_NOTIFICATION_ID, notification)
-        }
-    }
 
     enum class Step {
         Download,
