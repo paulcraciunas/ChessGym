@@ -101,7 +101,7 @@ Puzzles originate from the [Lichess open puzzle database](https://database.liche
 
 | Tier        | Puzzles   | Size (uncompressed) | Size (archived) |
 |-------------|-----------|---------------------|-----------------|
-| **Full**    | 5,939,980 | 329.7 MB            | 125 MiB         |
+| **Full**    | 5,939,980 | 329.7 MB            | 185 MiB         |
 | **Compact** | 2,385,719 | 131.2 MB            | 76 MB           |
 | **Lite**    | 606,248   | 32.9 MB             | 20 MB           |
 
@@ -174,8 +174,8 @@ The app will build and run normally with this placeholder. Firebase features (cr
 |                 | Version               |
 |-----------------|-----------------------|
 | **Min SDK**     | 27 (Android 8.1 Oreo) |
-| **Target SDK**  | 36 (Android 16)       |
-| **Compile SDK** | 36                    |
+| **Target SDK**  | 37 (Android 17)       |
+| **Compile SDK** | 37                    |
 
 ## Continuous Integration
 
