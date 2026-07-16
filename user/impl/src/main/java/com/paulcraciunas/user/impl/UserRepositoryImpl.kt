@@ -36,18 +36,20 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun logHistory(history: List<User.HistoryItem>) {
-        val currentUser = get()
-        val mergedHistory = mergeHistory(currentUser.history, history)
-        val updatedUser = currentUser.copy(history = mergedHistory)
-        localDataSource.saveUser(updatedUser)
+        // Atomic read-modify-write: the merge runs inside the DataStore transaction so a
+        // concurrent writer (e.g. the startup sync) cannot clobber the appended history.
+        localDataSource.updateUser { current ->
+            current.copy(history = mergeHistory(current.history, history))
+        }
     }
 
     override suspend fun signIn(authResult: AuthResult): User {
         val localUser = get()
         val remoteUser = remoteDataSource.signIn(authResult, localUser.deviceId)
-        val merged = mergeWithRemote(localUser, remoteUser).copy(authentication = authResult.authState)
+        val merged = localDataSource.updateUser { current ->
+            mergeWithRemote(current, remoteUser).copy(authentication = authResult.authState)
+        }
         remoteDataSource.updateUser(merged)
-        localDataSource.saveUser(merged)
         syncState.markClean()
         return merged
     }
@@ -74,8 +76,10 @@ class UserRepositoryImpl @Inject constructor(
                 remoteDataSource.updateUser(currentUser)
             }
             val remoteUser = remoteDataSource.getUser(userId)
-            val merged = mergeWithRemote(currentUser, remoteUser)
-            localDataSource.saveUser(merged)
+            // Atomic read-modify-write: merge against the freshest local user inside the
+            // DataStore transaction. A blind get()+saveUser() here would overwrite any
+            // local-only changes (e.g. failedPuzzles) made while the network calls were in flight.
+            localDataSource.updateUser { freshLocal -> mergeWithRemote(freshLocal, remoteUser) }
             syncState.markClean()
         } catch (e: Exception) {
             Timber.w(e, "Sync failed, will retry on next opportunity")

@@ -7,6 +7,6 @@ interface UserLocalDataSource {
 
     suspend fun getUser(): User
     suspend fun saveUser(user: User)
-    suspend fun updateUser(updater: (User) -> User)
+    suspend fun updateUser(updater: (User) -> User): User
     suspend fun clearUserData()
 }
