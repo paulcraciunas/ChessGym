@@ -277,6 +277,8 @@
     <string name="failed_puzzles_empty_description">Kerja bagus! Kamu tidak memiliki teka-teki gagal untuk dicoba kembali.</string>
     <string name="failed_puzzles_complete_title">Semua Selesai!</string>
     <string name="failed_puzzles_complete_message">Kerja bagus! Kamu telah selesai meninjau semua teka-teki yang gagal.</string>
+    <string name="failed_puzzles_complete_message_none_solved">Terus berlatih! Tinjau analisis setiap teka-teki untuk meningkatkan kemampuan.</string>
+    <string name="failed_puzzles_complete_summary">%1$d / %2$d</string>
     <!-- endregion -->
 
     <!-- Common -->

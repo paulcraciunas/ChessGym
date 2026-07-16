@@ -2,7 +2,7 @@ package com.paulcraciunas.user.api
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.updateAndGet
 
 class FakeUserLocalDataSource : UserLocalDataSource {
     private val _user = MutableStateFlow(User())
@@ -13,9 +13,8 @@ class FakeUserLocalDataSource : UserLocalDataSource {
         _user.value = user
     }
 
-    override suspend fun updateUser(updater: (User) -> User) {
-        _user.update(updater)
-    }
+    override suspend fun updateUser(updater: (User) -> User): User =
+        _user.updateAndGet(updater)
 
     override suspend fun clearUserData() {
         _user.value = User()

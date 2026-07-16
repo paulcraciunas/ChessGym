@@ -6,7 +6,10 @@ import com.paulcraciunas.user.api.AuthResult
 import com.paulcraciunas.user.api.FakeUserLocalDataSource
 import com.paulcraciunas.user.api.FakeUserRemoteDataSource
 import com.paulcraciunas.user.api.User
+import com.paulcraciunas.user.api.UserRemoteDataSource
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -344,6 +347,59 @@ internal class UserRepositoryImplTest {
         assertEquals(15, synced.achievements.bestConsecutiveDaysStreak)
         assertEquals(3, synced.achievements.currentRatedWinStreak)
         assertEquals(12, synced.achievements.bestRatedWinStreak)
+    }
+
+    @Test
+    fun `GIVEN failedPuzzles change while sync network call is in-flight WHEN sync completes THEN preserves them`() = runBlocking {
+        // Regression for the lost-update race: sync must merge the remote result against the
+        // freshest local user *inside* the DataStore transaction. A blind get()+saveUser() would
+        // capture a stale snapshot before the (slow) network call and overwrite any local-only
+        // change — such as a failed puzzle being solved — that landed while it was in flight.
+        //
+        // The gated remote parks sync mid-flight (after its snapshot, during getUser) so we can
+        // inject a concurrent local write, then release it. Without the atomic fix this test fails.
+        val user = UserTestFixtures.createSignedUpUser().copy(failedPuzzles = listOf(1, 2, 3))
+        val remoteUser = user.copy(profile = User.Profile(displayName = "RemoteUser"))
+        fakeLocalDataSource.saveUser(user)
+        fakeSyncState.stale = true
+
+        val reachedNetwork = CompletableDeferred<Unit>()
+        val releaseNetwork = CompletableDeferred<Unit>()
+        val gatedRemote = object : UserRemoteDataSource {
+            override suspend fun getUser(userId: String): User {
+                reachedNetwork.complete(Unit)
+                releaseNetwork.await()
+                return remoteUser
+            }
+
+            override suspend fun updateUser(user: User) = Unit
+            override suspend fun signIn(authResult: AuthResult, deviceId: String): User =
+                throw UnsupportedOperationException("not used")
+
+            override suspend fun deleteUser(userId: String) = Unit
+        }
+        val repository = UserRepositoryImpl(
+            fakeLocalDataSource,
+            gatedRemote,
+            fakeSyncState,
+            fakeSyncScheduler,
+        )
+
+        // Start sync; it takes its snapshot then parks inside the gated getUser call.
+        val syncJob = launch { repository.sync() }
+        reachedNetwork.await()
+
+        // Concurrent local write: the user solved a failed puzzle while sync was mid-flight.
+        fakeLocalDataSource.updateUser { it.copy(failedPuzzles = listOf(2, 3)) }
+
+        // Let sync finish its merge-and-save.
+        releaseNetwork.complete(Unit)
+        syncJob.join()
+
+        // Then — the solved puzzle must not reappear; the fresh local list wins.
+        val synced = fakeLocalDataSource.getUser()
+        assertEquals(listOf(2, 3), synced.failedPuzzles)
+        assertEquals("RemoteUser", synced.profile.displayName)
     }
 
     @Test

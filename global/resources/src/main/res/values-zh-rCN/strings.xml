@@ -277,6 +277,8 @@
     <string name="failed_puzzles_empty_description">做得很好！您没有任何失败的棋谜需要重试。</string>
     <string name="failed_puzzles_complete_title">全部完成！</string>
     <string name="failed_puzzles_complete_message">干得漂亮！您已完成对所有失败棋谜的回顾。</string>
+    <string name="failed_puzzles_complete_message_none_solved">继续练习！查看每道棋谜的分析以提高水平。</string>
+    <string name="failed_puzzles_complete_summary">%1$d / %2$d</string>
     <!-- endregion -->
 
     <!-- Common -->

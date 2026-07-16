@@ -282,6 +282,8 @@
     <string name="failed_puzzles_empty_description">Ótimo trabalho! Você não tem nenhum puzzle falho para repetir.</string>
     <string name="failed_puzzles_complete_title">Tudo pronto!</string>
     <string name="failed_puzzles_complete_message">Ótimo trabalho! Você terminou de revisar todos os seus puzzles falhos.</string>
+    <string name="failed_puzzles_complete_message_none_solved">Continue praticando! Revise a análise de cada puzzle para melhorar.</string>
+    <string name="failed_puzzles_complete_summary">%1$d / %2$d</string>
     <!-- endregion -->
 
     <!-- Common -->

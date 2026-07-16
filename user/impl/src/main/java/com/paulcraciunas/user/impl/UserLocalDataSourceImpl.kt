@@ -60,8 +60,8 @@ class UserLocalDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateUser(updater: (User) -> User) {
-        try {
+    override suspend fun updateUser(updater: (User) -> User): User {
+        return try {
             dataStore.updateData { currentUser ->
                 updater(currentUser)
             }

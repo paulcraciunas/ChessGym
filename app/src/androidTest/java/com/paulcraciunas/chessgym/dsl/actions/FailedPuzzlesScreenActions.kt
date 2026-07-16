@@ -78,7 +78,7 @@ class FailedPuzzlesScreenActions(private val rule: ComposeTestRule) {
     }
 
     fun dismissCompletion(): FailedPuzzlesScreenActions = apply {
-        rule.onNodeWithTag(ChessGymDialogTags.CONFIRM).performClick()
+        rule.onNodeWithTag(ChessGymDialogTags.DISMISS).performClick()
         rule.waitForIdle()
     }
 

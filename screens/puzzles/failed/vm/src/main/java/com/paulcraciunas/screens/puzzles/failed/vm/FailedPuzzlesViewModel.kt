@@ -76,6 +76,11 @@ class FailedPuzzlesViewModel @Inject constructor(
     fun onPromote(to: Piece) = playSession.accept(PlayIntent.Promote(to))
     fun onHintRequested() = playSession.accept(PlayIntent.Hint)
     fun onDismissCompletion() = playSession.clearSummary()
+    fun onRetry() {
+        playSession.reset()
+        timer.start()
+        viewModelScope.launch(dispatcher) { playSession.run() }
+    }
     fun onAnalyzeFailedPuzzle(puzzleId: Int) = navDispatcher.navigate(NavigationDispatcher.Destination.Analysis(puzzleId))
 
     private fun PlaySessionState.toUiState(): FailedPuzzlesUiState = when (status) {

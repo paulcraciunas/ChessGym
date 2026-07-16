@@ -282,6 +282,8 @@
     <string name="failed_puzzles_empty_description">Gute Arbeit! Du hast keine fehlgeschlagenen Aufgaben zu wiederholen.</string>
     <string name="failed_puzzles_complete_title">Alles erledigt!</string>
     <string name="failed_puzzles_complete_message">Großartige Arbeit! Du hast alle fehlgeschlagenen Aufgaben überprüft.</string>
+    <string name="failed_puzzles_complete_message_none_solved">Weiter üben! Überprüfe die Analyse jeder Aufgabe, um dich zu verbessern.</string>
+    <string name="failed_puzzles_complete_summary">%1$d / %2$d</string>
     <!-- endregion -->
 
     <!-- Common -->
