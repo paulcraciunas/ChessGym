@@ -213,7 +213,9 @@ private fun DialogContent(
         )
         DialogEntry.FailedPuzzlesCompletion -> FailedPuzzlesCompletionDialog(
             puzzlesSolved = 8,
+            puzzlesTotal = 10,
             onDismiss = onDismiss,
+            onRetry = {}
         )
     }
 }
