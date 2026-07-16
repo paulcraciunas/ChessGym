@@ -277,6 +277,8 @@
     <string name="failed_puzzles_empty_description">잘하셨습니다! 재도전할 실패한 퍼즐이 없습니다.</string>
     <string name="failed_puzzles_complete_title">모두 완료!</string>
     <string name="failed_puzzles_complete_message">훌륭합니다! 실패한 퍼즐을 모두 복습했습니다.</string>
+    <string name="failed_puzzles_complete_message_none_solved">계속 연습하세요! 각 퍼즐의 분석을 확인하여 실력을 향상시키세요.</string>
+    <string name="failed_puzzles_complete_summary">%1$d / %2$d</string>
     <!-- endregion -->
 
     <!-- Common -->

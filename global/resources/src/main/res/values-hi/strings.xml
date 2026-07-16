@@ -282,6 +282,8 @@
     <string name="failed_puzzles_empty_description">बढ़िया काम! आपके पास पुनः प्रयास के लिए कोई असफल पहेलियाँ नहीं हैं।</string>
     <string name="failed_puzzles_complete_title">सब हो गया!</string>
     <string name="failed_puzzles_complete_message">बढ़िया काम! आपने अपनी सभी असफल पहेलियों की समीक्षा पूरी कर ली।</string>
+    <string name="failed_puzzles_complete_message_none_solved">अभ्यास जारी रखें! सुधार के लिए प्रत्येक पहेली का विश्लेषण देखें।</string>
+    <string name="failed_puzzles_complete_summary">%1$d / %2$d</string>
     <!-- endregion -->
 
     <!-- Common -->

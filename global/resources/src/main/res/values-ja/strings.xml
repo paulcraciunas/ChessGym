@@ -277,6 +277,8 @@
     <string name="failed_puzzles_empty_description">素晴らしい！再挑戦すべき失敗したパズルはありません。</string>
     <string name="failed_puzzles_complete_title">全部完了！</string>
     <string name="failed_puzzles_complete_message">素晴らしい！失敗したすべてのパズルの見直しが終わりました。</string>
+    <string name="failed_puzzles_complete_message_none_solved">練習を続けましょう！各パズルの分析を確認して上達しましょう。</string>
+    <string name="failed_puzzles_complete_summary">%1$d / %2$d</string>
     <!-- endregion -->
 
     <!-- Common -->

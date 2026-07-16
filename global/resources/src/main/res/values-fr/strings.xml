@@ -282,6 +282,8 @@
     <string name="failed_puzzles_empty_description">Bravo ! Vous n\'avez aucun puzzle échoué à relancer.</string>
     <string name="failed_puzzles_complete_title">Tout fait !</string>
     <string name="failed_puzzles_complete_message">Excellent travail ! Vous avez terminé de revoir tous vos puzzles échoués.</string>
+    <string name="failed_puzzles_complete_message_none_solved">Continuez à pratiquer ! Consultez l\'analyse de chaque puzzle pour progresser.</string>
+    <string name="failed_puzzles_complete_summary">%1$d / %2$d</string>
     <!-- endregion -->
 
     <!-- Common -->

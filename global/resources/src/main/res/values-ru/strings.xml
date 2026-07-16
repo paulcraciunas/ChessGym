@@ -292,6 +292,8 @@
     <string name="failed_puzzles_empty_description">Отличная работа! У вас нет нерешённых задач для повтора.</string>
     <string name="failed_puzzles_complete_title">Всё готово!</string>
     <string name="failed_puzzles_complete_message">Отличная работа! Вы завершили просмотр всех нерешённых задач.</string>
+    <string name="failed_puzzles_complete_message_none_solved">Продолжайте практиковаться! Просмотрите анализ каждой задачи, чтобы улучшить свои навыки.</string>
+    <string name="failed_puzzles_complete_summary">%1$d / %2$d</string>
     <!-- endregion -->
 
     <!-- Common -->

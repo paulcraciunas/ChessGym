@@ -281,6 +281,8 @@
     <string name="failed_puzzles_empty_description">Great job! You don\'t have any failed puzzles to retry.</string>
     <string name="failed_puzzles_complete_title">All Done!</string>
     <string name="failed_puzzles_complete_message">Great work! You\'ve finished reviewing all your failed puzzles.</string>
+    <string name="failed_puzzles_complete_message_none_solved">Keep practicing! Review the analysis for each puzzle to improve.</string>
+    <string name="failed_puzzles_complete_summary">%1$d / %2$d</string>
     <!-- endregion -->
 
     <!-- Common -->
