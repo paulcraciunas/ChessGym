@@ -39,23 +39,7 @@ internal class MutablePuzzle(
         assert(isRunning())
         assert(remainingMoves.isNotEmpty())
 
-        val expected = remainingMoves.poll()
-        val promotedPiece = if (ply.isPromotion()) ply.algebraic().last().lowercase() else ""
         execute(ply)
-        // check if the move is the first in the list of expected moves
-        if (expected == "${ply.from}${ply.to}$promotedPiece") {
-            if (remainingMoves.isEmpty()) { // Now check if we have any expected moves left
-                state = Puzzle.State.Success
-            }
-        } else {
-            // If the move played wasn't the expected one, check if it resulted in checkmate
-            // (alternate checkmate moves should be accepted as success)
-            state = if (info.inCheckCount != CheckCount.None && plies.isEmpty()) {
-                Puzzle.State.Success
-            } else {
-                Puzzle.State.Failed
-            }
-        }
     }
 
     override fun play(from: Locus, to: Locus) = play(plies(from).first { it.to == to })
@@ -84,9 +68,22 @@ internal class MutablePuzzle(
 
     override fun isRunning(): Boolean = state == Puzzle.State.InProgress
 
-    override fun recomputeState() {
-        if (remainingMoves.isEmpty()) {
-            state = Puzzle.State.Success
+    override fun recomputeState(ply: Ply?) {
+        if (ply == null || remainingMoves.isEmpty()) return
+
+        val expected = remainingMoves.poll()
+        val promotedPiece = if (ply.isPromotion()) ply.algebraic().last().lowercase() else ""
+
+        if (expected == "${ply.from}${ply.to}$promotedPiece") {
+            if (remainingMoves.isEmpty()) {
+                state = Puzzle.State.Success
+            }
+        } else {
+            state = if (info.inCheckCount != CheckCount.None && plies.isEmpty()) {
+                Puzzle.State.Success
+            } else {
+                Puzzle.State.Failed
+            }
         }
     }
 

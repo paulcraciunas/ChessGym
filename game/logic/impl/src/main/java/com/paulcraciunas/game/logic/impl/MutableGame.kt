@@ -82,7 +82,7 @@ internal class MutableGame(
     override fun draw() = finish(Result.DrawByAgreement)
     override fun isRunning(): Boolean = state == Game.GameState.InProgress
 
-    override fun recomputeState() = stateStrategies.forEach {
+    override fun recomputeState(ply: Ply?) = stateStrategies.forEach {
         if (state == Game.GameState.InProgress) {
             state = it(this)
         }
