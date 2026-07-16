@@ -96,6 +96,7 @@ internal fun FailedPuzzles(tabNavController: NavHostController) {
         onSquareClicked = vm::onSquareClicked,
         onPromote = vm::onPromote,
         onDismissCompletion = vm::onDismissCompletion,
+        onRetry = vm::onRetry,
         onAnalyzeFailedPuzzle = vm::onAnalyzeFailedPuzzle,
     )
 }

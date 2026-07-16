@@ -27,6 +27,7 @@ import com.paulcraciunas.screens.common.board.BoardOrientation
 import com.paulcraciunas.screens.common.board.ChessBoard
 import com.paulcraciunas.screens.common.controls.CapturedPieces
 import com.paulcraciunas.screens.common.controls.PuzzleResultsGrid
+import com.paulcraciunas.screens.common.controls.YourMoveIndicator
 import com.paulcraciunas.screens.common.design.components.ChessGymSpacer
 import com.paulcraciunas.screens.common.design.components.SpacerSize
 import com.paulcraciunas.screens.common.design.theme.Design
@@ -45,6 +46,7 @@ fun FailedPuzzlesScreen(
     onSquareClicked: (selection: Locus) -> Unit = {},
     onPromote: (to: Piece) -> Unit = {},
     onDismissCompletion: () -> Unit = {},
+    onRetry: () -> Unit = {},
     onAnalyzeFailedPuzzle: (puzzleId: Int) -> Unit = {},
 ) {
     val progress = when (uiState) {
@@ -83,6 +85,7 @@ fun FailedPuzzlesScreen(
                     onSquareClicked = onSquareClicked,
                     onPromote = onPromote,
                     onDismissCompletion = onDismissCompletion,
+                    onRetry = onRetry,
                     onAnalyzeFailedPuzzle = onAnalyzeFailedPuzzle,
                     modifier = screenModifier,
                 )
@@ -98,6 +101,7 @@ private fun FailedPuzzlesContent(
     onSquareClicked: (selection: Locus) -> Unit,
     onPromote: (to: Piece) -> Unit,
     onDismissCompletion: () -> Unit,
+    onRetry: () -> Unit,
     onAnalyzeFailedPuzzle: (puzzleId: Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -118,6 +122,14 @@ private fun FailedPuzzlesContent(
             )
         }
         CapturedPieces(capturedPieces = data.captured.byPlayer, side = data.player.other(), modifier = Modifier.fillMaxWidth())
+        if (uiState is FailedPuzzlesUiState.Playing) {
+            YourMoveIndicator(
+                toMove = data.player,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = Design.dimensions.spacing.xxl)
+            )
+        }
         ChessGymSpacer(size = SpacerSize.XXLARGE)
         if (uiState.results.isNotEmpty()) {
             PuzzleResultsGrid(
@@ -137,7 +149,9 @@ private fun FailedPuzzlesContent(
         if (uiState is FailedPuzzlesUiState.Finished && uiState.showCompletionDialog) {
             FailedPuzzlesCompletionDialog(
                 puzzlesSolved = uiState.progress.solved,
+                puzzlesTotal = uiState.progress.total,
                 onDismiss = onDismissCompletion,
+                onRetry = onRetry,
             )
         }
     }

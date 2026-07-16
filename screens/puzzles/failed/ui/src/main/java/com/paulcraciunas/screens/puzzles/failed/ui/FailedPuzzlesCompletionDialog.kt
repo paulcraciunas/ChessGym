@@ -11,7 +11,9 @@ import com.paulcraciunas.screens.common.testTag
 @Composable
 fun FailedPuzzlesCompletionDialog(
     puzzlesSolved: Int,
+    puzzlesTotal: Int,
     onDismiss: () -> Unit,
+    onRetry: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     ChessGymDialog(
@@ -23,19 +25,26 @@ fun FailedPuzzlesCompletionDialog(
             )
         },
         buttons = {
-            Primary(
-                text = stringResource(R.string.generic_continue),
-                onClick = onDismiss,
+            Paired(
+                confirmText = stringResource(R.string.generic_retry),
+                onConfirm = onRetry,
+                dismissText = stringResource(R.string.generic_continue),
+                onDismiss = onDismiss,
             )
         },
         modifier = modifier.testTag { FailedPuzzlesScreenTags.Completion.DIALOG },
     ) {
         Column {
             Summary(
-                value = puzzlesSolved.toString(),
+                value = stringResource(R.string.failed_puzzles_complete_summary, puzzlesSolved, puzzlesTotal),
                 subtitle = stringResource(R.string.user_stat_puzzles_solved),
             )
-            CenteredMessage(text = stringResource(R.string.failed_puzzles_complete_message))
+            CenteredMessage(
+                text = stringResource(
+                    if (puzzlesSolved > 0) R.string.failed_puzzles_complete_message
+                    else R.string.failed_puzzles_complete_message_none_solved
+                )
+            )
         }
     }
 }
