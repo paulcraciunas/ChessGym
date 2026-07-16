@@ -15,7 +15,7 @@ internal abstract class Executable {
     abstract val plies: MutableList<Playable>
 
     abstract fun isRunning(): Boolean
-    abstract fun recomputeState()
+    abstract fun recomputeState(ply: Ply? = null)
     abstract fun saveInfo()
 
     fun execute(ply: Ply) {
@@ -31,7 +31,8 @@ internal abstract class Executable {
         // Update state
         info.update(playable, checkCount = checkCount(info.turn.other()))
         saveInfo()
-        updateState()
+        computeAvailablePlies()
+        updateResolution(ply)
     }
 
     fun checkCount(turn: Side) =
@@ -42,8 +43,8 @@ internal abstract class Executable {
         updateResolution()
     }
 
-    private fun updateResolution() { // Important to call after updating game state
-        recomputeState()
+    private fun updateResolution(ply: Ply? = null) { // Important to call after updating game state
+        recomputeState(ply)
         if (!isRunning()) {
             plies.clear()
         }

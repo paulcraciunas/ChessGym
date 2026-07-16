@@ -2,6 +2,7 @@ package com.paulcraciunas.game.logic
 
 import com.paulcraciunas.game.logic.api.Builder
 import com.paulcraciunas.game.logic.api.Puzzle
+import com.paulcraciunas.game.logic.api.Side
 import com.paulcraciunas.game.logic.api.board.Locus
 import com.paulcraciunas.game.logic.api.board.Piece
 import com.paulcraciunas.game.logic.impl.RealBuilder
@@ -185,25 +186,48 @@ internal class MutablePuzzleTest {
 
     @Test
     fun `GIVEN alternate checkmate move WHEN playing wrong but checkmate move THEN state becomes Success`() {
-        // Given - Position where both Qh4 and Qf2 are checkmate
-        // White: King on g1, Queen on d8
-        // Black: King on e8
-        // Expected move is d8h4 (Queen to h4 checkmate), but d8f2 also delivers checkmate
+        // White: Ka1, Qh7, Rd1, Rf1. Black: Ke8.
+        // Expected: Qd7# (defended by Rd1; Kf8 is blocked by rook at f1)
+        // Alternate: Qf7# (same thing as above, it's symmetrical)
         underTest = RealBuilder(PlyFactory())
             .withRating(1200)
-            .withPiece(Piece.King, com.paulcraciunas.game.logic.api.Side.WHITE, Locus.g1)
-            .withPiece(Piece.Queen, com.paulcraciunas.game.logic.api.Side.WHITE, Locus.h5)
-            .withPiece(Piece.King, com.paulcraciunas.game.logic.api.Side.BLACK, Locus.h8)
-            .withPiece(Piece.Rook, com.paulcraciunas.game.logic.api.Side.WHITE, Locus.a8)
-            .withMoves("h5f7") // Expected move: Queen to f7 checkmate
+            .withPiece(Piece.King, Side.WHITE, Locus.a1)
+            .withPiece(Piece.King, Side.BLACK, Locus.e8)
+            .withPiece(Piece.Queen, Side.WHITE, Locus.h7)
+            .withPiece(Piece.Rook, Side.WHITE, Locus.d1)
+            .withPiece(Piece.Rook, Side.WHITE, Locus.f1)
+            .withMoves("h7d7") // Expected: Qd7#
             .buildPuzzle()
         underTest.start()
 
-        // When - play alternate checkmate: Queen to h7 (also checkmate)
-        underTest.play(Locus.h5, Locus.h7)
+        // When - play alternate checkmate: Qf7#
+        underTest.play(Locus.h7, Locus.f7)
 
         // Then
         assertEquals(Puzzle.State.Success, underTest.state)
+    }
+
+    @Test
+    fun `GIVEN last move gives check but not checkmate WHEN playing wrong move THEN state becomes Failed`() {
+        // Regression: a wrong last move that gave check was incorrectly accepted as success
+        // because plies were cleared before the checkmate check ran.
+        // Position: White Kg1, Qd1, Rook a7. Black Ke8.
+        // Expected: Qd1-d7 (check). Wrong move: Qd1-d8 (gives check but black king can recapture).
+        underTest = RealBuilder(PlyFactory())
+            .withRating(1000)
+            .withPiece(Piece.King, Side.WHITE, Locus.g1)
+            .withPiece(Piece.Queen, Side.WHITE, Locus.d1)
+            .withPiece(Piece.Rook, Side.WHITE, Locus.a7)
+            .withPiece(Piece.King, Side.BLACK, Locus.e8)
+            .withMoves("d1d7") // Expected: Queen to d7 (check with rook on a7)
+            .buildPuzzle()
+        underTest.start()
+
+        // When - play Qd8+ (check, but king can capture queen)
+        underTest.play(Locus.d1, Locus.d8)
+
+        // Then - must be Failed, not Success
+        assertEquals(Puzzle.State.Failed, underTest.state)
     }
 
     @Test
@@ -211,9 +235,9 @@ internal class MutablePuzzleTest {
         // Given
         underTest = RealBuilder(PlyFactory())
             .withRating(1200)
-            .withPiece(Piece.King, com.paulcraciunas.game.logic.api.Side.WHITE, Locus.e1)
-            .withPiece(Piece.Queen, com.paulcraciunas.game.logic.api.Side.WHITE, Locus.d1)
-            .withPiece(Piece.King, com.paulcraciunas.game.logic.api.Side.BLACK, Locus.e8)
+            .withPiece(Piece.King, Side.WHITE, Locus.e1)
+            .withPiece(Piece.Queen, Side.WHITE, Locus.d1)
+            .withPiece(Piece.King, Side.BLACK, Locus.e8)
             .withMoves("d1d4") // Expected move
             .buildPuzzle()
         underTest.start()

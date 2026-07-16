@@ -509,7 +509,7 @@ internal class PuzzleStreakViewModelTest {
         .withPiece(Piece.Pawn, Side.WHITE, Locus.g2)
         .withPiece(Piece.King, Side.BLACK, Locus.e8)
         .withPiece(Piece.Pawn, Side.BLACK, Locus.a2)
-        .withMoves(listOf("g2g3", "a2a1"))
+        .withMoves(listOf("g2g3", "a2a1q"))
         .buildPuzzle()
 
     private fun buildOneMoveWinPuzzle(): Puzzle = RealGameFactory().builder()
