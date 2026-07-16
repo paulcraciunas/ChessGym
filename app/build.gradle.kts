@@ -16,6 +16,17 @@ android {
     buildFeatures {
         buildConfig = true
     }
+    bundle {
+        // Ship all translations in the base APK rather than as on-demand language splits.
+        // When a user changes the device language, Play would otherwise install the matching
+        // language split into the already-running app, relocating the package's APK directory
+        // and invalidating the live process's path to the native library (libstockfishjni.so),
+        // causing an UnsatisfiedLinkError until the next cold start. Disabling language splits
+        // removes that trigger; the size cost is negligible for string-only resources.
+        language {
+            enableSplit = false
+        }
+    }
     defaultConfig {
         testInstrumentationRunner = "com.paulcraciunas.chessgym.runner.HiltTestRunner"
     }
